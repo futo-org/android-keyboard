@@ -21,7 +21,7 @@
         latin:moreKeys="!text/number_1,!text/qwertysyms_q,!text/morekeys_b" />
     <Key
         latin:keySpec="&#xE9;"
-        latin:moreKeys="!text/number_2,!text/qwertysyms_w,&#xE8;" />
+        latin:moreKeys="!text/number_2,!text/qwertysyms_w" />
     <Key
         latin:keySpec="p"
         latin:moreKeys="!text/number_3,!text/qwertysyms_e,!text/morekeys_p" />
@@ -29,21 +29,23 @@
         latin:keySpec="o"
         latin:moreKeys="!text/number_4,!text/qwertysyms_r,!text/morekeys_o" />
     <Key
-        latin:keySpec="v"
+        latin:keySpec="&#xE8;"
         latin:moreKeys="!text/number_5,!text/qwertysyms_t,!text/morekeys_v" />
     <Key
-        latin:keySpec="d"
+        latin:keySpec="v"
         latin:moreKeys="!text/number_6,!text/qwertysyms_y,!text/morekeys_d" />
     <Key
-        latin:keySpec="l"
+        latin:keySpec="d"
         latin:moreKeys="!text/number_7,!text/qwertysyms_u,!text/morekeys_l" />
     <Key
-        latin:keySpec="j"
+        latin:keySpec="l"
         latin:moreKeys="!text/number_8,!text/qwertysyms_i,!text/morekeys_j" />
     <Key
-        latin:keySpec="z"
+        latin:keySpec="j"
         latin:moreKeys="!text/number_9,!text/qwertysyms_o,!text/morekeys_z" />
     <Key
-        latin:keySpec="w"
+        latin:keySpec="z"
         latin:moreKeys="!text/number_0,!text/qwertysyms_p,!text/morekeys_w" />
+    <Key
+        latin:keySpec="w"/>
 </merge>
