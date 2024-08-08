@@ -17,6 +17,10 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <Key
+        latin:keySpec="ê"/>
+    <Key
+        latin:keySpec="à"/>
+    <Key
         latin:keySpec="y"
         latin:moreKeys="!text/qwertysyms_z,!text/morekeys_y" />
     <Key

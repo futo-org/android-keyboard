@@ -46,4 +46,6 @@
     <Key
         latin:keySpec="m"
         latin:moreKeys="!text/morekeys_c" />
+    <Key
+        latin:keySpec="ç"/>
 </merge>
