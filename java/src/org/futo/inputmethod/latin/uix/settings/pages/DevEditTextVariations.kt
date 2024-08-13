@@ -70,67 +70,62 @@ fun DevEditTextVariationsScreen(navController: NavHostController = rememberNavCo
         ScreenTitle("Text Edit Variations", showBack = true, navController)
 
         TextEdit("multi lines none",
-            EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT,
             EditorInfo.IME_ACTION_UNSPECIFIED
         )
 
         TextEdit("multi lines send",
-            EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT,
             EditorInfo.IME_ACTION_SEND
         )
 
 
         TextEdit("short message send multi lines",
-            EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
             EditorInfo.IME_ACTION_SEND
         )
 
         TextEdit("multi lines search",
-            EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
             EditorInfo.IME_ACTION_SEARCH
         )
 
         TextEdit("short message send",
-            EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
             EditorInfo.IME_ACTION_SEND
         )
 
         TextEdit("autocap none",
-            EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
             EditorInfo.IME_ACTION_NONE
         )
 
         TextEdit("autocap send",
-            EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
             EditorInfo.IME_ACTION_SEND
         )
 
         TextEdit("uri go",
-            EditorInfo.TYPE_TEXT_VARIATION_URI,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_URI,
             EditorInfo.IME_ACTION_GO
         )
 
         TextEdit("email address done",
-            EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
             EditorInfo.IME_ACTION_DONE
         )
 
         TextEdit("auto correct search",
-            EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT,
-            EditorInfo.IME_ACTION_SEARCH
-        )
-
-        TextEdit("auto correct search",
-            EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT,
             EditorInfo.IME_ACTION_SEARCH
         )
 
         TextEdit("auto correct previous",
-            EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
         )
 
         TextEdit("auto correct custom",
-            EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT,
             imeActionLabel = "custom action label",
             imeActionId = 100
         )
@@ -155,89 +150,89 @@ fun DevEditTextVariationsScreen(navController: NavHostController = rememberNavCo
         )
 
         TextEdit("password next",
-            EditorInfo.TYPE_TEXT_VARIATION_PASSWORD,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PASSWORD,
             EditorInfo.IME_ACTION_NEXT
         )
 
         TextEdit("visible password done",
-            EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
             EditorInfo.IME_ACTION_DONE
         )
 
         TextEdit("number password send",
-            EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD,
+            EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD,
             EditorInfo.IME_ACTION_SEND
         )
 
         TextEdit("text no suggestion",
-            EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS,
             EditorInfo.IME_ACTION_GO
         )
 
         TextEdit("text no autocorrection",
-            EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE,
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE,
             EditorInfo.IME_ACTION_DONE
         )
 
 
         TextEdit("cap characters with autocorrect",
-            EditorInfo.TYPE_TEXT_FLAG_CAP_CHARACTERS or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_CHARACTERS or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
         )
 
         TextEdit("cap words with autocorrect",
-            EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
         )
 
         TextEdit("cap sentences with autocorrect",
-            EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES or EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
         )
 
         TextEdit("cap characters",
-            EditorInfo.TYPE_TEXT_FLAG_CAP_CHARACTERS
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_CHARACTERS
         )
 
         TextEdit("cap words",
-            EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS
         )
 
         TextEdit("cap sentences",
-            EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES
         )
 
         TextEdit("email subject",
-            EditorInfo.TYPE_TEXT_VARIATION_EMAIL_SUBJECT
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_EMAIL_SUBJECT
         )
 
         TextEdit("person name",
-            EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME
         )
 
         TextEdit("postal address",
-            EditorInfo.TYPE_TEXT_VARIATION_POSTAL_ADDRESS
+            EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_POSTAL_ADDRESS
         )
 
         TextEdit("signed number",
-            EditorInfo.TYPE_NUMBER_FLAG_SIGNED
+            EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_SIGNED
         )
 
         TextEdit("decimal number",
-            EditorInfo.TYPE_NUMBER_FLAG_DECIMAL
+            EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_DECIMAL
         )
 
         TextEdit("signed decimal number",
-            EditorInfo.TYPE_NUMBER_FLAG_DECIMAL or EditorInfo.TYPE_NUMBER_FLAG_SIGNED
+            EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_DECIMAL or EditorInfo.TYPE_NUMBER_FLAG_SIGNED
         )
 
         TextEdit("datetime",
-            EditorInfo.TYPE_DATETIME_VARIATION_NORMAL
+            EditorInfo.TYPE_CLASS_DATETIME or EditorInfo.TYPE_DATETIME_VARIATION_NORMAL
         )
 
         TextEdit("date",
-            EditorInfo.TYPE_DATETIME_VARIATION_DATE
+            EditorInfo.TYPE_CLASS_DATETIME or EditorInfo.TYPE_DATETIME_VARIATION_DATE
         )
 
         TextEdit("time",
-            EditorInfo.TYPE_DATETIME_VARIATION_TIME
+            EditorInfo.TYPE_CLASS_DATETIME or EditorInfo.TYPE_DATETIME_VARIATION_TIME
         )
 
     }
