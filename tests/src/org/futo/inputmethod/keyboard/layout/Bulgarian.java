@@ -24,7 +24,7 @@ import org.futo.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import java.util.Locale;
 
 public final class Bulgarian extends LayoutBase {
-    private static final String LAYOUT_NAME = "bulgarian";
+    private static final String LAYOUT_NAME = "bulgarian (traditional phonetic)";
 
     public Bulgarian(final Locale locale) {
         super(new BulgarianCustomizer(locale), Symbols.class, SymbolsShifted.class);
@@ -71,7 +71,7 @@ public final class Bulgarian extends LayoutBase {
                     key("\u0443", moreKey("7")),
                     // U+0438: "и" CYRILLIC SMALL LETTER I
                     // U+045D: "ѝ" CYRILLIC SMALL LETTER I WITH GRAVE
-                    key("\u0438", joinMoreKeys("8", "\u045D")),
+                    key("\u0438", moreKeys("8")),
                     // U+043E: "о" CYRILLIC SMALL LETTER O
                     key("\u043E", moreKey("9")),
                     // U+043F: "п" CYRILLIC SMALL LETTER PE
