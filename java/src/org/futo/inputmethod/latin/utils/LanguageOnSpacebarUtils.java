@@ -42,20 +42,13 @@ public final class LanguageOnSpacebarUtils {
     }
 
     public static int getLanguageOnSpacebarFormatType(
-            @Nonnull final RichInputMethodSubtype subtype) {
-        if (subtype.isNoLanguage()) {
-            return FORMAT_TYPE_FULL_LOCALE;
-        }
+            @Nonnull final Locale locale, @Nonnull final String keyboardLayout) {
         // Only this subtype is enabled and equals to the system locale.
         if (sEnabledSubtypes.size() < 2 && sIsSystemLanguageSameAsInputLanguage) {
             return FORMAT_TYPE_NONE;
         }
-        final Locale locale = subtype.getLocale();
-        if (locale == null) {
-            return FORMAT_TYPE_NONE;
-        }
+
         final String keyboardLanguage = locale.getLanguage();
-        final String keyboardLayout = subtype.getKeyboardLayoutSetName();
         int sameLanguageAndLayoutCount = 0;
         for (final InputMethodSubtype ims : sEnabledSubtypes) {
             final String language = SubtypeLocaleUtils.getSubtypeLocale(ims).getLanguage();

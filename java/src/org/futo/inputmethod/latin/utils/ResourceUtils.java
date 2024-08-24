@@ -221,6 +221,24 @@ public final class ResourceUtils {
         return (int)Math.max(Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
     }
 
+    public static int clampKeyboardHeight(final Resources res, final int height) {
+        final DisplayMetrics dm = res.getDisplayMetrics();
+
+        final float maxKeyboardHeight = res.getFraction(
+                R.fraction.config_max_keyboard_height, dm.heightPixels, dm.heightPixels);
+        float minKeyboardHeight = res.getFraction(
+                R.fraction.config_min_keyboard_height, dm.heightPixels, dm.heightPixels);
+        if (minKeyboardHeight < 0.0f) {
+            // Specified fraction was negative, so it should be calculated against display
+            // width.
+            minKeyboardHeight = -res.getFraction(
+                    R.fraction.config_min_keyboard_height, dm.widthPixels, dm.widthPixels);
+        }
+        // Keyboard height will not exceed maxKeyboardHeight and will not be less than
+        // minKeyboardHeight.
+        return (int)Math.max(Math.min(height, maxKeyboardHeight), minKeyboardHeight);
+    }
+
     public static boolean isValidFraction(final float fraction) {
         return fraction >= 0.0f;
     }

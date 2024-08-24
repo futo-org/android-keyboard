@@ -747,6 +747,12 @@ public final class InputLogic {
                 // line, so that does affect the contents of the editor.
                 inputTransaction.setDidAffectContents();
                 break;
+            case Constants.CODE_TO_NUMBER_LAYOUT:
+            case Constants.CODE_TO_ALT_0_LAYOUT:
+            case Constants.CODE_TO_ALT_1_LAYOUT:
+            case Constants.CODE_TO_ALT_2_LAYOUT:
+                // Handled in KeyboardState
+                break;
             default:
                 throw new RuntimeException("Unknown key code : " + event.mKeyCode);
         }

@@ -1,0 +1,22 @@
+name: Error Layout
+numberRowMode: AlwaysDisabled
+attributes:
+  width: Grow
+  showPopup: false
+  moreKeyMode: OnlyExplicit
+  useKeySpecShortcut: false
+  style: NoBackground
+  longPressEnabled: true
+  labelFlags:
+    followKeyLabelRatio: true
+    alignLabelOffCenter: false
+    hasHintLabel: false
+    autoXScale: true
+rows:
+  - letters:
+      - {type: base, spec: "View layout error details|!code/action_bugs"}
+    splittable: false
+  - bottom:
+      - {type: base, spec: "Switch language|!code/action_switch_language"}
+    attributes: { style: Action }
+    splittable: false

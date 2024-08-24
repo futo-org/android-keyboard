@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.settings
 
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -16,6 +17,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
 import org.futo.inputmethod.latin.uix.settings.pages.CreditsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DevEditTextVariationsScreen
+import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutList
 import org.futo.inputmethod.latin.uix.settings.pages.DeveloperScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HelpScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
@@ -61,6 +63,7 @@ fun SettingsNavigator(
         composable("help") { HelpScreen(navController) }
         composable("developer") { DeveloperScreen(navController) }
         composable("devtextedit") { DevEditTextVariationsScreen(navController) }
+        composable("devlayouts") { DevLayoutList(navController) }
         composable("blacklist") { BlacklistScreen(navController) }
         composable("payment") { PaymentScreen(navController) { navController.navigateUp() } }
         composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }
@@ -83,5 +86,9 @@ fun SettingsNavigator(
             UpdateDialog(navController = navController)
         }
         addModelManagerNavigation(navController)
+    }
+
+    LaunchedEffect(Unit) {
+        navController.navigate("devlayouts")
     }
 }

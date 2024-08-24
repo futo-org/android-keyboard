@@ -1,0 +1,7 @@
+# TODO: Redundant with swiss?
+name: Deutsch
+languages: de
+rows:
+  - letters: q w e r t z u i o p ü
+  - letters: a s d f g h j k l ö ä
+  - letters: y x c v b n m

@@ -430,7 +430,7 @@ public class KeyboardView extends View {
         float labelX = centerX;
         float labelBaseline = centerY;
         final String label = key.getLabel();
-        if (label != null) {
+        if (label != null && icon == null) {
             paint.setTypeface(key.selectTypeface(params));
             paint.setTextSize(key.selectTextSize(params));
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);
@@ -485,7 +485,7 @@ public class KeyboardView extends View {
             paint.setTextSize(key.selectHintTextSize(params));
             paint.setColor(key.selectHintTextColor(params));
             // TODO: Should add a way to specify type face for hint letters
-            paint.setTypeface(Typeface.DEFAULT_BOLD);
+            paint.setTypeface(Typeface.DEFAULT);
             blendAlpha(paint, params.mAnimAlpha);
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
@@ -499,7 +499,7 @@ public class KeyboardView extends View {
                 } else {
                     hintBaseline = centerY + labelCharHeight / 2.0f;
                 }
-                paint.setTextAlign(Align.LEFT);
+                paint.setTextAlign(Align.CENTER);
             } else if (key.hasShiftedLetterHint()) {
                 // The hint label is placed at top-right corner of the key. Used mainly on tablet.
                 hintX = keyWidth - mKeyShiftedLetterHintPadding - labelCharWidth / 2.0f;
@@ -532,7 +532,7 @@ public class KeyboardView extends View {
         }
 
         // Draw key icon.
-        if (label == null && icon != null) {
+        if (icon != null) {
             final float size = key.selectTextSize(params) * 1.75f;
 
             int iconWidth;

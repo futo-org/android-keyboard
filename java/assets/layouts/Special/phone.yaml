@@ -1,0 +1,39 @@
+name: Phone
+numberRowMode: AlwaysDisabled
+attributes:
+  width: Grow
+  showPopup: false
+  moreKeyMode: OnlyExplicit
+  useKeySpecShortcut: false
+  style: Normal
+  shiftable: false
+  labelFlags:
+    alignLabelOffCenter: true
+    hasHintLabel: true
+rowHeightMode: FillHeight
+rows:
+  - letters:
+      - "1"
+      - {type: base, spec: "2", hint: "ABC"}
+      - {type: base, spec: "3", hint: "DEF"}
+      - {type: base, spec: "-", attributes: &functional { style: Functional, labelFlags: {} }}
+    splittable: false
+  - letters:
+      - {type: base, spec: "4", hint: "GHI"}
+      - {type: base, spec: "5", hint: "JKL"}
+      - {type: base, spec: "6", hint: "MNO"}
+      - {type: base, spec: "!icon/space_key_for_number_layout|!code/key_space", attributes: *functional}
+    splittable: false
+  - letters:
+      - {type: base, spec: "7", hint: "PQRS"}
+      - {type: base, spec: "8", hint: "TUV"}
+      - {type: base, spec: "9", hint: "WXYZ"}
+      - {type: base, spec: "!icon/delete_key|!code/key_delete", attributes: *functional}
+    splittable: false
+  - bottom:
+      - {type: base, spec: "!text/keylabel_to_phone_symbols|!code/key_shift"}
+      - {type: base, spec: "0", moreKeys: "!noPanelAutoMoreKey!,+"}
+      - {type: base, spec: "."}
+      - {type: enter, attributes: { width: Grow }}
+    attributes: { style: Normal }
+    splittable: false

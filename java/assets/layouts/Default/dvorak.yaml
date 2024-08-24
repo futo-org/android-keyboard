@@ -1,0 +1,6 @@
+name: Dvorak
+rows:
+  - letters: \' , . p y f g c r l
+  - letters: a o e u i d h t n s
+  - letters: $shift j k x b m w v $delete
+  - bottom:  $symbols q $action $space $contextual z $enter

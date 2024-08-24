@@ -86,7 +86,7 @@ public final class MoreKeySpec {
             @Nonnull final KeyboardParams params) {
         return new Key(mLabel, mIconId, mCode, mOutputText, null /* hintLabel */, labelFlags,
                 Key.BACKGROUND_TYPE_NORMAL, x, y, params.mDefaultKeyWidth, params.mDefaultRowHeight,
-                params.mHorizontalGap, params.mVerticalGap);
+                params.mHorizontalGap, params.mVerticalGap, Key.ACTION_FLAGS_NO_KEY_PREVIEW);
     }
 
     @Override
@@ -176,14 +176,16 @@ public final class MoreKeySpec {
 
 
     @Nullable
-    public static MoreKeySpec[] removeDuplicateMoreKeys(@Nullable final MoreKeySpec[] moreKeys) {
+    public static MoreKeySpec[] removeDuplicateMoreKeys(int baseCode, @Nullable final MoreKeySpec[] moreKeys) {
         if (moreKeys == null) {
             return null;
         }
 
         final ArrayList<MoreKeySpec> filteredMoreKeys = new ArrayList<>();
         for (final MoreKeySpec moreKey : moreKeys) {
-            if (!filteredMoreKeys.contains(moreKey)) {
+            if (!filteredMoreKeys.contains(moreKey) &&
+                    ((moreKey.mCode != baseCode) || (moreKey.mCode == Constants.CODE_OUTPUT_TEXT))
+            ) {
                 filteredMoreKeys.add(moreKey);
             }
         }

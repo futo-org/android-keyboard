@@ -1,702 +1,443 @@
-/*
- * Copyright (C) 2011 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// TODO: Save numpad preference?
+package org.futo.inputmethod.keyboard.internal
 
-package org.futo.inputmethod.keyboard.internal;
+import android.util.Log
+import android.view.ViewConfiguration
+import android.view.inputmethod.EditorInfo
+import org.futo.inputmethod.event.Event
+import org.futo.inputmethod.keyboard.KeyboardId
+import org.futo.inputmethod.latin.common.Constants
+import org.futo.inputmethod.v2keyboard.getKeyboardMode
 
-import android.text.TextUtils;
-import android.util.Log;
+enum class KeyboardLayoutKind {
+    Alphabet,
+    Symbols,
+    Phone,
+    Number
+}
 
-import org.futo.inputmethod.event.Event;
-import org.futo.inputmethod.latin.common.Constants;
-import org.futo.inputmethod.latin.utils.CapsModeUtils;
-import org.futo.inputmethod.latin.utils.RecapitalizeStatus;
+enum class KeyboardLayoutPage(val locked: Boolean, val altIdx: Int? = null) {
+    Base(true),
+    Shifted(false),
+    ShiftLocked(true),
+    Alt0(false, 0),
+    Alt1(false, 1),
+    Alt2(false, 2),
+    Alt3(false, 3),
+}
+
+data class KeyboardLayoutElement(
+    val kind: KeyboardLayoutKind,
+    val page: KeyboardLayoutPage
+) {
+    val elementId: Int
+        get() = when(kind) {
+            KeyboardLayoutKind.Alphabet -> when(page) {
+                KeyboardLayoutPage.Base -> KeyboardId.ELEMENT_ALPHABET
+                KeyboardLayoutPage.Shifted -> KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED
+                KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED
+                else -> KeyboardId.ELEMENT_ALPHABET
+            }
+
+            KeyboardLayoutKind.Symbols -> when(page) {
+                KeyboardLayoutPage.Base -> KeyboardId.ELEMENT_SYMBOLS
+                KeyboardLayoutPage.Shifted, KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_SYMBOLS_SHIFTED
+                else -> KeyboardId.ELEMENT_SYMBOLS
+            }
+
+            KeyboardLayoutKind.Phone -> when(page) {
+                KeyboardLayoutPage.Base -> KeyboardId.ELEMENT_PHONE
+                KeyboardLayoutPage.Shifted, KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_PHONE_SYMBOLS
+                else -> KeyboardId.ELEMENT_PHONE
+            }
+
+            KeyboardLayoutKind.Number -> KeyboardId.ELEMENT_NUMBER
+        }
+}
+
+interface SwitchActions {
+    fun setKeyboard(element: KeyboardLayoutElement)
+    fun requestUpdatingShiftState(autoCapsFlags: Int, recapitalizeMode: Int)
+}
+
+internal data class SavedKeyboardState(
+    val isValid: Boolean = false,
+    val layout: KeyboardLayoutElement = KeyboardLayoutElement(
+        KeyboardLayoutKind.Alphabet,
+        KeyboardLayoutPage.Base
+    ),
+    val prefersNumberLayout: Boolean = false
+) {
+    override fun toString(): String {
+        if (!isValid) {
+            return "INVALID"
+        }
+        return "${layout.kind.name}${layout.page.name}"
+    }
+}
 
 /**
  * Keyboard state machine.
  *
  * This class contains all keyboard state transition logic.
  *
- * The input events are {@link #onLoadKeyboard(int, int)}, {@link #onSaveKeyboardState()},
- * {@link #onPressKey(int,boolean,int,int)}, {@link #onReleaseKey(int,boolean,int,int)},
- * {@link #onEvent(Event,int,int)}, {@link #onFinishSlidingInput(int,int)},
- * {@link #onUpdateShiftState(int,int)}, {@link #onResetKeyboardStateToAlphabet(int,int)}.
+ * The input events are [.onLoadKeyboard], [.onSaveKeyboardState],
+ * [.onPressKey], [.onReleaseKey],
+ * [.onEvent], [.onFinishSlidingInput],
+ * [.onUpdateShiftState], [.onResetKeyboardStateToAlphabet].
  *
- * The actions are {@link SwitchActions}'s methods.
+ * The actions are [SwitchActions]'s methods.
  */
-public final class KeyboardState {
-    private static final String TAG = KeyboardState.class.getSimpleName();
-    private static final boolean DEBUG_EVENT = false;
-    private static final boolean DEBUG_INTERNAL_ACTION = false;
-
-    public interface SwitchActions {
-        public static final boolean DEBUG_ACTION = false;
-
-        public void setAlphabetKeyboard();
-        public void setAlphabetManualShiftedKeyboard();
-        public void setAlphabetAutomaticShiftedKeyboard();
-        public void setAlphabetShiftLockedKeyboard();
-        public void setAlphabetShiftLockShiftedKeyboard();
-        public void setEmojiKeyboard();
-        public void setSymbolsKeyboard();
-        public void setSymbolsShiftedKeyboard();
-
-        /**
-         * Request to call back {@link KeyboardState#onUpdateShiftState(int, int)}.
-         */
-        public void requestUpdatingShiftState(final int autoCapsFlags, final int recapitalizeMode);
-
-        public static final boolean DEBUG_TIMER_ACTION = false;
-
-        public void startDoubleTapShiftKeyTimer();
-        public boolean isInDoubleTapShiftKeyTimeout();
-        public void cancelDoubleTapShiftKeyTimer();
+class KeyboardState(private val switchActions: SwitchActions) {
+    companion object {
+        private const val TAG = "KeyboardState"
+        private const val DEBUG_EVENT = true
+        private const val DEBUG_INTERNAL_ACTION = true
     }
 
-    private final SwitchActions mSwitchActions;
+    private val shiftKeyState = ShiftKeyState("Shift")
+    private val symbolKeyState = ModifierKeyState("Symbol")
 
-    private ShiftKeyState mShiftKeyState = new ShiftKeyState("Shift");
-    private ModifierKeyState mSymbolKeyState = new ModifierKeyState("Symbol");
+    private val alphabetShiftState = AlphabetShiftState()
+    private var savedKeyboardState = SavedKeyboardState()
 
-    // TODO: Merge {@link #mSwitchState}, {@link #mIsAlphabetMode}, {@link #mAlphabetShiftState},
-    // {@link #mIsSymbolShifted}, {@link #mPrevMainKeyboardWasShiftLocked}, and
-    // {@link #mPrevSymbolsKeyboardWasShifted} into single state variable.
-    private static final int SWITCH_STATE_ALPHA = 0;
-    private static final int SWITCH_STATE_SYMBOL_BEGIN = 1;
-    private static final int SWITCH_STATE_SYMBOL = 2;
-    private static final int SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL = 3;
-    private static final int SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE = 4;
-    private static final int SWITCH_STATE_MOMENTARY_ALPHA_SHIFT = 5;
-    private int mSwitchState = SWITCH_STATE_ALPHA;
+    private var currentLayout = KeyboardLayoutElement(
+        kind = KeyboardLayoutKind.Alphabet,
+        page = KeyboardLayoutPage.Base
+    )
 
-    // TODO: Consolidate these two mode booleans into one integer to distinguish between alphabet,
-    // symbols, and emoji mode.
-    private boolean mIsAlphabetMode;
-    private boolean mIsEmojiMode;
-    private AlphabetShiftState mAlphabetShiftState = new AlphabetShiftState();
-    private boolean mIsSymbolShifted;
-    private boolean mPrevMainKeyboardWasShiftLocked;
-    private boolean mPrevSymbolsKeyboardWasShifted;
-    private int mRecapitalizeMode;
+    private val isAlphabet: Boolean
+        get() = currentLayout.kind == KeyboardLayoutKind.Alphabet
 
-    // For handling double tap.
-    private boolean mIsInAlphabetUnshiftedFromShifted;
-    private boolean mIsInDoubleTapShiftKey;
+    private var prefersNumberLayout = false
 
-    private final SavedKeyboardState mSavedKeyboardState = new SavedKeyboardState();
+    private val debugState: String
+        get() = "Layout $currentLayout, alphabetShiftState: $alphabetShiftState, shiftKeyState $shiftKeyState, symbolKeyState $symbolKeyState"
 
-    static final class SavedKeyboardState {
-        public boolean mIsValid;
-        public boolean mIsAlphabetMode;
-        public boolean mIsAlphabetShiftLocked;
-        public boolean mIsEmojiMode;
-        public int mShiftMode;
+    private fun setLayout(layout: KeyboardLayoutElement) {
+        currentLayout = layout
+        switchActions.setKeyboard(layout)
+    }
 
-        @Override
-        public String toString() {
-            if (!mIsValid) {
-                return "INVALID";
-            }
-            if (mIsAlphabetMode) {
-                return mIsAlphabetShiftLocked ? "ALPHABET_SHIFT_LOCKED"
-                        : "ALPHABET_" + shiftModeToString(mShiftMode);
-            }
-            if (mIsEmojiMode) {
-                return "EMOJI";
-            }
-            return "SYMBOLS_" + shiftModeToString(mShiftMode);
+    private fun setNumberLayout(prefer: Boolean = true) {
+        if(prefer) prefersNumberLayout = true
+
+        setLayout(KeyboardLayoutElement(
+            kind = KeyboardLayoutKind.Number,
+            page = KeyboardLayoutPage.Base
+        ))
+    }
+
+    private fun setSymbolLayout() {
+        if(currentLayout.kind == KeyboardLayoutKind.Number || !prefersNumberLayout) {
+            prefersNumberLayout = false
+
+            setLayout(
+                KeyboardLayoutElement(
+                    kind = KeyboardLayoutKind.Symbols,
+                    page = KeyboardLayoutPage.Base
+                )
+            )
+        } else {
+            setLayout(KeyboardLayoutElement(
+                kind = KeyboardLayoutKind.Number,
+                page = KeyboardLayoutPage.Base
+            ))
         }
     }
 
-    public KeyboardState(final SwitchActions switchActions) {
-        mSwitchActions = switchActions;
-        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
+    private fun setPhoneLayout() {
+        setLayout(KeyboardLayoutElement(
+            kind = KeyboardLayoutKind.Phone,
+            page = KeyboardLayoutPage.Base
+        ))
     }
 
-    public void onLoadKeyboard(final int autoCapsFlags, final int recapitalizeMode) {
-        if (DEBUG_EVENT) {
-            Log.d(TAG, "onLoadKeyboard: " + stateToString(autoCapsFlags, recapitalizeMode));
-        }
+    private fun setAlphabetLayout(autoCapsFlags: Int, recapitalizeMode: Int) {
+        setLayout(KeyboardLayoutElement(
+            kind = KeyboardLayoutKind.Alphabet,
+            page = KeyboardLayoutPage.Base
+        ))
+
+        switchActions.requestUpdatingShiftState(autoCapsFlags, recapitalizeMode)
+    }
+
+    fun onLoadKeyboard(editorInfo: EditorInfo?, autoCapsFlags: Int, recapitalizeMode: Int) {
         // Reset alphabet shift state.
-        mAlphabetShiftState.setShiftLocked(false);
-        mPrevMainKeyboardWasShiftLocked = false;
-        mPrevSymbolsKeyboardWasShifted = false;
-        mShiftKeyState.onRelease();
-        mSymbolKeyState.onRelease();
-        if (mSavedKeyboardState.mIsValid) {
-            onRestoreKeyboardState(autoCapsFlags, recapitalizeMode);
-            mSavedKeyboardState.mIsValid = false;
-        } else {
-            // Reset keyboard to alphabet mode.
-            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
+        alphabetShiftState.isShiftLocked = false
+
+        shiftKeyState.onRelease()
+        symbolKeyState.onRelease()
+
+        when(getKeyboardMode(editorInfo ?: EditorInfo())) {
+            KeyboardId.MODE_NUMBER, KeyboardId.MODE_DATE, KeyboardId.MODE_TIME, KeyboardId.MODE_DATETIME ->
+                // TODO: Datetime selection could be improved by adding symbols specific for them
+                setNumberLayout(prefer = false)
+
+            KeyboardId.MODE_PHONE ->
+                setPhoneLayout()
+
+            else ->
+                if (savedKeyboardState.isValid) {
+                    onRestoreKeyboardState(autoCapsFlags, recapitalizeMode)
+                } else {
+                    setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+                }
         }
+
+        savedKeyboardState = SavedKeyboardState(isValid = false)
     }
 
-    // Constants for {@link SavedKeyboardState#mShiftMode} and {@link #setShifted(int)}.
-    private static final int UNSHIFT = 0;
-    private static final int MANUAL_SHIFT = 1;
-    private static final int AUTOMATIC_SHIFT = 2;
-    private static final int SHIFT_LOCK_SHIFTED = 3;
+    fun onSaveKeyboardState() {
+        savedKeyboardState = SavedKeyboardState(
+            isValid = true,
+            layout = currentLayout,
+            prefersNumberLayout = prefersNumberLayout
+        )
 
-    public void onSaveKeyboardState() {
-        final SavedKeyboardState state = mSavedKeyboardState;
-        state.mIsAlphabetMode = mIsAlphabetMode;
-        state.mIsEmojiMode = mIsEmojiMode;
-        if (mIsAlphabetMode) {
-            state.mIsAlphabetShiftLocked = mAlphabetShiftState.isShiftLocked();
-            state.mShiftMode = mAlphabetShiftState.isAutomaticShifted() ? AUTOMATIC_SHIFT
-                    : (mAlphabetShiftState.isShiftedOrShiftLocked() ? MANUAL_SHIFT : UNSHIFT);
-        } else {
-            state.mIsAlphabetShiftLocked = mPrevMainKeyboardWasShiftLocked;
-            state.mShiftMode = mIsSymbolShifted ? MANUAL_SHIFT : UNSHIFT;
-        }
-        state.mIsValid = true;
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onSaveKeyboardState: saved=" + state + " " + this);
+            Log.d(TAG, "onSaveKeyboardState: saved=$savedKeyboardState $debugState")
         }
     }
 
-    private void onRestoreKeyboardState(final int autoCapsFlags, final int recapitalizeMode) {
-        final SavedKeyboardState state = mSavedKeyboardState;
+    private fun onRestoreKeyboardState(autoCapsFlags: Int, recapitalizeMode: Int) {
+        val state = savedKeyboardState
+
+        setLayout(state.layout)
+        prefersNumberLayout = state.prefersNumberLayout
+        switchActions.requestUpdatingShiftState(autoCapsFlags, recapitalizeMode)
+    }
+
+    private val shifted: Boolean
+        get() = currentLayout.page == KeyboardLayoutPage.Shifted ||
+                currentLayout.page == KeyboardLayoutPage.ShiftLocked
+    private fun toggleShift(to: Boolean = !shifted) {
+        setLayout(currentLayout.copy(page = when {
+            to -> {
+                if(isAlphabet) alphabetShiftState.setShifted(true)
+                KeyboardLayoutPage.Shifted
+            }
+
+            else -> {
+                if(isAlphabet) alphabetShiftState.setShifted(false)
+                KeyboardLayoutPage.Base
+            }
+        }))
+
+        alphabetShiftState.isShiftLocked = currentLayout.page == KeyboardLayoutPage.ShiftLocked
+    }
+
+    private fun lockShift() {
+        if(!isAlphabet) return
+
+        alphabetShiftState.isShiftLocked = !alphabetShiftState.isShiftLocked
+        if(alphabetShiftState.isShiftLocked) {
+            setLayout(currentLayout.copy(page = KeyboardLayoutPage.ShiftLocked))
+        }
+    }
+
+    private var shiftTime: Long? = null
+    private fun onShiftTapForShiftLockTimer() {
+        if(!isAlphabet) return onCancelShiftTimer()
+
+        val shiftTimeout = ViewConfiguration.getDoubleTapTimeout()
+
+        val currentTime = System.currentTimeMillis()
+        if(shiftTime == null || (currentTime > shiftTime!! + shiftTimeout)) {
+            shiftTime = System.currentTimeMillis()
+        } else {
+            lockShift()
+            onCancelShiftTimer()
+        }
+    }
+    private fun onCancelShiftTimer() {
+        shiftTime = null
+    }
+
+    fun onPressKey(
+        code: Int, isSinglePointer: Boolean, autoCapsFlags: Int,
+        recapitalizeMode: Int
+    ) {
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onRestoreKeyboardState: saved=" + state
-                    + " " + stateToString(autoCapsFlags, recapitalizeMode));
-        }
-        mPrevMainKeyboardWasShiftLocked = state.mIsAlphabetShiftLocked;
-        if (state.mIsAlphabetMode) {
-            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
-            setShiftLocked(state.mIsAlphabetShiftLocked);
-            if (!state.mIsAlphabetShiftLocked) {
-                setShifted(state.mShiftMode);
-            }
-            return;
-        }
-        if (state.mIsEmojiMode) {
-            setEmojiKeyboard();
-            return;
-        }
-        // Symbol mode
-        if (state.mShiftMode == MANUAL_SHIFT) {
-            setSymbolsShiftedKeyboard();
-        } else {
-            setSymbolsKeyboard();
-        }
-    }
-
-    private void setShifted(final int shiftMode) {
-        if (DEBUG_INTERNAL_ACTION) {
-            Log.d(TAG, "setShifted: shiftMode=" + shiftModeToString(shiftMode) + " " + this);
-        }
-        if (!mIsAlphabetMode) return;
-        final int prevShiftMode;
-        if (mAlphabetShiftState.isAutomaticShifted()) {
-            prevShiftMode = AUTOMATIC_SHIFT;
-        } else if (mAlphabetShiftState.isManualShifted()) {
-            prevShiftMode = MANUAL_SHIFT;
-        } else {
-            prevShiftMode = UNSHIFT;
-        }
-        switch (shiftMode) {
-        case AUTOMATIC_SHIFT:
-            mAlphabetShiftState.setAutomaticShifted();
-            if (shiftMode != prevShiftMode) {
-                mSwitchActions.setAlphabetAutomaticShiftedKeyboard();
-            }
-            break;
-        case MANUAL_SHIFT:
-            mAlphabetShiftState.setShifted(true);
-            if (shiftMode != prevShiftMode) {
-                mSwitchActions.setAlphabetManualShiftedKeyboard();
-            }
-            break;
-        case UNSHIFT:
-            mAlphabetShiftState.setShifted(false);
-            if (shiftMode != prevShiftMode) {
-                mSwitchActions.setAlphabetKeyboard();
-            }
-            break;
-        case SHIFT_LOCK_SHIFTED:
-            mAlphabetShiftState.setShifted(true);
-            mSwitchActions.setAlphabetShiftLockShiftedKeyboard();
-            break;
-        }
-    }
-
-    private void setShiftLocked(final boolean shiftLocked) {
-        if (DEBUG_INTERNAL_ACTION) {
-            Log.d(TAG, "setShiftLocked: shiftLocked=" + shiftLocked + " " + this);
-        }
-        if (!mIsAlphabetMode) return;
-        if (shiftLocked && (!mAlphabetShiftState.isShiftLocked()
-                || mAlphabetShiftState.isShiftLockShifted())) {
-            mSwitchActions.setAlphabetShiftLockedKeyboard();
-        }
-        if (!shiftLocked && mAlphabetShiftState.isShiftLocked()) {
-            mSwitchActions.setAlphabetKeyboard();
-        }
-        mAlphabetShiftState.setShiftLocked(shiftLocked);
-    }
-
-    private void toggleAlphabetAndSymbols(final int autoCapsFlags, final int recapitalizeMode) {
-        if (DEBUG_INTERNAL_ACTION) {
-            Log.d(TAG, "toggleAlphabetAndSymbols: "
-                    + stateToString(autoCapsFlags, recapitalizeMode));
-        }
-        if (mIsAlphabetMode) {
-            mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
-            if (mPrevSymbolsKeyboardWasShifted) {
-                setSymbolsShiftedKeyboard();
-            } else {
-                setSymbolsKeyboard();
-            }
-            mPrevSymbolsKeyboardWasShifted = false;
-        } else {
-            mPrevSymbolsKeyboardWasShifted = mIsSymbolShifted;
-            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
-            if (mPrevMainKeyboardWasShiftLocked) {
-                setShiftLocked(true);
-            }
-            mPrevMainKeyboardWasShiftLocked = false;
-        }
-    }
-
-    // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
-    // when a keyboard layout set doesn't get reloaded in LatinIME.onStartInputViewInternal().
-    private void resetKeyboardStateToAlphabet(final int autoCapsFlags, final int recapitalizeMode) {
-        if (DEBUG_INTERNAL_ACTION) {
-            Log.d(TAG, "resetKeyboardStateToAlphabet: "
-                    + stateToString(autoCapsFlags, recapitalizeMode));
-        }
-        if (mIsAlphabetMode) return;
-
-        mPrevSymbolsKeyboardWasShifted = mIsSymbolShifted;
-        setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
-        if (mPrevMainKeyboardWasShiftLocked) {
-            setShiftLocked(true);
-        }
-        mPrevMainKeyboardWasShiftLocked = false;
-    }
-
-    private void toggleShiftInSymbols() {
-        if (mIsSymbolShifted) {
-            setSymbolsKeyboard();
-        } else {
-            setSymbolsShiftedKeyboard();
-        }
-    }
-
-    private void setAlphabetKeyboard(final int autoCapsFlags, final int recapitalizeMode) {
-        if (DEBUG_INTERNAL_ACTION) {
-            Log.d(TAG, "setAlphabetKeyboard: " + stateToString(autoCapsFlags, recapitalizeMode));
+            Log.d(
+                TAG, "onPressKey: code=${Constants.printableCode(code)} flags($autoCapsFlags, $recapitalizeMode) single=$isSinglePointer state=$debugState"
+            )
         }
 
-        mSwitchActions.setAlphabetKeyboard();
-        mIsAlphabetMode = true;
-        mIsEmojiMode = false;
-        mIsSymbolShifted = false;
-        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
-        mSwitchState = SWITCH_STATE_ALPHA;
-        mSwitchActions.requestUpdatingShiftState(autoCapsFlags, recapitalizeMode);
-    }
-
-    private void setSymbolsKeyboard() {
-        if (DEBUG_INTERNAL_ACTION) {
-            Log.d(TAG, "setSymbolsKeyboard");
-        }
-        mSwitchActions.setSymbolsKeyboard();
-        mIsAlphabetMode = false;
-        mIsSymbolShifted = false;
-        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
-        // Reset alphabet shift state.
-        mAlphabetShiftState.setShiftLocked(false);
-        mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
-    }
-
-    private void setSymbolsShiftedKeyboard() {
-        if (DEBUG_INTERNAL_ACTION) {
-            Log.d(TAG, "setSymbolsShiftedKeyboard");
-        }
-        mSwitchActions.setSymbolsShiftedKeyboard();
-        mIsAlphabetMode = false;
-        mIsSymbolShifted = true;
-        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
-        // Reset alphabet shift state.
-        mAlphabetShiftState.setShiftLocked(false);
-        mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
-    }
-
-    private void setEmojiKeyboard() {
-        mSwitchActions.setEmojiKeyboard();
-    }
-
-    public void onPressKey(final int code, final boolean isSinglePointer, final int autoCapsFlags,
-            final int recapitalizeMode) {
-        if (DEBUG_EVENT) {
-            Log.d(TAG, "onPressKey: code=" + Constants.printableCode(code)
-                    + " single=" + isSinglePointer
-                    + " " + stateToString(autoCapsFlags, recapitalizeMode));
-        }
         if (code != Constants.CODE_SHIFT) {
-            // Because the double tap shift key timer is to detect two consecutive shift key press,
-            // it should be canceled when a non-shift key is pressed.
-            mSwitchActions.cancelDoubleTapShiftKeyTimer();
+            // cancel shift double tap timer
+            onCancelShiftTimer()
         }
-        if (code == Constants.CODE_SHIFT) {
-            onPressShift();
-        } else if (code == Constants.CODE_CAPSLOCK) {
-            // Nothing to do here. See {@link #onReleaseKey(int,boolean)}.
-        } else if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
-            onPressSymbol(autoCapsFlags, recapitalizeMode);
-        } else {
-            mShiftKeyState.onOtherKeyPressed();
-            mSymbolKeyState.onOtherKeyPressed();
-            // It is required to reset the auto caps state when all of the following conditions
-            // are met:
-            // 1) two or more fingers are in action
-            // 2) in alphabet layout
-            // 3) not in all characters caps mode
-            // As for #3, please note that it's required to check even when the auto caps mode is
-            // off because, for example, we may be in the #1 state within the manual temporary
-            // shifted mode.
-            if (!isSinglePointer && mIsAlphabetMode
-                    && autoCapsFlags != TextUtils.CAP_MODE_CHARACTERS) {
-                final boolean needsToResetAutoCaps = mAlphabetShiftState.isAutomaticShifted()
-                        || (mAlphabetShiftState.isManualShifted() && mShiftKeyState.isReleasing());
-                if (needsToResetAutoCaps) {
-                    mSwitchActions.setAlphabetKeyboard();
+
+        when (code) {
+            Constants.CODE_SHIFT -> {
+                shiftKeyState.onPress()
+                toggleShift()
+                onShiftTapForShiftLockTimer()
+            }
+            Constants.CODE_CAPSLOCK -> {
+                // only in onReleaseKey?
+            }
+            Constants.CODE_SWITCH_ALPHA_SYMBOL -> {
+                symbolKeyState.onPress()
+                if(currentLayout.kind == KeyboardLayoutKind.Symbols
+                    || currentLayout.kind == KeyboardLayoutKind.Number) {
+                    setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+                } else {
+                    setSymbolLayout()
                 }
+            }
+            else -> {
+                shiftKeyState.onOtherKeyPressed()
+                symbolKeyState.onOtherKeyPressed()
             }
         }
     }
 
-    public void onReleaseKey(final int code, final boolean withSliding, final int autoCapsFlags,
-            final int recapitalizeMode) {
+    private fun finalizeChord(autoCapsFlags: Int,
+                              recapitalizeMode: Int) {
+        when {
+            shiftKeyState.isChording && shifted -> toggleShift(false)
+            symbolKeyState.isChording && !isAlphabet -> setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+            symbolKeyState.isChording && isAlphabet -> setSymbolLayout()
+        }
+    }
+
+    fun onReleaseKey(
+        code: Int, withSliding: Boolean, autoCapsFlags: Int,
+        recapitalizeMode: Int
+    ) {
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onReleaseKey: code=" + Constants.printableCode(code)
-                    + " sliding=" + withSliding
-                    + " " + stateToString(autoCapsFlags, recapitalizeMode));
+            Log.d(
+                TAG, "onReleaseKey: code=${Constants.printableCode(code)} flags($autoCapsFlags, $recapitalizeMode) sliding=$withSliding state=$debugState"
+            )
         }
-        if (code == Constants.CODE_SHIFT) {
-            onReleaseShift(withSliding, autoCapsFlags, recapitalizeMode);
-        } else if (code == Constants.CODE_CAPSLOCK) {
-            setShiftLocked(!mAlphabetShiftState.isShiftLocked());
-        } else if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
-            onReleaseSymbol(withSliding, autoCapsFlags, recapitalizeMode);
+        when (code) {
+            Constants.CODE_SHIFT -> {
+                finalizeChord(autoCapsFlags, recapitalizeMode)
+                if(!withSliding)
+                    shiftKeyState.onRelease()
+            }
+            Constants.CODE_CAPSLOCK -> {
+                lockShift()
+            }
+            Constants.CODE_SWITCH_ALPHA_SYMBOL -> {
+                finalizeChord(autoCapsFlags, recapitalizeMode)
+                if(!withSliding)
+                    symbolKeyState.onRelease()
+            }
+            else -> {
+
+            }
         }
     }
 
-    private void onPressSymbol(final int autoCapsFlags,
-            final int recapitalizeMode) {
-        toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
-        mSymbolKeyState.onPress();
-        mSwitchState = SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL;
-    }
-
-    private void onReleaseSymbol(final boolean withSliding, final int autoCapsFlags,
-            final int recapitalizeMode) {
-        if (mSymbolKeyState.isChording()) {
-            // Switch back to the previous keyboard mode if the user chords the mode change key and
-            // another key, then releases the mode change key.
-            toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
-        } else if (!withSliding) {
-            // If the mode change key is being released without sliding, we should forget the
-            // previous symbols keyboard shift state and simply switch back to symbols layout
-            // (never symbols shifted) next time the mode gets changed to symbols layout.
-            mPrevSymbolsKeyboardWasShifted = false;
-        }
-        mSymbolKeyState.onRelease();
-    }
-
-    public void onUpdateShiftState(final int autoCapsFlags, final int recapitalizeMode) {
+    fun onUpdateShiftState(autoCapsFlags: Int, recapitalizeMode: Int) {
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onUpdateShiftState: " + stateToString(autoCapsFlags, recapitalizeMode));
+            Log.d(TAG, "onUpdateShiftState($autoCapsFlags, $recapitalizeMode): $debugState")
         }
-        mRecapitalizeMode = recapitalizeMode;
-        updateAlphabetShiftState(autoCapsFlags, recapitalizeMode);
+        updateAlphabetShiftState(autoCapsFlags, recapitalizeMode)
     }
 
     // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
     // when a keyboard layout set doesn't get reloaded in LatinIME.onStartInputViewInternal().
-    public void onResetKeyboardStateToAlphabet(final int autoCapsFlags,
-            final int recapitalizeMode) {
+    fun onResetKeyboardStateToAlphabet(
+        autoCapsFlags: Int,
+        recapitalizeMode: Int
+    ) {
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onResetKeyboardStateToAlphabet: "
-                    + stateToString(autoCapsFlags, recapitalizeMode));
+            Log.d(
+                TAG, "onResetKeyboardStateToAlphabet: $debugState"
+            )
         }
-        resetKeyboardStateToAlphabet(autoCapsFlags, recapitalizeMode);
+        //resetKeyboardStateToAlphabet(autoCapsFlags, recapitalizeMode)
     }
 
-    private void updateShiftStateForRecapitalize(final int recapitalizeMode) {
-        switch (recapitalizeMode) {
-        case RecapitalizeStatus.CAPS_MODE_ALL_UPPER:
-            setShifted(SHIFT_LOCK_SHIFTED);
-            break;
-        case RecapitalizeStatus.CAPS_MODE_FIRST_WORD_UPPER:
-            setShifted(AUTOMATIC_SHIFT);
-            break;
-        case RecapitalizeStatus.CAPS_MODE_ALL_LOWER:
-        case RecapitalizeStatus.CAPS_MODE_ORIGINAL_MIXED_CASE:
-        default:
-            setShifted(UNSHIFT);
+    fun onFinishSlidingInput(autoCapsFlags: Int, recapitalizeMode: Int) {
+        if (DEBUG_EVENT) {
+            Log.d(TAG, "onFinishSlidingInput: $debugState")
+        }
+
+        finalizeChord(autoCapsFlags, recapitalizeMode)
+        shiftKeyState.onRelease()
+        symbolKeyState.onRelease()
+    }
+
+    private fun updateAlphabetShiftState(autoCapsFlags: Int, recapitalizeMode: Int) {
+        // Only return to main layout in alphabet layout
+        if(!isAlphabet) return
+
+        // Do not update shift state while shift key is being pressed or chorded
+        if(!shiftKeyState.isReleasing || shiftKeyState.isChording) return
+
+        // Shift the layout from base if autocaps is enabled
+        if(autoCapsFlags != Constants.TextUtils.CAP_MODE_OFF) {
+            // Only shift from base layout. If we are in an alt layout, do nothing.
+            if(currentLayout.page == KeyboardLayoutPage.Base) {
+                toggleShift(true)
+            }
+
+            return
+        }
+
+        // Otherwise, unshift the layout if it's not locked
+        if(!currentLayout.page.locked) {
+            toggleShift(false)
+            return
         }
     }
 
-    private void updateAlphabetShiftState(final int autoCapsFlags, final int recapitalizeMode) {
-        if (!mIsAlphabetMode) return;
-        if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != recapitalizeMode) {
-            // We are recapitalizing. Match the keyboard to the current recapitalize state.
-            updateShiftStateForRecapitalize(recapitalizeMode);
-            return;
+    private fun switchToAltLayout(altLayoutIdx: Int, autoCapsFlags: Int, recapitalizeMode: Int) {
+        val altPage = when(altLayoutIdx) {
+            0 -> KeyboardLayoutPage.Alt0
+            1 -> KeyboardLayoutPage.Alt1
+            2 -> KeyboardLayoutPage.Alt2
+            3 -> KeyboardLayoutPage.Alt3
+            else -> KeyboardLayoutPage.Alt0
         }
-        if (!mShiftKeyState.isReleasing()) {
-            // Ignore update shift state event while the shift key is being pressed (including
-            // chording).
-            return;
-        }
-        if (!mAlphabetShiftState.isShiftLocked() && !mShiftKeyState.isIgnoring()) {
-            if (mShiftKeyState.isReleasing() && autoCapsFlags != Constants.TextUtils.CAP_MODE_OFF) {
-                // Only when shift key is releasing, automatic temporary upper case will be set.
-                setShifted(AUTOMATIC_SHIFT);
-            } else {
-                setShifted(mShiftKeyState.isChording() ? MANUAL_SHIFT : UNSHIFT);
-            }
-        }
-    }
 
-    private void onPressShift() {
-        // If we are recapitalizing, we don't do any of the normal processing, including
-        // importantly the double tap timer.
-        if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != mRecapitalizeMode) {
-            return;
-        }
-        if (mIsAlphabetMode) {
-            mIsInDoubleTapShiftKey = mSwitchActions.isInDoubleTapShiftKeyTimeout();
-            if (!mIsInDoubleTapShiftKey) {
-                // This is first tap.
-                mSwitchActions.startDoubleTapShiftKeyTimer();
-            }
-            if (mIsInDoubleTapShiftKey) {
-                if (mAlphabetShiftState.isManualShifted() || mIsInAlphabetUnshiftedFromShifted) {
-                    // Shift key has been double tapped while in manual shifted or automatic
-                    // shifted state.
-                    setShiftLocked(true);
-                } else {
-                    // Shift key has been double tapped while in normal state. This is the second
-                    // tap to disable shift locked state, so just ignore this.
-                }
-            } else {
-                if (mAlphabetShiftState.isShiftLocked()) {
-                    // Shift key is pressed while shift locked state, we will treat this state as
-                    // shift lock shifted state and mark as if shift key pressed while normal
-                    // state.
-                    setShifted(SHIFT_LOCK_SHIFTED);
-                    mShiftKeyState.onPress();
-                } else if (mAlphabetShiftState.isAutomaticShifted()) {
-                    // Shift key is pressed while automatic shifted, we have to move to manual
-                    // shifted.
-                    setShifted(MANUAL_SHIFT);
-                    mShiftKeyState.onPress();
-                } else if (mAlphabetShiftState.isShiftedOrShiftLocked()) {
-                    // In manual shifted state, we just record shift key has been pressing while
-                    // shifted state.
-                    mShiftKeyState.onPressOnShifted();
-                } else {
-                    // In base layout, chording or manual shifted mode is started.
-                    setShifted(MANUAL_SHIFT);
-                    mShiftKeyState.onPress();
-                }
-            }
+        if(currentLayout.page == altPage) {
+            // Switch back to base
+            toggleShift(false)
+            updateAlphabetShiftState(autoCapsFlags, recapitalizeMode)
         } else {
-            // In symbol mode, just toggle symbol and symbol more keyboard.
-            toggleShiftInSymbols();
-            mSwitchState = SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE;
-            mShiftKeyState.onPress();
+            alphabetShiftState.setShifted(false)
+            setLayout(currentLayout.copy(page = altPage))
         }
     }
 
-    private void onReleaseShift(final boolean withSliding, final int autoCapsFlags,
-            final int recapitalizeMode) {
-        if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != mRecapitalizeMode) {
-            // We are recapitalizing. We should match the keyboard state to the recapitalize
-            // state in priority.
-            updateShiftStateForRecapitalize(mRecapitalizeMode);
-        } else if (mIsAlphabetMode) {
-            final boolean isShiftLocked = mAlphabetShiftState.isShiftLocked();
-            mIsInAlphabetUnshiftedFromShifted = false;
-            if (mIsInDoubleTapShiftKey) {
-                // Double tap shift key has been handled in {@link #onPressShift}, so that just
-                // ignore this release shift key here.
-                mIsInDoubleTapShiftKey = false;
-            } else if (mShiftKeyState.isChording()) {
-                if (mAlphabetShiftState.isShiftLockShifted()) {
-                    // After chording input while shift locked state.
-                    setShiftLocked(true);
-                } else {
-                    // After chording input while normal state.
-                    setShifted(UNSHIFT);
-                }
-                // After chording input, automatic shift state may have been changed depending on
-                // what characters were input.
-                mShiftKeyState.onRelease();
-                mSwitchActions.requestUpdatingShiftState(autoCapsFlags, recapitalizeMode);
-                return;
-            } else if (mAlphabetShiftState.isShiftLockShifted() && withSliding) {
-                // In shift locked state, shift has been pressed and slid out to other key.
-                setShiftLocked(true);
-            } else if (mAlphabetShiftState.isManualShifted() && withSliding) {
-                // Shift has been pressed and slid out to other key.
-                mSwitchState = SWITCH_STATE_MOMENTARY_ALPHA_SHIFT;
-            } else if (isShiftLocked && !mAlphabetShiftState.isShiftLockShifted()
-                    && (mShiftKeyState.isPressing() || mShiftKeyState.isPressingOnShifted())
-                    && !withSliding) {
-                // Shift has been long pressed, ignore this release.
-            } else if (isShiftLocked && !mShiftKeyState.isIgnoring() && !withSliding) {
-                // Shift has been pressed without chording while shift locked state.
-                setShiftLocked(false);
-            } else if (mAlphabetShiftState.isShiftedOrShiftLocked()
-                    && mShiftKeyState.isPressingOnShifted() && !withSliding) {
-                // Shift has been pressed without chording while shifted state.
-                setShifted(UNSHIFT);
-                mIsInAlphabetUnshiftedFromShifted = true;
-            } else if (mAlphabetShiftState.isManualShiftedFromAutomaticShifted()
-                    && mShiftKeyState.isPressing() && !withSliding) {
-                // Shift has been pressed without chording while manual shifted transited from
-                // automatic shifted
-                setShifted(UNSHIFT);
-                mIsInAlphabetUnshiftedFromShifted = true;
-            }
-        } else {
-            // In symbol mode, switch back to the previous keyboard mode if the user chords the
-            // shift key and another key, then releases the shift key.
-            if (mShiftKeyState.isChording()) {
-                toggleShiftInSymbols();
-            }
-        }
-        mShiftKeyState.onRelease();
-    }
-
-    public void onFinishSlidingInput(final int autoCapsFlags, final int recapitalizeMode) {
+    fun onEvent(event: Event, autoCapsFlags: Int, recapitalizeMode: Int) {
+        val code = if (event.isFunctionalKeyEvent) event.mKeyCode else event.mCodePoint
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onFinishSlidingInput: " + stateToString(autoCapsFlags, recapitalizeMode));
-        }
-        // Switch back to the previous keyboard mode if the user cancels sliding input.
-        switch (mSwitchState) {
-        case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL:
-            toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
-            break;
-        case SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE:
-            toggleShiftInSymbols();
-            break;
-        case SWITCH_STATE_MOMENTARY_ALPHA_SHIFT:
-            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
-            break;
-        }
-    }
-
-    private static boolean isSpaceOrEnter(final int c) {
-        return c == Constants.CODE_SPACE || c == Constants.CODE_ENTER;
-    }
-
-    public void onEvent(final Event event, final int autoCapsFlags, final int recapitalizeMode) {
-        final int code = event.isFunctionalKeyEvent() ? event.mKeyCode : event.mCodePoint;
-        if (DEBUG_EVENT) {
-            Log.d(TAG, "onEvent: code=" + Constants.printableCode(code)
-                    + " " + stateToString(autoCapsFlags, recapitalizeMode));
+            Log.d(
+                TAG, "onEvent: code=" + Constants.printableCode(code)
+                        + "flags($autoCapsFlags, $recapitalizeMode)"
+                        + " " + debugState
+            )
         }
 
-        switch (mSwitchState) {
-        case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL:
-            if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
-                // Detected only the mode change key has been pressed, and then released.
-                if (mIsAlphabetMode) {
-                    mSwitchState = SWITCH_STATE_ALPHA;
+        when(code) {
+            Constants.CODE_TO_NUMBER_LAYOUT -> {
+                if(currentLayout.kind == KeyboardLayoutKind.Number) {
+                    // Return back to symbol layout
+                    prefersNumberLayout = false
+                    setSymbolLayout()
                 } else {
-                    mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
+                    // Set number layout
+                    setNumberLayout()
                 }
             }
-            break;
-        case SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE:
-            if (code == Constants.CODE_SHIFT) {
-                // Detected only the shift key has been pressed on symbol layout, and then
-                // released.
-                mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
+
+            Constants.CODE_TO_ALT_0_LAYOUT,
+            Constants.CODE_TO_ALT_1_LAYOUT,
+            Constants.CODE_TO_ALT_2_LAYOUT -> {
+                switchToAltLayout(Constants.CODE_TO_ALT_0_LAYOUT - code,
+                    autoCapsFlags, recapitalizeMode)
             }
-            break;
-        case SWITCH_STATE_SYMBOL_BEGIN:
-            if (mIsEmojiMode) {
-                // When in the Emoji keyboard, we don't want to switch back to the main layout even
-                // after the user hits an emoji letter followed by an enter or a space.
-                break;
-            }
-            if (!isSpaceOrEnter(code) && (Constants.isLetterCode(code)
-                    || code == Constants.CODE_OUTPUT_TEXT)) {
-                mSwitchState = SWITCH_STATE_SYMBOL;
-            }
-            break;
-        case SWITCH_STATE_SYMBOL:
-            // Switch back to alpha keyboard mode if user types one or more non-space/enter
-            // characters followed by a space/enter.
-            if (isSpaceOrEnter(code)) {
-                toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
-                mPrevSymbolsKeyboardWasShifted = false;
-            }
-            break;
         }
 
-        // If the code is a letter, update keyboard shift state.
         if (Constants.isLetterCode(code)) {
-            updateAlphabetShiftState(autoCapsFlags, recapitalizeMode);
-        } else if (code == Constants.CODE_EMOJI) {
-            setEmojiKeyboard();
-        } else if (code == Constants.CODE_ALPHA_FROM_EMOJI) {
-            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
+            updateAlphabetShiftState(autoCapsFlags, recapitalizeMode)
         }
-    }
-
-    static String shiftModeToString(final int shiftMode) {
-        switch (shiftMode) {
-        case UNSHIFT: return "UNSHIFT";
-        case MANUAL_SHIFT: return "MANUAL";
-        case AUTOMATIC_SHIFT: return "AUTOMATIC";
-        default: return null;
-        }
-    }
-
-    private static String switchStateToString(final int switchState) {
-        switch (switchState) {
-        case SWITCH_STATE_ALPHA: return "ALPHA";
-        case SWITCH_STATE_SYMBOL_BEGIN: return "SYMBOL-BEGIN";
-        case SWITCH_STATE_SYMBOL: return "SYMBOL";
-        case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL: return "MOMENTARY-ALPHA-SYMBOL";
-        case SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE: return "MOMENTARY-SYMBOL-MORE";
-        case SWITCH_STATE_MOMENTARY_ALPHA_SHIFT: return "MOMENTARY-ALPHA_SHIFT";
-        default: return null;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "[keyboard=" + (mIsAlphabetMode ? mAlphabetShiftState.toString()
-                : (mIsSymbolShifted ? "SYMBOLS_SHIFTED" : "SYMBOLS"))
-                + " shift=" + mShiftKeyState
-                + " symbol=" + mSymbolKeyState
-                + " switch=" + switchStateToString(mSwitchState) + "]";
-    }
-
-    private String stateToString(final int autoCapsFlags, final int recapitalizeMode) {
-        return this + " autoCapsFlags=" + CapsModeUtils.flagsToString(autoCapsFlags)
-                + " recapitalizeMode=" + RecapitalizeStatus.modeToString(recapitalizeMode);
     }
 }

@@ -87,7 +87,7 @@ public final class MainKeyboardAccessibilityDelegate
             return;
         }
         // Announce the language name only when the language is changed.
-        if (lastKeyboard == null || !keyboard.mId.mSubtype.equals(lastKeyboard.mId.mSubtype)) {
+        if (lastKeyboard == null || !keyboard.mId.mLocale.equals(lastKeyboard.mId.mLocale)) {
             announceKeyboardLanguage(keyboard);
             return;
         }
@@ -119,8 +119,7 @@ public final class MainKeyboardAccessibilityDelegate
      * @param keyboard The new keyboard.
      */
     private void announceKeyboardLanguage(final Keyboard keyboard) {
-        final String languageText = SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(
-                keyboard.mId.mSubtype.getRawSubtype());
+        final String languageText = keyboard.mId.mLocale.getDisplayName(); // TODO: Verify this is correct
         sendWindowStateChanged(languageText);
     }
 

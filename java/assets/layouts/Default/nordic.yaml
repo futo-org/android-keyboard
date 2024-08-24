@@ -1,0 +1,35 @@
+name: "QWERTY+3 (Nordic)"
+languages: fi sv da et nb
+rows:
+  - letters:
+      - q
+      - w
+      - e
+      - r
+      - t
+      - y
+      - u
+      - i
+      - o
+      - p
+      - ["!text/keyspec_nordic_row1_11", "!text/morekeys_nordic_row1_11"]
+  - letters:
+      - a
+      - s
+      - d
+      - f
+      - g
+      - h
+      - j
+      - k
+      - l
+      - ["!text/keyspec_nordic_row2_10", "!text/morekeys_nordic_row2_10"]
+      - ["!text/keyspec_nordic_row2_11", "!text/morekeys_nordic_row2_11"]
+  - letters:
+      - z
+      - x
+      - c
+      - v
+      - b
+      - n
+      - m

@@ -1,0 +1,8 @@
+name: Հայերեն
+languages: hy
+rows:
+  - letters: [է, թ, փ, ձ, ջ, ր, չ, ճ, ժ, ծ]
+  - letters: [ք, ո, [ե, և], ռ, տ, ը, ւ, ի, օ, պ]
+  - letters: [ա, ս, դ, ֆ, գ, հ, յ, կ, լ, խ]
+  - letters: [զ, ղ, ց, վ, բ, ն, մ, շ]
+# Note: period is replaced with ։ in locales/hy.json

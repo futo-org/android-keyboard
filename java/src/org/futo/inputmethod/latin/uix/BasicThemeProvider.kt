@@ -228,6 +228,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         addIcon(KeyboardIconsSet.NAME_DELETE_KEY, R.drawable.delete, onKeyColor)
         addIcon(KeyboardIconsSet.NAME_SETTINGS_KEY, R.drawable.settings, onKeyColor)
         addIcon(KeyboardIconsSet.NAME_SPACE_KEY, null, onKeyColor)
+        addIcon(KeyboardIconsSet.NAME_SPACE_KEY_FOR_NUMBER_LAYOUT, R.drawable.space, onKeyColor)
         addIcon(KeyboardIconsSet.NAME_ENTER_KEY, R.drawable.sym_keyboard_return_lxx_light, enterKeyForeground)
         addIcon(KeyboardIconsSet.NAME_GO_KEY, R.drawable.sym_keyboard_go_lxx_light, enterKeyForeground)
         addIcon(KeyboardIconsSet.NAME_SEARCH_KEY, R.drawable.sym_keyboard_search_lxx_light, enterKeyForeground)
@@ -238,6 +239,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         addIcon(KeyboardIconsSet.NAME_TAB_KEY, R.drawable.sym_keyboard_tab_holo_dark, onKeyColor) // TODO: Correct tint
         addIcon(KeyboardIconsSet.NAME_ZWNJ_KEY, R.drawable.sym_keyboard_zwnj_lxx_dark, onKeyColor)
         addIcon(KeyboardIconsSet.NAME_ZWJ_KEY, R.drawable.sym_keyboard_zwj_lxx_dark, onPrimary)
+        addIcon(KeyboardIconsSet.NAME_NUMPAD, R.drawable.numpad, onKeyColor)
 
         addIcon(KeyboardIconsSet.NAME_EMOJI_ACTION_KEY, R.drawable.smile, onPrimary)
         addIcon(KeyboardIconsSet.NAME_EMOJI_NORMAL_KEY, R.drawable.smile, onKeyColor)
@@ -297,11 +299,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
             )
 
             addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_empty),
-                if(keyBorders) {
-                    coloredRoundedRectangle(keyColor, dp(8.dp))
-                } else {
-                    coloredRectangle(transparent)
-                }
+                coloredRectangle(transparent)
             )
 
             addStateWithHighlightLayerOnPressed(highlight, intArrayOf(),

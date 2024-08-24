@@ -1,8 +1,9 @@
 plugins {
-    id 'com.android.application' version '8.2.0'
-    id 'org.jetbrains.kotlin.android' version '1.9.20'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.20'
-    id 'com.android.library' version '8.2.0' apply false
+    id 'com.android.application' version '8.2.2'
+    id 'org.jetbrains.kotlin.android' version '2.0.0'
+    id 'org.jetbrains.kotlin.plugin.compose' version '2.0.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.0'
+    id 'com.android.library' version '8.2.2' apply false
 }
 
 def getVersionCode = { ->
@@ -32,6 +33,13 @@ def getVersionName = { ->
         return "0.0.0";
     }
 }
+
+// TODO: Remove
+tasks.register('updateLocales', Exec) {
+    commandLine 'bash', '-c', 'cd tools/make-keyboard-text-py && python3 src/generate.py'
+}
+
+preBuild.dependsOn updateLocales
 
 android {
     namespace 'org.futo.inputmethod.latin'
@@ -153,6 +161,7 @@ android {
             res.srcDirs = ['java/res']
             java.srcDirs = ['common/src', 'java/src']
             manifest.srcFile 'java/AndroidManifest.xml'
+            assets.srcDirs = ['java/assets']
         }
 
         playstore {
@@ -195,31 +204,28 @@ android {
         mlModelBinding true
         buildConfig true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.5'
-    }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0'
-    implementation 'androidx.activity:activity-compose:1.8.2'
-    implementation platform('androidx.compose:compose-bom:2024.02.02')
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.4'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.8.4'
+    implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.8.4'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4'
+    implementation 'androidx.activity:activity-compose:1.9.1'
+    implementation platform('androidx.compose:compose-bom:2024.06.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-compose:2.7.7'
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    implementation 'androidx.datastore:datastore-preferences:1.1.1'
     implementation 'androidx.autofill:autofill:1.1.0'
 
     stableImplementation 'ch.acra:acra-mail:5.11.1'
@@ -228,14 +234,16 @@ dependencies {
     implementation 'sh.calvin.reorderable:reorderable:2.2.0'
 
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.7.1'
 
     def work_version = "2.9.0"
     implementation "androidx.work:work-runtime-ktx:$work_version"
     implementation "androidx.work:work-runtime:$work_version"
 
     implementation project(":voiceinput-shared")
+
+    implementation "com.charleskorn.kaml:kaml:0.61.0"
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'

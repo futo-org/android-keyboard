@@ -63,38 +63,38 @@ public class Key implements Comparable<Key> {
     private final String mHintIconId;
     /** Flags of the label */
     private final int mLabelFlags;
-    private static final int LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM = 0x02;
-    private static final int LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM = 0x04;
-    private static final int LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER = 0x08;
+    public static final int LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM = 0x02;
+    public static final int LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM = 0x04;
+    public static final int LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER = 0x08;
     // Font typeface specification.
-    private static final int LABEL_FLAGS_FONT_MASK = 0x30;
-    private static final int LABEL_FLAGS_FONT_NORMAL = 0x10;
-    private static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x20;
-    private static final int LABEL_FLAGS_FONT_DEFAULT = 0x30;
+    public static final int LABEL_FLAGS_FONT_MASK = 0x30;
+    public static final int LABEL_FLAGS_FONT_NORMAL = 0x10;
+    public static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x20;
+    public static final int LABEL_FLAGS_FONT_DEFAULT = 0x30;
     // Start of key text ratio enum values
-    private static final int LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK = 0x1C0;
-    private static final int LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO = 0x40;
-    private static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
-    private static final int LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO = 0xC0;
-    private static final int LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO = 0x140;
+    public static final int LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK = 0x1C0;
+    public static final int LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO = 0x40;
+    public static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
+    public static final int LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO = 0xC0;
+    public static final int LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO = 0x140;
     // End of key text ratio mask enum values
-    private static final int LABEL_FLAGS_HAS_POPUP_HINT = 0x200;
-    private static final int LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT = 0x400;
-    private static final int LABEL_FLAGS_HAS_HINT_LABEL = 0x800;
+    public static final int LABEL_FLAGS_HAS_POPUP_HINT = 0x200;
+    public static final int LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT = 0x400;
+    public static final int LABEL_FLAGS_HAS_HINT_LABEL = 0x800;
     // The bit to calculate the ratio of key label width against key width. If autoXScale bit is on
     // and autoYScale bit is off, the key label may be shrunk only for X-direction.
     // If both autoXScale and autoYScale bits are on, the key label text size may be auto scaled.
-    private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
-    private static final int LABEL_FLAGS_AUTO_Y_SCALE = 0x8000;
-    private static final int LABEL_FLAGS_AUTO_SCALE = LABEL_FLAGS_AUTO_X_SCALE
+    public static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
+    public static final int LABEL_FLAGS_AUTO_Y_SCALE = 0x8000;
+    public static final int LABEL_FLAGS_AUTO_SCALE = LABEL_FLAGS_AUTO_X_SCALE
             | LABEL_FLAGS_AUTO_Y_SCALE;
-    private static final int LABEL_FLAGS_PRESERVE_CASE = 0x10000;
-    private static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x20000;
-    private static final int LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL = 0x40000;
-    private static final int LABEL_FLAGS_FOLLOW_FUNCTIONAL_TEXT_COLOR = 0x80000;
-    private static final int LABEL_FLAGS_KEEP_BACKGROUND_ASPECT_RATIO = 0x100000;
-    private static final int LABEL_FLAGS_DISABLE_HINT_LABEL = 0x40000000;
-    private static final int LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS = 0x80000000;
+    public static final int LABEL_FLAGS_PRESERVE_CASE = 0x10000;
+    public static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x20000;
+    public static final int LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL = 0x40000;
+    public static final int LABEL_FLAGS_FOLLOW_FUNCTIONAL_TEXT_COLOR = 0x80000;
+    public static final int LABEL_FLAGS_KEEP_BACKGROUND_ASPECT_RATIO = 0x100000;
+    public static final int LABEL_FLAGS_DISABLE_HINT_LABEL = 0x40000000;
+    public static final int LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS = 0x80000000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private final String mIconId;
@@ -126,28 +126,28 @@ public class Key implements Comparable<Key> {
     private final MoreKeySpec[] mMoreKeys;
     /** More keys column number and flags */
     private final int mMoreKeysColumnAndFlags;
-    private static final int MORE_KEYS_COLUMN_NUMBER_MASK = 0x000000ff;
+    public static final int MORE_KEYS_COLUMN_NUMBER_MASK = 0x000000ff;
     // If this flag is specified, more keys keyboard should have the specified number of columns.
     // Otherwise more keys keyboard should have less than or equal to the specified maximum number
     // of columns.
-    private static final int MORE_KEYS_FLAGS_FIXED_COLUMN = 0x00000100;
+    public static final int MORE_KEYS_FLAGS_FIXED_COLUMN = 0x00000100;
     // If this flag is specified, the order of more keys is determined by the order in the more
     // keys' specification. Otherwise the order of more keys is automatically determined.
-    private static final int MORE_KEYS_FLAGS_FIXED_ORDER = 0x00000200;
-    private static final int MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER = 0;
-    private static final int MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER =
+    public static final int MORE_KEYS_FLAGS_FIXED_ORDER = 0x00000200;
+    public static final int MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER = 0;
+    public static final int MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER =
             MORE_KEYS_FLAGS_FIXED_COLUMN;
-    private static final int MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER =
+    public static final int MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER =
             (MORE_KEYS_FLAGS_FIXED_COLUMN | MORE_KEYS_FLAGS_FIXED_ORDER);
-    private static final int MORE_KEYS_FLAGS_HAS_LABELS = 0x40000000;
-    private static final int MORE_KEYS_FLAGS_NEEDS_DIVIDERS = 0x20000000;
-    private static final int MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY = 0x10000000;
+    public static final int MORE_KEYS_FLAGS_HAS_LABELS = 0x40000000;
+    public static final int MORE_KEYS_FLAGS_NEEDS_DIVIDERS = 0x20000000;
+    public static final int MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY = 0x10000000;
     // TODO: Rename these specifiers to !autoOrder! and !fixedOrder! respectively.
-    private static final String MORE_KEYS_AUTO_COLUMN_ORDER = "!autoColumnOrder!";
-    private static final String MORE_KEYS_FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
-    private static final String MORE_KEYS_HAS_LABELS = "!hasLabels!";
-    private static final String MORE_KEYS_NEEDS_DIVIDERS = "!needsDividers!";
-    private static final String MORE_KEYS_NO_PANEL_AUTO_MORE_KEY = "!noPanelAutoMoreKey!";
+    public static final String MORE_KEYS_AUTO_COLUMN_ORDER = "!autoColumnOrder!";
+    public static final String MORE_KEYS_FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
+    public static final String MORE_KEYS_HAS_LABELS = "!hasLabels!";
+    public static final String MORE_KEYS_NEEDS_DIVIDERS = "!needsDividers!";
+    public static final String MORE_KEYS_NO_PANEL_AUTO_MORE_KEY = "!noPanelAutoMoreKey!";
 
     /** Background type that represents different key background visual than normal one. */
     private int mBackgroundType;
@@ -160,10 +160,10 @@ public class Key implements Comparable<Key> {
     public static final int BACKGROUND_TYPE_SPACEBAR = 6;
 
     private final int mActionFlags;
-    private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
-    private static final int ACTION_FLAGS_NO_KEY_PREVIEW = 0x02;
-    private static final int ACTION_FLAGS_ALT_CODE_WHILE_TYPING = 0x04;
-    private static final int ACTION_FLAGS_ENABLE_LONG_PRESS = 0x08;
+    public static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
+    public static final int ACTION_FLAGS_NO_KEY_PREVIEW = 0x02;
+    public static final int ACTION_FLAGS_ALT_CODE_WHILE_TYPING = 0x04;
+    public static final int ACTION_FLAGS_ENABLE_LONG_PRESS = 0x08;
 
     @Nullable
     private final KeyVisualAttributes mKeyVisualAttributes;
@@ -210,7 +210,8 @@ public class Key implements Comparable<Key> {
     public Key(@Nullable final String label, final String iconId, final int code,
             @Nullable final String outputText, @Nullable final String hintLabel,
             final int labelFlags, final int backgroundType, final int x, final int y,
-            final int width, final int height, final int horizontalGap, final int verticalGap) {
+            final int width, final int height, final int horizontalGap, final int verticalGap,
+            final int actionFlags) {
         mWidth = width - horizontalGap;
         mHeight = height - verticalGap;
         mHorizontalGap = horizontalGap;
@@ -219,8 +220,7 @@ public class Key implements Comparable<Key> {
         mHintIconId = ICON_UNDEFINED;
         mLabelFlags = labelFlags;
         mBackgroundType = backgroundType;
-        // TODO: Pass keyActionFlags as an argument.
-        mActionFlags = ACTION_FLAGS_NO_KEY_PREVIEW;
+        mActionFlags = actionFlags;
         mMoreKeys = null;
         mMoreKeysColumnAndFlags = 0;
         mLabel = label;
@@ -439,10 +439,10 @@ public class Key implements Comparable<Key> {
      * @param key the original key.
      */
     protected Key(@Nonnull final Key key) {
-        this(key, key.mMoreKeys);
+        this(key, key.mMoreKeysColumnAndFlags, key.mMoreKeys);
     }
 
-    private Key(@Nonnull final Key key, @Nullable final MoreKeySpec[] moreKeys) {
+    public Key(@Nonnull final Key key, final int moreKeysColumnAndFlags, @Nullable final MoreKeySpec[] moreKeys) {
         // Final attributes.
         mCode = key.mCode;
         mLabel = key.mLabel;
@@ -456,7 +456,7 @@ public class Key implements Comparable<Key> {
         mY = key.mY;
         mHitBox.set(key.mHitBox);
         mMoreKeys = moreKeys;
-        mMoreKeysColumnAndFlags = key.mMoreKeysColumnAndFlags;
+        mMoreKeysColumnAndFlags = moreKeysColumnAndFlags;
         mBackgroundType = key.mBackgroundType;
         mActionFlags = key.mActionFlags;
         mKeyVisualAttributes = key.mKeyVisualAttributes;
@@ -495,15 +495,15 @@ public class Key implements Comparable<Key> {
             @Nonnull final MoreKeySpec.LettersOnBaseLayout lettersOnBaseLayout, boolean onlyDuplicateKeys) {
         final MoreKeySpec[] moreKeys = key.getMoreKeys();
 
-        MoreKeySpec[] clearedMoreKeys = moreKeys;
+        MoreKeySpec[] clearedMoreKeys;
 
-        clearedMoreKeys = MoreKeySpec.removeDuplicateMoreKeys(moreKeys);
+        clearedMoreKeys = MoreKeySpec.removeDuplicateMoreKeys(key.mCode, moreKeys);
 
         if(!onlyDuplicateKeys) {
             clearedMoreKeys = MoreKeySpec.removeRedundantMoreKeys(
-                    moreKeys, lettersOnBaseLayout);
+                    clearedMoreKeys, lettersOnBaseLayout);
         }
-        return (clearedMoreKeys == moreKeys) ? key : new Key(key, clearedMoreKeys);
+        return (clearedMoreKeys == moreKeys) ? key : new Key(key, key.mMoreKeysColumnAndFlags, clearedMoreKeys);
     }
 
     private static boolean needsToUpcase(final int labelFlags, final int keyboardElementId) {
@@ -557,7 +557,7 @@ public class Key implements Comparable<Key> {
                 && TextUtils.equals(o.mLabel, mLabel)
                 && TextUtils.equals(o.mHintLabel, mHintLabel)
                 && TextUtils.equals(o.mHintIconId, mHintIconId)
-                && o.mIconId == mIconId
+                && Objects.equals(o.mIconId, mIconId)
                 && o.mBackgroundType == mBackgroundType
                 && Arrays.equals(o.mMoreKeys, mMoreKeys)
                 && TextUtils.equals(o.getOutputText(), getOutputText())
@@ -1096,7 +1096,7 @@ public class Key implements Comparable<Key> {
                 final int height) {
             super(null /* label */, ICON_UNDEFINED, CODE_UNSPECIFIED, null /* outputText */,
                     null /* hintLabel */, 0 /* labelFlags */, BACKGROUND_TYPE_EMPTY, x, y, width,
-                    height, params.mHorizontalGap, params.mVerticalGap);
+                    height, params.mHorizontalGap, params.mVerticalGap, ACTION_FLAGS_NO_KEY_PREVIEW);
         }
     }
 }

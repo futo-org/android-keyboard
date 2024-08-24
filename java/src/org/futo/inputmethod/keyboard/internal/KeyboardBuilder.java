@@ -492,7 +492,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 final int height = row.getRowHeight();
                 final Key key = new Key(label, KeyboardIconsSet.ICON_UNDEFINED, code, outputText,
                         null /* hintLabel */, labelFlags, backgroundType, x, y, width, height,
-                        mParams.mHorizontalGap, mParams.mVerticalGap);
+                        mParams.mHorizontalGap, mParams.mVerticalGap, Key.ACTION_FLAGS_NO_KEY_PREVIEW);
                 endKey(key);
                 row.advanceXPos(keyWidth);
             }
@@ -679,7 +679,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         try {
             final boolean keyboardLayoutSetMatched = matchString(caseAttr,
                     R.styleable.Keyboard_Case_keyboardLayoutSet,
-                    id.mSubtype.getKeyboardLayoutSetName());
+                    id.mKeyboardLayoutSetName);
             final boolean keyboardLayoutSetElementMatched = matchTypedValue(caseAttr,
                     R.styleable.Keyboard_Case_keyboardLayoutSetElement, id.mElementId,
                     KeyboardId.elementIdToName(id.mElementId));

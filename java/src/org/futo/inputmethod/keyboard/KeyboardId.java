@@ -54,25 +54,9 @@ public final class KeyboardId {
     public static final int ELEMENT_PHONE = 7;
     public static final int ELEMENT_PHONE_SYMBOLS = 8;
     public static final int ELEMENT_NUMBER = 9;
-    public static final int ELEMENT_EMOJI_RECENTS = 10;
-    public static final int ELEMENT_EMOJI_CATEGORY1 = 11;
-    public static final int ELEMENT_EMOJI_CATEGORY2 = 12;
-    public static final int ELEMENT_EMOJI_CATEGORY3 = 13;
-    public static final int ELEMENT_EMOJI_CATEGORY4 = 14;
-    public static final int ELEMENT_EMOJI_CATEGORY5 = 15;
-    public static final int ELEMENT_EMOJI_CATEGORY6 = 16;
-    public static final int ELEMENT_EMOJI_CATEGORY7 = 17;
-    public static final int ELEMENT_EMOJI_CATEGORY8 = 18;
-    public static final int ELEMENT_EMOJI_CATEGORY9 = 19;
-    public static final int ELEMENT_EMOJI_CATEGORY10 = 20;
-    public static final int ELEMENT_EMOJI_CATEGORY11 = 21;
-    public static final int ELEMENT_EMOJI_CATEGORY12 = 22;
-    public static final int ELEMENT_EMOJI_CATEGORY13 = 23;
-    public static final int ELEMENT_EMOJI_CATEGORY14 = 24;
-    public static final int ELEMENT_EMOJI_CATEGORY15 = 25;
-    public static final int ELEMENT_EMOJI_CATEGORY16 = 26;
 
-    public final RichInputMethodSubtype mSubtype;
+    public final String mKeyboardLayoutSetName;
+    public final Locale mLocale;
     public final int mWidth;
     public final int mHeight;
     public final int mMode;
@@ -90,7 +74,8 @@ public final class KeyboardId {
     private final int mHashCode;
 
     public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params) {
-        mSubtype = params.mSubtype;
+        mKeyboardLayoutSetName = params.mSubtype.getKeyboardLayoutSetName();
+        mLocale = params.mSubtype.getLocale();
         mWidth = params.mKeyboardWidth;
         mHeight = params.mKeyboardHeight;
         mMode = params.mMode;
@@ -105,6 +90,26 @@ public final class KeyboardId {
         mIsSplitLayout = params.mIsSplitLayoutEnabled;
         mNumberRow = params.mNumberRow || params.mIsPasswordField;
         mLongPressKeySettings = params.mLongPressKeySettings;
+
+        mHashCode = computeHashCode(this);
+    }
+
+    public KeyboardId(String mKeyboardLayoutSetName, Locale mLocale, int mWidth, int mHeight, int mMode, int mElementId, EditorInfo mEditorInfo, boolean mClobberSettingsKey, boolean mBottomEmojiKeyEnabled, int mBottomActionKeyId, String mCustomActionLabel, boolean mHasShortcutKey, boolean mIsSplitLayout, boolean mNumberRow, LongPressKeySettings mLongPressKeySettings) {
+        this.mKeyboardLayoutSetName = mKeyboardLayoutSetName;
+        this.mLocale = mLocale;
+        this.mWidth = mWidth;
+        this.mHeight = mHeight;
+        this.mMode = mMode;
+        this.mElementId = mElementId;
+        this.mEditorInfo = mEditorInfo;
+        this.mClobberSettingsKey = mClobberSettingsKey;
+        this.mBottomEmojiKeyEnabled = mBottomEmojiKeyEnabled;
+        this.mBottomActionKeyId = mBottomActionKeyId;
+        this.mCustomActionLabel = mCustomActionLabel;
+        this.mHasShortcutKey = mHasShortcutKey;
+        this.mIsSplitLayout = mIsSplitLayout;
+        this.mNumberRow = mNumberRow;
+        this.mLongPressKeySettings = mLongPressKeySettings;
 
         mHashCode = computeHashCode(this);
     }
@@ -125,7 +130,8 @@ public final class KeyboardId {
                 id.mCustomActionLabel,
                 id.navigateNext(),
                 id.navigatePrevious(),
-                id.mSubtype,
+                id.mKeyboardLayoutSetName,
+                id.mLocale,
                 id.mIsSplitLayout,
                 id.mNumberRow,
                 id.mLongPressKeySettings.hashCode()
@@ -149,7 +155,8 @@ public final class KeyboardId {
                 && TextUtils.equals(other.mCustomActionLabel, mCustomActionLabel)
                 && other.navigateNext() == navigateNext()
                 && other.navigatePrevious() == navigatePrevious()
-                && other.mSubtype.equals(mSubtype)
+                && other.mKeyboardLayoutSetName.equals(mKeyboardLayoutSetName)
+                && other.mLocale.equals(mLocale)
                 && other.mIsSplitLayout == mIsSplitLayout
                 && other.mNumberRow == mNumberRow
                 && other.mLongPressKeySettings.equals(mLongPressKeySettings);
@@ -188,7 +195,7 @@ public final class KeyboardId {
     }
 
     public Locale getLocale() {
-        return mSubtype.getLocale();
+        return mLocale;
     }
 
     @Override
@@ -205,8 +212,8 @@ public final class KeyboardId {
     public String toString() {
         return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s%s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
-                mSubtype.getLocale(),
-                mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
+                mLocale,
+                mKeyboardLayoutSetName,
                 mWidth, mHeight,
                 modeName(mMode),
                 actionName(imeAction()),
@@ -241,23 +248,6 @@ public final class KeyboardId {
         case ELEMENT_PHONE: return "phone";
         case ELEMENT_PHONE_SYMBOLS: return "phoneSymbols";
         case ELEMENT_NUMBER: return "number";
-        case ELEMENT_EMOJI_RECENTS: return "emojiRecents";
-        case ELEMENT_EMOJI_CATEGORY1: return "emojiCategory1";
-        case ELEMENT_EMOJI_CATEGORY2: return "emojiCategory2";
-        case ELEMENT_EMOJI_CATEGORY3: return "emojiCategory3";
-        case ELEMENT_EMOJI_CATEGORY4: return "emojiCategory4";
-        case ELEMENT_EMOJI_CATEGORY5: return "emojiCategory5";
-        case ELEMENT_EMOJI_CATEGORY6: return "emojiCategory6";
-        case ELEMENT_EMOJI_CATEGORY7: return "emojiCategory7";
-        case ELEMENT_EMOJI_CATEGORY8: return "emojiCategory8";
-        case ELEMENT_EMOJI_CATEGORY9: return "emojiCategory9";
-        case ELEMENT_EMOJI_CATEGORY10: return "emojiCategory10";
-        case ELEMENT_EMOJI_CATEGORY11: return "emojiCategory11";
-        case ELEMENT_EMOJI_CATEGORY12: return "emojiCategory12";
-        case ELEMENT_EMOJI_CATEGORY13: return "emojiCategory13";
-        case ELEMENT_EMOJI_CATEGORY14: return "emojiCategory14";
-        case ELEMENT_EMOJI_CATEGORY15: return "emojiCategory15";
-        case ELEMENT_EMOJI_CATEGORY16: return "emojiCategory16";
         default: return null;
         }
     }

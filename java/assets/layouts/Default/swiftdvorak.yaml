@@ -1,0 +1,6 @@
+name: "Swift DVORAK"
+rows:
+  - letters: "$delete $delete ' p y f g c r l"
+  - letters: "a o e u i d h t n s"
+  - letters: "$shift q j k x b m w v z"
+  - bottom: "$symbols , $space . $enter"

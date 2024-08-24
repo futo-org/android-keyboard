@@ -1,0 +1,35 @@
+name: "QWERTZ+3 (Swiss)"
+languages: de fr it
+rows:
+  - letters:
+      - q
+      - w
+      - e
+      - r
+      - t
+      - z
+      - u
+      - i
+      - o
+      - p
+      - ["!text/keyspec_swiss_row1_11", "!text/morekeys_swiss_row1_11"]
+  - letters:
+      - a
+      - s
+      - d
+      - f
+      - g
+      - h
+      - j
+      - k
+      - l
+      - ["!text/keyspec_swiss_row2_10", "!text/morekeys_swiss_row2_10"]
+      - ["!text/keyspec_swiss_row2_11", "!text/morekeys_swiss_row2_11"]
+  - letters:
+      - y
+      - x
+      - c
+      - v
+      - b
+      - n
+      - m

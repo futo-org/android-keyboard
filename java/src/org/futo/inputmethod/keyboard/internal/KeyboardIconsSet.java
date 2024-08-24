@@ -58,6 +58,7 @@ public final class KeyboardIconsSet {
     public static final String NAME_ZWJ_KEY = "zwj_key";
     public static final String NAME_EMOJI_ACTION_KEY = "emoji_action_key";
     public static final String NAME_EMOJI_NORMAL_KEY = "emoji_normal_key";
+    public static final String NAME_NUMPAD = "numpad";
 
     private DynamicThemeProvider provider;
     public void loadIcons(final TypedArray keyboardAttrs, @Nullable DynamicThemeProvider provider) {

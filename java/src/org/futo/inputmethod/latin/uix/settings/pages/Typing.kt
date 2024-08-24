@@ -138,48 +138,6 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
 
             AndroidTextInput(allowPredictions = false)
         }
-
-        /*
-        AndroidView(factory = {
-            val ctx = ContextThemeWrapper(context, R.style.KeyboardTheme_LXX_Light)
-
-            val inputView = LayoutInflater.from(ctx).inflate(
-                R.layout.input_view, null, false
-            ) as InputView
-
-            val settingsValues = Settings.getInstance().current
-
-            val builder = KeyboardLayoutSet.Builder(ctx, null)
-            val res: Resources = ctx.resources
-
-            val currentSubtype = RichInputMethodSubtype(Subtypes.getActiveSubtype(ctx))
-
-            val keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res)
-            val keyboardHeight = ResourceUtils.getKeyboardHeight(res, settingsValues)
-            builder.setKeyboardGeometry(keyboardWidth, keyboardHeight)
-            builder.setSubtype(currentSubtype)
-            builder.setVoiceInputKeyEnabled(settingsValues.mShowsVoiceInputKey)
-            builder.setBottomActionKey(settingsValues.mShowsActionKey, settingsValues.mActionKeyId)
-            builder.setSplitLayoutEnabledByUser(
-                ProductionFlags.IS_SPLIT_KEYBOARD_SUPPORTED
-                        && settingsValues.mIsSplitKeyboardEnabled
-            )
-            builder.setNumberRow(settingsValues.mIsNumberRowEnabled)
-
-
-            val keyboardLayoutSet = builder.build()
-
-            val keyboardView = inputView.findViewById<View>(R.id.keyboard_view) as MainKeyboardView
-
-            keyboardView.setKeyboard(keyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET))
-            /*
-            mMainKeyboardFrame = mCurrentInputView!!.findViewById<View>(R.id.main_keyboard_frame)
-            mKeyboardView =
-                mCurrentInputView!!.findViewById<View>(R.id.keyboard_view) as MainKeyboardView
-            */
-            inputView
-        }, modifier = Modifier.align(Alignment.BottomCenter))
-        */
     }
 }
 

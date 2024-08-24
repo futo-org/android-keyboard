@@ -1,0 +1,86 @@
+name: "Symbols (Shifted)"
+element: SymbolsShifted
+numberRowMode: UserConfigurable
+attributes:
+  shiftable: false
+rows:
+  - letters:
+      - type: base
+        spec: "~"
+
+      - type: base
+        spec: "`"
+
+      - type: base
+        spec: "|"
+
+      # U+2022: "•" BULLET
+      - type: base
+        spec: "\u2022"
+        moreKeys: "!text/morekeys_bullet"
+
+      # U+221A: "√" SQUARE ROOT
+      - type: base
+        spec: "\u221A"
+
+      # U+03C0: "π" GREEK SMALL LETTER PI
+      # U+03A0: "Π" GREEK CAPITAL LETTER PI
+      - type: base
+        spec: "\u03C0"
+        moreKeys: "\u03A0"
+
+      # U+00F7: "÷" DIVISION SIGN
+      - type: base
+        spec: "\u00F7"
+
+      # U+00D7: "×" MULTIPLICATION SIGN
+      - type: base
+        spec: "\u00D7"
+
+      # U+00B6: "¶" PILCROW SIGN
+      # U+00A7: "§" SECTION SIGN
+      - type: base
+        spec: "\u00B6"
+        moreKeys: "\u00A7"
+
+      # U+2206: "∆" INCREMENT
+      - type: base
+        spec: "\u2206"
+  - letters:
+      - "£"
+      - "¢"
+      - "€"
+      - "¥"
+
+      # U+2191: "↑" UPWARDS ARROW
+      # U+2193: "↓" DOWNWARDS ARROW
+      # U+2190: "←" LEFTWARDS ARROW
+      # U+2192: "→" RIGHTWARDS ARROW
+      - type: base
+        spec: "^"
+        moreKeys: "\u2191,\u2193,\u2190,\u2192"
+
+      # U+00B0: "°" DEGREE SIGN
+      # U+2032: "′" PRIME
+      # U+2033: "″" DOUBLE PRIME
+      - type: base
+        spec: "\u00B0"
+        moreKeys: "\u2032,\u2033"
+
+      - type: base
+        spec: "="
+
+      # Curly brackets
+      - "!text/keyspec_left_curly_bracket"
+      - "!text/keyspec_right_curly_bracket"
+  - letters:
+      - "$shift"
+      - "\\"
+      - "\u00A9" # U+00A9: "©" COPYRIGHT SIGN
+      - "\u00AE" # U+00AE: "®" REGISTERED SIGN
+      - "\u2122" # U+2122: "™" TRADE MARK SIGN
+      - "\u2105" # U+2105: "℅" CARE OF
+      - "!text/keyspec_left_square_bracket"
+      - "!text/keyspec_right_square_bracket"
+      - "$delete"
+  - bottom: "$alphabet , < $space > . $enter"

@@ -54,7 +54,7 @@
     <fraction name="config_key_label_ratio_holo">34%</fraction>
     <fraction name="config_key_label_ratio_lxx">34%</fraction>
     <fraction name="config_key_hint_letter_ratio_holo">25%</fraction>
-    <fraction name="config_key_hint_letter_ratio_lxx">25%</fraction>
+    <fraction name="config_key_hint_letter_ratio_lxx">30%</fraction>
     <fraction name="config_key_hint_label_ratio_holo">44%</fraction>
     <fraction name="config_key_hint_label_ratio_lxx">30%</fraction>
     <fraction name="config_key_shifted_letter_hint_ratio_holo">35%</fraction>

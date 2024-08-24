@@ -103,8 +103,21 @@ fun List<LongPressKey>.toEncodedString(): String {
 class LongPressKeySettings(val context: Context) {
     private val currentSetting = context.getSettingBlocking(LongPressKeyLayoutSetting).toLongPressKeyLayoutItems()
 
-    fun reorderMoreKeys(moreKeys: String): String {
-        val keys = (MoreKeySpec.splitKeySpecs(moreKeys)?.toList() ?: listOf(moreKeys)).toMutableList()
+    fun joinMoreKeys(keys: List<String>): String =
+        keys.map {
+            it.replace("\\", "\\\\")
+                .replace(",", "\\,")
+        }.joinToString(",")
+
+
+    fun reorderMoreKeys(moreKeys: String): String =
+        joinMoreKeys(reorderMoreKeys(
+            MoreKeySpec.splitKeySpecs(moreKeys)?.toList()
+                ?: listOf()
+        ))
+
+    fun reorderMoreKeys(moreKeys: List<String>): List<String> {
+        val keys = moreKeys.toMutableList()
 
         getBestMatchForMisc(keys)?.let { keys.add(it) }
         getBestMatchForAction(keys)?.let { keys.add(it) }
@@ -128,10 +141,16 @@ class LongPressKeySettings(val context: Context) {
             }
         }
 
-        return finalKeys.joinToString(separator = ",")
+        return finalKeys
     }
 
     override operator fun equals(other: Any?): Boolean {
         return other is LongPressKeySettings && (other.currentSetting.joinToString(",") == currentSetting.joinToString(","))
+    }
+
+    override fun hashCode(): Int {
+        var result = context.hashCode()
+        result = 31 * result + currentSetting.hashCode()
+        return result
     }
 }

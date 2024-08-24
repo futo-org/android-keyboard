@@ -1,0 +1,61 @@
+name: Numbers
+bottomRowWidthMode: Identical
+
+# Functional = 0.15
+# Each regular row has 2 functional keys and 3 Custom1 keys, therefore
+# Custom1 = (1.0 - 2*Functional) / 3 = 1/3 - 2/3 * Functional
+overrideWidths:
+  FunctionalKey: 0.15
+  Custom1: 0.23333333333
+  Regular: 0.1
+
+rowHeightMode: FillHeight
+
+attributes:
+  width: Custom1
+  showPopup: false
+  useKeySpecShortcut: false
+  style: Normal
+  shiftable: false
+  labelFlags: { followKeyLabelRatio: false }
+rows:
+  - numbers:
+      - ["x", "a", "i", "α", "u"]
+      - ["y", "b", "j", "β", "v"]
+      - ["z", "c", "k", "γ", "θ"]
+      - ["w", "d", "l", "δ", "ϕ"]
+    attributes:
+      width: Grow
+      style: NoBackground
+      moreKeyMode: OnlyExplicit
+  - letters:
+      - {type: base, spec: "+", moreKeys: ["(", "<"], attributes: &side { style: Functional, width: FunctionalKey }}
+      - "1"
+      - "2"
+      - "3"
+      - {type: base, spec: "%", attributes: *side}
+    splittable: false
+  - letters:
+      - {type: base, spec: "-", moreKeys: [")", ">"], attributes: *side}
+      - "4"
+      - "5"
+      - "6"
+      - {type: base, spec: "!icon/space_key_for_number_layout|!code/key_space", attributes: *side}
+    splittable: false
+  - letters:
+      - {type: base, spec: "*", moreKeys: ["/"], attributes: *side}
+      - "7"
+      - "8"
+      - "9"
+      - {type: base, spec: "!icon/delete_key|!code/key_delete", attributes: *side}
+    splittable: false
+  - bottom:
+      - {type: base, spec: "!text/keylabel_to_alpha|!code/key_switch_alpha_symbol", attributes: *side}
+      - {type: base, spec: ",", attributes: &regular { style: Functional, width: Regular }}
+      - {type: base, spec: "!?#|!code/key_to_number_layout", attributes: &grow { style: Functional, width: Grow } }
+      - "0"
+      - {type: contextual, attributes: *grow, fallbackKey: {type: base, spec: "=", attributes: *grow}}
+      - {type: base, spec: ".", attributes: *regular}
+      - {type: enter, attributes: *side}
+    attributes: { style: Normal }
+    splittable: false

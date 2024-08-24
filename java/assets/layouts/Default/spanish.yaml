@@ -1,0 +1,6 @@
+name: "QWERTY+1 (Spanish)"
+languages: es ca eo pt
+rows:
+  - letters: "q w e r t y u i o p"
+  - letters: "a s d f g h j k l !text/keyspec_spanish_row2_10"
+  - letters: "z x c v b n m"

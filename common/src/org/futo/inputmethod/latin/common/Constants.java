@@ -245,8 +245,12 @@ public final class Constants {
     public static final int CODE_SHIFT_ENTER = -12;
     public static final int CODE_SYMBOL_SHIFT = -13;
     public static final int CODE_ALPHA_FROM_EMOJI = -14;
+    public static final int CODE_TO_NUMBER_LAYOUT = -15;
+    public static final int CODE_TO_ALT_0_LAYOUT = -16;
+    public static final int CODE_TO_ALT_1_LAYOUT = -17;
+    public static final int CODE_TO_ALT_2_LAYOUT = -18;
     // Code value representing the code is not specified.
-    public static final int CODE_UNSPECIFIED = -15;
+    public static final int CODE_UNSPECIFIED = -19;
 
     public static final int CODE_ACTION_0 = -1050;
     public static final int CODE_ACTION_MAX = CODE_ACTION_0 + 100;

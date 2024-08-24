@@ -30,7 +30,8 @@ val AllActionsMap = mapOf(
     "cut" to CutAction,
     "copy" to CopyAction,
     "select_all" to SelectAllAction,
-    "more" to MoreActionsAction
+    "more" to MoreActionsAction,
+    "bugs" to BugViewerAction
 )
 
 val ActionToId = AllActionsMap.entries.associate { it.value to it.key }
@@ -232,7 +233,7 @@ val DefaultActionSettings = mapOf(
     ActionCategory.PinnedKey to listOf(VoiceInputAction),
     ActionCategory.Favorites to listOf(SwitchLanguageAction, UndoAction, RedoAction, TextEditAction, ClipboardHistoryAction, ThemeAction),
     ActionCategory.More to listOf(), // Remaining actions get populated automatically by ensureWellFormed
-    ActionCategory.Disabled to listOf(MemoryDebugAction, SystemVoiceInputAction)
+    ActionCategory.Disabled to listOf(MemoryDebugAction, SystemVoiceInputAction, BugViewerAction)
 )
 
 val DefaultActionKey = DefaultActionSettings[ActionCategory.ActionKey]!!.firstOrNull()?.let {

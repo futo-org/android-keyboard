@@ -104,7 +104,7 @@ public class LanguageOnSpacebarUtilsTests {
         LanguageOnSpacebarUtils.onSubtypeChanged(subtype, implicitlyEnabledSubtype, systemLocale);
         assertEquals(subtype.getLocale() + " implicitly=" + implicitlyEnabledSubtype
                 + " in " + systemLocale, expectedFormat,
-                LanguageOnSpacebarUtils.getLanguageOnSpacebarFormatType(subtype));
+                LanguageOnSpacebarUtils.getLanguageOnSpacebarFormatType(subtype.getLocale(), subtype.getKeyboardLayoutSetName()));
     }
 
     @Test

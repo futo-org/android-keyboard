@@ -148,6 +148,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             )
         } else {
             latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(
+                currentInputEditorInfo ?: return,
                 latinIMELegacy.currentAutoCapsState,
                 latinIMELegacy.currentRecapitalizeState
             )
