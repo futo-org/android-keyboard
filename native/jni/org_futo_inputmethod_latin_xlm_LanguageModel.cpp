@@ -1060,6 +1060,8 @@ namespace latinime {
 
             sortProbabilityPairVectorDescending(index_value, NUM_TOKEN_MIX);
 
+            if(index_value.size() < NUM_TOKEN_MIX) break;
+
             bool needs_resorting = false;
             int num_symbols = 0;
             for(int s=0; s<4; s++) {
