@@ -67,8 +67,8 @@ object LayoutManager {
 
     fun queryLayoutsForLocale(locale: Locale): List<Keyboard> {
         val language = locale.language
-        val script = locale.getKeyboardScript()
-        return layoutsById!!.values.filter { it.languages.contains(language) || it.script == script }
+        //val script = locale.getKeyboardScript()
+        return layoutsById!!.values.filter { it.languages.contains(language) }
     }
 
     fun getAllLayoutNames(context: Context): List<String> {

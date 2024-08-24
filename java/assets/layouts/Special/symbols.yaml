@@ -1,5 +1,4 @@
 name: "Symbols"
-element: Symbols
 attributes:
   shiftable: false
 rows:

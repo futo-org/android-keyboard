@@ -1,7 +1,6 @@
 name: Arabic (AOSP)
 description: The default Arabic keyboard from AOSP Keyboard.
 languages: ar
-script: Arabic
 rows:
   - letters:
       # U+0636: "ض" ARABIC LETTER DAD

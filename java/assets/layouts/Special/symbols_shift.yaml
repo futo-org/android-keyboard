@@ -1,5 +1,4 @@
 name: "Symbols (Shifted)"
-element: SymbolsShifted
 numberRowMode: UserConfigurable
 attributes:
   shiftable: false

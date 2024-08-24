@@ -12,14 +12,68 @@ import org.futo.inputmethod.latin.common.StringUtils
 
 typealias KeyJ = org.futo.inputmethod.keyboard.Key
 
+/**
+ * Width tokens for keys. Rather than explicitly specifying a width in percentage as is common in
+ * other layout systems, we instead use width tokens, which eliminates the need to explicitly
+ * calculate and specify width percentages for most cases.
+ */
 @Serializable
 enum class KeyWidth {
+    /**
+     * Regular key width. Used for normal letters (QWERTY etc)
+     *
+     * ##### Width calculation
+     * Simply put, the width of this is calculated by dividing the total keyboard width by the
+     * maximum number of keys in a row. It is consistent across the entire keyboard.
+     *
+     * For example, if a keyboard has 3 rows, with 10, 9, and 7 keys respectively,
+     * the regular key width will be 100% / 10 = 10% for the entire keyboard.
+     * The rows with 9 and 7 keys will receive padding by default to keep them centered due
+     * to the extra space.
+     */
     Regular,
+
+    /**
+     * Functional key width. Used for functional keys (Shift, Backspace, Enter, Symbols, etc)
+     *
+     * ##### Width calculation
+     * The width of this is at least the value specified in [Keyboard.minimumFunctionalKeyWidth]
+     * or, for the bottom row, [Keyboard.minimumBottomRowFunctionalKeyWidth].
+     *
+     * The width may be larger than the minimum if the available space is there.
+     * For example on the QWERTY layout, the ZXCV row has only 7 keys at a width of 10%, using up
+     * only 70% of space. The remaining 30% of space is divided among the shift and backspace,
+     * meaning the functional width is 15%.
+     */
     FunctionalKey,
+
+    /**
+     * Grow width. Takes up all remaining space divided evenly among all grow keys in the row.
+     * Mainly used for spacebar.
+     *
+     * Grow keys are not supported in split layouts, and their presence can complicate width
+     * calculation for functional keys and others. Avoid use when possible.
+     */
     Grow,
+
+    /**
+     * The Custom1 width as defined in [Keyboard.overrideWidths] (values are between 0.0 and 1.0)
+     */
     Custom1,
+
+    /**
+     * The Custom2 width as defined in [Keyboard.overrideWidths] (values are between 0.0 and 1.0)
+     */
     Custom2,
+
+    /**
+     * The Custom3 width as defined in [Keyboard.overrideWidths] (values are between 0.0 and 1.0)
+     */
     Custom3,
+
+    /**
+     * The Custom4 width as defined in [Keyboard.overrideWidths] (values are between 0.0 and 1.0)
+     */
     Custom4,
 }
 
@@ -91,14 +145,29 @@ internal fun filterMoreKeysFlags(moreKeys: List<String>): List<String> =
                 !it.startsWith(KeyJ.MORE_KEYS_NO_PANEL_AUTO_MORE_KEY)
     }
 
+/**
+ * Specifies which morekeys can be automatically added to the key.
+ */
 @Serializable
 enum class MoreKeyMode(
     val autoFromKeyspec: Boolean,
     val autoNumFromCoord: Boolean,
     val autoSymFromCoord: Boolean
 ) {
+    /**
+     * Automatically insert morekeys from keyspec shortcuts, as well as numbers, symbols and actions
+     * (if not disabled by user). These count towards KeyCoordinate.
+     */
     All(true, true, true),
+
+    /**
+     * Only automatically insert morekeys from keyspec shortcut.
+     */
     OnlyFromKeyspec(true, false, false),
+
+    /**
+     * Do not automatically insert any morekeys.
+     */
     OnlyExplicit(false, false, false)
 }
 
@@ -106,7 +175,9 @@ private fun Int.and(other: Boolean): Int {
     return if(other) { this } else { 0 }
 }
 
-
+/**
+ * Flags for the key label
+ */
 @Serializable
 data class LabelFlags(
     val alignHintLabelToBottom: Boolean = false,
@@ -129,17 +200,73 @@ data class LabelFlags(
         KeyJ.LABEL_FLAGS_AUTO_X_SCALE.and(autoXScale)
 }
 
+/**
+ * Attributes for keys.
+ *
+ * Values are inherited in the following order:
+ * `Key.attributes > Row.attributes > Keyboard.attributes > DefaultKeyAttributes`
+ */
 @Serializable
 data class KeyAttributes(
+    /**
+     * Key width token
+     */
     val width: KeyWidth? = null,
+
+    /**
+     * Visual style (background) for the key
+     */
     val style: KeyVisualStyle? = null,
+
+    /**
+     * Whether or not to anchor the key to the edges.
+     *
+     * When a row is not wide enough to fill 100%, padding is added to the edges of the row.
+     * If there are anchored keys in the row, the padding will be added after the anchored
+     * keys, keeping the anchored keys at the edge.
+     */
     val anchored: Boolean? = null,
+
+    /**
+     * Whether or not to show the popup indicator when the key is pressed.
+     * This is usually desirable for letters on normal layouts (QWERTY letters), but undesirable
+     * for functional keys (Shift, Backspace), or certain layouts (phone layout)
+     */
     val showPopup: Boolean? = null,
+
+    /**
+     * Which moreKeys to add automatically
+     */
     val moreKeyMode: MoreKeyMode? = null,
+
+    /**
+     * Whether or not to use keyspec shortcuts.
+     * For example, `$` gets automatically converted to `!text/keyspec_currency`.
+     *
+     * The full list of keyspec shortcuts is defined in `KeySpecShortcuts`.
+     */
     val useKeySpecShortcut: Boolean? = null,
+
+    /**
+     * Whether or not longpress is enabled for the key
+     */
     val longPressEnabled: Boolean? = null,
+
+    /**
+     * Label flags for how the key's label (and its hint) should be presented
+     */
     val labelFlags: LabelFlags? = null,
+
+    /**
+     * Whether or not the key is repeatable, intended for backspace
+     */
     val repeatableEnabled: Boolean? = null,
+
+    /**
+     * Whether or not the key is automatically shiftable. If true, it automatically becomes
+     * uppercased when the layout is shifted. If this is not desired, this can be set to false.
+     * Shift behavior can be customized by using a [CaseSelector].
+     */
     val shiftable: Boolean? = null,
 ) {
     fun getEffectiveAttributes(row: Row, keyboard: Keyboard): KeyAttributes {
@@ -190,24 +317,56 @@ object MoreKeysListSerializer: SpacedListSerializer<String>(String.serializer(),
     MoreKeySpec.splitKeySpecs(it)?.toList() ?: listOf()
 })
 
+/**
+ * The base key
+ */
 @Serializable
 @SerialName("base")
 data class BaseKey(
-    // AOSP Keyboard key spec
+    /**
+     * AOSP key spec. It can contain a custom label, code, icon, output text.
+     *
+     * Each key specification is one of the following:
+     * - Label optionally followed by keyOutputText (keyLabel|keyOutputText).
+     * - Label optionally followed by code point (keyLabel|!code/code_name).
+     * - Icon followed by keyOutputText (!icon/icon_name|keyOutputText).
+     * - Icon followed by code point (!icon/icon_name|!code/code_name).
+     *
+     * Label and keyOutputText are one of the following:
+     * - Literal string.
+     * - Label reference represented by (!text/label_name), see {@link KeyboardTextsSet}.
+     * - String resource reference represented by (!text/resource_name), see {@link KeyboardTextsSet}.
+     *
+     * Icon is represented by (!icon/icon_name), see {@link KeyboardIconsSet}.
+     *
+     * Code is one of the following:
+     * - Code point presented by hexadecimal string prefixed with "0x"
+     * - Code reference represented by (!code/code_name), see {@link KeyboardCodesSet}.
+     *
+     * Special character, comma ',' backslash '\', and bar '|' can be escaped by '\' character.
+     * Note that the '\' is also parsed by XML parser and {@link MoreKeySpec#splitKeySpecs(String)}
+     * as well.
+     */
     val spec: String,
 
-    // Attributes
+    /**
+     * Attributes for this key. Values defined here supersede any other values. Values which are
+     * not defined are inherited from the row, keyboard, or default attributes.
+     */
     val attributes: KeyAttributes = KeyAttributes(),
 
+    /**
+     * More keys for this key. In YAML, it can be defined as a list or a comma-separated string.
+     *
+     * The values here are key specs.
+     */
     val moreKeys: @Serializable(with = MoreKeysListSerializer::class) List<String> = listOf(),
 
-    // If these values are set, they override spec values
-    val outputText: String? = null,
-    val label: String? = null,
-    val code: Int? = null,
-    val icon: String? = null,
-
-    // If set, will override default hint from moreKeys
+    /**
+     * If set, overrides a default hint from the value of moreKeys.
+     *
+     * TODO: Currently does not override
+     */
     val hint: String? = null,
 ) : AbstractKey {
     override fun computeData(params: KeyboardParams, row: Row, keyboard: Keyboard, coordinate: KeyCoordinate): ComputedKeyData {
@@ -232,10 +391,10 @@ data class BaseKey(
              ?: spec
         )
 
-        val label = label ?: expandedSpec?.let { KeySpecParser.getLabel(it) } ?: ""
-        val icon = icon ?: expandedSpec?.let { KeySpecParser.getIconId(it) } ?: ""
-        val code = code ?: KeySpecParser.getCode(expandedSpec)
-        val outputText = outputText ?: KeySpecParser.getOutputText(expandedSpec)
+        val label = expandedSpec?.let { KeySpecParser.getLabel(it) } ?: ""
+        val icon = expandedSpec?.let { KeySpecParser.getIconId(it) } ?: ""
+        val code = KeySpecParser.getCode(expandedSpec)
+        val outputText = KeySpecParser.getOutputText(expandedSpec)
 
         val moreKeyMode = attributes.moreKeyMode!!
         
@@ -295,16 +454,38 @@ data class BaseKey(
     }
 }
 
+/**
+ * Case selector key. Allows specifying a different type of key depending on when the layout is
+ * shifted or not.
+ */
 @Serializable
 @SerialName("case")
 data class CaseSelector(
+    /**
+     * Key to use normally
+     */
     val normal: Key,
+
+    /**
+     * Key to use when shifted
+     */
     val shifted: Key = normal,
-    val automaticShifted: Key = shifted,
-    val manualShifted: Key = shifted,
+
+    /**
+     * Key to use when shift locked (caps lock), defaults to [shifted]
+     */
     val shiftLocked: Key = shifted,
-    val shiftLockShifted: Key = shiftLocked,
+
+    /**
+     * Key to use when in symbols layout, defaults to [normal]. Mainly used internally for
+     * [TemplateShiftKey]
+     */
     val symbols: Key = normal,
+
+    /**
+     * Key to use when in symbols layout, defaults to [normal]. Mainly used internally for
+     * [TemplateShiftKey]
+     */
     val symbolsShifted: Key = normal
 ) : AbstractKey {
     override fun computeData(
@@ -315,10 +496,15 @@ data class CaseSelector(
     ): ComputedKeyData? =
         when(params.mId.mElementId) {
             KeyboardId.ELEMENT_ALPHABET -> normal
-            KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED -> automaticShifted
-            KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED -> manualShifted
-            KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED -> shiftLocked
-            KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED -> shiftLockShifted
+
+            // KeyboardState.kt currently doesn't distinguish between these
+            KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED,
+            KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED -> shifted
+
+            // KeyboardState.kt currently doesn't distinguish between these
+            KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED,
+            KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED -> shiftLocked
+
             KeyboardId.ELEMENT_SYMBOLS -> symbols
             KeyboardId.ELEMENT_SYMBOLS_SHIFTED -> symbolsShifted
             else -> normal
@@ -356,15 +542,47 @@ object KeyContextualSerializer : ClassOrScalarsSerializer<AbstractKey>(
 )
 
 
-
+/**
+ * Affects the background for the key. Depending on the user theme settings, backgrounds may be
+ * different.
+ */
 @Serializable
 enum class KeyVisualStyle {
+    /**
+     * Uses a normal key background, intended for all letters.
+     */
     Normal,
+
+    /**
+     * Uses no key background, intended for number row numbers.
+     */
     NoBackground,
+
+    /**
+     * Uses a slightly darker colored background, intended for functional keys (backspace, etc)
+     */
     Functional,
+
+    /**
+     * Intended for Shift when it's not shiftlocked
+     */
     StickyOff,
+
+    /**
+     * Intended for Shift to indicate it's shiftlocked. Uses a more bright background
+     */
     StickyOn,
+
+    /**
+     * Uses a bright fully rounded background, normally used for the enter key
+     */
     Action,
+
+    /**
+     * Depending on the key borders setting, this is either
+     * the same as [Normal] (key borders enabled) or a
+     * fully rounded rectangle (key borders disabled)
+     */
     Spacebar
 }
 
@@ -379,6 +597,9 @@ fun KeyVisualStyle.toBackgroundTypeInt(): Int = when(this) {
 }
 
 
+/**
+ * An empty gap in place of a key
+ */
 @Serializable
 @SerialName("gap")
 class GapKey(val attributes: KeyAttributes = KeyAttributes()) : AbstractKey {

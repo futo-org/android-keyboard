@@ -1,5 +1,6 @@
 package org.futo.inputmethod.v2keyboard
 
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.latin.common.Constants
 
 fun getDefaultMoreKeysForKey(code: Int, relevantSpecShortcut: List<String>?): String {
@@ -21,7 +22,7 @@ val QwertySymbols = listOf(
 )
 
 fun getSymsForCoordinate(keyCoordinate: KeyCoordinate): String {
-    if(keyCoordinate.element != KeyboardElement.Alphabet) return ""
+    if(keyCoordinate.element.kind != KeyboardLayoutKind.Alphabet) return ""
 
     val row = QwertySymbols.getOrNull(keyCoordinate.regularRow)
     val letter = row?.getOrNull(keyCoordinate.regularColumn)
@@ -33,7 +34,7 @@ fun getSymsForCoordinate(keyCoordinate: KeyCoordinate): String {
 }
 
 fun getNumForCoordinate(keyCoordinate: KeyCoordinate): String {
-    if(keyCoordinate.element != KeyboardElement.Alphabet) return ""
+    if(keyCoordinate.element.kind != KeyboardLayoutKind.Alphabet) return ""
 
     if(keyCoordinate.regularRow == 0 && keyCoordinate.regularColumn <= 9) {
         if(keyCoordinate.regularColumn == 9) {

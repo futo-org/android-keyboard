@@ -105,12 +105,12 @@ class KeyboardLayoutSetV2 internal constructor(
 
     val layoutName = forcedLayout ?: params.keyboardLayoutSet
     val mainLayout = LayoutManager.getLayout(context, layoutName)
-    val symbolsLayout = LayoutManager.getLayout(context, mainLayout.symbolsLayout)
-    val symbolsShiftedLayout = LayoutManager.getLayout(context, mainLayout.symbolsShiftLayout)
-    val numberLayout = LayoutManager.getLayout(context, "number")
-    val numberShiftLayout = LayoutManager.getLayout(context, "number_shift")
-    val phoneLayout = LayoutManager.getLayout(context, "phone")
-    val phoneSymbolsLayout = LayoutManager.getLayout(context, "phone_shift")
+    val symbolsLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.symbols)
+    val symbolsShiftedLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.symbolsShifted)
+    val numberLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.number)
+    val numberShiftLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.numberShifted)
+    val phoneLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.phone)
+    val phoneSymbolsLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.phoneShifted)
     val errorLayout = LayoutManager.getLayout(context, "error")
 
     val elements = mapOf(
@@ -170,7 +170,7 @@ class KeyboardLayoutSetV2 internal constructor(
                 val baseLayout = elements[baseElement]
                 baseLayout?.altPages?.get(altIdx)
             }?.let {
-                mainLayout.copy(definedRows = it)
+                mainLayout.copy(rows = it)
             }
         } ?: run {
             // If all else fails, show the error layout
@@ -240,7 +240,8 @@ class KeyboardLayoutSetV2 internal constructor(
         val layoutParams = LayoutParams(
             gap = params.gap.dp,
             useSplitLayout = params.useSplitLayout,
-            standardRowHeight = singularRowHeight
+            standardRowHeight = singularRowHeight,
+            element = element
         )
 
         try {
@@ -268,34 +269,6 @@ Stack trace: ${e.stackTrace.map { it.toString() }}
         }
     }
 }
-
-private fun elementIdToElement(id: Int): KeyboardElement =
-    when(id) {
-        KeyboardId.ELEMENT_ALPHABET,
-        KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED,
-        KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED,
-        KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED,
-        KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED ->
-            KeyboardElement.Alphabet
-
-        KeyboardId.ELEMENT_SYMBOLS ->
-            KeyboardElement.Symbols
-
-        KeyboardId.ELEMENT_SYMBOLS_SHIFTED ->
-            KeyboardElement.SymbolsShifted
-
-        KeyboardId.ELEMENT_PHONE ->
-            KeyboardElement.Phone
-
-        KeyboardId.ELEMENT_PHONE_SYMBOLS ->
-            KeyboardElement.PhoneSymbols
-
-        KeyboardId.ELEMENT_NUMBER ->
-            KeyboardElement.Number
-
-        else -> KeyboardElement.Alphabet
-    }
-
 
 public fun getKeyboardMode(editorInfo: EditorInfo): Int {
     val inputType = editorInfo.inputType

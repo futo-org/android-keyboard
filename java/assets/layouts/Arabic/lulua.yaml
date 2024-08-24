@@ -2,7 +2,6 @@
 name: "العربية/لؤلؤة"
 description: Arabic/lulua keyboard from AnySoftKeyboard
 languages: ar
-script: Arabic
 attributes:
   width: Grow
 overrideWidths:

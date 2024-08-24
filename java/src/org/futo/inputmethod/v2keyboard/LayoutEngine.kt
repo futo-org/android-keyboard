@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.Dp
 import org.futo.inputmethod.keyboard.Key.ACTION_FLAGS_ENABLE_LONG_PRESS
 import org.futo.inputmethod.keyboard.Key.ACTION_FLAGS_IS_REPEATABLE
 import org.futo.inputmethod.keyboard.Key.ACTION_FLAGS_NO_KEY_PREVIEW
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
@@ -85,7 +86,8 @@ data class LayoutRow(
 data class LayoutParams(
     val gap: Dp,
     val useSplitLayout: Boolean,
-    val standardRowHeight: Double
+    val standardRowHeight: Double,
+    val element: KeyboardLayoutElement,
 )
 
 data class LayoutEngine(
@@ -365,7 +367,7 @@ data class LayoutEngine(
         val computedRowWithoutWidths = rows.map { row ->
             var regularColumn = 0
             row.keys.mapNotNull { key ->
-                key.computeData(params, row, keyboard, KeyCoordinate(regularRow, regularColumn, keyboard.element))?.let { data ->
+                key.computeData(params, row, keyboard, KeyCoordinate(regularRow, regularColumn, layoutParams.element))?.let { data ->
                     if(data.countsToKeyCoordinate) {
                         regularColumn += 1
                     }
