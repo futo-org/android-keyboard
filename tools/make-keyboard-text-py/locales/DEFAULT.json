@@ -372,6 +372,18 @@
             "!icon/action_emoji|!code/action_emoji",
             "!icon/action_undo|!code/action_undo",
             "!icon/action_redo|!code/action_redo"
+        ],
+        "emoji_action_key_navigation": [
+            "!fixedColumnOrder!4",
+            "!needsDividers!",
+            "!icon/action_switch_language|!code/action_switch_language",
+            "!icon/action_text_edit|!code/action_text_edit",
+            "!icon/action_clipboard_history|!code/action_clipboard_history",
+            "!icon/action_emoji|!code/action_emoji",
+            "!icon/previous_key|!code/key_action_previous",
+            "!icon/next_key|!code/key_action_next",
+            "!icon/action_undo|!code/action_undo",
+            "!icon/action_redo|!code/action_redo"
         ]
     },
     "label": {

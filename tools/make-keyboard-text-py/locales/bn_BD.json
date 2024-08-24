@@ -2,13 +2,34 @@
     "locale": "bn_BD",
     "morekeys": {},
     "keyspec": {
-        "currency": "৳"
+        "currency": "৳",
+        "symbols_0": "০",
+        "symbols_1": "১",
+        "symbols_2": "২",
+        "symbols_3": "৩",
+        "symbols_4": "৪",
+        "symbols_5": "৫",
+        "symbols_6": "৬",
+        "symbols_7": "৭",
+        "symbols_8": "৮",
+        "symbols_9": "৯"
     },
     "label": {},
     "keylabel": {
         "to_alpha": "কখগ"
     },
     "keyhintlabel": {},
-    "additional_morekeys": {},
+    "additional_morekeys": {
+        "symbols_0": "0",
+        "symbols_1": "1",
+        "symbols_2": "2",
+        "symbols_3": "3",
+        "symbols_4": "4",
+        "symbols_5": "5",
+        "symbols_6": "6",
+        "symbols_7": "7",
+        "symbols_8": "8",
+        "symbols_9": "9"
+    },
     "other": {}
 }

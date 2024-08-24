@@ -3,7 +3,7 @@
     "morekeys": {
         "punctuation": [
             "!autoColumnOrder!8",
-            "\\",
+            "\\,",
             "՞",
             "՜",
             ".",
@@ -36,7 +36,8 @@
         "comma": "՝",
         "tablet_comma": "՝",
         "period": "։",
-        "tablet_period": "։"
+        "tablet_period": "։",
+        "currency": "֏"
     },
     "label": {},
     "keylabel": {

@@ -67,7 +67,7 @@
         ],
         "punctuation": [
             "!autoColumnOrder!9",
-            "\\",
+            "\\\\",
             "?",
             "!",
             "·",
@@ -87,7 +87,7 @@
         ],
         "tablet_punctuation": [
             "!autoColumnOrder!8",
-            "\\",
+            "\\\\",
             "'",
             "·",
             "#",

@@ -4,7 +4,7 @@
         "period": [
             "!autoColumnOrder!9",
             ".",
-            "\\",
+            "\\\\",
             "?",
             "!",
             "#",
@@ -24,7 +24,7 @@
         "tablet_period": [
             "!autoColumnOrder!8",
             ".",
-            "\\",
+            "\\\\",
             "'",
             "#",
             ")",
