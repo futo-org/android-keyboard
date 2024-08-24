@@ -85,11 +85,7 @@ rows:
           - "$delete"
 
 altPages:
-    - name: International Phonetic Alphabet
-      minimumFunctionalKeyWidth: 0.0
-      attributes: *attrs
-      rows:
-          - letters:
+    -     - letters:
                 - "i"
                 - "y"
                 - "$gap"
@@ -158,11 +154,7 @@ altPages:
                 - "ɑ"
                 - "ɒ"
                 - "$delete"
-    - name: International Phonetic Alphabet
-      minimumFunctionalKeyWidth: 0.0
-      attributes: *attrs
-      rows:
-          - letters:
+    -     - letters:
                 - "ɓ̥"
                 - "ɓ"
                 - "ɗ̥"

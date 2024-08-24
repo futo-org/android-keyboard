@@ -149,9 +149,7 @@ data class Keyboard(
     val minimumFunctionalKeyWidth: Float = 0.125f,
     val minimumBottomRowFunctionalKeyWidth: Float = 0.15f,
 
-    // TODO: These should probably be lists of List<Row> or similar,
-    // it doesn't make sense to declare name and description repeatedly
-    val altPages: List<Keyboard> = listOf()
+    val altPages: List<List<Row>> = listOf()
 ) {
     var id: String = ""
 

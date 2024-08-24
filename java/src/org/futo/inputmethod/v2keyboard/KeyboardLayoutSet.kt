@@ -169,6 +169,8 @@ class KeyboardLayoutSetV2 internal constructor(
                 val baseElement = element.copy(page = KeyboardLayoutPage.Base)
                 val baseLayout = elements[baseElement]
                 baseLayout?.altPages?.get(altIdx)
+            }?.let {
+                mainLayout.copy(definedRows = it)
             }
         } ?: run {
             // If all else fails, show the error layout
