@@ -1136,7 +1136,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             }
         }
 
-        if (code > Constants.CODE_ACTION_0 && code < Constants.CODE_ACTION_MAX) {
+        if (code >= Constants.CODE_ACTION_0 && code <= Constants.CODE_ACTION_MAX) {
             cancelKeyTracking();
             sListener.onCodeInput(
                     code - Constants.CODE_ACTION_0 + Constants.CODE_ALT_ACTION_0,
