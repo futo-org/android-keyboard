@@ -37,7 +37,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
@@ -89,7 +88,7 @@ import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_EMOJI_SUGGESTION
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
 import org.futo.inputmethod.latin.common.Constants
-import org.futo.inputmethod.latin.suggestions.SuggestionStripView
+import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
 import org.futo.inputmethod.latin.uix.actions.FavoriteActions
 import org.futo.inputmethod.latin.uix.actions.MoreActionsAction
 import org.futo.inputmethod.latin.uix.actions.PinnedActions
@@ -646,7 +645,7 @@ fun ActionSep() {
 @Composable
 fun ActionBar(
     words: SuggestedWords?,
-    suggestionStripListener: SuggestionStripView.Listener,
+    suggestionStripListener: SuggestionStripViewListener,
     onActionActivated: (Action) -> Unit,
     onActionAltActivated: (Action) -> Unit,
     inlineSuggestions: List<MutableState<View?>>,
@@ -786,7 +785,7 @@ fun CollapsibleSuggestionsBar(
     onClose: () -> Unit,
     onCollapse: () -> Unit,
     words: SuggestedWords?,
-    suggestionStripListener: SuggestionStripView.Listener,
+    suggestionStripListener: SuggestionStripViewListener,
 ) {
     Column {
         ActionSep()
@@ -851,7 +850,7 @@ fun CollapsibleSuggestionsBar(
 
 /* ---- Previews ---- */
 
-class ExampleListener : SuggestionStripView.Listener {
+class ExampleListener : SuggestionStripViewListener {
     override fun showImportantNoticeContents() {
     }
 

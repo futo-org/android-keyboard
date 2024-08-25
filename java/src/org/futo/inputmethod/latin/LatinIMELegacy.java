@@ -82,10 +82,9 @@ import org.futo.inputmethod.latin.permissions.PermissionsManager;
 import org.futo.inputmethod.latin.personalization.PersonalizationHelper;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SettingsValues;
-import org.futo.inputmethod.latin.suggestions.SuggestionStripView;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
+import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener;
 import org.futo.inputmethod.latin.touchinputconsumer.GestureConsumer;
-import org.futo.inputmethod.latin.uix.actions.SwitchLanguageActionKt;
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity;
 import org.futo.inputmethod.latin.utils.ApplicationUtils;
 import org.futo.inputmethod.latin.utils.DialogUtils;
@@ -112,7 +111,7 @@ import javax.annotation.Nullable;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIMELegacy implements KeyboardActionListener,
-        SuggestionStripView.Listener, SuggestionStripViewAccessor,
+        SuggestionStripViewListener, SuggestionStripViewAccessor,
         DictionaryFacilitator.DictionaryInitializationListener,
         PermissionsManager.PermissionsResultCallback {
 

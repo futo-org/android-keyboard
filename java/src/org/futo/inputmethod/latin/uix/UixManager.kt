@@ -74,7 +74,7 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
-import org.futo.inputmethod.latin.suggestions.SuggestionStripView
+import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
 import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
@@ -372,7 +372,7 @@ class UixManager(private val latinIME: LatinIME) {
             if(actionBarShown.value) {
                 ActionBar(
                     suggestedWordsOrNull,
-                    latinIME.latinIMELegacy as SuggestionStripView.Listener,
+                    latinIME.latinIMELegacy as SuggestionStripViewListener,
                     inlineSuggestions = inlineSuggestions,
                     onActionActivated = {
                         keyboardManagerForAction.performHapticAndAudioFeedback(
@@ -490,7 +490,7 @@ class UixManager(private val latinIME: LatinIME) {
                     onCollapse = { toggleExpandAction() },
                     onClose = { returnBackToMainKeyboardViewFromAction() },
                     words = suggestedWordsOrNull,
-                    suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripView.Listener
+                    suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
                 )
             }
         }

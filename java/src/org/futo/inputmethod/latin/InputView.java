@@ -25,8 +25,6 @@ import android.widget.FrameLayout;
 
 import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.keyboard.MainKeyboardView;
-import org.futo.inputmethod.latin.suggestions.MoreSuggestionsView;
-import org.futo.inputmethod.latin.suggestions.SuggestionStripView;
 
 public final class InputView extends FrameLayout {
     private final Rect mInputViewRect = new Rect();
@@ -158,67 +156,6 @@ public final class InputView extends FrameLayout {
             mReceiverView.dispatchTouchEvent(me);
             onForwardingEvent(me);
             return true;
-        }
-    }
-
-    /**
-     * This class forwards {@link MotionEvent}s happened in the top padding of
-     * {@link MainKeyboardView} to {@link SuggestionStripView}.
-     */
-    private static class KeyboardTopPaddingForwarder
-            extends MotionEventForwarder<MainKeyboardView, SuggestionStripView> {
-        private int mKeyboardTopPadding;
-
-        public KeyboardTopPaddingForwarder(final MainKeyboardView mainKeyboardView,
-                final SuggestionStripView suggestionStripView) {
-            super(mainKeyboardView, suggestionStripView);
-        }
-
-        public void setKeyboardTopPadding(final int keyboardTopPadding) {
-            mKeyboardTopPadding = keyboardTopPadding;
-        }
-
-        private boolean isInKeyboardTopPadding(final int y) {
-            return y < mEventSendingRect.top + mKeyboardTopPadding;
-        }
-
-        @Override
-        protected boolean needsToForward(final int x, final int y) {
-            // Forwarding an event only when {@link MainKeyboardView} is visible.
-            // Because the visibility of {@link MainKeyboardView} is controlled by its parent
-            // view in {@link KeyboardSwitcher#setMainKeyboardFrame()}, we should check the
-            // visibility of the parent view.
-            final View mainKeyboardFrame = (View)mSenderView.getParent();
-            return mainKeyboardFrame.getVisibility() == View.VISIBLE && isInKeyboardTopPadding(y);
-        }
-
-        @Override
-        protected int translateY(final int y) {
-            final int translatedY = super.translateY(y);
-            if (isInKeyboardTopPadding(y)) {
-                // The forwarded event should have coordinates that are inside of the target.
-                return Math.min(translatedY, mEventReceivingRect.height() - 1);
-            }
-            return translatedY;
-        }
-    }
-
-    /**
-     * This class forwards {@link MotionEvent}s happened in the {@link MainKeyboardView} to
-     * {@link SuggestionStripView} when the {@link MoreSuggestionsView} is showing.
-     * {@link SuggestionStripView} dismisses {@link MoreSuggestionsView} when it receives any event
-     * outside of it.
-     */
-    private static class MoreSuggestionsViewCanceler
-            extends MotionEventForwarder<MainKeyboardView, SuggestionStripView> {
-        public MoreSuggestionsViewCanceler(final MainKeyboardView mainKeyboardView,
-                final SuggestionStripView suggestionStripView) {
-            super(mainKeyboardView, suggestionStripView);
-        }
-
-        @Override
-        protected boolean needsToForward(final int x, final int y) {
-            return false;
         }
     }
 
