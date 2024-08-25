@@ -20,10 +20,10 @@ attributes:
   labelFlags: { followKeyLabelRatio: false }
 rows:
   - numbers:
-      - ["x", "a", "i", "α", "u"]
-      - ["y", "b", "j", "β", "v"]
-      - ["z", "c", "k", "γ", "θ"]
-      - ["w", "d", "l", "δ", "ϕ"]
+      - {type: base, spec: "x", moreKeys: ["a", "b", "c", "d"], hint: "abcd"}
+      - {type: base, spec: "y", moreKeys: ["i", "j", "k", "l"], hint: "ijkl"}
+      - {type: base, spec: "z", moreKeys: ["α", "β", "γ", "θ"], hint: "αβγθ"}
+      - {type: base, spec: "w", moreKeys: ["u", "v", "θ", "ϕ"], hint: "uv"}
     attributes:
       width: Grow
       style: NoBackground
