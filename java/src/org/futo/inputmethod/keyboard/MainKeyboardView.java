@@ -58,6 +58,7 @@ import org.futo.inputmethod.latin.common.CoordinateUtils;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.WeakHashMap;
 
@@ -150,7 +151,6 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     // More keys keyboard
     private final Paint mBackgroundDimAlphaPaint = new Paint();
     private final View mMoreKeysKeyboardContainer;
-    private final View mMoreKeysKeyboardForActionContainer;
     private final WeakHashMap<Key, Keyboard> mMoreKeysKeyboardCache = new WeakHashMap<>();
     private final boolean mConfigShowMoreKeysKeyboardAtTouchedPoint;
     // More keys panel (used by both more keys keyboard and more suggestions view)
@@ -234,9 +234,6 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
         final int moreKeysKeyboardLayoutId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0);
-        final int moreKeysKeyboardForActionLayoutId = mainKeyboardViewAttr.getResourceId(
-                R.styleable.MainKeyboardView_moreKeysKeyboardForActionLayout,
-                moreKeysKeyboardLayoutId);
         mConfigShowMoreKeysKeyboardAtTouchedPoint = mainKeyboardViewAttr.getBoolean(
                 R.styleable.MainKeyboardView_showMoreKeysKeyboardAtTouchedPoint, false);
 
@@ -258,8 +255,6 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         mMoreKeysKeyboardContainer = inflater.inflate(moreKeysKeyboardLayoutId, null);
-        mMoreKeysKeyboardForActionContainer = inflater.inflate(
-                moreKeysKeyboardForActionLayoutId, null);
         mLanguageOnSpacebarFadeoutAnimator = loadObjectAnimator(
                 languageOnSpacebarFadeoutAnimatorResId, this);
         mAltCodeKeyWhileTypingFadeoutAnimator = loadObjectAnimator(
@@ -468,7 +463,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     public void onKeyPressed(@Nonnull final Key key, final boolean withPreview) {
         key.onPressed();
         invalidateKey(key);
-        if (withPreview && !key.noKeyPreview()) {
+        if (withPreview && !key.getNoKeyPreview()) {
             showKeyPreview(key);
         }
     }
@@ -500,7 +495,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     public void onKeyReleased(@Nonnull final Key key, final boolean withAnimation) {
         key.onReleased();
         invalidateKey(key);
-        if (!key.noKeyPreview()) {
+        if (!key.getNoKeyPreview()) {
             if (withAnimation) {
                 dismissKeyPreview(key);
             } else {
@@ -597,8 +592,8 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     @Nullable
     public MoreKeysPanel showMoreKeysKeyboard(@Nonnull final Key key,
             @Nonnull final PointerTracker tracker) {
-        final MoreKeySpec[] moreKeys = key.getMoreKeys();
-        if (moreKeys == null) {
+        final List<MoreKeySpec> moreKeys = key.getMoreKeys();
+        if (moreKeys.isEmpty()) {
             return null;
         }
         Keyboard moreKeysKeyboard = mMoreKeysKeyboardCache.get(key);
@@ -609,7 +604,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
             // will cause zero-division error at
             // {@link MoreKeysKeyboardParams#setParameters(int,int,int,int,int,int,boolean,int)}.
             final boolean isSingleMoreKeyWithPreview = mKeyPreviewDrawParams.isPopupEnabled()
-                    && !key.noKeyPreview() && moreKeys.length == 1
+                    && !key.getNoKeyPreview() && moreKeys.size() == 1
                     && mKeyPreviewDrawParams.getVisibleWidth() > 0;
             final MoreKeysKeyboard.Builder builder = new MoreKeysKeyboard.Builder(
                     getContext(), key, getKeyboard(), isSingleMoreKeyWithPreview,
@@ -619,8 +614,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
             mMoreKeysKeyboardCache.put(key, moreKeysKeyboard);
         }
 
-        final View container = key.isActionKey() ? mMoreKeysKeyboardForActionContainer
-                : mMoreKeysKeyboardContainer;
+        final View container = mMoreKeysKeyboardContainer;
         final MoreKeysKeyboardView moreKeysKeyboardView =
                 (MoreKeysKeyboardView)container.findViewById(R.id.more_keys_keyboard_view);
         moreKeysKeyboardView.setKeyboard(moreKeysKeyboard);
@@ -628,8 +622,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
         final int[] lastCoords = CoordinateUtils.newInstance();
         tracker.getLastCoordinates(lastCoords);
-        final boolean keyPreviewEnabled = mKeyPreviewDrawParams.isPopupEnabled()
-                && !key.noKeyPreview();
+        final boolean keyPreviewEnabled = mKeyPreviewDrawParams.isPopupEnabled();
         // The more keys keyboard is usually horizontally aligned with the center of the parent key.
         // If showMoreKeysKeyboardAtTouchedPoint is true and the key preview is disabled, the more
         // keys keyboard is placed at the touch point of the parent key.
@@ -776,16 +769,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     }
 
     public void updateShortcutKey(final boolean available) {
-        final Keyboard keyboard = getKeyboard();
-        if (keyboard == null) {
-            return;
-        }
-        final Key shortcutKey = keyboard.getKey(Constants.CODE_SHORTCUT);
-        if (shortcutKey == null) {
-            return;
-        }
-        shortcutKey.setEnabled(available);
-        invalidateKey(shortcutKey);
+        // TODO: Remove
     }
 
     public void startDisplayLanguageOnSpacebar(final boolean subtypeChanged,
@@ -819,7 +803,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     @Override
     protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
             final KeyDrawParams params) {
-        if (key.altCodeWhileTyping() && key.isEnabled()) {
+        if (key.getAltCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
         }
         super.onDrawKeyTopVisuals(key, canvas, paint, params);

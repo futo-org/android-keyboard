@@ -137,7 +137,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<DrawingProxy>
 
     @Override
     public void startTypingStateTimer(@Nonnull final Key typedKey) {
-        if (typedKey.isModifier() || typedKey.altCodeWhileTyping()) {
+        if (typedKey.isModifier() || typedKey.getAltCodeWhileTyping()) {
             return;
         }
 

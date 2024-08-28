@@ -173,7 +173,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         String description = getKeyDescription(k);
 
         if(description == null || description.isBlank()) {
-            Log.e(TAG, "Invalid key has blank description: " + k.toLongString());
+            Log.e(TAG, "Invalid key has blank description: " + k.toString());
             description = "Unknown";
         }
 

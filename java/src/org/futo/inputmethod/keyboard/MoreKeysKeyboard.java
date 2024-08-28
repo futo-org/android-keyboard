@@ -27,6 +27,8 @@ import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 public final class MoreKeysKeyboard extends Keyboard {
@@ -299,19 +301,16 @@ public final class MoreKeysKeyboard extends Keyboard {
             } else {
                 final float padding = context.getResources().getDimension(
                         R.dimen.config_more_keys_keyboard_key_horizontal_padding)
-                        + (key.hasLabelsInMoreKeys()
+                        + (key.getHasLabelsInMoreKeys()
                                 ? mParams.mDefaultKeyWidth * LABEL_PADDING_RATIO : 0.0f);
-                keyWidth = getMaxKeyWidth(key, mParams.mDefaultKeyWidth, padding, paintToMeasure);
-                rowHeight = keyboard.mMostCommonKeyHeight;
+
+                int dimension = (int)(context.getResources().getDisplayMetrics().density * 44.5f);
+                keyWidth = getMaxKeyWidth(key, Math.min(dimension, key.getTotalWidth()), padding, paintToMeasure);
+                rowHeight = dimension;
             }
-            final int dividerWidth;
-            if (key.needsDividersInMoreKeys()) {
-                dividerWidth = (int)(keyWidth * DIVIDER_RATIO);
-            } else {
-                dividerWidth = 0;
-            }
-            final MoreKeySpec[] moreKeys = key.getMoreKeys();
-            mParams.setParameters(moreKeys.length, key.getMoreKeysColumnNumber(), keyWidth,
+            final int dividerWidth = 0; // TODO: Remove divider
+            final List<MoreKeySpec> moreKeys = key.getMoreKeys();
+            mParams.setParameters(moreKeys.size(), key.getMoreKeysColumnNumber(), keyWidth,
                     rowHeight, key.getX() + key.getWidth() / 2, keyboard.mId.mWidth,
                     key.isMoreKeysFixedColumn(), key.isMoreKeysFixedOrder(), dividerWidth);
         }
@@ -335,36 +334,18 @@ public final class MoreKeysKeyboard extends Keyboard {
         public MoreKeysKeyboard build() {
             final MoreKeysKeyboardParams params = mParams;
             final int moreKeyFlags = mParentKey.getMoreKeyLabelFlags();
-            final MoreKeySpec[] moreKeys = mParentKey.getMoreKeys();
-            for (int n = 0; n < moreKeys.length; n++) {
-                final MoreKeySpec moreKeySpec = moreKeys[n];
+            final List<MoreKeySpec> moreKeys = mParentKey.getMoreKeys();
+            for (int n = 0; n < moreKeys.size(); n++) {
+                final MoreKeySpec moreKeySpec = moreKeys.get(n);
                 final int row = n / params.mNumColumns;
                 final int x = params.getX(n, row);
                 final int y = params.getY(row);
                 final Key key = moreKeySpec.buildKey(x, y, moreKeyFlags, params);
                 params.markAsEdgeKey(key, row);
                 params.onAddKey(key);
-
-                final int pos = params.getColumnPos(n);
-                // The "pos" value represents the offset from the default position. Negative means
-                // left of the default position.
-                if (params.mDividerWidth > 0 && pos != 0) {
-                    final int dividerX = (pos > 0) ? x - params.mDividerWidth
-                            : x + params.mDefaultKeyWidth;
-                    final Key divider = new MoreKeyDivider(
-                            params, dividerX, y, params.mDividerWidth, params.mDefaultRowHeight);
-                    params.onAddKey(divider);
-                }
             }
             return new MoreKeysKeyboard(params);
         }
     }
 
-    // Used as a divider maker. A divider is drawn by {@link MoreKeysKeyboardView}.
-    public static class MoreKeyDivider extends Key.Spacer {
-        public MoreKeyDivider(final KeyboardParams params, final int x, final int y,
-                final int width, final int height) {
-            super(params, x, y, width, height);
-        }
-    }
 }

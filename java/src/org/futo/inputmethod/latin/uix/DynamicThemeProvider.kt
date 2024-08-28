@@ -3,6 +3,24 @@ package org.futo.inputmethod.latin.uix
 import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
+import org.futo.inputmethod.v2keyboard.KeyVisualStyle
+
+/** Visual style descriptor for a key */
+data class VisualStyleDescriptor(
+    /** Key background drawable when not pressed */
+    val backgroundDrawable: Drawable?,
+
+    /** Key foreground label/icon color when not pressed */
+    @ColorInt
+    val foregroundColor: Int,
+
+    /** Key background drawable when pressed */
+    val backgroundDrawablePressed: Drawable? = backgroundDrawable,
+
+    /** Key foreground label/icon color when pressed */
+    @ColorInt
+    val foregroundColorPressed: Int = foregroundColor
+)
 
 interface DynamicThemeProvider {
     val primaryKeyboardColor: Int
@@ -16,8 +34,6 @@ interface DynamicThemeProvider {
 
     val moreKeysTextColor: Int
     val moreKeysKeyboardBackground: Drawable
-    val popupKey: Drawable
-    val actionPopupKey: Drawable
 
     @ColorInt
     fun getColor(i: Int): Int?
@@ -27,6 +43,8 @@ interface DynamicThemeProvider {
     fun getIcon(iconName: String): Drawable?
 
     fun getKeyboardHeightMultiplier(): Float
+
+    fun getKeyStyleDescriptor(visualStyle: KeyVisualStyle): VisualStyleDescriptor
 
     companion object {
         @ColorInt

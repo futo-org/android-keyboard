@@ -84,9 +84,7 @@ public final class MoreKeySpec {
     @Nonnull
     public Key buildKey(final int x, final int y, final int labelFlags,
             @Nonnull final KeyboardParams params) {
-        return new Key(mLabel, mIconId, mCode, mOutputText, null /* hintLabel */, labelFlags,
-                Key.BACKGROUND_TYPE_NORMAL, x, y, params.mDefaultKeyWidth, params.mDefaultRowHeight,
-                params.mHorizontalGap, params.mVerticalGap, Key.ACTION_FLAGS_NO_KEY_PREVIEW);
+        return Key.buildKeyForMoreKeySpec(this, x, y, labelFlags, params);
     }
 
     @Override

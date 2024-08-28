@@ -88,8 +88,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     @Override
     protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
             final KeyDrawParams params) {
-        if (!key.isSpacer() || !(key instanceof MoreKeysKeyboard.MoreKeyDivider)
-                || mDivider == null) {
+        if (!key.isSpacer() || mDivider == null) {
             super.onDrawKeyTopVisuals(key, canvas, paint, params);
             return;
         }

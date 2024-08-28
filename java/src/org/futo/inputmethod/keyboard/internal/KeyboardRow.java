@@ -20,7 +20,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.Xml;
 
-import org.futo.inputmethod.keyboard.Key;
+import org.futo.inputmethod.keyboard.KeyConsts;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
@@ -34,6 +34,7 @@ import java.util.ArrayDeque;
  * Some of the key size defaults can be overridden per row from what the {@link Keyboard}
  * defines.
  */
+// TODO: Remove this class, it is no longer used
 public final class KeyboardRow {
     // keyWidth enum constants
     private static final int KEYWIDTH_NOT_ENUM = 0;
@@ -67,7 +68,7 @@ public final class KeyboardRow {
                     keyboardWidth, keyboardWidth, defaultKeyWidth);
             mDefaultKeyLabelFlags = keyAttr.getInt(R.styleable.Keyboard_Key_keyLabelFlags, 0);
             mDefaultBackgroundType = keyAttr.getInt(R.styleable.Keyboard_Key_backgroundType,
-                    Key.BACKGROUND_TYPE_NORMAL);
+                    KeyConsts.BACKGROUND_TYPE_NORMAL);
         }
 
         /**

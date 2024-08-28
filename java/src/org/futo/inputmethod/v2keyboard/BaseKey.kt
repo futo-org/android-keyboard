@@ -3,14 +3,13 @@ package org.futo.inputmethod.v2keyboard
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
+import org.futo.inputmethod.keyboard.KeyConsts
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeySpecParser
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.keyboard.internal.MoreKeySpec
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.StringUtils
-
-typealias KeyJ = org.futo.inputmethod.keyboard.Key
 
 /**
  * Width tokens for keys. Rather than explicitly specifying a width in percentage as is common in
@@ -80,12 +79,12 @@ enum class KeyWidth {
 internal fun computeMoreKeysFlags(moreKeys: Array<String>, params: KeyboardParams): Int {
     // Get maximum column order number and set a relevant mode value.
     var moreKeysColumnAndFlags =
-        (KeyJ.MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER
+        (KeyConsts.MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER
                 or params.mMaxMoreKeysKeyboardColumn)
     var value: Int
     if ((MoreKeySpec.getIntValue(
             moreKeys,
-            KeyJ.MORE_KEYS_AUTO_COLUMN_ORDER,
+            KeyConsts.MORE_KEYS_AUTO_COLUMN_ORDER,
             -1
         ).also {
             value = it
@@ -93,12 +92,12 @@ internal fun computeMoreKeysFlags(moreKeys: Array<String>, params: KeyboardParam
     ) {
         // Override with fixed column order number and set a relevant mode value.
         moreKeysColumnAndFlags =
-            (KeyJ.MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER
-                    or (value and KeyJ.MORE_KEYS_COLUMN_NUMBER_MASK))
+            (KeyConsts.MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER
+                    or (value and KeyConsts.MORE_KEYS_COLUMN_NUMBER_MASK))
     }
     if ((MoreKeySpec.getIntValue(
             moreKeys,
-            KeyJ.MORE_KEYS_FIXED_COLUMN_ORDER,
+            KeyConsts.MORE_KEYS_FIXED_COLUMN_ORDER,
             -1
         ).also {
             value = it
@@ -106,43 +105,43 @@ internal fun computeMoreKeysFlags(moreKeys: Array<String>, params: KeyboardParam
     ) {
         // Override with fixed column order number and set a relevant mode value.
         moreKeysColumnAndFlags =
-            (KeyJ.MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER
-                    or (value and KeyJ.MORE_KEYS_COLUMN_NUMBER_MASK))
+            (KeyConsts.MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER
+                    or (value and KeyConsts.MORE_KEYS_COLUMN_NUMBER_MASK))
     }
     if (MoreKeySpec.getBooleanValue(
             moreKeys,
-            KeyJ.MORE_KEYS_HAS_LABELS
+            KeyConsts.MORE_KEYS_HAS_LABELS
         )
     ) {
         moreKeysColumnAndFlags =
-            moreKeysColumnAndFlags or KeyJ.MORE_KEYS_FLAGS_HAS_LABELS
+            moreKeysColumnAndFlags or KeyConsts.MORE_KEYS_FLAGS_HAS_LABELS
     }
     if (MoreKeySpec.getBooleanValue(
             moreKeys,
-            KeyJ.MORE_KEYS_NEEDS_DIVIDERS
+            KeyConsts.MORE_KEYS_NEEDS_DIVIDERS
         )
     ) {
         moreKeysColumnAndFlags =
-            moreKeysColumnAndFlags or KeyJ.MORE_KEYS_FLAGS_NEEDS_DIVIDERS
+            moreKeysColumnAndFlags or KeyConsts.MORE_KEYS_FLAGS_NEEDS_DIVIDERS
     }
     if (MoreKeySpec.getBooleanValue(
             moreKeys,
-            KeyJ.MORE_KEYS_NO_PANEL_AUTO_MORE_KEY
+            KeyConsts.MORE_KEYS_NO_PANEL_AUTO_MORE_KEY
         )
     ) {
         moreKeysColumnAndFlags =
-            moreKeysColumnAndFlags or KeyJ.MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY
+            moreKeysColumnAndFlags or KeyConsts.MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY
     }
     return moreKeysColumnAndFlags
 }
 
 internal fun filterMoreKeysFlags(moreKeys: List<String>): List<String> =
     moreKeys.filter {
-        !it.startsWith(KeyJ.MORE_KEYS_AUTO_COLUMN_ORDER) &&
-                !it.startsWith(KeyJ.MORE_KEYS_FIXED_COLUMN_ORDER) &&
-                !it.startsWith(KeyJ.MORE_KEYS_HAS_LABELS) &&
-                !it.startsWith(KeyJ.MORE_KEYS_NEEDS_DIVIDERS) &&
-                !it.startsWith(KeyJ.MORE_KEYS_NO_PANEL_AUTO_MORE_KEY)
+        !it.startsWith(KeyConsts.MORE_KEYS_AUTO_COLUMN_ORDER) &&
+                !it.startsWith(KeyConsts.MORE_KEYS_FIXED_COLUMN_ORDER) &&
+                !it.startsWith(KeyConsts.MORE_KEYS_HAS_LABELS) &&
+                !it.startsWith(KeyConsts.MORE_KEYS_NEEDS_DIVIDERS) &&
+                !it.startsWith(KeyConsts.MORE_KEYS_NO_PANEL_AUTO_MORE_KEY)
     }
 
 /**
@@ -166,9 +165,14 @@ enum class MoreKeyMode(
     OnlyFromKeyspec(true, false, false),
 
     /**
+     * Only automatically insert morekeys from coord, not keyspec shortcut.
+     */
+    OnlyFromCoord(false, true, true),
+
+    /**
      * Do not automatically insert any morekeys.
      */
-    OnlyExplicit(false, false, false)
+    OnlyExplicit(false, false, false),
 }
 
 private fun Int.and(other: Boolean): Int {
@@ -190,14 +194,14 @@ data class LabelFlags(
     val autoXScale: Boolean = false,
 ) {
     fun getValue(): Int =
-        KeyJ.LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER.and(alignLabelOffCenter) or
-        KeyJ.LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM.and(alignHintLabelToBottom) or
-        KeyJ.LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM.and(alignIconToBottom) or
-        KeyJ.LABEL_FLAGS_HAS_HINT_LABEL.and(hasHintLabel) or
-        KeyJ.LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO.and(followKeyLabelRatio) or
-        KeyJ.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO.and(followKeyLetterRatio) or
-        KeyJ.LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO.and(followKeyLargeLetterRatio) or
-        KeyJ.LABEL_FLAGS_AUTO_X_SCALE.and(autoXScale)
+        KeyConsts.LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER.and(alignLabelOffCenter) or
+        KeyConsts.LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM.and(alignHintLabelToBottom) or
+        KeyConsts.LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM.and(alignIconToBottom) or
+        KeyConsts.LABEL_FLAGS_HAS_HINT_LABEL.and(hasHintLabel) or
+        KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO.and(followKeyLabelRatio) or
+        KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO.and(followKeyLetterRatio) or
+        KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO.and(followKeyLargeLetterRatio) or
+        KeyConsts.LABEL_FLAGS_AUTO_X_SCALE.and(autoXScale)
 }
 
 /**
@@ -583,19 +587,13 @@ enum class KeyVisualStyle {
      * the same as [Normal] (key borders enabled) or a
      * fully rounded rectangle (key borders disabled)
      */
-    Spacebar
-}
+    Spacebar,
 
-fun KeyVisualStyle.toBackgroundTypeInt(): Int = when(this) {
-    KeyVisualStyle.Normal -> KeyJ.BACKGROUND_TYPE_NORMAL
-    KeyVisualStyle.NoBackground -> KeyJ.BACKGROUND_TYPE_EMPTY
-    KeyVisualStyle.Functional -> KeyJ.BACKGROUND_TYPE_FUNCTIONAL
-    KeyVisualStyle.StickyOff -> KeyJ.BACKGROUND_TYPE_STICKY_OFF
-    KeyVisualStyle.StickyOn -> KeyJ.BACKGROUND_TYPE_STICKY_ON
-    KeyVisualStyle.Action -> KeyJ.BACKGROUND_TYPE_ACTION
-    KeyVisualStyle.Spacebar -> KeyJ.BACKGROUND_TYPE_SPACEBAR
+    /**
+     * Visual style for moreKeys
+     */
+    MoreKey,
 }
-
 
 /**
  * An empty gap in place of a key

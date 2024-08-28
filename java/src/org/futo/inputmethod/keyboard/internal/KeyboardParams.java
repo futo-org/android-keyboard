@@ -133,7 +133,7 @@ public class KeyboardParams {
         if (key.getCode() == Constants.CODE_SHIFT) {
             mShiftKeys.add(key);
         }
-        if (key.altCodeWhileTyping()) {
+        if (key.getAltCodeWhileTyping()) {
             mAltCodeKeysWhileTyping.add(key);
         }
     }

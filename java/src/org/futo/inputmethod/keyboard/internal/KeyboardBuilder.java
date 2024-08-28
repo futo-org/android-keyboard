@@ -46,7 +46,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -121,7 +120,7 @@ import javax.annotation.Nonnull;
  * </pre>
  */
 
-// TODO: Write unit tests for this class.
+// TODO: Remove this class, XML is no longer used for building keyboards
 public class KeyboardBuilder<KP extends KeyboardParams> {
     private static final String BUILDER_TAG = "Keyboard.Builder";
     private static final boolean DEBUG = false;
@@ -490,10 +489,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 final int y = row.getKeyY();
                 final int width = (int)keyWidth;
                 final int height = row.getRowHeight();
-                final Key key = new Key(label, KeyboardIconsSet.ICON_UNDEFINED, code, outputText,
-                        null /* hintLabel */, labelFlags, backgroundType, x, y, width, height,
-                        mParams.mHorizontalGap, mParams.mVerticalGap, Key.ACTION_FLAGS_NO_KEY_PREVIEW);
-                endKey(key);
+                //final Key key = new Key(label, KeyboardIconsSet.ICON_UNDEFINED, code, outputText,
+                //        null /* hintLabel */, labelFlags, backgroundType, x, y, width, height,
+                //        mParams.mHorizontalGap, mParams.mVerticalGap, KeyConsts.ACTION_FLAGS_NO_KEY_PREVIEW);
+                //endKey(key);
                 row.advanceXPos(keyWidth);
             }
             endRow(row);
@@ -516,14 +515,14 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         if (TextUtils.isEmpty(keySpec)) {
             throw new ParseException("Empty keySpec", parser);
         }
-        final Key key = new Key(keySpec, keyAttr, keyStyle, mParams, row);
+        //final Key key = new Key(keySpec, keyAttr, keyStyle, mParams, row);
         keyAttr.recycle();
-        if (DEBUG) {
-            startEndTag("<%s%s %s moreKeys=%s />", TAG_KEY, (key.isEnabled() ? "" : " disabled"),
-                    key, Arrays.toString(key.getMoreKeys()));
-        }
+        //if (DEBUG) {
+        //    startEndTag("<%s%s %s moreKeys=%s />", TAG_KEY, (key.isEnabled() ? "" : " disabled"),
+        //            key, Arrays.toString(key.getMoreKeys()));
+        //}
         XmlParseUtils.checkEndTag(TAG_KEY, parser);
-        endKey(key);
+        //endKey(key);
     }
 
     private void parseSpacer(final XmlPullParser parser, final KeyboardRow row, final boolean skip)
@@ -536,11 +535,11 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         final TypedArray keyAttr = mResources.obtainAttributes(
                 Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);
         final KeyStyle keyStyle = mParams.mKeyStyles.getKeyStyle(keyAttr, parser);
-        final Key spacer = new Key.Spacer(keyAttr, keyStyle, mParams, row);
+        //final Key spacer = new Key.Spacer(keyAttr, keyStyle, mParams, row);
         keyAttr.recycle();
         if (DEBUG) startEndTag("<%s />", TAG_SPACER);
         XmlParseUtils.checkEndTag(TAG_SPACER, parser);
-        endKey(spacer);
+        //endKey(spacer);
     }
 
     private void parseIncludeKeyboardContent(final XmlPullParser parser, final boolean skip)

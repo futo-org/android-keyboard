@@ -16,6 +16,7 @@ val KeySpecShortcuts = mapOf(
     "0" to listOf("keyspec_symbols_0", "additional_morekeys_symbols_0", "morekeys_symbols_0"),
     ";" to listOf("keyspec_symbols_semicolon", "morekeys_symbols_semicolon"),
     "!" to listOf("!", "morekeys_exclamation"),
+    "+" to listOf("+", "morekeys_plus"),
     "?" to listOf("keyspec_symbols_question", "morekeys_question"),
     "\"" to listOf("\"", "morekeys_double_quote"),
     "\'" to listOf("\'", "morekeys_single_quote"),

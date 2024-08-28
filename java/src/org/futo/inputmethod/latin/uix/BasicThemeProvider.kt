@@ -7,26 +7,23 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.os.Build
 import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.ColorUtils
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
-import com.google.android.material.color.DynamicColors
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
-import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
+import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 import kotlin.math.roundToInt
 
 val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), true)
@@ -53,8 +50,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
     override val moreKeysTextColor: Int
     override val moreKeysKeyboardBackground: Drawable
-    override val popupKey: Drawable
-    override val actionPopupKey: Drawable
 
     private val colors: HashMap<Int, Int> = HashMap()
     override fun getColor(i: Int): Int? {
@@ -80,6 +75,11 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
     override fun getKeyboardHeightMultiplier(): Float {
         return keyboardHeight
+    }
+
+    val keyStyles: Map<KeyVisualStyle, VisualStyleDescriptor>
+    override fun getKeyStyleDescriptor(visualStyle: KeyVisualStyle): VisualStyleDescriptor {
+        return keyStyles[visualStyle]!!
     }
 
     private fun dp(dp: Dp): Float {
@@ -122,6 +122,17 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         )
         )
         addState(stateSet, drawable)
+    }
+
+    private fun makeVisualStyle(background: Int, foreground: Int, highlight: Int, roundedness: Dp): VisualStyleDescriptor {
+        val bg = coloredRoundedRectangle(background, dp(roundedness))
+        val bgHighlight = coloredRoundedRectangle(highlight, dp(roundedness))
+        return VisualStyleDescriptor(
+            backgroundDrawable = bg,
+            foregroundColor    = foreground,
+
+            backgroundDrawablePressed = LayerDrawable(arrayOf(bg, bgHighlight))
+        )
     }
 
     val expertMode: Boolean
@@ -272,50 +283,105 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         keyboardBackground = coloredRectangle(primaryKeyboardColor)
 
-        keyBackground = StateListDrawable().apply {
-            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_active),
-                coloredRoundedRectangle(enterKeyBackground, dp(128.dp)),
-                cornerRadius = 128.dp
-            )
-
-            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_checkable, android.R.attr.state_checked),
-                coloredRoundedRectangle(colorScheme.secondaryContainer.toArgb(), dp(8.dp))
-            )
-
-            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_checkable),
-                if(keyBorders) {
-                    coloredRoundedRectangle(keyColor, dp(8.dp))
-                } else {
-                    coloredRectangle(transparent)
-                }
-            )
-
-            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_first),
-                if(keyBorders) {
-                    coloredRoundedRectangle(functionalKeyColor, dp(8.dp))
-                } else {
-                    coloredRectangle(transparent)
-                }
-            )
-
-            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(android.R.attr.state_empty),
-                coloredRectangle(transparent)
-            )
-
-            addStateWithHighlightLayerOnPressed(highlight, intArrayOf(),
-                if(keyBorders) {
-                    coloredRoundedRectangle(keyColor, dp(8.dp))
-                } else {
-                    coloredRectangle(transparent)
-                }
-            )
-        }
 
         val spaceCornerRadius = if(keyBorders) {
             8.dp
         } else {
             48.dp
         }
+
+        keyStyles = mapOf(
+            KeyVisualStyle.Action to VisualStyleDescriptor(
+                backgroundDrawable = coloredRoundedRectangle(colorScheme.primary.toArgb(), dp(128.dp)),
+                foregroundColor    = colorScheme.onPrimary.toArgb(),
+
+                backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.secondaryContainer.toArgb(), dp(128.dp)),
+                foregroundColorPressed    = colorScheme.onSecondaryContainer.toArgb()
+            ),
+
+            KeyVisualStyle.Normal to if(keyBorders) {
+                makeVisualStyle(
+                    colorScheme.backgroundContainer.toArgb(),
+                    colorScheme.onBackgroundContainer.toArgb(),
+                    highlight,
+                    8.dp
+                )
+            } else {
+                makeVisualStyle(
+                    transparent,
+                    onBackground,
+                    highlight,
+                    8.dp
+                )
+            },
+
+            KeyVisualStyle.MoreKey to VisualStyleDescriptor(
+                backgroundDrawable = coloredRoundedRectangle(primaryContainer, dp(24.dp)),
+                foregroundColor = onPrimaryContainer,
+
+                backgroundDrawablePressed = coloredRoundedRectangle(onPrimaryContainer, dp(24.dp)),
+                foregroundColorPressed = primaryContainer
+            ),
+
+            KeyVisualStyle.Functional to if(keyBorders) {
+                makeVisualStyle(
+                    colorScheme.backgroundContainerDim.toArgb(),
+                    colorScheme.onBackgroundContainer.toArgb(),
+                    highlight,
+                    8.dp
+                )
+            } else {
+                makeVisualStyle(
+                    transparent,
+                    onBackground,
+                    highlight,
+                    8.dp
+                )
+            },
+
+            KeyVisualStyle.StickyOff to if(keyBorders) {
+                makeVisualStyle(
+                    colorScheme.backgroundContainerDim.toArgb(),
+                    colorScheme.onBackgroundContainer.toArgb(),
+                    highlight,
+                    8.dp
+                )
+            } else {
+                makeVisualStyle(
+                    transparent,
+                    onBackground,
+                    highlight,
+                    8.dp
+                )
+            },
+
+            KeyVisualStyle.NoBackground to makeVisualStyle(transparent, onBackground, highlight, 8.dp),
+
+            KeyVisualStyle.StickyOn to makeVisualStyle(
+                colorScheme.secondaryContainer.toArgb(),
+                colorScheme.onSecondaryContainer.toArgb(),
+                highlight,
+                8.dp
+            ),
+
+            KeyVisualStyle.Spacebar to when {
+                keyBorders -> makeVisualStyle(keyColor, onKeyColor, highlight, spaceCornerRadius)
+                expertMode -> makeVisualStyle(
+                    colorScheme.outline.copy(alpha = 0.1f).toArgb(),
+                    onKeyColor,
+                    highlight,
+                    spaceCornerRadius
+                )
+                else -> makeVisualStyle(
+                    highlight,
+                    onKeyColor,
+                    highlight,
+                    spaceCornerRadius
+                )
+            }
+        )
+
+        keyBackground = keyStyles[KeyVisualStyle.Normal]!!.backgroundDrawable!!
 
         val spaceDrawable = if(keyBorders) {
             coloredRoundedRectangle(keyColor, dp(spaceCornerRadius))
@@ -355,19 +421,11 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         }
 
         moreKeysTextColor = onPrimaryContainer
-        moreKeysKeyboardBackground = coloredRoundedRectangle(primaryContainer, dp(8.dp))
-        popupKey = StateListDrawable().apply {
-            addStateWithHighlightLayerOnPressed(primary, intArrayOf(),
-                coloredRoundedRectangle(primaryContainer, dp(8.dp))
-            )
+        moreKeysKeyboardBackground = coloredRoundedRectangle(primaryContainer, dp(28.dp)).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val padding = dp(4.dp).roundToInt()
+                setPadding(padding, padding, padding, padding)
+            }
         }
-        actionPopupKey = StateListDrawable().apply {
-            addStateWithHighlightLayerOnPressed(primary, intArrayOf(),
-                coloredRoundedRectangle(primaryContainer, dp(128.dp)),
-                128.dp
-            )
-        }
-
     }
-
 }

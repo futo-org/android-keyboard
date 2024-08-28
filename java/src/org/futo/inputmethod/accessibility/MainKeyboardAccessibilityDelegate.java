@@ -250,10 +250,10 @@ public final class MainKeyboardAccessibilityDelegate
         // This long press has handled at {@link MainKeyboardView#onLongPress(PointerTracker)}.
         // We should ignore further hover events on this key.
         mBoundsToIgnoreHoverEvent.set(key.getHitBox());
-        if (key.hasNoPanelAutoMoreKey()) {
+        if (key.getHasNoPanelAutoMoreKey()) {
             // This long press has registered a code point without showing a more keys keyboard.
             // We should talk back the code point if possible.
-            final int codePointOfNoPanelAutoMoreKey = key.getMoreKeys()[0].mCode;
+            final int codePointOfNoPanelAutoMoreKey = key.getMoreKeys().get(0).mCode;
             final String text = KeyCodeDescriptionMapper.getInstance().getDescriptionForCodePoint(
                     mKeyboardView.getContext(), codePointOfNoPanelAutoMoreKey);
             if (text != null) {

@@ -3,9 +3,7 @@ package org.futo.inputmethod.v2keyboard
 import android.content.Context
 import android.view.ContextThemeWrapper
 import androidx.compose.ui.unit.Dp
-import org.futo.inputmethod.keyboard.Key.ACTION_FLAGS_ENABLE_LONG_PRESS
-import org.futo.inputmethod.keyboard.Key.ACTION_FLAGS_IS_REPEATABLE
-import org.futo.inputmethod.keyboard.Key.ACTION_FLAGS_NO_KEY_PREVIEW
+import org.futo.inputmethod.keyboard.KeyConsts
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.latin.R
@@ -458,9 +456,9 @@ data class LayoutEngine(
             return
 
 
-        val actionsFlags = if(!data.showPopup) { ACTION_FLAGS_NO_KEY_PREVIEW } else { 0 } or
-                if(data.longPressEnabled) { ACTION_FLAGS_ENABLE_LONG_PRESS } else { 0 } or
-                if(data.repeatable) { ACTION_FLAGS_IS_REPEATABLE } else { 0 }
+        val actionsFlags = if(!data.showPopup) { KeyConsts.ACTION_FLAGS_NO_KEY_PREVIEW } else { 0 } or
+                if(data.longPressEnabled) { KeyConsts.ACTION_FLAGS_ENABLE_LONG_PRESS } else { 0 } or
+                if(data.repeatable) { KeyConsts.ACTION_FLAGS_IS_REPEATABLE } else { 0 }
 
         val verticalGapForKey = when {
             keyboard.rowHeightMode.clampHeight && height > layoutParams.standardRowHeight ->
@@ -471,25 +469,23 @@ data class LayoutEngine(
         } + verticalGapPx
 
         val key = org.futo.inputmethod.keyboard.Key(
-            data.label,
-            data.icon,
-            data.code,
-            data.outputText,
-            data.hint.ifEmpty { null },
-            data.labelFlags,
-            data.style.toBackgroundTypeInt(),
-            x,
-            y,
-            width,
-            height,
-            horizontalGapPx.roundToInt(),
-            verticalGapForKey.roundToInt(),
-            actionsFlags
+            code = data.code,
+            label = data.label,
+            width = width - horizontalGapPx.roundToInt(),
+            height = height - verticalGapForKey.roundToInt(),
+            iconId = data.icon,
+            x = x,
+            y = y,
+            actionFlags = actionsFlags,
+            horizontalGap = horizontalGapPx.roundToInt(),
+            verticalGap = verticalGapForKey.roundToInt(),
+            labelFlags = data.labelFlags,
+            moreKeys = data.moreKeys,
+            moreKeysColumnAndFlags = data.moreKeyFlags,
+            visualStyle = data.style
         )
 
-        val key2 = org.futo.inputmethod.keyboard.Key(key, data.moreKeyFlags, data.moreKeys.toTypedArray())
-
-        params.onAddKey(key2)
+        params.onAddKey(key)
     }
 
     private fun addRow(row: List<LayoutEntry>, x: Float, y: Int, height: Int) {

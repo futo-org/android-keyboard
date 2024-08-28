@@ -13,990 +13,433 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.futo.inputmethod.keyboard
 
-package org.futo.inputmethod.keyboard;
+import android.graphics.Rect
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import android.text.TextUtils
+import org.futo.inputmethod.keyboard.internal.KeyDrawParams
+import org.futo.inputmethod.keyboard.internal.KeySpecParser
+import org.futo.inputmethod.keyboard.internal.KeyStyle
+import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes
+import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
+import org.futo.inputmethod.keyboard.internal.KeyboardParams
+import org.futo.inputmethod.keyboard.internal.MoreKeySpec
+import org.futo.inputmethod.keyboard.internal.MoreKeySpec.LettersOnBaseLayout
+import org.futo.inputmethod.latin.common.Constants
+import org.futo.inputmethod.latin.common.StringUtils
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider
+import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
-import static org.futo.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
-import static org.futo.inputmethod.latin.common.Constants.CODE_OUTPUT_TEXT;
-import static org.futo.inputmethod.latin.common.Constants.CODE_SHIFT;
-import static org.futo.inputmethod.latin.common.Constants.CODE_SWITCH_ALPHA_SYMBOL;
-import static org.futo.inputmethod.latin.common.Constants.CODE_UNSPECIFIED;
 
-import android.content.res.TypedArray;
-import android.graphics.Rect;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
+data object KeyConsts {
+    const val LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM: Int = 0x02
+    const val LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM: Int = 0x04
+    const val LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER: Int = 0x08
 
-import org.futo.inputmethod.keyboard.internal.KeyDrawParams;
-import org.futo.inputmethod.keyboard.internal.KeySpecParser;
-import org.futo.inputmethod.keyboard.internal.KeyStyle;
-import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes;
-import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet;
-import org.futo.inputmethod.keyboard.internal.KeyboardParams;
-import org.futo.inputmethod.keyboard.internal.KeyboardRow;
-import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
-import org.futo.inputmethod.latin.R;
-import org.futo.inputmethod.latin.common.Constants;
-import org.futo.inputmethod.latin.common.StringUtils;
+    // Font typeface specification.
+    const val LABEL_FLAGS_FONT_MASK: Int = 0x30
+    const val LABEL_FLAGS_FONT_NORMAL: Int = 0x10
+    const val LABEL_FLAGS_FONT_MONO_SPACE: Int = 0x20
+    const val LABEL_FLAGS_FONT_DEFAULT: Int = 0x30
 
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
+    // Start of key text ratio enum values
+    const val LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK: Int = 0x1C0
+    const val LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO: Int = 0x40
+    const val LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO: Int = 0x80
+    const val LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO: Int = 0xC0
+    const val LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO: Int = 0x140
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+    // End of key text ratio mask enum values
+    const val LABEL_FLAGS_HAS_POPUP_HINT: Int = 0x200
+    const val LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT: Int = 0x400
+    const val LABEL_FLAGS_HAS_HINT_LABEL: Int = 0x800
+
+    // The bit to calculate the ratio of key label width against key width. If autoXScale bit is on
+    // and autoYScale bit is off, the key label may be shrunk only for X-direction.
+    // If both autoXScale and autoYScale bits are on, the key label text size may be auto scaled.
+    const val LABEL_FLAGS_AUTO_X_SCALE: Int = 0x4000
+    const val LABEL_FLAGS_AUTO_Y_SCALE: Int = 0x8000
+    const val LABEL_FLAGS_AUTO_SCALE: Int = (LABEL_FLAGS_AUTO_X_SCALE
+            or LABEL_FLAGS_AUTO_Y_SCALE)
+    const val LABEL_FLAGS_PRESERVE_CASE: Int = 0x10000
+    const val LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED: Int = 0x20000
+    const val LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL: Int = 0x40000
+    const val LABEL_FLAGS_FOLLOW_FUNCTIONAL_TEXT_COLOR: Int = 0x80000
+    const val LABEL_FLAGS_KEEP_BACKGROUND_ASPECT_RATIO: Int = 0x100000
+    const val LABEL_FLAGS_DISABLE_HINT_LABEL: Int = 0x40000000
+    const val LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS: Int = -0x80000000
+
+    const val MORE_KEYS_COLUMN_NUMBER_MASK: Int = 0x000000ff
+
+    // If this flag is specified, more keys keyboard should have the specified number of columns.
+    // Otherwise more keys keyboard should have less than or equal to the specified maximum number
+    // of columns.
+    const val MORE_KEYS_FLAGS_FIXED_COLUMN: Int = 0x00000100
+
+    // If this flag is specified, the order of more keys is determined by the order in the more
+    // keys' specification. Otherwise the order of more keys is automatically determined.
+    const val MORE_KEYS_FLAGS_FIXED_ORDER: Int = 0x00000200
+    const val MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER: Int = 0
+    const val MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER: Int = MORE_KEYS_FLAGS_FIXED_COLUMN
+    const val MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER: Int =
+        (MORE_KEYS_FLAGS_FIXED_COLUMN or MORE_KEYS_FLAGS_FIXED_ORDER)
+    const val MORE_KEYS_FLAGS_HAS_LABELS: Int = 0x40000000
+    const val MORE_KEYS_FLAGS_NEEDS_DIVIDERS: Int = 0x20000000
+    const val MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY: Int = 0x10000000
+
+    const val MORE_KEYS_AUTO_COLUMN_ORDER: String = "!autoColumnOrder!"
+    const val MORE_KEYS_FIXED_COLUMN_ORDER: String = "!fixedColumnOrder!"
+    const val MORE_KEYS_HAS_LABELS: String = "!hasLabels!"
+    const val MORE_KEYS_NEEDS_DIVIDERS: String = "!needsDividers!"
+    const val MORE_KEYS_NO_PANEL_AUTO_MORE_KEY: String = "!noPanelAutoMoreKey!"
+
+    const val BACKGROUND_TYPE_EMPTY: Int = 0
+    const val BACKGROUND_TYPE_NORMAL: Int = 1
+    const val BACKGROUND_TYPE_FUNCTIONAL: Int = 2
+    const val BACKGROUND_TYPE_STICKY_OFF: Int = 3
+    const val BACKGROUND_TYPE_STICKY_ON: Int = 4
+    const val BACKGROUND_TYPE_ACTION: Int = 5
+    const val BACKGROUND_TYPE_SPACEBAR: Int = 6
+
+    const val ACTION_FLAGS_IS_REPEATABLE: Int = 0x01
+    const val ACTION_FLAGS_NO_KEY_PREVIEW: Int = 0x02
+    const val ACTION_FLAGS_ALT_CODE_WHILE_TYPING: Int = 0x04
+    const val ACTION_FLAGS_ENABLE_LONG_PRESS: Int = 0x08
+}
+
 
 /**
  * Class for describing the position and characteristics of a single key in the keyboard.
  */
-public class Key implements Comparable<Key> {
+data class Key(
     /**
      * The key code (unicode or custom code) that this key generates.
      */
-    private final int mCode;
+    val code: Int,
 
-    /** Label to display */
-    private final String mLabel;
-    /** Hint label to display on the key in conjunction with the label */
-    private final String mHintLabel;
-    private final String mHintIconId;
-    /** Flags of the label */
-    private final int mLabelFlags;
-    public static final int LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM = 0x02;
-    public static final int LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM = 0x04;
-    public static final int LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER = 0x08;
-    // Font typeface specification.
-    public static final int LABEL_FLAGS_FONT_MASK = 0x30;
-    public static final int LABEL_FLAGS_FONT_NORMAL = 0x10;
-    public static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x20;
-    public static final int LABEL_FLAGS_FONT_DEFAULT = 0x30;
-    // Start of key text ratio enum values
-    public static final int LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK = 0x1C0;
-    public static final int LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO = 0x40;
-    public static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
-    public static final int LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO = 0xC0;
-    public static final int LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO = 0x140;
-    // End of key text ratio mask enum values
-    public static final int LABEL_FLAGS_HAS_POPUP_HINT = 0x200;
-    public static final int LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT = 0x400;
-    public static final int LABEL_FLAGS_HAS_HINT_LABEL = 0x800;
-    // The bit to calculate the ratio of key label width against key width. If autoXScale bit is on
-    // and autoYScale bit is off, the key label may be shrunk only for X-direction.
-    // If both autoXScale and autoYScale bits are on, the key label text size may be auto scaled.
-    public static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
-    public static final int LABEL_FLAGS_AUTO_Y_SCALE = 0x8000;
-    public static final int LABEL_FLAGS_AUTO_SCALE = LABEL_FLAGS_AUTO_X_SCALE
-            | LABEL_FLAGS_AUTO_Y_SCALE;
-    public static final int LABEL_FLAGS_PRESERVE_CASE = 0x10000;
-    public static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x20000;
-    public static final int LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL = 0x40000;
-    public static final int LABEL_FLAGS_FOLLOW_FUNCTIONAL_TEXT_COLOR = 0x80000;
-    public static final int LABEL_FLAGS_KEEP_BACKGROUND_ASPECT_RATIO = 0x100000;
-    public static final int LABEL_FLAGS_DISABLE_HINT_LABEL = 0x40000000;
-    public static final int LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS = 0x80000000;
+    /** Label to display  */
+    val label: String,
 
-    /** Icon to display instead of a label. Icon takes precedence over a label */
-    private final String mIconId;
+    /** Icon to display instead of a label. Icon takes precedence over a label  */
+    val iconId: String = KeyboardIconsSet.ICON_UNDEFINED,
 
-    /** Width of the key, excluding the gap */
-    private final int mWidth;
-    /** Height of the key, excluding the gap */
-    private final int mHeight;
+    /** Hint label to display on the key in conjunction with the label  */
+    val hintLabel: String? = null,
+
+    /** Hint icon to display instead of hint label. Icon takes precedence over a label  */
+    val hintIconId: String? = null,
+
+    /** Flags of the label  */
+    val labelFlags: Int,
+
+    /** Width of the key, minus the gap  */
+    val width: Int,
+
+    /** Height of the key, minus the gap  */
+    val height: Int,
+
     /**
      * The combined width in pixels of the horizontal gaps belonging to this key, both to the left
-     * and to the right. I.e., mWidth + mHorizontalGap = total width belonging to the key.
+     * and to the right. I.e., [width] + [horizontalGap] = total width belonging to the key.
      */
-    private final int mHorizontalGap;
+    val horizontalGap: Int,
+
     /**
      * The combined height in pixels of the vertical gaps belonging to this key, both above and
-     * below. I.e., mHeight + mVerticalGap = total height belonging to the key.
+     * below. I.e., [height] + [verticalGap] = total height belonging to the key.
      */
-    private final int mVerticalGap;
-    /** X coordinate of the top-left corner of the key in the keyboard layout, excluding the gap. */
-    private final int mX;
-    /** Y coordinate of the top-left corner of the key in the keyboard layout, excluding the gap. */
-    private final int mY;
-    /** Hit bounding box of the key */
-    @Nonnull
-    private final Rect mHitBox = new Rect();
+    val verticalGap: Int,
 
-    /** More keys. It is guaranteed that this is null or an array of one or more elements */
-    @Nullable
-    private final MoreKeySpec[] mMoreKeys;
-    /** More keys column number and flags */
-    private final int mMoreKeysColumnAndFlags;
-    public static final int MORE_KEYS_COLUMN_NUMBER_MASK = 0x000000ff;
-    // If this flag is specified, more keys keyboard should have the specified number of columns.
-    // Otherwise more keys keyboard should have less than or equal to the specified maximum number
-    // of columns.
-    public static final int MORE_KEYS_FLAGS_FIXED_COLUMN = 0x00000100;
-    // If this flag is specified, the order of more keys is determined by the order in the more
-    // keys' specification. Otherwise the order of more keys is automatically determined.
-    public static final int MORE_KEYS_FLAGS_FIXED_ORDER = 0x00000200;
-    public static final int MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER = 0;
-    public static final int MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER =
-            MORE_KEYS_FLAGS_FIXED_COLUMN;
-    public static final int MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER =
-            (MORE_KEYS_FLAGS_FIXED_COLUMN | MORE_KEYS_FLAGS_FIXED_ORDER);
-    public static final int MORE_KEYS_FLAGS_HAS_LABELS = 0x40000000;
-    public static final int MORE_KEYS_FLAGS_NEEDS_DIVIDERS = 0x20000000;
-    public static final int MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY = 0x10000000;
-    // TODO: Rename these specifiers to !autoOrder! and !fixedOrder! respectively.
-    public static final String MORE_KEYS_AUTO_COLUMN_ORDER = "!autoColumnOrder!";
-    public static final String MORE_KEYS_FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
-    public static final String MORE_KEYS_HAS_LABELS = "!hasLabels!";
-    public static final String MORE_KEYS_NEEDS_DIVIDERS = "!needsDividers!";
-    public static final String MORE_KEYS_NO_PANEL_AUTO_MORE_KEY = "!noPanelAutoMoreKey!";
+    /** X coordinate of the top-left corner of the key in the keyboard layout, excluding the gap.  */
+    val x: Int,
 
-    /** Background type that represents different key background visual than normal one. */
-    private int mBackgroundType;
-    public static final int BACKGROUND_TYPE_EMPTY = 0;
-    public static final int BACKGROUND_TYPE_NORMAL = 1;
-    public static final int BACKGROUND_TYPE_FUNCTIONAL = 2;
-    public static final int BACKGROUND_TYPE_STICKY_OFF = 3;
-    public static final int BACKGROUND_TYPE_STICKY_ON = 4;
-    public static final int BACKGROUND_TYPE_ACTION = 5;
-    public static final int BACKGROUND_TYPE_SPACEBAR = 6;
+    /** Y coordinate of the top-left corner of the key in the keyboard layout, excluding the gap.  */
+    val y: Int,
 
-    private final int mActionFlags;
-    public static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
-    public static final int ACTION_FLAGS_NO_KEY_PREVIEW = 0x02;
-    public static final int ACTION_FLAGS_ALT_CODE_WHILE_TYPING = 0x04;
-    public static final int ACTION_FLAGS_ENABLE_LONG_PRESS = 0x08;
+    /** Hit bounding box of the key  */
+    val hitBox: Rect = Rect(
+        x, y,
+        x + width + horizontalGap,
+        y + height + verticalGap
+    ),
 
-    @Nullable
-    private final KeyVisualAttributes mKeyVisualAttributes;
-    @Nullable
-    private final OptionalAttributes mOptionalAttributes;
+    /** More keys. If the key has no morekeys, this will be an empty list. */
+    val moreKeys: List<MoreKeySpec> = listOf(),
 
-    private static final class OptionalAttributes {
-        /** Text to output when pressed. This can be multiple characters, like ".com" */
-        public final String mOutputText;
-        public final int mAltCode;
-        /** The visual insets */
-        public final int mVisualInsetsLeft;
-        public final int mVisualInsetsRight;
+    /** More keys column number and flags  */
+    val moreKeysColumnAndFlags: Int = 0,
 
-        private OptionalAttributes(final String outputText, final int altCode, final int visualInsetsLeft, final int visualInsetsRight) {
-            mOutputText = outputText;
-            mAltCode = altCode;
-            mVisualInsetsLeft = 0;//visualInsetsLeft;
-            mVisualInsetsRight = 0;//visualInsetsRight;
+    /** Background type that represents different key background visual than normal one.  */
+    val visualStyle: KeyVisualStyle,
+
+    val actionFlags: Int,
+
+    val visualAttributes: KeyVisualAttributes? = null,
+
+    /** Text to output. If set, code should be set to Constants.CODE_OUTPUT_TEXT */
+    val outputText: String? = null,
+
+    // Not sure what this is
+    val altCode: Int = Constants.CODE_UNSPECIFIED,
+
+    /** Backgroundless spacer. Use Constants.CODE_UNSPECIFIED */
+    val isSpacer: Boolean = false,
+
+    /** Key is enabled and responds on press  */
+    val isEnabled: Boolean = code != Constants.CODE_UNSPECIFIED,
+) {
+    /** The current pressed state of this key  */
+    private var mPressed = false
+
+    /** x position for drawing */
+    val drawX: Int = x + horizontalGap / 2 // + visualInsetsLeft
+
+    /** width for drawing */
+    val drawWidth: Int = width // - visualInsetsLeft - visualInsetsRight
+
+    /** width + gap */
+    val totalWidth = width + horizontalGap
+
+    /** hint label to use, either constructor-specified or from moreKeys */
+    val effectiveHintLabel = hintLabel ?: moreKeys.firstOrNull()?.let {
+        val label = it.mLabel?.let {
+            if(it.startsWith("\\")) it.substring(1) else it
         }
 
-        @Nullable
-        public static OptionalAttributes newInstance(final String outputText, final int altCode, final int visualInsetsLeft, final int visualInsetsRight) {
-            if (outputText == null && altCode == CODE_UNSPECIFIED && visualInsetsLeft == 0
-                    && visualInsetsRight == 0) {
-                return null;
-            }
-            return new OptionalAttributes(outputText, altCode, visualInsetsLeft,
-                    visualInsetsRight);
-        }
-    }
-
-    private final int mHashCode;
-
-    /** The current pressed state of this key */
-    private boolean mPressed;
-    /** Key is enabled and responds on press */
-    private boolean mEnabled = true;
-
-    /**
-     * Constructor for a key on <code>MoreKeyKeyboard</code>, on <code>MoreSuggestions</code>,
-     * and in a <GridRows/>.
-     */
-    public Key(@Nullable final String label, final String iconId, final int code,
-            @Nullable final String outputText, @Nullable final String hintLabel,
-            final int labelFlags, final int backgroundType, final int x, final int y,
-            final int width, final int height, final int horizontalGap, final int verticalGap,
-            final int actionFlags) {
-        mWidth = width - horizontalGap;
-        mHeight = height - verticalGap;
-        mHorizontalGap = horizontalGap;
-        mVerticalGap = verticalGap;
-        mHintLabel = hintLabel;
-        mHintIconId = ICON_UNDEFINED;
-        mLabelFlags = labelFlags;
-        mBackgroundType = backgroundType;
-        mActionFlags = actionFlags;
-        mMoreKeys = null;
-        mMoreKeysColumnAndFlags = 0;
-        mLabel = label;
-        mOptionalAttributes = OptionalAttributes.newInstance(outputText, CODE_UNSPECIFIED, 0 /* visualInsetsLeft */, 0 /* visualInsetsRight */);
-        mCode = code;
-        mEnabled = (code != CODE_UNSPECIFIED);
-        mIconId = iconId;
-        // Horizontal gap is divided equally to both sides of the key.
-        mX = x + mHorizontalGap / 2;
-        mY = y;
-        mHitBox.set(x, y, x + width + 1, y + height);
-        mKeyVisualAttributes = null;
-
-        mHashCode = computeHashCode(this);
-    }
-
-    /**
-     * Create a key with the given top-left coordinate and extract its attributes from a key
-     * specification string, Key attribute array, key style, and etc.
-     *
-     * @param keySpec the key specification.
-     * @param keyAttr the Key XML attributes array.
-     * @param style the {@link KeyStyle} of this key.
-     * @param params the keyboard building parameters.
-     * @param row the row that this key belongs to. row's x-coordinate will be the right edge of
-     *        this key.
-     */
-    public Key(@Nullable final String keySpec, @Nonnull final TypedArray keyAttr,
-            @Nonnull final KeyStyle style, @Nonnull final KeyboardParams params,
-            @Nonnull final KeyboardRow row) {
-        mHorizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
-        mVerticalGap = params.mVerticalGap;
-
-        final float horizontalGapFloat = mHorizontalGap;
-        final int rowHeight = row.getRowHeight();
-        mHeight = rowHeight - mVerticalGap;
-
-        final float keyXPos = row.getKeyX(keyAttr);
-        final float keyWidth = row.getKeyWidth(keyAttr, keyXPos);
-        final int keyYPos = row.getKeyY();
-
-        // Horizontal gap is divided equally to both sides of the key.
-        mX = Math.round(keyXPos + horizontalGapFloat / 2);
-        mY = keyYPos;
-        mWidth = Math.round(keyWidth - horizontalGapFloat);
-        mHitBox.set(Math.round(keyXPos), keyYPos, Math.round(keyXPos + keyWidth) + 1,
-                keyYPos + rowHeight);
-        // Update row to have current x coordinate.
-        row.setXPos(keyXPos + keyWidth);
-
-        mBackgroundType = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_backgroundType, row.getDefaultBackgroundType());
-
-        final int baseWidth = params.mBaseWidth;
-        final int visualInsetsLeft = Math.round(keyAttr.getFraction(
-                R.styleable.Keyboard_Key_visualInsetsLeft, baseWidth, baseWidth, 0));
-        final int visualInsetsRight = Math.round(keyAttr.getFraction(
-                R.styleable.Keyboard_Key_visualInsetsRight, baseWidth, baseWidth, 0));
-
-        if((visualInsetsLeft > 0 || visualInsetsRight > 0) && mBackgroundType != BACKGROUND_TYPE_STICKY_ON) {
-            mBackgroundType = BACKGROUND_TYPE_FUNCTIONAL;
-        }
-
-        mLabelFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
-                | row.getDefaultKeyLabelFlags();
-        final boolean needsToUpcase = needsToUpcase(mLabelFlags, params.mId.mElementId);
-        final Locale localeForUpcasing = params.mId.getLocale();
-        int actionFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
-
-        String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys, s -> params.mId.mLongPressKeySettings.reorderMoreKeys(s));
-
-        // Get maximum column order number and set a relevant mode value.
-        int moreKeysColumnAndFlags = MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER
-                | style.getInt(keyAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn,
-                        params.mMaxMoreKeysKeyboardColumn);
-        int value;
-        if ((value = MoreKeySpec.getIntValue(moreKeys, MORE_KEYS_AUTO_COLUMN_ORDER, -1)) > 0) {
-            // Override with fixed column order number and set a relevant mode value.
-            moreKeysColumnAndFlags = MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER
-                    | (value & MORE_KEYS_COLUMN_NUMBER_MASK);
-        }
-        if ((value = MoreKeySpec.getIntValue(moreKeys, MORE_KEYS_FIXED_COLUMN_ORDER, -1)) > 0) {
-            // Override with fixed column order number and set a relevant mode value.
-            moreKeysColumnAndFlags = MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER
-                    | (value & MORE_KEYS_COLUMN_NUMBER_MASK);
-        }
-        if (MoreKeySpec.getBooleanValue(moreKeys, MORE_KEYS_HAS_LABELS)) {
-            moreKeysColumnAndFlags |= MORE_KEYS_FLAGS_HAS_LABELS;
-        }
-        if (MoreKeySpec.getBooleanValue(moreKeys, MORE_KEYS_NEEDS_DIVIDERS)) {
-            moreKeysColumnAndFlags |= MORE_KEYS_FLAGS_NEEDS_DIVIDERS;
-        }
-        if (MoreKeySpec.getBooleanValue(moreKeys, MORE_KEYS_NO_PANEL_AUTO_MORE_KEY)) {
-            moreKeysColumnAndFlags |= MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY;
-        }
-        mMoreKeysColumnAndFlags = moreKeysColumnAndFlags;
-
-        final String[] additionalMoreKeys;
-        if ((mLabelFlags & LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS) != 0) {
-            additionalMoreKeys = null;
+        if(it.mNeedsToUpperCase) {
+            StringUtils.toTitleCaseOfKeyLabel(label, it.mLocale)
         } else {
-            additionalMoreKeys = style.getStringArray(keyAttr,
-                    R.styleable.Keyboard_Key_additionalMoreKeys, null);
-        }
-        moreKeys = MoreKeySpec.insertAdditionalMoreKeys(moreKeys, additionalMoreKeys);
-
-        boolean shouldSuppressNumbersInMoreKeys = moreKeys != null &&
-                // Number row is active
-                params.mId.mNumberRow &&
-                // This key is not part of number row
-                style.getFlags(keyAttr, R.styleable.Keyboard_Key_doNotSuppressNumbersInMoreKeys) == 0;
-
-        if(shouldSuppressNumbersInMoreKeys) {
-            moreKeys = Arrays.stream(moreKeys)
-                    .filter(s -> !s.matches("\\d+"))
-                    .toArray(String[]::new);
-        }
-
-        if (moreKeys != null && moreKeys.length > 0) {
-            actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
-            mMoreKeys = new MoreKeySpec[moreKeys.length];
-            for (int i = 0; i < moreKeys.length; i++) {
-                mMoreKeys[i] = new MoreKeySpec(moreKeys[i], needsToUpcase, localeForUpcasing);
-            }
-        } else {
-            mMoreKeys = null;
-        }
-        mActionFlags = actionFlags;
-
-        mIconId = KeySpecParser.getIconId(keySpec);
-
-        final int code = KeySpecParser.getCode(keySpec);
-        if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
-            mLabel = params.mId.mCustomActionLabel;
-        } else if (code >= Character.MIN_SUPPLEMENTARY_CODE_POINT) {
-            // This is a workaround to have a key that has a supplementary code point in its label.
-            // Because we can put a string in resource neither as a XML entity of a supplementary
-            // code point nor as a surrogate pair.
-            mLabel = new StringBuilder().appendCodePoint(code).toString();
-        } else {
-            final String label = KeySpecParser.getLabel(keySpec);
-            mLabel = needsToUpcase
-                    ? StringUtils.toTitleCaseOfKeyLabel(label, localeForUpcasing)
-                    : label;
-        }
-
-        if ((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) {
-            mHintLabel = null;
-            mHintIconId = null;
-        } else {
-            String hintLabel = null;
-            String hintIcon = null;
-
-            if(moreKeys != null && moreKeys.length > 0) {
-                String hintLabelCandidate = moreKeys[0];
-                if(hintLabelCandidate.startsWith("\\")) hintLabelCandidate = hintLabelCandidate.substring(1);
-
-                if(hintLabelCandidate.length() < 3) {
-                    hintLabel = needsToUpcase
-                            ? StringUtils.toTitleCaseOfKeyLabel(hintLabelCandidate, localeForUpcasing)
-                            : hintLabelCandidate;
-                } else if(hintLabelCandidate.contains("!icon/")) {
-                    hintIcon = KeySpecParser.getIconId(hintLabelCandidate);
-                }
-            }
-
-            mHintLabel = hintLabel;
-            mHintIconId = hintIcon;
-        }
-
-        String outputText = KeySpecParser.getOutputText(keySpec);
-        if (needsToUpcase) {
-            outputText = StringUtils.toTitleCaseOfKeyLabel(outputText, localeForUpcasing);
-        }
-        // Choose the first letter of the label as primary code if not specified.
-        if (code == CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
-                && !TextUtils.isEmpty(mLabel)) {
-            if (StringUtils.codePointCount(mLabel) == 1) {
-                // Use the first letter of the hint label if shiftedLetterActivated flag is
-                // specified.
-                if (hasShiftedLetterHint() && isShiftedLetterActivated()) {
-                    mCode = mHintLabel.codePointAt(0);
-                } else {
-                    mCode = mLabel.codePointAt(0);
-                }
-            } else {
-                // In some locale and case, the character might be represented by multiple code
-                // points, such as upper case Eszett of German alphabet.
-                outputText = mLabel;
-                mCode = CODE_OUTPUT_TEXT;
-            }
-        } else if (code == CODE_UNSPECIFIED && outputText != null) {
-            if (StringUtils.codePointCount(outputText) == 1) {
-                mCode = outputText.codePointAt(0);
-                outputText = null;
-            } else {
-                mCode = CODE_OUTPUT_TEXT;
-            }
-        } else {
-            mCode = needsToUpcase ? StringUtils.toTitleCaseOfKeyCode(code, localeForUpcasing)
-                    : code;
-        }
-        final int altCodeInAttr = KeySpecParser.parseCode(
-                style.getString(keyAttr, R.styleable.Keyboard_Key_altCode, null), CODE_UNSPECIFIED);
-        final int altCode = needsToUpcase
-                ? StringUtils.toTitleCaseOfKeyCode(altCodeInAttr, localeForUpcasing)
-                : altCodeInAttr;
-        mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode, visualInsetsLeft, visualInsetsRight);
-        mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr, null);
-        mHashCode = computeHashCode(this);
-    }
-
-    /**
-     * Copy constructor for DynamicGridKeyboard.GridKey.
-     *
-     * @param key the original key.
-     */
-    protected Key(@Nonnull final Key key) {
-        this(key, key.mMoreKeysColumnAndFlags, key.mMoreKeys);
-    }
-
-    public Key(@Nonnull final Key key, final int moreKeysColumnAndFlags, @Nullable final MoreKeySpec[] moreKeys) {
-        // Final attributes.
-        mCode = key.mCode;
-        mLabel = key.mLabel;
-        mLabelFlags = key.mLabelFlags;
-        mIconId = key.mIconId;
-        mWidth = key.mWidth;
-        mHeight = key.mHeight;
-        mHorizontalGap = key.mHorizontalGap;
-        mVerticalGap = key.mVerticalGap;
-        mX = key.mX;
-        mY = key.mY;
-        mHitBox.set(key.mHitBox);
-        mMoreKeys = moreKeys;
-        mMoreKeysColumnAndFlags = moreKeysColumnAndFlags;
-        mBackgroundType = key.mBackgroundType;
-        mActionFlags = key.mActionFlags;
-        mKeyVisualAttributes = key.mKeyVisualAttributes;
-        mOptionalAttributes = key.mOptionalAttributes;
-        mHashCode = key.mHashCode;
-        // Key state.
-        mPressed = key.mPressed;
-        mEnabled = key.mEnabled;
-
-
-        if (((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) || moreKeys == null || moreKeys.length == 0 || moreKeys[0].mLabel == null) {
-            mHintLabel = key.mHintLabel;
-            mHintIconId = key.mHintIconId;
-        } else {
-            String hintLabel = null;
-            String hintIcon = null;
-
-            String hintLabelCandidate = moreKeys[0].mLabel;
-            if(hintLabelCandidate.startsWith("\\")) hintLabelCandidate = hintLabelCandidate.substring(1);
-
-            if(hintLabelCandidate.length() < 3) {
-                hintLabel = moreKeys[0].mNeedsToUpperCase
-                        ? StringUtils.toTitleCaseOfKeyLabel(hintLabelCandidate, moreKeys[0].mLocale)
-                        : hintLabelCandidate;
-            } else if(hintLabelCandidate.contains("!icon/")) {
-                hintIcon = KeySpecParser.getIconId(hintLabelCandidate);
-            }
-
-            mHintLabel = hintLabel;
-            mHintIconId = hintIcon;
+            label
         }
     }
 
-    @Nonnull
-    public static Key removeRedundantMoreKeys(@Nonnull final Key key,
-            @Nonnull final MoreKeySpec.LettersOnBaseLayout lettersOnBaseLayout, boolean onlyDuplicateKeys) {
-        final MoreKeySpec[] moreKeys = key.getMoreKeys();
-
-        MoreKeySpec[] clearedMoreKeys;
-
-        clearedMoreKeys = MoreKeySpec.removeDuplicateMoreKeys(key.mCode, moreKeys);
-
-        if(!onlyDuplicateKeys) {
-            clearedMoreKeys = MoreKeySpec.removeRedundantMoreKeys(
-                    clearedMoreKeys, lettersOnBaseLayout);
-        }
-        return (clearedMoreKeys == moreKeys) ? key : new Key(key, key.mMoreKeysColumnAndFlags, clearedMoreKeys);
+    /** hint icon to use, either constructor-specified or from moreKeys */
+    val effectiveHintIcon = hintIconId ?: moreKeys.firstOrNull()?.let {
+        it.mIconId ?: KeySpecParser.getIconId(it.mLabel)
     }
 
-    private static boolean needsToUpcase(final int labelFlags, final int keyboardElementId) {
-        if ((labelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0) return false;
-        switch (keyboardElementId) {
-        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
-        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
-        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
-        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
-            return true;
-        default:
-            return false;
-        }
+
+    val isAlignIconToBottom =
+        (labelFlags and KeyConsts.LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM) != 0
+
+    val isAlignLabelOffCenter =
+        (labelFlags and KeyConsts.LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER) != 0
+
+    val hasPopupHint =
+        (labelFlags and KeyConsts.LABEL_FLAGS_HAS_POPUP_HINT) != 0
+
+    val hasShiftedLetterHint =
+        ((labelFlags and KeyConsts.LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT) != 0
+                && !TextUtils.isEmpty(effectiveHintLabel))
+
+    val hasHintLabel = (labelFlags and KeyConsts.LABEL_FLAGS_HAS_HINT_LABEL) != 0
+
+    val needsAutoXScale = (labelFlags and KeyConsts.LABEL_FLAGS_AUTO_X_SCALE) != 0
+
+    val needsAutoScale =
+        (labelFlags and KeyConsts.LABEL_FLAGS_AUTO_SCALE) == KeyConsts.LABEL_FLAGS_AUTO_SCALE
+
+    val hasCustomActionLabel =
+        (labelFlags and KeyConsts.LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0
+
+    private val isShiftedLetterActivated =
+        ((labelFlags and KeyConsts.LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) != 0
+                && !TextUtils.isEmpty(effectiveHintLabel))
+
+    val moreKeysColumnNumber =
+        moreKeysColumnAndFlags and KeyConsts.MORE_KEYS_COLUMN_NUMBER_MASK
+
+    val isMoreKeysFixedColumn =
+        (moreKeysColumnAndFlags and KeyConsts.MORE_KEYS_FLAGS_FIXED_COLUMN) != 0
+
+    val isMoreKeysFixedOrder =
+        (moreKeysColumnAndFlags and KeyConsts.MORE_KEYS_FLAGS_FIXED_ORDER) != 0
+
+    val hasLabelsInMoreKeys =
+        (moreKeysColumnAndFlags and KeyConsts.MORE_KEYS_FLAGS_HAS_LABELS) != 0
+
+    val moreKeyLabelFlags = run {
+        val labelSizeFlag = if (hasLabelsInMoreKeys)
+            KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO
+        else
+            KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO
+
+        labelSizeFlag or KeyConsts.LABEL_FLAGS_AUTO_X_SCALE
     }
 
-    private static int computeHashCode(final Key key) {
-        return Arrays.hashCode(new Object[] {
-                key.mX,
-                key.mY,
-                key.mWidth,
-                key.mHeight,
-                key.mCode,
-                key.mLabel,
-                key.mHintLabel,
-                key.mHintIconId,
-                key.mIconId,
-                key.mBackgroundType,
-                Arrays.hashCode(key.mMoreKeys),
-                key.getOutputText(),
-                key.mActionFlags,
-                key.mLabelFlags,
-                // Key can be distinguishable without the following members.
-                // key.mOptionalAttributes.mAltCode,
-                // key.mOptionalAttributes.mDisabledIconId,
-                // key.mOptionalAttributes.mPreviewIconId,
-                // key.mHorizontalGap,
-                // key.mVerticalGap,
-                // key.mOptionalAttributes.mVisualInsetLeft,
-                // key.mOptionalAttributes.mVisualInsetRight,
-                // key.mMaxMoreKeysColumn,
-        });
-    }
+    val needsDividersInMoreKeys =
+        (moreKeysColumnAndFlags and KeyConsts.MORE_KEYS_FLAGS_NEEDS_DIVIDERS) != 0
 
-    private boolean equalsInternal(final Key o) {
-        if (this == o) return true;
-        return o.mX == mX
-                && o.mY == mY
-                && o.mWidth == mWidth
-                && o.mHeight == mHeight
-                && o.mCode == mCode
-                && TextUtils.equals(o.mLabel, mLabel)
-                && TextUtils.equals(o.mHintLabel, mHintLabel)
-                && TextUtils.equals(o.mHintIconId, mHintIconId)
-                && Objects.equals(o.mIconId, mIconId)
-                && o.mBackgroundType == mBackgroundType
-                && Arrays.equals(o.mMoreKeys, mMoreKeys)
-                && TextUtils.equals(o.getOutputText(), getOutputText())
-                && o.mActionFlags == mActionFlags
-                && o.mLabelFlags == mLabelFlags;
-    }
+    val hasNoPanelAutoMoreKey =
+        (moreKeysColumnAndFlags and KeyConsts.MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY) != 0
 
-    @Override
-    public int compareTo(Key o) {
-        if (equalsInternal(o)) return 0;
-        if (mHashCode > o.mHashCode) return 1;
-        return -1;
-    }
 
-    @Override
-    public int hashCode() {
-        return mHashCode;
-    }
+    val isActionKey: Boolean = visualStyle == KeyVisualStyle.Action
 
-    @Override
-    public boolean equals(final Object o) {
-        return o instanceof Key && equalsInternal((Key)o);
-    }
+    val isShift: Boolean = code == Constants.CODE_SHIFT
 
-    @Override
-    public String toString() {
-        return toShortString() + " " + getX() + "," + getY() + " " + getWidth() + "x" + getHeight();
-    }
+    val isModifier: Boolean = code == Constants.CODE_SHIFT || code == Constants.CODE_SWITCH_ALPHA_SYMBOL
 
-    public String toShortString() {
-        final int code = getCode();
-        if (code == Constants.CODE_OUTPUT_TEXT) {
-            return getOutputText();
-        }
-        return Constants.printableCode(code);
-    }
+    val isRepeatable: Boolean = (actionFlags and KeyConsts.ACTION_FLAGS_IS_REPEATABLE) != 0
 
-    public String toLongString() {
-        final String iconId = getIconId();
-        final String topVisual = (Objects.equals(iconId, ICON_UNDEFINED))
-                ? KeyboardIconsSet.PREFIX_ICON + iconId : getLabel();
-        final String hintLabel = getHintLabel();
-        final String visual = (hintLabel == null) ? topVisual : topVisual + "^" + hintLabel;
-        return toString() + " " + visual + "/" + backgroundName(mBackgroundType);
-    }
+    val noKeyPreview: Boolean = (actionFlags and KeyConsts.ACTION_FLAGS_NO_KEY_PREVIEW) != 0
 
-    private static String backgroundName(final int backgroundType) {
-        switch (backgroundType) {
-        case BACKGROUND_TYPE_EMPTY: return "empty";
-        case BACKGROUND_TYPE_NORMAL: return "normal";
-        case BACKGROUND_TYPE_FUNCTIONAL: return "functional";
-        case BACKGROUND_TYPE_STICKY_OFF: return "stickyOff";
-        case BACKGROUND_TYPE_STICKY_ON: return "stickyOn";
-        case BACKGROUND_TYPE_ACTION: return "action";
-        case BACKGROUND_TYPE_SPACEBAR: return "spacebar";
-        default: return null;
-        }
-    }
+    val altCodeWhileTyping: Boolean = (actionFlags and KeyConsts.ACTION_FLAGS_ALT_CODE_WHILE_TYPING) != 0
 
-    public int getCode() {
-        return mCode;
-    }
-
-    @Nullable
-    public String getLabel() {
-        return mLabel;
-    }
-
-    @Nullable
-    public String getHintLabel() {
-        return mHintLabel;
-    }
-
-    @Nullable
-    public String getHintIconId() {
-        return mHintIconId;
-    }
-
-    @Nullable
-    public MoreKeySpec[] getMoreKeys() {
-        return mMoreKeys;
-    }
-
-    public void markAsLeftEdge(final KeyboardParams params) {
-        mHitBox.left = params.mLeftPadding;
-    }
-
-    public void markAsRightEdge(final KeyboardParams params) {
-        mHitBox.right = params.mOccupiedWidth - params.mRightPadding;
-    }
-
-    public void markAsTopEdge(final KeyboardParams params) {
-        mHitBox.top = params.mTopPadding;
-    }
-
-    public void markAsBottomEdge(final KeyboardParams params) {
-        mHitBox.bottom = params.mOccupiedHeight + params.mBottomPadding;
-    }
-
-    public final boolean isSpacer() {
-        return this instanceof Spacer;
-    }
-
-    public final boolean isActionKey() {
-        return mBackgroundType == BACKGROUND_TYPE_ACTION;
-    }
-
-    public final boolean isShift() {
-        return mCode == CODE_SHIFT;
-    }
-
-    public final boolean isModifier() {
-        return mCode == CODE_SHIFT || mCode == CODE_SWITCH_ALPHA_SYMBOL;
-    }
-
-    public final boolean isRepeatable() {
-        return (mActionFlags & ACTION_FLAGS_IS_REPEATABLE) != 0;
-    }
-
-    public final boolean noKeyPreview() {
-        return (mActionFlags & ACTION_FLAGS_NO_KEY_PREVIEW) != 0;
-    }
-
-    public final boolean altCodeWhileTyping() {
-        return (mActionFlags & ACTION_FLAGS_ALT_CODE_WHILE_TYPING) != 0;
-    }
-
-    public final boolean isLongPressEnabled() {
+    val isLongPressEnabled: Boolean =
         // We need not start long press timer on the key which has activated shifted letter.
-        return (mActionFlags & ACTION_FLAGS_ENABLE_LONG_PRESS) != 0
-                && (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) == 0;
+        ((actionFlags and KeyConsts.ACTION_FLAGS_ENABLE_LONG_PRESS) != 0
+                && (labelFlags and KeyConsts.LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) == 0)
+
+    fun markAsLeftEdge(params: KeyboardParams) {
+        hitBox.left = params.mLeftPadding
     }
 
-    public KeyVisualAttributes getVisualAttributes() {
-        return mKeyVisualAttributes;
+    fun markAsRightEdge(params: KeyboardParams) {
+        hitBox.right = params.mOccupiedWidth - params.mRightPadding
     }
 
-    @Nonnull
-    public final Typeface selectTypeface(final KeyDrawParams params) {
-        switch (mLabelFlags & LABEL_FLAGS_FONT_MASK) {
-        case LABEL_FLAGS_FONT_NORMAL:
-            return Typeface.DEFAULT;
-        case LABEL_FLAGS_FONT_MONO_SPACE:
-            return Typeface.MONOSPACE;
-        case LABEL_FLAGS_FONT_DEFAULT:
-        default:
-            // The type-face is specified by keyTypeface attribute.
-            return params.mTypeface;
+    fun markAsTopEdge(params: KeyboardParams) {
+        hitBox.top = params.mTopPadding
+    }
+
+    fun markAsBottomEdge(params: KeyboardParams) {
+        hitBox.bottom = params.mOccupiedHeight + params.mBottomPadding
+    }
+
+    fun selectTypeface(params: KeyDrawParams): Typeface {
+        return when (labelFlags and KeyConsts.LABEL_FLAGS_FONT_MASK) {
+            KeyConsts.LABEL_FLAGS_FONT_NORMAL -> Typeface.DEFAULT
+            KeyConsts.LABEL_FLAGS_FONT_MONO_SPACE -> Typeface.MONOSPACE
+            KeyConsts.LABEL_FLAGS_FONT_DEFAULT ->             // The type-face is specified by keyTypeface attribute.
+                params.mTypeface
+
+            else ->
+                params.mTypeface
         }
     }
 
-    public final int selectTextSize(final KeyDrawParams params) {
-        switch (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK) {
-        case LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO:
-            return params.mLetterSize;
-        case LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO:
-            return params.mLargeLetterSize;
-        case LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO:
-            return params.mLabelSize;
-        case LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO:
-            return params.mHintLabelSize;
-        default: // No follow key ratio flag specified.
-            return StringUtils.codePointCount(mLabel) == 1 ? params.mLetterSize : params.mLabelSize;
+    fun selectTextSize(params: KeyDrawParams): Int {
+        return when (labelFlags and KeyConsts.LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK) {
+            KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO -> params.mLetterSize
+            KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO -> params.mLargeLetterSize
+            KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO -> params.mLabelSize
+            KeyConsts.LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO -> params.mHintLabelSize
+            else -> if (StringUtils.codePointCount(label) == 1) params.mLetterSize else params.mLabelSize
         }
     }
 
-    public final int selectTextColor(final KeyDrawParams params) {
-        if (isActionKey()) {
-            return params.mActionKeyTextColor;
+    fun selectTextColor(provider: DynamicThemeProvider, params: KeyDrawParams): Int {
+        return provider.getKeyStyleDescriptor(visualStyle).let { style ->
+            when {
+                mPressed -> style.foregroundColorPressed
+                else -> style.foregroundColor
+            }
         }
-
-        if ((mLabelFlags & LABEL_FLAGS_FOLLOW_FUNCTIONAL_TEXT_COLOR) != 0) {
-            return params.mFunctionalTextColor;
-        }
-        if (mPressed) {
-            return params.mPressedTextColor;
-        }
-
-        return isShiftedLetterActivated() ? params.mTextInactivatedColor : params.mTextColor;
     }
 
-    public final int selectHintTextSize(final KeyDrawParams params) {
-        if (hasHintLabel()) {
-            return params.mHintLabelSize;
+    fun selectBackground(provider: DynamicThemeProvider): Drawable? {
+        return provider.getKeyStyleDescriptor(visualStyle).let { style ->
+            when {
+                mPressed -> style.backgroundDrawablePressed
+                else -> style.backgroundDrawable
+            }
         }
-        if (hasShiftedLetterHint()) {
-            return params.mShiftedLetterHintSize;
+    }
+
+    fun selectHintTextSize(provider: DynamicThemeProvider, params: KeyDrawParams): Int {
+        if (hasHintLabel) {
+            return params.mHintLabelSize
         }
-        return params.mHintLetterSize;
-    }
-
-    public final int selectHintTextColor(final KeyDrawParams params) {
-        if (hasHintLabel()) {
-            return params.mHintLabelColor;
+        if (hasShiftedLetterHint) {
+            return params.mShiftedLetterHintSize
         }
-        if (hasShiftedLetterHint()) {
-            return isShiftedLetterActivated() ? params.mShiftedLetterHintActivatedColor
-                    : params.mShiftedLetterHintInactivatedColor;
+        return params.mHintLetterSize
+    }
+
+    fun selectHintTextColor(provider: DynamicThemeProvider, params: KeyDrawParams): Int {
+        if (hasHintLabel) {
+            return params.mHintLabelColor
         }
-        return params.mHintLetterColor;
+        if (hasShiftedLetterHint) {
+            return if (isShiftedLetterActivated) params.mShiftedLetterHintActivatedColor
+            else params.mShiftedLetterHintInactivatedColor
+        }
+        return params.mHintLetterColor
     }
 
-    public final int selectMoreKeyTextSize(final KeyDrawParams params) {
-        return hasLabelsInMoreKeys() ? params.mLabelSize : params.mLetterSize;
+    fun selectMoreKeyTextSize(params: KeyDrawParams): Int {
+        return if (hasLabelsInMoreKeys) params.mLabelSize else params.mLetterSize
     }
 
-    public final String getPreviewLabel() {
-        return isShiftedLetterActivated() ? mHintLabel : mLabel;
+    val previewLabel: String?
+        get() = if (isShiftedLetterActivated) hintLabel else label
+
+    private fun previewHasLetterSize(): Boolean {
+        return ((labelFlags and KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO) != 0
+                || StringUtils.codePointCount(previewLabel) == 1)
     }
 
-    private boolean previewHasLetterSize() {
-        return (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO) != 0
-                || StringUtils.codePointCount(getPreviewLabel()) == 1;
+    fun selectPreviewTextSize(params: KeyDrawParams): Int {
+        return params.mPreviewTextSize
     }
 
-    public final int selectPreviewTextSize(final KeyDrawParams params) {
-        return params.mPreviewTextSize;
-    }
-
-    @Nonnull
-    public Typeface selectPreviewTypeface(final KeyDrawParams params) {
+    fun selectPreviewTypeface(params: KeyDrawParams): Typeface {
         if (previewHasLetterSize()) {
-            return selectTypeface(params);
+            return selectTypeface(params)
         }
-        return Typeface.DEFAULT_BOLD;
+        return Typeface.DEFAULT_BOLD
     }
 
-    public final boolean isAlignHintLabelToBottom(final int defaultFlags) {
-        return ((mLabelFlags | defaultFlags) & LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM) != 0;
+    fun isAlignHintLabelToBottom(defaultFlags: Int): Boolean {
+        return ((labelFlags or defaultFlags) and KeyConsts.LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM) != 0
     }
 
-    public final boolean isAlignIconToBottom() {
-        return (mLabelFlags & LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM) != 0;
+    fun needsToKeepBackgroundAspectRatio(defaultFlags: Int): Boolean {
+        return ((labelFlags or defaultFlags) and KeyConsts.LABEL_FLAGS_KEEP_BACKGROUND_ASPECT_RATIO) != 0
     }
 
-    public final boolean isAlignLabelOffCenter() {
-        return (mLabelFlags & LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER) != 0;
-    }
-
-    public final boolean hasPopupHint() {
-        return (mLabelFlags & LABEL_FLAGS_HAS_POPUP_HINT) != 0;
-    }
-
-    public final boolean hasShiftedLetterHint() {
-        return (mLabelFlags & LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT) != 0
-                && !TextUtils.isEmpty(mHintLabel);
-    }
-
-    public final boolean hasHintLabel() {
-        return (mLabelFlags & LABEL_FLAGS_HAS_HINT_LABEL) != 0;
-    }
-
-    public final boolean needsAutoXScale() {
-        return (mLabelFlags & LABEL_FLAGS_AUTO_X_SCALE) != 0;
-    }
-
-    public final boolean needsAutoScale() {
-        return (mLabelFlags & LABEL_FLAGS_AUTO_SCALE) == LABEL_FLAGS_AUTO_SCALE;
-    }
-
-    public final boolean needsToKeepBackgroundAspectRatio(final int defaultFlags) {
-        return ((mLabelFlags | defaultFlags) & LABEL_FLAGS_KEEP_BACKGROUND_ASPECT_RATIO) != 0;
-    }
-
-    public final boolean hasCustomActionLabel() {
-        return (mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0;
-    }
-
-    private final boolean isShiftedLetterActivated() {
-        return (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) != 0
-                && !TextUtils.isEmpty(mHintLabel);
-    }
-
-    public final int getMoreKeysColumnNumber() {
-        return mMoreKeysColumnAndFlags & MORE_KEYS_COLUMN_NUMBER_MASK;
-    }
-
-    public final boolean isMoreKeysFixedColumn() {
-        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_FIXED_COLUMN) != 0;
-    }
-
-    public final boolean isMoreKeysFixedOrder() {
-        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_FIXED_ORDER) != 0;
-    }
-
-    public final boolean hasLabelsInMoreKeys() {
-        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_HAS_LABELS) != 0;
-    }
-
-    public final int getMoreKeyLabelFlags() {
-        final int labelSizeFlag = hasLabelsInMoreKeys()
-                ? LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO
-                : LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO;
-        return labelSizeFlag | LABEL_FLAGS_AUTO_X_SCALE;
-    }
-
-    public final boolean needsDividersInMoreKeys() {
-        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_NEEDS_DIVIDERS) != 0;
-    }
-
-    public final boolean hasNoPanelAutoMoreKey() {
-        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY) != 0;
-    }
-
-    @Nullable
-    public final String getOutputText() {
-        final OptionalAttributes attrs = mOptionalAttributes;
-        return (attrs != null) ? attrs.mOutputText : null;
-    }
-
-    public final int getAltCode() {
-        final OptionalAttributes attrs = mOptionalAttributes;
-        return (attrs != null) ? attrs.mAltCode : CODE_UNSPECIFIED;
-    }
-
-    public String getIconId() {
-        return mIconId;
-    }
-
-    @Nullable
-    public Drawable getIcon(final KeyboardIconsSet iconSet, final int alpha) {
-        final OptionalAttributes attrs = mOptionalAttributes;
-        final String iconId = getIconId();
-        final Drawable icon = iconSet.getIconDrawable(iconId);
+    fun getIcon(iconSet: KeyboardIconsSet, alpha: Int): Drawable? {
+        val iconId = iconId
+        val icon = iconSet.getIconDrawable(iconId)
         if (icon != null) {
-            icon.setAlpha(alpha);
+            icon.alpha = alpha
         }
-        return icon;
+        return icon
     }
 
-    @Nullable
-    public Drawable getHintIcon(final KeyboardIconsSet iconSet, final int alpha) {
-        final OptionalAttributes attrs = mOptionalAttributes;
-        final String iconId = getHintIconId();
-        if(iconId == null) return null;
+    fun getHintIcon(iconSet: KeyboardIconsSet, alpha: Int): Drawable? {
+        val iconId = effectiveHintIcon ?: return null
 
-        final Drawable icon = iconSet.getIconDrawable(iconId);
+        val icon = iconSet.getIconDrawable(iconId)
         if (icon != null) {
-            icon.setAlpha(alpha);
+            icon.alpha = alpha
         }
-        return icon;
+        return icon
     }
 
-    @Nullable
-    public Drawable getPreviewIcon(final KeyboardIconsSet iconSet) {
-        return iconSet.getIconDrawable(getIconId());
-    }
-
-    /**
-     * Gets the width of the key in pixels, excluding the gap.
-     * @return The width of the key in pixels, excluding the gap.
-     */
-    public int getWidth() {
-        return mWidth;
-    }
-
-    /**
-     * Gets the height of the key in pixels, excluding the gap.
-     * @return The height of the key in pixels, excluding the gap.
-     */
-    public int getHeight() {
-        return mHeight;
-    }
-
-    /**
-     * The combined width in pixels of the horizontal gaps belonging to this key, both above and
-     * below. I.e., getWidth() + getHorizontalGap() = total width belonging to the key.
-     * @return Horizontal gap belonging to this key.
-     */
-    public int getHorizontalGap() {
-        return mHorizontalGap;
-    }
-
-    /**
-     * The combined height in pixels of the vertical gaps belonging to this key, both above and
-     * below. I.e., getHeight() + getVerticalGap() = total height belonging to the key.
-     * @return Vertical gap belonging to this key.
-     */
-    public int getVerticalGap() {
-        return mVerticalGap;
-    }
-
-    /**
-     * Gets the x-coordinate of the top-left corner of the key in pixels, excluding the gap.
-     * @return The x-coordinate of the top-left corner of the key in pixels, excluding the gap.
-     */
-    public int getX() {
-        return mX;
-    }
-
-    /**
-     * Gets the y-coordinate of the top-left corner of the key in pixels, excluding the gap.
-     * @return The y-coordinate of the top-left corner of the key in pixels, excluding the gap.
-     */
-    public int getY() {
-        return mY;
-    }
-
-    public final int getDrawX() {
-        final int x = getX();
-        final OptionalAttributes attrs = mOptionalAttributes;
-        return (attrs == null) ? x : x + attrs.mVisualInsetsLeft;
-    }
-
-    public final int getDrawWidth() {
-        final OptionalAttributes attrs = mOptionalAttributes;
-        return (attrs == null) ? mWidth
-                : mWidth - attrs.mVisualInsetsLeft - attrs.mVisualInsetsRight;
+    fun getPreviewIcon(iconSet: KeyboardIconsSet): Drawable? {
+        return iconSet.getIconDrawable(iconId)
     }
 
     /**
      * Informs the key that it has been pressed, in case it needs to change its appearance or
      * state.
-     * @see #onReleased()
+     * @see .onReleased
      */
-    public void onPressed() {
-        mPressed = true;
+    fun onPressed() {
+        mPressed = true
     }
 
     /**
      * Informs the key that it has been released, in case it needs to change its appearance or
      * state.
-     * @see #onPressed()
+     * @see .onPressed
      */
-    public void onReleased() {
-        mPressed = false;
-    }
-
-    public final boolean isEnabled() {
-        return mEnabled;
-    }
-
-    public void setEnabled(final boolean enabled) {
-        mEnabled = enabled;
-    }
-
-    @Nonnull
-    public Rect getHitBox() {
-        return mHitBox;
+    fun onReleased() {
+        mPressed = false
     }
 
     /**
@@ -1005,10 +448,10 @@ public class Key implements Comparable<Key> {
      * @param y the y-coordinate of the point
      * @return whether or not the point falls on the key. If the key is attached to an edge, it
      * will assume that all points between the key and the edge are considered to be on the key.
-     * @see #markAsLeftEdge(KeyboardParams) etc.
+     * @see .markAsLeftEdge
      */
-    public boolean isOnKey(final int x, final int y) {
-        return mHitBox.contains(x, y);
+    fun isOnKey(x: Int, y: Int): Boolean {
+        return hitBox.contains(x, y)
     }
 
     /**
@@ -1017,86 +460,89 @@ public class Key implements Comparable<Key> {
      * @param y the y-coordinate of the point
      * @return the square of the distance of the point from the nearest edge of the key
      */
-    public int squaredDistanceToEdge(final int x, final int y) {
-        final int left = getX();
-        final int right = left + mWidth;
-        final int top = getY();
-        final int bottom = top + mHeight;
-        final int edgeX = x < left ? left : (x > right ? right : x);
-        final int edgeY = y < top ? top : (y > bottom ? bottom : y);
-        final int dx = x - edgeX;
-        final int dy = y - edgeY;
-        return dx * dx + dy * dy;
+    fun squaredDistanceToEdge(x: Int, y: Int): Int {
+        val left = this.x
+        val right = left + width
+        val top = this.y
+        val bottom = top + height
+        val edgeX = if (x < left) left else (if (x > right) right else x)
+        val edgeY = if (y < top) top else (if (y > bottom) bottom else y)
+        val dx = x - edgeX
+        val dy = y - edgeY
+        return dx * dx + dy * dy
     }
 
-    static class KeyBackgroundState {
-        private final int[] mReleasedState;
-        private final int[] mPressedState;
+    companion object {
+        @JvmStatic
+        fun removeRedundantMoreKeys(
+            key: Key,
+            lettersOnBaseLayout: LettersOnBaseLayout?,
+            onlyDuplicateKeys: Boolean
+        ): Key {
+            val moreKeys = key.moreKeys
 
-        private KeyBackgroundState(final int ... attrs) {
-            mReleasedState = attrs;
-            mPressedState = Arrays.copyOf(attrs, attrs.length + 1);
-            mPressedState[attrs.length] = android.R.attr.state_pressed;
+            var clearedMoreKeys: Array<MoreKeySpec?>?
+
+            clearedMoreKeys = MoreKeySpec.removeDuplicateMoreKeys(key.code, moreKeys.toTypedArray())
+
+            if (!onlyDuplicateKeys) {
+                clearedMoreKeys = MoreKeySpec.removeRedundantMoreKeys(
+                    clearedMoreKeys, lettersOnBaseLayout!!
+                )
+            }
+
+
+            val differs = when {
+                (moreKeys.isEmpty() && clearedMoreKeys == null) -> false
+                (moreKeys.isNotEmpty() && clearedMoreKeys != null) -> true
+                (clearedMoreKeys.contentEquals(moreKeys.toTypedArray())) -> false
+                else -> true
+            }
+
+            return if(differs) {
+                key.copy(
+                    moreKeys = clearedMoreKeys?.filterNotNull() ?: listOf()
+                )
+            } else {
+                key
+            }
         }
 
-        public int[] getState(final boolean pressed) {
-            return pressed ? mPressedState : mReleasedState;
+        private fun needsToUpcase(labelFlags: Int, keyboardElementId: Int): Boolean {
+            if ((labelFlags and KeyConsts.LABEL_FLAGS_PRESERVE_CASE) != 0) return false
+            return when (keyboardElementId) {
+                KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED, KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED, KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED, KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED -> true
+                else -> false
+            }
         }
 
-        public static final KeyBackgroundState[] STATES = {
-            // 0: BACKGROUND_TYPE_EMPTY
-            new KeyBackgroundState(android.R.attr.state_empty),
-            // 1: BACKGROUND_TYPE_NORMAL
-            new KeyBackgroundState(),
-            // 2: BACKGROUND_TYPE_FUNCTIONAL
-            new KeyBackgroundState(android.R.attr.state_first),
-            // 3: BACKGROUND_TYPE_STICKY_OFF
-            new KeyBackgroundState(android.R.attr.state_checkable),
-            // 4: BACKGROUND_TYPE_STICKY_ON
-            new KeyBackgroundState(android.R.attr.state_checkable, android.R.attr.state_checked),
-            // 5: BACKGROUND_TYPE_ACTION
-            new KeyBackgroundState(android.R.attr.state_active),
-            // 6: BACKGROUND_TYPE_SPACEBAR
-            new KeyBackgroundState(),
-        };
-    }
+        @JvmStatic
+        fun buildKeyForMoreKeySpec(
+            moreKeySpec: MoreKeySpec,
+            x: Int,
+            y: Int,
+            labelFlags: Int,
+            params: KeyboardParams
+        ): Key {
+            return Key(
+                code = moreKeySpec.mCode,
+                outputText = moreKeySpec.mOutputText,
+                label = moreKeySpec.mLabel ?: "",
+                iconId = moreKeySpec.mIconId ?: "",
+                hintLabel = null,
+                labelFlags = labelFlags,
+                visualStyle = KeyVisualStyle.MoreKey,
+                x = x,
+                y = y,
+                width = params.mDefaultKeyWidth,
+                height = params.mDefaultRowHeight,
+                horizontalGap = params.mHorizontalGap,
+                verticalGap = params.mVerticalGap,
+                actionFlags = KeyConsts.ACTION_FLAGS_NO_KEY_PREVIEW,
 
-    /**
-     * Returns the background drawable for the key, based on the current state and type of the key.
-     * @return the background drawable of the key.
-     * @see android.graphics.drawable.StateListDrawable#setState(int[])
-     */
-    @Nonnull
-    public final Drawable selectBackgroundDrawable(@Nonnull final Drawable keyBackground,
-            @Nonnull final Drawable functionalKeyBackground,
-            @Nonnull final Drawable spacebarBackground) {
-        final Drawable background;
-        if (mBackgroundType == BACKGROUND_TYPE_FUNCTIONAL) {
-            background = functionalKeyBackground;
-        } else if (mBackgroundType == BACKGROUND_TYPE_SPACEBAR) {
-            background = spacebarBackground;
-        } else {
-            background = keyBackground;
-        }
-        final int[] state = KeyBackgroundState.STATES[mBackgroundType].getState(mPressed);
-        background.setState(state);
-        return background;
-    }
-
-    public static class Spacer extends Key {
-        public Spacer(final TypedArray keyAttr, final KeyStyle keyStyle,
-                final KeyboardParams params, final KeyboardRow row) {
-            super(null /* keySpec */, keyAttr, keyStyle, params, row);
-        }
-
-        /**
-         * This constructor is being used only for divider in more keys keyboard.
-         */
-        protected Spacer(final KeyboardParams params, final int x, final int y, final int width,
-                final int height) {
-            super(null /* label */, ICON_UNDEFINED, CODE_UNSPECIFIED, null /* outputText */,
-                    null /* hintLabel */, 0 /* labelFlags */, BACKGROUND_TYPE_EMPTY, x, y, width,
-                    height, params.mHorizontalGap, params.mVerticalGap, ACTION_FLAGS_NO_KEY_PREVIEW);
+                moreKeys = listOf(),
+                moreKeysColumnAndFlags = 0
+            )
         }
     }
 }

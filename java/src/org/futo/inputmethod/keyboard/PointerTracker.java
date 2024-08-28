@@ -291,7 +291,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private void callListenerOnCodeInput(final Key key, final int primaryCode, final int x,
             final int y, final long eventTime, final boolean isKeyRepeat) {
         final boolean ignoreModifierKey = mIsInDraggingFinger && key.isModifier();
-        final boolean altersCode = key.altCodeWhileTyping() && sTimerProxy.isTypingState();
+        final boolean altersCode = key.getAltCodeWhileTyping() && sTimerProxy.isTypingState();
         final int code = altersCode ? key.getAltCode() : primaryCode;
         if (DEBUG_LISTENER) {
             final String output = code == Constants.CODE_OUTPUT_TEXT
@@ -412,7 +412,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             }
         }
 
-        if (key.altCodeWhileTyping()) {
+        if (key.getAltCodeWhileTyping()) {
             final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
@@ -437,7 +437,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
 
         // Even if the key is disabled, it should respond if it is in the altCodeWhileTyping state.
-        final boolean altersCode = key.altCodeWhileTyping() && sTimerProxy.isTypingState();
+        final boolean altersCode = key.getAltCodeWhileTyping() && sTimerProxy.isTypingState();
         final boolean needsToUpdateGraphics = key.isEnabled() || altersCode;
         if (!needsToUpdateGraphics) {
             return;
@@ -1106,9 +1106,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         if (key == null) {
             return;
         }
-        if (key.hasNoPanelAutoMoreKey()) {
+        if (key.getHasNoPanelAutoMoreKey()) {
             cancelKeyTracking();
-            final int moreKeyCode = key.getMoreKeys()[0].mCode;
+            final int moreKeyCode = key.getMoreKeys().get(0).mCode;
             sListener.onPressKey(moreKeyCode, 0 /* repeatCont */, true /* isSinglePointer */);
             sListener.onCodeInput(moreKeyCode, Constants.NOT_A_COORDINATE,
                     Constants.NOT_A_COORDINATE, false /* isKeyRepeat */);
