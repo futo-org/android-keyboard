@@ -104,6 +104,7 @@ val TemplateAlt2Key = BaseKey(
 data class EnterKey(
     val attributes: KeyAttributes = KeyAttributes(width = KeyWidth.FunctionalKey)
 ) : AbstractKey {
+    override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean = false
     override fun computeData(
         params: KeyboardParams,
         row: Row,
@@ -169,6 +170,7 @@ data class EnterKey(
 data class ActionKey(
     val attributes: KeyAttributes = KeyAttributes()
 ) : AbstractKey {
+    override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean = false
     override fun computeData(
         params: KeyboardParams,
         row: Row,
@@ -217,21 +219,27 @@ data class ContextualKey(
         KeyboardId.MODE_TIME     to BaseKey(spec = ":", attributes = attributes),
     )
 
+    private fun selectKey(params: KeyboardParams, keyboard: Keyboard): Key? {
+        if(keyboard.useZWNJKey) {
+            return TemplateZWNJKey
+        }
+
+        val key = keys[params.mId.mMode] ?: fallbackKey
+
+        return key
+    }
+
+    override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean {
+        return selectKey(params, keyboard)?.countsToKeyCoordinate(params, row, keyboard) ?: false
+    }
+
     override fun computeData(
         params: KeyboardParams,
         row: Row,
         keyboard: Keyboard,
         coordinate: KeyCoordinate
     ): ComputedKeyData? {
-        if(keyboard.useZWNJKey) {
-            return TemplateZWNJKey.computeData(params, row, keyboard, coordinate)
-        }
-
-        val key = keys[params.mId.mMode] ?: fallbackKey
-
-        return key?.computeData(
-            params, row, keyboard, coordinate
-        )
+        return selectKey(params, keyboard)?.computeData(params, row, keyboard, coordinate)
     }
 }
 

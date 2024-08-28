@@ -2,8 +2,8 @@ package org.futo.inputmethod.v2keyboard
 
 val KeySpecShortcuts = mapOf(
     "q" to listOf("keyspec_q"),
-    "," to listOf("keyspec_comma", "morekeys_comma"),
-    "." to listOf("keyspec_period", "morekeys_period"),
+    "," to listOf("keyspec_comma"),
+    "." to listOf("keyspec_period"),
     "1" to listOf("keyspec_symbols_1", "additional_morekeys_symbols_1", "morekeys_symbols_1"),
     "2" to listOf("keyspec_symbols_2", "additional_morekeys_symbols_2", "morekeys_symbols_2"),
     "3" to listOf("keyspec_symbols_3", "additional_morekeys_symbols_3", "morekeys_symbols_3"),
@@ -30,6 +30,7 @@ val KeySpecShortcuts = mapOf(
     "]" to listOf("keyspec_right_square_bracket"),
     "{" to listOf("keyspec_left_curly_bracket"),
     "}" to listOf("keyspec_right_curly_bracket"),
+    "*" to listOf("*", "morekeys_star"),
 
     // U+2260: "≠" NOT EQUAL TO
     // U+2248: "≈" ALMOST EQUAL TO

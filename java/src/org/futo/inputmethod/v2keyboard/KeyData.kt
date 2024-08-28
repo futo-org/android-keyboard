@@ -8,11 +8,18 @@ import org.futo.inputmethod.keyboard.internal.MoreKeySpec
 data class KeyCoordinate(
     val regularRow: Int,
     val regularColumn: Int,
-    val element: KeyboardLayoutElement
+    val element: KeyboardLayoutElement,
+    val measurement: KeyCoordinateMeasurement
+)
+
+data class KeyCoordinateMeasurement(
+    val totalRows: Int,
+    val numColumnsByRow: List<Int>
 )
 
 @Serializable
 sealed interface AbstractKey {
+    fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean
     fun computeData(params: KeyboardParams, row: Row, keyboard: Keyboard, coordinate: KeyCoordinate): ComputedKeyData?
 }
 

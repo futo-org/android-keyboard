@@ -361,11 +361,32 @@ data class LayoutEngine(
             }.toFloat()
         }
 
+        // Measure key coordinate
+        val numColumnsPerRow = mutableListOf<Int>()
+        rows.forEach { row ->
+            val numColumns = row.keys.sumOf { if(it.countsToKeyCoordinate(params, row, keyboard)) (1 as Int) else 0 }
+            if(numColumns > 0) {
+                numColumnsPerRow.add(numColumns)
+            }
+        }
+
+        val keyCoordinateMeasurement = KeyCoordinateMeasurement(
+            totalRows = numColumnsPerRow.size,
+            numColumnsByRow = numColumnsPerRow.toList()
+        )
+
         var regularRow = 0
         val computedRowWithoutWidths = rows.map { row ->
             var regularColumn = 0
             row.keys.mapNotNull { key ->
-                key.computeData(params, row, keyboard, KeyCoordinate(regularRow, regularColumn, layoutParams.element))?.let { data ->
+                val coordinate = KeyCoordinate(
+                    regularRow,
+                    regularColumn,
+                    layoutParams.element,
+                    keyCoordinateMeasurement
+                )
+
+                key.computeData(params, row, keyboard, coordinate)?.let { data ->
                     if(data.countsToKeyCoordinate) {
                         regularColumn += 1
                     }
@@ -563,8 +584,6 @@ data class LayoutEngine(
                 provider = (baseContext as DynamicThemeProviderOwner).getDrawableProvider()
             }
         }
-
-
 
         params.mIconsSet.loadIcons(null, provider!!)
         params.mThemeId = 3

@@ -274,11 +274,15 @@ data class KeyAttributes(
     val shiftable: Boolean? = null,
 ) {
     fun getEffectiveAttributes(row: Row, keyboard: Keyboard): KeyAttributes {
-        val attrs = listOf(this, row.attributes, keyboard.attributes, DefaultKeyAttributes)
+        val attrs = if(row.isBottomRow) {
+            listOf(this, row.attributes, DefaultKeyAttributes)
+        } else {
+            listOf(this, row.attributes, keyboard.attributes, DefaultKeyAttributes)
+        }
 
         val effectiveWidth = resolve(attrs) { it.width }
 
-        val defaultMoreKeyMode = if(row.isLetterRow && effectiveWidth == KeyWidth.Regular) {
+        val defaultMoreKeyMode = if((row.isLetterRow || row.isBottomRow) && effectiveWidth == KeyWidth.Regular) {
             MoreKeyMode.All
         } else {
             MoreKeyMode.OnlyFromKeyspec
@@ -373,6 +377,13 @@ data class BaseKey(
      */
     val hint: String? = null,
 ) : AbstractKey {
+    override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean {
+        val attributes = attributes.getEffectiveAttributes(row, keyboard)
+        val moreKeyMode = attributes.moreKeyMode!!
+
+        return moreKeyMode.autoNumFromCoord && moreKeyMode.autoSymFromCoord
+    }
+
     override fun computeData(params: KeyboardParams, row: Row, keyboard: Keyboard, coordinate: KeyCoordinate): ComputedKeyData {
         val attributes = attributes.getEffectiveAttributes(row, keyboard)
         val shifted = (attributes.shiftable == true) && when(params.mId.mElementId) {
@@ -401,18 +412,22 @@ data class BaseKey(
         val outputText = KeySpecParser.getOutputText(expandedSpec)
 
         val moreKeyMode = attributes.moreKeyMode!!
-        
+
         val autoMoreKeys = listOfNotNull(
             if (moreKeyMode.autoFromKeyspec) {
                 getDefaultMoreKeysForKey(code, relevantSpecShortcut)
             } else { null },
 
-            if (moreKeyMode.autoNumFromCoord) {
+            if (moreKeyMode.autoNumFromCoord && row.isLetterRow) {
                 getNumForCoordinate(coordinate)
             } else { null },
 
-            if (moreKeyMode.autoSymFromCoord) {
+            if (moreKeyMode.autoSymFromCoord && row.isLetterRow) {
                 getSymsForCoordinate(coordinate)
+            } else { null },
+
+            if (moreKeyMode.autoSymFromCoord) {
+                getSpecialFromRow(coordinate, row)
             } else { null }
         ).joinToString(",")
 
@@ -492,13 +507,8 @@ data class CaseSelector(
      */
     val symbolsShifted: Key = normal
 ) : AbstractKey {
-    override fun computeData(
-        params: KeyboardParams,
-        row: Row,
-        keyboard: Keyboard,
-        coordinate: KeyCoordinate
-    ): ComputedKeyData? =
-        when(params.mId.mElementId) {
+    private fun selectKeyFromElement(elementId: Int): Key =
+        when(elementId) {
             KeyboardId.ELEMENT_ALPHABET -> normal
 
             // KeyboardState.kt currently doesn't distinguish between these
@@ -512,7 +522,18 @@ data class CaseSelector(
             KeyboardId.ELEMENT_SYMBOLS -> symbols
             KeyboardId.ELEMENT_SYMBOLS_SHIFTED -> symbolsShifted
             else -> normal
-        }.computeData(params, row, keyboard, coordinate)
+        }
+
+    override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean =
+        selectKeyFromElement(params.mId.mElementId).countsToKeyCoordinate(params, row, keyboard)
+
+    override fun computeData(
+        params: KeyboardParams,
+        row: Row,
+        keyboard: Keyboard,
+        coordinate: KeyCoordinate
+    ): ComputedKeyData? =
+        selectKeyFromElement(params.mId.mElementId).computeData(params, row, keyboard, coordinate)
 }
 
 typealias Key = @Serializable(with = KeyPathSerializer::class) AbstractKey
@@ -601,6 +622,8 @@ enum class KeyVisualStyle {
 @Serializable
 @SerialName("gap")
 class GapKey(val attributes: KeyAttributes = KeyAttributes()) : AbstractKey {
+    override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean = false
+
     override fun computeData(
         params: KeyboardParams,
         row: Row,

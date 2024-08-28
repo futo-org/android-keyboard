@@ -264,6 +264,9 @@
         "tablet_period": [
             "!text/morekeys_tablet_punctuation"
         ],
+        "bottomrow_comma": [
+            "!icon/action_settings|!code/action_settings"
+        ],
         "exclamation": [
             "¡",
             "‽"

@@ -45,3 +45,15 @@ fun getNumForCoordinate(keyCoordinate: KeyCoordinate): String {
     }
     return ""
 }
+
+fun getSpecialFromRow(keyCoordinate: KeyCoordinate, row: Row): String {
+    if(row.isBottomRow) {
+        val numCols = keyCoordinate.measurement.numColumnsByRow.getOrNull(keyCoordinate.regularRow) ?: -10
+        if(keyCoordinate.regularColumn == 0) {
+            return "!text/morekeys_bottomrow_comma"
+        }else if(keyCoordinate.regularColumn == numCols - 1) {
+            return "!text/morekeys_period"
+        }
+    }
+    return ""
+}
