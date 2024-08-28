@@ -19,9 +19,10 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import org.futo.inputmethod.keyboard.internal.KeyDrawParams
 import org.futo.inputmethod.keyboard.internal.KeySpecParser
-import org.futo.inputmethod.keyboard.internal.KeyStyle
 import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
@@ -368,14 +369,14 @@ data class Key(
     }
 
     fun selectHintTextColor(provider: DynamicThemeProvider, params: KeyDrawParams): Int {
-        if (hasHintLabel) {
-            return params.mHintLabelColor
+        return provider.getKeyStyleDescriptor(visualStyle).let { style ->
+            when {
+                mPressed -> style.foregroundColorPressed
+                else -> style.foregroundColor
+            }
+        }.let {
+            Color(it).copy(alpha = 0.5f).toArgb()
         }
-        if (hasShiftedLetterHint) {
-            return if (isShiftedLetterActivated) params.mShiftedLetterHintActivatedColor
-            else params.mShiftedLetterHintInactivatedColor
-        }
-        return params.mHintLetterColor
     }
 
     fun selectMoreKeyTextSize(params: KeyDrawParams): Int {
