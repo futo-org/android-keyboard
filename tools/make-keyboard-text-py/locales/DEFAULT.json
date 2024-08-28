@@ -186,11 +186,11 @@
             "±"
         ],
         "left_parenthesis": [
-            "!fixedColumnOrder!3",
+            "!autoColumnOrder!3",
             "!text/keyspecs_left_parenthesis_more_keys"
         ],
         "right_parenthesis": [
-            "!fixedColumnOrder!3",
+            "!autoColumnOrder!3",
             "!text/keyspecs_right_parenthesis_more_keys"
         ],
         "less_than": [
