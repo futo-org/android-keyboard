@@ -1,6 +1,6 @@
 name: Phone Symbols
 numberRowMode: AlwaysDisabled
-attributes:
+attributes: &globalAttrs
   width: Grow
   showPopup: false
   moreKeyMode: OnlyExplicit
@@ -35,5 +35,5 @@ rows:
       - {type: base, spec: "+"}
       - {type: base, spec: "."}
       - {type: enter, attributes: { width: Grow }}
-    attributes: { style: Normal }
+    attributes: *globalAttrs
     splittable: false

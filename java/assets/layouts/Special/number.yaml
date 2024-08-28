@@ -11,7 +11,7 @@ overrideWidths:
 
 rowHeightMode: FillHeight
 
-attributes:
+attributes: &globalAttrs
   width: Custom1
   showPopup: false
   useKeySpecShortcut: false
@@ -57,5 +57,5 @@ rows:
       - {type: contextual, attributes: *grow, fallbackKey: {type: base, spec: "=", attributes: *grow}}
       - {type: base, spec: ".", attributes: *regular}
       - {type: enter, attributes: *side}
-    attributes: { style: Normal }
+    attributes: *globalAttrs
     splittable: false
