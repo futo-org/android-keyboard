@@ -503,7 +503,9 @@ data class LayoutEngine(
             labelFlags = data.labelFlags,
             moreKeys = data.moreKeys,
             moreKeysColumnAndFlags = data.moreKeyFlags,
-            visualStyle = data.style
+            visualStyle = data.style,
+            outputText = data.outputText,
+            hintLabel = data.hint.ifEmpty { null }
         )
 
         params.onAddKey(key)

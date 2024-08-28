@@ -129,7 +129,7 @@ data class Key(
     val hintLabel: String? = null,
 
     /** Hint icon to display instead of hint label. Icon takes precedence over a label  */
-    val hintIconId: String? = null,
+    val hintIconId: String? = if(hintLabel?.isNotEmpty() == true) { "" } else { null },
 
     /** Flags of the label  */
     val labelFlags: Int,
@@ -190,6 +190,14 @@ data class Key(
     /** Key is enabled and responds on press  */
     val isEnabled: Boolean = code != Constants.CODE_UNSPECIFIED,
 ) {
+    /** Validation */
+    init {
+        assert((code == Constants.CODE_OUTPUT_TEXT && outputText != null) ||
+                (code != Constants.CODE_OUTPUT_TEXT && outputText == null)) {
+            "Output text validation failed: $code $outputText"
+        }
+    }
+
     /** The current pressed state of this key  */
     private var mPressed = false
 

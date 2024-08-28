@@ -159,7 +159,7 @@ data class EnterKey(
             repeatable            = false,
             moreKeyFlags          = moreKeyFlags,
             countsToKeyCoordinate = false,
-            hint                  = "",
+            hint                  = " ",
             labelFlags            = 0
         )
     }
