@@ -83,8 +83,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
                                 res.getStringArray(R.array.predefined_subtypes)));
         //mRichImm.setAdditionalInputMethodSubtypes(predefinedAdditionalSubtypes);
 
-        final KeyboardTheme keyboardTheme = KeyboardTheme.searchKeyboardThemeById(
-                getKeyboardThemeForTests(), KeyboardTheme.KEYBOARD_THEMES);
+        final KeyboardTheme keyboardTheme = KeyboardTheme.getKeyboardTheme(context);
         setContext(new ContextThemeWrapper(getContext(), keyboardTheme.mStyleId));
         KeyboardLayoutSetV2.onKeyboardThemeChanged();
 
