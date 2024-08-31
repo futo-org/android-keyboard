@@ -17,6 +17,7 @@
 package org.futo.inputmethod.keyboard.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import android.app.Instrumentation;
@@ -27,8 +28,7 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import org.futo.inputmethod.latin.tests.R;
-
+//import org.futo.inputmethod.latin.tests.R;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,8 +46,8 @@ public class MoreKeySpecStringReferenceTests {
         final Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         final Context testContext = instrumentation.getContext();
         final Resources testRes = testContext.getResources();
-        final String testPackageName = testRes.getResourcePackageName(R.string.empty_string);
-        mTextsSet.setLocale(TEST_LOCALE, testRes, testPackageName);
+        //final String testPackageName = testRes.getResourcePackageName(R.string.empty_string);
+        mTextsSet.setLocale(TEST_LOCALE, testContext);//, testPackageName);
     }
 
     private void assertTextArray(final String message, final String value,
@@ -69,14 +69,12 @@ public class MoreKeySpecStringReferenceTests {
 
     @Test
     public void testResolveNullText() {
-        assertEquals("resolve null",
-                mTextsSet.resolveTextReference(null), null);
+        assertNull("resolve null", mTextsSet.resolveTextReference(null));
     }
 
     @Test
     public void testResolveEmptyText() {
-        assertEquals("resolve empty text",
-                mTextsSet.resolveTextReference("!string/empty_string"), null);
+        assertNull("resolve empty text", mTextsSet.resolveTextReference("!string/empty_string"));
     }
 
     @Test

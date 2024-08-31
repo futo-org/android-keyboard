@@ -63,22 +63,6 @@ public final class KeyboardIconsSet {
     private DynamicThemeProvider provider;
     public void loadIcons(final TypedArray keyboardAttrs, @Nullable DynamicThemeProvider provider) {
         this.provider = provider;
-        /*
-        final int size = ATTR_ID_TO_ICON_ID.size();
-        for (int index = 0; index < size; index++) {
-            final int attrId = ATTR_ID_TO_ICON_ID.keyAt(index);
-            try {
-                final Drawable icon = DynamicThemeProvider.Companion.getDrawableOrDefault(attrId, keyboardAttrs, provider);
-                setDefaultBounds(icon);
-                final Integer iconId = ATTR_ID_TO_ICON_ID.get(attrId);
-                mIcons[iconId] = icon;
-            } catch (Resources.NotFoundException e) {
-                Log.w(TAG, "Drawable resource for icon #"
-                        + keyboardAttrs.getResources().getResourceEntryName(attrId)
-                        + " not found");
-            }
-        }
-        */
     }
 
     @Nullable

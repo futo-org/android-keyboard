@@ -33,6 +33,8 @@ import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -79,12 +81,12 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
                 AdditionalSubtypeUtils.createAdditionalSubtypesArray(
                         AdditionalSubtypeUtils.createPrefSubtypes(
                                 res.getStringArray(R.array.predefined_subtypes)));
-        mRichImm.setAdditionalInputMethodSubtypes(predefinedAdditionalSubtypes);
+        //mRichImm.setAdditionalInputMethodSubtypes(predefinedAdditionalSubtypes);
 
         final KeyboardTheme keyboardTheme = KeyboardTheme.searchKeyboardThemeById(
                 getKeyboardThemeForTests(), KeyboardTheme.KEYBOARD_THEMES);
         setContext(new ContextThemeWrapper(getContext(), keyboardTheme.mStyleId));
-        KeyboardLayoutSet.onKeyboardThemeChanged();
+        KeyboardLayoutSetV2.onKeyboardThemeChanged();
 
         mScreenMetrics = Settings.readScreenMetrics(res);
 
@@ -98,7 +100,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     @Override
     protected void tearDown() throws Exception {
         // Restore additional subtypes preference.
-        mRichImm.setAdditionalInputMethodSubtypes(mSavedAdditionalSubtypes);
+        //mRichImm.setAdditionalInputMethodSubtypes(mSavedAdditionalSubtypes);
         super.tearDown();
     }
 
@@ -143,25 +145,32 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
                 "Unknown subtype: locale=" + locale + " keyboardLayout=" + keyboardLayout);
     }
 
-    protected KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
+    protected KeyboardLayoutSetV2 createKeyboardLayoutSet(final InputMethodSubtype subtype,
             final EditorInfo editorInfo) {
         return createKeyboardLayoutSet(subtype, editorInfo, false /* voiceInputKeyEnabled */,
                 false /* languageSwitchKeyEnabled */, false /* splitLayoutEnabled */);
     }
 
-    protected KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
+    protected KeyboardLayoutSetV2 createKeyboardLayoutSet(final InputMethodSubtype subtype,
             final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
             final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
         final Context context = getContext();
         final Resources res = context.getResources();
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
         final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
-        final Builder builder = new Builder(context, editorInfo);
-        builder.setKeyboardGeometry(keyboardWidth, keyboardHeight)
-                .setSubtype(RichInputMethodSubtype.getRichInputMethodSubtype(subtype))
-                .setVoiceInputKeyEnabled(voiceInputKeyEnabled)
-                .setBottomEmojiKeyEnabled(languageSwitchKeyEnabled)
-                .setSplitLayoutEnabledByUser(splitLayoutEnabled);
-        return builder.build();
+
+        final RichInputMethodSubtype richInputMethodSubtype = RichInputMethodSubtype.getRichInputMethodSubtype(subtype);
+
+        return new KeyboardLayoutSetV2(
+                context,
+                new KeyboardLayoutSetV2Params(
+                        keyboardWidth, keyboardHeight,
+                        richInputMethodSubtype.getKeyboardLayoutSetName(),
+                        richInputMethodSubtype.getLocale(),
+                        editorInfo, false,
+                        4.0f, splitLayoutEnabled,
+                        languageSwitchKeyEnabled ? 1 : null
+                )
+        );
     }
 }

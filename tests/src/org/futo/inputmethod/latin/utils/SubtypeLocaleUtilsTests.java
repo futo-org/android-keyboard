@@ -34,6 +34,7 @@ import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
 
+import org.futo.inputmethod.latin.Subtypes;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,7 +91,7 @@ public class SubtypeLocaleUtilsTests {
                 AdditionalSubtypeUtils.createAdditionalSubtypesArray(
                         AdditionalSubtypeUtils.createPrefSubtypes(
                                 mRes.getStringArray(R.array.predefined_subtypes)));
-        mRichImm.setAdditionalInputMethodSubtypes(predefinedAddtionalSubtypes);
+        //mRichImm.setAdditionalInputMethodSubtypes(predefinedAddtionalSubtypes);
 
         final InputMethodInfo imi = mRichImm.getInputMethodInfoOfThisIme();
         final int subtypeCount = imi.getSubtypeCount();
@@ -99,51 +100,51 @@ public class SubtypeLocaleUtilsTests {
             mSubtypesList.add(new RichInputMethodSubtype(subtype));
         }
 
-        EN_US = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        EN_US = Subtypes.INSTANCE.makeSubtype(
                 Locale.US.toString(), "qwerty");
-        EN_GB = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        EN_GB = Subtypes.INSTANCE.makeSubtype(
                 Locale.UK.toString(), "qwerty");
-        ES_US = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        ES_US = Subtypes.INSTANCE.makeSubtype(
                 "es_US", "spanish");
-        FR = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        FR = Subtypes.INSTANCE.makeSubtype(
                 Locale.FRENCH.toString(), "azerty");
-        FR_CA = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        FR_CA = Subtypes.INSTANCE.makeSubtype(
                 Locale.CANADA_FRENCH.toString(), "qwerty");
-        FR_CH = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        FR_CH = Subtypes.INSTANCE.makeSubtype(
                 "fr_CH", "swiss");
-        DE = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        DE = Subtypes.INSTANCE.makeSubtype(
                 Locale.GERMAN.toString(), "qwertz");
-        DE_CH = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        DE_CH = Subtypes.INSTANCE.makeSubtype(
                 "de_CH", "swiss");
-        HI = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        HI = Subtypes.INSTANCE.makeSubtype(
                 "hi", "hindi");
-        SR = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        SR = Subtypes.INSTANCE.makeSubtype(
                 "sr", "south_slavic");
-        ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        ZZ = Subtypes.INSTANCE.makeSubtype(
                 SubtypeLocaleUtils.NO_LANGUAGE, "qwerty");
-        DE_QWERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+        DE_QWERTY = Subtypes.INSTANCE.makeSubtype(
                 Locale.GERMAN.toString(), "qwerty");
-        FR_QWERTZ = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+        FR_QWERTZ = Subtypes.INSTANCE.makeSubtype(
                 Locale.FRENCH.toString(), "qwertz");
-        EN_US_AZERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+        EN_US_AZERTY = Subtypes.INSTANCE.makeSubtype(
                 Locale.US.toString(), "azerty");
-        EN_UK_DVORAK = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+        EN_UK_DVORAK = Subtypes.INSTANCE.makeSubtype(
                 Locale.UK.toString(), "dvorak");
-        ES_US_COLEMAK = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+        ES_US_COLEMAK = Subtypes.INSTANCE.makeSubtype(
                 "es_US", "colemak");
-        ZZ_AZERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+        ZZ_AZERTY = Subtypes.INSTANCE.makeSubtype(
                 SubtypeLocaleUtils.NO_LANGUAGE, "azerty");
-        ZZ_PC = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+        ZZ_PC = Subtypes.INSTANCE.makeSubtype(
                 SubtypeLocaleUtils.NO_LANGUAGE, "pcqwerty");
 
-        HI_LATN = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet("hi_ZZ", "qwerty");
+        HI_LATN = Subtypes.INSTANCE.makeSubtype("hi_ZZ", "qwerty");
         if (HI_LATN != null) {
-            HI_LATN_DVORAK = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+            HI_LATN_DVORAK = Subtypes.INSTANCE.makeSubtype(
                     "hi_ZZ", "dvorak");
         }
-        SR_LATN = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet("sr_ZZ", "serbian_qwertz");
+        SR_LATN = Subtypes.INSTANCE.makeSubtype("sr_ZZ", "serbian_qwertz");
         if (SR_LATN != null) {
-            SR_LATN_QWERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+            SR_LATN_QWERTY = Subtypes.INSTANCE.makeSubtype(
                     "sr_ZZ", "qwerty");
         }
     }
@@ -151,7 +152,7 @@ public class SubtypeLocaleUtilsTests {
     @After
     public void tearDown() throws Exception {
         // Restore additional subtypes.
-        mRichImm.setAdditionalInputMethodSubtypes(mSavedAddtionalSubtypes);
+        //mRichImm.setAdditionalInputMethodSubtypes(mSavedAddtionalSubtypes);
     }
 
     @Test
@@ -473,14 +474,11 @@ public class SubtypeLocaleUtilsTests {
     @Test
     public void testIsRtlLanguage() {
         // Known Right-to-Left language subtypes.
-        final InputMethodSubtype ARABIC = mRichImm
-                .findSubtypeByLocaleAndKeyboardLayoutSet("ar", "arabic");
+        final InputMethodSubtype ARABIC = Subtypes.INSTANCE.makeSubtype("ar", "arabic");
         assertNotNull("Arabic", ARABIC);
-        final InputMethodSubtype FARSI = mRichImm
-                .findSubtypeByLocaleAndKeyboardLayoutSet("fa", "farsi");
+        final InputMethodSubtype FARSI = Subtypes.INSTANCE.makeSubtype("fa", "farsi");
         assertNotNull("Farsi", FARSI);
-        final InputMethodSubtype HEBREW = mRichImm
-                .findSubtypeByLocaleAndKeyboardLayoutSet("iw", "hebrew");
+        final InputMethodSubtype HEBREW = Subtypes.INSTANCE.makeSubtype("iw", "hebrew");
         assertNotNull("Hebrew", HEBREW);
 
         for (final RichInputMethodSubtype subtype : mSubtypesList) {

@@ -24,6 +24,7 @@ import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardId;
 import org.futo.inputmethod.keyboard.KeyboardLayoutSetTestsBase;
 import org.futo.inputmethod.keyboard.KeyboardTheme;
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement;
 import org.futo.inputmethod.keyboard.layout.LayoutBase;
 import org.futo.inputmethod.keyboard.layout.expected.AbstractLayoutBase;
 import org.futo.inputmethod.keyboard.layout.expected.ActualKeyboardBuilder;
@@ -31,6 +32,7 @@ import org.futo.inputmethod.keyboard.layout.expected.ExpectedKey;
 import org.futo.inputmethod.keyboard.layout.expected.ExpectedKey.ExpectedAdditionalMoreKey;
 import org.futo.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 
 import java.util.Arrays;
 
@@ -41,7 +43,7 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
     private LayoutBase mLayout;
     private InputMethodSubtype mSubtype;
     private String mLogTag;
-    private KeyboardLayoutSet mKeyboardLayoutSet;
+    private KeyboardLayoutSetV2 mKeyboardLayoutSet;
 
     @Override
     protected void setUp() throws Exception {
@@ -138,7 +140,7 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
         }
         final String tag = mLogTag + "/" + KeyboardId.elementIdToName(elementId);
         // Create actual keyboard object.
-        final Keyboard keyboard = mKeyboardLayoutSet.getKeyboard(elementId);
+        final Keyboard keyboard = mKeyboardLayoutSet.getKeyboard(KeyboardLayoutElement.fromElementId(elementId));
         // Create actual keyboard to be compared with the expected keyboard.
         final Key[][] actualKeyboard = ActualKeyboardBuilder.buildKeyboard(
                 keyboard.getSortedKeys());

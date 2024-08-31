@@ -25,8 +25,10 @@ import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet;
 import org.futo.inputmethod.keyboard.internal.KeyboardTextsSet;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodManager;
+import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.utils.RunInLocale;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 
 import java.util.Locale;
 
@@ -55,7 +57,7 @@ public class KlpActionLabelTests extends KlpActionTestsBase {
             final Locale labelLocale, final Locale systemLocale) {
         // Simulate system locale changing, see {@link SystemBroadcastReceiver}.
         if (!systemLocale.equals(mSystemLocale)) {
-            KeyboardLayoutSet.onSystemLocaleChanged();
+            KeyboardLayoutSetV2.onSystemLocaleChanged();
             mSystemLocale = systemLocale;
         }
         final ExpectedActionKey enterKey = ExpectedActionKey.newIconKey(
@@ -87,7 +89,7 @@ public class KlpActionLabelTests extends KlpActionTestsBase {
 
     public void testActionLabelInOtherLocale() {
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
-        final InputMethodSubtype italian = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype italian = Subtypes.INSTANCE.makeSubtype(
                 Locale.ITALIAN.toString(), SubtypeLocaleUtils.QWERTY);
         // An action label should be displayed in subtype's locale regardless of the system locale.
         doTestActionKeysInLocaleWithStringResources(italian, Locale.ITALIAN, Locale.US);
@@ -98,7 +100,7 @@ public class KlpActionLabelTests extends KlpActionTestsBase {
 
     public void testNoLanguageSubtypeActionLabel() {
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
-        final InputMethodSubtype noLanguage = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype noLanguage = Subtypes.INSTANCE.makeSubtype(
                 SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.QWERTY);
         // An action label of no language keyboard should be displayed in the system locale.
         doTestActionKeysInLocaleWithStringResources(noLanguage, Locale.US, Locale.US);
@@ -111,7 +113,7 @@ public class KlpActionLabelTests extends KlpActionTestsBase {
             final Locale labelLocale, final Locale systemLocale) {
         // Simulate system locale changing, see {@link SystemBroadcastReceiver}.
         if (!systemLocale.equals(mSystemLocale)) {
-            KeyboardLayoutSet.onSystemLocaleChanged();
+            KeyboardLayoutSetV2.onSystemLocaleChanged();
             mSystemLocale = systemLocale;
         }
         final KeyboardTextsSet textsSet = new KeyboardTextsSet();
@@ -146,7 +148,7 @@ public class KlpActionLabelTests extends KlpActionTestsBase {
     public void testHinglishActionLabel() {
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
         final Locale hi_ZZ = new Locale("hi", "ZZ");
-        final InputMethodSubtype hiLatn = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype hiLatn = Subtypes.INSTANCE.makeSubtype(
                 hi_ZZ.toString(), SubtypeLocaleUtils.QWERTY);
         // This is a preliminary subtype and may not exist.
         if (hiLatn == null) {
@@ -163,7 +165,7 @@ public class KlpActionLabelTests extends KlpActionTestsBase {
     public void testSerbianLatinActionLabel() {
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
         final Locale sr_ZZ = new Locale("sr", "ZZ");
-        final InputMethodSubtype srLatn = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype srLatn = Subtypes.INSTANCE.makeSubtype(
                 sr_ZZ.toString(), "serbian_qwertz");
         // This is a preliminary subtype and may not exist.
         if (srLatn == null) {

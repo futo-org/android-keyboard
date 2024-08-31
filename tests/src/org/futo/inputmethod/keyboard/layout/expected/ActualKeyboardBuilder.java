@@ -24,6 +24,7 @@ import org.futo.inputmethod.latin.common.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -108,10 +109,10 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
         }
 
         @Nonnull
-        static String toString(final String label, final int iconId, final String outputText,
+        static String toString(final String label, final String iconId, final String outputText,
                 final int code) {
-            final String visual = (iconId != KeyboardIconsSet.ICON_UNDEFINED)
-                    ? KeyboardIconsSet.getIconName(iconId) : label;
+            final String visual = (!Objects.equals(iconId, KeyboardIconsSet.ICON_UNDEFINED))
+                    ? iconId : label;
             final String output;
             if (code == Constants.CODE_OUTPUT_TEXT) {
                 output = outputText;
@@ -142,12 +143,12 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
             final StringBuilder sb = new StringBuilder();
             sb.append(MoreKeySpecStringizer.toString(
                     key.getLabel(), key.getIconId(), key.getOutputText(), key.getCode()));
-            final MoreKeySpec[] moreKeys = key.getMoreKeys();
-            if (moreKeys == null) {
+            final List<MoreKeySpec> moreKeys = key.getMoreKeys();
+            if (moreKeys.isEmpty()) {
                 return sb.toString();
             }
             sb.append("^");
-            sb.append(MoreKeySpecStringizer.STRINGIZER.join(moreKeys));
+            sb.append(MoreKeySpecStringizer.STRINGIZER.join(moreKeys.toArray(new MoreKeySpec[0])));
             return sb.toString();
         }
     }

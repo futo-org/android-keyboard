@@ -13,69 +13,94 @@
  * See the License for the specific language governing permissions and
  * limitations under the License
  */
+package org.futo.inputmethod.keyboard
 
-package org.futo.inputmethod.keyboard;
-
-import static org.junit.Assert.assertEquals;
-
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.ArrayList;
+import androidx.test.filters.SmallTest
+import androidx.test.runner.AndroidJUnit4
+import org.futo.inputmethod.v2keyboard.KeyVisualStyle
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
 
 @SmallTest
-@RunWith(AndroidJUnit4.class)
-public class KeyboardLayoutTest {
+@RunWith(AndroidJUnit4::class)
+class KeyboardLayoutTest {
     @Test
-    public void testNewKeyboardLayout() {
-        KeyboardLayout keyboardLayout = KeyboardLayout
-                .newKeyboardLayout(new ArrayList<Key>(), 11, 12, 13, 14);
+    fun testNewKeyboardLayout() {
+        var keyboardLayout = KeyboardLayout
+            .newKeyboardLayout(ArrayList(), 11, 12, 13, 14)
 
-        assertEquals(11, keyboardLayout.mMostCommonKeyWidth);
-        assertEquals(12, keyboardLayout.mMostCommonKeyHeight);
-        assertEquals(13, keyboardLayout.mKeyboardWidth);
-        assertEquals(14, keyboardLayout.mKeyboardHeight);
+        Assert.assertEquals(11, keyboardLayout.mMostCommonKeyWidth.toLong())
+        Assert.assertEquals(12, keyboardLayout.mMostCommonKeyHeight.toLong())
+        Assert.assertEquals(13, keyboardLayout.mKeyboardWidth.toLong())
+        Assert.assertEquals(14, keyboardLayout.mKeyboardHeight.toLong())
 
-        assertEquals(0, keyboardLayout.getKeyCodes().length);
-        assertEquals(0, keyboardLayout.getKeyWidths().length);
-        assertEquals(0, keyboardLayout.getKeyHeights().length);
-        assertEquals(0, keyboardLayout.getKeyXCoordinates().length);
-        assertEquals(0, keyboardLayout.getKeyYCoordinates().length);
+        Assert.assertEquals(0, keyboardLayout.keyCodes.size.toLong())
+        Assert.assertEquals(0, keyboardLayout.keyWidths.size.toLong())
+        Assert.assertEquals(0, keyboardLayout.keyHeights.size.toLong())
+        Assert.assertEquals(0, keyboardLayout.keyXCoordinates.size.toLong())
+        Assert.assertEquals(0, keyboardLayout.keyYCoordinates.size.toLong())
 
-        Key key1 = new Key("label1", 101, 102, "101", "101hint", 103, 104, 105, 106, 1100, 1101,
-                10, 10);
-        Key key2 = new Key("label2", 201, 103, "201", "201hint", 203, 204, 205, 206, 2100, 2101,
-                10, 10);
+        val key1 = Key(
+            code = 101,
+            label = "label1",
+            hintLabel = "101hint",
+            width = 1100,
+            height = 1101,
+            horizontalGap = 10,
+            verticalGap = 10,
+            actionFlags = 102,
+            labelFlags = 103,
+            visualStyle = KeyVisualStyle.Normal,
+            x = 105,
+            y = 106
+        )
 
-        ArrayList<Key> sortedKeys = new ArrayList<>(2);
-        sortedKeys.add(key1);
-        sortedKeys.add(key2);
-        keyboardLayout = KeyboardLayout.newKeyboardLayout(sortedKeys, 11, 12, 13, 14);
-        assertEquals(2, keyboardLayout.getKeyCodes().length);
-        assertEquals(2, keyboardLayout.getKeyWidths().length);
-        assertEquals(2, keyboardLayout.getKeyHeights().length);
-        assertEquals(2, keyboardLayout.getKeyXCoordinates().length);
-        assertEquals(2, keyboardLayout.getKeyYCoordinates().length);
+        val key2 = Key(
+            code = 201,
+            label = "label2",
+            hintLabel = "201hint",
+            width = 2100,
+            height = 2101,
+            horizontalGap = 10,
+            verticalGap = 10,
+            actionFlags = 202,
+            labelFlags = 203,
+            visualStyle = KeyVisualStyle.Normal,
+            x = 205,
+            y = 206
+        )
 
-        assertEquals(102, keyboardLayout.getKeyCodes()[0]);
+        //Key key1 = new Key("label1", 101, 102, "101", "101hint", 103, 104, 105, 106, 1100, 1101,
+        //        10, 10);
+        //Key key2 = new Key("label2", 201, 103, "201", "201hint", 203, 204, 205, 206, 2100, 2101,
+        //        10, 10);
+        val sortedKeys = ArrayList<Key>(2)
+        sortedKeys.add(key1)
+        sortedKeys.add(key2)
+        keyboardLayout = KeyboardLayout.newKeyboardLayout(sortedKeys, 11, 12, 13, 14)
+        Assert.assertEquals(2, keyboardLayout.keyCodes.size.toLong())
+        Assert.assertEquals(2, keyboardLayout.keyWidths.size.toLong())
+        Assert.assertEquals(2, keyboardLayout.keyHeights.size.toLong())
+        Assert.assertEquals(2, keyboardLayout.keyXCoordinates.size.toLong())
+        Assert.assertEquals(2, keyboardLayout.keyYCoordinates.size.toLong())
+
+        Assert.assertEquals(102, keyboardLayout.keyCodes[0].toLong())
         // xCo + horizontalGap/2
-        assertEquals(105 + 5, keyboardLayout.getKeyXCoordinates()[0]);
-        assertEquals(106, keyboardLayout.getKeyYCoordinates()[0]);
+        Assert.assertEquals((105 + 5).toLong(), keyboardLayout.keyXCoordinates[0].toLong())
+        Assert.assertEquals(106, keyboardLayout.keyYCoordinates[0].toLong())
         // width - horizontalGap
-        assertEquals(1100 - 10, keyboardLayout.getKeyWidths()[0]);
+        Assert.assertEquals((1100 - 10).toLong(), keyboardLayout.keyWidths[0].toLong())
         // height - verticalGap
-        assertEquals(1101 - 10, keyboardLayout.getKeyHeights()[0]);
+        Assert.assertEquals((1101 - 10).toLong(), keyboardLayout.keyHeights[0].toLong())
 
-        assertEquals(103, keyboardLayout.getKeyCodes()[1]);
+        Assert.assertEquals(103, keyboardLayout.keyCodes[1].toLong())
         // xCo + horizontalGap/2
-        assertEquals(205 + 5, keyboardLayout.getKeyXCoordinates()[1]);
-        assertEquals(206, keyboardLayout.getKeyYCoordinates()[1]);
+        Assert.assertEquals((205 + 5).toLong(), keyboardLayout.keyXCoordinates[1].toLong())
+        Assert.assertEquals(206, keyboardLayout.keyYCoordinates[1].toLong())
         // width - horizontalGap
-        assertEquals(2100 - 10, keyboardLayout.getKeyWidths()[1]);
+        Assert.assertEquals((2100 - 10).toLong(), keyboardLayout.keyWidths[1].toLong())
         // height - verticalGap
-        assertEquals(2101 - 10, keyboardLayout.getKeyHeights()[1]);
+        Assert.assertEquals((2101 - 10).toLong(), keyboardLayout.keyHeights[1].toLong())
     }
 }

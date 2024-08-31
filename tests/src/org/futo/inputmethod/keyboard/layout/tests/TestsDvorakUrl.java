@@ -27,6 +27,7 @@ import org.futo.inputmethod.keyboard.layout.LayoutBase;
 import org.futo.inputmethod.keyboard.layout.customizer.DvorakCustomizer.EnglishDvorakCustomizer;
 import org.futo.inputmethod.keyboard.layout.customizer.LayoutCustomizer;
 import org.futo.inputmethod.keyboard.layout.expected.ExpectedKey;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 
 import java.util.Locale;
 
@@ -42,9 +43,9 @@ public class TestsDvorakUrl extends LayoutTestsBase {
     LayoutBase getLayout() { return LAYOUT; }
 
     @Override
-    protected KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
-            final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
-            final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
+    protected KeyboardLayoutSetV2 createKeyboardLayoutSet(final InputMethodSubtype subtype,
+                                                          final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
+                                                          final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
         final EditorInfo emailField = new EditorInfo();
         emailField.inputType =
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;

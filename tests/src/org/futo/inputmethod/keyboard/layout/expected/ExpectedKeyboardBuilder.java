@@ -121,7 +121,7 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
             } else if (key instanceof ExpectedKey[]) {
                 list.addAll(Arrays.asList((ExpectedKey[])key));
             } else if (key instanceof String) {
-                list.add(ExpectedKey.newInstance((String)key));
+                list.add(ExpectedKey.newLabelInstance((String)key));
             } else {
                 throw new RuntimeException("Unknown expected key type: " + key);
             }
@@ -160,8 +160,8 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
      *        {@link ExpectedKey}, {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
      */
-    public ExpectedKeyboardBuilder setMoreKeysOf(final int iconId, final Object ... moreKeys) {
-        setMoreKeysOf(ExpectedKeyVisual.newInstance(iconId), joinKeys(moreKeys));
+    public ExpectedKeyboardBuilder setMoreIconKeysOf(final String iconId, final Object ... moreKeys) {
+        setMoreKeysOf(ExpectedKeyVisual.newIconInstance(iconId), joinKeys(moreKeys));
         return this;
     }
 

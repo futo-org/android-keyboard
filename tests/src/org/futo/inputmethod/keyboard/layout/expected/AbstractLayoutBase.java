@@ -29,31 +29,31 @@ public abstract class AbstractLayoutBase {
 
     // Helper method to create an {@link ExpectedKey} object that has the label.
     public static ExpectedKey key(final String label, final ExpectedKey ... moreKeys) {
-        return ExpectedKey.newInstance(label, moreKeys);
+        return ExpectedKey.newLabelInstance(label, moreKeys);
     }
 
     // Helper method to create an {@link ExpectedKey} object that has the label and the output text.
     public static ExpectedKey key(final String label, final String outputText,
             final ExpectedKey ... moreKeys) {
-        return ExpectedKey.newInstance(label, outputText, moreKeys);
+        return ExpectedKey.newLabelInstance(label, outputText, moreKeys);
     }
 
     // Helper method to create an {@link ExpectedKey} object that has the label and the output code.
     public static ExpectedKey key(final String label, final int code,
             final ExpectedKey ... moreKeys) {
-        return ExpectedKey.newInstance(label, code, moreKeys);
+        return ExpectedKey.newLabelInstance(label, code, moreKeys);
     }
 
     // Helper method to create an {@link ExpectedKey} object that has the icon and the output text.
-    public static ExpectedKey key(final int iconId, final String outputText,
+    public static ExpectedKey iconKey(final String iconId, final String outputText,
             final ExpectedKey ... moreKeys) {
-        return ExpectedKey.newInstance(iconId, outputText, moreKeys);
+        return ExpectedKey.newIconInstance(iconId, outputText, moreKeys);
     }
 
     // Helper method to create an {@link ExpectedKey} object that has the icon and the output code.
-    public static ExpectedKey key(final int iconId, final int code,
+    public static ExpectedKey iconKey(final String iconId, final int code,
             final ExpectedKey ... moreKeys) {
-        return ExpectedKey.newInstance(iconId, code, moreKeys);
+        return ExpectedKey.newIconInstance(iconId, code, moreKeys);
     }
 
     // Helper method to create an {@link ExpectedKey} object that has new "more keys".
@@ -72,25 +72,25 @@ public abstract class AbstractLayoutBase {
 
     // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label.
     public static ExpectedKey moreKey(final String label) {
-        return ExpectedKey.newInstance(label);
+        return ExpectedKey.newLabelInstance(label);
     }
 
     // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label
     // and the output text.
     public static ExpectedKey moreKey(final String label, final String outputText) {
-        return ExpectedKey.newInstance(label, outputText);
+        return ExpectedKey.newLabelInstance(label, outputText);
     }
 
     // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label
     // and the output code.
     public static ExpectedKey moreKey(final String label, final int code) {
-        return ExpectedKey.newInstance(label, code);
+        return ExpectedKey.newLabelInstance(label, code);
     }
 
     // Helper method to create an {@link ExpectedKey} object for a "more key" that has the icon
     // and the output text.
-    public static ExpectedKey moreKey(final int iconId, final String outputText) {
-        return ExpectedKey.newInstance(iconId, outputText);
+    public static ExpectedKey moreIconKey(final String iconId, final String outputText) {
+        return ExpectedKey.newIconInstance(iconId, outputText);
     }
 
     // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
@@ -121,20 +121,20 @@ public abstract class AbstractLayoutBase {
     private static final String ICON_ZWJ = KeyboardIconsSet.NAME_ZWJ_KEY;
 
     // Functional keys.
-    protected static final ExpectedKey DELETE_KEY = key(ICON_DELETE, Constants.CODE_DELETE);
-    protected static final ExpectedKey TAB_KEY = key(ICON_TAB, Constants.CODE_TAB);
-    protected static final ExpectedKey SHORTCUT_KEY = key(ICON_SHORTCUT, Constants.CODE_SHORTCUT);
-    protected static final ExpectedKey SETTINGS_KEY = key(ICON_SETTINGS, Constants.CODE_SETTINGS);
-    protected static final ExpectedKey LANGUAGE_SWITCH_KEY = key(
+    protected static final ExpectedKey DELETE_KEY = iconKey(ICON_DELETE, Constants.CODE_DELETE);
+    protected static final ExpectedKey TAB_KEY = iconKey(ICON_TAB, Constants.CODE_TAB);
+    protected static final ExpectedKey SHORTCUT_KEY = iconKey(ICON_SHORTCUT, Constants.CODE_SHORTCUT);
+    protected static final ExpectedKey SETTINGS_KEY = iconKey(ICON_SETTINGS, Constants.CODE_SETTINGS);
+    protected static final ExpectedKey LANGUAGE_SWITCH_KEY = iconKey(
             ICON_LANGUAGE_SWITCH, Constants.CODE_LANGUAGE_SWITCH);
-    protected static final ExpectedKey ENTER_KEY = key(ICON_ENTER, Constants.CODE_ENTER);
-    protected static final ExpectedKey EMOJI_ACTION_KEY = key(ICON_EMOJI_ACTION, Constants.CODE_EMOJI);
-    protected static final ExpectedKey EMOJI_NORMAL_KEY = key(ICON_EMOJI_NORMAL, Constants.CODE_EMOJI);
-    protected static final ExpectedKey SPACE_KEY = key(ICON_SPACE, Constants.CODE_SPACE);
+    protected static final ExpectedKey ENTER_KEY = iconKey(ICON_ENTER, Constants.CODE_ENTER);
+    protected static final ExpectedKey EMOJI_ACTION_KEY = iconKey(ICON_EMOJI_ACTION, Constants.CODE_EMOJI);
+    protected static final ExpectedKey EMOJI_NORMAL_KEY = iconKey(ICON_EMOJI_NORMAL, Constants.CODE_EMOJI);
+    protected static final ExpectedKey SPACE_KEY = iconKey(ICON_SPACE, Constants.CODE_SPACE);
     protected static final ExpectedKey CAPSLOCK_MORE_KEY = key(" ", Constants.CODE_CAPSLOCK);
-    protected static final ExpectedKey SHIFT_KEY = key(ICON_SHIFT,
+    protected static final ExpectedKey SHIFT_KEY = iconKey(ICON_SHIFT,
             Constants.CODE_SHIFT, CAPSLOCK_MORE_KEY);
-    protected static final ExpectedKey SHIFTED_SHIFT_KEY = key(ICON_SHIFTED_SHIFT,
+    protected static final ExpectedKey SHIFTED_SHIFT_KEY = iconKey(ICON_SHIFTED_SHIFT,
             Constants.CODE_SHIFT, CAPSLOCK_MORE_KEY);
     protected static final ExpectedKey ALPHABET_KEY = key("ABC", Constants.CODE_SWITCH_ALPHA_SYMBOL);
     protected static final ExpectedKey SYMBOLS_KEY = key("?123", Constants.CODE_SWITCH_ALPHA_SYMBOL);
@@ -148,8 +148,8 @@ public abstract class AbstractLayoutBase {
             key("!", moreKey("\u00A1")), key("?", moreKey("\u00BF")));
     // U+200C: ZERO WIDTH NON-JOINER
     // U+200D: ZERO WIDTH JOINER
-    protected static final ExpectedKey ZWNJ_KEY = key(ICON_ZWNJ, "\u200C");
-    protected static final ExpectedKey ZWJ_KEY = key(ICON_ZWJ, "\u200D");
+    protected static final ExpectedKey ZWNJ_KEY = iconKey(ICON_ZWNJ, "\u200C");
+    protected static final ExpectedKey ZWJ_KEY = iconKey(ICON_ZWJ, "\u200D");
     // Domain key
     protected static final ExpectedKey DOMAIN_KEY =
             key(".com", joinMoreKeys(".net", ".org", ".gov", ".edu")).preserveCase();

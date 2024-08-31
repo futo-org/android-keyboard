@@ -575,9 +575,13 @@ data class LayoutEngine(
         params.mBaseHeight = totalKeyboardHeight
         params.mDefaultRowHeight = rowHeightPx.roundToInt()
 
-        val provider = DynamicThemeProvider.obtainFromContext(context)
+        try {
+            val provider = DynamicThemeProvider.obtainFromContext(context)
+            params.mIconsSet.loadIcons(null, provider)
+        } catch(_: IllegalArgumentException) {
+            // May fail during test because provider is unavailable
+        }
 
-        params.mIconsSet.loadIcons(null, provider)
         params.mThemeId = 3
         params.mTextsSet.setLocale(params.mId.locale, context)
 

@@ -26,11 +26,13 @@ import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardId;
 import org.futo.inputmethod.keyboard.KeyboardLayoutSetTestsBase;
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement;
 import org.futo.inputmethod.keyboard.layout.expected.ExpectedKeyVisual;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.LocaleUtils;
 import org.futo.inputmethod.latin.utils.RunInLocale;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 
 import java.util.Locale;
 
@@ -74,9 +76,9 @@ abstract class ActionTestsBase extends KeyboardLayoutSetTestsBase {
         return LocaleUtils.constructLocaleFromString(localeString);
     }
 
-    private static void assertActionKey(final String tag, final KeyboardLayoutSet layoutSet,
+    private static void assertActionKey(final String tag, final KeyboardLayoutSetV2 layoutSet,
             final int elementId, final ExpectedActionKey expectedKey) {
-        final Keyboard keyboard = layoutSet.getKeyboard(elementId);
+        final Keyboard keyboard = layoutSet.getKeyboard(KeyboardLayoutElement.fromElementId(elementId));
         final Key actualKey = keyboard.getKey(Constants.CODE_ENTER);
         assertNotNull(tag + " enter key on " + keyboard.mId, actualKey);
         assertEquals(tag + " label " + expectedKey, expectedKey.getLabel(), actualKey.getLabel());
@@ -94,7 +96,7 @@ abstract class ActionTestsBase extends KeyboardLayoutSetTestsBase {
             final EditorInfo editorInfo, final ExpectedActionKey expectedKey) {
         // Test text layouts.
         editorInfo.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL;
-        final KeyboardLayoutSet layoutSet = createKeyboardLayoutSet(subtype, editorInfo);
+        final KeyboardLayoutSetV2 layoutSet = createKeyboardLayoutSet(subtype, editorInfo);
         assertActionKey(tag, layoutSet, KeyboardId.ELEMENT_ALPHABET, expectedKey);
         assertActionKey(tag, layoutSet, KeyboardId.ELEMENT_SYMBOLS, expectedKey);
         assertActionKey(tag, layoutSet, KeyboardId.ELEMENT_SYMBOLS_SHIFTED, expectedKey);
@@ -106,7 +108,7 @@ abstract class ActionTestsBase extends KeyboardLayoutSetTestsBase {
         // Test number password layout.
         editorInfo.inputType =
                 InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD;
-        final KeyboardLayoutSet passwordSet = createKeyboardLayoutSet(subtype, editorInfo);
+        final KeyboardLayoutSetV2 passwordSet = createKeyboardLayoutSet(subtype, editorInfo);
         assertActionKey(tag, passwordSet, KeyboardId.ELEMENT_NUMBER, expectedKey);
     }
 }

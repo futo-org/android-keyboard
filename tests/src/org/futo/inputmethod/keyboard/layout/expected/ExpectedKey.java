@@ -21,44 +21,45 @@ import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * This class represents an expected key.
  */
 public class ExpectedKey {
-    static ExpectedKey EMPTY_KEY = newInstance("");
+    static ExpectedKey EMPTY_KEY = newLabelInstance("");
 
     // A key that has a string label and may have "more keys".
-    static ExpectedKey newInstance(final String label, final ExpectedKey... moreKeys) {
-        return newInstance(label, label, moreKeys);
+    static ExpectedKey newLabelInstance(final String label, final ExpectedKey... moreKeys) {
+        return newLabelInstance(label, label, moreKeys);
     }
 
     // A key that has a string label and a different output text and may have "more keys".
-    static ExpectedKey newInstance(final String label, final String outputText,
+    static ExpectedKey newLabelInstance(final String label, final String outputText,
             final ExpectedKey... moreKeys) {
         return newInstance(ExpectedKeyVisual.newInstance(label),
                 ExpectedKeyOutput.newInstance(outputText), moreKeys);
     }
 
     // A key that has a string label and a code point output and may have "more keys".
-    static ExpectedKey newInstance(final String label, final int code,
+    static ExpectedKey newLabelInstance(final String label, final int code,
             final ExpectedKey... moreKeys) {
         return newInstance(ExpectedKeyVisual.newInstance(label),
                 ExpectedKeyOutput.newInstance(code), moreKeys);
     }
 
     // A key that has an icon and an output text and may have "more keys".
-    static ExpectedKey newInstance(final int iconId, final String outputText,
+    static ExpectedKey newIconInstance(final String iconId, final String outputText,
             final ExpectedKey... moreKeys) {
-        return newInstance(ExpectedKeyVisual.newInstance(iconId),
+        return newInstance(ExpectedKeyVisual.newIconInstance(iconId),
                 ExpectedKeyOutput.newInstance(outputText), moreKeys);
     }
 
     // A key that has an icon and a code point output and may have "more keys".
-    static ExpectedKey newInstance(final int iconId, final int code,
+    static ExpectedKey newIconInstance(final String iconId, final int code,
             final ExpectedKey... moreKeys) {
-        return newInstance(ExpectedKeyVisual.newInstance(iconId),
+        return newInstance(ExpectedKeyVisual.newIconInstance(iconId),
                 ExpectedKeyOutput.newInstance(code), moreKeys);
     }
 
@@ -276,14 +277,14 @@ public class ExpectedKey {
         @Override
         public boolean equalsTo(final Key key) {
             if (getVisual().hasSameKeyVisual(key) && getOutput().hasSameKeyOutput(key)) {
-                final MoreKeySpec[] moreKeySpecs = key.getMoreKeys();
+                final List<MoreKeySpec> moreKeySpecs = key.getMoreKeys();
                 final ExpectedKey[] moreKeys = getMoreKeys();
                 // This key should have at least one "more key".
-                if (moreKeySpecs == null || moreKeySpecs.length != moreKeys.length) {
+                if (moreKeySpecs == null || moreKeySpecs.size() != moreKeys.length) {
                     return false;
                 }
-                for (int index = 0; index < moreKeySpecs.length; index++) {
-                    if (!moreKeys[index].equalsTo(moreKeySpecs[index])) {
+                for (int index = 0; index < moreKeySpecs.size(); index++) {
+                    if (!moreKeys[index].equalsTo(moreKeySpecs.get(index))) {
                         return false;
                     }
                 }

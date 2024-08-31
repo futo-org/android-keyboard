@@ -88,7 +88,6 @@ import org.futo.inputmethod.latin.touchinputconsumer.GestureConsumer;
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity;
 import org.futo.inputmethod.latin.utils.ApplicationUtils;
 import org.futo.inputmethod.latin.utils.DialogUtils;
-import org.futo.inputmethod.latin.utils.ImportantNoticeUtils;
 import org.futo.inputmethod.latin.utils.IntentUtils;
 import org.futo.inputmethod.latin.utils.JniUtils;
 import org.futo.inputmethod.latin.utils.LeakGuardHandlerWrapper;
@@ -1272,7 +1271,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     @Override
     public void onRequestPermissionsResult(boolean allGranted) {
-        ImportantNoticeUtils.updateContactsNoticeShown(mInputMethodService /* context */);
         setNeutralSuggestionStrip();
     }
 
@@ -1533,15 +1531,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
             return;
         }
 
-        final boolean shouldShowImportantNotice =
-                ImportantNoticeUtils.shouldShowImportantNotice(mInputMethodService, currentSettingsValues);
+        final boolean shouldShowImportantNotice = false;
         final boolean shouldShowSuggestionCandidates =
                 currentSettingsValues.mInputAttributes.mShouldShowSuggestions
                 && currentSettingsValues.isSuggestionsEnabledPerUserSettings();
-        final boolean shouldShowSuggestionsStripUnlessPassword = shouldShowImportantNotice
-                || currentSettingsValues.mShowsVoiceInputKey
-                || shouldShowSuggestionCandidates
-                || currentSettingsValues.isApplicationSpecifiedCompletionsOn();
+        final boolean shouldShowSuggestionsStripUnlessPassword = currentSettingsValues.mShowsVoiceInputKey || shouldShowSuggestionCandidates || currentSettingsValues.isApplicationSpecifiedCompletionsOn();
         final boolean shouldShowSuggestionsStrip = shouldShowSuggestionsStripUnlessPassword
                 && !currentSettingsValues.mInputAttributes.mIsPasswordField;
         mSuggestionStripController.updateVisibility(shouldShowSuggestionsStrip, mInputMethodService.isFullscreenMode());
@@ -1557,13 +1551,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
                 || isEmptyApplicationSpecifiedCompletions;
         final boolean isBeginningOfSentencePrediction = (suggestedWords.mInputStyle
                 == SuggestedWords.INPUT_STYLE_BEGINNING_OF_SENTENCE_PREDICTION);
-        final boolean noSuggestionsToOverrideImportantNotice = noSuggestionsFromDictionaries
-                || isBeginningOfSentencePrediction;
-        if (shouldShowImportantNotice && noSuggestionsToOverrideImportantNotice) {
-            if (mSuggestionStripController.maybeShowImportantNoticeTitle()) {
-                return;
-            }
-        }
 
         if (currentSettingsValues.isSuggestionsEnabledPerUserSettings()
                 || currentSettingsValues.isApplicationSpecifiedCompletionsOn()

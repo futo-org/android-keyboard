@@ -94,7 +94,7 @@ public class KeyboardStateTestsBase extends AndroidTestCase
      * @param afterPress the keyboard state after pressing the key.
      */
     public void pressKey(final int code, final int afterPress) {
-        mSwitcher.expireDoubleTapTimeout();
+        //mSwitcher.expireDoubleTapTimeout();
         pressKeyWithoutTimerExpire(code, true, afterPress);
     }
 
@@ -129,7 +129,7 @@ public class KeyboardStateTestsBase extends AndroidTestCase
      * @param afterPress the keyboard state after pressing chording key.
      */
     public void chordingPressKey(final int code, final int afterPress) {
-        mSwitcher.expireDoubleTapTimeout();
+        //mSwitcher.expireDoubleTapTimeout();
         pressKeyWithoutTimerExpire(code, false, afterPress);
     }
 

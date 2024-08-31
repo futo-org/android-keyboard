@@ -31,6 +31,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
+import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -81,7 +82,7 @@ public class LanguageOnSpacebarUtilsTests {
     @Nonnull
     private RichInputMethodSubtype findSubtypeOf(final String localeString,
             final String keyboardLayoutSetName) {
-        final InputMethodSubtype subtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype subtype = Subtypes.INSTANCE.makeSubtype(
                 localeString, keyboardLayoutSetName);
         if (subtype == null) {
             throw new RuntimeException("Can't find subtype of " + localeString + " with "

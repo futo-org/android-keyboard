@@ -93,7 +93,7 @@ public class RichInputMethodSubtypeTests {
                 AdditionalSubtypeUtils.createAdditionalSubtypesArray(
                         AdditionalSubtypeUtils.createPrefSubtypes(
                                 mRes.getStringArray(R.array.predefined_subtypes)));
-        mRichImm.setAdditionalInputMethodSubtypes(predefinedAddtionalSubtypes);
+        //mRichImm.setAdditionalInputMethodSubtypes(predefinedAddtionalSubtypes);
 
         final InputMethodInfo imi = mRichImm.getInputMethodInfoOfThisIme();
         final int subtypeCount = imi.getSubtypeCount();
@@ -102,27 +102,27 @@ public class RichInputMethodSubtypeTests {
             mSubtypesList.add(new RichInputMethodSubtype(subtype));
         }
 
-        EN_US = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        EN_US = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 Locale.US.toString(), "qwerty"));
-        EN_GB = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        EN_GB = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 Locale.UK.toString(), "qwerty"));
-        ES_US = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        ES_US = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 "es_US", "spanish"));
-        FR = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        FR = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 Locale.FRENCH.toString(), "azerty"));
-        FR_CA = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        FR_CA = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 Locale.CANADA_FRENCH.toString(), "qwerty"));
-        FR_CH = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        FR_CH = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 "fr_CH", "swiss"));
-        DE = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        DE = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 Locale.GERMAN.toString(), "qwertz"));
-        DE_CH = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        DE_CH = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 "de_CH", "swiss"));
-        HI = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        HI = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 "hi", "hindi"));
-        SR = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        SR = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 "sr", "south_slavic"));
-        ZZ = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        ZZ = new RichInputMethodSubtype(Subtypes.INSTANCE.makeSubtype(
                 SubtypeLocaleUtils.NO_LANGUAGE, "qwerty"));
         DE_QWERTY = new RichInputMethodSubtype(
                 AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
@@ -146,7 +146,7 @@ public class RichInputMethodSubtypeTests {
                 AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
                     SubtypeLocaleUtils.NO_LANGUAGE, "pcqwerty"));
 
-        final InputMethodSubtype hiLatn = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype hiLatn = Subtypes.INSTANCE.makeSubtype(
                 "hi_ZZ", "qwerty");
         if (hiLatn != null) {
             HI_LATN = new RichInputMethodSubtype(hiLatn);
@@ -154,7 +154,7 @@ public class RichInputMethodSubtypeTests {
                     AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
                             "hi_ZZ", "dvorak"));
         }
-        final InputMethodSubtype srLatn = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype srLatn = Subtypes.INSTANCE.makeSubtype(
                 "sr_ZZ", "serbian_qwertz");
         if (srLatn != null) {
             SR_LATN = new RichInputMethodSubtype(srLatn);
@@ -167,7 +167,7 @@ public class RichInputMethodSubtypeTests {
     @After
     public void tearDown() throws Exception {
         // Restore additional subtypes.
-        mRichImm.setAdditionalInputMethodSubtypes(mSavedAddtionalSubtypes);
+        //mRichImm.setAdditionalInputMethodSubtypes(mSavedAddtionalSubtypes);
     }
 
     @Test

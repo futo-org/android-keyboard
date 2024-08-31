@@ -53,6 +53,24 @@ data class KeyboardLayoutElement(
 
             KeyboardLayoutKind.Number -> KeyboardId.ELEMENT_NUMBER
         }
+
+    companion object {
+        @JvmStatic
+        fun fromElementId(value: Int): KeyboardLayoutElement =
+            when(value) {
+                KeyboardId.ELEMENT_ALPHABET                    -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.Base)
+                KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED     -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.Shifted)
+                KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED  -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.Shifted)
+                KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED       -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.ShiftLocked)
+                KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.ShiftLocked)
+                KeyboardId.ELEMENT_SYMBOLS                     -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Symbols, page = KeyboardLayoutPage.Base)
+                KeyboardId.ELEMENT_SYMBOLS_SHIFTED             -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Symbols, page = KeyboardLayoutPage.Shifted)
+                KeyboardId.ELEMENT_PHONE                       -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Phone, page = KeyboardLayoutPage.Base)
+                KeyboardId.ELEMENT_PHONE_SYMBOLS               -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Phone, page = KeyboardLayoutPage.Shifted)
+                KeyboardId.ELEMENT_NUMBER                      -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Number, page = KeyboardLayoutPage.Base)
+                else -> throw IllegalArgumentException("Invalid elementId $value")
+            }
+    }
 }
 
 interface SwitchActions {

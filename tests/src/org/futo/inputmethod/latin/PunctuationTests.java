@@ -29,7 +29,7 @@ public class PunctuationTests extends InputTestsBase {
         final String PUNCTUATION_FROM_STRIP = "!";
         final String EXPECTED_RESULT = "this!! ";
         final boolean defaultNextWordPredictionOption =
-                mLatinIMELegacy.getResources().getBoolean(R.bool.config_default_next_word_prediction);
+                mLatinIME.getResources().getBoolean(R.bool.config_default_next_word_prediction);
         final boolean previousNextWordPredictionOption =
                 setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, false,
                         defaultNextWordPredictionOption);

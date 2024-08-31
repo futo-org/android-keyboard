@@ -73,6 +73,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     private static final String TYPE_TEST = "test";
     private static final PhonyDictionary DICTIONARY_TEST = new PhonyDictionary(TYPE_TEST);
 
+    protected LatinIME mLatinIME;
     protected LatinIMELegacy mLatinIMELegacy;
     protected Keyboard mKeyboard;
     protected MyEditText mEditText;
@@ -83,6 +84,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
 
     public InputTestsBase(Class<LatinIME> serviceClass) {
         super(serviceClass);
+    }
+    public InputTestsBase() {
+        super(LatinIME.class);
     }
 
     // A helper class to ease span tests
@@ -380,7 +384,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         // TODO: Use {@link InputMethodSubtype.InputMethodSubtypeBuilder} directly or indirectly so
         // that {@link InputMethodSubtype#isAsciiCapable} can return the correct value.
         final String EXTRA_VALUE_FOR_TEST =
-                "KeyboardLayoutSet=" + SubtypeLocaleUtils.QWERTY
+                "KeyboardLayoutSetV2=" + SubtypeLocaleUtils.QWERTY
                 + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
                 + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
                 + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE

@@ -21,13 +21,17 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet;
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement;
 import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodManager;
+import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 abstract class KeyboardLayoutSetNavigateMoreKeysBase extends KeyboardLayoutSetTestsBase {
@@ -82,38 +86,38 @@ abstract class KeyboardLayoutSetNavigateMoreKeysBase extends KeyboardLayoutSetTe
         final EditorInfo editorInfo = new EditorInfo();
         editorInfo.inputType = inputType;
         editorInfo.imeOptions = imeOptions;
-        final KeyboardLayoutSet layoutSet = createKeyboardLayoutSet(subtype, editorInfo);
-        final Keyboard keyboard = layoutSet.getKeyboard(elementId);
+        final KeyboardLayoutSetV2 layoutSet = createKeyboardLayoutSet(subtype, editorInfo);
+        final Keyboard keyboard = layoutSet.getKeyboard(KeyboardLayoutElement.fromElementId(elementId));
 
         final Key actualKey = keyboard.getKey(code);
-        final MoreKeySpec[] actualMoreKeys = actualKey.getMoreKeys();
-        final String tag = actualKey.toString() + " moreKeys=" + Arrays.toString(actualMoreKeys);
+        final List<MoreKeySpec> actualMoreKeys = actualKey.getMoreKeys();
+        final String tag = actualKey.toString() + " moreKeys=" + actualMoreKeys.toString();
         if (expectedMoreKeys.length == 0) {
-            assertEquals(tag, null, actualMoreKeys);
+            assertEquals(tag, 0, actualMoreKeys.size());
             return;
         }
         if (expectedMoreKeys.length == 1) {
-            assertEquals(tag + " fixedOrder", false, actualKey.isMoreKeysFixedOrder());
-            assertEquals(tag + " fixedColumn", false, actualKey.isMoreKeysFixedColumn());
+            assertFalse(tag + " fixedOrder", actualKey.isMoreKeysFixedOrder());
+            assertFalse(tag + " fixedColumn", actualKey.isMoreKeysFixedColumn());
         } else {
-            assertEquals(tag + " fixedOrder", true, actualKey.isMoreKeysFixedOrder());
-            assertEquals(tag + " fixedColumn", true, actualKey.isMoreKeysFixedColumn());
+            assertTrue(tag + " fixedOrder", actualKey.isMoreKeysFixedOrder());
+            assertTrue(tag + " fixedColumn", actualKey.isMoreKeysFixedColumn());
             // TODO: Can't handle multiple rows of more keys.
             assertEquals(tag + " column",
                     expectedMoreKeys.length, actualKey.getMoreKeysColumnNumber());
         }
         assertNotNull(tag + " moreKeys", actualMoreKeys);
-        assertEquals(tag, expectedMoreKeys.length, actualMoreKeys.length);
-        for (int index = 0; index < actualMoreKeys.length; index++) {
+        assertEquals(tag, expectedMoreKeys.length, actualMoreKeys.size());
+        for (int index = 0; index < actualMoreKeys.size(); index++) {
             final int expectedLabelResId = expectedMoreKeys[index].mLabelResId;
             if (expectedLabelResId == ExpectedMoreKey.NO_LABEL) {
-                assertEquals(tag + " label " + index, null, actualMoreKeys[index].mLabel);
+                assertEquals(tag + " label " + index, null, actualMoreKeys.get(index).mLabel);
             } else {
                 final CharSequence expectedLabel = getContext().getText(expectedLabelResId);
-                assertEquals(tag + " label " + index, expectedLabel, actualMoreKeys[index].mLabel);
+                assertEquals(tag + " label " + index, expectedLabel, actualMoreKeys.get(index).mLabel);
             }
             final String expectedIconId = expectedMoreKeys[index].mIconId;
-            assertEquals(tag + " icon " + index, expectedIconId, actualMoreKeys[index].mIconId);
+            assertEquals(tag + " icon " + index, expectedIconId, actualMoreKeys.get(index).mIconId);
         }
     }
 
@@ -282,7 +286,7 @@ abstract class KeyboardLayoutSetNavigateMoreKeysBase extends KeyboardLayoutSetTe
 
     public void testMoreKeysOfEnterKey() {
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
-        final InputMethodSubtype subtype = richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype subtype = Subtypes.INSTANCE.makeSubtype(
                 Locale.US.toString(), SubtypeLocaleUtils.QWERTY);
 
         // Password field.

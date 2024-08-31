@@ -180,13 +180,17 @@ object Subtypes {
         }
     }
 
+    fun makeSubtype(locale: String, layout: String): InputMethodSubtype =
+        InputMethodSubtypeBuilder()
+            .setSubtypeLocale(locale)
+            .setSubtypeExtraValue("KeyboardLayoutSet=$layout")
+            .build()
+
     fun addLanguage(context: Context, language: Locale, layout: String) {
-        val value = subtypeToString(
-            InputMethodSubtypeBuilder()
-                .setSubtypeLocale(language.stripExtensionsIfNeeded().toString())
-                .setSubtypeExtraValue("KeyboardLayoutSet=$layout")
-                .build()
-        )
+        val value = subtypeToString(makeSubtype(
+            language.stripExtensionsIfNeeded().toString(), layout
+        ))
+
         val currentSetting = context.getSettingBlocking(SubtypesSetting)
 
         context.setSettingBlocking(SubtypesSetting.key, currentSetting + setOf(value))

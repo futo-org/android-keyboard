@@ -18,11 +18,13 @@ package org.futo.inputmethod.keyboard.internal;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import org.futo.inputmethod.event.Event;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.utils.RecapitalizeStatus;
 
-public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
+public class MockKeyboardSwitcher implements SwitchActions {
     public interface MockConstants {
         // Argument for {@link KeyboardState#onPressKey} and {@link KeyboardState#onReleaseKey}.
         public static final boolean NOT_SLIDING = false;
@@ -54,7 +56,6 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     // Following InputConnection's behavior. Simulating InputType.TYPE_TEXT_FLAG_CAP_WORDS.
     private int mAutoCapsState = MockConstants.CAP_MODE_OFF;
 
-    private boolean mIsInDoubleTapShiftKeyTimeout;
     private int mLongPressTimeoutCode;
 
     private final KeyboardState mState = new KeyboardState(this);
@@ -81,48 +82,9 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mAutoCapsState = autoCaps;
     }
 
-    public void expireDoubleTapTimeout() {
-        mIsInDoubleTapShiftKeyTimeout = false;
-    }
-
     @Override
-    public void setAlphabetKeyboard() {
-        mLayout = MockConstants.ALPHABET_UNSHIFTED;
-    }
-
-    @Override
-    public void setAlphabetManualShiftedKeyboard() {
-        mLayout = MockConstants.ALPHABET_MANUAL_SHIFTED;
-    }
-
-    @Override
-    public void setAlphabetAutomaticShiftedKeyboard() {
-        mLayout = MockConstants.ALPHABET_AUTOMATIC_SHIFTED;
-    }
-
-    @Override
-    public void setAlphabetShiftLockedKeyboard() {
-        mLayout = MockConstants.ALPHABET_SHIFT_LOCKED;
-    }
-
-    @Override
-    public void setAlphabetShiftLockShiftedKeyboard() {
-        mLayout = MockConstants.ALPHABET_SHIFT_LOCK_SHIFTED;
-    }
-
-    @Override
-    public void setSymbolsKeyboard() {
-        mLayout = MockConstants.SYMBOLS_UNSHIFTED;
-    }
-
-    @Override
-    public void setSymbolsShiftedKeyboard() {
-        mLayout = MockConstants.SYMBOLS_SHIFTED;
-    }
-
-    @Override
-    public void setEmojiKeyboard() {
-        // Just ignore.
+    public void setKeyboard(@NonNull KeyboardLayoutElement element) {
+        mLayout = element.getElementId();
     }
 
     @Override
@@ -131,27 +93,12 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onUpdateShiftState(currentAutoCapsState, currentRecapitalizeState);
     }
 
-    @Override
-    public void startDoubleTapShiftKeyTimer() {
-        mIsInDoubleTapShiftKeyTimeout = true;
-    }
-
-    @Override
-    public void cancelDoubleTapShiftKeyTimer() {
-        mIsInDoubleTapShiftKeyTimeout = false;
-    }
-
-    @Override
-    public boolean isInDoubleTapShiftKeyTimeout() {
-        return mIsInDoubleTapShiftKeyTimeout;
-    }
-
     public void updateShiftState() {
         mState.onUpdateShiftState(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
     }
 
     public void loadKeyboard() {
-        mState.onLoadKeyboard(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+        mState.onLoadKeyboard(null, mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
     }
 
     public void saveKeyboardState() {

@@ -24,6 +24,7 @@ import org.futo.inputmethod.keyboard.layout.LayoutBase;
 import org.futo.inputmethod.keyboard.layout.Qwerty;
 import org.futo.inputmethod.keyboard.layout.customizer.EnglishCustomizer;
 import org.futo.inputmethod.keyboard.layout.expected.ExpectedKey;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 
 import java.util.Locale;
 
@@ -36,9 +37,9 @@ public class TestsSplitLayoutQwertyEnglishUS extends LayoutTestsBase {
     private static final LayoutBase LAYOUT = new Qwerty(new EnglishSplitCustomizer(LOCALE));
 
     @Override
-    protected KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
-            final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
-            final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
+    protected KeyboardLayoutSetV2 createKeyboardLayoutSet(final InputMethodSubtype subtype,
+                                                          final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
+                                                          final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
         return super.createKeyboardLayoutSet(subtype, editorInfo, voiceInputKeyEnabled,
             languageSwitchKeyEnabled, true /* splitLayoutEnabled */);
     }

@@ -56,7 +56,7 @@ public class AdditionalSubtypeUtilsTests {
      * final int SUBTYPE_ID_EN_US_DVORAK = Arrays.hashCode(new Object[] {
      *         "en_US",
      *         "keyboard",
-     *         "KeyboardLayoutSet=dvorak"
+     *         "KeyboardLayoutSetV2=dvorak"
      *                 + ",AsciiCapable"
      *                 + ",UntranslatableReplacementStringInSubtypeName=Dvorak"
      *                 + ",EmojiCapable"
@@ -67,16 +67,16 @@ public class AdditionalSubtypeUtilsTests {
      */
     private static int SUBTYPE_ID_EN_US_DVORAK = 0xb3c0cc56;
     private static String EXTRA_VALUE_EN_US_DVORAK_ICS =
-            "KeyboardLayoutSet=dvorak" +
+            "KeyboardLayoutSetV2=dvorak" +
             ",AsciiCapable" +
             ",isAdditionalSubtype";
     private static String EXTRA_VALUE_EN_US_DVORAK_JELLY_BEAN =
-            "KeyboardLayoutSet=dvorak" +
+            "KeyboardLayoutSetV2=dvorak" +
             ",AsciiCapable" +
             ",UntranslatableReplacementStringInSubtypeName=Dvorak" +
             ",isAdditionalSubtype";
     private static String EXTRA_VALUE_EN_US_DVORAK_KITKAT =
-            "KeyboardLayoutSet=dvorak" +
+            "KeyboardLayoutSetV2=dvorak" +
             ",AsciiCapable" +
             ",UntranslatableReplacementStringInSubtypeName=Dvorak" +
             ",EmojiCapable" +
@@ -90,7 +90,7 @@ public class AdditionalSubtypeUtilsTests {
      * final int SUBTYPE_ID_ZZ_AZERTY = Arrays.hashCode(new Object[] {
      *         "zz",
      *         "keyboard",
-     *         "KeyboardLayoutSet=azerty"
+     *         "KeyboardLayoutSetV2=azerty"
      *                 + ",AsciiCapable"
      *                 + ",EmojiCapable"
      *                 + ",isAdditionalSubtype",
@@ -100,11 +100,11 @@ public class AdditionalSubtypeUtilsTests {
      */
     private static int SUBTYPE_ID_ZZ_AZERTY = 0x5b6be697;
     private static String EXTRA_VALUE_ZZ_AZERTY_ICS =
-            "KeyboardLayoutSet=azerty" +
+            "KeyboardLayoutSetV2=azerty" +
             ",AsciiCapable" +
             ",isAdditionalSubtype";
     private static String EXTRA_VALUE_ZZ_AZERTY_KITKAT =
-            "KeyboardLayoutSet=azerty" +
+            "KeyboardLayoutSetV2=azerty" +
             ",AsciiCapable" +
             ",EmojiCapable" +
             ",isAdditionalSubtype";
