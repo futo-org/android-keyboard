@@ -35,7 +35,6 @@ import java.util.Locale;
 
 @SmallTest
 public class KeyboardLayoutSetNavigateMoreKeysTest extends KeyboardLayoutSetTestsBase {
-    // !icon/action_clipboard_history|!code/action_clipboard_history,!icon/action_emoji|!code/action_emoji,!icon/previous_key|!code/key_action_previous,!icon/next_key|!code/key_action_next,!icon/action_undo|!code/action_undo,!icon/action_redo|!code/action_redo
     private ExpectedMoreKey mSwitchLanguageMoreKey = new ExpectedMoreKey("action_switch_language");
     private ExpectedMoreKey mTextEditMoreKey = new ExpectedMoreKey("action_text_edit");
     private ExpectedMoreKey mClipboardHistoryMoreKey = new ExpectedMoreKey("action_clipboard_history");
@@ -90,7 +89,6 @@ public class KeyboardLayoutSetNavigateMoreKeysTest extends KeyboardLayoutSetTest
         } else {
             assertTrue(tag + " fixedOrder", actualKey.isMoreKeysFixedOrder());
             assertTrue(tag + " fixedColumn", actualKey.isMoreKeysFixedColumn());
-            // TODO: Can't handle multiple rows of more keys.
             assertEquals(tag + " column",
                     mEnterMoreKeysExpectedColumnCount, actualKey.getMoreKeysColumnNumber());
         }

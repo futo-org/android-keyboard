@@ -58,9 +58,9 @@ public class KeyboardLayout {
         for (int i = 0; i < layoutKeys.size(); i++) {
             Key key = layoutKeys.get(i);
             mKeyCodes[i] = Character.toLowerCase(key.getCode());
-            mKeyXCoordinates[i] = key.getX();
+            mKeyXCoordinates[i] = key.getDrawX();
             mKeyYCoordinates[i] = key.getY();
-            mKeyWidths[i] = key.getWidth();
+            mKeyWidths[i] = key.getDrawWidth();
             mKeyHeights[i] = key.getHeight();
         }
     }

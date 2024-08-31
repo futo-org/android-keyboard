@@ -42,39 +42,39 @@ class KeyboardLayoutTest {
         Assert.assertEquals(0, keyboardLayout.keyYCoordinates.size.toLong())
 
         val key1 = Key(
-            code = 101,
+            code = 102,
             label = "label1",
             hintLabel = "101hint",
-            width = 1100,
-            height = 1101,
-            horizontalGap = 10,
-            verticalGap = 10,
             actionFlags = 102,
             labelFlags = 103,
             visualStyle = KeyVisualStyle.Normal,
             x = 105,
-            y = 106
+            y = 106,
+
+            // Note: The old Key constructor subtracted width automatically, the new one
+            // requires the caller to provide dimensions with gap subtracted
+            width = 1100 - 10,
+            height = 1101 - 10,
+            horizontalGap = 10,
+            verticalGap = 10,
         )
 
         val key2 = Key(
-            code = 201,
+            code = 103,
             label = "label2",
             hintLabel = "201hint",
-            width = 2100,
-            height = 2101,
-            horizontalGap = 10,
-            verticalGap = 10,
             actionFlags = 202,
             labelFlags = 203,
             visualStyle = KeyVisualStyle.Normal,
             x = 205,
-            y = 206
+            y = 206,
+
+            width = 2100 - 10,
+            height = 2101 - 10,
+            horizontalGap = 10,
+            verticalGap = 10,
         )
 
-        //Key key1 = new Key("label1", 101, 102, "101", "101hint", 103, 104, 105, 106, 1100, 1101,
-        //        10, 10);
-        //Key key2 = new Key("label2", 201, 103, "201", "201hint", 203, 204, 205, 206, 2100, 2101,
-        //        10, 10);
         val sortedKeys = ArrayList<Key>(2)
         sortedKeys.add(key1)
         sortedKeys.add(key2)
