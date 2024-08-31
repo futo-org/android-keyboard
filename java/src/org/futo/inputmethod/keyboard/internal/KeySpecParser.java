@@ -246,6 +246,11 @@ public final class KeySpecParser {
         final int labelEnd = indexOfLabelEnd(keySpec);
         final String iconName = getBeforeLabelEnd(keySpec, labelEnd)
                 .substring(KeyboardIconsSet.PREFIX_ICON.length());
+
+        if(!KeyboardIconsSet.iconExists(iconName)) {
+            throw new IllegalArgumentException("Icon does not exist: " + iconName);
+        }
+
         return iconName;
     }
 

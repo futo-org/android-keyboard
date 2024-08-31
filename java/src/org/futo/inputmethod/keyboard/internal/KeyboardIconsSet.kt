@@ -13,66 +13,83 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.futo.inputmethod.keyboard.internal
 
-package org.futo.inputmethod.keyboard.internal;
+import android.content.res.TypedArray
+import android.graphics.drawable.Drawable
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider
+import org.futo.inputmethod.latin.uix.actions.AllActionsMap
 
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.util.SparseIntArray;
-
-import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
-import org.futo.inputmethod.latin.R;
-
-import java.util.HashMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public final class KeyboardIconsSet {
-    private static final String TAG = KeyboardIconsSet.class.getSimpleName();
-
-    public static final String PREFIX_ICON = "!icon/";
-    public static final String ICON_UNDEFINED = "";
-
-    private static final String NAME_UNDEFINED = "undefined";
-    public static final String NAME_SHIFT_KEY = "shift_key";
-    public static final String NAME_SHIFT_KEY_SHIFTED = "shift_key_shifted";
-    public static final String NAME_DELETE_KEY = "delete_key";
-    public static final String NAME_SETTINGS_KEY = "settings_key";
-    public static final String NAME_SPACE_KEY = "space_key";
-    public static final String NAME_SPACE_KEY_FOR_NUMBER_LAYOUT = "space_key_for_number_layout";
-    public static final String NAME_ENTER_KEY = "enter_key";
-    public static final String NAME_GO_KEY = "go_key";
-    public static final String NAME_SEARCH_KEY = "search_key";
-    public static final String NAME_SEND_KEY = "send_key";
-    public static final String NAME_NEXT_KEY = "next_key";
-    public static final String NAME_DONE_KEY = "done_key";
-    public static final String NAME_PREVIOUS_KEY = "previous_key";
-    public static final String NAME_TAB_KEY = "tab_key";
-    public static final String NAME_SHORTCUT_KEY = "shortcut_key";
-    public static final String NAME_SHORTCUT_KEY_DISABLED = "shortcut_key_disabled";
-    public static final String NAME_LANGUAGE_SWITCH_KEY = "language_switch_key";
-    public static final String NAME_ZWNJ_KEY = "zwnj_key";
-    public static final String NAME_ZWJ_KEY = "zwj_key";
-    public static final String NAME_EMOJI_ACTION_KEY = "emoji_action_key";
-    public static final String NAME_EMOJI_NORMAL_KEY = "emoji_normal_key";
-    public static final String NAME_NUMPAD = "numpad";
-
-    private DynamicThemeProvider provider;
-    public void loadIcons(final TypedArray keyboardAttrs, @Nullable DynamicThemeProvider provider) {
-        this.provider = provider;
+class KeyboardIconsSet {
+    private var provider: DynamicThemeProvider? = null
+    fun loadIcons(keyboardAttrs: TypedArray?, provider: DynamicThemeProvider?) {
+        this.provider = provider
     }
 
-    @Nullable
-    public Drawable getIconDrawable(final String iconId) {
-        return provider.getIcon(iconId);
+    fun getIconDrawable(iconId: String?): Drawable? {
+        return provider!!.getIcon(iconId!!)
     }
 
-    private static void setDefaultBounds(final Drawable icon)  {
-        if (icon != null) {
-            icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+    companion object {
+        private val TAG: String = KeyboardIconsSet::class.java.simpleName
+
+        const val PREFIX_ICON: String = "!icon/"
+        const val ICON_UNDEFINED: String = ""
+
+        const val NAME_UNDEFINED = "undefined"
+        const val NAME_SHIFT_KEY: String = "shift_key"
+        const val NAME_SHIFT_KEY_SHIFTED: String = "shift_key_shifted"
+        const val NAME_DELETE_KEY: String = "delete_key"
+        const val NAME_SETTINGS_KEY: String = "settings_key"
+        const val NAME_SPACE_KEY: String = "space_key"
+        const val NAME_SPACE_KEY_FOR_NUMBER_LAYOUT: String = "space_key_for_number_layout"
+        const val NAME_ENTER_KEY: String = "enter_key"
+        const val NAME_GO_KEY: String = "go_key"
+        const val NAME_SEARCH_KEY: String = "search_key"
+        const val NAME_SEND_KEY: String = "send_key"
+        const val NAME_NEXT_KEY: String = "next_key"
+        const val NAME_DONE_KEY: String = "done_key"
+        const val NAME_PREVIOUS_KEY: String = "previous_key"
+        const val NAME_TAB_KEY: String = "tab_key"
+        const val NAME_ZWNJ_KEY: String = "zwnj_key"
+        const val NAME_ZWJ_KEY: String = "zwj_key"
+        const val NAME_EMOJI_ACTION_KEY: String = "emoji_action_key"
+        const val NAME_EMOJI_NORMAL_KEY: String = "emoji_normal_key"
+        const val NAME_NUMPAD: String = "numpad"
+
+        val validIcons = mutableListOf(
+            NAME_SHIFT_KEY,
+            NAME_SHIFT_KEY_SHIFTED,
+            NAME_DELETE_KEY,
+            NAME_SETTINGS_KEY,
+            NAME_SPACE_KEY,
+            NAME_SPACE_KEY_FOR_NUMBER_LAYOUT,
+            NAME_ENTER_KEY,
+            NAME_GO_KEY,
+            NAME_SEARCH_KEY,
+            NAME_SEND_KEY,
+            NAME_NEXT_KEY,
+            NAME_DONE_KEY,
+            NAME_PREVIOUS_KEY,
+            NAME_TAB_KEY,
+            NAME_ZWNJ_KEY,
+            NAME_ZWJ_KEY,
+            NAME_EMOJI_ACTION_KEY,
+            NAME_EMOJI_NORMAL_KEY,
+            NAME_NUMPAD
+        ).apply {
+            AllActionsMap.keys.forEachIndexed { i, it ->
+                // by number (action_0)
+                add("action_${i}")
+
+                // by key (action_copy)
+                add("action_${it}")
+            }
+        }.toSet()
+
+        @JvmStatic
+        fun iconExists(iconId: String?): Boolean {
+            return validIcons.contains(iconId ?: return false)
         }
     }
 }

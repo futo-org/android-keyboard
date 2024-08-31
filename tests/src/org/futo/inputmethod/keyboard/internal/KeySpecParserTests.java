@@ -35,7 +35,7 @@ public final class KeySpecParserTests extends KeySpecParserTestsBase {
         final String actualIcon = KeySpecParser.getIconId(keySpecResolved);
         final int actualCode = KeySpecParser.getCode(keySpecResolved);
         assertEquals(message + " [label]", expectedLabel, actualLabel);
-        assertEquals(message + " [ouptputText]", expectedOutputText, actualOutputText);
+        assertEquals(message + " [outputText]", expectedOutputText, actualOutputText);
         assertEquals(message + " [icon]",
                 expectedIcon,
                 actualIcon);

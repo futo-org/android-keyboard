@@ -427,5 +427,9 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                 setPadding(padding, padding, padding, padding)
             }
         }
+
+        assert(icons.keys == KeyboardIconsSet.validIcons) {
+            "Icons differ. Missing: ${KeyboardIconsSet.validIcons - icons.keys}, extraneous: ${icons.keys - KeyboardIconsSet.validIcons}"
+        }
     }
 }
