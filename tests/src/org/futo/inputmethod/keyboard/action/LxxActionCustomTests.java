@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
+import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 @LargeTest
@@ -30,7 +31,10 @@ public class LxxActionCustomTests extends LxxActionTestsBase {
             final EditorInfo editorInfo = new EditorInfo();
             editorInfo.imeOptions = EditorInfo.IME_ACTION_UNSPECIFIED;
             editorInfo.actionLabel = "customLabel";
-            final ExpectedActionKey expectedKey = ExpectedActionKey.newLabelKey("customLabel");
+
+            // Changed from AOSP: Action labels are unused, most modern keyboards don't use them
+            // anymore
+            final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(KeyboardIconsSet.NAME_ENTER_KEY);
             doTestActionKey(tag, subtype, editorInfo, expectedKey);
         }
     }

@@ -64,7 +64,7 @@ public abstract class ExpectedKeyVisual {
 
         @Override
         public String getLabel() {
-            return mIconId;
+            return "";
         }
 
         @Override

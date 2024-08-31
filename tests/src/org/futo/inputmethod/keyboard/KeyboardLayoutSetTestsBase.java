@@ -28,6 +28,7 @@ import org.futo.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
+import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
@@ -89,11 +90,14 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
 
         mScreenMetrics = Settings.readScreenMetrics(res);
 
-        final InputMethodInfo imi = mRichImm.getInputMethodInfoOfThisIme();
-        final int subtypeCount = imi.getSubtypeCount();
-        for (int index = 0; index < subtypeCount; index++) {
-            mAllSubtypesList.add(imi.getSubtypeAt(index));
-        }
+        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "qwerty"));
+        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "pcqwerty"));
+        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "azerty"));
+        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "colemak"));
+        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.GERMANY.toString(), "qwertz"));
+        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.GERMANY.toString(), "german"));
+        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.GERMANY.toString(), "swiss"));
+        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(new Locale("ar").toString(), "arabic"));
     }
 
     @Override
