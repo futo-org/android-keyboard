@@ -25,7 +25,6 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import org.futo.inputmethod.compat.InputMethodSubtypeCompatUtils;
-import org.futo.inputmethod.keyboard.KeyboardLayoutSet.Builder;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;

@@ -76,8 +76,6 @@ public class KeyboardParams {
     public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
     @Nonnull
     public final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
-    @Nonnull
-    public final KeyStylesSet mKeyStyles = new KeyStylesSet(mTextsSet);
 
     @Nonnull
     private final UniqueKeysCache mUniqueKeysCache;

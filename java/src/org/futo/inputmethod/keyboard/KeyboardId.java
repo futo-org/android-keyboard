@@ -73,27 +73,6 @@ public final class KeyboardId {
 
     private final int mHashCode;
 
-    public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params) {
-        mKeyboardLayoutSetName = params.mSubtype.getKeyboardLayoutSetName();
-        mLocale = params.mSubtype.getLocale();
-        mWidth = params.mKeyboardWidth;
-        mHeight = params.mKeyboardHeight;
-        mMode = params.mMode;
-        mElementId = elementId;
-        mEditorInfo = params.mEditorInfo;
-        mClobberSettingsKey = params.mNoSettingsKey;
-        mBottomEmojiKeyEnabled = params.mBottomEmojiKeyEnabled;
-        mBottomActionKeyId = params.mBottomActionKeyId;
-        mCustomActionLabel = (mEditorInfo.actionLabel != null)
-                ? mEditorInfo.actionLabel.toString() : null;
-        mHasShortcutKey = params.mVoiceInputKeyEnabled;
-        mIsSplitLayout = params.mIsSplitLayoutEnabled;
-        mNumberRow = params.mNumberRow || params.mIsPasswordField;
-        mLongPressKeySettings = params.mLongPressKeySettings;
-
-        mHashCode = computeHashCode(this);
-    }
-
     public KeyboardId(String mKeyboardLayoutSetName, Locale mLocale, int mWidth, int mHeight, int mMode, int mElementId, EditorInfo mEditorInfo, boolean mClobberSettingsKey, boolean mBottomEmojiKeyEnabled, int mBottomActionKeyId, String mCustomActionLabel, boolean mHasShortcutKey, boolean mIsSplitLayout, boolean mNumberRow, LongPressKeySettings mLongPressKeySettings) {
         this.mKeyboardLayoutSetName = mKeyboardLayoutSetName;
         this.mLocale = mLocale;

@@ -21,7 +21,6 @@ import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
-import org.futo.inputmethod.keyboard.KeyboardLayoutSet;
 import org.futo.inputmethod.keyboard.layout.LayoutBase;
 import org.futo.inputmethod.keyboard.layout.Qwerty;
 import org.futo.inputmethod.keyboard.layout.customizer.EnglishCustomizer;

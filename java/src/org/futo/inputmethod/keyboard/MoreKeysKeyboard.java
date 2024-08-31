@@ -17,14 +17,15 @@
 package org.futo.inputmethod.keyboard;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Paint;
 
 import org.futo.inputmethod.annotations.UsedForTesting;
-import org.futo.inputmethod.keyboard.internal.KeyboardBuilder;
 import org.futo.inputmethod.keyboard.internal.KeyboardParams;
 import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.StringUtils;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.List;
@@ -258,11 +259,13 @@ public final class MoreKeysKeyboard extends Keyboard {
         }
     }
 
-    public static class Builder extends KeyboardBuilder<MoreKeysKeyboardParams> {
+    public static class Builder {
         private final Key mParentKey;
 
         private static final float LABEL_PADDING_RATIO = 0.2f;
         private static final float DIVIDER_RATIO = 0.2f;
+
+        private MoreKeysKeyboardParams mParams = new MoreKeysKeyboardParams();
 
         /**
          * The builder of MoreKeysKeyboard.
@@ -278,8 +281,17 @@ public final class MoreKeysKeyboard extends Keyboard {
         public Builder(final Context context, final Key key, final Keyboard keyboard,
                 final boolean isSingleMoreKeyWithPreview, final int keyPreviewVisibleWidth,
                 final int keyPreviewVisibleHeight, final Paint paintToMeasure) {
-            super(context, new MoreKeysKeyboardParams());
-            load(keyboard.mMoreKeysTemplate, keyboard.mId);
+            final Resources res = context.getResources();
+            mParams.GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
+            mParams.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
+
+            DynamicThemeProvider provider = DynamicThemeProvider.obtainFromContext(context);
+
+            mParams.mIconsSet.loadIcons(null, provider);
+            mParams.mThemeId = 3;
+            mParams.mTextsSet.setLocale(keyboard.mId.mLocale, context);
+
+            mParams.mProximityCharsCorrectionEnabled = false;
 
             // TODO: More keys keyboard's vertical gap is currently calculated heuristically.
             // Should revise the algorithm.
@@ -329,7 +341,6 @@ public final class MoreKeysKeyboard extends Keyboard {
             return maxWidth;
         }
 
-        @Override
         @Nonnull
         public MoreKeysKeyboard build() {
             final MoreKeysKeyboardParams params = mParams;

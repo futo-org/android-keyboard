@@ -1,7 +1,9 @@
 package org.futo.inputmethod.latin.uix
 
+import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
+import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
@@ -54,6 +56,20 @@ interface DynamicThemeProvider {
 
         fun getDrawableOrDefault(i: Int, keyAttr: TypedArray, provider: DynamicThemeProvider?): Drawable? {
             return (provider?.getDrawable(i)) ?: keyAttr.getDrawable(i)
+        }
+
+        @JvmStatic
+        fun obtainFromContext(context: Context): DynamicThemeProvider {
+            if (context is DynamicThemeProviderOwner) {
+                return context.getDrawableProvider()
+            } else if (context is ContextThemeWrapper) {
+                val baseContext = context.baseContext
+                if (baseContext is DynamicThemeProviderOwner) {
+                    return baseContext.getDrawableProvider()
+                }
+            }
+
+            throw IllegalArgumentException("Could not find DynamicThemeProviderOwner")
         }
     }
 }

@@ -372,8 +372,6 @@ data class BaseKey(
 
     /**
      * If set, overrides a default hint from the value of moreKeys.
-     *
-     * TODO: Currently does not override
      */
     val hint: String? = null,
 ) : AbstractKey {

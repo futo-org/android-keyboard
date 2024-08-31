@@ -268,6 +268,18 @@ Stack trace: ${e.stackTrace.map { it.toString() }}
             return errorLayout.build(context, keyboardParams, layoutParams)
         }
     }
+
+    companion object {
+        @JvmStatic
+        fun onSystemLocaleChanged() {
+
+        }
+
+        @JvmStatic
+        fun onKeyboardThemeChanged() {
+
+        }
+    }
 }
 
 public fun getKeyboardMode(editorInfo: EditorInfo): Int {

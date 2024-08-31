@@ -18,21 +18,15 @@ package org.futo.inputmethod.latin.spellcheck;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.service.textservice.SpellCheckerService;
-import android.text.InputType;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 import android.view.textservice.SuggestionsInfo;
 
 import org.futo.inputmethod.keyboard.Keyboard;
-import org.futo.inputmethod.keyboard.KeyboardId;
-import org.futo.inputmethod.keyboard.KeyboardLayoutSet;
 import org.futo.inputmethod.latin.DictionaryFacilitator;
 import org.futo.inputmethod.latin.DictionaryFacilitatorLruCache;
 import org.futo.inputmethod.latin.NgramContext;
 import org.futo.inputmethod.latin.R;
-import org.futo.inputmethod.latin.RichInputMethodSubtype;
 import org.futo.inputmethod.latin.SuggestedWords;
 import org.futo.inputmethod.latin.common.ComposedData;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
@@ -227,19 +221,20 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         final String keyboardLayoutName = getKeyboardLayoutNameForLocale(locale);
         final InputMethodSubtype subtype = AdditionalSubtypeUtils.createDummyAdditionalSubtype(
                 locale.toString(), keyboardLayoutName);
-        final KeyboardLayoutSet keyboardLayoutSet = createKeyboardSetForSpellChecker(subtype);
-        return keyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
+        throw new UnsupportedOperationException("TODO: Implement");
+        //final KeyboardLayoutSet keyboardLayoutSet = createKeyboardSetForSpellChecker(subtype);
+        //return keyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
     }
 
-    private KeyboardLayoutSet createKeyboardSetForSpellChecker(final InputMethodSubtype subtype) {
+    /*private KeyboardLayoutSet createKeyboardSetForSpellChecker(final InputMethodSubtype subtype) {
         final EditorInfo editorInfo = new EditorInfo();
         editorInfo.inputType = InputType.TYPE_CLASS_TEXT;
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(this, editorInfo);
         builder.setKeyboardGeometry(
                 SPELLCHECKER_DUMMY_KEYBOARD_WIDTH, SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT);
         builder.setSubtype(RichInputMethodSubtype.getRichInputMethodSubtype(subtype));
-        builder.setIsSpellChecker(true /* isSpellChecker */);
+        builder.setIsSpellChecker(true);
         builder.disableTouchPositionCorrectionData();
         return builder.build();
-    }
+    }*/
 }

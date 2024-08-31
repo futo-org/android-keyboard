@@ -22,10 +22,9 @@ import android.content.Intent;
 import android.os.Process;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
-import android.view.inputmethod.InputMethodSubtype;
 
-import org.futo.inputmethod.keyboard.KeyboardLayoutSet;
 import org.futo.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 
 /**
  * This class detects the {@link Intent#ACTION_MY_PACKAGE_REPLACED} broadcast intent when this IME
@@ -63,7 +62,7 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             Log.i(TAG, "Boot has been completed");
         } else if (Intent.ACTION_LOCALE_CHANGED.equals(intentAction)) {
             Log.i(TAG, "System locale changed");
-            KeyboardLayoutSet.onSystemLocaleChanged();
+            KeyboardLayoutSetV2.onSystemLocaleChanged();
         }
 
         // The process that hosts this broadcast receiver is invoked and remains alive even after

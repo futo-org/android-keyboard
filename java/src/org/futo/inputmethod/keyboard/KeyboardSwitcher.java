@@ -112,7 +112,7 @@ public final class KeyboardSwitcher implements SwitchActions {
                 || !mThemeContext.getResources().equals(context.getResources())) {
             mKeyboardTheme = keyboardTheme;
             mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
-            KeyboardLayoutSet.onKeyboardThemeChanged();
+            KeyboardLayoutSetV2.onKeyboardThemeChanged();
             themeSwitchPending = false;
             return true;
         }

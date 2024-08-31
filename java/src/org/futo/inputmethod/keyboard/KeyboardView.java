@@ -30,14 +30,11 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 
 import org.futo.inputmethod.keyboard.internal.KeyDrawParams;
 import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
-import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
@@ -138,16 +135,7 @@ public class KeyboardView extends View {
         final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.Keyboard_Key, defStyle, R.style.KeyboardView);
 
-        assert(context instanceof ContextThemeWrapper);
-
-        if(((ContextThemeWrapper) context).getBaseContext() instanceof DynamicThemeProviderOwner) {
-            mDrawableProvider = ((DynamicThemeProviderOwner) ((ContextThemeWrapper) context).getBaseContext()).getDrawableProvider();
-        } else if(context instanceof DynamicThemeProviderOwner) {
-            mDrawableProvider = ((DynamicThemeProviderOwner) context).getDrawableProvider();
-        } else {
-            throw new IllegalStateException("Failed to obtain DynamicThemeProvider");
-        }
-
+        mDrawableProvider = DynamicThemeProvider.obtainFromContext(context);
 
         boolean isMoreKeys = keyAttr.getBoolean(R.styleable.Keyboard_Key_isMoreKey, false);
         boolean isMoreKeysAction = keyAttr.getBoolean(R.styleable.Keyboard_Key_isAction, false);

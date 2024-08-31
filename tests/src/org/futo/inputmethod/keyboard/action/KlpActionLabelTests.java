@@ -21,7 +21,6 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
-import org.futo.inputmethod.keyboard.KeyboardLayoutSet;
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet;
 import org.futo.inputmethod.keyboard.internal.KeyboardTextsSet;
 import org.futo.inputmethod.latin.R;

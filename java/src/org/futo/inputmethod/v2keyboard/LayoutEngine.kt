@@ -1,7 +1,6 @@
 package org.futo.inputmethod.v2keyboard
 
 import android.content.Context
-import android.view.ContextThemeWrapper
 import androidx.compose.ui.unit.Dp
 import org.futo.inputmethod.keyboard.KeyConsts
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement
@@ -9,7 +8,6 @@ import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
-import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
@@ -577,17 +575,9 @@ data class LayoutEngine(
         params.mBaseHeight = totalKeyboardHeight
         params.mDefaultRowHeight = rowHeightPx.roundToInt()
 
-        var provider: DynamicThemeProvider? = null
-        if (context is DynamicThemeProviderOwner) {
-            provider = (context as DynamicThemeProviderOwner).getDrawableProvider()
-        } else if (context is ContextThemeWrapper) {
-            val baseContext = (context as ContextThemeWrapper).baseContext
-            if (baseContext is DynamicThemeProviderOwner) {
-                provider = (baseContext as DynamicThemeProviderOwner).getDrawableProvider()
-            }
-        }
+        val provider = DynamicThemeProvider.obtainFromContext(context)
 
-        params.mIconsSet.loadIcons(null, provider!!)
+        params.mIconsSet.loadIcons(null, provider)
         params.mThemeId = 3
         params.mTextsSet.setLocale(params.mId.locale, context)
 

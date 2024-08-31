@@ -22,7 +22,6 @@ import android.view.inputmethod.InputMethodSubtype;
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardId;
-import org.futo.inputmethod.keyboard.KeyboardLayoutSet;
 import org.futo.inputmethod.keyboard.KeyboardLayoutSetTestsBase;
 import org.futo.inputmethod.keyboard.KeyboardTheme;
 import org.futo.inputmethod.keyboard.layout.LayoutBase;
