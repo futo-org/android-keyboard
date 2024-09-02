@@ -156,14 +156,7 @@ class KeyboardLayoutSetV2 internal constructor(
     )
 
     private fun getKeyboardLayoutForElement(element: KeyboardLayoutElement): org.futo.inputmethod.v2keyboard.Keyboard {
-        return elements[element] ?: run {
-            // ShiftLocked is equivalent to Shifted
-            if(element.page == KeyboardLayoutPage.ShiftLocked) {
-                elements[element.copy(page = KeyboardLayoutPage.Shifted)]
-            } else {
-                null
-            }
-        } ?: run {
+        return elements[element.normalize()] ?: run {
             // If this is an alt layout, try to get the matching alt
             element.page.altIdx?.let { altIdx ->
                 val baseElement = element.copy(page = KeyboardLayoutPage.Base)

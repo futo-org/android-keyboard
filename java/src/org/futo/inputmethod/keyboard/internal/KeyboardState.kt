@@ -19,6 +19,7 @@ enum class KeyboardLayoutKind {
 enum class KeyboardLayoutPage(val locked: Boolean, val altIdx: Int? = null) {
     Base(true),
     Shifted(false),
+    ManuallyShifted(false),
     ShiftLocked(true),
     Alt0(false, 0),
     Alt1(false, 1),
@@ -26,28 +27,44 @@ enum class KeyboardLayoutPage(val locked: Boolean, val altIdx: Int? = null) {
     Alt3(false, 3),
 }
 
+/** Normalizes to the base page (for shifted variationsu) */
+fun KeyboardLayoutPage.normalize(): KeyboardLayoutPage =
+    when(this) {
+        KeyboardLayoutPage.ManuallyShifted -> KeyboardLayoutPage.Shifted
+        KeyboardLayoutPage.ShiftLocked -> KeyboardLayoutPage.Shifted
+        else -> this
+    }
+
 data class KeyboardLayoutElement(
     val kind: KeyboardLayoutKind,
     val page: KeyboardLayoutPage
 ) {
+    fun normalize(): KeyboardLayoutElement =
+        this.copy(kind = kind, page = page.normalize())
+
     val elementId: Int
         get() = when(kind) {
             KeyboardLayoutKind.Alphabet -> when(page) {
                 KeyboardLayoutPage.Base -> KeyboardId.ELEMENT_ALPHABET
                 KeyboardLayoutPage.Shifted -> KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED
+                KeyboardLayoutPage.ManuallyShifted -> KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED
                 KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED
                 else -> KeyboardId.ELEMENT_ALPHABET
             }
 
             KeyboardLayoutKind.Symbols -> when(page) {
                 KeyboardLayoutPage.Base -> KeyboardId.ELEMENT_SYMBOLS
-                KeyboardLayoutPage.Shifted, KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_SYMBOLS_SHIFTED
+                KeyboardLayoutPage.Shifted,
+                KeyboardLayoutPage.ManuallyShifted,
+                KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_SYMBOLS_SHIFTED
                 else -> KeyboardId.ELEMENT_SYMBOLS
             }
 
             KeyboardLayoutKind.Phone -> when(page) {
                 KeyboardLayoutPage.Base -> KeyboardId.ELEMENT_PHONE
-                KeyboardLayoutPage.Shifted, KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_PHONE_SYMBOLS
+                KeyboardLayoutPage.Shifted,
+                KeyboardLayoutPage.ManuallyShifted,
+                KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_PHONE_SYMBOLS
                 else -> KeyboardId.ELEMENT_PHONE
             }
 
@@ -59,7 +76,7 @@ data class KeyboardLayoutElement(
         fun fromElementId(value: Int): KeyboardLayoutElement =
             when(value) {
                 KeyboardId.ELEMENT_ALPHABET                    -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.Base)
-                KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED     -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.Shifted)
+                KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED     -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.ManuallyShifted)
                 KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED  -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.Shifted)
                 KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED       -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.ShiftLocked)
                 KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.ShiftLocked)
@@ -228,12 +245,18 @@ class KeyboardState(private val switchActions: SwitchActions) {
 
     private val shifted: Boolean
         get() = currentLayout.page == KeyboardLayoutPage.Shifted ||
+                currentLayout.page == KeyboardLayoutPage.ManuallyShifted ||
                 currentLayout.page == KeyboardLayoutPage.ShiftLocked
-    private fun toggleShift(to: Boolean = !shifted) {
+    private fun toggleShift(to: Boolean = !shifted, manually: Boolean = false) {
         setLayout(currentLayout.copy(page = when {
             to -> {
                 if(isAlphabet) alphabetShiftState.setShifted(true)
-                KeyboardLayoutPage.Shifted
+
+                if(manually) {
+                    KeyboardLayoutPage.ManuallyShifted
+                } else {
+                    KeyboardLayoutPage.Shifted
+                }
             }
 
             else -> {
@@ -290,7 +313,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
         when (code) {
             Constants.CODE_SHIFT -> {
                 shiftKeyState.onPress()
-                toggleShift()
+                toggleShift(manually = true)
                 onShiftTapForShiftLockTimer()
             }
             Constants.CODE_CAPSLOCK -> {
@@ -392,7 +415,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
         if(autoCapsFlags != Constants.TextUtils.CAP_MODE_OFF) {
             // Only shift from base layout. If we are in an alt layout, do nothing.
             if(currentLayout.page == KeyboardLayoutPage.Base) {
-                toggleShift(true)
+                toggleShift(true, manually = false)
             }
 
             return
