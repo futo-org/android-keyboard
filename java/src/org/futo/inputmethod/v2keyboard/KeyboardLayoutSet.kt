@@ -180,16 +180,11 @@ class KeyboardLayoutSetV2 internal constructor(
             NumberRowMode.AlwaysDisabled   -> false
         }
 
-    private val keyboardHeightMultiplier = context.getSettingBlocking(KeyboardHeightMultiplierSetting)
-
     private val singularRowHeight: Double
         get() = params.height?.let { it / 4.0 } ?: run {
             (ResourceUtils.getDefaultKeyboardHeight(context.resources) / 4.0) *
                     keyboardHeightMultiplier
         }
-
-            // params.height?.let { it / 4.0 } ?: (50.0 * context.resources.displayMetrics.density * keyboardHeightMultiplier)
-
 
     private fun getRecommendedKeyboardHeight(): Int {
         val numRows = 4.0 +
@@ -263,14 +258,18 @@ Stack trace: ${e.stackTrace.map { it.toString() }}
     }
 
     companion object {
+        var keyboardHeightMultiplier: Float = 1.0f
+
         @JvmStatic
         fun onSystemLocaleChanged() {
 
         }
 
         @JvmStatic
-        fun onKeyboardThemeChanged() {
+        fun onKeyboardThemeChanged(context: Context) {
+            keyboardHeightMultiplier = context.getSettingBlocking(KeyboardHeightMultiplierSetting)
 
+            // This is where we would clear all caches if we had any
         }
     }
 }
