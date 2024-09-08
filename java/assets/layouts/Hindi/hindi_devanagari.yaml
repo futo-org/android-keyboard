@@ -1,0 +1,54 @@
+name: "Devanagari"
+description: Default Devanagari.
+languages: hi
+rows:
+  - numbers:
+      - {type: case, normal: ["ॉ", "ऑ", "!text/morekeys_symbols_1"], shifted: "ऑ"}
+      - {type: case, normal: ["१", "ॅ", "!text/morekeys_symbols_1"], shifted: "ॅ"}
+      - {type: case, normal: ["२", "`", "!text/morekeys_symbols_1"], shifted: "`"}
+      - {type: case, normal: ["३", "ॊ", "!text/morekeys_symbols_1"], shifted: "ॊ"}
+      - {type: case, normal: ["४", "ः", "!text/morekeys_symbols_1"], shifted: "ः"}
+      - {type: case, normal: ["५", "।", "!text/morekeys_symbols_1"], shifted: "।"}
+      - {type: case, normal: ["६", "@", "!text/morekeys_symbols_1"], shifted: ["६", "@"]}
+      - {type: case, normal: ["७", "ज्ञ", "!text/morekeys_symbols_1"], shifted: "ज्ञ"}
+      - {type: case, normal: ["८", "क्ष", "!text/morekeys_symbols_1"], shifted: "क्ष"}
+      - {type: case, normal: ["९", "त्र", "!text/morekeys_symbols_1"], shifted: "त्र"}
+      - {type: case, normal: ["०", "श्र", "!text/morekeys_symbols_1"], shifted: "श्र"} # doesnt fix it
+  - letters:
+      - {type: case, normal: ["ौ", "औ"], shifted: "औ"}
+      - {type: case, normal: ["ै", "ऐ"], shifted: "ऐ"}
+      - {type: case, normal: ["ा", "आ"], shifted: "आ"}
+      - {type: case, normal: ["ी", "ई"], shifted: "ई"}
+      - {type: case, normal: ["ू", "ऊ"], shifted: "ऊ"}
+      - {type: case, normal: ["ब", "भ"], shifted: "भ"}
+      - {type: case, normal: ["ह", "ङ"], shifted: "ङ"}
+      - {type: case, normal: ["ग", "घ"], shifted: "घ"}
+      - {type: case, normal: ["द", "ध"], shifted: "ध"}
+      - {type: case, normal: ["ज", "झ"], shifted: "झ"}
+      - {type: case, normal: ["ड", "ढ"], shifted: "ढ"}
+  - letters:
+        - {type: case, normal: ["ो", "ओ"], shifted: "ओ"}
+        - {type: case, normal: ["े", "ए"], shifted: "ए"}
+        - {type: case, normal: ["्", "अ"], shifted: "अ"}
+        - {type: case, normal: ["ि", "इ"], shifted: "इ"}
+        - {type: case, normal: ["ु", "उ"], shifted: "उ"}
+        - {type: case, normal: ["प", "फ"], shifted: "फ"}
+        - {type: case, normal: ["र", "ऋ"], shifted: "ऋ"}
+        - {type: case, normal: ["क", "ख"], shifted: "ख"}
+        - {type: case, normal: ["त", "थ"], shifted: "थ"}
+        - {type: case, normal: ["च", "छ"], shifted: "छ"}
+        - {type: case, normal: ["ट", "ठ"], shifted: "ठ"}
+  - letters:
+      - $shift
+      - {type: case, normal: ["़", "ृ"], shifted: "ृ"}
+      - {type: case, normal: ["ं", "ॐ"], shifted: "ॐ"}
+      - {type: case, normal: ["म", "ँ"], shifted: "ँ"}
+      - {type: case, normal: ["न", "ण"], shifted: "ण"}
+      - {type: case, normal: ["व", "ञ"], shifted: "ञ"}
+      - {type: case, normal: ["ल", "ळ"], shifted: "ळ"}
+      - {type: case, normal: ["स", "श"], shifted: "श"}
+      - {type: case, normal: ["ष", "("], shifted: ["ष", "("]}
+      - {type: case, normal: ["य", ")"], shifted: ["य", ")"]}
+      - $delete
+  - bottom: ["$symbols", "," , "$space", [".", "?", ","], "$enter"]
+numberRowMode: AlwaysEnabled
