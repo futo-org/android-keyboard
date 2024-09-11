@@ -278,7 +278,8 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * @return The context-specific description of the key.
      */
     public String getKeyDescription(final Key key) {
-        final EditorInfo editorInfo = mKeyboard.mId.mEditorInfo;
+//        final EditorInfo editorInfo = mKeyboard.mId.mEditorInfo; NPE?
+        final EditorInfo editorInfo = new EditorInfo();
         final boolean shouldObscure = AccessibilityUtils.getInstance().shouldObscureInput(editorInfo);
         final SettingsValues currentSettings = Settings.getInstance().getCurrent();
         final String keyCodeDescription = KeyCodeDescriptionMapper.getInstance().getDescriptionForKey(
