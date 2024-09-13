@@ -1,0 +1,5 @@
+name: "Colemak DH (ANSI)"
+rows:
+  - letters: q w f p b j l u y ;
+  - letters: a r s t g m n e i o
+  - letters: x c d v z k h
