@@ -89,6 +89,7 @@ public class SpanishCustomizer extends LayoutCustomizer {
                         "\u00E6", "\u0101", "\u00AA")
                 // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
                 .replaceKeyOfLabel(Spanish.ROW2_10, "\u00F1")
+                .setMoreKeysOf("\u00F1", "/")
                 // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
                 // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
                 // U+010D: "č" LATIN SMALL LETTER C WITH CARON

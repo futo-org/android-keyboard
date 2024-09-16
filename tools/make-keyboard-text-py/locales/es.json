@@ -91,5 +91,8 @@
     "keylabel": {},
     "keyhintlabel": {},
     "additional_morekeys": {},
-    "other": {}
+    "other": {},
+    "qwertysyms": {
+        "ñ": "/"
+    }
 }
