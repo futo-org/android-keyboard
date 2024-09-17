@@ -622,25 +622,13 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
         final int[] lastCoords = CoordinateUtils.newInstance();
         tracker.getLastCoordinates(lastCoords);
-        final boolean keyPreviewEnabled = mKeyPreviewDrawParams.isPopupEnabled();
-        // The more keys keyboard is usually horizontally aligned with the center of the parent key.
-        // If showMoreKeysKeyboardAtTouchedPoint is true and the key preview is disabled, the more
-        // keys keyboard is placed at the touch point of the parent key.
-        final int pointX = (mConfigShowMoreKeysKeyboardAtTouchedPoint && !keyPreviewEnabled)
-                ? CoordinateUtils.x(lastCoords)
-                : key.getX() + key.getWidth() / 2;
-        // The more keys keyboard is usually vertically aligned with the top edge of the parent key
-        // (plus vertical gap). If the key preview is enabled, the more keys keyboard is vertically
-        // aligned with the bottom edge of the visible part of the key preview.
-        // {@code mPreviewVisibleOffset} has been set appropriately in
-        // {@link KeyboardView#showKeyPreview(PointerTracker)}.
-        final int pointY;
-        if(key.isActionKey()) {
-            pointY = key.getY();
-        } else {
-            pointY = key.getY() + mKeyPreviewDrawParams.getVisibleOffset() + (keyPreviewEnabled ? key.getHeight() : key.getVerticalGap());
-        }
-        moreKeysKeyboardView.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
+
+        final int bottomPadding = mKeyPreviewChoreographer.getBottomPaddingForKey(getContext(), key);
+
+        final int pointX = key.getDrawX() + key.getDrawWidth() / 2;
+        final int pointY = key.getY() + key.getHeight() - bottomPadding;
+
+        moreKeysKeyboardView.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener, lastCoords);
         return moreKeysKeyboardView;
     }
 

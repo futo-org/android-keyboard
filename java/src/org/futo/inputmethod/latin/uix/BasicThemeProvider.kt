@@ -229,7 +229,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         colors[R.styleable.Keyboard_Key_keyHintLabelColor] = onKeyColorHalf
         colors[R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor] = onKeyColorHalf
         colors[R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor] = onKeyColorHalf
-        colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = onSecondary
         colors[R.styleable.MainKeyboardView_languageOnSpacebarTextColor] = onKeyColorHalf
         colors[R.styleable.MainKeyboardView_gestureTrailColor] = primary
         colors[R.styleable.MainKeyboardView_slidingKeyInputPreviewColor] = primary
@@ -316,11 +315,11 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
             },
 
             KeyVisualStyle.MoreKey to VisualStyleDescriptor(
-                backgroundDrawable = coloredRoundedRectangle(primaryContainer, dp(24.dp)),
+                backgroundDrawable = coloredRoundedRectangle(primaryContainer, dp(8.dp)),
                 foregroundColor = onPrimaryContainer,
 
-                backgroundDrawablePressed = coloredRoundedRectangle(onPrimaryContainer, dp(24.dp)),
-                foregroundColorPressed = primaryContainer
+                backgroundDrawablePressed = coloredRoundedRectangle(primary, dp(8.dp)),
+                foregroundColorPressed = onPrimary
             ),
 
             KeyVisualStyle.Functional to if(keyBorders) {
@@ -405,28 +404,17 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
             )
         }
 
-        keyFeedback = ShapeDrawable().apply {
-            paint.color = secondary
-            shape = RoundRectShape(
-                floatArrayOf(
-                    dp(8.dp), dp(8.dp), dp(8.dp), dp(8.dp),
-                    dp(8.dp), dp(8.dp), dp(8.dp), dp(8.dp),
-                ), null, null
-            )
-
-            intrinsicWidth = dp(48.dp).roundToInt()
-            intrinsicHeight = dp(24.dp).roundToInt()
-
-            setPadding(0, 0, 0, dp(50.dp).roundToInt())
+        keyFeedback = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(primaryContainer, primaryContainer),
+        ).apply {
+            cornerRadius = dp(8.dp)
         }
+
+        colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = onPrimaryContainer
 
         moreKeysTextColor = onPrimaryContainer
-        moreKeysKeyboardBackground = coloredRoundedRectangle(primaryContainer, dp(28.dp)).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val padding = dp(4.dp).roundToInt()
-                setPadding(padding, padding, padding, padding)
-            }
-        }
+        moreKeysKeyboardBackground = coloredRoundedRectangle(primaryContainer, dp(8.dp))
 
         assert(icons.keys == KeyboardIconsSet.validIcons) {
             "Icons differ. Missing: ${KeyboardIconsSet.validIcons - icons.keys}, extraneous: ${icons.keys - KeyboardIconsSet.validIcons}"

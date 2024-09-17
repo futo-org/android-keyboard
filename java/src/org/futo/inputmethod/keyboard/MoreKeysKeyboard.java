@@ -318,7 +318,7 @@ public final class MoreKeysKeyboard extends Keyboard {
 
                 int dimension = (int)(context.getResources().getDisplayMetrics().density * 44.5f);
                 keyWidth = getMaxKeyWidth(key, Math.min(dimension, key.getTotalWidth()), padding, paintToMeasure);
-                rowHeight = dimension;
+                rowHeight = Math.max(key.getHeight(), dimension);
             }
             final int dividerWidth = 0; // TODO: Remove divider
             final List<MoreKeySpec> moreKeys = key.getMoreKeys();
