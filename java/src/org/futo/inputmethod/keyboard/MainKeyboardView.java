@@ -603,7 +603,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
             // though there may be some chances that the value is zero. <code>width == 0</code>
             // will cause zero-division error at
             // {@link MoreKeysKeyboardParams#setParameters(int,int,int,int,int,int,boolean,int)}.
-            final boolean isSingleMoreKeyWithPreview = mKeyPreviewDrawParams.isPopupEnabled()
+            final boolean isSingleMoreKeyWithPreview = false && mKeyPreviewDrawParams.isPopupEnabled()
                     && !key.getNoKeyPreview() && moreKeys.size() == 1
                     && mKeyPreviewDrawParams.getVisibleWidth() > 0;
             final MoreKeysKeyboard.Builder builder = new MoreKeysKeyboard.Builder(
