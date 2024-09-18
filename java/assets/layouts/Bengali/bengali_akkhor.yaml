@@ -4,34 +4,34 @@ useZWNJKey: true
 rows:
   - letters:
         - type: case
-          normal: [ 'ধ', 'ধ্ব', 'ধ্য', 'ধ্র' ]
+          normal: [ 'ধ', '১', 'ধ্ব', 'ধ্য', 'ধ্র' ]
           shifted: [ 'ঢ' ]
         - type: case
-          normal: [ 'থ', 'থ্য', 'থ্র' ]
+          normal: [ 'থ', '২', 'থ্য', 'থ্র' ]
           shifted: [ 'ঠ' ]
         - type: case
-          normal: [ 'ে', 'এ' ]
+          normal: [ 'ে', '৩', 'এ' ]
           shifted: [ 'ৈ', 'ঐ' ]
         - type: case
-          normal: [ 'র' ]
+          normal: [ 'র', '৪' ]
           shifted: [ 'ড়', '়' ]
         - type: case
-          normal: [ 'ত', 'ৎ', 'ত্ত', 'ত্ন', 'ত্ব', 'ত্ম' ]
+          normal: [ 'ত', '৫', 'ৎ', 'ত্ত', 'ত্ন', 'ত্ব', 'ত্ম' ]
           shifted: [ 'ট', '৳', 'ট্ট', 'ট্ব', 'ট্ম' ]
         - type: case
-          normal: [ 'য়' ]
+          normal: [ 'য়', '৬' ]
           shifted: [ 'ঞ', 'ঞ্চ', 'ঞ্ছ', 'ঞ্জ' ]
         - type: case
-          normal: [ 'ু', 'উ' ]
+          normal: [ 'ু', '৭', 'উ' ]
           shifted: [ 'ূ', 'ঊ' ]
         - type: case
-          normal: [ 'ি', 'ই' ]
+          normal: [ 'ি', '৮', 'ই' ]
           shifted: [ 'ী', 'ঈ' ]
         - type: case
-          normal: [ 'ো', 'ও' ]
+          normal: [ 'ো', '৯', 'ও' ]
           shifted: [ 'ৌ', 'চ', 'ৗ' ]
         - type: case
-          normal: [ 'প', 'প্ত', 'প্ন', 'প্প', 'প্য', 'প্র', 'প্ল', 'প্স' ]
+          normal: [ 'প', '০', 'প্ত', 'প্ন', 'প্প', 'প্য', 'প্র', 'প্ল', 'প্স' ]
           shifted: [ 'ফ', 'ফ্ট', 'ফ্য', 'ফ্র', 'ফ্ল' ]
         - type: case
           normal: [ 'আ' ]

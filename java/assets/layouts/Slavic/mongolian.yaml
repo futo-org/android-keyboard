@@ -1,0 +1,40 @@
+name: Mongolian
+languages: mn-MN
+rows:
+  - letters: # rowkeys_mongolian1.xml
+    - ['ф']
+    - ['ц']
+    - ['у', '!text/morekeys_cyrillic_u']
+    - ['ж']
+    - ['э', '!text/morekeys_cyrillic_ie']
+    - ['н', '!text/morekeys_cyrillic_en']
+    - ['г', '!text/morekeys_cyrillic_ghe']
+    - ['ш', '%', 'щ']
+    - ['ү']
+    - ['з']
+    - ['к']
+    - ['е']
+  - letters: # rowkeys_mongolian2.xml
+    - ['й']
+    - ['ы']
+    - ['б']
+    - ['ө']
+    - ['а']
+    - ['х']
+    - ['р']
+    - ['о']
+    - ['л']
+    - ['д']
+    - ['п']
+    - ['ю']
+  - letters: # rowkeys_mongolian3.xml
+    - ['я']
+    - ['ч']
+    - ['ё']
+    - ['с']
+    - ['м']
+    - ['и']
+    - ['т']
+    - ['ь', 'ъ']
+    - ['в']
+# detected 3 rows

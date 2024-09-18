@@ -103,12 +103,17 @@ fun List<LongPressKey>.toEncodedString(): String {
 class LongPressKeySettings(val context: Context) {
     private val currentSetting = context.getSettingBlocking(LongPressKeyLayoutSetting).toLongPressKeyLayoutItems()
 
-    fun joinMoreKeys(keys: List<String>): String =
-        keys.map {
-            it.replace("\\", "\\\\")
-                .replace(",", "\\,")
-        }.joinToString(",")
+    val currentOrder: List<LongPressKey>
+        get() = currentSetting
 
+    companion object {
+        @JvmStatic
+        fun joinMoreKeys(keys: List<String>): String =
+            keys.map {
+                it.replace("\\", "\\\\")
+                    .replace(",", "\\,")
+            }.joinToString(",")
+    }
 
     fun reorderMoreKeys(moreKeys: String): String =
         joinMoreKeys(reorderMoreKeys(

@@ -1,0 +1,33 @@
+name: Georgian
+languages: ka_GE
+attributes: {shiftable: false} # Automatic shifting breaks many of the characters
+rows:
+  - letters:
+    - 'ქ'
+    - {type: case, normal: ['წ', 'ჭ'], shifted: ['ჭ']}
+    - ['ე', '%', 'ჱ']
+    - {type: case, normal: ['რ', 'ღ'], shifted: ['ღ']}
+    - {type: case, normal: ['ტ', 'თ'], shifted: ['თ']}
+    - ['ყ', '%', 'ჸ']
+    - 'უ'
+    - ['ი', '%', 'ჲ']
+    - 'ო'
+    - 'პ'
+  - letters:
+    - ['ა', 'ჺ']
+    - {type: case, normal: ['ს', 'შ'], shifted: ['შ']}
+    - 'დ'
+    - ['ფ', 'ჶ']
+    - ['გ', 'ჹ']
+    - ['ჰ', 'ჵ']
+    - {type: case, normal: ['ჯ', 'ჟ', 'ჷ'], shifted: ['ჟ']}
+    - 'კ'
+    - 'ლ'
+  - letters:
+    - {type: case, normal: ['ზ', 'ძ'], shifted: ['ძ']}
+    - ['ხ', 'ჴ']
+    - {type: case, normal: ['ც', 'ჩ'], shifted: ['ჩ']}
+    - ['ვ', 'ჳ']
+    - 'ბ'
+    - ['ნ', 'ჼ']
+    - 'მ'

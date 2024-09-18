@@ -133,17 +133,15 @@ data class EnterKey(
         } else {
             "!text/keyspec_emoji_action_key"
         }.let {
-            params.mTextsSet.resolveTextReference(it)
-        }.let {
-            MoreKeySpec.splitKeySpecs(it)?.toList() ?: listOf()
+            MoreKeysBuilder(
+                code = Constants.CODE_ENTER,
+                mode = attributes.moreKeyMode!!,
+                coordinate = coordinate,
+                row = row,
+                keyboard = keyboard,
+                params = params
+            ).insertMoreKeys(it).build(false)
         }
-
-        val moreKeySpecs = filterMoreKeysFlags(moreKeys).map {
-            MoreKeySpec(it, false, params.mId.locale)
-        }
-
-        val moreKeyFlags = computeMoreKeysFlags(moreKeys.toTypedArray(), params)
-
 
         return ComputedKeyData(
             label                 = "",
@@ -154,10 +152,10 @@ data class EnterKey(
             style                 = KeyVisualStyle.Action,
             anchored              = true,
             showPopup             = false,
-            moreKeys              = moreKeySpecs,
+            moreKeys              = moreKeys.specs,
             longPressEnabled      = true,
             repeatable            = false,
-            moreKeyFlags          = moreKeyFlags,
+            moreKeyFlags          = moreKeys.flags,
             countsToKeyCoordinate = false,
             hint                  = " ",
             labelFlags            = 0

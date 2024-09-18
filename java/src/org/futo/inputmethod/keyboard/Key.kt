@@ -213,9 +213,7 @@ data class Key(
 
     /** hint label to use, either constructor-specified or from moreKeys */
     val effectiveHintLabel = hintLabel ?: moreKeys.firstOrNull()?.let {
-        val label = it.mLabel?.let {
-            if(it.startsWith("\\")) it.substring(1) else it
-        }
+        val label = it.mLabel
 
         if(it.mNeedsToUpperCase) {
             StringUtils.toTitleCaseOfKeyLabel(label, it.mLocale)
@@ -336,7 +334,7 @@ data class Key(
             KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO -> params.mLargeLetterSize
             KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO -> params.mLabelSize
             KeyConsts.LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO -> params.mHintLabelSize
-            else -> if (StringUtils.codePointCount(label) == 1) params.mLetterSize else params.mLabelSize
+            else -> if (StringUtils.codePointCount(label) == 1 || visualStyle == KeyVisualStyle.Normal) params.mLetterSize else params.mLabelSize
         }
     }
 

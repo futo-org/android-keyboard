@@ -587,7 +587,7 @@ data class LayoutEngine(
 
         params.mProximityCharsCorrectionEnabled = true
 
-        params.mAllowRedundantMoreKeys = false
+        params.mAllowRedundantMoreKeys = true
         params.removeRedundantMoreKeys()
 
         params.mMostCommonKeyWidth = regularKeyWidth.roundToInt()

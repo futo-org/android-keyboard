@@ -2,16 +2,16 @@ name: "PC QWERTY"
 rows:
   - numbers:
       - {type: case, normal: ["`", "~"], shifted: "~"}
-      - {type: case, normal: ["1", "!", "!text/morekeys_symbols_1"], shifted: "!"}
-      - {type: case, normal: ["2", "@", "!text/morekeys_symbols_2"], shifted: "@"}
-      - {type: case, normal: ["3", "#", "!text/morekeys_symbols_3"], shifted: "#"}
-      - {type: case, normal: ["4", "$", "!text/morekeys_symbols_4"], shifted: "$"}
-      - {type: case, normal: ["5", "%", "!text/morekeys_symbols_5"], shifted: "%"}
-      - {type: case, normal: ["6", "^", "!text/morekeys_symbols_6"], shifted: "^"}
-      - {type: case, normal: ["7", "&", "!text/morekeys_symbols_7"], shifted: "&"}
-      - {type: case, normal: ["8", "*", "!text/morekeys_symbols_8"], shifted: "*"}
-      - {type: case, normal: ["9", "(", "!text/morekeys_symbols_9"], shifted: "("}
-      - {type: case, normal: ["0", ")", "!text/morekeys_symbols_0"], shifted: ")"}
+      - {type: case, normal: ["1", "!"], shifted: "!"}
+      - {type: case, normal: ["2", "@"], shifted: "@"}
+      - {type: case, normal: ["3", "#"], shifted: "#"}
+      - {type: case, normal: ["4", "$"], shifted: "$"}
+      - {type: case, normal: ["5", "%"], shifted: "%"}
+      - {type: case, normal: ["6", "^"], shifted: "^"}
+      - {type: case, normal: ["7", "&"], shifted: "&"}
+      - {type: case, normal: ["8", "*"], shifted: "*"}
+      - {type: case, normal: ["9", "("], shifted: "("}
+      - {type: case, normal: ["0", ")"], shifted: ")"}
       - {type: case, normal: ["-", "_"], shifted: "_"}
       - {type: case, normal: ["=", "+"], shifted: "+"}
   - letters:

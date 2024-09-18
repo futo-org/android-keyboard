@@ -121,7 +121,7 @@ public final class KeyPreviewChoreographer {
         final int bottomPadding = getBottomPaddingForKey(keyPreviewView.getContext(), key);
         final int topArea = Math.max(key.getHeight(), (int)(44.0f * density));
 
-        final int previewWidth  = Math.min(Math.max(key.getWidth(), (int)(34.0f * density)), (int)(80.0f * density));
+        final int previewWidth  = Math.min(Math.max(key.getWidth(), (int)(34.0f * density)), (int)(64.0f * density));
         final int previewHeight = topArea + bottomPadding;
         keyPreviewView.setPadding(0, 0, 0, bottomPadding);
 
