@@ -402,7 +402,7 @@ data class BaseKey(
         val expandedSpec: String? = params.mTextsSet.resolveTextReference(
             if(attributes.useKeySpecShortcut != false) { relevantSpecShortcut?.get(0) } else { null }
              ?: spec
-        )
+        ) ?: params.mTextsSet.resolveTextReference(spec)
 
         val label = expandedSpec?.let { KeySpecParser.getLabel(it) } ?: ""
         val icon = expandedSpec?.let { KeySpecParser.getIconId(it) } ?: ""
