@@ -119,32 +119,19 @@ public class Symbols extends AbstractLayoutBase {
     // Common symbols keyboard layout.
     private static final ExpectedKey[][] SYMBOLS_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
-                    // U+00B9: "¹" SUPERSCRIPT ONE
-                    // U+00BD: "½" VULGAR FRACTION ONE HALF
-                    // U+2153: "⅓" VULGAR FRACTION ONE THIRD
-                    // U+00BC: "¼" VULGAR FRACTION ONE QUARTER
-                    // U+215B: "⅛" VULGAR FRACTION ONE EIGHTH
-                    key("1", joinMoreKeys("\u00B9", "\u00BD", "\u2153", "\u00BC", "\u215B")),
-                    // U+00B2: "²" SUPERSCRIPT TWO
-                    // U+2154: "⅔" VULGAR FRACTION TWO THIRDS
-                    key("2", joinMoreKeys("\u00B2", "\u2154")),
-                    // U+00B3: "³" SUPERSCRIPT THREE
-                    // U+00BE: "¾" VULGAR FRACTION THREE QUARTERS
-                    // U+215C: "⅜" VULGAR FRACTION THREE EIGHTHS
-                    key("3", joinMoreKeys("\u00B3", "\u00BE", "\u215C")),
-                    // U+2074: "⁴" SUPERSCRIPT FOUR
-                    key("4", moreKey("\u2074")),
-                    // U+215D: "⅝" VULGAR FRACTION FIVE EIGHTHS
-                    key("5", moreKey("\u215D")),
-                    "6",
-                    // U+215E: "⅞" VULGAR FRACTION SEVEN EIGHTHS
-                    key("7", moreKey("\u215E")),
-                    "8", "9",
-                    // U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N
-                    // U+2205: "∅" EMPTY SET
-                    key("0", joinMoreKeys("\u207F", "\u2205")))
+                    key("1", joinMoreKeys("¹", "₁", "½", "⅓", "¼", "⅛")),
+                    key("2", joinMoreKeys("²", "₂", "⅔")),
+                    key("3", joinMoreKeys("³", "₃", "¾", "⅜")),
+                    key("4", joinMoreKeys("⁴", "₄")),
+                    key("5", joinMoreKeys("⁵", "₅", "⅝")),
+                    key("6", joinMoreKeys("⁶", "₆")),
+                    key("7", joinMoreKeys("⁷", "₇", "⅞")),
+                    key("8", joinMoreKeys("⁸", "₈")),
+                    key("9", joinMoreKeys("⁹", "₉")),
+                    key("0", joinMoreKeys("⁰", "₀", "ⁿ", "∅")))
             .setKeysOfRow(2,
                     key("@"), key("#"), key(CURRENCY),
+                    "_",
                     // U+2030: "‰" PER MILLE SIGN
                     key("%", moreKey("\u2030")),
                     "&",
@@ -163,11 +150,11 @@ public class Symbols extends AbstractLayoutBase {
                     key("*", joinMoreKeys("\u2020", "\u2021", "\u2605")),
                     key(DOUBLE_QUOTE), key(SINGLE_QUOTE), key(":"), key(";"),
                     // U+00A1: "¡" INVERTED EXCLAMATION MARK
-                    key("!", moreKey("\u00A1")),
+                    key("!", joinMoreKeys("\u00A1", "‽")),
                     // U+00BF: "¿" INVERTED QUESTION MARK
                     key("?", moreKey("\u00BF")))
             .setKeysOfRow(4,
-                    key(","), key("_"), SPACE_KEY, key("/"),
+                    key(","), NUMPAD_KEY, SPACE_KEY, key("/"),
                     // U+2026: "…" HORIZONTAL ELLIPSIS
                     key(".", moreKey("\u2026")))
             .build();

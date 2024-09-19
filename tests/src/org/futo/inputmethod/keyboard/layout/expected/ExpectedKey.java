@@ -164,7 +164,7 @@ public class ExpectedKey {
     public boolean equalsTo(final Key key) {
         // This key has no "more keys".
         return mVisual.hasSameKeyVisual(key) && mOutput.hasSameKeyOutput(key)
-                && key.getMoreKeys() == null;
+                && key.getMoreKeys().isEmpty();
     }
 
     public boolean equalsTo(final MoreKeySpec moreKeySpec) {

@@ -1,5 +1,6 @@
 package org.futo.inputmethod.v2keyboard
 
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.latin.common.Constants
 
 fun getDefaultMoreKeysForKey(code: Int, relevantSpecShortcut: List<String>?): String {
@@ -14,7 +15,7 @@ fun getDefaultMoreKeysForKey(code: Int, relevantSpecShortcut: List<String>?): St
 
 
 fun getSpecialFromRow(keyCoordinate: KeyCoordinate, row: Row): String {
-    if(row.isBottomRow) {
+    if(row.isBottomRow && keyCoordinate.element.kind == KeyboardLayoutKind.Alphabet) {
         val numCols = keyCoordinate.measurement.numColumnsByRow.getOrNull(keyCoordinate.regularRow) ?: -10
         if(keyCoordinate.regularColumn == 0) {
             return "!text/morekeys_bottomrow_comma"

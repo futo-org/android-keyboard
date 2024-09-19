@@ -112,6 +112,10 @@ data class LongPressKeySettings(val currentOrder: List<LongPressKey>) {
                 it.replace("\\", "\\\\")
                     .replace(",", "\\,")
             }.joinToString(",")
+
+        @JvmStatic
+        fun forTest(): LongPressKeySettings =
+            LongPressKeySettings(listOf(LongPressKey.Numbers, LongPressKey.LanguageKeys, LongPressKey.MiscLetters))
     }
 
     fun reorderMoreKeys(moreKeys: String): String =

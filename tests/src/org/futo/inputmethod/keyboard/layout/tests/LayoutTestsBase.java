@@ -165,10 +165,13 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
                 final Key actualKey = actualKeyboard[r][c];
                 final ExpectedKey expectedKey = expectedKeyboard[r][c];
                 // Test both keyboards' keys have the same visual outlook and key output.
-                assertTrue(tag + " labels row,column=" + row + "," + column
-                        + "\nexpected=" + expectedKey
-                        + "\nactual  =" + ActualKeyboardBuilder.toString(actualKey),
-                        expectedKey.equalsTo(actualKey));
+                if(!expectedKey.equalsTo(actualKey)) {
+                    assertTrue(tag + " labels row,column=" + row + "," + column
+                                    + "\nexpected=" + expectedKey
+                                    + "\nactual  =" + ActualKeyboardBuilder.toString(actualKey),
+                            expectedKey.equalsTo(actualKey));
+                }
+
             }
         }
     }

@@ -36,6 +36,9 @@ val KeySpecShortcuts = listOf(
         "*" to listOf("*", "morekeys_star"),
         "=" to listOf("=", "≠", "≈", "∞"),
 
+        "," to listOf("keyspec_comma"),
+        "." to listOf("keyspec_period", "…"),
+
         "1" to listOf("keyspec_symbols_1", "additional_morekeys_symbols_1", "morekeys_symbols_1"),
         "2" to listOf("keyspec_symbols_2", "additional_morekeys_symbols_2", "morekeys_symbols_2"),
         "3" to listOf("keyspec_symbols_3", "additional_morekeys_symbols_3", "morekeys_symbols_3"),

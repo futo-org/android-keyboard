@@ -37,6 +37,7 @@ val AllActionsMap = mapOf(
 val ActionToId = AllActionsMap.entries.associate { it.value to it.key }
 
 val AllActions = AllActionsMap.values.toList()
+val AllActionKeys = AllActionsMap.keys.toList()
 
 val ActionIdToInt = AllActionsMap.entries.associate { it.key to AllActions.indexOf(it.value) }
 

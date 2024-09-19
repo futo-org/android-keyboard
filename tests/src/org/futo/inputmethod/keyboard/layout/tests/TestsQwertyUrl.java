@@ -56,18 +56,9 @@ public class TestsQwertyUrl extends LayoutTestsBase {
         EnglishUrlCustomizer(final Locale locale) { super(locale); }
 
         @Override
-        public ExpectedKey getEnterKey(final boolean isPhone) {
-            return isPhone ? ENTER_KEY : super.getEnterKey(isPhone);
-        }
-
-        @Override
-        public ExpectedKey getEmojiKey(final boolean isPhone) {
-            return DOMAIN_KEY;
-        }
-
-        @Override
-        public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return joinKeys(key("/", SETTINGS_KEY));
+        public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
+            final ExpectedKey periodKey = key(".", getPunctuationMoreKeys(isPhone));
+            return joinKeys(key("/"), periodKey);
         }
     }
 }

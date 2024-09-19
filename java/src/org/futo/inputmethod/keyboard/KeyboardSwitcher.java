@@ -40,6 +40,7 @@ import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
 import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.WordComposer;
+import org.futo.inputmethod.latin.settings.LongPressKeySettings;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
@@ -135,7 +136,8 @@ public final class KeyboardSwitcher implements SwitchActions {
                 settingsValues.mIsNumberRowEnabled,
                 4.0f,
                 res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE,
-                settingsValues.mShowsActionKey ? settingsValues.mActionKeyId : null
+                settingsValues.mShowsActionKey ? settingsValues.mActionKeyId : null,
+                LongPressKeySettings.load(mThemeContext)
         );
 
         try {

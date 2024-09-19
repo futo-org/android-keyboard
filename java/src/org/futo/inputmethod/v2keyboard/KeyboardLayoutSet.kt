@@ -80,11 +80,12 @@ data class KeyboardLayoutSetV2Params(
     val height: Int?,
     val keyboardLayoutSet: String,
     val locale: Locale,
-    val editorInfo: EditorInfo,
+    val editorInfo: EditorInfo?,
     val numberRow: Boolean,
     val gap: Float = 4.0f,
     val useSplitLayout: Boolean,
-    val bottomActionKey: Int?
+    val bottomActionKey: Int?,
+    val longPressKeySettings: LongPressKeySettings? = null
 )
 
 
@@ -94,14 +95,16 @@ class KeyboardLayoutSetV2 internal constructor(
 ) {
     val script = Script.Latin
 
-    val privateParams = params.editorInfo.getPrivateImeOptions()
+    val editorInfo = params.editorInfo ?: EditorInfo()
+
+    val privateParams = editorInfo.getPrivateImeOptions()
     val forcedLayout = privateParams["org.futo.inputmethod.latin.ForceLayout"]
     val forcedLocale = privateParams["org.futo.inputmethod.latin.ForceLocale"]?.let { Locale.forLanguageTag(it) }
 
     // Necessary for Java API
     fun getScriptId(): Int = script.id
 
-    private val keyboardMode = getKeyboardMode(params.editorInfo)
+    private val keyboardMode = getKeyboardMode(editorInfo)
 
     val layoutName = forcedLayout ?: params.keyboardLayoutSet
     val mainLayout = LayoutManager.getLayout(context, layoutName)
@@ -207,15 +210,15 @@ class KeyboardLayoutSetV2 internal constructor(
             params.height ?: getRecommendedKeyboardHeight(),
             keyboardMode,
             element.elementId,
-            params.editorInfo,
+            editorInfo,
             false,
             params.bottomActionKey != null,
             params.bottomActionKey ?: -1,
-            params.editorInfo.actionLabel?.toString() ?: "",
+            editorInfo.actionLabel?.toString() ?: "",
             false,
             false,
             isNumberRowActive,
-            LongPressKeySettings.load(context)
+            params.longPressKeySettings ?: LongPressKeySettings.load(context)
         )
 
         val layout = getKeyboardLayoutForElement(element)

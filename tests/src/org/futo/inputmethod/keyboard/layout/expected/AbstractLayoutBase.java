@@ -19,6 +19,13 @@ package org.futo.inputmethod.keyboard.layout.expected;
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet;
 import org.futo.inputmethod.keyboard.layout.expected.ExpectedKey.ExpectedAdditionalMoreKey;
 import org.futo.inputmethod.latin.common.Constants;
+import org.futo.inputmethod.latin.uix.Action;
+import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
+import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryActionKt;
+import org.futo.inputmethod.latin.uix.actions.EmojiActionKt;
+import org.futo.inputmethod.latin.uix.actions.SwitchLanguageActionKt;
+import org.futo.inputmethod.latin.uix.actions.TextEditActionKt;
+import org.futo.inputmethod.latin.uix.actions.UndoRedoActionsKt;
 
 /**
  * Base class to create an expected keyboard for unit test.
@@ -48,6 +55,11 @@ public abstract class AbstractLayoutBase {
     public static ExpectedKey iconKey(final String iconId, final String outputText,
             final ExpectedKey ... moreKeys) {
         return ExpectedKey.newIconInstance(iconId, outputText, moreKeys);
+    }
+
+    public static ExpectedKey actionKey(final Action action) {
+        String id = ActionRegistry.INSTANCE.actionToStringId(action);
+        return iconKey("action_"+id, Constants.CODE_ACTION_0 + ActionRegistry.INSTANCE.actionStringIdToIdx(id));
     }
 
     // Helper method to create an {@link ExpectedKey} object that has the icon and the output code.
@@ -121,9 +133,9 @@ public abstract class AbstractLayoutBase {
     // Functional keys.
     protected static final ExpectedKey DELETE_KEY = iconKey(ICON_DELETE, Constants.CODE_DELETE);
     protected static final ExpectedKey TAB_KEY = iconKey(ICON_TAB, Constants.CODE_TAB);
-    protected static final ExpectedKey SETTINGS_KEY = iconKey(ICON_SETTINGS, Constants.CODE_SETTINGS);
+    protected static final ExpectedKey SETTINGS_KEY = iconKey("action_settings", Constants.CODE_ACTION_0 + ActionRegistry.INSTANCE.actionStringIdToIdx("settings"));
     protected static final ExpectedKey LANGUAGE_SWITCH_KEY = iconKey(
-            "action_switch_language", Constants.CODE_LANGUAGE_SWITCH);
+            "action_switch_language", Constants.CODE_ACTION_0 + ActionRegistry.INSTANCE.actionStringIdToIdx("switch_language"));
     protected static final ExpectedKey ENTER_KEY = iconKey(ICON_ENTER, Constants.CODE_ENTER);
     protected static final ExpectedKey EMOJI_ACTION_KEY = iconKey(ICON_EMOJI_ACTION, Constants.CODE_EMOJI);
     protected static final ExpectedKey EMOJI_NORMAL_KEY = iconKey(ICON_EMOJI_NORMAL, Constants.CODE_EMOJI);
@@ -138,6 +150,15 @@ public abstract class AbstractLayoutBase {
     protected static final ExpectedKey BACK_TO_SYMBOLS_KEY = key("?123", Constants.CODE_SHIFT);
     protected static final ExpectedKey SYMBOLS_SHIFT_KEY = key("= \\ <", Constants.CODE_SHIFT);
     protected static final ExpectedKey TABLET_SYMBOLS_SHIFT_KEY = key("~ [ <", Constants.CODE_SHIFT);
+
+    protected static final ExpectedKey SWITCH_LANGUAGE_KEY = actionKey(SwitchLanguageActionKt.getSwitchLanguageAction());
+    protected static final ExpectedKey TEXT_EDIT_KEY = actionKey(TextEditActionKt.getTextEditAction());
+    protected static final ExpectedKey CLIPBOARD_HISTORY_KEY = actionKey(ClipboardHistoryActionKt.getClipboardHistoryAction());
+    protected static final ExpectedKey EMOJI_KEY = actionKey(EmojiActionKt.getEmojiAction());
+    protected static final ExpectedKey UNDO_KEY = actionKey(UndoRedoActionsKt.getUndoAction());
+    protected static final ExpectedKey REDO_KEY = actionKey(UndoRedoActionsKt.getRedoAction());
+
+    protected static final ExpectedKey NUMPAD_KEY = iconKey("numpad", Constants.CODE_TO_NUMBER_LAYOUT);
 
     // U+00A1: "¡" INVERTED EXCLAMATION MARK
     // U+00BF: "¿" INVERTED QUESTION MARK
