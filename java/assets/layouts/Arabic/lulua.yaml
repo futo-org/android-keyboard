@@ -35,6 +35,7 @@ rows:
         - "\u2067"
       - - "\u0638"
         - "\u2066"
+    splittable: false
   - letters:
       - - "\u0628"
         - ':'
@@ -69,6 +70,7 @@ rows:
       - "\u0633"
       - - "\u0635"
         - "\u2069"
+    splittable: false
   - letters:
       - - "\u0630"
         - "\u066C"
@@ -85,6 +87,7 @@ rows:
       - "\u0643"
       - "\u062E"
       - "\u063A"
+    splittable: false
   - bottom:
       - "$enter"
       - "$space"

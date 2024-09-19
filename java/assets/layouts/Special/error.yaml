@@ -18,5 +18,5 @@ rows:
     splittable: false
   - bottom:
       - {type: base, spec: "Switch language|!code/action_switch_language"}
-    attributes: { style: Action }
+    attributes: { style: Action, width: Grow }
     splittable: false
