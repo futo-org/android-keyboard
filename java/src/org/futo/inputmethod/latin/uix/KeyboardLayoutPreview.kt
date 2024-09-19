@@ -67,22 +67,17 @@ fun KeyboardViewCompose(keyboard: Keyboard?, width: Dp) {
 }
 
 @Composable
-fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp) {
+fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null) {
     val context = LocalContext.current
 
-    val locale = remember(id) {
-        LayoutManager.getLayout(context, id).languages.firstOrNull()?.let {
-            val l = Locale.forLanguageTag(it)
-
-            println("SET LOCALE: $it to $l, ${l.language}, ${l.country}")
-            l
+    val loc = remember(id) {
+        locale ?: LayoutManager.getLayout(context, id).languages.firstOrNull()?.let {
+            Locale.forLanguageTag(it)
         }
     }
 
-
-
     val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isLandscape = false//configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     val widthPx: Int
     val heightPx: Int
@@ -116,7 +111,7 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp) {
                     height = heightPx,
                     gap = 4.0f,
                     keyboardLayoutSet = id,
-                    locale = locale ?: Locale.ENGLISH,
+                    locale = loc ?: Locale.ENGLISH,
                     editorInfo = editorInfo,
                     numberRow = numberRow,
                     useSplitLayout = isLandscape,

@@ -130,19 +130,15 @@ private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
     return cost[lhsLen]
 }
 
-private fun <T> List<T>.search(searchTarget: String, keyFunction: (T) -> String): List<T> {
-    val maxDistance = searchTarget.length * 2 / 3
+fun <T> List<T>.searchMultiple(searchTarget: String, maxDistance: Int = searchTarget.length * 2 / 3, limitLength: Boolean = false, keyFunction: (T) -> List<String>): List<T> {
     return this.mapNotNull { item ->
-        val key = keyFunction(item)
-        val distance = levenshteinDistance(searchTarget, key)
-        if (distance <= maxDistance) Pair(item, distance) else null
-    }.sortedBy { it.second }.map { it.first }
-}
-
-private fun <T> List<T>.searchMultiple(searchTarget: String, keyFunction: (T) -> List<String>): List<T> {
-    val maxDistance = searchTarget.length * 2 / 3
-    return this.mapNotNull { item ->
-        val keys = keyFunction(item)
+        val keys = keyFunction(item).let {
+            if(limitLength) {
+                it.map { it.substring(0 until searchTarget.length.coerceAtMost(it.length)) }
+            } else {
+                it
+            }
+        }
         val minDistanceKey = keys.minByOrNull { levenshteinDistance(searchTarget, it) }
         val minDistance = minDistanceKey?.let { levenshteinDistance(searchTarget, it) }
         if (minDistance != null && minDistance <= maxDistance) Pair(item, minDistance) else null

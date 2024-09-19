@@ -1,6 +1,5 @@
 package org.futo.inputmethod.v2keyboard
 
-import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.latin.common.Constants
 
 fun getDefaultMoreKeysForKey(code: Int, relevantSpecShortcut: List<String>?): String {

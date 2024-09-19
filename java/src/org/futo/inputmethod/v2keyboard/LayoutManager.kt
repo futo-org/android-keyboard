@@ -6,13 +6,20 @@ import android.util.Log
 import com.charleskorn.kaml.PolymorphismStyle
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.EmptySerializersModule
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import java.util.Locale
 
+@Serializable
+data class Mappings(
+    val languages: Map<String, List<String>>
+)
+
 object LayoutManager {
     private var layoutsById: Map<String, Keyboard>? = null
+    private var localeToLayoutsMappings: Map<Locale, List<String>>? = null
     private var initialized = false
 
     private fun listFilesRecursively(assetManager: AssetManager, path: String): List<String> {
@@ -26,7 +33,7 @@ object LayoutManager {
 
     private fun getAllLayoutPaths(assetManager: AssetManager): List<String> {
         return listFilesRecursively(assetManager, "layouts").filter {
-            it.endsWith(".yml") || it.endsWith(".yaml")
+            (it.endsWith(".yml") || it.endsWith(".yaml")) && it != "mapping.yaml"
         }
     }
 
@@ -34,6 +41,10 @@ object LayoutManager {
         if(initialized) return
 
         initialized = true
+
+        localeToLayoutsMappings = parseMappings(context, "layouts/mapping.yaml").languages.mapKeys {
+            Locale.forLanguageTag(it.key.replace("_", "-"))
+        }
 
         val assetManager = context.assets
 
@@ -65,10 +76,10 @@ object LayoutManager {
         return layoutsById?.get(name) ?: throw IllegalArgumentException("Failed to find keyboard layout $name. Available layouts: ${layoutsById?.keys}")
     }
 
-    fun queryLayoutsForLocale(locale: Locale): List<Keyboard> {
-        val language = locale.language
-        //val script = locale.getKeyboardScript()
-        return layoutsById!!.values.filter { it.languages.contains(language) }
+    fun getLayoutMapping(context: Context): Map<Locale, List<String>> {
+        init(context)
+
+        return localeToLayoutsMappings!!
     }
 
     fun getAllLayoutNames(context: Context): List<String> {
@@ -80,6 +91,20 @@ object LayoutManager {
     }
 }
 
+private fun parseMappings(context: Context, mappingsPath: String): Mappings {
+    val yaml = Yaml(
+        EmptySerializersModule(),
+        YamlConfiguration(
+            polymorphismStyle = PolymorphismStyle.Property,
+            allowAnchorsAndAliases = true
+        )
+    )
+    return context.assets.open(mappingsPath).use { inputStream ->
+        val yamlString = inputStream.bufferedReader().use { it.readText() }
+
+        yaml.decodeFromString(Mappings.serializer(), yamlString)
+    }
+}
 
 private fun parseKeyboardYaml(context: Context, layoutPath: String): Keyboard {
     val yaml = Yaml(
