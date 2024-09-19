@@ -2,6 +2,7 @@ name: Khmer
 languages: km-KH
 minimumFunctionalKeyWidth: 0.0
 attributes: { moreKeyMode: OnlyExplicit }
+numberRowMode: AlwaysDisabled
 rows:
   - letters: # rowkeys_khmer1.xml
     - {type: case, normal: ['១', '1', '៱'], shifted: ['!', "!icon/zwj_key|\u200d"]}

@@ -2,6 +2,7 @@ name: Lao
 languages: lo-LA
 minimumFunctionalKeyWidth: 0.0
 attributes: { moreKeyMode: OnlyExplicit }
+numberRowMode: AlwaysDisabled
 rows:
   - letters: # rowkeys_lao1.xml
     - {type: case, normal: ['ຢ', '1', '໑'], shifted: ['໑']}

@@ -2,6 +2,7 @@ name: Thai
 languages: th
 minimumFunctionalKeyWidth: 0.0
 attributes: { moreKeyMode: OnlyExplicit }
+numberRowMode: AlwaysDisabled
 rows:
   - letters: # rowkeys_thai1.xml
     - {type: case, normal: ['ๅ'], shifted: ['+']}
