@@ -1,0 +1,37 @@
+name: Hindi
+languages: hi
+rows:
+  - letters: # rowkeys_hindi1.xml
+      - {type: case, normal: ['ौ', 'ौं'], shifted: ['औ', 'ऒं']}
+      - {type: case, normal: ['ै', 'ैं'], shifted: ['ऐ', 'ऐं']}
+      - {type: case, normal: ['ा', 'ां', 'ाँ'], shifted: ['आ', 'आं', 'आँ']}
+      - {type: case, normal: ['ी', 'ीं'], shifted: ['ई', 'ईं']}
+      - {type: case, normal: ['ू', 'ूं', 'ूँ'], shifted: ['ऊ', 'ऊं', 'ऊँ']}
+      - {type: case, normal: ['ब', 'ब॒'], shifted: ['भ']}
+      - {type: case, normal: ['ह'], shifted: ['ः']}
+      - {type: case, normal: ['ग', 'ज्ञ', 'ग़', 'ग॒'], shifted: ['घ']}
+      - {type: case, normal: ['द'], shifted: ['ध', 'क्ष', 'श्र']}
+      - {type: case, normal: ['ज', 'ज॒', 'ज्ञ', 'ज़'], shifted: ['झ']}
+      - {type: case, normal: ['ड', 'ड॒', 'ड़'], shifted: ['ढ']}
+  - letters: # rowkeys_hindi2.xml
+      - {type: case, normal: ['ो', 'ों', 'ॉ', 'ॊ'], shifted: ['ओ', 'ओं', 'ऑ', 'ऒ']}
+      - {type: case, normal: ['े', 'ें'], shifted: ['ए', 'एं', 'एँ', 'ऍ', 'ऎ']}
+      - {type: case, normal: ['्'], shifted: ['अ', 'अं', 'अँ']}
+      - {type: case, normal: ['ि', 'िं'], shifted: ['इ', 'इं', 'इँ']}
+      - {type: case, normal: ['ु', 'ुं', 'ुँ'], shifted: ['उ', 'उं', 'उँ']}
+      - {type: case, normal: ['प'], shifted: ['फ', 'फ़']}
+      - {type: case, normal: ['र', 'ऋ', 'ऱ', 'ॠ'], shifted: ['ऱ', '्र', 'र्']}
+      - {type: case, normal: ['क', 'क़'], shifted: ['ख', 'ख़']}
+      - {type: case, normal: ['त', 'त्र'], shifted: ['थ']}
+      - {type: case, normal: ['च'], shifted: ['छ']}
+      - {type: case, normal: ['ट'], shifted: ['ठ']}
+  - letters: # rowkeys_hindi3.xml
+      - {type: case, normal: ['ॉ'], shifted: ['ऑ']}
+      - {type: case, normal: ['ं'], shifted: ['ँ', 'ॅ']}
+      - {type: case, normal: ['म', 'ॐ'], shifted: ['ण']}
+      - {type: case, normal: ['न', 'ञ', 'ङ', 'ऩ'], shifted: ['ऩ']}
+      - {type: case, normal: ['व'], shifted: ['ळ', 'ऴ']}
+      - {type: case, normal: ['ल', 'ऌ', 'ॡ'], shifted: ['श']}
+      - {type: case, normal: ['स'], shifted: ['ष']}
+      - {type: case, normal: ['य', 'य़'], shifted: ['ृ', 'ॄ']}
+      - {type: case, normal: ['़', 'ॽ', '॰', 'ऽ'], shifted: ['ञ']}

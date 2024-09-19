@@ -100,13 +100,12 @@ fun List<LongPressKey>.toEncodedString(): String {
     }
 }
 
-class LongPressKeySettings(val context: Context) {
-    private val currentSetting = context.getSettingBlocking(LongPressKeyLayoutSetting).toLongPressKeyLayoutItems()
-
-    val currentOrder: List<LongPressKey>
-        get() = currentSetting
-
+data class LongPressKeySettings(val currentOrder: List<LongPressKey>) {
     companion object {
+        @JvmStatic
+        fun load(context: Context): LongPressKeySettings =
+            LongPressKeySettings(context.getSettingBlocking(LongPressKeyLayoutSetting).toLongPressKeyLayoutItems())
+
         @JvmStatic
         fun joinMoreKeys(keys: List<String>): String =
             keys.map {
@@ -138,7 +137,7 @@ class LongPressKeySettings(val context: Context) {
 
         // Add the necessary configurable keys in the correct order.
         // Key kinds not enabled are not added
-        currentSetting.forEach { kind ->
+        currentOrder.forEach { kind ->
             keys.forEach { key ->
                 if(getKind(key) == kind) {
                     finalKeys.add(key)
@@ -147,15 +146,5 @@ class LongPressKeySettings(val context: Context) {
         }
 
         return finalKeys
-    }
-
-    override operator fun equals(other: Any?): Boolean {
-        return other is LongPressKeySettings && (other.currentSetting.joinToString(",") == currentSetting.joinToString(","))
-    }
-
-    override fun hashCode(): Int {
-        var result = context.hashCode()
-        result = 31 * result + currentSetting.hashCode()
-        return result
     }
 }

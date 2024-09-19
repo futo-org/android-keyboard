@@ -22,9 +22,9 @@ private fun getNumForCoordinate(keyCoordinate: KeyCoordinate): String {
         val centeredCol = keyCoordinate.regularColumn - colOffset
 
         if(centeredCol == 9) {
-            return "!text/keyspec_symbols_0"
+            return "!text/keyspec_symbols_0,!text/additional_morekeys_symbols_0"
         } else if(centeredCol in 0 until 9) {
-            return "!text/keyspec_symbols_${centeredCol + 1}"
+            return "!text/keyspec_symbols_${centeredCol + 1},!text/additional_morekeys_symbols_${centeredCol + 1}"
         } else {
             return ""
         }

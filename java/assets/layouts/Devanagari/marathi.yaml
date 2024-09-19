@@ -1,0 +1,146 @@
+name: Marathi
+languages: mr-IN
+rows:
+  - letters: # rowkeys_marathi1.xml
+    # U+094C: ौ DEVANAGARI VOWEL SIGN AU
+    # U+0914: औ DEVANAGARI LETTER AU
+    - ["\u094c", "\u0914"]
+
+    # U+0948: ै DEVANAGARI VOWEL SIGN AI
+    # U+0910: ऐ DEVANAGARI LETTER AI
+    - ["\u0948", "\u0910"]
+
+    # U+093E: ा DEVANAGARI VOWEL SIGN AA
+    # U+0906: आ DEVANAGARI LETTER AA
+    - ["\u093e", "\u0906"]
+
+    # U+0940: ी DEVANAGARI VOWEL SIGN II
+    # U+0908: ई DEVANAGARI LETTER II
+    - ["\u0940", "\u0908"]
+
+    # U+0942: ू DEVANAGARI VOWEL SIGN UU
+    # U+090A: ऊ DEVANAGARI LETTER UU
+    - ["\u0942", "\u090a"]
+
+    # U+092C: ब DEVANAGARI LETTER BA
+    # U+092D: भ DEVANAGARI LETTER BHA
+    - ["\u092c", "\u092d"]
+
+    # U+0939: ह DEVANAGARI LETTER HA
+    - ["\u0939"]
+
+    # U+0917: ग DEVANAGARI LETTER GA
+    # U+0918: घ DEVANAGARI LETTER GHA
+    - ["\u0917", "\u0918"]
+
+    # U+0926: द DEVANAGARI LETTER DA
+    # U+0927: ध DEVANAGARI LETTER DHA
+    - ["\u0926", "\u0927"]
+
+    # U+091C: ज DEVANAGARI LETTER JA
+    # U+091D: झ DEVANAGARI LETTER JHA
+    # U+094D: ् DEVANAGARI SIGN VIRAMA
+    # U+091E: ञ DEVANAGARI LETTER NYA
+    - ["\u091c", "\u091d", "\u091c\u094d\u091e"]
+
+    # U+0921: ड DEVANAGARI LETTER DDA
+    # U+0922: ढ DEVANAGARI LETTER DDHA
+    - ["\u0921", "\u0922"]
+
+  - letters: # rowkeys_marathi2.xml
+    # U+094B: ो DEVANAGARI VOWEL SIGN O
+    # U+0913: ओ DEVANAGARI LETTER O
+    - ["\u094b", "\u0913"]
+
+    # U+0947: े DEVANAGARI VOWEL SIGN E
+    # U+090F: ए DEVANAGARI LETTER E
+    - ["\u0947", "\u090f"]
+
+    # U+094D: ् DEVANAGARI SIGN VIRAMA
+    # U+0905: अ DEVANAGARI LETTER A
+    - ["\u094d", "\u0905"]
+
+    # U+093F: ि DEVANAGARI VOWEL SIGN I
+    # U+0907: इ DEVANAGARI LETTER I
+    - ["\u093f", "\u0907"]
+
+    # U+0941: ु DEVANAGARI VOWEL SIGN U
+    # U+0909: उ DEVANAGARI LETTER U
+    - ["\u0941", "\u0909"]
+
+    # U+092A: प DEVANAGARI LETTER PA
+    # U+092B: फ DEVANAGARI LETTER PHA
+    - ["\u092a", "\u092b"]
+
+    # U+0930: र DEVANAGARI LETTER RA
+    # U+0931: ऱ DEVANAGARI LETTER RRA
+    # U+090B: ऋ DEVANAGARI LETTER VOCALIC R
+    # U+0943: ृ DEVANAGARI VOWEL SIGN VOCALIC R
+    - ["\u0930", "\u0931", "\u090b", "\u0943"]
+
+    # U+0915: क DEVANAGARI LETTER KA
+    # U+0916: ख DEVANAGARI LETTER KHA
+    - ["\u0915", "\u0916"]
+
+    # U+0924: त DEVANAGARI LETTER TA
+    # U+0925: थ DEVANAGARI LETTER THA
+    # U+094D: ् DEVANAGARI SIGN VIRAMA
+    # U+0930: र DEVANAGARI LETTER RA
+    - ["\u0924", "\u0925", "\u0924\u094d\u0930"]
+
+    # U+091A: च DEVANAGARI LETTER CA
+    # U+091B: छ DEVANAGARI LETTER CHA
+    - ["\u091a", "\u091b"]
+
+    # U+091F: ट DEVANAGARI LETTER TTA
+    # U+0920: ठ DEVANAGARI LETTER TTHA
+    - ["\u091f", "\u0920"]
+
+  - letters: # rowkeys_marathi3.xml
+    # U+0949: ॉ DEVANAGARI VOWEL SIGN CANDRA O
+    # U+0911: ऑ DEVANAGARI LETTER CANDRA O
+    - ["\u0949", "\u0911"]
+
+    # U+0945: ॅ DEVANAGARI VOWEL SIGN CANDRA E
+    # U+090D: ऍ DEVANAGARI LETTER CANDRA E
+    - ["\u0945", "\u090d"]
+
+    # U+0902: ं DEVANAGARI SIGN ANUSVARA
+    # U+0903: ः DEVANAGARI SIGN VISARGA
+    # U+0901: ँ DEVANAGARI SIGN CANDRABINDU
+    - ["\u0902", "\u0903", "\u0901"]
+
+    # U+092E: म DEVANAGARI LETTER MA
+    - ["\u092e"]
+
+    # U+0928: न DEVANAGARI LETTER NA
+    # U+0923: ण DEVANAGARI LETTER NNA
+    # U+091E: ञ DEVANAGARI LETTER NYA
+    # U+0919: ङ DEVANAGARI LETTER NGA
+    - ["\u0928", "\u0923", "\u091e", "\u0919"]
+
+    # U+0935: व DEVANAGARI LETTER VA
+    - ["\u0935"]
+
+    # U+0932: ल DEVANAGARI LETTER LA
+    # U+0933: ळ DEVANAGARI LETTER LLA
+    - ["\u0932", "\u0933"]
+
+    # U+0938: स DEVANAGARI LETTER SA
+    # U+0936: श DEVANAGARI LETTER SHA
+    # U+0937: ष DEVANAGARI LETTER SSA
+    # U+094D: ् DEVANAGARI SIGN VIRAMA
+    # U+0930: र DEVANAGARI LETTER RA
+    - ["\u0938", "\u0936", "\u0937", "\u0936\u094d\u0930"]
+
+    # U+092F: य DEVANAGARI LETTER YA
+    - ["\u092f"]
+
+    # U+0915: क DEVANAGARI LETTER KA
+    # U+094D: ् DEVANAGARI SIGN VIRAMA
+    # U+0937: ष DEVANAGARI LETTER SSA
+    - ["\u0915\u094d\u0937"]
+
+    - $delete
+
+# detected 3 rows
