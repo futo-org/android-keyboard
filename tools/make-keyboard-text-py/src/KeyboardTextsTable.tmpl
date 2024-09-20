@@ -41,7 +41,9 @@ public final class KeyboardTextsTable {
     public static String getText(final String name, final String[] textsTable) {
         final Integer indexObj = sNameToIndexesMap.get(name);
         if (indexObj == null) {
-            if(name.startsWith("morekeys")) {
+            if(name.startsWith("actions_") || name.startsWith("qwertysyms_")) {
+                return "";
+            } else if(name.startsWith("morekeys")) {
                 Log.w("KeyboardTextsTable", "Unknown morekeys text name=" + name + " locale="
                         + sTextsTableToLocaleMap.get(textsTable));
                 return "";

@@ -1,0 +1,38 @@
+name: Hebrew
+languages: iw
+rows:
+  - letters: # rowkeys_hebrew1.xml
+    # skipped unknown case {'{http://schemas.android.com/apk/res-auto}mode': 'email|url'}
+    - ["\\'", '%', '"']
+    - ['-', '%', '_']
+    - ['ק']
+    - ['ר']
+    - ['א']
+    - ['ט']
+    - ['ו']
+    - ['ן']
+    - ['ם']
+    - ['פ']
+  - letters: # rowkeys_hebrew2.xml
+    - ['ש']
+    - ['ד']
+    - ['ג', 'ג׳']
+    - ['כ']
+    - ['ע']
+    - ['י', 'ײַ']
+    - ['ח', 'ח׳']
+    - ['ל']
+    - ['ך']
+    - ['ף']
+  - letters: # rowkeys_hebrew3.xml
+    - ['ז', 'ז׳']
+    - ['ס']
+    - ['ב']
+    - ['ה']
+    - ['נ']
+    - ['מ']
+    - ['צ', 'צ׳']
+    - ['ת', 'ת׳']
+    - ['ץ', 'ץ׳']
+    - $delete # force no shift key
+# detected 3 rows

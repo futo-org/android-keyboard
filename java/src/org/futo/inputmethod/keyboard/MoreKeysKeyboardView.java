@@ -121,7 +121,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     @Override
     public void showMoreKeysPanel(final View parentView, final Controller controller,
-            final int pointX, final int pointY, final KeyboardActionListener listener) {
+            final int pointX, final int pointY, final KeyboardActionListener listener, final int[] touchOrigin) {
         mController = controller;
         mListener = listener;
         final View container = getContainerView();
@@ -139,8 +139,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         container.setX(panelX);
         container.setY(panelY);
 
-        mOriginX = x + container.getPaddingLeft();
-        mOriginY = y + container.getPaddingTop();
+        mOriginX = CoordinateUtils.x(touchOrigin) - getDefaultCoordX();
+        mOriginY = CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight();
         controller.onShowMoreKeysPanel(this);
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
         if (accessibilityDelegate != null

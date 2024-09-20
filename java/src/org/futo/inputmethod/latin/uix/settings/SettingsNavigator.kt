@@ -12,7 +12,6 @@ import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
-import org.futo.inputmethod.latin.uix.settings.pages.AddLanguageScreen
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
 import org.futo.inputmethod.latin.uix.settings.pages.CreditsScreen
@@ -25,6 +24,8 @@ import org.futo.inputmethod.latin.uix.settings.pages.LanguagesScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentThankYouScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
+import org.futo.inputmethod.latin.uix.settings.pages.SelectLanguageScreen
+import org.futo.inputmethod.latin.uix.settings.pages.SelectLayoutsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputScreen
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
@@ -53,8 +54,8 @@ fun SettingsNavigator(
     ) {
         composable("home") { HomeScreen(navController) }
         composable("languages") { LanguagesScreen(navController) }
-        composable("addLanguage") { AddLanguageScreen(navController) }
-        composable("addLayout/{lang}") { AddLanguageScreen(navController, it.arguments?.getString("lang")?.urlDecode()) }
+        composable("addLanguage") { SelectLanguageScreen(navController) }
+        composable("addLayout/{lang}") { SelectLayoutsScreen(navController, it.arguments?.getString("lang")?.urlDecode() ?: "") }
         composable("predictiveText") { PredictiveTextScreen(navController) }
         composable("advancedparams") { AdvancedParametersScreen(navController) }
         addTypingNavigation(navController)
@@ -86,9 +87,5 @@ fun SettingsNavigator(
             UpdateDialog(navController = navController)
         }
         addModelManagerNavigation(navController)
-    }
-
-    LaunchedEffect(Unit) {
-        navController.navigate("devlayouts")
     }
 }

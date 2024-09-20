@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
-import org.futo.inputmethod.keyboard.internal.MoreKeySpec
 import org.futo.inputmethod.latin.common.Constants
+import org.futo.inputmethod.latin.uix.actions.AllActionKeys
 import org.futo.inputmethod.latin.utils.InputTypeUtils
 
 val FunctionalAttributes = KeyAttributes(
@@ -133,17 +133,15 @@ data class EnterKey(
         } else {
             "!text/keyspec_emoji_action_key"
         }.let {
-            params.mTextsSet.resolveTextReference(it)
-        }.let {
-            MoreKeySpec.splitKeySpecs(it)?.toList() ?: listOf()
+            MoreKeysBuilder(
+                code = Constants.CODE_ENTER,
+                mode = attributes.moreKeyMode!!,
+                coordinate = coordinate,
+                row = row,
+                keyboard = keyboard,
+                params = params
+            ).insertMoreKeys(it).build(false)
         }
-
-        val moreKeySpecs = filterMoreKeysFlags(moreKeys).map {
-            MoreKeySpec(it, false, params.mId.locale)
-        }
-
-        val moreKeyFlags = computeMoreKeysFlags(moreKeys.toTypedArray(), params)
-
 
         return ComputedKeyData(
             label                 = "",
@@ -154,10 +152,10 @@ data class EnterKey(
             style                 = KeyVisualStyle.Action,
             anchored              = true,
             showPopup             = false,
-            moreKeys              = moreKeySpecs,
+            moreKeys              = moreKeys.specs,
             longPressEnabled      = true,
             repeatable            = false,
-            moreKeyFlags          = moreKeyFlags,
+            moreKeyFlags          = moreKeys.flags,
             countsToKeyCoordinate = false,
             hint                  = " ",
             labelFlags            = 0
@@ -184,13 +182,14 @@ data class ActionKey(
         val attributes = attributes.getEffectiveAttributes(row, keyboard)
 
         val actionId = params.mId.mBottomActionKeyId
+        val actionName = AllActionKeys[actionId]
 
         return ComputedKeyData(
             label                 = "",
             code                  = Constants.CODE_ACTION_0 + actionId,
             outputText            = null,
             width                 = attributes.width ?: KeyWidth.Regular,
-            icon                  = "action_$actionId",
+            icon                  = "action_$actionName",
             style                 = attributes.style ?: KeyVisualStyle.Functional,
             anchored              = true,
             showPopup             = false,

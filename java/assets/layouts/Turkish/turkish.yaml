@@ -1,0 +1,39 @@
+name: Turkish
+languages: tr
+rows:
+  - letters: # rowkeys_turkish1.xml
+    - ['!text/keyspec_q']
+    - ['!text/keyspec_w']
+    - ['e']
+    - ['r']
+    - ['t']
+    - ['!text/keyspec_y']
+    - ['u']
+    - ['ı']
+    - ['o']
+    - ['p']
+    - ['ğ']
+    - ['ü']
+  - letters: # rowkeys_turkish2.xml
+    - a
+    - s
+    - d
+    - f
+    - g
+    - h
+    - j
+    - k
+    - l
+    - ['ş']
+    - ['i']
+  - letters: # rowkeys_turkish3.xml
+    - z
+    - x
+    - c
+    - v
+    - b
+    - n
+    - m
+    - ['ö']
+    - ['ç']
+# detected 3 rows

@@ -1,0 +1,38 @@
+name: Sinhala
+languages: si-LK
+rows:
+  - letters: # rowkeys_sinhala1.xml
+    - {type: case, normal: ['ු'], shifted: ['ූ']}
+    - {type: case, normal: ['අ'], shifted: ['උ']}
+    - {type: case, normal: ['ැ'], shifted: ['ෑ']}
+    - {type: case, normal: ['ර'], shifted: ['ඍ']}
+    - {type: case, normal: ['එ'], shifted: ['ඔ']}
+    - {type: case, normal: ['හ'], shifted: ['ශ']}
+    - {type: case, normal: ['ම'], shifted: ['ඹ']}
+    - {type: case, normal: ['ස'], shifted: ['ෂ']}
+    - {type: case, normal: ['ද', '%', 'ඳ'], shifted: ['ධ']}
+    - {type: case, normal: ['ච'], shifted: ['ඡ']}
+    - {type: case, normal: ['ඤ', '෴'], shifted: ['ඥ', '෴']}
+  - letters: # rowkeys_sinhala2.xml
+    - {type: case, normal: ['්'], shifted: ['ෟ']}
+    - {type: case, normal: ['ි'], shifted: ['ී']}
+    - {type: case, normal: ['ා'], shifted: ['ෘ']}
+    - {type: case, normal: ['ෙ'], shifted: ['ෆ']}
+    - {type: case, normal: ['ට'], shifted: ['ඨ']}
+    - {type: case, normal: ['ය'], shifted: ["්\u200dය"]}
+    - {type: case, normal: ['ව'], shifted: ['ළු']}
+    - {type: case, normal: ['න'], shifted: ['ණ']}
+    - {type: case, normal: ['ක'], shifted: ['ඛ']}
+    - {type: case, normal: ['ත'], shifted: ['ථ']}
+    - {type: case, normal: ['ඏ'], shifted: ["්\u200dර"]}
+  - letters: # rowkeys_sinhala3.xml
+    - {type: case, normal: ['ං', 'ඃ'], shifted: ['ඞ']}
+    - {type: case, normal: ['ජ', 'ඦ'], shifted: ['ඣ']}
+    - {type: case, normal: ['ඩ', 'ඬ'], shifted: ['ඪ']}
+    - {type: case, normal: ['ඉ'], shifted: ['ඊ']}
+    - {type: case, normal: ['බ'], shifted: ['භ']}
+    - {type: case, normal: ['ප'], shifted: ['ඵ']}
+    - {type: case, normal: ['ල'], shifted: ['ළ']}
+    - {type: case, normal: ['ග', 'ඟ'], shifted: ['ඝ']}
+    - {type: case, normal: ['ෳ'], shifted: ["ර්\u200d"]}
+# detected 3 rows

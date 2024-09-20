@@ -1,0 +1,128 @@
+name: Nepali (Romanized)
+languages: ne-NP
+useZWNJKey: true
+rows:
+  - letters: # rowkeys_nepali_romanized1.xml
+    # U+091F: ट DEVANAGARI LETTER TTA
+    # U+093C: ़ DEVANAGARI SIGN NUKTA
+    # U+0920: ठ DEVANAGARI LETTER TTHA
+    - {type: case, normal: ["\u091f", "%", "\u093c"], shifted: ["\u0920"]}
+
+    # U+094C: ौ DEVANAGARI VOWEL SIGN AU
+    # U+0914: औ DEVANAGARI LETTER AU
+    - {type: case, normal: ["\u094c"], shifted: ["\u0914"]}
+
+    # U+0947: े DEVANAGARI VOWEL SIGN E
+    # U+0948: ै DEVANAGARI VOWEL SIGN AI
+    - {type: case, normal: ["\u0947"], shifted: ["\u0948"]}
+
+    # U+0930: र DEVANAGARI LETTER RA
+    # U+0943: ृ DEVANAGARI VOWEL SIGN VOCALIC R
+    - {type: case, normal: ["\u0930"], shifted: ["\u0943"]}
+
+    # U+0924: त DEVANAGARI LETTER TA
+    # U+0925: थ DEVANAGARI LETTER THA
+    - {type: case, normal: ["\u0924"], shifted: ["\u0925"]}
+
+    # U+092F: य DEVANAGARI LETTER YA
+    # U+091E: ञ DEVANAGARI LETTER NYA
+    - {type: case, normal: ["\u092f"], shifted: ["\u091e"]}
+
+    # U+0941: ु DEVANAGARI VOWEL SIGN U
+    # U+0942: ू DEVANAGARI VOWEL SIGN UU
+    - {type: case, normal: ["\u0941"], shifted: ["\u0942"]}
+
+    # U+093F: ि DEVANAGARI VOWEL SIGN I
+    # U+0940: ी DEVANAGARI VOWEL SIGN II
+    - {type: case, normal: ["\u093f"], shifted: ["\u0940"]}
+
+    # U+094B: ो DEVANAGARI VOWEL SIGN O
+    # U+0913: ओ DEVANAGARI LETTER O
+    - {type: case, normal: ["\u094b"], shifted: ["\u0913"]}
+
+    # U+092A: प DEVANAGARI LETTER PA
+    # U+092B: फ DEVANAGARI LETTER PHA
+    - {type: case, normal: ["\u092a"], shifted: ["\u092b"]}
+
+    # U+0907: इ DEVANAGARI LETTER I
+    # U+0908: ई DEVANAGARI LETTER II
+    - {type: case, normal: ["\u0907"], shifted: ["\u0908"]}
+
+  - letters: # rowkeys_nepali_romanized2.xml
+    # U+093E: ा DEVANAGARI VOWEL SIGN AA
+    # U+0906: आ DEVANAGARI LETTER AA
+    - {type: case, normal: ["\u093e"], shifted: ["\u0906"]}
+
+    # U+0938: स DEVANAGARI LETTER SA
+    # U+0936: श DEVANAGARI LETTER SHA
+    - {type: case, normal: ["\u0938"], shifted: ["\u0936"]}
+
+    # U+0926: द DEVANAGARI LETTER DA
+    # U+0927: ध DEVANAGARI LETTER DHA
+    - {type: case, normal: ["\u0926"], shifted: ["\u0927"]}
+
+    # U+0909: उ DEVANAGARI LETTER U
+    # U+090A: ऊ DEVANAGARI LETTER UU
+    - {type: case, normal: ["\u0909"], shifted: ["\u090a"]}
+
+    # U+0917: ग DEVANAGARI LETTER GA
+    # U+0918: घ DEVANAGARI LETTER GHA
+    - {type: case, normal: ["\u0917"], shifted: ["\u0918"]}
+
+    # U+0939: ह DEVANAGARI LETTER HA
+    # U+0905: अ DEVANAGARI LETTER A
+    - {type: case, normal: ["\u0939"], shifted: ["\u0905"]}
+
+    # U+091C: ज DEVANAGARI LETTER JA
+    # U+091D: झ DEVANAGARI LETTER JHA
+    - {type: case, normal: ["\u091c"], shifted: ["\u091d"]}
+
+    # U+0915: क DEVANAGARI LETTER KA
+    # U+0916: ख DEVANAGARI LETTER KHA
+    - {type: case, normal: ["\u0915"], shifted: ["\u0916"]}
+
+    # U+0932: ल DEVANAGARI LETTER LA
+    # U+0965: ॥ DEVANAGARI DOUBLE DANDA
+    - {type: case, normal: ["\u0932"], shifted: ["\u0965"]}
+
+    # U+090F: ए DEVANAGARI LETTER E
+    # U+0910: ऐ DEVANAGARI LETTER AI
+    - {type: case, normal: ["\u090f"], shifted: ["\u0910"]}
+
+    # U+0950: ॐ DEVANAGARI OM
+    # U+0903: ः DEVANAGARI SIGN VISARGA
+    - {type: case, normal: ["\u0950"], shifted: ["\u0903"]}
+
+  - letters: # rowkeys_nepali_romanized3.xml
+    # U+0937: ष DEVANAGARI LETTER SSA
+    # U+090B: ऋ DEVANAGARI LETTER VOCALIC R
+    - {type: case, normal: ["\u0937"], shifted: ["\u090b"]}
+
+    # U+0921: ड DEVANAGARI LETTER DDA
+    # U+0922: ढ DEVANAGARI LETTER DDHA
+    - {type: case, normal: ["\u0921"], shifted: ["\u0922"]}
+
+    # U+091A: च DEVANAGARI LETTER CA
+    # U+091B: छ DEVANAGARI LETTER CHA
+    - {type: case, normal: ["\u091a"], shifted: ["\u091b"]}
+
+    # U+0935: व DEVANAGARI LETTER VA
+    # U+0901: ँ DEVANAGARI SIGN CANDRABINDU
+    - {type: case, normal: ["\u0935"], shifted: ["\u0901"]}
+
+    # U+092C: ब DEVANAGARI LETTER BA
+    # U+092D: भ DEVANAGARI LETTER BHA
+    - {type: case, normal: ["\u092c"], shifted: ["\u092d"]}
+
+    # U+0928: न DEVANAGARI LETTER NA
+    # U+0923: ण DEVANAGARI LETTER NNA
+    - {type: case, normal: ["\u0928"], shifted: ["\u0923"]}
+
+    # U+092E: म DEVANAGARI LETTER MA
+    # U+0902: ं DEVANAGARI SIGN ANUSVARA
+    - {type: case, normal: ["\u092e"], shifted: ["\u0902"]}
+
+    # U+094D: ् DEVANAGARI SIGN VIRAMA
+    # U+093D: ऽ DEVANAGARI SIGN AVAGRAHA
+    # U+0919: ङ DEVANAGARI LETTER NGA
+    - {type: case, normal: ["\u094d", "\u093d"], shifted: ["\u0919"]}

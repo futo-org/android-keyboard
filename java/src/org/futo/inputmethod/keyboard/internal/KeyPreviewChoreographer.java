@@ -103,6 +103,11 @@ public final class KeyPreviewChoreographer {
         showKeyPreview(key, keyPreviewView, withAnimation);
     }
 
+    public int getBottomPaddingForKey(final Context context, final Key key) {
+        final float density = context.getResources().getDisplayMetrics().density;
+        return Math.max(key.getHeight(), (int)(64.0f * density));
+    }
+
     private void placeKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
             final KeyboardIconsSet iconsSet, final KeyDrawParams drawParams,
             final int keyboardViewWidth, final int[] originCoords) {
@@ -110,8 +115,16 @@ public final class KeyPreviewChoreographer {
         keyPreviewView.measure(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mParams.setGeometry(keyPreviewView);
-        final int previewWidth = keyPreviewView.getMeasuredWidth();
-        final int previewHeight = mParams.mPreviewHeight;
+
+        final float density = keyPreviewView.getContext().getResources().getDisplayMetrics().density;
+
+        final int bottomPadding = getBottomPaddingForKey(keyPreviewView.getContext(), key);
+        final int topArea = Math.max(key.getHeight(), (int)(44.0f * density));
+
+        final int previewWidth  = Math.min(Math.max(key.getWidth(), (int)(34.0f * density)), (int)(64.0f * density));
+        final int previewHeight = topArea + bottomPadding;
+        keyPreviewView.setPadding(0, 0, 0, bottomPadding);
+
         final int keyDrawWidth = key.getDrawWidth();
         // The key preview is horizontally aligned with the center of the visible part of the
         // parent key. If it doesn't fit in this {@link KeyboardView}, it is moved inward to fit and

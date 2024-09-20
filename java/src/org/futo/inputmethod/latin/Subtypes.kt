@@ -43,10 +43,10 @@ import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
-import org.futo.inputmethod.latin.uix.settings.pages.LocaleLayoutMap
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
+import org.futo.inputmethod.v2keyboard.LayoutManager
 import java.util.Locale
 import kotlin.math.sign
 
@@ -110,7 +110,7 @@ object Subtypes {
         var numAdded = 0
         for(i in 0 until locales.size()) {
             val locale = locales.get(i).stripExtensionsIfNeeded()
-            val layout = findClosestLocaleLayouts(locale).firstOrNull() ?: continue
+            val layout = findClosestLocaleLayouts(context, locale).firstOrNull() ?: continue
 
             addLanguage(context, locale, layout)
             numAdded += 1
@@ -124,10 +124,8 @@ object Subtypes {
         context.setSettingBlocking(ActiveSubtype.key, context.getSettingBlocking(SubtypesSetting).firstOrNull() ?: return)
     }
 
-    fun findClosestLocaleLayouts(locale: Locale): List<String> {
-        val supportedLocales = LocaleLayoutMap.toList().associate {
-            getLocale(it.first) to it.second
-        }
+    fun findClosestLocaleLayouts(context: Context, locale: Locale): List<String> {
+        val supportedLocales = LayoutManager.getLayoutMapping(context)
 
         val perfectMatch = supportedLocales.keys.find { it.language == locale.language && it.country == locale.country }
         val languageMatch = supportedLocales.keys.find { it.language == locale.language }
@@ -242,7 +240,7 @@ object Subtypes {
 
         for(i in 0 until locales.size()) {
             val locale = locales.get(i).stripExtensionsIfNeeded()
-            val layout = findClosestLocaleLayouts(locale).firstOrNull() ?: continue
+            val layout = findClosestLocaleLayouts(context, locale).firstOrNull() ?: continue
 
             val value = subtypeToString(
                 InputMethodSubtypeBuilder()

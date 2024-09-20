@@ -75,7 +75,7 @@ fun List<LayoutEntry.Key>.addGap(totalGap: Float): List<LayoutEntry> {
 data class LayoutRow(
     val entries: List<LayoutEntry>,
     val widths: Map<KeyWidth, Float>,
-    val height: Int,
+    val height: Float,
     val splittable: Boolean
 )
 
@@ -159,6 +159,8 @@ data class LayoutEngine(
     private val minFunctionalKeyWidth = layoutWidth * keyboard.minimumFunctionalKeyWidth
     private val maxFunctionalKeyWidth = (layoutWidth * maxOf(0.15f,
         keyboard.overrideWidths[KeyWidth.FunctionalKey] ?: 0.15f))
+
+    private val bottomRegularKeyWidth = 0.1f * layoutWidth
 
 
     private fun computeRegularKeyWidth(layoutWidth: Int = this.layoutWidth): Float {
@@ -321,7 +323,7 @@ data class LayoutEngine(
     private fun buildLayoutRow(
         computedRowWithoutWidths: List<LayoutEntry.Key>,
         widths: Map<KeyWidth, Float>,
-        height: Int,
+        height: Float,
         splittable: Boolean
     ): LayoutRow {
         val computedRow = computedRowWithoutWidths.map { key ->
@@ -352,7 +354,9 @@ data class LayoutEngine(
 
         val rowRegularKeyWidths = rows.map {
             // Special case: action row uses regular key width to match the other rows
-            if(it.splittable || it.isBottomRow) {
+            if(it.isBottomRow) {
+                bottomRegularKeyWidth
+            } else if(it.splittable) {
                 regularKeyWidth
             } else {
                 unsplitRegularKeyWidth
@@ -430,15 +434,15 @@ data class LayoutEngine(
 
         val computedRowWithWidths = computedRowWithoutWidths.mapIndexed { i, row ->
             val height = if(rows[i].isBottomRow) {
-                bottomRowHeightPx.roundToInt()
+                bottomRowHeightPx
             } else {
-                (rows[i].rowHeight * rowHeightPx).roundToInt()
+                (rows[i].rowHeight * rowHeightPx)
             }
 
             buildLayoutRow(
                 row,
                 rowWidths[i],
-                height,
+                height.toFloat(),
                 rows[i].splittable
             )
         }
@@ -533,21 +537,21 @@ data class LayoutEngine(
         if(isSplitLayout && row.splittable) {
             val splitRows = row.entries.splitRow()
 
-            addRowAlignLeft(splitRows.first,   y, row.height)
-            addRowAlignRight(splitRows.second, y, row.height)
+            addRowAlignLeft(splitRows.first,   y, row.height.toInt())
+            addRowAlignRight(splitRows.second, y, row.height.toInt())
         } else {
-            addRowAlignLeft(row.entries, y, row.height)
+            addRowAlignLeft(row.entries, y, row.height.toInt())
         }
     }
 
     private fun addKeys(rows: List<LayoutRow>): Int {
-        var currentY = 0
+        var currentY = 0.0f
         rows.forEach { row ->
-            addRow(row, currentY)
+            addRow(row, currentY.toInt())
             currentY += row.height
         }
 
-        return currentY
+        return currentY.roundToInt()
     }
 
     fun build(): org.futo.inputmethod.keyboard.Keyboard {
@@ -587,7 +591,7 @@ data class LayoutEngine(
 
         params.mProximityCharsCorrectionEnabled = true
 
-        params.mAllowRedundantMoreKeys = false
+        params.mAllowRedundantMoreKeys = true
         params.removeRedundantMoreKeys()
 
         params.mMostCommonKeyWidth = regularKeyWidth.roundToInt()

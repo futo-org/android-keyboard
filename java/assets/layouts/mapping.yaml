@@ -1,0 +1,521 @@
+languages:
+  af:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  ar:
+    - arabic
+    - lulua
+  az_AZ:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  be_BY:
+    - east_slavic
+    - russian_student
+    - russian_yavert
+    - russian_yazhert
+  bg:
+    - bulgarian
+    - bulgarian_bds
+  bn_BD:
+    - bengali_akkhor
+  bn_IN:
+    - bengali
+  ca:
+    - spanish
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  ckb:
+    - kurdish
+  cs:
+    - qwertz
+    - qwerty
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  da:
+    - nordic
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+  de:
+    - german
+    - qwertz
+    - swiss
+    - qwerty
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  de_CH:
+    - swiss
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  el:
+    - greek
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  en_GB:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  en_IN:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  en_US:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  eo:
+    - spanish
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  es:
+    - spanish
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  es_419:
+    - spanish
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  es_US:
+    - spanish
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  et_EE:
+    - nordic
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+  eu_ES:
+    - spanish
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  fa:
+    - farsi
+  fi:
+    - nordic
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+  fr:
+    - azerty
+    - swiss
+    - qwerty
+    - qwertz
+    - dvorak
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  fr_CA:
+    - qwerty
+    - swiss
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  fr_CH:
+    - swiss
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  gl_ES:
+    - spanish
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  hi:
+    - hindi
+    - hindi_compact
+  hi_Latn:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  hr:
+    - qwertz
+    - qwerty
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  hu:
+    - qwertz
+    - qwerty
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  hy_AM:
+    - armenian_phonetic
+  in:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  is:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  it:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  it_CH:
+    - swiss
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  iw:
+    - hebrew
+  ka_GE:
+    - georgian
+  kk:
+    - east_slavic
+    - russian_student
+    - russian_yavert
+    - russian_yazhert
+  km_KH:
+    - khmer
+  kn_IN:
+    - kannada
+  ky:
+    - east_slavic
+    - russian_student
+    - russian_yavert
+    - russian_yazhert
+  lo_LA:
+    - lao
+  lt:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  lv:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  mk:
+    - south_slavic
+  ml_IN:
+    - malayalam
+  mn_MN:
+    - mongolian
+  mr_IN:
+    - marathi
+  ms_MY:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  nb:
+    - nordic
+  ne_NP:
+    - nepali_romanized
+    - nepali_traditional
+  nl:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  nl_BE:
+    - azerty
+    - qwerty
+    - qwertz
+    - dvorak
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  pl:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  pt_BR:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  pt_PT:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  ro:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  ru:
+    - east_slavic
+    - russian_student
+    - russian_yavert
+    - russian_yazhert
+  si_LK:
+    - sinhala
+  sk:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  sl:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  sr:
+    - south_slavic
+  sr_Latn:
+    - serbian_qwertz
+  sv:
+    - nordic
+  sw:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  ta_IN:
+    - tamil
+  ta_LK:
+    - tamil
+  ta_SG:
+    - tamil
+  te_IN:
+    - telugu
+  th:
+    - thai
+  tl:
+    - spanish
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  tr:
+    - turkish
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  uk:
+    - east_slavic
+    - russian_student
+    - russian_yavert
+    - russian_yazhert
+  uz_UZ:
+    - uzbek
+  vi:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  zu:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  zz:
+    - qwerty
+    - qwertz
+    - dvorak
+    - azerty
+    - colemak
+    - bepo
+    - pcqwerty
+    - nordic
+  ipa:
+    - ipa

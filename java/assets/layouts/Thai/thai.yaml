@@ -1,0 +1,57 @@
+name: Thai
+languages: th
+minimumFunctionalKeyWidth: 0.0
+attributes: { moreKeyMode: OnlyExplicit }
+numberRowMode: AlwaysDisabled
+rows:
+  - letters: # rowkeys_thai1.xml
+    - {type: case, normal: ['ๅ'], shifted: ['+']}
+    - {type: case, normal: ['/', '1', '๑'], shifted: ['๑']}
+    - {type: case, normal: ['_', '2', '๒'], shifted: ['๒']}
+    - {type: case, normal: ['ภ', '3', '๓'], shifted: ['๓']}
+    - {type: case, normal: ['ถ', '4', '๔'], shifted: ['๔']}
+    - {type: case, normal: [' ุ|ุ'], shifted: [' ู|ู']}
+    - {type: case, normal: [' ึ|ึ'], shifted: ['฿']}
+    - {type: case, normal: ['ค', '5', '๕'], shifted: ['๕']}
+    - {type: case, normal: ['ต', '6', '๖'], shifted: ['๖']}
+    - {type: case, normal: ['จ', '7', '๗'], shifted: ['๗']}
+    - {type: case, normal: ['ข', '8', '๘'], shifted: ['๘']}
+    - {type: case, normal: ['ช', '9', '๙'], shifted: ['๙']}
+  - letters: # rowkeys_thai2.xml
+    - {type: case, normal: ['ๆ', '0', '๐'], shifted: ['๐']}
+    - {type: case, normal: ['ไ'], shifted: ['"']}
+    - {type: case, normal: ['ำ'], shifted: ['ฎ']}
+    - {type: case, normal: ['พ'], shifted: ['ฑ']}
+    - {type: case, normal: ['ะ'], shifted: ['ธ']}
+    - {type: case, normal: [' ั|ั'], shifted: [' ํ|ํ']}
+    - {type: case, normal: [' ี|ี'], shifted: [' ๊|๊']}
+    - {type: case, normal: ['ร'], shifted: ['ณ']}
+    - {type: case, normal: ['น'], shifted: ['ฯ']}
+    - {type: case, normal: ['ย'], shifted: ['ญ']}
+    - {type: case, normal: ['บ'], shifted: ['ฐ']}
+    - {type: case, normal: ['ล'], shifted: [',']}
+  - letters: # rowkeys_thai3.xml
+    - {type: case, normal: ['ฟ'], shifted: ['ฤ']}
+    - {type: case, normal: ['ห'], shifted: ['ฆ']}
+    - {type: case, normal: ['ก'], shifted: ['ฏ']}
+    - {type: case, normal: ['ด'], shifted: ['โ']}
+    - {type: case, normal: ['เ'], shifted: ['ฌ']}
+    - {type: case, normal: [' ้|้'], shifted: [' ็|็']}
+    - {type: case, normal: [' ่|่'], shifted: [' ๋|๋']}
+    - {type: case, normal: ['า'], shifted: ['ษ']}
+    - {type: case, normal: ['ส'], shifted: ['ศ']}
+    - {type: case, normal: ['ว'], shifted: ['ซ']}
+    - {type: case, normal: ['ง'], shifted: ['.']}
+    - {type: case, normal: ['ฃ'], shifted: ['ฅ']}
+  - letters: # rowkeys_thai4.xml
+    - {type: case, normal: ['ผ'], shifted: ['(']}
+    - {type: case, normal: ['ป'], shifted: [')']}
+    - {type: case, normal: ['แ'], shifted: ['ฉ']}
+    - {type: case, normal: ['อ'], shifted: ['ฮ']}
+    - {type: case, normal: [' ิ|ิ'], shifted: [' ฺ|ฺ']}
+    - {type: case, normal: [' ื|ื'], shifted: [' ์|์']}
+    - {type: case, normal: ['ท'], shifted: ['?']}
+    - {type: case, normal: ['ม'], shifted: ['ฒ']}
+    - {type: case, normal: ['ใ'], shifted: ['ฬ']}
+    - {type: case, normal: ['ฝ'], shifted: ['ฦ']}
+# detected 4 rows

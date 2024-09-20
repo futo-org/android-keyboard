@@ -128,6 +128,13 @@ enum class NumberRowMode {
     AlwaysDisabled
 }
 
+fun NumberRowMode.isActive(userSetting: Boolean) =
+    when(this) {
+        NumberRowMode.UserConfigurable -> userSetting
+        NumberRowMode.AlwaysEnabled -> true
+        NumberRowMode.AlwaysDisabled -> false
+    }
+
 enum class BottomRowHeightMode {
     Fixed,
     Flexible

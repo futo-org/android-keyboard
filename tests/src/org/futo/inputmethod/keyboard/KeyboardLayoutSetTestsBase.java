@@ -21,7 +21,6 @@ import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.view.ContextThemeWrapper;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import org.futo.inputmethod.compat.InputMethodSubtypeCompatUtils;
@@ -30,10 +29,11 @@ import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
 import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.common.Constants;
+import org.futo.inputmethod.latin.settings.LongPressKeySettings;
 import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
 import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
-import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params;
 
@@ -128,24 +128,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
 
     protected final InputMethodSubtype getSubtype(final Locale locale,
             final String keyboardLayout) {
-        for (final InputMethodSubtype subtype : mAllSubtypesList) {
-            final Locale subtypeLocale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
-            final String subtypeLayout = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
-            if (locale.equals(subtypeLocale) && keyboardLayout.equals(subtypeLayout)) {
-                // Found subtype that matches locale and keyboard layout.
-                return subtype;
-            }
-        }
-        for (final InputMethodSubtype subtype : getSubtypesFilteredBy(FILTER_IS_ASCII_CAPABLE)) {
-            final Locale subtypeLocale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
-            if (locale.equals(subtypeLocale)) {
-                // Create additional subtype.
-                return AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
-                        locale.toString(), keyboardLayout);
-            }
-        }
-        throw new RuntimeException(
-                "Unknown subtype: locale=" + locale + " keyboardLayout=" + keyboardLayout);
+        return Subtypes.INSTANCE.makeSubtype(locale.toString(), keyboardLayout);
     }
 
     protected KeyboardLayoutSetV2 createKeyboardLayoutSet(final InputMethodSubtype subtype,
@@ -172,7 +155,8 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
                         richInputMethodSubtype.getLocale(),
                         editorInfo, false,
                         4.0f, splitLayoutEnabled,
-                        languageSwitchKeyEnabled ? 1 : null
+                        languageSwitchKeyEnabled ? ActionRegistry.INSTANCE.actionStringIdToIdx("switch_language") : null,
+                        LongPressKeySettings.forTest()
                 )
         );
     }

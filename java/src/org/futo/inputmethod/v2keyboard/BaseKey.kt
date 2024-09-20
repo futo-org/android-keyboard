@@ -10,6 +10,7 @@ import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.keyboard.internal.MoreKeySpec
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.StringUtils
+import org.futo.inputmethod.latin.settings.LongPressKeySettings
 
 /**
  * Width tokens for keys. Rather than explicitly specifying a width in percentage as is common in
@@ -75,74 +76,6 @@ enum class KeyWidth {
      */
     Custom4,
 }
-
-internal fun computeMoreKeysFlags(moreKeys: Array<String>, params: KeyboardParams): Int {
-    // Get maximum column order number and set a relevant mode value.
-    var moreKeysColumnAndFlags =
-        (KeyConsts.MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER
-                or params.mMaxMoreKeysKeyboardColumn)
-    var value: Int
-    if ((MoreKeySpec.getIntValue(
-            moreKeys,
-            KeyConsts.MORE_KEYS_AUTO_COLUMN_ORDER,
-            -1
-        ).also {
-            value = it
-        }) > 0
-    ) {
-        // Override with fixed column order number and set a relevant mode value.
-        moreKeysColumnAndFlags =
-            (KeyConsts.MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER
-                    or (value and KeyConsts.MORE_KEYS_COLUMN_NUMBER_MASK))
-    }
-    if ((MoreKeySpec.getIntValue(
-            moreKeys,
-            KeyConsts.MORE_KEYS_FIXED_COLUMN_ORDER,
-            -1
-        ).also {
-            value = it
-        }) > 0
-    ) {
-        // Override with fixed column order number and set a relevant mode value.
-        moreKeysColumnAndFlags =
-            (KeyConsts.MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER
-                    or (value and KeyConsts.MORE_KEYS_COLUMN_NUMBER_MASK))
-    }
-    if (MoreKeySpec.getBooleanValue(
-            moreKeys,
-            KeyConsts.MORE_KEYS_HAS_LABELS
-        )
-    ) {
-        moreKeysColumnAndFlags =
-            moreKeysColumnAndFlags or KeyConsts.MORE_KEYS_FLAGS_HAS_LABELS
-    }
-    if (MoreKeySpec.getBooleanValue(
-            moreKeys,
-            KeyConsts.MORE_KEYS_NEEDS_DIVIDERS
-        )
-    ) {
-        moreKeysColumnAndFlags =
-            moreKeysColumnAndFlags or KeyConsts.MORE_KEYS_FLAGS_NEEDS_DIVIDERS
-    }
-    if (MoreKeySpec.getBooleanValue(
-            moreKeys,
-            KeyConsts.MORE_KEYS_NO_PANEL_AUTO_MORE_KEY
-        )
-    ) {
-        moreKeysColumnAndFlags =
-            moreKeysColumnAndFlags or KeyConsts.MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY
-    }
-    return moreKeysColumnAndFlags
-}
-
-internal fun filterMoreKeysFlags(moreKeys: List<String>): List<String> =
-    moreKeys.filter {
-        !it.startsWith(KeyConsts.MORE_KEYS_AUTO_COLUMN_ORDER) &&
-                !it.startsWith(KeyConsts.MORE_KEYS_FIXED_COLUMN_ORDER) &&
-                !it.startsWith(KeyConsts.MORE_KEYS_HAS_LABELS) &&
-                !it.startsWith(KeyConsts.MORE_KEYS_NEEDS_DIVIDERS) &&
-                !it.startsWith(KeyConsts.MORE_KEYS_NO_PANEL_AUTO_MORE_KEY)
-    }
 
 /**
  * Specifies which morekeys can be automatically added to the key.
@@ -315,7 +248,7 @@ val DefaultKeyAttributes = KeyAttributes(
     moreKeyMode         = null, // Default value is calculated in getEffectiveAttributes based on other attribute values
     useKeySpecShortcut  = true,
     longPressEnabled    = false,
-    labelFlags          = LabelFlags(),
+    labelFlags          = LabelFlags(autoXScale = true),
     repeatableEnabled   = false,
     shiftable           = true,
 )
@@ -394,7 +327,7 @@ data class BaseKey(
         }
 
         val relevantSpecShortcut = if(attributes.useKeySpecShortcut != false || attributes.moreKeyMode?.autoFromKeyspec != false) {
-            KeySpecShortcuts[spec]
+            resolveSpecWithOptionalShortcut(spec, params.mTextsSet, coordinate)
         } else {
             null
         }
@@ -410,38 +343,30 @@ data class BaseKey(
         val outputText = KeySpecParser.getOutputText(expandedSpec)
 
         val moreKeyMode = attributes.moreKeyMode!!
+        var moreKeysBuilder = MoreKeysBuilder(code = code, mode = moreKeyMode, coordinate = coordinate, row = row, keyboard = keyboard, params = params)
 
-        val autoMoreKeys = listOfNotNull(
-            if (moreKeyMode.autoFromKeyspec) {
-                getDefaultMoreKeysForKey(code, relevantSpecShortcut)
-            } else { null },
+        // 1. Add layout-defined moreKeys
+        moreKeysBuilder =
+            moreKeysBuilder.insertMoreKeys(LongPressKeySettings.joinMoreKeys(moreKeys))
 
-            if (moreKeyMode.autoNumFromCoord && row.isLetterRow) {
-                getNumForCoordinate(coordinate)
-            } else { null },
-
-            if (moreKeyMode.autoSymFromCoord && row.isLetterRow) {
-                getSymsForCoordinate(coordinate)
-            } else { null },
-
-            if (moreKeyMode.autoSymFromCoord) {
-                getSpecialFromRow(coordinate, row)
-            } else { null }
-        ).joinToString(",")
-
-        val joinedMoreKeys = params.mId.mLongPressKeySettings.joinMoreKeys(moreKeys)
-
-        val moreKeys = params.mId.mLongPressKeySettings.reorderMoreKeys("$joinedMoreKeys,$autoMoreKeys").let {
-            params.mTextsSet.resolveTextReference(it)
-        }.let {
-            MoreKeySpec.splitKeySpecs(it)?.toList() ?: listOf()
+        // 2. Add moreKeys from keyspec
+        if (moreKeyMode.autoFromKeyspec) {
+            moreKeysBuilder =
+                moreKeysBuilder.insertMoreKeys(getDefaultMoreKeysForKey(code, relevantSpecShortcut))
         }
 
-        val moreKeySpecs = filterMoreKeysFlags(moreKeys).map {
-            MoreKeySpec(it, shifted, params.mId.locale)
+        // 3. Add settings-defined moreKeys (numbers, symbols, actions, language, etc) in their order
+        params.mId.mLongPressKeySettings.currentOrder.forEach {
+            moreKeysBuilder = moreKeysBuilder.insertMoreKeys(it)
         }
 
-        val moreKeyFlags = computeMoreKeysFlags(moreKeys.toTypedArray(), params)
+        // 4. Add special (period and comma)
+        if (moreKeyMode.autoSymFromCoord) {
+            moreKeysBuilder =
+                moreKeysBuilder.insertMoreKeys(getSpecialFromRow(coordinate, row))
+        }
+
+        val moreKeys = moreKeysBuilder.build(shifted)
 
         return ComputedKeyData(
             label = if(shifted) {
@@ -460,10 +385,10 @@ data class BaseKey(
             style = attributes.style!!,
             anchored = attributes.anchored!!,
             showPopup = attributes.showPopup!!,
-            moreKeys = moreKeySpecs,
-            longPressEnabled = (attributes.longPressEnabled ?: false) || moreKeys.isNotEmpty(),
+            moreKeys = moreKeys.specs,
+            longPressEnabled = (attributes.longPressEnabled ?: false) || moreKeys.specs.isNotEmpty(),
             repeatable = attributes.repeatableEnabled ?: false,
-            moreKeyFlags = moreKeyFlags,
+            moreKeyFlags = moreKeys.flags,
             countsToKeyCoordinate = moreKeyMode.autoNumFromCoord && moreKeyMode.autoSymFromCoord,
             hint = hint ?: "",
             labelFlags = attributes.labelFlags?.getValue() ?: 0

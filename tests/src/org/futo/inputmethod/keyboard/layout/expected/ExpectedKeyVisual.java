@@ -22,6 +22,7 @@ import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
 import org.futo.inputmethod.latin.common.StringUtils;
 
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * This class represents an expected visual outlook of a key.
@@ -86,7 +87,7 @@ public abstract class ExpectedKeyVisual {
         boolean hasSameKeyVisual(final Key key) {
             // If the actual key has an icon as its visual, a label has to be null.
             // See {@link KeyboardView#onDrawKeyTopVisuals(Key,Canvas,Paint,KeyDrawParams).
-            return mIconId == key.getIconId() && key.getLabel() == null;
+            return Objects.equals(mIconId, key.getIconId()) && key.getLabel().isEmpty();
         }
 
         @Override
@@ -94,7 +95,7 @@ public abstract class ExpectedKeyVisual {
             // If the actual more key has an icon as its visual, a label has to be null.
             // See {@link KeySpecParser#getIconId(String)} and
             // {@link KeySpecParser#getLabel(String)}.
-            return mIconId == moreKeySpec.mIconId && moreKeySpec.mLabel == null;
+            return Objects.equals(mIconId, moreKeySpec.mIconId) && moreKeySpec.mLabel == null;
         }
 
         @Override
@@ -104,7 +105,7 @@ public abstract class ExpectedKeyVisual {
 
         @Override
         boolean hasSameKeyVisual(final ExpectedKeyVisual visual) {
-            return (visual instanceof Icon) && mIconId == ((Icon)visual).mIconId;
+            return (visual instanceof Icon) && Objects.equals(mIconId, ((Icon) visual).mIconId);
         }
 
         @Override
@@ -153,7 +154,7 @@ public abstract class ExpectedKeyVisual {
             // If the actual key has a label as its visual, an icon has to be undefined.
             // See {@link KeyboardView#onDrawKeyTopVisuals(Key,Canvas,Paint,KeyDrawParams).
             return mLabel.equals(key.getLabel())
-                    && key.getIconId() == KeyboardIconsSet.ICON_UNDEFINED;
+                    && key.getIconId().equals(KeyboardIconsSet.ICON_UNDEFINED);
         }
 
         @Override
@@ -162,7 +163,7 @@ public abstract class ExpectedKeyVisual {
             // See {@link KeySpecParser#getIconId(String)} and
             // {@link KeySpecParser#getLabel(String)}.
             return mLabel.equals(moreKeySpec.mLabel)
-                    && moreKeySpec.mIconId == KeyboardIconsSet.ICON_UNDEFINED;
+                    && Objects.equals(moreKeySpec.mIconId, KeyboardIconsSet.ICON_UNDEFINED);
         }
 
         @Override

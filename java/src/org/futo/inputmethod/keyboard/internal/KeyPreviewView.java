@@ -49,7 +49,7 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
 
     public KeyPreviewView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setGravity(Gravity.CENTER);
+        setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
     }
 
     public void setPreviewVisual(final Key key, final KeyboardIconsSet iconsSet,
@@ -64,13 +64,13 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
 
         setCompoundDrawables(null, null, null, null);
         setTextColor(drawParams.mPreviewTextColor);
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, key.selectPreviewTextSize(drawParams));
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, key.selectTextSize(drawParams));
         setTypeface(key.selectPreviewTypeface(drawParams));
         // TODO Should take care of temporaryShiftLabel here.
-        setTextAndScaleX(key.getPreviewLabel());
+        setTextAndScaleX(key.getWidth(), key.getPreviewLabel());
     }
 
-    private void setTextAndScaleX(final String text) {
+    private void setTextAndScaleX(int maxWidth, final String text) {
         setTextScaleX(1.0f);
         setText(text);
         if (sNoScaleXTextSet.contains(text)) {
@@ -83,8 +83,6 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
             return;
         }
         background.getPadding(mBackgroundPadding);
-        final int maxWidth = background.getIntrinsicWidth() - mBackgroundPadding.left
-                - mBackgroundPadding.right;
         final float width = getTextWidth(text, getPaint());
         if (width <= maxWidth) {
             sNoScaleXTextSet.add(text);

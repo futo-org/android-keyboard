@@ -2,13 +2,55 @@
     "locale": "kn",
     "morekeys": {},
     "keyspec": {
-        "currency": "₹"
+        "currency": "₹",
+        "symbols_0": "೦",
+        "symbols_1": "೧",
+        "symbols_2": "೨",
+        "symbols_3": "೩",
+        "symbols_4": "೪",
+        "symbols_5": "೫",
+        "symbols_6": "೬",
+        "symbols_7": "೭",
+        "symbols_8": "೮",
+        "symbols_9": "೯"
     },
     "label": {},
     "keylabel": {
-        "to_alpha": "ಅಆಇ"
+        "to_alpha": "ಅಆಇ",
+        "to_symbol": "?೧೨೩"
     },
     "keyhintlabel": {},
-    "additional_morekeys": {},
-    "other": {}
+    "other": {},
+    "additional_morekeys": {
+        "symbols_1": [
+            "1"
+        ],
+        "symbols_2": [
+            "2"
+        ],
+        "symbols_3": [
+            "3"
+        ],
+        "symbols_4": [
+            "4"
+        ],
+        "symbols_5": [
+            "5"
+        ],
+        "symbols_6": [
+            "6"
+        ],
+        "symbols_7": [
+            "7"
+        ],
+        "symbols_8": [
+            "8"
+        ],
+        "symbols_9": [
+            "9"
+        ],
+        "symbols_0": [
+            "0"
+        ]
+    }
 }
