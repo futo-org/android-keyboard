@@ -287,6 +287,7 @@ public final class MoreKeysKeyboard extends Keyboard {
 
             DynamicThemeProvider provider = DynamicThemeProvider.obtainFromContext(context);
 
+            mParams.mId = keyboard.mId;
             mParams.mIconsSet.loadIcons(null, provider);
             mParams.mThemeId = 3;
             mParams.mTextsSet.setLocale(keyboard.mId.mLocale, context);
