@@ -22,10 +22,11 @@ import kotlinx.coroutines.delay
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
-import org.futo.inputmethod.latin.uix.settings.ScreenTitle
+import org.futo.inputmethod.latin.uix.LocalFoldingState
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 
 val DebugLabel = Typography.labelSmall.copy(fontFamily = FontFamily.Monospace)
 val DebugTitle = Typography.titleSmall.copy(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
@@ -189,6 +190,8 @@ val MemoryDebugAction = Action(
                         state.value = newInfo.memoryStats
                     }
                 }
+                
+                val foldingState = LocalFoldingState.current
 
                 ScrollableList {
                     Text("Editor Info", style = DebugTitle)
@@ -225,6 +228,16 @@ val MemoryDebugAction = Action(
                     Text("committedTextBeforeComposingText = ${latinIme.inputLogic.mConnection.committedTextBeforeComposingTextForDebug}", style = DebugLabel)
                     Text("LM.shouldPassThroughToLegacy = ${latinIme.languageModelFacilitator.shouldPassThroughToLegacy()}", style = DebugLabel)
                     Text("LM.isTransformerDisabledDueToTimeout = ${latinIme.languageModelFacilitator.isTransformerDisabled()}", style = DebugLabel)
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text("Screen State Info", style = DebugTitle)
+                    Text("size mode     = ${(manager.getContext() as KeyboardSizeStateProvider).currentSizeState}", style = DebugLabel)
+                    Text("Fold State", style = DebugTitle)
+                    Text("state         = ${foldingState.feature?.state}",          style = DebugLabel)
+                    Text("orientation   = ${foldingState.feature?.orientation}",    style = DebugLabel)
+                    Text("isSeparating  = ${foldingState.feature?.isSeparating}",   style = DebugLabel)
+                    Text("occlusionType = ${foldingState.feature?.occlusionType}",  style = DebugLabel)
 
                     Spacer(modifier = Modifier.height(8.dp))
 

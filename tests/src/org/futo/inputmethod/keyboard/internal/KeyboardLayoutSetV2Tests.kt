@@ -1,5 +1,6 @@
 package org.futo.inputmethod.keyboard.internal
 
+import android.graphics.Rect
 import android.test.AndroidTestCase
 import android.view.inputmethod.EditorInfo
 import androidx.datastore.preferences.core.edit
@@ -14,12 +15,14 @@ import kotlin.math.absoluteValue
 class KeyboardLayoutSetV2Tests : AndroidTestCase() {
     private val layoutParams = KeyboardLayoutSetV2Params(
         width = 1024,
-        height = null,
+        height = 1024,
+        padding = Rect(),
         keyboardLayoutSet = "qwerty",
         locale = Locale.ENGLISH,
         editorInfo = EditorInfo(),
         numberRow = false,
         useSplitLayout = false,
+        splitLayoutWidth = 0,
         bottomActionKey = null
     )
 

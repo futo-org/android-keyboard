@@ -1,6 +1,7 @@
 package org.futo.inputmethod.v2keyboard
 
 import android.content.Context
+import android.graphics.Rect
 import androidx.compose.ui.unit.Dp
 import org.futo.inputmethod.keyboard.KeyConsts
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement
@@ -82,6 +83,8 @@ data class LayoutRow(
 data class LayoutParams(
     val gap: Dp,
     val useSplitLayout: Boolean,
+    val splitLayoutWidth: Int,
+    val padding: Rect,
     val standardRowHeight: Double,
     val element: KeyboardLayoutElement,
 )
@@ -144,7 +147,7 @@ data class LayoutEngine(
     private val isSplitLayout = layoutParams.useSplitLayout
 
     private val layoutWidth = if(isSplitLayout) {
-        params.mId.mWidth * 2 / 3
+        layoutParams.splitLayoutWidth
     } else {
         params.mId.mWidth
     }
@@ -526,10 +529,10 @@ data class LayoutEngine(
     }
 
     private fun addRowAlignLeft(row: List<LayoutEntry>, y: Int, height: Int)
-            = addRow(row, 0.0f, y, height)
+            = addRow(row, 0.0f + layoutParams.padding.left, y, height)
 
     private fun addRowAlignRight(row: List<LayoutEntry>, y: Int, height: Int) {
-        val startingOffset = params.mId.mWidth - row.sumOf { it.widthPx.toDouble() }.toFloat()
+        val startingOffset = params.mId.mWidth - row.sumOf { it.widthPx.toDouble() }.toFloat() + layoutParams.padding.left
         addRow(row, startingOffset, y, height)
     }
 
@@ -545,7 +548,7 @@ data class LayoutEngine(
     }
 
     private fun addKeys(rows: List<LayoutRow>): Int {
-        var currentY = 0.0f
+        var currentY = 0.0f + layoutParams.padding.top
         rows.forEach { row ->
             addRow(row, currentY.toInt())
             currentY += row.height
@@ -563,14 +566,14 @@ data class LayoutEngine(
 
         val rows = computeRows(this.rows)
 
-        val totalKeyboardHeight = addKeys(rows).let { totalRowHeight.roundToInt() }
+        val totalKeyboardHeight = addKeys(rows).let { totalRowHeight.roundToInt() } + layoutParams.padding.top + layoutParams.padding.bottom
 
         params.mOccupiedHeight = totalKeyboardHeight - verticalGapPx.roundToInt()
-        params.mOccupiedWidth = params.mId.mWidth
-        params.mTopPadding = 0
-        params.mBottomPadding = 0
-        params.mLeftPadding = 0
-        params.mRightPadding = 0
+        params.mOccupiedWidth = params.mId.mWidth + layoutParams.padding.left + layoutParams.padding.right
+        params.mTopPadding    = 0//layoutParams.padding.top
+        params.mBottomPadding = 0//layoutParams.padding.bottom
+        params.mLeftPadding   = 0//layoutParams.padding.left
+        params.mRightPadding  = 0//layoutParams.padding.right
 
         params.mBaseWidth = params.mOccupiedWidth
         params.mDefaultKeyWidth = regularKeyWidth.roundToInt()

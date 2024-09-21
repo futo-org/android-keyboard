@@ -16,6 +16,7 @@
 
 package org.futo.inputmethod.keyboard;
 
+import android.graphics.Rect;
 import android.util.SparseArray;
 
 import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes;
@@ -64,8 +65,8 @@ public class Keyboard {
     /** Base width of the keyboard, used to calculate keys' width */
     public final int mBaseWidth;
 
-    /** The padding above the keyboard */
-    public final int mTopPadding;
+    /** left, right, top, bottom specify respective padding */
+    public final Rect mPadding;
     /** Default gap between rows */
     public final int mVerticalGap;
 
@@ -112,7 +113,7 @@ public class Keyboard {
         mMoreKeysTemplate = params.mMoreKeysTemplate;
         mMaxMoreKeysKeyboardColumn = params.mMaxMoreKeysKeyboardColumn;
         mKeyVisualAttributes = params.mKeyVisualAttributes;
-        mTopPadding = params.mTopPadding;
+        mPadding = new Rect(params.mLeftPadding, params.mTopPadding, params.mRightPadding, params.mBottomPadding);
         mVerticalGap = params.mVerticalGap;
 
         mSortedKeys = Collections.unmodifiableList(new ArrayList<>(params.mSortedKeys));
@@ -140,7 +141,7 @@ public class Keyboard {
         mMoreKeysTemplate = keyboard.mMoreKeysTemplate;
         mMaxMoreKeysKeyboardColumn = keyboard.mMaxMoreKeysKeyboardColumn;
         mKeyVisualAttributes = keyboard.mKeyVisualAttributes;
-        mTopPadding = keyboard.mTopPadding;
+        mPadding = keyboard.mPadding;
         mVerticalGap = keyboard.mVerticalGap;
 
         mSortedKeys = keyboard.mSortedKeys;
@@ -178,7 +179,6 @@ public class Keyboard {
     /**
      * Return the sorted list of keys of this keyboard.
      * The keys are sorted from top-left to bottom-right order.
-     * The list may contain {@link Key.Spacer} object as well.
      * @return the sorted unmodifiable list of {@link Key}s of this keyboard.
      */
     @Nonnull

@@ -1,6 +1,6 @@
 package org.futo.inputmethod.latin.uix
 
-import android.content.res.Configuration
+import android.graphics.Rect
 import android.view.ContextThemeWrapper
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.layout.Box
@@ -109,12 +109,14 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
                 KeyboardLayoutSetV2Params(
                     width = widthPx,
                     height = heightPx,
+                    padding = Rect(),
                     gap = 4.0f,
                     keyboardLayoutSet = id,
                     locale = loc ?: Locale.ENGLISH,
                     editorInfo = editorInfo,
                     numberRow = numberRow,
                     useSplitLayout = isLandscape,
+                    splitLayoutWidth = widthPx * 2 / 3,
                     bottomActionKey = null
                 )
             )

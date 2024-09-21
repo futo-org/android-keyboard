@@ -1,6 +1,7 @@
 package org.futo.inputmethod.v2keyboard
 
 import android.content.Context
+import android.graphics.Rect
 import android.text.InputType
 import android.util.Log
 import android.view.inputmethod.EditorInfo
@@ -20,7 +21,6 @@ import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.utils.InputTypeUtils
 import org.futo.inputmethod.latin.utils.ResourceUtils
 import java.util.Locale
-import kotlin.math.roundToInt
 
 @Serializable
 enum class Script(val id: Int, val iso4letterCode: String) {
@@ -71,23 +71,24 @@ private fun EditorInfo.getPrivateImeOptions(): Map<String, String> {
     return options
 }
 
-private fun EditorInfo.getPrimaryLayoutOverride(): String? =
-    getPrivateImeOptions()["org.futo.inputmethod.latin.ForceLayout"]
-
+fun getPrimaryLayoutOverride(editorInfo: EditorInfo?): String? {
+    return editorInfo?.getPrivateImeOptions()?.get("org.futo.inputmethod.latin.ForceLayout")
+}
 
 data class KeyboardLayoutSetV2Params(
     val width: Int,
-    val height: Int?,
+    val height: Int,
+    val padding: Rect,
     val keyboardLayoutSet: String,
     val locale: Locale,
     val editorInfo: EditorInfo?,
     val numberRow: Boolean,
     val gap: Float = 4.0f,
     val useSplitLayout: Boolean,
+    val splitLayoutWidth: Int,
     val bottomActionKey: Int?,
     val longPressKeySettings: LongPressKeySettings? = null
 )
-
 
 class KeyboardLayoutSetV2 internal constructor(
     private val context: Context,
@@ -183,31 +184,22 @@ class KeyboardLayoutSetV2 internal constructor(
             NumberRowMode.AlwaysDisabled   -> false
         }
 
+    private val widthMinusPadding = params.width - params.padding.left - params.padding.right
+    private val heightMinusPadding = params.height - params.padding.top - params.padding.bottom
+
     private val singularRowHeight: Double
-        get() = params.height?.let { it / 4.0 } ?: run {
+        get() = heightMinusPadding?.let { it / 4.0 } ?: run {
             (ResourceUtils.getDefaultKeyboardHeight(context.resources) / 4.0) *
                     keyboardHeightMultiplier
         }
 
-    private fun getRecommendedKeyboardHeight(): Int {
-        val numRows = 4.0 +
-                ((mainLayout.effectiveRows.size - 5) / 2.0).coerceAtLeast(0.0) +
-                if(isNumberRowActive) { 0.5 } else { 0.0 }
-
-        // Clamp if necessary (disabled for now)
-        if(false && params.height == null) {
-            return ResourceUtils.clampKeyboardHeight(context.resources, (singularRowHeight * numRows).roundToInt())
-        } else {
-            return (singularRowHeight * numRows).roundToInt()
-        }
-    }
-
     fun getKeyboard(element: KeyboardLayoutElement): Keyboard {
+
         val keyboardId = KeyboardId(
             params.keyboardLayoutSet,
             forcedLocale ?: params.locale,
-            params.width,
-            params.height ?: getRecommendedKeyboardHeight(),
+            widthMinusPadding,
+            heightMinusPadding,
             keyboardMode,
             element.elementId,
             editorInfo,
@@ -231,6 +223,8 @@ class KeyboardLayoutSetV2 internal constructor(
         val layoutParams = LayoutParams(
             gap = params.gap.dp,
             useSplitLayout = params.useSplitLayout,
+            splitLayoutWidth = params.splitLayoutWidth,
+            padding = params.padding,
             standardRowHeight = singularRowHeight,
             element = element
         )

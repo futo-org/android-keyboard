@@ -19,10 +19,8 @@ import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodSubtype
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -58,7 +56,6 @@ import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.EmojiTracker.unuseEmoji
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
-import org.futo.inputmethod.latin.uix.KeyboardBottomOffsetSetting
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
@@ -70,7 +67,6 @@ import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
-import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -79,6 +75,8 @@ import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
+import org.futo.inputmethod.v2keyboard.KeyboardSizeSettingKind
+import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -90,7 +88,8 @@ private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : Broa
 }
 
 class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner,
-    LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner {
+    LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner, FoldStateProvider,
+    KeyboardSizeStateProvider {
 
     private lateinit var mLifecycleRegistry: LifecycleRegistry
     private lateinit var mViewModelStore: ViewModelStore
@@ -205,7 +204,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
     }
 
-    private fun invalidateKeyboard(refreshSettings: Boolean = false) {
+    fun invalidateKeyboard(refreshSettings: Boolean = false) {
         settingsRefreshRequired = settingsRefreshRequired || refreshSettings
 
         if(!uixManager.isMainKeyboardHidden) {
@@ -427,12 +426,12 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             }
         }
 
-        val padding = getSettingFlow(KeyboardBottomOffsetSetting).collectAsState(initial = 0.0f)
+
 
         key(legacyInputView) {
             AndroidView(factory = {
                 legacyInputView!!
-            }, modifier = modifier.padding(0.dp, 0.dp, 0.dp, padding.value.dp), onRelease = {
+            }, modifier = modifier, onRelease = {
                 val view = it as InputView
                 view.deallocateMemory()
                 view.removeAllViews()
@@ -762,4 +761,19 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         // TODO: Spell checker service
     }
+
+    override val foldState: FoldingOptions
+        get() = uixManager.foldingOptions.value
+
+    override val currentSizeState: KeyboardSizeSettingKind
+        get() = when {
+            foldState.feature != null ->
+                KeyboardSizeSettingKind.FoldableInnerDisplay
+
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE ->
+                KeyboardSizeSettingKind.Landscape
+
+            else ->
+                KeyboardSizeSettingKind.Portrait
+        }
 }

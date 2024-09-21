@@ -17,8 +17,8 @@
 package org.futo.inputmethod.keyboard;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -46,8 +46,13 @@ import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.latin.utils.ScriptUtils;
+import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetKt;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params;
+import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator;
+import org.futo.inputmethod.v2keyboard.RegularKeyboardSize;
+import org.futo.inputmethod.v2keyboard.SplitKeyboardSize;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -124,18 +129,48 @@ public final class KeyboardSwitcher implements SwitchActions {
             final int currentAutoCapsState, final int currentRecapitalizeState) {
 
         final Resources res = mThemeContext.getResources();
-        final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
 
         final RichInputMethodSubtype subtype = mRichImm.getCurrentSubtype();
+
+        String layoutSetName = subtype.getKeyboardLayoutSetName();
+        String overrideLayoutSet = KeyboardLayoutSetKt.getPrimaryLayoutOverride(editorInfo);
+        if(overrideLayoutSet != null) {
+            layoutSetName = overrideLayoutSet;
+        }
+
+
+        final KeyboardSizingCalculator sizingCalculator = new KeyboardSizingCalculator(mLatinIMELegacy.getInputMethodService());
+        final ComputedKeyboardSize computedSize = sizingCalculator.calculate(layoutSetName, settingsValues.mIsNumberRowEnabled);
+
+        int keyboardWidth = 0;
+        int keyboardHeight = 0;
+
+        int splitLayoutWidth = 0;
+
+        Rect padding = new Rect();
+
+        if(computedSize instanceof SplitKeyboardSize) {
+            keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
+            keyboardHeight = ((SplitKeyboardSize) computedSize).getHeight();
+            splitLayoutWidth = ((SplitKeyboardSize) computedSize).getSplitLayoutWidth();
+            padding = ((SplitKeyboardSize) computedSize).getPadding();
+        }else if(computedSize instanceof RegularKeyboardSize) {
+            keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
+            keyboardHeight = ((RegularKeyboardSize) computedSize).getHeight();
+            padding = ((RegularKeyboardSize) computedSize).getPadding();
+        }
+
         final KeyboardLayoutSetV2Params params = new KeyboardLayoutSetV2Params(
                 keyboardWidth,
-                null, // Auto keyboard height
-                subtype.getKeyboardLayoutSetName(),
+                keyboardHeight,
+                padding,
+                layoutSetName,
                 subtype.getLocale(),
                 editorInfo == null ? new EditorInfo() : editorInfo,
                 settingsValues.mIsNumberRowEnabled,
-                4.0f,
-                res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE,
+                sizingCalculator.calculateGap(),
+                splitLayoutWidth != 0,
+                splitLayoutWidth,
                 settingsValues.mShowsActionKey ? settingsValues.mActionKeyId : null,
                 LongPressKeySettings.load(mThemeContext)
         );
@@ -176,7 +211,6 @@ public final class KeyboardSwitcher implements SwitchActions {
         final Keyboard oldKeyboard = keyboardView.getKeyboard();
         final Keyboard newKeyboard = mKeyboardLayoutSet.getKeyboard(element);
         keyboardView.setKeyboard(newKeyboard);
-        mCurrentInputView.setKeyboardTopPadding(newKeyboard.mTopPadding);
         keyboardView.setKeyPreviewPopupEnabled(
                 currentSettingsValues.mKeyPreviewPopupOn,
                 currentSettingsValues.mKeyPreviewPopupDismissDelay);

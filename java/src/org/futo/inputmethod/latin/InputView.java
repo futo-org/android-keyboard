@@ -41,10 +41,6 @@ public final class InputView extends FrameLayout {
         mMainKeyboardView = (MainKeyboardView) findViewById(R.id.keyboard_view);
     }
 
-    public void setKeyboardTopPadding(final int keyboardTopPadding) {
-
-    }
-
     @Override
     protected boolean dispatchHoverEvent(final MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()

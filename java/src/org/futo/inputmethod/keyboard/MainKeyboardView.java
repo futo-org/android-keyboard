@@ -401,6 +401,8 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         } else {
             mAccessibilityDelegate = null;
         }
+
+        setPadding(keyboard.mPadding.left, keyboard.mPadding.top, keyboard.mPadding.right, keyboard.mPadding.bottom);
     }
 
     /**
