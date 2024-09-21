@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
@@ -149,13 +150,15 @@ public final class KeyboardSwitcher implements SwitchActions {
 
         Rect padding = new Rect();
 
+        Window window = mLatinIMELegacy.getInputMethodService().getWindow().getWindow();
+
         if(computedSize instanceof SplitKeyboardSize) {
-            keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
+            keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(window, res);
             keyboardHeight = ((SplitKeyboardSize) computedSize).getHeight();
             splitLayoutWidth = ((SplitKeyboardSize) computedSize).getSplitLayoutWidth();
             padding = ((SplitKeyboardSize) computedSize).getPadding();
         }else if(computedSize instanceof RegularKeyboardSize) {
-            keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
+            keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(window, res);
             keyboardHeight = ((RegularKeyboardSize) computedSize).getHeight();
             padding = ((RegularKeyboardSize) computedSize).getPadding();
         }

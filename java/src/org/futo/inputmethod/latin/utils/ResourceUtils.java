@@ -18,11 +18,15 @@ package org.futo.inputmethod.latin.utils;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Insets;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowMetrics;
 
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.latin.R;
@@ -182,9 +186,14 @@ public final class ResourceUtils {
         return matchedAll;
     }
 
-    public static int getDefaultKeyboardWidth(final Resources res) {
-        final DisplayMetrics dm = res.getDisplayMetrics();
-        return dm.widthPixels;
+    public static int getDefaultKeyboardWidth(final Window window, final Resources res) {
+        if(window != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)) {
+            WindowMetrics metrics = window.getWindowManager().getCurrentWindowMetrics();
+            Insets insets = metrics.getWindowInsets().getInsetsIgnoringVisibility(WindowInsets.Type.navigationBars() | WindowInsets.Type.displayCutout());
+
+            return metrics.getBounds().width() - (insets.left + insets.right);
+        }
+        return (int)(res.getConfiguration().screenWidthDp * res.getDisplayMetrics().density);
     }
 
     public static int getKeyboardHeight(final Resources res, final SettingsValues settingsValues) {

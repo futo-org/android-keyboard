@@ -1,7 +1,6 @@
 package org.futo.inputmethod.latin.uix
 
 import android.app.Activity
-import android.app.KeyguardManager
 import android.content.ClipDescription
 import android.content.Context
 import android.content.Intent
@@ -62,11 +61,15 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoTracker
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
+import org.futo.inputmethod.latin.FoldingOptions
 import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
@@ -102,6 +105,12 @@ val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
 val LocalThemeProvider = compositionLocalOf<DynamicThemeProvider> {
     error("No LocalThemeProvider provided")
 }
+
+val LocalFoldingState = compositionLocalOf<FoldingOptions> {
+    FoldingOptions(null)
+}
+
+
 
 private class LatinIMEActionInputTransaction(
     private val inputLogic: InputLogic,
@@ -322,6 +331,8 @@ class UixManager(private val latinIME: LatinIME) {
     fun showActionEditor() {
         isShowingActionEditor.value = true
     }
+
+    val foldingOptions = mutableStateOf(FoldingOptions(null))
 
     var isInputOverridden = mutableStateOf(false)
 
@@ -622,35 +633,39 @@ class UixManager(private val latinIME: LatinIME) {
                     CompositionLocalProvider(LocalManager provides keyboardManagerForAction) {
                         CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
                             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                                InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
-                                    closeActionWindow()
-                                    isShowingActionEditor.value = false
-                                }
+                                CompositionLocalProvider(LocalFoldingState provides foldingOptions.value) {
+                                    InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
+                                        closeActionWindow()
+                                        isShowingActionEditor.value = false
+                                    }
 
-                                Column {
-                                    Spacer(modifier = Modifier.weight(1.0f))
-                                    Surface(modifier = Modifier.onSizeChanged {
-                                        latinIME.updateTouchableHeight(it.height)
-                                    }, color = latinIME.keyboardColor) {
-                                        Box {
-                                            Column {
-                                                when {
-                                                    currWindowActionWindow != null -> ActionViewWithHeader(
-                                                        currWindowActionWindow!!
-                                                    )
+                                    Column {
+                                        Spacer(modifier = Modifier.weight(1.0f))
+                                        Surface(modifier = Modifier.onSizeChanged {
+                                            latinIME.updateTouchableHeight(it.height)
+                                        }, color = latinIME.keyboardColor) {
+                                            Box {
+                                                Column {
+                                                    when {
+                                                        currWindowActionWindow != null -> ActionViewWithHeader(
+                                                            currWindowActionWindow!!
+                                                        )
 
-                                                    else -> MainKeyboardViewWithActionBar()
+                                                        else -> MainKeyboardViewWithActionBar()
+                                                    }
+
+                                                    latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
                                                 }
 
-                                                latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
+                                                ForgetWordDialog()
                                             }
 
-                                            ForgetWordDialog()
                                         }
-                                    }
-                                }
 
-                                ActionEditorHost()
+                                    }
+
+                                    ActionEditorHost()
+                                }
                             }
                         }
                     }
@@ -852,6 +867,13 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         isActionsExpanded.value = latinIME.getSettingBlocking(ActionBarExpanded)
+
+        latinIME.lifecycleScope.launch(Dispatchers.Main) {
+            WindowInfoTracker.getOrCreate(latinIME).windowLayoutInfo(latinIME).collect {
+                foldingOptions.value = FoldingOptions(it.displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull())
+                latinIME.invalidateKeyboard(true)
+            }
+        }
     }
 
     fun onPersistentStatesUnlocked() {
