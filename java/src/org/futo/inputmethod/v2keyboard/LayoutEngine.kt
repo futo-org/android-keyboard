@@ -476,8 +476,10 @@ data class LayoutEngine(
         }
     }
 
-    private fun addKey(data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int) {
-        // Gap
+    private fun addKey(data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int, leftGap: LayoutEntry.Gap?, rightGap: LayoutEntry.Gap?) {
+        // These keys are empty keys and do not get added, leaving an empty gap in place of the key
+        // The hitbox of other keys does not get expanded to include this gap though, unlike
+        // gaps added for centering rows
         if(data.label.isEmpty() && data.icon.isEmpty() && data.code == Constants.CODE_UNSPECIFIED)
             return
 
@@ -510,7 +512,21 @@ data class LayoutEngine(
             moreKeysColumnAndFlags = data.moreKeyFlags,
             visualStyle = data.style,
             outputText = data.outputText,
-            hintLabel = data.hint.ifEmpty { null }
+            hintLabel = data.hint.ifEmpty { null },
+
+            // Add leftGap and rightGap to the hitbox
+            // This makes the following area tappable,
+            // otherwise taps there wouldn't be registered
+            // q w e r t y u i o p
+            // #a s d f g h j k l#
+            // ^                 ^
+            // taps A       taps L
+            hitBox = Rect(
+                x - (leftGap?.widthPx?.roundToInt() ?: 0),
+                y,
+                x + width + (leftGap?.widthPx?.roundToInt() ?: 0) + (rightGap?.widthPx?.roundToInt() ?: 0),
+                y + height
+            ),
         )
 
         params.onAddKey(key)
@@ -518,10 +534,16 @@ data class LayoutEngine(
 
     private fun addRow(row: List<LayoutEntry>, x: Float, y: Int, height: Int) {
         var currentX = x
-        row.forEach { entry ->
+        row.forEachIndexed { i, entry ->
             when(entry) {
                 is LayoutEntry.Gap -> { }
-                is LayoutEntry.Key -> addKey(entry.data, currentX.roundToInt(), y, entry.widthPx.roundToInt(), height)
+                is LayoutEntry.Key -> {
+                    // Adding gaps is only applicable on unanchored keys on the correct side of the keyboard
+                    val leftGap = if(i < row.size / 2 && !entry.data.anchored) { row.getOrNull(i - 1) as? LayoutEntry.Gap } else { null }
+                    val rightGap = if(i >= row.size / 2 && !entry.data.anchored) { row.getOrNull(i + 1) as? LayoutEntry.Gap } else { null }
+
+                    addKey(entry.data, currentX.roundToInt(), y, entry.widthPx.roundToInt(), height, leftGap, rightGap)
+                }
             }
 
             currentX += entry.widthPx
