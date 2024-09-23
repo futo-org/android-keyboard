@@ -185,9 +185,9 @@ public final class AccessibilityUtils {
                 if (shouldObscure) {
                     // This should never happen, but just in case...
                     return mContext.getString(R.string.spoken_auto_correct_obscured,
-                            keyCodeDescription);
+                            keyCodeDescription + "\u034F");
                 }
-                return mContext.getString(R.string.spoken_auto_correct, keyCodeDescription,
+                return mContext.getString(R.string.spoken_auto_correct, keyCodeDescription + "\u034F",
                         mTypedWord, mAutoCorrectionWord);
             }
         }
