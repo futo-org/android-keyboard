@@ -107,7 +107,12 @@ data class Row(
 }
 
 val DefaultNumberRow = Row(
-    numbers = "1234567890".map { BaseKey(it.toString()) }
+    numbers = "1234567890".mapIndexed { i, c ->
+        CaseSelector(
+            normal = BaseKey(c.toString()),
+            shiftedManually = BaseKey("!@#$%^&*()"[i].toString())
+        )
+    }
 )
 
 val DefaultBottomRow = Row(

@@ -414,6 +414,11 @@ data class CaseSelector(
     val shifted: Key = normal,
 
     /**
+     * Key to use when shifted, excluding automatic shift
+     */
+    val shiftedManually: Key = shifted,
+
+    /**
      * Key to use when shift locked (caps lock), defaults to [shifted]
      */
     val shiftLocked: Key = shifted,
@@ -434,9 +439,8 @@ data class CaseSelector(
         when(elementId) {
             KeyboardId.ELEMENT_ALPHABET -> normal
 
-            // KeyboardState.kt currently doesn't distinguish between these
-            KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED,
-            KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED -> shifted
+            KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED -> shifted
+            KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED -> shiftedManually
 
             // KeyboardState.kt currently doesn't distinguish between these
             KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED,
