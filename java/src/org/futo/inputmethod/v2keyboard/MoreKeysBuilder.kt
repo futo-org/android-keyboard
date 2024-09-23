@@ -43,9 +43,7 @@ private fun symsForCoord(keyCoordinate: KeyCoordinate): String {
     if(centeredCol < 0) return ""
 
     val letter = row.getOrNull(centeredCol)
-    if(letter == 'ñ') {
-        println("It's ñ")
-    }
+
     return if(letter != null) {
         "!text/qwertysyms_$letter"
     } else {
