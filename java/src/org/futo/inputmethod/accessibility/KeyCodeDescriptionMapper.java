@@ -62,6 +62,10 @@ final class KeyCodeDescriptionMapper {
         mKeyCodeMap.put(Constants.CODE_SHIFT, R.string.spoken_description_shift);
         mKeyCodeMap.put(Constants.CODE_SHORTCUT, R.string.spoken_description_mic);
         mKeyCodeMap.put(Constants.CODE_SWITCH_ALPHA_SYMBOL, R.string.spoken_description_to_symbol);
+        mKeyCodeMap.put(Constants.CODE_TO_NUMBER_LAYOUT, R.string.spoken_description_to_numeric);
+        mKeyCodeMap.put(Constants.CODE_TO_ALT_0_LAYOUT, R.string.spoken_description_to_alt_0);
+        mKeyCodeMap.put(Constants.CODE_TO_ALT_1_LAYOUT, R.string.spoken_description_to_alt_1);
+        mKeyCodeMap.put(Constants.CODE_TO_ALT_2_LAYOUT, R.string.spoken_description_to_alt_2);
         mKeyCodeMap.put(Constants.CODE_TAB, R.string.spoken_description_tab);
         mKeyCodeMap.put(Constants.CODE_LANGUAGE_SWITCH,
                 R.string.spoken_description_language_switch);

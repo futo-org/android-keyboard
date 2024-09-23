@@ -18,10 +18,8 @@ package org.futo.inputmethod.accessibility;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.SystemClock;
 import android.util.Log;
 import android.util.SparseIntArray;
-import android.view.MotionEvent;
 
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.KeyDetector;
@@ -30,7 +28,6 @@ import org.futo.inputmethod.keyboard.KeyboardId;
 import org.futo.inputmethod.keyboard.MainKeyboardView;
 import org.futo.inputmethod.keyboard.PointerTracker;
 import org.futo.inputmethod.latin.R;
-import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 /**
  * This class represents a delegate that can be registered in {@link MainKeyboardView} to enhance
@@ -190,6 +187,9 @@ public final class MainKeyboardAccessibilityDelegate
             break;
         case KeyboardId.ELEMENT_PHONE_SYMBOLS:
             resId = R.string.spoken_description_mode_phone_shift;
+            break;
+        case KeyboardId.ELEMENT_NUMBER:
+            resId = R.string.spoken_description_mode_digits;
             break;
         default:
             return;

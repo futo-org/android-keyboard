@@ -23,7 +23,6 @@ import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
 
 import org.futo.inputmethod.compat.EditorInfoCompatUtils;
-import org.futo.inputmethod.latin.RichInputMethodSubtype;
 import org.futo.inputmethod.latin.settings.LongPressKeySettings;
 import org.futo.inputmethod.latin.utils.InputTypeUtils;
 

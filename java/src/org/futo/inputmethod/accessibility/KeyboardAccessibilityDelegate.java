@@ -181,7 +181,16 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         node.setFocusable(true);
         node.setScreenReaderFocusable(true);
 
-        if(k.isActionKey() || k.getCode() == Constants.CODE_SWITCH_ALPHA_SYMBOL || k.getCode() == Constants.CODE_EMOJI || k.getCode() == Constants.CODE_SYMBOL_SHIFT || (k.getCode() >= Constants.CODE_ACTION_0 && k.getCode() <= Constants.CODE_ACTION_MAX)) {
+        if(k.isActionKey() ||
+                k.getCode() == Constants.CODE_SWITCH_ALPHA_SYMBOL ||
+                k.getCode() == Constants.CODE_EMOJI ||
+                k.getCode() == Constants.CODE_SYMBOL_SHIFT ||
+                k.getCode() == Constants.CODE_TO_ALT_0_LAYOUT ||
+                k.getCode() == Constants.CODE_TO_ALT_1_LAYOUT ||
+                k.getCode() == Constants.CODE_TO_ALT_2_LAYOUT ||
+                k.getCode() == Constants.CODE_TO_NUMBER_LAYOUT ||
+                (k.getCode() >= Constants.CODE_ACTION_0 && k.getCode() <= Constants.CODE_ACTION_MAX)
+        ) {
             node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
             node.addAction(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK);
             node.setClickable(true);

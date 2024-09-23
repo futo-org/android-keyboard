@@ -53,7 +53,7 @@
     <!-- Spoken description for the "To Alpha" keyboard key. -->
     <string name="spoken_description_to_alpha">Letters</string>
     <!-- Spoken description for the "To Numbers" keyboard key. -->
-    <string name="spoken_description_to_numeric">Numbers</string>
+    <string name="spoken_description_to_numeric">Digits</string>
     <!-- Spoken description for the "Settings" keyboard key. -->
     <string name="spoken_description_settings">Settings</string>
     <!-- Spoken description for the "Tab" keyboard key. -->
@@ -77,6 +77,12 @@
     <!-- Spoken description for the "Previous" action keyboard key. -->
     <string name="spoken_description_action_previous">Previous</string>
 
+
+    <!-- Spoken description for the "To Numbers" keyboard key. -->
+    <string name="spoken_description_to_alt_0">Page 1</string>
+    <string name="spoken_description_to_alt_1">Page 2</string>
+    <string name="spoken_description_to_alt_2">Page 3</string>
+
     <!-- Spoken feedback after turning "Shift" mode on. -->
     <string name="spoken_description_shiftmode_on">Shift enabled</string>
     <!-- Spoken feedback after turning "Caps lock" mode on. -->
@@ -91,6 +97,8 @@
     <string name="spoken_description_mode_phone">Phone mode</string>
     <!-- Spoken feedback after changing to the shifted phone dialer (symbols) keyboard. -->
     <string name="spoken_description_mode_phone_shift">Phone symbols mode</string>
+    <!-- Spoken feedback after changing to the digits keyboard. -->
+    <string name="spoken_description_mode_digits">Digits mode</string>
 
     <!-- Spoken feedback when the keyboard is hidden. -->
     <string name="announce_keyboard_hidden">Keyboard hidden</string>
