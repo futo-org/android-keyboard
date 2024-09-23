@@ -524,7 +524,7 @@ data class LayoutEngine(
             hitBox = Rect(
                 x - (leftGap?.widthPx?.roundToInt() ?: 0),
                 y,
-                x + width + (leftGap?.widthPx?.roundToInt() ?: 0) + (rightGap?.widthPx?.roundToInt() ?: 0),
+                x + width + (rightGap?.widthPx?.roundToInt() ?: 0),
                 y + height
             ),
         )
