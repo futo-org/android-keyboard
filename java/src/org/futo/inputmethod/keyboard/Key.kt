@@ -300,22 +300,6 @@ data class Key(
         ((actionFlags and KeyConsts.ACTION_FLAGS_ENABLE_LONG_PRESS) != 0
                 && (labelFlags and KeyConsts.LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) == 0)
 
-    fun markAsLeftEdge(params: KeyboardParams) {
-        hitBox.left = params.mLeftPadding
-    }
-
-    fun markAsRightEdge(params: KeyboardParams) {
-        hitBox.right = params.mOccupiedWidth - params.mRightPadding
-    }
-
-    fun markAsTopEdge(params: KeyboardParams) {
-        hitBox.top = params.mTopPadding
-    }
-
-    fun markAsBottomEdge(params: KeyboardParams) {
-        hitBox.bottom = params.mOccupiedHeight + params.mBottomPadding
-    }
-
     fun selectTypeface(params: KeyDrawParams): Typeface {
         return when (labelFlags and KeyConsts.LABEL_FLAGS_FONT_MASK) {
             KeyConsts.LABEL_FLAGS_FONT_NORMAL -> Typeface.DEFAULT

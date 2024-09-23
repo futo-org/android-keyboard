@@ -248,10 +248,10 @@ public final class MoreKeysKeyboard extends Keyboard {
         }
 
         public void markAsEdgeKey(final Key key, final int row) {
-            if (row == 0)
-                key.markAsTopEdge(this);
-            if (isTopRow(row))
-                key.markAsBottomEdge(this);
+            //if (row == 0)
+            //    key.markAsTopEdge(this);
+            //if (isTopRow(row))
+            //    key.markAsBottomEdge(this);
         }
 
         private boolean isTopRow(final int rowCount) {

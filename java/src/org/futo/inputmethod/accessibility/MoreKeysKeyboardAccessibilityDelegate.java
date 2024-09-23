@@ -17,8 +17,8 @@
 package org.futo.inputmethod.accessibility;
 
 import android.graphics.Rect;
-import android.util.Log;
-import android.view.MotionEvent;
+import android.view.HapticFeedbackConstants;
+import android.view.SoundEffectConstants;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.core.view.accessibility.AccessibilityEventCompat;
@@ -27,7 +27,6 @@ import androidx.core.view.accessibility.AccessibilityRecordCompat;
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.keyboard.KeyDetector;
 import org.futo.inputmethod.keyboard.MoreKeysKeyboardView;
-import org.futo.inputmethod.keyboard.PointerTracker;
 
 /**
  * This class represents a delegate that can be registered in {@link MoreKeysKeyboardView} to
@@ -57,6 +56,9 @@ public class MoreKeysKeyboardAccessibilityDelegate
 
     public void onShowMoreKeysKeyboard() {
         sendWindowStateChanged(mOpenAnnounceResId);
+
+        mKeyboardView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        mKeyboardView.playSoundEffect(SoundEffectConstants.CLICK);
     }
 
     public void onDismissMoreKeysKeyboard() {

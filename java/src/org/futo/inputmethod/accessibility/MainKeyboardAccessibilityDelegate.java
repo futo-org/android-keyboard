@@ -227,38 +227,6 @@ public final class MainKeyboardAccessibilityDelegate
             Log.d(TAG, "performLongClickOn: key=" + key);
         }
         final PointerTracker tracker = PointerTracker.getPointerTracker(HOVER_EVENT_POINTER_ID);
-        final long eventTime = SystemClock.uptimeMillis();
-        final int x = key.getHitBox().centerX();
-        final int y = key.getHitBox().centerY();
-        final MotionEvent downEvent = MotionEvent.obtain(
-                eventTime, eventTime, MotionEvent.ACTION_DOWN, x, y, 0 /* metaState */);
-        // Inject a fake down event to {@link PointerTracker} to handle a long press correctly.
-        tracker.processMotionEvent(downEvent, mKeyDetector);
-        downEvent.recycle();
-        // Invoke {@link PointerTracker#onLongPressed()} as if a long press timeout has passed.
-        tracker.onLongPressed();
-        // If {@link Key#hasNoPanelAutoMoreKeys()} is true (such as "0 +" key on the phone layout)
-        // or a key invokes IME switcher dialog, we should just ignore the next
-        // {@link #onRegisterHoverKey(Key,MotionEvent)}. It can be determined by whether
-        // {@link PointerTracker} is in operation or not.
-        if (tracker.isInOperation()) {
-            // This long press shows a more keys keyboard and further hover events should be
-            // handled.
-            mBoundsToIgnoreHoverEvent.setEmpty();
-            return;
-        }
-        // This long press has handled at {@link MainKeyboardView#onLongPress(PointerTracker)}.
-        // We should ignore further hover events on this key.
-        mBoundsToIgnoreHoverEvent.set(key.getHitBox());
-        if (key.getHasNoPanelAutoMoreKey()) {
-            // This long press has registered a code point without showing a more keys keyboard.
-            // We should talk back the code point if possible.
-            final int codePointOfNoPanelAutoMoreKey = key.getMoreKeys().get(0).mCode;
-            final String text = KeyCodeDescriptionMapper.getInstance().getDescriptionForCodePoint(
-                    mKeyboardView.getContext(), codePointOfNoPanelAutoMoreKey);
-            if (text != null) {
-                sendWindowStateChanged(text);
-            }
-        }
+        mKeyboardView.showMoreKeysKeyboard(key, tracker);
     }
 }

@@ -25,8 +25,11 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.accessibility.MoreKeysKeyboardAccessibilityDelegate;
@@ -43,7 +46,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     private final int[] mCoordinates = CoordinateUtils.newInstance();
 
     private final Drawable mDivider;
-    protected final KeyDetector mKeyDetector;
+    protected final MoreKeysDetector mKeyDetector;
     private Controller mController = EMPTY_CONTROLLER;
     protected KeyboardActionListener mListener;
     private int mOriginX;
@@ -104,8 +107,6 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     @Override
     public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
-        mKeyDetector.setKeyboard(
-                keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
         if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
             if (mAccessibilityDelegate == null) {
                 mAccessibilityDelegate = new MoreKeysKeyboardAccessibilityDelegate(
@@ -114,8 +115,15 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
                 mAccessibilityDelegate.setCloseAnnounce(R.string.spoken_close_more_keys_keyboard);
             }
             mAccessibilityDelegate.setKeyboard(keyboard);
+
+            // No vertical correction
+            mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(), -getPaddingTop());
         } else {
             mAccessibilityDelegate = null;
+
+            // With vertical correction
+            mKeyDetector.setKeyboard(
+                    keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
         }
     }
 
@@ -139,8 +147,13 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         container.setX(panelX);
         container.setY(panelY);
 
-        mOriginX = CoordinateUtils.x(touchOrigin) - getDefaultCoordX();
-        mOriginY = CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight();
+        if(AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+            mOriginX = (int)container.getX() - CoordinateUtils.x(mCoordinates);
+            mOriginY = (int)container.getY() - CoordinateUtils.y(mCoordinates);
+        } else {
+            mOriginX = CoordinateUtils.x(touchOrigin) - getDefaultCoordX();
+            mOriginY = CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight();
+        }
         controller.onShowMoreKeysPanel(this);
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
         if (accessibilityDelegate != null
@@ -194,6 +207,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
      * Performs the specific action for this panel when the user presses a key on the panel.
      */
     protected void onKeyInput(final Key key, final int x, final int y) {
+        dismissMoreKeysPanel();
+
         final int code = key.getCode();
         if (code == Constants.CODE_OUTPUT_TEXT) {
             mListener.onTextInput(mCurrentKey.getOutputText());
@@ -315,6 +330,36 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     public void showInParent(final ViewGroup parentView) {
         removeFromParent();
         parentView.addView(getContainerView());
+
+        if(mAccessibilityDelegate != null && AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            parentView.setTouchDelegate(new MyTouchDelegate(parentView, getContainerView()));
+        }
+    }
+
+    class MyTouchDelegate extends TouchDelegate {
+        public MyTouchDelegate(View parentView, View delegateView) {
+            super(new Rect(Integer.MIN_VALUE / 2,  Integer.MIN_VALUE / 2, Integer.MAX_VALUE / 2 - 1, Integer.MAX_VALUE / 2 - 1), delegateView);
+        }
+
+        @Override
+        public boolean onTouchExplorationHoverEvent(@NonNull MotionEvent event) {
+            MotionEvent copy = MotionEvent.obtain(event);
+            copy.offsetLocation(-getContainerView().getX(), -getContainerView().getY());
+
+            // Dismiss the panel if we exit outside of the range
+            if(copy.getAction() == MotionEvent.ACTION_HOVER_EXIT) {
+                if (mKeyDetector.detectHitKey(
+                        (int)copy.getX(),
+                        (int)copy.getY()
+                ) == null) {
+                    dismissMoreKeysPanel();
+                }
+
+                return true;
+            } else {
+                return MoreKeysKeyboardView.this.dispatchHoverEvent(copy);
+            }
+        }
     }
 
     @Override
@@ -323,6 +368,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         final ViewGroup currentParent = (ViewGroup)containerView.getParent();
         if (currentParent != null) {
             currentParent.removeView(containerView);
+            currentParent.setTouchDelegate(null);
         }
     }
 

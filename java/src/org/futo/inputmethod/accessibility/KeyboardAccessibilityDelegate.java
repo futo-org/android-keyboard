@@ -29,10 +29,8 @@ import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.AccessibilityDelegateCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
-import androidx.core.view.accessibility.AccessibilityNodeProviderCompat;
 import androidx.customview.widget.ExploreByTouchHelper;
 
 import org.futo.inputmethod.keyboard.Key;
@@ -121,7 +119,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      */
     protected void sendWindowStateChanged(final String text) {
         final AccessibilityEvent stateChange = AccessibilityEvent.obtain(
-                AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+                AccessibilityEvent.TYPE_ANNOUNCEMENT);
         mKeyboardView.onInitializeAccessibilityEvent(stateChange);
         stateChange.getText().add(text);
         stateChange.setContentDescription(null);
@@ -183,10 +181,14 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         node.setFocusable(true);
         node.setScreenReaderFocusable(true);
 
-        if(k.isActionKey() || k.getCode() == Constants.CODE_SWITCH_ALPHA_SYMBOL || k.getCode() == Constants.CODE_EMOJI || k.getCode() == Constants.CODE_SYMBOL_SHIFT) {
+        if(k.isActionKey() || k.getCode() == Constants.CODE_SWITCH_ALPHA_SYMBOL || k.getCode() == Constants.CODE_EMOJI || k.getCode() == Constants.CODE_SYMBOL_SHIFT || (k.getCode() >= Constants.CODE_ACTION_0 && k.getCode() <= Constants.CODE_ACTION_MAX)) {
             node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+            node.addAction(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK);
             node.setClickable(true);
         } else {
+            if(k.isLongPressEnabled()) {
+                node.addAction(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK);
+            }
             node.setTextEntryKey(true);
         }
     }
@@ -199,6 +201,10 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
             // Handle the click action for the virtual button
             performClickOn(k);
+            return true;
+        } else if(action == AccessibilityNodeInfoCompat.ACTION_LONG_CLICK) {
+            // Show morekeys
+            performLongClickOn(k);
             return true;
         }
         return false;
