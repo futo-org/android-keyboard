@@ -140,40 +140,16 @@ public final class KeyboardSwitcher implements SwitchActions {
         }
 
 
-        final KeyboardSizingCalculator sizingCalculator = new KeyboardSizingCalculator(mLatinIMELegacy.getInputMethodService());
+        final KeyboardSizingCalculator sizingCalculator = ((LatinIME)mLatinIMELegacy.getInputMethodService()).getSizingCalculator();
         final ComputedKeyboardSize computedSize = sizingCalculator.calculate(layoutSetName, settingsValues.mIsNumberRowEnabled);
 
-        int keyboardWidth = 0;
-        int keyboardHeight = 0;
-
-        int splitLayoutWidth = 0;
-
-        Rect padding = new Rect();
-
-        Window window = mLatinIMELegacy.getInputMethodService().getWindow().getWindow();
-
-        if(computedSize instanceof SplitKeyboardSize) {
-            keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(window, res);
-            keyboardHeight = ((SplitKeyboardSize) computedSize).getHeight();
-            splitLayoutWidth = ((SplitKeyboardSize) computedSize).getSplitLayoutWidth();
-            padding = ((SplitKeyboardSize) computedSize).getPadding();
-        }else if(computedSize instanceof RegularKeyboardSize) {
-            keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(window, res);
-            keyboardHeight = ((RegularKeyboardSize) computedSize).getHeight();
-            padding = ((RegularKeyboardSize) computedSize).getPadding();
-        }
-
         final KeyboardLayoutSetV2Params params = new KeyboardLayoutSetV2Params(
-                keyboardWidth,
-                keyboardHeight,
-                padding,
+                computedSize,
                 layoutSetName,
                 subtype.getLocale(),
                 editorInfo == null ? new EditorInfo() : editorInfo,
                 settingsValues.mIsNumberRowEnabled,
                 sizingCalculator.calculateGap(),
-                splitLayoutWidth != 0,
-                splitLayoutWidth,
                 settingsValues.mShowsActionKey ? settingsValues.mActionKeyId : null,
                 LongPressKeySettings.load(mThemeContext)
         );

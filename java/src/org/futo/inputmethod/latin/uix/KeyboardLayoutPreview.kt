@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -30,6 +29,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params
 import org.futo.inputmethod.v2keyboard.LayoutManager
+import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -76,23 +76,8 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
         }
     }
 
-    val configuration = LocalConfiguration.current
-    val isLandscape = false//configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-    val widthPx: Int
-    val heightPx: Int
-
-    when {
-        isLandscape -> {
-            widthPx  = (500.0 * context.resources.displayMetrics.density).roundToInt()
-            heightPx = (180.0 * context.resources.displayMetrics.density).roundToInt()
-        }
-
-        else -> {
-            widthPx  = (320.0 * context.resources.displayMetrics.density).roundToInt()
-            heightPx = (200.0 * context.resources.displayMetrics.density).roundToInt()
-        }
-    }
+    val widthPx: Int = (320.0 * context.resources.displayMetrics.density).roundToInt()
+    val heightPx: Int = (200.0 * context.resources.displayMetrics.density).roundToInt()
 
     val keyboard = remember { mutableStateOf<Keyboard?>(null) }
 
@@ -107,16 +92,12 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
             val layoutSet = KeyboardLayoutSetV2(
                 context,
                 KeyboardLayoutSetV2Params(
-                    width = widthPx,
-                    height = heightPx,
-                    padding = Rect(),
+                    computedSize = RegularKeyboardSize(width = widthPx, height = heightPx, padding = Rect()),
                     gap = 4.0f,
                     keyboardLayoutSet = id,
                     locale = loc ?: Locale.ENGLISH,
                     editorInfo = editorInfo,
                     numberRow = numberRow,
-                    useSplitLayout = isLandscape,
-                    splitLayoutWidth = widthPx * 2 / 3,
                     bottomActionKey = null
                 )
             )

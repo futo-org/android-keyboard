@@ -76,16 +76,12 @@ fun getPrimaryLayoutOverride(editorInfo: EditorInfo?): String? {
 }
 
 data class KeyboardLayoutSetV2Params(
-    val width: Int,
-    val height: Int,
-    val padding: Rect,
+    val computedSize: ComputedKeyboardSize,
     val keyboardLayoutSet: String,
     val locale: Locale,
     val editorInfo: EditorInfo?,
     val numberRow: Boolean,
     val gap: Float = 4.0f,
-    val useSplitLayout: Boolean,
-    val splitLayoutWidth: Int,
     val bottomActionKey: Int?,
     val longPressKeySettings: LongPressKeySettings? = null
 )
@@ -184,14 +180,15 @@ class KeyboardLayoutSetV2 internal constructor(
             NumberRowMode.AlwaysDisabled   -> false
         }
 
-    private val widthMinusPadding = params.width - params.padding.left - params.padding.right
-    private val heightMinusPadding = params.height - params.padding.top - params.padding.bottom
+    private val height = params.computedSize.getHeight()
+
+    private val padding = params.computedSize.getPadding()
+
+    private val widthMinusPadding = params.computedSize.getTotalKeyboardWidth()
+    private val heightMinusPadding = height - padding.top - padding.bottom
 
     private val singularRowHeight: Double
-        get() = heightMinusPadding?.let { it / 4.0 } ?: run {
-            (ResourceUtils.getDefaultKeyboardHeight(context.resources) / 4.0) *
-                    keyboardHeightMultiplier
-        }
+        get() = heightMinusPadding / 4.0
 
     fun getKeyboard(element: KeyboardLayoutElement): Keyboard {
 
@@ -221,10 +218,8 @@ class KeyboardLayoutSetV2 internal constructor(
         }
 
         val layoutParams = LayoutParams(
+            size = params.computedSize,
             gap = params.gap.dp,
-            useSplitLayout = params.useSplitLayout,
-            splitLayoutWidth = params.splitLayoutWidth,
-            padding = params.padding,
             standardRowHeight = singularRowHeight,
             element = element
         )

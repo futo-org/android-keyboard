@@ -132,16 +132,8 @@ public final class KeyPreviewChoreographer {
         final int keyPreviewPosition;
         int previewX = key.getDrawX() - (previewWidth - keyDrawWidth) / 2
                 + CoordinateUtils.x(originCoords);
-        if (previewX < 0) {
-            previewX = 0;
-            keyPreviewPosition = KeyPreviewView.POSITION_LEFT;
-        } else if (previewX > keyboardViewWidth - previewWidth) {
-            previewX = keyboardViewWidth - previewWidth;
-            keyPreviewPosition = KeyPreviewView.POSITION_RIGHT;
-        } else {
-            keyPreviewPosition = KeyPreviewView.POSITION_MIDDLE;
-        }
-        final boolean hasMoreKeys = (key.getMoreKeys() != null);
+        keyPreviewPosition = KeyPreviewView.POSITION_MIDDLE;
+        final boolean hasMoreKeys = !key.getMoreKeys().isEmpty();
         keyPreviewView.setPreviewBackground(hasMoreKeys, keyPreviewPosition);
         // The key preview is placed vertically above the top edge of the parent key with an
         // arbitrary offset.

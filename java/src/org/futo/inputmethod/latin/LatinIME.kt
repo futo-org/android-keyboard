@@ -21,10 +21,14 @@ import android.view.inputmethod.InputMethodSubtype
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
@@ -75,27 +79,26 @@ import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
+import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
+import org.futo.inputmethod.v2keyboard.FloatingKeyboardSize
+import org.futo.inputmethod.v2keyboard.KeyboardSettings
 import org.futo.inputmethod.v2keyboard.KeyboardSizeSettingKind
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
+import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
+import org.futo.inputmethod.v2keyboard.getHeight
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        println("Unlocked Broadcast Receiver: ${intent?.action}")
         if (intent?.action == Intent.ACTION_USER_UNLOCKED) {
             onDeviceUnlocked()
         }
     }
 }
 
-class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner,
-    LatinIMELegacy.SuggestionStripController, DynamicThemeProviderOwner, FoldStateProvider,
-    KeyboardSizeStateProvider {
-
+open class InputMethodServiceCompose : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner {
     private lateinit var mLifecycleRegistry: LifecycleRegistry
     private lateinit var mViewModelStore: ViewModelStore
     private lateinit var mSavedStateRegistryController: SavedStateRegistryController
-
-
 
     fun setOwners() {
         val decorView = window.window?.decorView
@@ -110,10 +113,58 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
     }
 
+    override fun onCreate() {
+        super.onCreate()
+
+        mLifecycleRegistry = LifecycleRegistry(this)
+        mLifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
+
+        mViewModelStore = ViewModelStore()
+
+        mSavedStateRegistryController = SavedStateRegistryController.create(this)
+        mSavedStateRegistryController.performRestore(null)
+
+        mLifecycleRegistry.currentState = Lifecycle.State.CREATED
+    }
+
+    override fun onStartInputView(editorInfo: EditorInfo?, restarting: Boolean) {
+        super.onStartInputView(editorInfo, restarting)
+
+        mLifecycleRegistry.currentState = Lifecycle.State.STARTED
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mLifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+    }
+
+    override val lifecycle: Lifecycle
+        get() = mLifecycleRegistry
+    override val savedStateRegistry: SavedStateRegistry
+        get() = mSavedStateRegistryController.savedStateRegistry
+    override val viewModelStore: ViewModelStore
+        get() = mViewModelStore
+
+    internal var composeView: ComposeView? = null
+
+    override fun onCreateInputView(): View =
+        ComposeView(this).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setParentCompositionContext(null)
+
+            setOwners()
+
+            composeView = this
+        }
+}
+
+class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripController,
+        DynamicThemeProviderOwner, FoldStateProvider, KeyboardSizeStateProvider {
     val latinIMELegacy = LatinIMELegacy(
         this as InputMethodService,
         this as LatinIMELegacy.SuggestionStripController
     )
+
 
     val inputLogic get() = latinIMELegacy.mInputLogic
 
@@ -122,6 +173,8 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     val uixManager = UixManager(this)
     lateinit var suggestionBlacklist: SuggestionBlacklist
 
+    val sizingCalculator = KeyboardSizingCalculator(this, uixManager)
+
     private var activeThemeOption: ThemeOption? = null
     private var activeColorScheme = VoiceInputTheme.obtainColors(this)
     private var pendingRecreateKeyboard: Boolean = false
@@ -129,6 +182,13 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     val themeOption get() = activeThemeOption
     val colorScheme get() = activeColorScheme
     val keyboardColor get() = drawableProvider?.primaryKeyboardColor?.let { androidx.compose.ui.graphics.Color(it) } ?: colorScheme.surface
+
+    val size: MutableState<ComputedKeyboardSize?> = mutableStateOf(null)
+    private fun calculateSize(): ComputedKeyboardSize
+            = sizingCalculator.calculate(
+        latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName ?: "qwerty",
+        latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mNumberRow ?: false
+    )
 
     private var drawableProvider: DynamicThemeProvider? = null
 
@@ -204,7 +264,26 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         }
     }
 
+    private fun onSizeUpdated() {
+        val newSize = calculateSize()
+        val shouldInvalidateKeyboard = size.value?.let { oldSize ->
+            when {
+                oldSize is FloatingKeyboardSize && newSize is FloatingKeyboardSize -> {
+                    oldSize.width != newSize.width || oldSize.height != newSize.height
+                }
+                else -> true
+            }
+        } ?: true
+
+        size.value = newSize
+
+        if(shouldInvalidateKeyboard) {
+            invalidateKeyboard(true)
+        }
+    }
+
     fun invalidateKeyboard(refreshSettings: Boolean = false) {
+        size.value = calculateSize()
         settingsRefreshRequired = settingsRefreshRequired || refreshSettings
 
         if(!uixManager.isMainKeyboardHidden) {
@@ -255,16 +334,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
         val filter = IntentFilter(Intent.ACTION_USER_UNLOCKED)
         registerReceiver(unlockReceiver, filter)
-
-        mLifecycleRegistry = LifecycleRegistry(this)
-        mLifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
-
-        mViewModelStore = ViewModelStore()
-
-        mSavedStateRegistryController = SavedStateRegistryController.create(this)
-        mSavedStateRegistryController.performRestore(null)
-
-        mLifecycleRegistry.currentState = Lifecycle.State.CREATED
 
         suggestionBlacklist = SuggestionBlacklist(latinIMELegacy.mSettings, this, lifecycleScope)
 
@@ -348,6 +417,21 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             }
         }
 
+        // Listen to size changes
+        launchJob {
+            val prev: MutableMap<KeyboardSizeSettingKind, String?> =
+                KeyboardSizeSettingKind.entries.associateWith { null }.toMutableMap()
+
+            dataStore.data.collect { data ->
+                prev.keys.toList().forEach {
+                    if(data[KeyboardSettings[it]!!.key] != prev[it]) {
+                        prev[it] = data[KeyboardSettings[it]!!.key]
+                        onSizeUpdated()
+                    }
+                }
+            }
+        }
+
         uixManager.onCreate()
 
         Settings.getInstance().settingsChangedListeners.add { oldSettings, newSettings ->
@@ -364,7 +448,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         unregisterReceiver(unlockReceiver)
 
         stopJobs()
-        mLifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         viewModelStore.clear()
 
         languageModelFacilitator.saveHistoryLog()
@@ -381,6 +464,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         Log.w("LatinIME", "Configuration changed")
+        size.value = calculateSize()
         latinIMELegacy.onConfigurationChanged(newConfig)
         super.onConfigurationChanged(newConfig)
     }
@@ -390,22 +474,21 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     private var legacyInputView: View? = null
-    private var touchableHeight: Int = 0
     override fun onCreateInputView(): View {
-        Log.w("LatinIME", "Create input view")
-        legacyInputView = latinIMELegacy.onCreateInputView()
+        val composeView = super.onCreateInputView()
 
-        val composeView = uixManager.createComposeView()
+        legacyInputView = latinIMELegacy.onCreateInputView()
         latinIMELegacy.setComposeInputView(composeView)
+
+        uixManager.setContent()
 
         return composeView
     }
 
     private var inputViewHeight: Int = -1
 
-    // Both called by UixManager
-    fun updateTouchableHeight(to: Int) { touchableHeight = to }
     fun getInputViewHeight(): Int = inputViewHeight
+    fun getViewHeight(): Int = composeView?.height ?: resources.displayMetrics.heightPixels
 
     private var isInputModal = false
     fun setInputModal(to: Boolean) {
@@ -426,8 +509,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
             }
         }
 
-
-
         key(legacyInputView) {
             AndroidView(factory = {
                 legacyInputView!!
@@ -445,7 +526,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
         legacyInputView = newView
 
         uixManager.setContent()
-        uixManager.getComposeView()?.let {
+        composeView?.let {
             latinIMELegacy.setComposeInputView(it)
         }
 
@@ -455,7 +536,7 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     override fun setInputView(view: View?) {
         super.setInputView(view)
 
-        uixManager.getComposeView()?.let {
+        composeView?.let {
             latinIMELegacy.setComposeInputView(it)
         }
 
@@ -473,8 +554,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
-        mLifecycleRegistry.currentState = Lifecycle.State.STARTED
-
         lastEditorInfo = info
 
         super.onStartInputView(info, restarting)
@@ -561,36 +640,55 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     }
 
     override fun onComputeInsets(outInsets: Insets?) {
-        val composeView = uixManager.getComposeView()
-
         // This method may be called before {@link #setInputView(View)}.
         if (legacyInputView == null || composeView == null) {
             return
         }
 
-        val inputHeight: Int = composeView.height
-        if (latinIMELegacy.isImeSuppressedByHardwareKeyboard && !legacyInputView!!.isShown) {
-            // If there is a hardware keyboard and a visible software keyboard view has been hidden,
-            // no visual element will be shown on the screen.
-            latinIMELegacy.setInsets(outInsets!!.apply {
-                contentTopInsets = inputHeight
-                visibleTopInsets = inputHeight
-            })
-            return
-        }
-
-        val visibleTopY = inputHeight - touchableHeight
-
-        val touchLeft = 0
-        val touchTop = if(isInputModal) { 0 } else { visibleTopY }
-        val touchRight = composeView.width
-        val touchBottom = inputHeight
-
+        val viewHeight = composeView!!.height
+        val size = size.value ?: return
         latinIMELegacy.setInsets(outInsets!!.apply {
-            touchableInsets = Insets.TOUCHABLE_INSETS_REGION;
-            touchableRegion.set(touchLeft, touchTop, touchRight, touchBottom);
-            contentTopInsets = visibleTopY
-            visibleTopInsets = visibleTopY
+            when(size) {
+                is FloatingKeyboardSize -> {
+                    val height = uixManager.touchableHeight
+
+                    val left = size.bottomOrigin.first
+                    val bottomYFromBottom = size.bottomOrigin.second
+                    var bottom = viewHeight - bottomYFromBottom
+                    var top = bottom - height
+                    val right = left + size.width
+
+                    if(top < 0) {
+                        bottom -= top
+                        top -= top
+                    }
+
+                    touchableInsets = Insets.TOUCHABLE_INSETS_REGION
+                    touchableRegion.set(left, top, right, bottom)
+                    contentTopInsets = viewHeight
+                    visibleTopInsets = viewHeight
+                }
+                else -> {
+                    touchableInsets = Insets.TOUCHABLE_INSETS_CONTENT
+
+                    val touchableHeight = uixManager.touchableHeight
+                    val topInset = if(touchableHeight < 1 || touchableHeight >= viewHeight - 1) {
+                        val actionBarHeight = sizingCalculator.calculateTotalActionBarHeightPx()
+
+                        viewHeight - size.getHeight() - actionBarHeight
+                    } else {
+                        viewHeight - touchableHeight
+                    }
+
+                    contentTopInsets = topInset
+                    visibleTopInsets = topInset
+                }
+            }
+
+            if(isInputModal) {
+                touchableInsets = Insets.TOUCHABLE_INSETS_REGION
+                touchableRegion.set(0, 0, composeView!!.width, composeView!!.height)
+            }
         })
     }
 
@@ -736,14 +834,6 @@ class LatinIME : InputMethodService(), LifecycleOwner, ViewModelStoreOwner, Save
     fun getBaseInputConnection(): InputConnection? {
         return super.getCurrentInputConnection()
     }
-
-    override val lifecycle: Lifecycle
-        get() = mLifecycleRegistry
-    override val savedStateRegistry: SavedStateRegistry
-        get() = mSavedStateRegistryController.savedStateRegistry
-    override val viewModelStore: ViewModelStore
-        get() = mViewModelStore
-
 
     private fun onDeviceUnlocked() {
         Log.i("LatinIME", "DEVICE has UNLOCKED!!! Reloading settings...")

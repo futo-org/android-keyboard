@@ -16,6 +16,11 @@
     <string name="more_actions_action_title">All Actions</string>
     <string name="bug_viewer_action_title">Bug Viewer</string>
 
+    <string name="left_handed_keyboard_action_title">Left-Handed Keyboard</string>
+    <string name="right_handed_keyboard_action_title">Right-Handed Keyboard</string>
+    <string name="split_keyboard_action_title">Split Keyboard</string>
+    <string name="floating_keyboard_action_title">Floating Keyboard</string>
+
     <string name="action_kind_action_key">Action Key</string>
     <string name="action_kind_pinned_key">Pinned Action(s)</string>
     <string name="action_kind_favorites">Favorite Actions</string>

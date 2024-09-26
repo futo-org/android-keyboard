@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
+import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import java.util.Locale
 
 interface ActionInputTransaction {
@@ -68,6 +69,8 @@ interface KeyboardManagerForAction {
 
     fun getLatinIMEForDebug(): LatinIME
     fun isDeviceLocked(): Boolean
+
+    fun getSizingCalculator(): KeyboardSizingCalculator
 }
 
 interface ActionWindow {

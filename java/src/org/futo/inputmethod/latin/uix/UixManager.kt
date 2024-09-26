@@ -23,22 +23,29 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -46,17 +53,21 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -96,6 +107,14 @@ import org.futo.inputmethod.updates.deferManualUpdate
 import org.futo.inputmethod.updates.isManualUpdateTimeExpired
 import org.futo.inputmethod.updates.openManualUpdateCheck
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
+import org.futo.inputmethod.v2keyboard.FloatingKeyboardSize
+import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
+import org.futo.inputmethod.v2keyboard.OneHandedDirection
+import org.futo.inputmethod.v2keyboard.OneHandedKeyboardSize
+import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
+import org.futo.inputmethod.v2keyboard.SplitKeyboardSize
+import org.futo.inputmethod.v2keyboard.getPadding
+import org.futo.inputmethod.v2keyboard.getWidth
 import java.util.Locale
 
 val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
@@ -279,7 +298,7 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     override fun announce(s: String) {
         AccessibilityUtils.init(getContext())
         if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
-            AccessibilityUtils.getInstance().announceForAccessibility(uixManager.getComposeView(), s)
+            AccessibilityUtils.getInstance().announceForAccessibility(uixManager.composeView, s)
         }
     }
 
@@ -295,6 +314,9 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         return getContext().isDeviceLocked
     }
 
+    override fun getSizingCalculator(): KeyboardSizingCalculator =
+        latinIME.sizingCalculator
+
     override fun getLatinIMEForDebug(): LatinIME = latinIME
 }
 
@@ -305,10 +327,11 @@ data class ActiveDialogRequest(
 )
 
 class UixManager(private val latinIME: LatinIME) {
+    internal val composeView: ComposeView?
+        get() = latinIME.composeView
+
     private var shouldShowSuggestionStrip: Boolean = true
     private var suggestedWords: SuggestedWords? = null
-
-    private var composeView: ComposeView? = null
 
     private var currWindowAction: Action? = null
     private var persistentStates: HashMap<Action, PersistentActionState?> = hashMapOf()
@@ -327,6 +350,9 @@ class UixManager(private val latinIME: LatinIME) {
         latinIME.deferSetSetting(ActionBarExpanded, isActionsExpanded.value)
     }
 
+    val actionsExpanded: Boolean
+        get() = isActionsExpanded.value
+
     private var isShowingActionEditor = mutableStateOf(false)
     fun showActionEditor() {
         isShowingActionEditor.value = true
@@ -337,6 +363,12 @@ class UixManager(private val latinIME: LatinIME) {
     var isInputOverridden = mutableStateOf(false)
 
     var currWindowActionWindow: ActionWindow? = null
+    val isActionWindowDocked: Boolean
+        get() = currWindowActionWindow != null
+
+    private var measuredTouchableHeight = 0
+    val touchableHeight: Int
+        get() = measuredTouchableHeight
 
     val isMainKeyboardHidden get() = mainKeyboardHidden
 
@@ -626,6 +658,129 @@ class UixManager(private val latinIME: LatinIME) {
         )
     }
 
+    @Composable
+    fun SizePositionerSurface(content: @Composable BoxScope.(actionBarGap: Dp) -> Unit) {
+        val size = latinIME.size.value
+        when(size) {
+            is FloatingKeyboardSize -> {
+                val offset = remember(size) { mutableStateOf(Offset(size.bottomOrigin.first.toFloat(), size.bottomOrigin.second.toFloat())) }
+                val configuration = LocalConfiguration.current
+                with(LocalDensity.current) {
+                    Column(modifier = Modifier.fillMaxHeight().absoluteOffset { IntOffset(offset.value.x.toInt(), 0) }) {
+                        Spacer(Modifier.weight(1.0f))
+                        Column(Modifier
+                            .background(latinIME.keyboardColor, RoundedCornerShape(8.dp))
+                            .requiredWidth(size.width.toDp())
+                            .onSizeChanged {
+                                measuredTouchableHeight = it.height
+                            }
+                            .absolutePadding(
+                                left = size.decorationPadding.left.toDp(),
+                                top = 0.dp,
+                                right = size.decorationPadding.right.toDp(),
+                                bottom = 0.dp,
+                            )
+                        ) {
+                            Box(Modifier.fillMaxWidth()) {
+                                CompositionLocalProvider(
+                                    LocalContentColor provides contentColorFor(
+                                        latinIME.keyboardColor
+                                    )
+                                ) {
+                                    content(4.dp)
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .height(20.dp)
+                                .pointerInput(size) {
+                                detectDragGestures(onDrag = { change, dragAmount ->
+                                    var newOffset = offset.value.copy(
+                                        x = offset.value.x + dragAmount.x,
+                                        y = offset.value.y - dragAmount.y
+                                    )
+
+                                    // Ensure we are not out of bounds
+                                    newOffset = newOffset.copy(
+                                        newOffset.x.coerceAtLeast(0.0f),
+                                        newOffset.y.coerceAtLeast(0.0f)
+                                    )
+                                    newOffset = newOffset.copy(
+                                        newOffset.x.coerceAtMost(configuration.screenWidthDp.dp.toPx() - size.width),
+                                        newOffset.y.coerceAtMost(latinIME.getViewHeight().toFloat() - measuredTouchableHeight)
+                                    )
+
+                                    offset.value = newOffset
+                                }, onDragEnd = {
+                                    latinIME.sizingCalculator.editSavedSettings { settings ->
+                                        settings.copy(
+                                            floatingBottomCenterOriginDp = Pair(
+                                                offset.value.x.toDp().value,
+                                                offset.value.y.toDp().value
+                                            )
+                                        )
+                                    }
+                                })
+                            }) {
+                                Box(modifier = Modifier.fillMaxWidth(0.6f).height(4.dp).align(Alignment.TopCenter).background(
+                                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f), RoundedCornerShape(100)
+                                ))
+                            }
+                        }
+                        Spacer(Modifier.height(offset.value.y.toDp()))
+                    }
+                }
+            }
+            is OneHandedKeyboardSize,
+            is RegularKeyboardSize,
+            is SplitKeyboardSize -> {
+                Column {
+                    Spacer(modifier = Modifier.weight(1.0f))
+                    Surface(modifier = Modifier.onSizeChanged {
+                        measuredTouchableHeight = it.height
+                    }, color = latinIME.keyboardColor) {
+                        with(LocalDensity.current) {
+                            val actionBarGap = (size.getPadding().top / 2).toDp()
+                            Box(Modifier.absolutePadding(
+                                left = size.getPadding().left.toDp(),
+                                top = actionBarGap,
+                                right = size.getPadding().right.toDp(),
+                                bottom = size.getPadding().bottom.toDp(),
+                            ).width(
+                                (size.getWidth() - size.getPadding().left - size.getPadding().right).toDp()
+                            )) {
+                                when(size) {
+                                    is OneHandedKeyboardSize -> {
+                                        Box(modifier = Modifier.width(size.layoutWidth.toDp()).align(
+                                            when(size.direction) {
+                                                OneHandedDirection.Left -> Alignment.CenterStart
+                                                OneHandedDirection.Right -> Alignment.CenterEnd
+                                            }
+                                        )) {
+                                            content(actionBarGap)
+                                        }
+                                    }
+                                    is RegularKeyboardSize -> {
+                                        content(actionBarGap)
+                                    }
+                                    is SplitKeyboardSize -> {
+                                        content(actionBarGap)
+                                    }
+                                    else -> throw IllegalStateException()
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            null -> return
+        }
+    }
+
     fun setContent() {
         composeView?.setContent {
             UixThemeWrapper(latinIME.colorScheme) {
@@ -639,29 +794,22 @@ class UixManager(private val latinIME: LatinIME) {
                                         isShowingActionEditor.value = false
                                     }
 
-                                    Column {
-                                        Spacer(modifier = Modifier.weight(1.0f))
-                                        Surface(modifier = Modifier.onSizeChanged {
-                                            latinIME.updateTouchableHeight(it.height)
-                                        }, color = latinIME.keyboardColor) {
-                                            Box {
-                                                Column {
-                                                    when {
-                                                        currWindowActionWindow != null -> ActionViewWithHeader(
-                                                            currWindowActionWindow!!
-                                                        )
+                                    SizePositionerSurface { gap ->
+                                        Column {
+                                            when {
+                                                currWindowActionWindow != null -> ActionViewWithHeader(
+                                                    currWindowActionWindow!!
+                                                )
 
-                                                        else -> MainKeyboardViewWithActionBar()
-                                                    }
-
-                                                    latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
-                                                }
-
-                                                ForgetWordDialog()
+                                                else -> MainKeyboardViewWithActionBar()
                                             }
 
+                                            Spacer(modifier = Modifier.height(gap))
+
+                                            latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
                                         }
 
+                                        ForgetWordDialog()
                                     }
 
                                     ActionEditorHost()
@@ -732,28 +880,6 @@ class UixManager(private val latinIME: LatinIME) {
 
             }
         }
-    }
-
-    fun createComposeView(): View {
-        if(composeView != null) {
-            composeView = null
-            //throw IllegalStateException("Attempted to create compose view, when one is already created!")
-        }
-
-        composeView = ComposeView(latinIME).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setParentCompositionContext(null)
-
-            latinIME.setOwners()
-        }
-
-        setContent()
-
-        return composeView!!
-    }
-
-    fun getComposeView(): View? {
-        return composeView
     }
 
     fun onColorSchemeChanged() {

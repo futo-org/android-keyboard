@@ -33,7 +33,7 @@ object LayoutManager {
 
     private fun getAllLayoutPaths(assetManager: AssetManager): List<String> {
         return listFilesRecursively(assetManager, "layouts").filter {
-            (it.endsWith(".yml") || it.endsWith(".yaml")) && it != "mapping.yaml"
+            (it.endsWith(".yml") || it.endsWith(".yaml")) && it != "layouts/mapping.yaml"
         }
     }
 

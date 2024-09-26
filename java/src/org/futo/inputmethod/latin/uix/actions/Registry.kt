@@ -31,7 +31,11 @@ val AllActionsMap = mapOf(
     "copy" to CopyAction,
     "select_all" to SelectAllAction,
     "more" to MoreActionsAction,
-    "bugs" to BugViewerAction
+    "bugs" to BugViewerAction,
+    "onehanded_left" to LeftHandedKeyboardAction,
+    "onehanded_right" to RightHandedKeyboardAction,
+    "split_keyboard" to SplitKeyboardAction,
+    "floating_keyboard" to FloatingKeyboardAction
 )
 
 val ActionToId = AllActionsMap.entries.associate { it.value to it.key }
