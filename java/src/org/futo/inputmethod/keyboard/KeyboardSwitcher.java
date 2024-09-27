@@ -329,9 +329,7 @@ public final class KeyboardSwitcher implements SwitchActions {
     }
 
     public boolean isShowingMoreKeysPanel() {
-        if (isShowingEmojiPalettes()) {
-            return false;
-        }
+        if(mKeyboardView == null) return false;
         return mKeyboardView.isShowingMoreKeysPanel();
     }
 

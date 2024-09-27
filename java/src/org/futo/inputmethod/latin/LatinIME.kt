@@ -685,7 +685,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 }
             }
 
-            if(isInputModal) {
+            if(isInputModal || latinIMELegacy.mKeyboardSwitcher?.isShowingMoreKeysPanel == true) {
                 touchableInsets = Insets.TOUCHABLE_INSETS_REGION
                 touchableRegion.set(0, 0, composeView!!.width, composeView!!.height)
             }
