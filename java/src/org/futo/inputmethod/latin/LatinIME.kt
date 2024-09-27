@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.CompletionInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InlineSuggestionsRequest
@@ -511,7 +512,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         key(legacyInputView) {
             AndroidView(factory = {
-                legacyInputView!!
+                legacyInputView!!.also {
+                    if(it.parent != null) (it.parent as ViewGroup).removeView(it)
+                }
             }, modifier = modifier, onRelease = {
                 val view = it as InputView
                 view.deallocateMemory()
