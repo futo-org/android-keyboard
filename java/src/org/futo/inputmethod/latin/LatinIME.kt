@@ -490,6 +490,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     fun getInputViewHeight(): Int = inputViewHeight
     fun getViewHeight(): Int = composeView?.height ?: resources.displayMetrics.heightPixels
+    fun getViewWidth(): Int = composeView?.width ?: resources.displayMetrics.widthPixels
 
     private var isInputModal = false
     fun setInputModal(to: Boolean) {

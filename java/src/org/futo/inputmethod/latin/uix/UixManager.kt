@@ -709,7 +709,7 @@ class UixManager(private val latinIME: LatinIME) {
                                         newOffset.y.coerceAtLeast(0.0f)
                                     )
                                     newOffset = newOffset.copy(
-                                        newOffset.x.coerceAtMost(configuration.screenWidthDp.dp.toPx() - size.width),
+                                        newOffset.x.coerceAtMost(latinIME.getViewWidth().toFloat() - size.width),
                                         newOffset.y.coerceAtMost(latinIME.getViewHeight().toFloat() - measuredTouchableHeight)
                                     )
 
