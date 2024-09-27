@@ -41,6 +41,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -60,6 +64,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -703,6 +708,7 @@ class UixManager(private val latinIME: LatinIME) {
         pointerInputKey: Any?,
         onDragged: (Offset) -> Unit,
         onDragEnd: () -> Unit,
+        onResizerOpen: () -> Unit,
         content: @Composable BoxScope.(actionBarGap: Dp) -> Unit
     ) {
         // Content
@@ -720,6 +726,13 @@ class UixManager(private val latinIME: LatinIME) {
                     onDrag = { _, dragAmount -> onDragged(dragAmount)},
                     onDragEnd = { onDragEnd() })
             }) {
+
+            IconButton(onClick = {
+                onResizerOpen()
+            }, Modifier.align(Alignment.CenterEnd)) {
+                Icon(Icons.Default.Menu, contentDescription = "resize")
+            }
+
             Box(
                 modifier = Modifier.fillMaxWidth(0.6f).height(4.dp)
                     .align(Alignment.TopCenter).background(
@@ -736,6 +749,54 @@ class UixManager(private val latinIME: LatinIME) {
         content: @Composable BoxScope.(actionBarGap: Dp) -> Unit
     ) = with(LocalDensity.current) {
         val offset = remember(size) { mutableStateOf(Offset(size.bottomOrigin.first.toFloat(), size.bottomOrigin.second.toFloat())) }
+
+        val resizing = remember { mutableStateOf(false) }
+
+        val onDragDelta: (DragDelta) -> Boolean = remember { { delta ->
+            // Matching the necessary coordinate space
+            var deltaX = delta.left
+            var deltaY = -delta.bottom
+            var deltaWidth = delta.right - delta.left
+            var deltaHeight = delta.bottom - delta.top
+
+            var result = true
+
+            // TODO: Limit the values so that we do not go off-screen
+            // If we have reached a minimum limit, return false
+
+            // Basic limiting for minimum size
+            val currSettings = latinIME.sizingCalculator.getSavedSettings()
+            val currSize = Size(
+                currSettings.floatingWidthDp.dp.toPx(),
+                currSettings.floatingHeightDp.dp.toPx()
+            )
+
+            if(currSize.width + deltaWidth < 200.dp.toPx()) {
+                deltaWidth = deltaWidth.coerceAtLeast(200.dp.toPx() - currSize.width)
+                deltaX = 0.0f
+                result = false
+            }
+
+            if(currSize.height + deltaHeight < 160.dp.toPx()) {
+                deltaHeight = deltaHeight.coerceAtLeast(160.dp.toPx() - currSize.height)
+                deltaY = 0.0f
+                result = false
+            }
+
+            latinIME.sizingCalculator.editSavedSettings { settings ->
+                settings.copy(
+                    floatingBottomOriginDp = Pair(
+                        settings.floatingBottomOriginDp.first + deltaX.toDp().value,
+                        settings.floatingBottomOriginDp.second + deltaY.toDp().value
+                    ),
+                    floatingWidthDp = settings.floatingWidthDp + deltaWidth.toDp().value,
+                    floatingHeightDp = settings.floatingHeightDp + deltaHeight.toDp().value
+                )
+            }
+
+            result
+        } }
+
         OffsetPositioner(offset.value) {
             KeyboardSurface(
                 requiredWidthPx = size.width,
@@ -778,8 +839,17 @@ class UixManager(private val latinIME: LatinIME) {
                                 )
                             }
                         },
+                        onResizerOpen = {
+                            resizing.value = true
+                        },
                         content = content
                     )
+                }
+
+                if(resizing.value) {
+                    ResizerRect(onDragDelta, showResetApply = true, onApply = {
+                        resizing.value = false
+                    }, onReset = { })
                 }
             }
         }
