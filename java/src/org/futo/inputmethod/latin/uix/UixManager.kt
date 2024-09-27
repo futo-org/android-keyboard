@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ClipDescription
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
@@ -57,12 +58,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
@@ -107,6 +110,7 @@ import org.futo.inputmethod.updates.deferManualUpdate
 import org.futo.inputmethod.updates.isManualUpdateTimeExpired
 import org.futo.inputmethod.updates.openManualUpdateCheck
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
+import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
 import org.futo.inputmethod.v2keyboard.FloatingKeyboardSize
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import org.futo.inputmethod.v2keyboard.OneHandedDirection
@@ -659,165 +663,218 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     @Composable
-    fun SizePositionerSurface(content: @Composable BoxScope.(actionBarGap: Dp) -> Unit) {
+    private fun OffsetPositioner(offset: Offset, content: @Composable () -> Unit) {
+        Column(modifier = Modifier.fillMaxHeight().absoluteOffset { IntOffset(offset.x.toInt(), 0) }) {
+            Spacer(Modifier.weight(1.0f))
+            content()
+            Spacer(Modifier.height(with(LocalDensity.current) { offset.y.toDp() }))
+        }
+    }
+
+    @Composable
+    private fun KeyboardSurface(
+        requiredWidthPx: Int,
+        backgroundColor: Color,
+        modifier: Modifier = Modifier,
+        shape: Shape = RectangleShape,
+        padding: Rect = Rect(),
+        content: @Composable BoxScope.() -> Unit
+    ) = with(LocalDensity.current) {
+        Box(modifier
+            .onSizeChanged { measuredTouchableHeight = it.height}
+            .background(backgroundColor, shape)
+            .requiredWidth(requiredWidthPx.toDp())
+            .absolutePadding(
+                left = padding.left.toDp(),
+                top = padding.top.toDp(),
+                right = padding.right.toDp(),
+                bottom = padding.bottom.toDp(),
+            )
+            .clipToBounds()
+        ) {
+            CompositionLocalProvider(LocalContentColor provides contentColorFor(backgroundColor)) {
+                content()
+            }
+        }
+    }
+
+    @Composable
+    private fun FloatingKeyboardContents(
+        pointerInputKey: Any?,
+        onDragged: (Offset) -> Unit,
+        onDragEnd: () -> Unit,
+        content: @Composable BoxScope.(actionBarGap: Dp) -> Unit
+    ) {
+        // Content
+        Box(Modifier.fillMaxWidth()) {
+            content(4.dp)
+        }
+
+        // Bottom drag bar
+        Spacer(modifier = Modifier.height(24.dp))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(20.dp)
+            .pointerInput(pointerInputKey) {
+                detectDragGestures(
+                    onDrag = { _, dragAmount -> onDragged(dragAmount)},
+                    onDragEnd = { onDragEnd() })
+            }) {
+            Box(
+                modifier = Modifier.fillMaxWidth(0.6f).height(4.dp)
+                    .align(Alignment.TopCenter).background(
+                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        RoundedCornerShape(100)
+                    )
+            )
+        }
+    }
+
+    @Composable
+    private fun FloatingKeyboardWindow(
+        size: FloatingKeyboardSize,
+        content: @Composable BoxScope.(actionBarGap: Dp) -> Unit
+    ) = with(LocalDensity.current) {
+        val offset = remember(size) { mutableStateOf(Offset(size.bottomOrigin.first.toFloat(), size.bottomOrigin.second.toFloat())) }
+        OffsetPositioner(offset.value) {
+            KeyboardSurface(
+                requiredWidthPx = size.width,
+                backgroundColor = latinIME.keyboardColor,
+                shape = RoundedCornerShape(16.dp),
+                padding = size.decorationPadding
+            ) {
+                Column {
+                    FloatingKeyboardContents(
+                        pointerInputKey = size,
+                        onDragged = { dragAmount ->
+                            var newOffset = offset.value.copy(
+                                x = offset.value.x + dragAmount.x,
+                                y = offset.value.y - dragAmount.y
+                            )
+
+                            // Ensure we are not out of bounds
+                            newOffset = newOffset.copy(
+                                newOffset.x.coerceAtLeast(0.0f),
+                                newOffset.y.coerceAtLeast(0.0f)
+                            )
+                            newOffset = newOffset.copy(
+                                newOffset.x.coerceAtMost(
+                                    latinIME.getViewWidth().toFloat() - size.width
+                                ),
+                                newOffset.y.coerceAtMost(
+                                    latinIME.getViewHeight().toFloat() - measuredTouchableHeight
+                                )
+                            )
+
+                            offset.value = newOffset
+                        },
+                        onDragEnd = {
+                            latinIME.sizingCalculator.editSavedSettings { settings ->
+                                settings.copy(
+                                    floatingBottomOriginDp = Pair(
+                                        offset.value.x.toDp().value,
+                                        offset.value.y.toDp().value
+                                    )
+                                )
+                            }
+                        },
+                        content = content
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun NonFloatingKeyboardWindow(
+        size: ComputedKeyboardSize,
+        content: @Composable BoxScope.(actionBarGap: Dp) -> Unit
+    ) = with(LocalDensity.current) {
+        OffsetPositioner(Offset(0.0f, 0.0f)) {
+            KeyboardSurface(
+                requiredWidthPx = size.getWidth(),
+                backgroundColor = latinIME.keyboardColor,
+                padding = size.getPadding()
+            ) {
+                val actionBarGap = 4.dp
+
+                when(size) {
+                    is OneHandedKeyboardSize -> {
+                        Box(modifier = Modifier.width(size.layoutWidth.toDp()).align(
+                            when(size.direction) {
+                                OneHandedDirection.Left -> Alignment.CenterStart
+                                OneHandedDirection.Right -> Alignment.CenterEnd
+                            }
+                        )) {
+                            content(actionBarGap)
+                        }
+                    }
+                    else -> {
+                        content(actionBarGap)
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun KeyboardWindowSelector(content: @Composable BoxScope.(actionBarGap: Dp) -> Unit) {
         val size = latinIME.size.value
         when(size) {
-            is FloatingKeyboardSize -> {
-                val offset = remember(size) { mutableStateOf(Offset(size.bottomOrigin.first.toFloat(), size.bottomOrigin.second.toFloat())) }
-                val configuration = LocalConfiguration.current
-                with(LocalDensity.current) {
-                    Column(modifier = Modifier.fillMaxHeight().absoluteOffset { IntOffset(offset.value.x.toInt(), 0) }) {
-                        Spacer(Modifier.weight(1.0f))
-                        Column(Modifier
-                            .background(latinIME.keyboardColor, RoundedCornerShape(8.dp))
-                            .requiredWidth(size.width.toDp())
-                            .onSizeChanged {
-                                measuredTouchableHeight = it.height
-                            }
-                            .absolutePadding(
-                                left = size.decorationPadding.left.toDp(),
-                                top = 0.dp,
-                                right = size.decorationPadding.right.toDp(),
-                                bottom = 0.dp,
-                            )
-                        ) {
-                            Box(Modifier.fillMaxWidth()) {
-                                CompositionLocalProvider(
-                                    LocalContentColor provides contentColorFor(
-                                        latinIME.keyboardColor
-                                    )
-                                ) {
-                                    content(4.dp)
-                                }
-                            }
+            is FloatingKeyboardSize -> FloatingKeyboardWindow(size, content)
 
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            Box(modifier = Modifier
-                                .fillMaxWidth()
-                                .height(20.dp)
-                                .pointerInput(size) {
-                                detectDragGestures(onDrag = { change, dragAmount ->
-                                    var newOffset = offset.value.copy(
-                                        x = offset.value.x + dragAmount.x,
-                                        y = offset.value.y - dragAmount.y
-                                    )
-
-                                    // Ensure we are not out of bounds
-                                    newOffset = newOffset.copy(
-                                        newOffset.x.coerceAtLeast(0.0f),
-                                        newOffset.y.coerceAtLeast(0.0f)
-                                    )
-                                    newOffset = newOffset.copy(
-                                        newOffset.x.coerceAtMost(latinIME.getViewWidth().toFloat() - size.width),
-                                        newOffset.y.coerceAtMost(latinIME.getViewHeight().toFloat() - measuredTouchableHeight)
-                                    )
-
-                                    offset.value = newOffset
-                                }, onDragEnd = {
-                                    latinIME.sizingCalculator.editSavedSettings { settings ->
-                                        settings.copy(
-                                            floatingBottomOriginDp = Pair(
-                                                offset.value.x.toDp().value,
-                                                offset.value.y.toDp().value
-                                            )
-                                        )
-                                    }
-                                })
-                            }) {
-                                Box(modifier = Modifier.fillMaxWidth(0.6f).height(4.dp).align(Alignment.TopCenter).background(
-                                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f), RoundedCornerShape(100)
-                                ))
-                            }
-                        }
-                        Spacer(Modifier.height(offset.value.y.toDp()))
-                    }
-                }
-            }
             is OneHandedKeyboardSize,
             is RegularKeyboardSize,
-            is SplitKeyboardSize -> {
-                Column {
-                    Spacer(modifier = Modifier.weight(1.0f))
-                    Surface(modifier = Modifier.onSizeChanged {
-                        measuredTouchableHeight = it.height
-                    }, color = latinIME.keyboardColor) {
-                        with(LocalDensity.current) {
-                            val actionBarGap = (size.getPadding().top / 2).toDp()
-                            Box(Modifier.absolutePadding(
-                                left = size.getPadding().left.toDp(),
-                                top = actionBarGap,
-                                right = size.getPadding().right.toDp(),
-                                bottom = size.getPadding().bottom.toDp(),
-                            ).width(
-                                (size.getWidth() - size.getPadding().left - size.getPadding().right).toDp()
-                            )) {
-                                when(size) {
-                                    is OneHandedKeyboardSize -> {
-                                        Box(modifier = Modifier.width(size.layoutWidth.toDp()).align(
-                                            when(size.direction) {
-                                                OneHandedDirection.Left -> Alignment.CenterStart
-                                                OneHandedDirection.Right -> Alignment.CenterEnd
-                                            }
-                                        )) {
-                                            content(actionBarGap)
-                                        }
-                                    }
-                                    is RegularKeyboardSize -> {
-                                        content(actionBarGap)
-                                    }
-                                    is SplitKeyboardSize -> {
-                                        content(actionBarGap)
-                                    }
-                                    else -> throw IllegalStateException()
-                                }
-                            }
+            is SplitKeyboardSize -> NonFloatingKeyboardWindow(size, content)
 
+            null -> return
+        }
+    }
+
+    @Composable
+    private fun ProvidersAndWrapper(content: @Composable () -> Unit) {
+        UixThemeWrapper(latinIME.colorScheme) {
+            DataStoreCacheProvider {
+                CompositionLocalProvider(LocalManager provides keyboardManagerForAction) {
+                    CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
+                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                            CompositionLocalProvider(LocalFoldingState provides foldingOptions.value) {
+                                content()
+                            }
                         }
                     }
                 }
             }
-            null -> return
         }
     }
 
     fun setContent() {
         composeView?.setContent {
-            UixThemeWrapper(latinIME.colorScheme) {
-                DataStoreCacheProvider {
-                    CompositionLocalProvider(LocalManager provides keyboardManagerForAction) {
-                        CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
-                            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                                CompositionLocalProvider(LocalFoldingState provides foldingOptions.value) {
-                                    InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
-                                        closeActionWindow()
-                                        isShowingActionEditor.value = false
-                                    }
-
-                                    SizePositionerSurface { gap ->
-                                        Column {
-                                            when {
-                                                currWindowActionWindow != null -> ActionViewWithHeader(
-                                                    currWindowActionWindow!!
-                                                )
-
-                                                else -> MainKeyboardViewWithActionBar()
-                                            }
-
-                                            Spacer(modifier = Modifier.height(gap))
-
-                                            latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
-                                        }
-
-                                        ForgetWordDialog()
-                                    }
-
-                                    ActionEditorHost()
-                                }
-                            }
-                        }
-                    }
+            ProvidersAndWrapper {
+                InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
+                    closeActionWindow()
+                    isShowingActionEditor.value = false
                 }
+
+                KeyboardWindowSelector { gap ->
+                    Column {
+                        when {
+                            currWindowActionWindow != null -> ActionViewWithHeader(
+                                currWindowActionWindow!!
+                            )
+
+                            else -> MainKeyboardViewWithActionBar()
+                        }
+
+                        Spacer(modifier = Modifier.height(gap))
+
+                        latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
+                    }
+
+                    ForgetWordDialog()
+                }
+
+                ActionEditorHost()
             }
         }
     }
