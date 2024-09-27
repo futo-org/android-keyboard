@@ -317,7 +317,6 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         val effectiveRowCount = layout.effectiveRows.size
 
         val displayMetrics = context.resources.displayMetrics
-        println("Display metrics ${displayMetrics.widthPixels / displayMetrics.density}")
 
         val singularRowHeight = (ResourceUtils.getDefaultKeyboardHeight(context.resources) / 4.0) *
                 savedSettings.heightMultiplier
