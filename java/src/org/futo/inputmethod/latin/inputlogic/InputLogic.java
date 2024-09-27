@@ -439,6 +439,7 @@ public final class InputLogic {
         // The cursor has been moved : we now accept to perform recapitalization
         mRecapitalizeStatus.enable();
         // We moved the cursor. If we are touching a word, we need to resume suggestion.
+        mIsAutoCorrectionIndicatorOn = false;
         mLatinIMELegacy.mHandler.postResumeSuggestions(true /* shouldDelay */);
         // Stop the last recapitalization, if started.
         mRecapitalizeStatus.stop();
