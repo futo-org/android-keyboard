@@ -147,7 +147,8 @@ data class SavedKeyboardSizingSettings(
     val oneHandedDirection: OneHandedDirection,
 
     // Floating
-    val floatingBottomCenterOriginDp: Pair<Float, Float>, // relative to bottom left of screen, .second is Y up
+    // bottom left of the floating keyboard, relative to bottom left of screen, .second is Y up
+    val floatingBottomOriginDp: Pair<Float, Float>,
     val floatingWidthDp: Float,
     val floatingHeightDp: Float
 ) {
@@ -180,7 +181,7 @@ val DefaultKeyboardSettings = mapOf(
         splitWidthFraction = 4.0f / 5.0f,
         oneHandedDirection = OneHandedDirection.Right,
         oneHandedRectDp = Rect(4, 4, 364, 30),
-        floatingBottomCenterOriginDp = Pair(0.0f, 0.0f),
+        floatingBottomOriginDp = Pair(0.0f, 0.0f),
         floatingHeightDp = 240.0f,
         floatingWidthDp = 360.0f
     ),
@@ -192,7 +193,7 @@ val DefaultKeyboardSettings = mapOf(
         splitWidthFraction = 3.0f / 5.0f,
         oneHandedDirection = OneHandedDirection.Right,
         oneHandedRectDp = Rect(4, 4, 364, 30),
-        floatingBottomCenterOriginDp = Pair(0.0f, 0.0f),
+        floatingBottomOriginDp = Pair(0.0f, 0.0f),
         floatingHeightDp = 240.0f,
         floatingWidthDp = 360.0f
     ),
@@ -204,7 +205,7 @@ val DefaultKeyboardSettings = mapOf(
         splitWidthFraction = 3.0f / 5.0f,
         oneHandedDirection = OneHandedDirection.Right,
         oneHandedRectDp = Rect(4, 4, 364, 30),
-        floatingBottomCenterOriginDp = Pair(0.0f, 0.0f),
+        floatingBottomOriginDp = Pair(0.0f, 0.0f),
         floatingHeightDp = 240.0f,
         floatingWidthDp = 360.0f
     ),
@@ -374,8 +375,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                 val recommendedHeightFloat = singularRowHeightFloat * numRows
                 FloatingKeyboardSize(
                     bottomOrigin = Pair(
-                        dp(savedSettings.floatingBottomCenterOriginDp.first),
-                        dp(savedSettings.floatingBottomCenterOriginDp.second)
+                        dp(savedSettings.floatingBottomOriginDp.first),
+                        dp(savedSettings.floatingBottomOriginDp.second)
                     ),
                     width = dp(savedSettings.floatingWidthDp),
                     height = recommendedHeightFloat.toInt(),

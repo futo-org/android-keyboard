@@ -717,7 +717,7 @@ class UixManager(private val latinIME: LatinIME) {
                                 }, onDragEnd = {
                                     latinIME.sizingCalculator.editSavedSettings { settings ->
                                         settings.copy(
-                                            floatingBottomCenterOriginDp = Pair(
+                                            floatingBottomOriginDp = Pair(
                                                 offset.value.x.toDp().value,
                                                 offset.value.y.toDp().value
                                             )
