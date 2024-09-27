@@ -1617,10 +1617,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     // punctuation suggestions (if it's disabled).
     @Override
     public void setNeutralSuggestionStrip() {
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        final SuggestedWords neutralSuggestions = currentSettings.mBigramPredictionEnabled
-                ? SuggestedWords.getEmptyInstance()
-                : currentSettings.mSpacingAndPunctuations.mSuggestPuncList;
+        final SuggestedWords neutralSuggestions = SuggestedWords.getEmptyInstance();
         setSuggestedWords(neutralSuggestions);
     }
 
