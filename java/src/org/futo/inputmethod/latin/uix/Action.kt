@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.LatinIME
+import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import java.util.Locale
@@ -67,6 +68,7 @@ interface KeyboardManagerForAction {
     fun activateAction(action: Action)
     fun showActionEditor()
 
+    fun getSuggestionBlacklist(): SuggestionBlacklist
     fun getLatinIMEForDebug(): LatinIME
     fun isDeviceLocked(): Boolean
 

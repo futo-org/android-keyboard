@@ -72,6 +72,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
@@ -87,6 +88,7 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_EMOJI_SUGGESTION
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_TYPED
+import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
 import org.futo.inputmethod.latin.uix.actions.FavoriteActions
@@ -98,7 +100,6 @@ import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
-import java.lang.Integer.min
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -220,17 +221,9 @@ fun AutoFitText(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
-    val word = try {
-         words.getWord(idx)
-    } catch(e: IndexOutOfBoundsException) {
-        null
-    }
-
-    val wordInfo = try {
-        words.getInfo(idx)
-    } catch(e: IndexOutOfBoundsException) {
-        null
-    }
+    val wordInfo = words.getInfoOrNull(idx)
+    val isVerbatim = wordInfo?.kind == KIND_TYPED
+    val word = wordInfo?.mWord
 
     val actualIsPrimary = isPrimary && (words.mWillAutoCorrect || ((wordInfo?.isExactMatch) == true))
 
@@ -277,9 +270,12 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
     ) {
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
             if (word != null) {
-                AutoFitText(word, style = textStyle, modifier = textModifier
-                    .align(Center)
-                    .padding(2.dp))
+                val modifier = textModifier.align(Center).padding(2.dp)
+                if(isVerbatim) {
+                    AutoFitText('"' + word + '"', style = textStyle.copy(fontStyle = FontStyle.Italic), modifier = modifier)
+                } else {
+                    AutoFitText(word, style = textStyle, modifier = modifier)
+                }
             }
         }
     }
@@ -296,87 +292,137 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
 }
 
 
+data class SuggestionLayout(
+    /** Set to the word to be autocorrected to */
+    val autocorrectMatch: SuggestedWordInfo?,
 
-// Show the most probable in the middle, then left, then right
-val ORDER_OF_SUGGESTIONS = listOf(1, 0, 2)
+    /** Other words, sorted by likelihood */
+    val sortedMatches: List<SuggestedWordInfo>,
+
+    /** Emoji suggestions if they are to be shown */
+    val emojiMatches: List<SuggestedWordInfo>,
+
+    /** The exact word the user typed */
+    val verbatimWord: SuggestedWordInfo?,
+
+    /** Set to true if the best match is so unlikely that we should show verbatim instead */
+    val areSuggestionsClueless: Boolean,
+
+    /** Set to true if this is a gesture update, and we should only show one suggestion */
+    val isGestureBatch: Boolean,
+
+    val presentableSuggestions: List<SuggestedWordInfo>
+)
+
+fun SuggestedWords.getInfoOrNull(idx: Int): SuggestedWordInfo? = try {
+    getInfo(idx)
+} catch(e: IndexOutOfBoundsException) {
+    null
+}
+
+fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist): SuggestionLayout {
+    val typedWord = words.getInfoOrNull(SuggestedWords.INDEX_OF_TYPED_WORD)?.let {
+        if(it.kind == KIND_TYPED) { it } else { null }
+    }?.let {
+        if(blacklist.isSuggestedWordOk(it)) {
+            it
+        } else {
+            null
+        }
+    }
+
+    val autocorrectMatch = words.getInfoOrNull(SuggestedWords.INDEX_OF_AUTO_CORRECTION)?.let {
+        if(words.mWillAutoCorrect) { it } else { null }
+    }
+
+    // We actually have to avoid sorting these because they are provided sorted in an important order
+
+    val emojiMatches = words.mSuggestedWordInfoList.filter {
+        it.kind == KIND_EMOJI_SUGGESTION
+    }
+
+    val sortedMatches = words.mSuggestedWordInfoList.filter {
+        it != typedWord && it.kind != KIND_TYPED && it != autocorrectMatch && !emojiMatches.contains(it)
+    }
+
+    val areSuggestionsClueless = (autocorrectMatch ?: sortedMatches.getOrNull(0))?.let {
+        it.mOriginatesFromTransformerLM && it.mScore < -50
+    } ?: false
+
+    val isGestureBatch = words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+
+    val presentableSuggestions = (
+            listOf(
+                typedWord,
+                autocorrectMatch,
+            ) + sortedMatches
+    ).filterNotNull()
+
+    return SuggestionLayout(
+        autocorrectMatch = autocorrectMatch,
+        sortedMatches = sortedMatches,
+        emojiMatches = emojiMatches,
+        verbatimWord = typedWord,
+        areSuggestionsClueless = areSuggestionsClueless,
+        isGestureBatch = isGestureBatch,
+        presentableSuggestions = presentableSuggestions
+    )
+}
 
 @Composable
 fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
-    val maxSuggestions = min(ORDER_OF_SUGGESTIONS.size, words.size())
+    val layout = makeSuggestionLayout(words, LocalManager.current.getSuggestionBlacklist())
 
-    if(maxSuggestions == 0) {
-        Spacer(modifier = Modifier.weight(1.0f))
-        return
-    }
-
-    if(maxSuggestions == 1 || words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH) {
-        SuggestionItem(
-            words,
-            0,
-            isPrimary = true,
-            onClick = { onClick(0) },
-            onLongClick = { onLongClick(0) }
-        )
-
-        return
-    } else if(words.mInputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH && maxSuggestions > 1) {
-        //words.mSuggestedWordInfoList.removeAt(0);
-    }
-
-
-    var offset = 0
-
-    try {
-        val info = words.getInfo(0)
-        if (info.kind == KIND_TYPED && !info.isExactMatch && !info.isExactMatchWithIntentionalOmission) {
-            offset = 1
+    val suggestionItem = @Composable { suggestion: SuggestedWordInfo? ->
+        if(suggestion != null) {
+            val idx = words.indexOf(suggestion)
+            SuggestionItem(
+                words,
+                idx,
+                isPrimary = idx == SuggestedWords.INDEX_OF_AUTO_CORRECTION,
+                onClick = { onClick(idx) },
+                onLongClick = { onLongClick(idx) }
+            )
+        } else {
+            Spacer(Modifier.weight(1.0f))
         }
-    } catch(_: IndexOutOfBoundsException) {
-
     }
 
-    // Check for "clueless" suggestions, and display typed word in center if so
-    try {
-        if(offset == 1) {
-            val info = words.getInfo(1)
-            if(info.mOriginatesFromTransformerLM && info.mScore < -50) {
-                offset = 0;
+    println(layout)
+    when {
+        layout.isGestureBatch ||
+        layout.presentableSuggestions.size <= 1 -> suggestionItem(layout.presentableSuggestions.firstOrNull())
+
+        layout.autocorrectMatch != null -> {
+            var supplementalSuggestionIndex = 0
+            if(layout.emojiMatches.isEmpty()) {
+                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex++))
+            } else {
+                suggestionItem(layout.emojiMatches[0])
+            }
+            SuggestionSeparator()
+            suggestionItem(layout.autocorrectMatch)
+            SuggestionSeparator()
+
+            if(layout.verbatimWord != null && layout.verbatimWord.mWord != layout.autocorrectMatch.mWord) {
+                suggestionItem(layout.verbatimWord)
+            } else {
+                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex))
             }
         }
-    } catch(_: IndexOutOfBoundsException) {
 
-    }
-
-
-    val suggestionOrder = mutableListOf(
-        ORDER_OF_SUGGESTIONS[0] + offset,
-        ORDER_OF_SUGGESTIONS[1] + offset,
-        if(offset == 1) { 0 - offset } else { ORDER_OF_SUGGESTIONS[2] } + offset,
-    )
-
-    // Find emoji
-    try {
-        for(i in 0 until words.size()) {
-            val info = words.getInfo(i)
-            if(info.mKindAndFlags == KIND_EMOJI_SUGGESTION && i > 2) {
-                suggestionOrder[0] = i
+        else -> {
+            var supplementalSuggestionIndex = 1
+            if(layout.emojiMatches.isEmpty()) {
+                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex++))
+            } else {
+                suggestionItem(layout.emojiMatches[0])
             }
+            SuggestionSeparator()
+            suggestionItem(layout.sortedMatches.getOrNull(0))
+            SuggestionSeparator()
+            suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex))
         }
-    } catch(_: IndexOutOfBoundsException) {
-
-    }
-
-
-    for (i in 0 until maxSuggestions) {
-        SuggestionItem(
-            words,
-            suggestionOrder[i],
-            isPrimary = i == (maxSuggestions / 2),
-            onClick = { onClick(suggestionOrder[i]) },
-            onLongClick = { onLongClick(suggestionOrder[i]) }
-        )
-
-        if (i < maxSuggestions - 1) SuggestionSeparator()
     }
 }
 

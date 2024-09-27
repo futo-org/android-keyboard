@@ -94,6 +94,7 @@ import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
+import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
@@ -327,6 +328,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         latinIME.sizingCalculator
 
     override fun getLatinIMEForDebug(): LatinIME = latinIME
+
+    override fun getSuggestionBlacklist(): SuggestionBlacklist = latinIME.suggestionBlacklist
 }
 
 data class ActiveDialogRequest(
