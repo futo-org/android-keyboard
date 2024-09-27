@@ -240,7 +240,7 @@ public class LanguageModelFacilitator(
         try {
             inputLogic.mWordComposer.setAutoCorrection(null)
 
-            if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH) {
+            if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH-1) {
                 inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
                 return
             }
