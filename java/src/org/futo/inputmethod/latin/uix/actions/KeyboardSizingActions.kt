@@ -84,3 +84,12 @@ val FloatingKeyboardAction = Action(
     },
     windowImpl = null,
 )
+
+val ResizeKeyboardAction = Action(
+    icon = R.drawable.maximize,
+    name = R.string.resize_keyboard_action_title,
+    simplePressImpl = { manager, _ ->
+        manager.showResizer()
+    },
+    windowImpl = null,
+)

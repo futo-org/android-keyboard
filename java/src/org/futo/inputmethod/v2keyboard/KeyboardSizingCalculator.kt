@@ -138,19 +138,22 @@ data class SavedKeyboardSizingSettings(
 
     // Split
     val splitWidthFraction: Float,
+    val splitPaddingDp: @Serializable(RectSerializer::class) Rect,
+    val splitHeightMultiplier: Float? = null,
 
-    // One handed, values with respect to left handed mode
-    // left = padding
-    // right = width + padding
-    // bottom = padding for bottom
+    /** One handed, values with respect to left handed mode:
+     * * left = padding
+     * * right = width + padding
+     * * bottom = padding for bottom */
     val oneHandedRectDp: @Serializable(RectSerializer::class) Rect,
     val oneHandedDirection: OneHandedDirection,
+    val oneHandedHeightMultiplier: Float? = null,
 
     // Floating
     // bottom left of the floating keyboard, relative to bottom left of screen, .second is Y up
     val floatingBottomOriginDp: Pair<Float, Float>,
     val floatingWidthDp: Float,
-    val floatingHeightDp: Float
+    val floatingHeightDp: Float,
 ) {
     fun toJsonString(): String =
         Json.encodeToString(this)
@@ -178,6 +181,7 @@ val DefaultKeyboardSettings = mapOf(
         currentMode = KeyboardMode.Regular,
         heightMultiplier = 1.0f,
         paddingDp = Rect(2, 4, 2, 10),
+        splitPaddingDp = Rect(2, 4, 2, 10),
         splitWidthFraction = 4.0f / 5.0f,
         oneHandedDirection = OneHandedDirection.Right,
         oneHandedRectDp = Rect(4, 4, 364, 30),
@@ -190,6 +194,7 @@ val DefaultKeyboardSettings = mapOf(
         currentMode = KeyboardMode.Split,
         heightMultiplier = 0.9f,
         paddingDp = Rect(8, 2, 8, 2),
+        splitPaddingDp = Rect(8, 2, 8, 2),
         splitWidthFraction = 3.0f / 5.0f,
         oneHandedDirection = OneHandedDirection.Right,
         oneHandedRectDp = Rect(4, 4, 364, 30),
@@ -202,6 +207,7 @@ val DefaultKeyboardSettings = mapOf(
         currentMode = KeyboardMode.Split,
         heightMultiplier = 0.67f,
         paddingDp = Rect(44, 4, 44, 8),
+        splitPaddingDp = Rect(44, 4, 44, 8),
         splitWidthFraction = 3.0f / 5.0f,
         oneHandedDirection = OneHandedDirection.Right,
         oneHandedRectDp = Rect(4, 4, 364, 30),
@@ -320,7 +326,12 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         val displayMetrics = context.resources.displayMetrics
 
         val singularRowHeight = (ResourceUtils.getDefaultKeyboardHeight(context.resources) / 4.0) *
-                savedSettings.heightMultiplier
+                (when(savedSettings.currentMode) {
+                    KeyboardMode.Regular -> null
+                    KeyboardMode.Split -> savedSettings.splitHeightMultiplier
+                    KeyboardMode.OneHanded -> savedSettings.oneHandedHeightMultiplier
+                    KeyboardMode.Floating -> null
+                } ?: savedSettings.heightMultiplier)
 
         val numRows = 4.0 +
                 ((effectiveRowCount - 5) / 2.0).coerceAtLeast(0.0) +
@@ -352,7 +363,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                 SplitKeyboardSize(
                     height = recommendedHeight.roundToInt(),
                     width = width,
-                    padding = dp(savedSettings.paddingDp),
+                    padding = dp(savedSettings.splitPaddingDp),
                     splitLayoutWidth = (displayMetrics.widthPixels * savedSettings.splitWidthFraction).toInt()
                 )
 

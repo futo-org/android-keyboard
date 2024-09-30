@@ -77,6 +77,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
@@ -123,9 +124,12 @@ import org.futo.inputmethod.v2keyboard.OneHandedDirection
 import org.futo.inputmethod.v2keyboard.OneHandedKeyboardSize
 import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
 import org.futo.inputmethod.v2keyboard.SplitKeyboardSize
+import org.futo.inputmethod.v2keyboard.getHeight
 import org.futo.inputmethod.v2keyboard.getPadding
 import org.futo.inputmethod.v2keyboard.getWidth
 import java.util.Locale
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
     error("No LocalManager provided")
@@ -320,6 +324,11 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         uixManager.showActionEditor()
     }
 
+    override fun showResizer() {
+        uixManager.resizing.value = true
+        uixManager.closeActionWindow()
+    }
+
     override fun isDeviceLocked(): Boolean {
         return getContext().isDeviceLocked
     }
@@ -365,6 +374,8 @@ class UixManager(private val latinIME: LatinIME) {
     val actionsExpanded: Boolean
         get() = isActionsExpanded.value
 
+    internal val resizing = mutableStateOf(false)
+
     private var isShowingActionEditor = mutableStateOf(false)
     fun showActionEditor() {
         isShowingActionEditor.value = true
@@ -385,6 +396,7 @@ class UixManager(private val latinIME: LatinIME) {
     val isMainKeyboardHidden get() = mainKeyboardHidden
 
     fun onActionActivated(rawAction: Action) {
+        resizing.value = false
         latinIME.inputLogic.finishInput()
 
         val action = runBlocking {
@@ -693,10 +705,10 @@ class UixManager(private val latinIME: LatinIME) {
             .background(backgroundColor, shape)
             .requiredWidth(requiredWidthPx.toDp())
             .absolutePadding(
-                left = padding.left.toDp(),
-                top = padding.top.toDp(),
-                right = padding.right.toDp(),
-                bottom = padding.bottom.toDp(),
+                left = padding.left.toDp().coerceAtLeast(0.dp),
+                top = padding.top.toDp().coerceAtLeast(0.dp),
+                right = padding.right.toDp().coerceAtLeast(0.dp),
+                bottom = padding.bottom.toDp().coerceAtLeast(0.dp),
             )
             .clipToBounds()
         ) {
@@ -753,53 +765,6 @@ class UixManager(private val latinIME: LatinIME) {
     ) = with(LocalDensity.current) {
         val offset = remember(size) { mutableStateOf(Offset(size.bottomOrigin.first.toFloat(), size.bottomOrigin.second.toFloat())) }
 
-        val resizing = remember { mutableStateOf(false) }
-
-        val onDragDelta: (DragDelta) -> Boolean = remember { { delta ->
-            // Matching the necessary coordinate space
-            var deltaX = delta.left
-            var deltaY = -delta.bottom
-            var deltaWidth = delta.right - delta.left
-            var deltaHeight = delta.bottom - delta.top
-
-            var result = true
-
-            // TODO: Limit the values so that we do not go off-screen
-            // If we have reached a minimum limit, return false
-
-            // Basic limiting for minimum size
-            val currSettings = latinIME.sizingCalculator.getSavedSettings()
-            val currSize = Size(
-                currSettings.floatingWidthDp.dp.toPx(),
-                currSettings.floatingHeightDp.dp.toPx()
-            )
-
-            if(currSize.width + deltaWidth < 200.dp.toPx()) {
-                deltaWidth = deltaWidth.coerceAtLeast(200.dp.toPx() - currSize.width)
-                deltaX = 0.0f
-                result = false
-            }
-
-            if(currSize.height + deltaHeight < 160.dp.toPx()) {
-                deltaHeight = deltaHeight.coerceAtLeast(160.dp.toPx() - currSize.height)
-                deltaY = 0.0f
-                result = false
-            }
-
-            latinIME.sizingCalculator.editSavedSettings { settings ->
-                settings.copy(
-                    floatingBottomOriginDp = Pair(
-                        settings.floatingBottomOriginDp.first + deltaX.toDp().value,
-                        settings.floatingBottomOriginDp.second + deltaY.toDp().value
-                    ),
-                    floatingWidthDp = settings.floatingWidthDp + deltaWidth.toDp().value,
-                    floatingHeightDp = settings.floatingHeightDp + deltaHeight.toDp().value
-                )
-            }
-
-            result
-        } }
-
         OffsetPositioner(offset.value) {
             KeyboardSurface(
                 requiredWidthPx = size.width,
@@ -849,12 +814,206 @@ class UixManager(private val latinIME: LatinIME) {
                     )
                 }
 
-                if(resizing.value) {
-                    ResizerRect(onDragDelta, showResetApply = true, onApply = {
-                        resizing.value = false
-                    }, onReset = { })
+                ResizerSwitch(size)
+            }
+        }
+    }
+
+    @Composable
+    private fun BoxScope.FloatingKeyboardResizer(size: FloatingKeyboardSize) = with(LocalDensity.current) {
+        ResizerRect({ delta ->
+            // Matching the necessary coordinate space
+            var deltaX = delta.left
+            var deltaY = -delta.bottom
+            var deltaWidth = delta.right - delta.left
+            var deltaHeight = delta.bottom - delta.top
+
+            var result = true
+
+            // TODO: Limit the values so that we do not go off-screen
+            // If we have reached a minimum limit, return false
+
+            // Basic limiting for minimum size
+            val currSettings = latinIME.sizingCalculator.getSavedSettings()
+            val currSize = Size(
+                currSettings.floatingWidthDp.dp.toPx(),
+                currSettings.floatingHeightDp.dp.toPx()
+            )
+
+            if(currSize.width + deltaWidth < 200.dp.toPx()) {
+                deltaWidth = deltaWidth.coerceAtLeast(200.dp.toPx() - currSize.width)
+                deltaX = 0.0f
+                result = false
+            }
+
+            if(currSize.height + deltaHeight < 160.dp.toPx()) {
+                deltaHeight = deltaHeight.coerceAtLeast(160.dp.toPx() - currSize.height)
+                deltaY = 0.0f
+                result = false
+            }
+
+            latinIME.sizingCalculator.editSavedSettings { settings ->
+                settings.copy(
+                    floatingBottomOriginDp = Pair(
+                        settings.floatingBottomOriginDp.first + deltaX.toDp().value,
+                        settings.floatingBottomOriginDp.second + deltaY.toDp().value
+                    ),
+                    floatingWidthDp = settings.floatingWidthDp + deltaWidth.toDp().value,
+                    floatingHeightDp = settings.floatingHeightDp + deltaHeight.toDp().value
+                )
+            }
+
+            result
+        }, true, {
+            resizing.value = false
+        }, {
+            // Reset
+        })
+    }
+
+    @Composable
+    private fun BoxScope.RegularKeyboardResizer(size: RegularKeyboardSize) = with(LocalDensity.current) {
+        ResizerRect({ delta ->
+            var result = true
+
+            val sideDelta = delta.left - delta.right
+            latinIME.sizingCalculator.editSavedSettings { settings ->
+                val existingHeight = latinIME.size.value!!.getHeight()
+                var targetHeight = existingHeight + delta.top
+
+                var newSidePadding =
+                    (settings.paddingDp.left + sideDelta.toDp().value)
+                if (newSidePadding !in 0.0f..64.0f) {
+                    newSidePadding = newSidePadding.coerceIn(0.0f..64.0f)
+                    result = false
+                }
+
+                var newBottomPadding =
+                    (settings.paddingDp.bottom - delta.bottom.toDp().value)
+                if (newBottomPadding !in 0.0f..64.0f) {
+                    // Correct for height difference if it's being dragged up/down
+                    val correction = if (newBottomPadding < 0.0f) {
+                        newBottomPadding.dp.toPx().coerceAtLeast(-delta.top)
+                    } else {
+                        (newBottomPadding - 64.0f).dp.toPx()
+                            .coerceAtMost(-delta.top)
+                    }
+                    targetHeight += correction
+
+                    newBottomPadding = newBottomPadding.coerceIn(0.0f..64.0f)
+                    result = false
+                }
+
+                var newHeightMultiplier =
+                    (settings.heightMultiplier * (existingHeight / targetHeight))
+                if (newHeightMultiplier !in 0.3f..2.0f) {
+                    newHeightMultiplier =
+                        newHeightMultiplier.coerceIn(0.3f..2.0f)
+                    result = false
+                }
+
+                settings.copy(
+                    paddingDp = Rect(
+                        newSidePadding.roundToInt(),
+                        settings.paddingDp.top,
+                        newSidePadding.roundToInt(),
+                        newBottomPadding.roundToInt(),
+                    ),
+                    heightMultiplier = newHeightMultiplier
+                )
+            }
+            result
+        }, true, {
+            resizing.value = false
+        }, {
+            // TODO: Reset
+        })
+    }
+
+    @Composable
+    private fun BoxScope.OneHandedResizer(size: OneHandedKeyboardSize) = with(LocalDensity.current) {
+        Box(
+            modifier = Modifier.matchParentSize().let {
+                val pad = (size.width - size.layoutWidth - size.padding.left - size.padding.right).toDp().coerceAtLeast(0.dp)
+                when(size.direction) {
+                    OneHandedDirection.Left -> it.absolutePadding(right = pad)
+                    OneHandedDirection.Right -> it.absolutePadding(left = pad)
                 }
             }
+        ) {
+            ResizerRect({ delta ->
+                var result = true
+
+                latinIME.sizingCalculator.editSavedSettings { settings ->
+                    val existingHeight = latinIME.size.value!!.getHeight()
+                    var targetHeight = existingHeight + delta.top
+
+                    var newHeightMultiplier =
+                        ((settings.oneHandedHeightMultiplier ?: settings.heightMultiplier) * (existingHeight / targetHeight))
+                    if (newHeightMultiplier !in 0.3f..2.0f) {
+                        newHeightMultiplier =
+                            newHeightMultiplier.coerceIn(0.3f..2.0f)
+                        result = false
+                    }
+
+                    // These have to be flipped in right handed mode for the setting
+                    val deltaLeft = if(size.direction == OneHandedDirection.Left) {
+                        delta.left
+                    } else {
+                        -delta.right
+                    }
+
+                    val deltaRight = if(size.direction == OneHandedDirection.Left) {
+                        delta.right
+                    } else {
+                        -delta.left
+                    }
+
+                    settings.copy(
+                        oneHandedRectDp = Rect(
+                            settings.oneHandedRectDp.left + deltaLeft.toDp().value.toInt(),
+                            settings.oneHandedRectDp.top,
+                            settings.oneHandedRectDp.right + deltaRight.toDp().value.toInt(),
+                            settings.oneHandedRectDp.bottom - delta.bottom.toDp().value.toInt(),
+                        ),
+                        oneHandedHeightMultiplier = newHeightMultiplier
+                    )
+                }
+                result
+            }, true, {
+                resizing.value = false
+            }, {
+                // TODO: Reset
+            })
+        }
+    }
+
+    @Composable
+    private fun BoxScope.SplitKeyboardResizer(size: SplitKeyboardSize) = with(LocalDensity.current) {
+        Box(
+            modifier = Modifier.matchParentSize()
+                .width(size.splitLayoutWidth.toDp()).align(
+                    Alignment.CenterStart
+                )
+        ) {
+            ResizerRect({ delta ->
+                true
+            }, true, {
+                resizing.value = false
+            }, {
+
+            })
+        }
+    }
+
+    @Composable
+    private fun BoxScope.ResizerSwitch(size: ComputedKeyboardSize) {
+        if(!resizing.value) return
+        when (size) {
+            is OneHandedKeyboardSize -> OneHandedResizer(size)
+            is RegularKeyboardSize -> RegularKeyboardResizer(size)
+            is SplitKeyboardSize -> SplitKeyboardResizer(size)
+            is FloatingKeyboardSize -> FloatingKeyboardResizer(size)
         }
     }
 
@@ -886,6 +1045,8 @@ class UixManager(private val latinIME: LatinIME) {
                         content(actionBarGap)
                     }
                 }
+
+                ResizerSwitch(size)
             }
         }
     }
@@ -1020,6 +1181,7 @@ class UixManager(private val latinIME: LatinIME) {
         closeActionWindow()
         languageSwitcherDialog?.dismiss()
         isShowingActionEditor.value = false
+        resizing.value = false
     }
 
     fun cleanUpPersistentStates() {

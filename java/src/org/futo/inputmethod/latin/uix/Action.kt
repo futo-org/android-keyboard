@@ -73,6 +73,7 @@ interface KeyboardManagerForAction {
     fun isDeviceLocked(): Boolean
 
     fun getSizingCalculator(): KeyboardSizingCalculator
+    fun showResizer()
 }
 
 interface ActionWindow {

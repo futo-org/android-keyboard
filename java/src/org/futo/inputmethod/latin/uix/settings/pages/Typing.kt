@@ -65,6 +65,7 @@ import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionsEditor
 import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -79,6 +80,8 @@ import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsInt
+import org.futo.inputmethod.v2keyboard.KeyboardSettings
+import org.futo.inputmethod.v2keyboard.SavedKeyboardSizingSettings
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import kotlin.math.sign
@@ -119,21 +122,14 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
         ScrollableList {
             ScreenTitle("Resize Keyboard", showBack = true, navController)
 
-            SettingSlider(
-                title = "Keyboard Height",
-                setting = KeyboardHeightMultiplierSetting,
-                range = 0.33f..1.75f, transform = { it },
-                indicator = { "${(it * 100.0f).roundToInt()}%" },
-                steps = 16
-            )
-            SettingSlider(
-                title = "Keyboard Offset",
-                setting = KeyboardBottomOffsetSetting,
-                range = 0.0f..50.0f,
-                hardRange = 0.0f..250.0f,
-                transform = { it },
-                indicator = { "${String.format("%.1f", it)} dp" },
-                steps = 9
+            NavigationItem(
+                "Reset size settings",
+                style = NavigationItemStyle.MiscNoArrow,
+                navigate = {
+                    KeyboardSettings.values.forEach {
+                        context.setSettingBlocking(it.key, it.default)
+                    }
+                }
             )
 
             AndroidTextInput(allowPredictions = false)
