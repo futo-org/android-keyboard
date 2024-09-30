@@ -283,20 +283,26 @@ data class Keyboard(
 
         if(find { it.isBottomRow } == null) {
             // If action row is not explicitly defined, shift and delete are implicitly added to last row
-            // (unless they're already there)
-            val ultimateRow = removeAt(size - 1)
-            assert(ultimateRow.isLetterRow)
+            // (unless a row has explicitly defined shift or delete key)
 
-            val updatedRow = ultimateRow.copy(
-                letters = ultimateRow.letters!!.toMutableList().apply {
-                    if(!contains(TemplateShiftKey) && !contains(TemplateDeleteKey)) {
+            if(!any {
+                it.isLetterRow && it.letters != null && (
+                        it.letters.contains(TemplateShiftKey)
+                                || it.letters.contains(TemplateDeleteKey))
+            }) {
+                val ultimateRow = removeAt(size - 1)
+                assert(ultimateRow.isLetterRow)
+
+                val updatedRow = ultimateRow.copy(
+                    letters = ultimateRow.letters!!.toMutableList().apply {
                         add(0, TemplateShiftKey)
                         add(TemplateDeleteKey)
                     }
-                }
-            )
+                )
 
-            add(updatedRow)
+                add(updatedRow)
+            }
+
 
             // Add default bottom row
             add(DefaultBottomRow)
