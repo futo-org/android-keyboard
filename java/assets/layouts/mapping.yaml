@@ -301,6 +301,7 @@ languages:
     - nordic
   iw:
     - hebrew
+    - hebrew-staggered
   ka_GE:
     - georgian
   kk:
