@@ -1,4 +1,4 @@
-package org.futo.inputmethod.latin.uix
+package org.futo.inputmethod.latin.uix.resizing
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
