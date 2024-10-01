@@ -2,11 +2,14 @@ package org.futo.inputmethod.v2keyboard
 
 import android.content.Context
 import android.graphics.Rect
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpRect
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.width
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.window.layout.FoldingFeature
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
@@ -86,68 +89,69 @@ enum class KeyboardMode {
 }
 
 
-
-@Serializer(forClass = Rect::class)
-object RectSerializer : KSerializer<Rect> {
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Rect") {
-        element<Int>("left")
-        element<Int>("top")
-        element<Int>("right")
-        element<Int>("bottom")
+object DpRectSerializer : KSerializer<DpRect> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("DpRect") {
+        element<Float>("left")
+        element<Float>("top")
+        element<Float>("right")
+        element<Float>("bottom")
     }
 
-    override fun serialize(encoder: Encoder, value: Rect) {
+    override fun serialize(encoder: Encoder, value: DpRect) {
         encoder.encodeStructure(descriptor) {
-            encodeIntElement(descriptor, 0, value.left)
-            encodeIntElement(descriptor, 1, value.top)
-            encodeIntElement(descriptor, 2, value.right)
-            encodeIntElement(descriptor, 3, value.bottom)
+            encodeFloatElement(descriptor, 0, value.left.value)
+            encodeFloatElement(descriptor, 1, value.top.value)
+            encodeFloatElement(descriptor, 2, value.right.value)
+            encodeFloatElement(descriptor, 3, value.bottom.value)
         }
     }
 
-    override fun deserialize(decoder: Decoder): Rect {
+    override fun deserialize(decoder: Decoder): DpRect {
         return decoder.decodeStructure(descriptor) {
-            var left = 0
-            var top = 0
-            var right = 0
-            var bottom = 0
+            var left = 0.0f
+            var top = 0.0f
+            var right = 0.0f
+            var bottom = 0.0f
 
             while (true) {
                 when (val index = decodeElementIndex(descriptor)) {
-                    0 -> left = decodeIntElement(descriptor, 0)
-                    1 -> top = decodeIntElement(descriptor, 1)
-                    2 -> right = decodeIntElement(descriptor, 2)
-                    3 -> bottom = decodeIntElement(descriptor, 3)
+                    0 -> left = decodeFloatElement(descriptor, 0)
+                    1 -> top = decodeFloatElement(descriptor, 1)
+                    2 -> right = decodeFloatElement(descriptor, 2)
+                    3 -> bottom = decodeFloatElement(descriptor, 3)
                     CompositeDecoder.DECODE_DONE -> break
                     else -> error("Unexpected index: $index")
                 }
             }
 
-            Rect(left, top, right, bottom)
+            DpRect(left = left.dp, top = top.dp, right = right.dp, bottom = bottom.dp)
         }
     }
 }
 
+
+typealias SDpRect = @Serializable(with = DpRectSerializer::class) DpRect
 
 
 @Serializable
 data class SavedKeyboardSizingSettings(
     val currentMode: KeyboardMode,
     val heightMultiplier: Float,
-    val paddingDp: @Serializable(RectSerializer::class) Rect,
+    val heightAdditionDp: Float = 0.0f,
+    val paddingDp: SDpRect,
 
     // Split
     val splitWidthFraction: Float,
-    val splitPaddingDp: @Serializable(RectSerializer::class) Rect,
-    val splitHeightMultiplier: Float? = null,
+    val splitPaddingDp: SDpRect,
+    val splitHeightAdditionDp: Float = 0.0f,
 
     /** One handed, values with respect to left handed mode:
      * * left = padding
      * * right = width + padding
      * * bottom = padding for bottom */
-    val oneHandedRectDp: @Serializable(RectSerializer::class) Rect,
+    val oneHandedRectDp: SDpRect,
     val oneHandedDirection: OneHandedDirection,
-    val oneHandedHeightMultiplier: Float? = null,
+    val oneHandedHeightAdditionDp: Float = 0.0f,
 
     // Floating
     // bottom left of the floating keyboard, relative to bottom left of screen, .second is Y up
@@ -180,11 +184,11 @@ val DefaultKeyboardSettings = mapOf(
     KeyboardSizeSettingKind.Portrait to SavedKeyboardSizingSettings(
         currentMode = KeyboardMode.Regular,
         heightMultiplier = 1.0f,
-        paddingDp = Rect(2, 4, 2, 10),
-        splitPaddingDp = Rect(2, 4, 2, 10),
+        paddingDp = DpRect(2.dp, 4.dp, 2.dp, 10.dp),
+        splitPaddingDp = DpRect(2.dp, 4.dp, 2.dp, 10.dp),
         splitWidthFraction = 4.0f / 5.0f,
         oneHandedDirection = OneHandedDirection.Right,
-        oneHandedRectDp = Rect(4, 4, 364, 30),
+        oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
         floatingBottomOriginDp = Pair(0.0f, 0.0f),
         floatingHeightDp = 240.0f,
         floatingWidthDp = 360.0f
@@ -193,11 +197,11 @@ val DefaultKeyboardSettings = mapOf(
     KeyboardSizeSettingKind.Landscape to SavedKeyboardSizingSettings(
         currentMode = KeyboardMode.Split,
         heightMultiplier = 0.9f,
-        paddingDp = Rect(8, 2, 8, 2),
-        splitPaddingDp = Rect(8, 2, 8, 2),
+        paddingDp = DpRect(8.dp, 2.dp, 8.dp, 2.dp),
+        splitPaddingDp = DpRect(8.dp, 2.dp, 8.dp, 2.dp),
         splitWidthFraction = 3.0f / 5.0f,
         oneHandedDirection = OneHandedDirection.Right,
-        oneHandedRectDp = Rect(4, 4, 364, 30),
+        oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
         floatingBottomOriginDp = Pair(0.0f, 0.0f),
         floatingHeightDp = 240.0f,
         floatingWidthDp = 360.0f
@@ -206,11 +210,11 @@ val DefaultKeyboardSettings = mapOf(
     KeyboardSizeSettingKind.FoldableInnerDisplay to SavedKeyboardSizingSettings(
         currentMode = KeyboardMode.Split,
         heightMultiplier = 0.67f,
-        paddingDp = Rect(44, 4, 44, 8),
-        splitPaddingDp = Rect(44, 4, 44, 8),
+        paddingDp = DpRect(44.dp, 4.dp, 44.dp, 8.dp),
+        splitPaddingDp = DpRect(44.dp, 4.dp, 44.dp, 8.dp),
         splitWidthFraction = 3.0f / 5.0f,
         oneHandedDirection = OneHandedDirection.Right,
-        oneHandedRectDp = Rect(4, 4, 364, 30),
+        oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
         floatingBottomOriginDp = Pair(0.0f, 0.0f),
         floatingHeightDp = 240.0f,
         floatingWidthDp = 360.0f
@@ -233,7 +237,12 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
     private fun dp(v: Number): Int =
         (v.toFloat() * context.resources.displayMetrics.density).toInt()
 
+    private fun dp(v: Dp): Int = dp(v.value)
+
     private fun dp(v: Rect): Rect =
+        Rect(dp(v.left), dp(v.top), dp(v.right), dp(v.bottom))
+
+    private fun dp(v: DpRect): Rect =
         Rect(dp(v.left), dp(v.top), dp(v.right), dp(v.bottom))
 
     private fun limitFloating(rectPx: Rect): Rect {
@@ -326,18 +335,19 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         val displayMetrics = context.resources.displayMetrics
 
         val singularRowHeight = (ResourceUtils.getDefaultKeyboardHeight(context.resources) / 4.0) *
-                (when(savedSettings.currentMode) {
-                    KeyboardMode.Regular -> null
-                    KeyboardMode.Split -> savedSettings.splitHeightMultiplier
-                    KeyboardMode.OneHanded -> savedSettings.oneHandedHeightMultiplier
-                    KeyboardMode.Floating -> null
-                } ?: savedSettings.heightMultiplier)
+                savedSettings.heightMultiplier
 
         val numRows = 4.0 +
                 ((effectiveRowCount - 5) / 2.0).coerceAtLeast(0.0) +
                 if(isNumberRowActive) { 0.5 } else { 0.0 }
 
-        val recommendedHeight = numRows * singularRowHeight
+        val recommendedHeight = numRows * singularRowHeight +
+                when(savedSettings.currentMode) {
+                    KeyboardMode.Regular -> dp(savedSettings.heightAdditionDp)
+                    KeyboardMode.Split -> dp(savedSettings.splitHeightAdditionDp)
+                    KeyboardMode.OneHanded -> dp(savedSettings.oneHandedHeightAdditionDp)
+                    KeyboardMode.Floating -> 0
+                }
 
         val foldState = foldStateProvider.foldState.feature
 
@@ -377,7 +387,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                             OneHandedDirection.Right -> Rect(rect.left, rect.top, rect.left, rect.bottom)
                         }
                     },
-                    layoutWidth = dp(savedSettings.oneHandedRectDp.width()).coerceAtMost(displayMetrics.widthPixels * 9 / 10),
+                    layoutWidth = dp(savedSettings.oneHandedRectDp.width).coerceAtMost(displayMetrics.widthPixels * 9 / 10),
                     direction = savedSettings.oneHandedDirection
                 )
 
