@@ -7,9 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
@@ -25,13 +26,18 @@ import org.futo.inputmethod.v2keyboard.getHeight
 import org.futo.inputmethod.v2keyboard.getPadding
 
 open class KeyboardResizeHelper(
+    val viewSize: IntSize,
     val computedKeyboardSize: ComputedKeyboardSize,
     val density: Density,
     initialSettings: SavedKeyboardSizingSettings,
     val delta: DragDelta
 ) {
+    val minimumKeyboardWidth = 48.dp * 3
+    val maximumKeyboardWidth = with(density) { viewSize.width.toDp() }
+
     val minimumKeyboardHeight = 32.dp * 3
     val maximumKeyboardHeight = 128.dp * 3
+
     val maximumSidePadding = 64.dp
     val maximumBottomPadding = 72.dp
 
@@ -118,12 +124,12 @@ open class KeyboardResizeHelper(
 }
 
 class OneHandedKeyboardResizeHelper(
-    val viewWidth: Int,
+    viewSize: IntSize,
     computedKeyboardSize: OneHandedKeyboardSize,
     density: Density,
     initialSettings: SavedKeyboardSizingSettings,
     delta: DragDelta
-) : KeyboardResizeHelper(computedKeyboardSize, density, initialSettings, delta) {
+) : KeyboardResizeHelper(viewSize, computedKeyboardSize, density, initialSettings, delta) {
 
     // These have to be flipped in right handed mode, because the setting values are relative to
     // left-handed mode.
@@ -169,7 +175,7 @@ class OneHandedKeyboardResizeHelper(
         var newRight = editedSettings.oneHandedRectDp.right
 
         val newCenter = (newLeft + newRight) / 2.0f
-        val limit = (viewWidth.toDp()) / 2.0f
+        val limit = (viewSize.width.toDp()) / 2.0f
         if(newCenter > limit) {
             val diff = newCenter - limit
             newLeft -= diff
@@ -184,7 +190,70 @@ class OneHandedKeyboardResizeHelper(
             )
         )
     }
+}
 
+class FloatingKeyboardResizeHelper(
+    viewSize: IntSize,
+    computedKeyboardSize: ComputedKeyboardSize,
+    density: Density,
+    initialSettings: SavedKeyboardSizingSettings,
+    delta: DragDelta
+) : KeyboardResizeHelper(viewSize, computedKeyboardSize, density, initialSettings, delta) {
+    // Matching the necessary coordinate space
+    var deltaX = delta.left
+    var deltaY = -delta.bottom
+    var deltaWidth = delta.right - delta.left
+    var deltaHeight = delta.bottom - delta.top
+
+    fun applyOriginOffsetWithLimits() = with(density) {
+        var newX = editedSettings.floatingBottomOriginDp.first.dp + deltaX.toDp()
+        var newY = editedSettings.floatingBottomOriginDp.second.dp + deltaY.toDp()
+
+        val maxX = (viewSize.width.toDp() - editedSettings.floatingWidthDp.dp).coerceAtLeast(0.dp)
+        val maxY = (viewSize.height.toDp() - editedSettings.floatingHeightDp.dp).coerceAtLeast(0.dp)
+
+        val xRange = 0.dp .. maxX
+        val yRange = 0.dp .. maxY
+
+        if(newX !in xRange) {
+            newX = newX.coerceIn(xRange)
+            result = false
+        }
+
+        if(newY !in yRange) {
+            newY = newY.coerceIn(yRange)
+            result = false
+        }
+
+        editedSettings = editedSettings.copy(
+            floatingBottomOriginDp = Pair(newX.value, newY.value)
+        )
+    }
+
+    fun applyDeltaSizeWithLimits() = with(density) {
+        var newWidth = editedSettings.floatingWidthDp.dp + deltaWidth.toDp()
+        var newHeight = editedSettings.floatingHeightDp.dp + deltaHeight.toDp()
+
+        val widthRange = minimumKeyboardWidth .. maximumKeyboardWidth
+        val heightRange = minimumKeyboardHeight .. maximumKeyboardHeight
+
+        if(newWidth !in widthRange) {
+            deltaX = 0.0f
+            newWidth = newWidth.coerceIn(widthRange)
+            result = false
+        }
+
+        if(newHeight !in heightRange) {
+            deltaY = 0.0f
+            newHeight = newHeight.coerceIn(heightRange)
+            result = false
+        }
+
+        editedSettings = editedSettings.copy(
+            floatingWidthDp = newWidth.value,
+            floatingHeightDp = newHeight.value
+        )
+    }
 }
 
 class KeyboardResizers(val latinIME: LatinIME) {
@@ -193,45 +262,23 @@ class KeyboardResizers(val latinIME: LatinIME) {
     @Composable
     private fun BoxScope.FloatingKeyboardResizer(size: FloatingKeyboardSize) = with(LocalDensity.current) {
         ResizerRect({ delta ->
-            // Matching the necessary coordinate space
-            var deltaX = delta.left
-            var deltaY = -delta.bottom
-            var deltaWidth = delta.right - delta.left
-            var deltaHeight = delta.bottom - delta.top
-
             var result = true
 
-            // TODO: Limit the values so that we do not go off-screen
-            // If we have reached a minimum limit, return false
-
-            // Basic limiting for minimum size
-            val currSettings = latinIME.sizingCalculator.getSavedSettings()
-            val currSize = Size(
-                currSettings.floatingWidthDp.dp.toPx(),
-                currSettings.floatingHeightDp.dp.toPx()
-            )
-
-            if(currSize.width + deltaWidth < 200.dp.toPx()) {
-                deltaWidth = deltaWidth.coerceAtLeast(200.dp.toPx() - currSize.width)
-                deltaX = 0.0f
-                result = false
-            }
-
-            if(currSize.height + deltaHeight < 160.dp.toPx()) {
-                deltaHeight = deltaHeight.coerceAtLeast(160.dp.toPx() - currSize.height)
-                deltaY = 0.0f
-                result = false
-            }
-
             latinIME.sizingCalculator.editSavedSettings { settings ->
-                settings.copy(
-                    floatingBottomOriginDp = Pair(
-                        settings.floatingBottomOriginDp.first + deltaX.toDp().value,
-                        settings.floatingBottomOriginDp.second + deltaY.toDp().value
-                    ),
-                    floatingWidthDp = settings.floatingWidthDp + deltaWidth.toDp().value,
-                    floatingHeightDp = settings.floatingHeightDp + deltaHeight.toDp().value
+                val helper = FloatingKeyboardResizeHelper(
+                    IntSize(latinIME.getViewWidth(), latinIME.getViewHeight()),
+                    latinIME.size.value as? FloatingKeyboardSize ?: size,
+                    this,
+                    settings,
+                    delta
                 )
+
+                helper.applyDeltaSizeWithLimits()
+                helper.applyOriginOffsetWithLimits()
+
+                result = result && helper.result
+
+                helper.editedSettings
             }
 
             result
@@ -249,7 +296,9 @@ class KeyboardResizers(val latinIME: LatinIME) {
 
             latinIME.sizingCalculator.editSavedSettings { settings ->
                 val helper = KeyboardResizeHelper(
-                    latinIME.size.value ?: size, this, settings, delta
+                    IntSize(latinIME.getViewWidth(), latinIME.getViewHeight()),
+                    latinIME.size.value ?: size,
+                    this, settings, delta
                 )
 
                 helper.editBottomPaddingAndHeightAddition()
@@ -274,7 +323,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
 
             latinIME.sizingCalculator.editSavedSettings { settings ->
                 val helper = OneHandedKeyboardResizeHelper(
-                    latinIME.getViewWidth(),
+                    IntSize(latinIME.getViewWidth(), latinIME.getViewHeight()),
                     latinIME.size.value as? OneHandedKeyboardSize ?: size,
                     this, settings, delta
                 )
