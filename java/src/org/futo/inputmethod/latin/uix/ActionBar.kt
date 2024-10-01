@@ -131,6 +131,8 @@ import kotlin.math.roundToInt
  * TODO: Will need to make RTL languages work
  */
 
+val ActionBarHeight = 40.dp
+
 val ActionBarScrollIndexSetting = SettingsKey(
     intPreferencesKey("action_bar_scroll_index"),
     0
@@ -703,18 +705,16 @@ fun ActionBar(
     val view = LocalView.current
     val context = LocalContext.current
 
-    val actionBarHeight = 40.dp
-
     val oldActionBar = useDataStore(OldStyleActionsBar)
 
-    Column {
+    Column(Modifier.height(ActionBarHeight * if(isActionsExpanded) 2 else 1)) {
         if(isActionsExpanded && !oldActionBar.value) {
             ActionSep()
 
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(actionBarHeight), color = MaterialTheme.colorScheme.background
+                    .weight(1.0f), color = MaterialTheme.colorScheme.background
             ) {
                 ActionItems(onActionActivated, onActionAltActivated)
             }
@@ -725,7 +725,7 @@ fun ActionBar(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(actionBarHeight), color = MaterialTheme.colorScheme.background
+                .weight(1.0f), color = MaterialTheme.colorScheme.background
         ) {
             Row {
                 ExpandActionsButton(isActionsExpanded) {
@@ -793,12 +793,12 @@ fun ActionWindowBar(
     onBack: () -> Unit,
     onExpand: () -> Unit
 ) {
-    Column {
+    Column(Modifier.height(ActionBarHeight)) {
         ActionSep()
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp), color = MaterialTheme.colorScheme.background
+                .weight(1.0f), color = MaterialTheme.colorScheme.background
         )
         {
             Row {
@@ -833,12 +833,12 @@ fun CollapsibleSuggestionsBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripViewListener,
 ) {
-    Column {
+    Column(Modifier.height(ActionBarHeight)) {
         ActionSep()
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp), color = MaterialTheme.colorScheme.background
+                .weight(1.0f), color = MaterialTheme.colorScheme.background
         )
         {
             Row {

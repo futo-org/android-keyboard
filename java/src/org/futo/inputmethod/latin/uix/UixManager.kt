@@ -542,7 +542,8 @@ class UixManager(private val latinIME: LatinIME) {
                 .height(with(LocalDensity.current) {
                     (latinIME
                         .getInputViewHeight()
-                        .toFloat() / heightDiv.toFloat()).toDp()
+                        .toFloat() / heightDiv.toFloat()).toDp() +
+                            if(actionsExpanded) ActionBarHeight else 0.dp
                 })
             ) {
                 windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden)
