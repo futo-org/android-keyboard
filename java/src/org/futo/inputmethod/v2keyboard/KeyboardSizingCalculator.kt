@@ -428,7 +428,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
     fun calculateTotalActionBarHeightPx(): Int =
         when {
-            uixManager.actionsExpanded -> dp(2 * calculateSuggestionBarHeightDp())
+            uixManager.actionsExpanded && (uixManager.currWindowActionWindow == null) -> dp(2 * calculateSuggestionBarHeightDp())
             else -> dp(calculateSuggestionBarHeightDp())
         }
 }

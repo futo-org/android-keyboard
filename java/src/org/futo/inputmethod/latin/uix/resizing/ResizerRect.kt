@@ -86,7 +86,7 @@ fun BoxScope.ResizerRect(onDragged: (DragDelta) -> Boolean, showResetApply: Bool
     val shape = RoundedCornerShape(4.dp)
 
     val draggingState = remember { mutableStateOf<CurrentDraggingTarget?>(null) }
-    val wasAccepted = remember { mutableStateOf(true) }
+    val wasAccepted = remember { mutableStateOf(onDragged(DragDelta())) }
 
     Box(Modifier
         .matchParentSize()

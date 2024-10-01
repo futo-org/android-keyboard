@@ -3,7 +3,6 @@ package org.futo.inputmethod.latin.uix.resizing
 import android.graphics.Rect
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -11,9 +10,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.LatinIME
+import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
 import org.futo.inputmethod.v2keyboard.FloatingKeyboardSize
 import org.futo.inputmethod.v2keyboard.OneHandedDirection
@@ -139,60 +138,93 @@ class KeyboardResizers(val latinIME: LatinIME) {
 
     @Composable
     private fun BoxScope.OneHandedResizer(size: OneHandedKeyboardSize) = with(LocalDensity.current) {
-        Box(
-            modifier = Modifier.matchParentSize().let {
-                val pad = (size.width - size.layoutWidth - size.padding.left - size.padding.right).toDp().coerceAtLeast(0.dp)
-                when(size.direction) {
-                    OneHandedDirection.Left -> it.absolutePadding(right = pad)
-                    OneHandedDirection.Right -> it.absolutePadding(left = pad)
+        ResizerRect({ delta ->
+            var result = true
+
+            latinIME.sizingCalculator.editSavedSettings { settings ->
+                val existingHeight = latinIME.size.value!!.getHeight()
+                var targetHeight = existingHeight + delta.top
+
+                // These have to be flipped in right handed mode for the setting
+                var deltaLeft = if(size.direction == OneHandedDirection.Left) {
+                    delta.left
+                } else {
+                    -delta.right
                 }
+
+                var deltaRight = if(size.direction == OneHandedDirection.Left) {
+                    delta.right
+                } else {
+                    -delta.left
+                }
+
+                var newLeft = settings.oneHandedRectDp.left + deltaLeft.toDp().value
+                if(newLeft < 0) {
+                    // prevent shrinking when being dragged into the wall
+                    if(deltaRight < 0.0f) {
+                        deltaRight -= newLeft.dp.toPx()
+                    }
+                    newLeft = 0.0f
+
+                    result = false
+                }
+
+                var newRight = settings.oneHandedRectDp.right + deltaRight.toDp().value
+                if(newRight < 0) {
+                    // this should never happen, but just in case
+                    newRight = 0.0f
+                    result = false
+                }
+
+                // prevent being dragged to the wrong side of the keyboard
+                val newCenter = (newLeft + newRight) / 2.0f
+                val limit = (latinIME.getViewWidth().toDp().value) / 2.0f
+                if(newCenter > limit) {
+                    val diff = newCenter - limit
+                    newLeft -= diff
+                    newRight -= diff
+                    result = false
+                }
+
+                var newBottomPadding = (settings.oneHandedRectDp.bottom - delta.bottom.toDp().value)
+                if (newBottomPadding !in 0.0f..80.0f) {
+                    // Correct for height difference if it's being dragged up/down
+                    val correction = if (newBottomPadding < 0.0f) {
+                        newBottomPadding.dp.toPx().coerceAtLeast(-delta.top)
+                    } else {
+                        (newBottomPadding - 80.0f).dp.toPx()
+                            .coerceAtMost(-delta.top)
+                    }
+                    targetHeight += correction
+
+                    newBottomPadding = newBottomPadding.coerceIn(0.0f..80.0f)
+                    result = false
+                }
+
+                var newHeightMultiplier =
+                    ((settings.oneHandedHeightMultiplier ?: settings.heightMultiplier) * (existingHeight / targetHeight))
+                if (newHeightMultiplier !in 0.3f..2.0f) {
+                    newHeightMultiplier =
+                        newHeightMultiplier.coerceIn(0.3f..2.0f)
+                    result = false
+                }
+
+                settings.copy(
+                    oneHandedRectDp = Rect(
+                        newLeft.toInt(),
+                        settings.oneHandedRectDp.top,
+                        newRight.toInt(),
+                        newBottomPadding.toInt(),
+                    ),
+                    oneHandedHeightMultiplier = newHeightMultiplier
+                )
             }
-        ) {
-            ResizerRect({ delta ->
-                var result = true
-
-                latinIME.sizingCalculator.editSavedSettings { settings ->
-                    val existingHeight = latinIME.size.value!!.getHeight()
-                    var targetHeight = existingHeight + delta.top
-
-                    var newHeightMultiplier =
-                        ((settings.oneHandedHeightMultiplier ?: settings.heightMultiplier) * (existingHeight / targetHeight))
-                    if (newHeightMultiplier !in 0.3f..2.0f) {
-                        newHeightMultiplier =
-                            newHeightMultiplier.coerceIn(0.3f..2.0f)
-                        result = false
-                    }
-
-                    // These have to be flipped in right handed mode for the setting
-                    val deltaLeft = if(size.direction == OneHandedDirection.Left) {
-                        delta.left
-                    } else {
-                        -delta.right
-                    }
-
-                    val deltaRight = if(size.direction == OneHandedDirection.Left) {
-                        delta.right
-                    } else {
-                        -delta.left
-                    }
-
-                    settings.copy(
-                        oneHandedRectDp = Rect(
-                            settings.oneHandedRectDp.left + deltaLeft.toDp().value.toInt(),
-                            settings.oneHandedRectDp.top,
-                            settings.oneHandedRectDp.right + deltaRight.toDp().value.toInt(),
-                            settings.oneHandedRectDp.bottom - delta.bottom.toDp().value.toInt(),
-                        ),
-                        oneHandedHeightMultiplier = newHeightMultiplier
-                    )
-                }
-                result
-            }, true, {
-                resizing.value = false
-            }, {
-                // TODO: Reset
-            })
-        }
+            result
+        }, true, {
+            resizing.value = false
+        }, {
+            // TODO: Reset
+        })
     }
 
     @Composable
@@ -218,11 +250,14 @@ class KeyboardResizers(val latinIME: LatinIME) {
     @Composable
     fun Resizer(boxScope: BoxScope, size: ComputedKeyboardSize) = with(boxScope) {
         if(!resizing.value) return
-        when (size) {
-            is OneHandedKeyboardSize -> OneHandedResizer(size)
-            is RegularKeyboardSize -> RegularKeyboardResizer(size)
-            is SplitKeyboardSize -> SplitKeyboardResizer(size)
-            is FloatingKeyboardSize -> FloatingKeyboardResizer(size)
+
+        Box(Modifier.matchParentSize().safeKeyboardPadding()) {
+            when (size) {
+                is OneHandedKeyboardSize -> OneHandedResizer(size)
+                is RegularKeyboardSize -> RegularKeyboardResizer(size)
+                is SplitKeyboardSize -> SplitKeyboardResizer(size)
+                is FloatingKeyboardSize -> FloatingKeyboardResizer(size)
+            }
         }
     }
 
