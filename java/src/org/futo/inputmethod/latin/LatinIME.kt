@@ -73,6 +73,7 @@ import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
+import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
@@ -509,7 +510,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             Modifier.onSizeChanged {
                 inputViewHeight = it.height
             }
-        }
+        }.safeKeyboardPadding()
 
         key(legacyInputView) {
             AndroidView(factory = {

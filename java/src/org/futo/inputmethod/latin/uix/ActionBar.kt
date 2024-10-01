@@ -525,18 +525,12 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
         }
     }
 
-    val bgCol = LocalKeyboardScheme.current.backgroundContainer
-
-    val gradientColor = if(bgCol.alpha > 0.5) {
-        bgCol.copy(alpha = 0.9f)
-    } else {
-        MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
-    }
+    val gradientColor = LocalKeyboardScheme.current.background
 
     val drawLeftGradient = lazyListState.firstVisibleItemIndex > 0
     val drawRightGradient = lazyListState.layoutInfo.visibleItemsInfo.isNotEmpty() && actionItems.isNotEmpty() && (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key != actionItems.lastOrNull()?.name)
 
-    Box {
+    Box(Modifier.safeKeyboardPadding()) {
         LazyRow(state = lazyListState) {
             item {
                 ActionItemSmall(action = MoreActionsAction, onSelect = {
@@ -555,14 +549,16 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
                 .fillMaxHeight()
                 .width(72.dp)
                 .align(Alignment.CenterStart)) {
-                drawRect(
-                    Brush.linearGradient(
-                        0.0f to gradientColor,
-                        1.0f to Color.Transparent,
-                        start = Offset.Zero,
-                        end = Offset(Float.POSITIVE_INFINITY, 0.0f)
+                for(i in 0 until 2) {
+                    drawRect(
+                        Brush.linearGradient(
+                            0.0f to gradientColor,
+                            1.0f to Color.Transparent,
+                            start = Offset.Zero,
+                            end = Offset(Float.POSITIVE_INFINITY, 0.0f)
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -571,14 +567,16 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
                 .fillMaxHeight()
                 .width(72.dp)
                 .align(Alignment.CenterEnd)) {
-                drawRect(
-                    Brush.linearGradient(
-                        0.0f to Color.Transparent,
-                        1.0f to gradientColor,
-                        start = Offset.Zero,
-                        end = Offset(Float.POSITIVE_INFINITY, 0.0f)
+                for(i in 0 until 2) {
+                    drawRect(
+                        Brush.linearGradient(
+                            0.0f to Color.Transparent,
+                            1.0f to gradientColor,
+                            start = Offset.Zero,
+                            end = Offset(Float.POSITIVE_INFINITY, 0.0f)
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -714,7 +712,8 @@ fun ActionBar(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1.0f), color = MaterialTheme.colorScheme.background
+                    .weight(1.0f),
+                color = MaterialTheme.colorScheme.background
             ) {
                 ActionItems(onActionActivated, onActionAltActivated)
             }
@@ -727,7 +726,7 @@ fun ActionBar(
                 .fillMaxWidth()
                 .weight(1.0f), color = MaterialTheme.colorScheme.background
         ) {
-            Row {
+            Row(Modifier.safeKeyboardPadding()) {
                 ExpandActionsButton(isActionsExpanded) {
                     toggleActionsExpanded()
 
@@ -801,7 +800,7 @@ fun ActionWindowBar(
                 .weight(1.0f), color = MaterialTheme.colorScheme.background
         )
         {
-            Row {
+            Row(Modifier.safeKeyboardPadding()) {
                 IconButton(onClick = onBack) {
                     Icon(
                         painter = painterResource(id = R.drawable.arrow_left_26),
@@ -841,7 +840,7 @@ fun CollapsibleSuggestionsBar(
                 .weight(1.0f), color = MaterialTheme.colorScheme.background
         )
         {
-            Row {
+            Row(Modifier.safeKeyboardPadding()) {
                 val color = MaterialTheme.colorScheme.primary
 
                 IconButton(

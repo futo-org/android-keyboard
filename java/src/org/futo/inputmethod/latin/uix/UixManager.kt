@@ -39,7 +39,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -64,7 +63,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -104,7 +102,6 @@ import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.resizing.KeyboardResizers
-import org.futo.inputmethod.latin.uix.resizing.ResizerRect
 import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
@@ -126,11 +123,9 @@ import org.futo.inputmethod.v2keyboard.OneHandedDirection
 import org.futo.inputmethod.v2keyboard.OneHandedKeyboardSize
 import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
 import org.futo.inputmethod.v2keyboard.SplitKeyboardSize
-import org.futo.inputmethod.v2keyboard.getHeight
 import org.futo.inputmethod.v2keyboard.getPadding
 import org.futo.inputmethod.v2keyboard.getWidth
 import java.util.Locale
-import kotlin.math.roundToInt
 
 val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
     error("No LocalManager provided")
@@ -144,6 +139,22 @@ val LocalFoldingState = compositionLocalOf<FoldingOptions> {
     FoldingOptions(null)
 }
 
+
+data class KeyboardPadding(
+    val left: Dp,
+    val right: Dp
+)
+
+val LocalKeyboardPadding = compositionLocalOf {
+    KeyboardPadding(0.dp, 0.dp)
+}
+
+@Composable
+fun Modifier.safeKeyboardPadding(): Modifier {
+    val padding = LocalKeyboardPadding.current
+
+    return this.absolutePadding(left = padding.left.coerceAtLeast(0.dp), right = padding.right.coerceAtLeast(0.dp))
+}
 
 
 private class LatinIMEActionInputTransaction(
@@ -545,6 +556,7 @@ class UixManager(private val latinIME: LatinIME) {
                         .toFloat() / heightDiv.toFloat()).toDp() +
                             if(actionsExpanded) ActionBarHeight else 0.dp
                 })
+                .safeKeyboardPadding()
             ) {
                 windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden)
             }
@@ -704,19 +716,22 @@ class UixManager(private val latinIME: LatinIME) {
         content: @Composable BoxScope.() -> Unit
     ) = with(LocalDensity.current) {
         Box(modifier
-            .onSizeChanged { measuredTouchableHeight = it.height}
+            .onSizeChanged { measuredTouchableHeight = it.height }
             .background(backgroundColor, shape)
             .requiredWidth(requiredWidthPx.toDp())
             .absolutePadding(
-                left = padding.left.toDp().coerceAtLeast(0.dp),
-                top = padding.top.toDp().coerceAtLeast(0.dp),
-                right = padding.right.toDp().coerceAtLeast(0.dp),
+                //top = padding.top.toDp().coerceAtLeast(0.dp),
                 bottom = padding.bottom.toDp().coerceAtLeast(0.dp),
             )
             .clipToBounds()
         ) {
-            CompositionLocalProvider(LocalContentColor provides contentColorFor(backgroundColor)) {
-                content()
+            CompositionLocalProvider(LocalKeyboardPadding provides KeyboardPadding(
+                left = padding.left.toDp().coerceAtLeast(0.dp),
+                right = padding.right.toDp().coerceAtLeast(0.dp),
+            )) {
+                CompositionLocalProvider(LocalContentColor provides contentColorFor(backgroundColor)) {
+                    content()
+                }
             }
         }
     }
@@ -833,25 +848,23 @@ class UixManager(private val latinIME: LatinIME) {
                 backgroundColor = latinIME.keyboardColor,
                 padding = size.getPadding()
             ) {
-                val actionBarGap = 4.dp
-
-                when(size) {
+                val paddingOverride = when(size) {
                     is OneHandedKeyboardSize -> {
-                        Box(modifier = Modifier.width(size.layoutWidth.toDp()).align(
-                            when(size.direction) {
-                                OneHandedDirection.Left -> Alignment.CenterStart
-                                OneHandedDirection.Right -> Alignment.CenterEnd
-                            }
-                        )) {
-                            content(actionBarGap)
+                        val pad = LocalKeyboardPadding.current
+                        val sidePad = (size.getWidth() - size.layoutWidth).toDp()
+                        when(size.direction) {
+                            OneHandedDirection.Left -> pad.copy(right = sidePad - pad.left)
+                            OneHandedDirection.Right -> pad.copy(left = sidePad - pad.right)
                         }
                     }
-                    else -> {
-                        content(actionBarGap)
-                    }
+                    else -> LocalKeyboardPadding.current
                 }
 
-                resizers.Resizer(this, size)
+                CompositionLocalProvider(LocalKeyboardPadding provides paddingOverride) {
+                    content(size.getPadding().top.toDp().coerceAtLeast(4.dp))
+
+                    resizers.Resizer(this, size)
+                }
             }
         }
     }
