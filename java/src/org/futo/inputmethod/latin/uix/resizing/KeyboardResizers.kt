@@ -2,10 +2,9 @@ package org.futo.inputmethod.latin.uix.resizing
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -104,22 +103,36 @@ open class KeyboardResizeHelper(
         }
     }
 
-    fun applySymmetricalPaddingForRegular() = with(density) {
-        val sideDelta = delta.left - delta.right
-
+    fun applySymmetricalPaddingForRegular(sideDelta: Float) = with(density) {
         var newSidePadding =
-            (editedSettings.paddingDp.left + sideDelta.toDp())
+            when (editedSettings.currentMode) {
+                KeyboardMode.Regular -> editedSettings.paddingDp.left
+                KeyboardMode.Split -> editedSettings.splitPaddingDp.left
+                KeyboardMode.OneHanded -> editedSettings.oneHandedRectDp.left
+                KeyboardMode.Floating -> 0.dp
+            } + sideDelta.toDp()
+
         if (newSidePadding !in 0.dp..maximumSidePadding) {
             newSidePadding = newSidePadding.coerceIn(0.dp..maximumSidePadding)
             result = false
         }
 
-        editedSettings = editedSettings.copy(
-            paddingDp = editedSettings.paddingDp.copy(
-                left = newSidePadding,
-                right = newSidePadding
+        editedSettings = when (editedSettings.currentMode) {
+            KeyboardMode.Regular -> editedSettings.copy(
+                paddingDp = editedSettings.paddingDp.copy(
+                    left = newSidePadding,
+                    right = newSidePadding
+                )
             )
-        )
+            KeyboardMode.Split -> editedSettings.copy(
+                splitPaddingDp = editedSettings.splitPaddingDp.copy(
+                    left = newSidePadding,
+                    right = newSidePadding
+                )
+            )
+            KeyboardMode.OneHanded -> TODO()
+            KeyboardMode.Floating -> TODO()
+        }
     }
 }
 
@@ -256,6 +269,31 @@ class FloatingKeyboardResizeHelper(
     }
 }
 
+class SplitKeyboardResizeHelper(
+    viewSize: IntSize,
+    computedKeyboardSize: SplitKeyboardSize,
+    density: Density,
+    initialSettings: SavedKeyboardSizingSettings,
+    delta: DragDelta
+) : KeyboardResizeHelper(viewSize, computedKeyboardSize, density, initialSettings, delta) {
+    fun editSplitLayoutWidth(delta: Float) {
+        val oldSplitWidth = (computedKeyboardSize as SplitKeyboardSize).splitLayoutWidth
+        val newSplitWidth = oldSplitWidth + 2*delta
+
+        var newFraction = editedSettings.splitWidthFraction * (newSplitWidth / oldSplitWidth)
+
+        val fractionRange = 0.1f .. 0.9f
+        if(newFraction !in fractionRange) {
+            newFraction = newFraction.coerceIn(fractionRange)
+            result = false
+        }
+
+        editedSettings = editedSettings.copy(
+            splitWidthFraction = newFraction
+        )
+    }
+}
+
 class KeyboardResizers(val latinIME: LatinIME) {
     private val resizing = mutableStateOf(false)
 
@@ -302,7 +340,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
                 )
 
                 helper.editBottomPaddingAndHeightAddition()
-                helper.applySymmetricalPaddingForRegular()
+                helper.applySymmetricalPaddingForRegular(delta.left - delta.right)
 
                 result = result && helper.result
 
@@ -346,14 +384,31 @@ class KeyboardResizers(val latinIME: LatinIME) {
 
     @Composable
     private fun BoxScope.SplitKeyboardResizer(size: SplitKeyboardSize) = with(LocalDensity.current) {
+        println("Active size: ${size.width} ${size.splitLayoutWidth} ${size.padding}")
         Box(
             modifier = Modifier.matchParentSize()
-                .width(size.splitLayoutWidth.toDp()).align(
-                    Alignment.CenterStart
-                )
+                .absolutePadding(right = (size.width - size.splitLayoutWidth * 0.55f - size.padding.right - size.padding.left).toDp().coerceAtLeast(0.dp))
         ) {
             ResizerRect({ delta ->
-                true
+                var result = true
+
+                latinIME.sizingCalculator.editSavedSettings { settings ->
+                    val helper = SplitKeyboardResizeHelper(
+                        IntSize(latinIME.getViewWidth(), latinIME.getViewHeight()),
+                        latinIME.size.value as? SplitKeyboardSize ?: size,
+                        this@with, settings, delta
+                    )
+
+                    helper.editBottomPaddingAndHeightAddition()
+                    helper.applySymmetricalPaddingForRegular(delta.left)
+                    helper.editSplitLayoutWidth(delta.right - delta.left)
+
+                    result = result && helper.result
+
+                    helper.editedSettings
+                }
+
+                result
             }, true, {
                 resizing.value = false
             }, {
