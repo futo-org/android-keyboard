@@ -123,8 +123,6 @@ import org.futo.inputmethod.v2keyboard.OneHandedDirection
 import org.futo.inputmethod.v2keyboard.OneHandedKeyboardSize
 import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
 import org.futo.inputmethod.v2keyboard.SplitKeyboardSize
-import org.futo.inputmethod.v2keyboard.getPadding
-import org.futo.inputmethod.v2keyboard.getWidth
 import java.util.Locale
 
 val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
@@ -790,7 +788,7 @@ class UixManager(private val latinIME: LatinIME) {
                 requiredWidthPx = size.width,
                 backgroundColor = latinIME.keyboardColor,
                 shape = RoundedCornerShape(16.dp),
-                padding = size.decorationPadding
+                padding = size.padding
             ) {
                 Column {
                     FloatingKeyboardContents(
@@ -846,14 +844,14 @@ class UixManager(private val latinIME: LatinIME) {
     ) = with(LocalDensity.current) {
         OffsetPositioner(Offset(0.0f, 0.0f)) {
             KeyboardSurface(
-                requiredWidthPx = size.getWidth(),
+                requiredWidthPx = size.width,
                 backgroundColor = latinIME.keyboardColor,
-                padding = size.getPadding()
+                padding = size.padding
             ) {
                 val paddingOverride = when(size) {
                     is OneHandedKeyboardSize -> {
                         val pad = LocalKeyboardPadding.current
-                        val sidePad = (size.getWidth() - size.layoutWidth).toDp()
+                        val sidePad = (size.width - size.layoutWidth).toDp()
                         when(size.direction) {
                             OneHandedDirection.Left -> pad.copy(right = sidePad - pad.left)
                             OneHandedDirection.Right -> pad.copy(left = sidePad - pad.right)
@@ -863,7 +861,7 @@ class UixManager(private val latinIME: LatinIME) {
                 }
 
                 CompositionLocalProvider(LocalKeyboardPadding provides paddingOverride) {
-                    content(size.getPadding().top.toDp().coerceAtLeast(4.dp))
+                    content(size.padding.top.toDp().coerceAtLeast(4.dp))
 
                     resizers.Resizer(this, size)
                 }

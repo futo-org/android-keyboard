@@ -152,7 +152,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         return new KeyboardLayoutSetV2(
                 context,
                 new KeyboardLayoutSetV2Params(
-                        new RegularKeyboardSize(keyboardHeight, keyboardWidth, new Rect()),
+                        new RegularKeyboardSize(keyboardHeight, keyboardWidth, new Rect(), keyboardHeight / 4),
                         richInputMethodSubtype.getKeyboardLayoutSetName(),
                         richInputMethodSubtype.getLocale(),
                         editorInfo, false, false,

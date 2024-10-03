@@ -34,53 +34,44 @@ interface KeyboardSizeStateProvider {
     val currentSizeState: KeyboardSizeSettingKind
 }
 
-sealed class ComputedKeyboardSize()
+sealed class ComputedKeyboardSize(
+    val width: Int,
+    val height: Int,
+    val padding: Rect,
+    val singleRowHeight: Int = height / 4
+)
 
-class RegularKeyboardSize(val height: Int, val width: Int, val padding: Rect) : ComputedKeyboardSize()
+class RegularKeyboardSize(
+    width: Int, height: Int, padding: Rect, singleRowHeight: Int = height / 4
+) : ComputedKeyboardSize(width, height, padding, singleRowHeight)
 
-class SplitKeyboardSize(val height: Int, val width: Int, val padding: Rect, val splitLayoutWidth: Int) : ComputedKeyboardSize()
+class SplitKeyboardSize(
+    width: Int, height: Int, padding: Rect, singleRowHeight: Int = height / 4,
+    val splitLayoutWidth: Int
+) : ComputedKeyboardSize(width, height, padding, singleRowHeight)
 
 enum class OneHandedDirection {
     Left,
     Right
 }
 
-class OneHandedKeyboardSize(val height: Int, val width: Int, val padding: Rect, val layoutWidth: Int, val direction: OneHandedDirection): ComputedKeyboardSize()
+class OneHandedKeyboardSize(
+    width: Int, height: Int, padding: Rect, singleRowHeight: Int = height / 4,
+    val layoutWidth: Int, val direction: OneHandedDirection
+) : ComputedKeyboardSize(width, height, padding, singleRowHeight)
 
 class FloatingKeyboardSize(
-    val bottomOrigin: Pair<Int, Int>,
-    val width: Int,
-    val height: Int,
-    val decorationPadding: Rect
-): ComputedKeyboardSize()
+    width: Int, height: Int, padding: Rect, singleRowHeight: Int = height / 4,
+    val bottomOrigin: Pair<Int, Int>
+): ComputedKeyboardSize(width, height, padding, singleRowHeight)
 
-fun ComputedKeyboardSize.getHeight(): Int = when(this) {
-    is FloatingKeyboardSize -> height
-    is OneHandedKeyboardSize -> height
-    is RegularKeyboardSize -> height
-    is SplitKeyboardSize -> height
-}
-
-fun ComputedKeyboardSize.getWidth(): Int = when(this) {
-    is FloatingKeyboardSize -> width
-    is OneHandedKeyboardSize -> width
-    is RegularKeyboardSize -> width
-    is SplitKeyboardSize -> width
-}
-
-fun ComputedKeyboardSize.getPadding(): Rect = when(this) {
-    is FloatingKeyboardSize -> decorationPadding
-    is OneHandedKeyboardSize -> padding
-    is RegularKeyboardSize -> padding
-    is SplitKeyboardSize -> padding
-}
-
-fun ComputedKeyboardSize.getTotalKeyboardWidth(): Int = when(this) {
-    is FloatingKeyboardSize -> width - decorationPadding.left - decorationPadding.right
-    is OneHandedKeyboardSize -> layoutWidth
-    is RegularKeyboardSize -> width - padding.left - padding.right
-    is SplitKeyboardSize -> width - padding.left - padding.right
-}
+val ComputedKeyboardSize.totalKeyboardWidth: Int
+    get() = when(this) {
+        is FloatingKeyboardSize -> width - padding.left - padding.right
+        is OneHandedKeyboardSize -> layoutWidth
+        is RegularKeyboardSize -> width - padding.left - padding.right
+        is SplitKeyboardSize -> width - padding.left - padding.right
+    }
 
 enum class KeyboardMode {
     Regular,
@@ -360,8 +351,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
             // Special case: 50% screen height no matter the row count or settings
             foldState != null && foldState.state == FoldingFeature.State.HALF_OPENED && foldState.orientation == FoldingFeature.Orientation.HORIZONTAL ->
                 SplitKeyboardSize(
-                    height = displayMetrics.heightPixels / 2 - (displayMetrics.density * 80.0f).toInt(),
                     width = width,
+                    height = displayMetrics.heightPixels / 2 - (displayMetrics.density * 80.0f).toInt(),
                     padding = Rect(
                         (displayMetrics.density * 44.0f).roundToInt(),
                         (displayMetrics.density * 50.0f).roundToInt(),
@@ -373,16 +364,18 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
             savedSettings.currentMode == KeyboardMode.Split ->
                 SplitKeyboardSize(
-                    height = recommendedHeight.roundToInt(),
                     width = width,
+                    height = recommendedHeight.roundToInt(),
+                    singleRowHeight = singularRowHeight.roundToInt(),
                     padding = dp(savedSettings.splitPaddingDp),
                     splitLayoutWidth = (displayMetrics.widthPixels * savedSettings.splitWidthFraction).toInt()
                 )
 
             savedSettings.currentMode == KeyboardMode.OneHanded ->
                 OneHandedKeyboardSize(
-                    height = recommendedHeight.roundToInt(),
                     width = width,
+                    height = recommendedHeight.roundToInt(),
+                    singleRowHeight = singularRowHeight.roundToInt(),
                     padding = dp(savedSettings.oneHandedRectDp).let { rect ->
                         when(savedSettings.oneHandedDirection) {
                             OneHandedDirection.Left -> Rect(rect.left, rect.top, rect.left, rect.bottom)
@@ -403,7 +396,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     ),
                     width = dp(savedSettings.floatingWidthDp),
                     height = recommendedHeightFloat.toInt(),
-                    decorationPadding = dp(
+                    padding = dp(
                         Rect(
                             8,
                             8,
@@ -416,9 +409,10 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
             else ->
                 RegularKeyboardSize(
-                    height = recommendedHeight.roundToInt(),
                     width = width,
-                    padding = dp(savedSettings.paddingDp)
+                    height = recommendedHeight.roundToInt(),
+                    singleRowHeight = singularRowHeight.roundToInt(),
+                    padding = dp(savedSettings.paddingDp),
                 )
         }
     }

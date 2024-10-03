@@ -87,7 +87,6 @@ import org.futo.inputmethod.v2keyboard.KeyboardSettings
 import org.futo.inputmethod.v2keyboard.KeyboardSizeSettingKind
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
-import org.futo.inputmethod.v2keyboard.getHeight
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -680,7 +679,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                     val topInset = if(touchableHeight < 1 || touchableHeight >= viewHeight - 1) {
                         val actionBarHeight = sizingCalculator.calculateTotalActionBarHeightPx()
 
-                        viewHeight - size.getHeight() - actionBarHeight
+                        viewHeight - size.height - actionBarHeight
                     } else {
                         viewHeight - touchableHeight
                     }

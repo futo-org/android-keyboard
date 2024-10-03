@@ -181,15 +181,15 @@ class KeyboardLayoutSetV2 internal constructor(
             NumberRowMode.AlwaysDisabled   -> false
         }
 
-    private val height = params.computedSize.getHeight()
+    private val height = params.computedSize.height
 
-    private val padding = params.computedSize.getPadding()
+    private val padding = params.computedSize.padding
 
-    private val widthMinusPadding = params.computedSize.getTotalKeyboardWidth()
+    private val widthMinusPadding = params.computedSize.totalKeyboardWidth
     private val heightMinusPadding = height - padding.top - padding.bottom
 
     private val singularRowHeight: Double
-        get() = heightMinusPadding / 4.0
+        get() = params.computedSize.singleRowHeight.toDouble()
 
     fun getKeyboard(element: KeyboardLayoutElement): Keyboard {
 

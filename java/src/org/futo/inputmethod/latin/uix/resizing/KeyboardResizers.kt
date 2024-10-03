@@ -21,8 +21,6 @@ import org.futo.inputmethod.v2keyboard.OneHandedKeyboardSize
 import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
 import org.futo.inputmethod.v2keyboard.SavedKeyboardSizingSettings
 import org.futo.inputmethod.v2keyboard.SplitKeyboardSize
-import org.futo.inputmethod.v2keyboard.getHeight
-import org.futo.inputmethod.v2keyboard.getPadding
 
 open class KeyboardResizeHelper(
     val viewSize: IntSize,
@@ -74,7 +72,7 @@ open class KeyboardResizeHelper(
         val heightAdditionDiffDp = with(density) {
             var heightDiff = (-delta.top - heightCorrection).toDp()
             val currHeight =
-                (computedKeyboardSize.getHeight() - computedKeyboardSize.getPadding().bottom - computedKeyboardSize.getPadding().top).toDp()
+                (computedKeyboardSize.height - computedKeyboardSize.padding.bottom - computedKeyboardSize.padding.top).toDp()
             if (currHeight + heightDiff < minimumKeyboardHeight) {
                 heightDiff += minimumKeyboardHeight - (currHeight + heightDiff)
                 result = false
