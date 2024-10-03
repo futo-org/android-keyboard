@@ -237,68 +237,6 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
     private fun dp(v: DpRect): Rect =
         Rect(dp(v.left), dp(v.top), dp(v.right), dp(v.bottom))
 
-    private fun limitFloating(rectPx: Rect): Rect {
-        val width = rectPx.width()
-        val height = rectPx.height()
-
-        val minWidth = dp(160)
-        val minHeight = dp(160)
-
-        if(width < minWidth) {
-            val delta = minWidth - width
-            rectPx.left -= delta / 2
-            rectPx.right += delta / 2
-        }
-
-        if(height < minHeight) {
-            val delta = minHeight - height
-            rectPx.top -= delta
-            rectPx.bottom += delta
-        }
-
-        val maxWidth = context.resources.displayMetrics.widthPixels * 2 / 3
-        val maxHeight = context.resources.displayMetrics.heightPixels * 2 / 3
-
-        if(width > maxWidth) {
-            val delta = width - maxWidth
-            rectPx.left += delta / 2
-            rectPx.right -= delta / 2
-        }
-
-        if(height > maxHeight) {
-            val delta = height - maxHeight
-            rectPx.top += delta / 2
-            rectPx.bottom -= delta / 2
-        }
-
-
-        val originX = rectPx.left
-        val originY = rectPx.top
-
-        if(originX < 0){
-            rectPx.left -= originX
-            rectPx.right -= originX
-        }
-
-        if(originY < 0) {
-            rectPx.top -= originY
-            rectPx.bottom -= originY
-        }
-
-        if(rectPx.right > context.resources.displayMetrics.widthPixels) {
-            val delta = rectPx.right - context.resources.displayMetrics.widthPixels
-            rectPx.right -= delta
-            rectPx.left -= delta
-        }
-        if(rectPx.bottom < 0) {
-            val delta = rectPx.bottom
-            rectPx.top -= delta
-            rectPx.bottom -= delta
-        }
-
-        return rectPx
-    }
-
     fun getSavedSettings(): SavedKeyboardSizingSettings =
         SavedKeyboardSizingSettings.fromJsonString(context.getSettingBlocking(
             KeyboardSettings[sizeStateProvider.currentSizeState]!!
@@ -326,7 +264,26 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
         val displayMetrics = context.resources.displayMetrics
 
-        val singularRowHeight = (ResourceUtils.getDefaultKeyboardHeight(context.resources) / 4.0) *
+        val heightAddition = when(savedSettings.currentMode) {
+            KeyboardMode.Regular -> dp(savedSettings.heightAdditionDp)
+            KeyboardMode.Split -> dp(savedSettings.splitHeightAdditionDp)
+            KeyboardMode.OneHanded -> dp(savedSettings.oneHandedHeightAdditionDp)
+            KeyboardMode.Floating -> 0
+        }
+
+        val padding = when(savedSettings.currentMode) {
+            KeyboardMode.Regular -> dp(savedSettings.paddingDp)
+            KeyboardMode.Split -> dp(savedSettings.splitPaddingDp)
+            KeyboardMode.OneHanded -> dp(savedSettings.oneHandedRectDp).let { rect ->
+                when(savedSettings.oneHandedDirection) {
+                    OneHandedDirection.Left -> Rect(rect.left, rect.top, rect.left, rect.bottom)
+                    OneHandedDirection.Right -> Rect(rect.left, rect.top, rect.left, rect.bottom)
+                }
+            }
+            KeyboardMode.Floating -> dp(Rect(8,8,8,8))
+        }
+
+        val singularRowHeight = ((ResourceUtils.getDefaultKeyboardHeight(context.resources) + heightAddition - padding.bottom) / 4.0) *
                 savedSettings.heightMultiplier
 
         val numRows = 4.0 +
@@ -334,13 +291,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                 if(settings.mIsNumberRowEnabled) { 0.5 } else { 0.0 } +
                 if(settings.mIsArrowRowEnabled)  { 0.8 } else { 0.0 }
 
-        val recommendedHeight = numRows * singularRowHeight +
-                when(savedSettings.currentMode) {
-                    KeyboardMode.Regular -> dp(savedSettings.heightAdditionDp)
-                    KeyboardMode.Split -> dp(savedSettings.splitHeightAdditionDp)
-                    KeyboardMode.OneHanded -> dp(savedSettings.oneHandedHeightAdditionDp)
-                    KeyboardMode.Floating -> 0
-                }
+        val recommendedHeight = numRows * singularRowHeight + padding.bottom
+
 
         val foldState = foldStateProvider.foldState.feature
 
@@ -349,10 +301,13 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
         return when {
             // Special case: 50% screen height no matter the row count or settings
-            foldState != null && foldState.state == FoldingFeature.State.HALF_OPENED && foldState.orientation == FoldingFeature.Orientation.HORIZONTAL ->
+            foldState != null && foldState.state == FoldingFeature.State.HALF_OPENED && foldState.orientation == FoldingFeature.Orientation.HORIZONTAL -> {
+                val totalHeight = displayMetrics.heightPixels / 2 - (displayMetrics.density * 80.0f).toInt()
+                val singleRowHeight = totalHeight / numRows
                 SplitKeyboardSize(
                     width = width,
-                    height = displayMetrics.heightPixels / 2 - (displayMetrics.density * 80.0f).toInt(),
+                    height = totalHeight,
+                    singleRowHeight = singleRowHeight.roundToInt(),
                     padding = Rect(
                         (displayMetrics.density * 44.0f).roundToInt(),
                         (displayMetrics.density * 50.0f).roundToInt(),
@@ -361,13 +316,14 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     ),
                     splitLayoutWidth = displayMetrics.widthPixels * 3 / 5
                 )
+            }
 
             savedSettings.currentMode == KeyboardMode.Split ->
                 SplitKeyboardSize(
                     width = width,
                     height = recommendedHeight.roundToInt(),
                     singleRowHeight = singularRowHeight.roundToInt(),
-                    padding = dp(savedSettings.splitPaddingDp),
+                    padding = padding,
                     splitLayoutWidth = (displayMetrics.widthPixels * savedSettings.splitWidthFraction).toInt()
                 )
 
@@ -376,12 +332,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     width = width,
                     height = recommendedHeight.roundToInt(),
                     singleRowHeight = singularRowHeight.roundToInt(),
-                    padding = dp(savedSettings.oneHandedRectDp).let { rect ->
-                        when(savedSettings.oneHandedDirection) {
-                            OneHandedDirection.Left -> Rect(rect.left, rect.top, rect.left, rect.bottom)
-                            OneHandedDirection.Right -> Rect(rect.left, rect.top, rect.left, rect.bottom)
-                        }
-                    },
+                    padding = padding,
                     layoutWidth = dp(savedSettings.oneHandedRectDp.width).coerceAtMost(displayMetrics.widthPixels * 9 / 10),
                     direction = savedSettings.oneHandedDirection
                 )
@@ -396,14 +347,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     ),
                     width = dp(savedSettings.floatingWidthDp),
                     height = recommendedHeightFloat.toInt(),
-                    padding = dp(
-                        Rect(
-                            8,
-                            8,
-                            8,
-                            8
-                        )
-                    )
+                    singleRowHeight = singularRowHeightFloat.roundToInt(),
+                    padding = padding
                 )
             }
 
@@ -412,7 +357,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     width = width,
                     height = recommendedHeight.roundToInt(),
                     singleRowHeight = singularRowHeight.roundToInt(),
-                    padding = dp(savedSettings.paddingDp),
+                    padding = padding,
                 )
         }
     }
