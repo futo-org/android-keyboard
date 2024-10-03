@@ -9,20 +9,18 @@ import org.futo.inputmethod.latin.uix.KeyboardHeightMultiplierSetting
 import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params
+import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
 import java.util.Locale
 import kotlin.math.absoluteValue
 
 class KeyboardLayoutSetV2Tests : AndroidTestCase() {
     private val layoutParams = KeyboardLayoutSetV2Params(
-        width = 1024,
-        height = 1024,
-        padding = Rect(),
+        computedSize = RegularKeyboardSize(1024, 1024, Rect()),
         keyboardLayoutSet = "qwerty",
         locale = Locale.ENGLISH,
         editorInfo = EditorInfo(),
         numberRow = false,
-        useSplitLayout = false,
-        splitLayoutWidth = 0,
+        arrowRow = false,
         bottomActionKey = null
     )
 

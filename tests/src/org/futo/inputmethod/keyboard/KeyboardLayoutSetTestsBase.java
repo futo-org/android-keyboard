@@ -37,6 +37,7 @@ import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params;
+import org.futo.inputmethod.v2keyboard.RegularKeyboardSize;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -151,11 +152,11 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         return new KeyboardLayoutSetV2(
                 context,
                 new KeyboardLayoutSetV2Params(
-                        keyboardWidth, keyboardHeight, new Rect(),
+                        new RegularKeyboardSize(keyboardHeight, keyboardWidth, new Rect()),
                         richInputMethodSubtype.getKeyboardLayoutSetName(),
                         richInputMethodSubtype.getLocale(),
-                        editorInfo, false,
-                        4.0f, splitLayoutEnabled, 0,
+                        editorInfo, false, false,
+                        4.0f,
                         languageSwitchKeyEnabled ? ActionRegistry.INSTANCE.actionStringIdToIdx("switch_language") : null,
                         LongPressKeySettings.forTest()
                 )
