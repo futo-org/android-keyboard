@@ -72,6 +72,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
@@ -123,6 +124,7 @@ import org.futo.inputmethod.v2keyboard.OneHandedDirection
 import org.futo.inputmethod.v2keyboard.OneHandedKeyboardSize
 import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
 import org.futo.inputmethod.v2keyboard.SplitKeyboardSize
+import org.futo.inputmethod.v2keyboard.opposite
 import java.util.Locale
 
 val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
@@ -838,6 +840,39 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     @Composable
+    private fun BoxScope.OneHandedOptions(size: OneHandedKeyboardSize) = with(LocalDensity.current) {
+        Box(Modifier.matchParentSize()) {
+            Column(modifier = Modifier.matchParentSize().absolutePadding(
+                top = if(isActionsExpanded.value) ActionBarHeight else 0.dp
+            ), horizontalAlignment = when(size.direction) {
+                // Aligned opposite of the keyboard
+                OneHandedDirection.Left -> Alignment.End
+                OneHandedDirection.Right -> Alignment.Start
+            }) {
+                IconButton(onClick = {
+                    latinIME.sizingCalculator.editSavedSettings {
+                        it.copy(oneHandedDirection = it.oneHandedDirection.opposite)
+                    }
+                }) {
+                    Icon(painterResource(when(size.direction) {
+                        // Show opposite icon
+                        OneHandedDirection.Left -> R.drawable.chevron_right
+                        OneHandedDirection.Right -> R.drawable.chevron_left
+                    }), contentDescription = "Switch handedness")
+                }
+
+                Spacer(Modifier.weight(1.0f))
+
+                IconButton(onClick = {
+                    latinIME.sizingCalculator.exitOneHandedMode()
+                }) {
+                    Icon(painterResource(R.drawable.maximize), contentDescription = "Exit one-handed mode")
+                }
+            }
+        }
+    }
+
+    @Composable
     private fun NonFloatingKeyboardWindow(
         size: ComputedKeyboardSize,
         content: @Composable BoxScope.(actionBarGap: Dp) -> Unit
@@ -864,6 +899,10 @@ class UixManager(private val latinIME: LatinIME) {
                     content(size.padding.top.toDp().coerceAtLeast(4.dp))
 
                     resizers.Resizer(this, size)
+                }
+
+                if(size is OneHandedKeyboardSize) {
+                    OneHandedOptions(size)
                 }
             }
         }

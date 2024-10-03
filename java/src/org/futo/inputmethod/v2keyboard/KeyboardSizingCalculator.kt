@@ -55,6 +55,12 @@ enum class OneHandedDirection {
     Right
 }
 
+val OneHandedDirection.opposite: OneHandedDirection
+    get() = when(this) {
+        OneHandedDirection.Left -> OneHandedDirection.Right
+        OneHandedDirection.Right -> OneHandedDirection.Left
+    }
+
 class OneHandedKeyboardSize(
     width: Int, height: Int, padding: Rect, singleRowHeight: Int = height / 4,
     val layoutWidth: Int, val direction: OneHandedDirection
@@ -255,6 +261,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
             context.setSettingBlocking(KeyboardSettings[sizeState]!!.key, transformed.toJsonString())
         }
     }
+
+    fun exitOneHandedMode() = editSavedSettings { it.copy(currentMode = KeyboardMode.Regular) }
 
     fun calculate(layoutName: String, settings: SettingsValues): ComputedKeyboardSize {
         val savedSettings = getSavedSettings()
