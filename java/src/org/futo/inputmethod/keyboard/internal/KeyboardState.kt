@@ -243,7 +243,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
         switchActions.requestUpdatingShiftState(autoCapsFlags, recapitalizeMode)
     }
 
-    private val shifted: Boolean
+    val shifted: Boolean
         get() = currentLayout.page == KeyboardLayoutPage.Shifted ||
                 currentLayout.page == KeyboardLayoutPage.ManuallyShifted ||
                 currentLayout.page == KeyboardLayoutPage.ShiftLocked

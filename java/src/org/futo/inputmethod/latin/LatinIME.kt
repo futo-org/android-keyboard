@@ -189,7 +189,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     private fun calculateSize(): ComputedKeyboardSize
             = sizingCalculator.calculate(
         latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName ?: "qwerty",
-        latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mNumberRow ?: false
+        Settings.getInstance().current
     )
 
     private var drawableProvider: DynamicThemeProvider? = null

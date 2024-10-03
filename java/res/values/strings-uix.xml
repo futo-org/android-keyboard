@@ -16,6 +16,11 @@
     <string name="more_actions_action_title">All Actions</string>
     <string name="bug_viewer_action_title">Bug Viewer</string>
 
+    <string name="arrow_up_action_title">Arrow Up</string>
+    <string name="arrow_down_action_title">Arrow Down</string>
+    <string name="arrow_left_action_title">Arrow Left</string>
+    <string name="arrow_right_action_title">Arrow Right</string>
+
     <string name="left_handed_keyboard_action_title">Left-Handed Keyboard</string>
     <string name="right_handed_keyboard_action_title">Right-Handed Keyboard</string>
     <string name="split_keyboard_action_title">Split Keyboard</string>

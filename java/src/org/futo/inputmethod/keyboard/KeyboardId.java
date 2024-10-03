@@ -68,11 +68,12 @@ public final class KeyboardId {
     public final boolean mHasShortcutKey;
     public final boolean mIsSplitLayout;
     public final boolean mNumberRow;
+    public final boolean mArrowRow;
     public final LongPressKeySettings mLongPressKeySettings;
 
     private final int mHashCode;
 
-    public KeyboardId(String mKeyboardLayoutSetName, Locale mLocale, int mWidth, int mHeight, int mMode, int mElementId, EditorInfo mEditorInfo, boolean mClobberSettingsKey, boolean mBottomEmojiKeyEnabled, int mBottomActionKeyId, String mCustomActionLabel, boolean mHasShortcutKey, boolean mIsSplitLayout, boolean mNumberRow, LongPressKeySettings mLongPressKeySettings) {
+    public KeyboardId(String mKeyboardLayoutSetName, Locale mLocale, int mWidth, int mHeight, int mMode, int mElementId, EditorInfo mEditorInfo, boolean mClobberSettingsKey, boolean mBottomEmojiKeyEnabled, int mBottomActionKeyId, String mCustomActionLabel, boolean mHasShortcutKey, boolean mIsSplitLayout, boolean mNumberRow, boolean mArrowRow, LongPressKeySettings mLongPressKeySettings) {
         this.mKeyboardLayoutSetName = mKeyboardLayoutSetName;
         this.mLocale = mLocale;
         this.mWidth = mWidth;
@@ -87,6 +88,7 @@ public final class KeyboardId {
         this.mHasShortcutKey = mHasShortcutKey;
         this.mIsSplitLayout = mIsSplitLayout;
         this.mNumberRow = mNumberRow;
+        this.mArrowRow = mArrowRow;
         this.mLongPressKeySettings = mLongPressKeySettings;
 
         mHashCode = computeHashCode(this);

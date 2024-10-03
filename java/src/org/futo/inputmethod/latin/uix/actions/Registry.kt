@@ -36,7 +36,11 @@ val AllActionsMap = mapOf(
     "onehanded_right" to RightHandedKeyboardAction,
     "split_keyboard" to SplitKeyboardAction,
     "floating_keyboard" to FloatingKeyboardAction,
-    "resize_keyboard" to ResizeKeyboardAction
+    "resize_keyboard" to ResizeKeyboardAction,
+    "up" to ArrowUpAction,
+    "down" to ArrowDownAction,
+    "left" to ArrowLeftAction,
+    "right" to ArrowRightAction
 )
 
 val ActionToId = AllActionsMap.entries.associate { it.value to it.key }

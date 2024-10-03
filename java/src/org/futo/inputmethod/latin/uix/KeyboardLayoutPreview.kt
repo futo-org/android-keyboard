@@ -87,8 +87,6 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
         withContext(Dispatchers.Default) {
             val editorInfo = EditorInfo()
 
-            val numberRow = false
-
             val layoutSet = KeyboardLayoutSetV2(
                 context,
                 KeyboardLayoutSetV2Params(
@@ -97,7 +95,8 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
                     keyboardLayoutSet = id,
                     locale = loc ?: Locale.ENGLISH,
                     editorInfo = editorInfo,
-                    numberRow = numberRow,
+                    numberRow = false,
+                    arrowRow = false,
                     bottomActionKey = null
                 )
             )

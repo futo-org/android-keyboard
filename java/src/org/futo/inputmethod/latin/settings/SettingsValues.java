@@ -89,9 +89,8 @@ public class SettingsValues {
     public final boolean mCloudSyncEnabled;
     public final boolean mEnableMetricsLogging;
     public final boolean mShouldShowLxxSuggestionUi;
-    // Use split layout for keyboard.
-    public final boolean mIsSplitKeyboardEnabled;
     public final boolean mIsNumberRowEnabled;
+    public final boolean mIsArrowRowEnabled;
     public final int mScreenMetrics;
 
     public final int mSpacebarMode;
@@ -155,6 +154,7 @@ public class SettingsValues {
                 ));
         mShowsActionKey = mActionKeyId != -1;
         mIsNumberRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false);
+        mIsArrowRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_ARROW_ROW, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true)
@@ -169,7 +169,6 @@ public class SettingsValues {
         mDoubleSpacePeriodTimeout = res.getInteger(R.integer.config_double_space_period_timeout);
         mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.getConfiguration());
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
-        mIsSplitKeyboardEnabled = prefs.getBoolean(Settings.PREF_ENABLE_SPLIT_KEYBOARD, false);
         mScreenMetrics = Settings.readScreenMetrics(res);
 
         mSpacebarMode = prefs.getInt(Settings.PREF_SPACEBAR_MODE, Settings.SPACEBAR_MODE_SWIPE_CURSOR);

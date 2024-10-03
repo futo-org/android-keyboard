@@ -81,6 +81,7 @@ data class KeyboardLayoutSetV2Params(
     val locale: Locale,
     val editorInfo: EditorInfo?,
     val numberRow: Boolean,
+    val arrowRow: Boolean,
     val gap: Float = 4.0f,
     val bottomActionKey: Int?,
     val longPressKeySettings: LongPressKeySettings? = null
@@ -207,6 +208,7 @@ class KeyboardLayoutSetV2 internal constructor(
             false,
             false,
             isNumberRowActive,
+            params.arrowRow,
             params.longPressKeySettings ?: LongPressKeySettings.load(context)
         )
 

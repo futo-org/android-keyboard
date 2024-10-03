@@ -22,6 +22,7 @@ import kotlinx.serialization.encoding.encodeStructure
 import kotlinx.serialization.json.Json
 import org.futo.inputmethod.latin.FoldStateProvider
 import org.futo.inputmethod.latin.LatinIME
+import org.futo.inputmethod.latin.settings.SettingsValues
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.getSettingBlocking
@@ -326,7 +327,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         }
     }
 
-    fun calculate(layoutName: String, isNumberRowActive: Boolean): ComputedKeyboardSize {
+    fun calculate(layoutName: String, settings: SettingsValues): ComputedKeyboardSize {
         val savedSettings = getSavedSettings()
 
         val layout = LayoutManager.getLayout(context, layoutName)
@@ -339,7 +340,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
         val numRows = 4.0 +
                 ((effectiveRowCount - 5) / 2.0).coerceAtLeast(0.0) +
-                if(isNumberRowActive) { 0.5 } else { 0.0 }
+                if(settings.mIsNumberRowEnabled) { 0.5 } else { 0.0 } +
+                if(settings.mIsArrowRowEnabled)  { 0.8 } else { 0.0 }
 
         val recommendedHeight = numRows * singularRowHeight +
                 when(savedSettings.currentMode) {

@@ -285,6 +285,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         latinIME.inputLogic.sendDownUpKeyEvent(keyCode, metaState)
     }
 
+    override fun isShifted(): Boolean = latinIME.latinIMELegacy.mKeyboardSwitcher.mState.shifted
+
     override fun cursorLeft(steps: Int, stepOverWords: Boolean, select: Boolean) {
         latinIME.inputLogic.cursorLeft(steps, stepOverWords, select)
     }

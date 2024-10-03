@@ -382,10 +382,20 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
 
         SettingToggleSharedPrefs(
             title = "Show Number Row",
-            subtitle = "When active, the number row is shown on top of the keyboard at all times",
+            subtitle = "When active, the number row is shown on top of the keyboard on supported layouts",
             key = Settings.PREF_ENABLE_NUMBER_ROW,
             default = false,
             icon = { Text("123", style = TextBodyRegularMlStyle, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) }
+        )
+
+        SettingToggleSharedPrefs(
+            title = "Show Arrow Keys",
+            subtitle = "When active, the arrow keys row is shown on the bottom of the keyboard",
+            key = Settings.PREF_ENABLE_ARROW_ROW,
+            default = false,
+            icon = {
+                Icon(painterResource(id = R.drawable.direction_arrows), contentDescription = null)
+            }
         )
 
         NavigationItem(

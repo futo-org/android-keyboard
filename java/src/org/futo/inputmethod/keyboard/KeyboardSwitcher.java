@@ -18,12 +18,10 @@ package org.futo.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
@@ -45,15 +43,12 @@ import org.futo.inputmethod.latin.settings.LongPressKeySettings;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
-import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.latin.utils.ScriptUtils;
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetKt;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params;
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator;
-import org.futo.inputmethod.v2keyboard.RegularKeyboardSize;
-import org.futo.inputmethod.v2keyboard.SplitKeyboardSize;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -141,7 +136,7 @@ public final class KeyboardSwitcher implements SwitchActions {
 
 
         final KeyboardSizingCalculator sizingCalculator = ((LatinIME)mLatinIMELegacy.getInputMethodService()).getSizingCalculator();
-        final ComputedKeyboardSize computedSize = sizingCalculator.calculate(layoutSetName, settingsValues.mIsNumberRowEnabled);
+        final ComputedKeyboardSize computedSize = sizingCalculator.calculate(layoutSetName, settingsValues);
 
         final KeyboardLayoutSetV2Params params = new KeyboardLayoutSetV2Params(
                 computedSize,
@@ -149,6 +144,7 @@ public final class KeyboardSwitcher implements SwitchActions {
                 subtype.getLocale(),
                 editorInfo == null ? new EditorInfo() : editorInfo,
                 settingsValues.mIsNumberRowEnabled,
+                settingsValues.mIsArrowRowEnabled,
                 sizingCalculator.calculateGap(),
                 settingsValues.mShowsActionKey ? settingsValues.mActionKeyId : null,
                 LongPressKeySettings.load(mThemeContext)
