@@ -6,7 +6,7 @@ import org.futo.inputmethod.v2keyboard.KeyboardMode
 import org.futo.inputmethod.v2keyboard.OneHandedDirection
 
 val LeftHandedKeyboardAction = Action(
-    icon = R.drawable.arrow_left,
+    icon = R.drawable.left_handed_keyboard_outline,
     name = R.string.left_handed_keyboard_action_title,
     simplePressImpl = { manager, _ ->
         manager.getSizingCalculator().editSavedSettings {
@@ -27,7 +27,7 @@ val LeftHandedKeyboardAction = Action(
 )
 
 val RightHandedKeyboardAction = Action(
-    icon = R.drawable.arrow_right,
+    icon = R.drawable.right_handed_keyboard_outline,
     name = R.string.right_handed_keyboard_action_title,
     simplePressImpl = { manager, _ ->
         manager.getSizingCalculator().editSavedSettings {
@@ -48,7 +48,7 @@ val RightHandedKeyboardAction = Action(
 )
 
 val SplitKeyboardAction = Action(
-    icon = R.drawable.arrow_down,
+    icon = R.drawable.split_keyboard_outline,
     name = R.string.split_keyboard_action_title,
     simplePressImpl = { manager, _ ->
         manager.getSizingCalculator().editSavedSettings {
@@ -67,7 +67,7 @@ val SplitKeyboardAction = Action(
 )
 
 val FloatingKeyboardAction = Action(
-    icon = R.drawable.arrow_up,
+    icon = R.drawable.floating_keyboard_outline,
     name = R.string.floating_keyboard_action_title,
     simplePressImpl = { manager, _ ->
         manager.getSizingCalculator().editSavedSettings {
@@ -86,7 +86,7 @@ val FloatingKeyboardAction = Action(
 )
 
 val ResizeKeyboardAction = Action(
-    icon = R.drawable.maximize,
+    icon = R.drawable.aspect_ratio,
     name = R.string.resize_keyboard_action_title,
     simplePressImpl = { manager, _ ->
         manager.showResizer()
