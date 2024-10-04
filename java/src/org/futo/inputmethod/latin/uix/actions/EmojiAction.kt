@@ -102,6 +102,7 @@ import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.resetRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
+import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
@@ -480,9 +481,9 @@ fun EmojiNavigation(
     goToCategory: (CategoryItem) -> Unit,
 ) {
     Surface(
-        color = MaterialTheme.colorScheme.background, modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
+        color = LocalKeyboardScheme.current.keyboardSurface,
+        contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
+        modifier = Modifier.fillMaxWidth().height(48.dp)
     ) {
         Row(modifier = Modifier.padding(2.dp, 0.dp)) {
             if(showKeys) {
@@ -836,7 +837,8 @@ val EmojiAction = Action(
                 if(searching.value) {
                     with(rowScope) {
                         Surface(
-                            color = MaterialTheme.colorScheme.surfaceBright,
+                            color = LocalKeyboardScheme.current.keyboardContainer,
+                            contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
                             shape = RoundedCornerShape(24.dp),
                             modifier = Modifier
                                 .minimumInteractiveComponentSize()
@@ -853,11 +855,16 @@ val EmojiAction = Action(
                     }
                 } else {
                     super.WindowTitleBar(rowScope)
-                    Surface(color = MaterialTheme.colorScheme.surfaceBright, shape = RoundedCornerShape(24.dp), modifier = Modifier
-                        .minimumInteractiveComponentSize()
-                        .padding(2.dp)
-                        .width(128.dp)
-                        .clickable { searching.value = true }) {
+                    Surface(
+                        color = LocalKeyboardScheme.current.keyboardContainer,
+                        contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
+                        shape = RoundedCornerShape(24.dp),
+                        modifier = Modifier
+                            .minimumInteractiveComponentSize()
+                            .padding(2.dp)
+                            .width(128.dp),
+                        onClick = { searching.value = true }
+                    ) {
                         Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterStart) {
                             Row {
                                 Icon(Icons.Default.Search, contentDescription = null)
