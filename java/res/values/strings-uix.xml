@@ -21,11 +21,7 @@
     <string name="arrow_left_action_title">Arrow Left</string>
     <string name="arrow_right_action_title">Arrow Right</string>
 
-    <string name="left_handed_keyboard_action_title">Left-Handed Keyboard</string>
-    <string name="right_handed_keyboard_action_title">Right-Handed Keyboard</string>
-    <string name="split_keyboard_action_title">Split Keyboard</string>
-    <string name="floating_keyboard_action_title">Floating Keyboard</string>
-    <string name="resize_keyboard_action_title">Resize Keyboard</string>
+    <string name="keyboard_modes_action_title">Keyboard Modes</string>
 
     <string name="action_kind_action_key">Action Key</string>
     <string name="action_kind_pinned_key">Pinned Action(s)</string>

@@ -142,6 +142,7 @@ data class SavedKeyboardSizingSettings(
     val splitWidthFraction: Float,
     val splitPaddingDp: SDpRect,
     val splitHeightAdditionDp: Float = 0.0f,
+    val prefersSplit: Boolean,
 
     /** One handed, values with respect to left handed mode:
      * * left = padding
@@ -189,7 +190,8 @@ val DefaultKeyboardSettings = mapOf(
         oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
         floatingBottomOriginDp = Pair(0.0f, 0.0f),
         floatingHeightDp = 240.0f,
-        floatingWidthDp = 360.0f
+        floatingWidthDp = 360.0f,
+        prefersSplit = false
     ),
 
     KeyboardSizeSettingKind.Landscape to SavedKeyboardSizingSettings(
@@ -202,7 +204,8 @@ val DefaultKeyboardSettings = mapOf(
         oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
         floatingBottomOriginDp = Pair(0.0f, 0.0f),
         floatingHeightDp = 240.0f,
-        floatingWidthDp = 360.0f
+        floatingWidthDp = 360.0f,
+        prefersSplit = true
     ),
 
     KeyboardSizeSettingKind.FoldableInnerDisplay to SavedKeyboardSizingSettings(
@@ -215,7 +218,8 @@ val DefaultKeyboardSettings = mapOf(
         oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
         floatingBottomOriginDp = Pair(0.0f, 0.0f),
         floatingHeightDp = 240.0f,
-        floatingWidthDp = 360.0f
+        floatingWidthDp = 360.0f,
+        prefersSplit = true
     ),
 )
 
@@ -262,7 +266,9 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         }
     }
 
-    fun exitOneHandedMode() = editSavedSettings { it.copy(currentMode = KeyboardMode.Regular) }
+    fun exitOneHandedMode() = editSavedSettings { it.copy(
+        currentMode = if(it.prefersSplit) KeyboardMode.Split else KeyboardMode.Regular
+    ) }
 
     fun calculate(layoutName: String, settings: SettingsValues): ComputedKeyboardSize {
         val savedSettings = getSavedSettings()

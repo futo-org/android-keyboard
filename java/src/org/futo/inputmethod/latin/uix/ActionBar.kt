@@ -829,6 +829,7 @@ fun ActionWindowBar(
 fun CollapsibleSuggestionsBar(
     onClose: () -> Unit,
     onCollapse: () -> Unit,
+    showCollapse: Boolean,
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripViewListener,
 ) {
@@ -873,17 +874,21 @@ fun CollapsibleSuggestionsBar(
                     Spacer(modifier = Modifier.weight(1.0f))
                 }
 
-                IconButton(
-                    onClick = onCollapse,
-                    modifier = Modifier
-                        .width(42.dp)
-                        .fillMaxHeight(),
-                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.arrow_down),
-                        contentDescription = "Collapse"
-                    )
+                if(showCollapse) {
+                    IconButton(
+                        onClick = onCollapse,
+                        modifier = Modifier
+                            .width(42.dp)
+                            .fillMaxHeight(),
+                        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_down),
+                            contentDescription = "Collapse"
+                        )
+                    }
+                } else {
+                    Spacer(Modifier.width(42.dp))
                 }
             }
         }
@@ -1026,6 +1031,7 @@ fun PreviewCollapsibleBar(colorScheme: ColorScheme = DarkColorScheme) {
         onCollapse = { },
         onClose = { },
         words = exampleSuggestedWords,
+        showCollapse = true,
         suggestionStripListener = ExampleListener()
     )
 }

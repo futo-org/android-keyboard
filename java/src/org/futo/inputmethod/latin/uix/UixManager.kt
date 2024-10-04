@@ -484,7 +484,7 @@ class UixManager(private val latinIME: LatinIME) {
     private fun enterActionWindowView(action: Action) {
         assert(action.windowImpl != null)
 
-        mainKeyboardHidden = true
+        mainKeyboardHidden = action.onlyShowAboveKeyboard == false
 
         currWindowAction = action
 
@@ -553,10 +553,10 @@ class UixManager(private val latinIME: LatinIME) {
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(with(LocalDensity.current) {
-                    (latinIME
+                    currWindowAction?.fixedWindowHeight ?: ((latinIME
                         .getInputViewHeight()
                         .toFloat() / heightDiv.toFloat()).toDp() +
-                            if(actionsExpanded) ActionBarHeight else 0.dp
+                            if (actionsExpanded) ActionBarHeight else 0.dp)
                 })
                 .safeKeyboardPadding()
             ) {
@@ -574,6 +574,7 @@ class UixManager(private val latinIME: LatinIME) {
                     onCollapse = { toggleExpandAction() },
                     onClose = { returnBackToMainKeyboardViewFromAction() },
                     words = suggestedWordsOrNull,
+                    showCollapse = currWindowAction?.onlyShowAboveKeyboard == false,
                     suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
                 )
             }

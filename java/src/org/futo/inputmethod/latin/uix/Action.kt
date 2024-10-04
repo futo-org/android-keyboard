@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.SuggestionBlacklist
@@ -126,5 +127,7 @@ data class Action(
     val persistentStateInitialization: PersistentStateInitialization = PersistentStateInitialization.OnActionTrigger,
     val altPressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)? = null,
 
-    val shownInEditor: Boolean = true
+    val shownInEditor: Boolean = true,
+    val onlyShowAboveKeyboard: Boolean = false,
+    val fixedWindowHeight: Dp? = null
 )
