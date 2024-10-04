@@ -65,6 +65,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
@@ -717,9 +718,12 @@ class UixManager(private val latinIME: LatinIME) {
         padding: Rect = Rect(),
         content: @Composable BoxScope.() -> Unit
     ) = with(LocalDensity.current) {
+
+        val backgroundBrush = LocalKeyboardScheme.current.keyboardBackgroundGradient ?: SolidColor(backgroundColor)
+
         Box(modifier
             .onSizeChanged { measuredTouchableHeight = it.height }
-            .background(backgroundColor, shape)
+            .background(backgroundBrush, shape)
             .requiredWidth(requiredWidthPx.toDp())
             .absolutePadding(
                 //top = padding.top.toDp().coerceAtLeast(0.dp),

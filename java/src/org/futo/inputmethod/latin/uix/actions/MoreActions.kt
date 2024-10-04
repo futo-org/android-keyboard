@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.LocalManager
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -59,10 +60,10 @@ import sh.calvin.reorderable.rememberReorderableLazyGridState
 
 @Composable
 fun ActionItem(action: Action, modifier: Modifier = Modifier, dragIcon: Boolean = false, dragIconModifier: Modifier = Modifier) {
-    Surface(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), modifier = modifier
-        .fillMaxWidth()
-        .height(92.dp)
-        , shape = RoundedCornerShape(16.dp)) {
+    Surface(color = LocalKeyboardScheme.current.keyboardContainer,
+        modifier = modifier.fillMaxWidth().height(92.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(8.dp)) {
@@ -256,7 +257,8 @@ fun ActionEditor() {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.75f),
-        color = MaterialTheme.colorScheme.background,
+        color = LocalKeyboardScheme.current.keyboardSurface,
+        contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
         shape = RoundedCornerShape(32.dp, 32.dp, 0.dp, 0.dp)
     ) {
         ActionsEditor {
@@ -286,7 +288,7 @@ val MoreActionsAction = Action(
                 super.WindowTitleBar(rowScope)
 
                 OutlinedButton(onClick = { manager.showActionEditor() }, modifier = Modifier.padding(8.dp, 0.dp)) {
-                    Text("Edit actions", color = MaterialTheme.colorScheme.onBackground)
+                    Text("Edit actions", color = LocalKeyboardScheme.current.onKeyboardContainer)
                 }
             }
 

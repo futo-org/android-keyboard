@@ -43,6 +43,10 @@
 
     <string name="emerald_theme_name">Emerald</string>
 
+    <string name="gradient1_theme_name">Gradient 1</string>
+    <string name="gradient2_theme_name">Gradient 2</string>
+    <string name="rainbow_theme_name">Rainbow</string>
+
     <string name="snowfall_theme_name">Snowfall</string>
     <string name="steel_gray_theme_name">Steel Gray</string>
     <string name="sunflower_theme_name">Sunflower</string>

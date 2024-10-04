@@ -278,7 +278,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
             colors[R.styleable.Keyboard_Key_functionalTextColor] = onKeyColorThird
         }
 
-        keyboardBackground = coloredRectangle(keyboardColor)
+        keyboardBackground = coloredRectangle(0x00000000)
 
         val keyCornerRadius = 9.dp
 

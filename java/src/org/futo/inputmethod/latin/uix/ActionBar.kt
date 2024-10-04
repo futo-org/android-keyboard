@@ -187,6 +187,8 @@ val suggestionStyleAlternative = TextStyle(
 fun actionBarColor(): Color =
     if(LocalInspectionMode.current) {
         LocalKeyboardScheme.current.keyboardSurface
+    } else if(LocalKeyboardScheme.current.keyboardBackgroundGradient != null) {
+        Color.Transparent
     } else {
         LocalThemeProvider.current.actionBarColor
     }

@@ -24,7 +24,9 @@ data class ExtraColors(
     val keyboardPress: Color,
     val keyboardBackgroundGradient: Brush?,
     val primaryTransparent: Color,
-    val onSurfaceTransparent: Color
+    val onSurfaceTransparent: Color,
+
+    val navigationBarColor: Color? = null
 )
 
 data class KeyboardColorScheme(
@@ -123,6 +125,9 @@ data class KeyboardColorScheme(
         get() = extended.primaryTransparent
     val onSurfaceTransparent: Color
         get() = extended.onSurfaceTransparent
+
+    val navigationBarColor: Color?
+        get() = extended.navigationBarColor
 }
 
 fun extendedDarkColorScheme(
@@ -158,7 +163,8 @@ fun extendedDarkColorScheme(
     keyboardFade1: Color = surface,
     keyboardBackgroundGradient: Brush? = null,
     primaryTransparent: Color,
-    onSurfaceTransparent: Color
+    onSurfaceTransparent: Color,
+    navigationBarColor: Color? = null,
 ): KeyboardColorScheme =
     KeyboardColorScheme(
         darkColorScheme(
@@ -197,6 +203,7 @@ fun extendedDarkColorScheme(
             keyboardBackgroundGradient = keyboardBackgroundGradient,
             primaryTransparent         = primaryTransparent,
             onSurfaceTransparent       = onSurfaceTransparent,
+            navigationBarColor         = navigationBarColor,
         )
     )
 
@@ -234,7 +241,8 @@ fun extendedLightColorScheme(
     keyboardFade1: Color = surface,
     keyboardBackgroundGradient: Brush? = null,
     primaryTransparent: Color,
-    onSurfaceTransparent: Color
+    onSurfaceTransparent: Color,
+    navigationBarColor: Color? = null,
 ): KeyboardColorScheme =
     KeyboardColorScheme(
         lightColorScheme(
@@ -273,6 +281,7 @@ fun extendedLightColorScheme(
             keyboardBackgroundGradient = keyboardBackgroundGradient,
             primaryTransparent         = primaryTransparent,
             onSurfaceTransparent       = onSurfaceTransparent,
+            navigationBarColor         = navigationBarColor,
         )
     )
 
