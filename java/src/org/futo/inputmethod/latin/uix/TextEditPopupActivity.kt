@@ -22,7 +22,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import org.futo.inputmethod.latin.R
 
 @Composable
-fun AndroidTextInput(allowPredictions: Boolean = true) {
+fun AndroidTextInput(allowPredictions: Boolean = true, customOptions: Set<String> = setOf()) {
     val context = LocalContext.current
     val bgColor = MaterialTheme.colorScheme.background
     val fgColor = MaterialTheme.colorScheme.onBackground
@@ -30,14 +30,15 @@ fun AndroidTextInput(allowPredictions: Boolean = true) {
     if(!LocalInspectionMode.current) {
         val editText = remember {
             EditText(context).apply {
-                if(allowPredictions) {
-                    inputType = EditorInfo.TYPE_CLASS_TEXT
-                    isSingleLine = false
+                inputType = EditorInfo.TYPE_CLASS_TEXT
+
+                privateImeOptions = (customOptions + if(!allowPredictions) {
+                    listOf("org.futo.inputmethod.latin.NoSuggestions")
                 } else {
-                    inputType = EditorInfo.TYPE_CLASS_TEXT
-                    privateImeOptions = "org.futo.inputmethod.latin.NoSuggestions=1"
-                    isSingleLine = true
-                }
+                    listOf()
+                }).joinToString { "$it=1" }
+
+                isSingleLine = !allowPredictions
 
 
                 setHint(R.string.try_typing)

@@ -123,7 +123,7 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
             ScreenTitle("Resize Keyboard", showBack = true, navController)
 
             NavigationItem(
-                "Reset size settings",
+                "Reset all size settings",
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = {
                     KeyboardSettings.values.forEach {
@@ -132,7 +132,7 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
                 }
             )
 
-            AndroidTextInput(allowPredictions = false)
+            AndroidTextInput(allowPredictions = false, customOptions = setOf("org.futo.inputmethod.latin.ResizeMode"))
         }
     }
 }

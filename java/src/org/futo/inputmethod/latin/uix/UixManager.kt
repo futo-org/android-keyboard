@@ -102,6 +102,7 @@ import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
+import org.futo.inputmethod.latin.uix.actions.KeyboardModeAction
 import org.futo.inputmethod.latin.uix.resizing.KeyboardResizers
 import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
@@ -340,7 +341,10 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun showResizer() {
         uixManager.resizers.displayResizer()
-        uixManager.closeActionWindow()
+
+        if(uixManager.currWindowAction != KeyboardModeAction) {
+            uixManager.closeActionWindow()
+        }
     }
 
     override fun isDeviceLocked(): Boolean {
@@ -368,7 +372,7 @@ class UixManager(private val latinIME: LatinIME) {
     private var shouldShowSuggestionStrip: Boolean = true
     private var suggestedWords: SuggestedWords? = null
 
-    private var currWindowAction: Action? = null
+    var currWindowAction: Action? = null
     private var persistentStates: HashMap<Action, PersistentActionState?> = hashMapOf()
 
     private var inlineSuggestions: List<MutableState<View?>> = listOf()
@@ -1160,6 +1164,12 @@ class UixManager(private val latinIME: LatinIME) {
             latinIME.lifecycleScope.launch {
                 it.value?.onDeviceUnlocked()
             }
+        }
+    }
+
+    fun inputStarted(editorInfo: EditorInfo?) {
+        if(editorInfo?.privateImeOptions?.contains("org.futo.inputmethod.latin.ResizeMode=1") == true) {
+            onActionActivated(KeyboardModeAction)
         }
     }
 }
