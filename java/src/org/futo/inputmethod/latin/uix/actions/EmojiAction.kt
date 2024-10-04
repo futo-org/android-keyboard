@@ -480,9 +480,7 @@ fun EmojiNavigation(
     activeCategoryItem: CategoryItem,
     goToCategory: (CategoryItem) -> Unit,
 ) {
-    Surface(
-        color = LocalKeyboardScheme.current.keyboardSurface,
-        contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
+    Box(
         modifier = Modifier.fillMaxWidth().height(48.dp)
     ) {
         Row(modifier = Modifier.padding(2.dp, 0.dp)) {
@@ -625,7 +623,6 @@ fun EmojiGrid(
     emojis: List<EmojiItem>,
     keyboardShown: Boolean,
     emojiMap: Map<String, EmojiItem>,
-    keyBackground: Drawable,
     isSearching: Boolean,
     searchFilter: String
 ) {
@@ -678,16 +675,10 @@ fun EmojiGrid(
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
                 .weight(1.0f)
-                .drawBehind {
-                    keyBackground.setBounds(
-                        0,
-                        0,
-                        this.size.width.roundToInt(),
-                        this.size.height.roundToInt()
-                    )
-                    keyBackground.state = intArrayOf()
-                    keyBackground.draw(this.drawContext.canvas.nativeCanvas)
-                },
+                .background(
+                    LocalKeyboardScheme.current.keyboardContainer,
+                    RoundedCornerShape(9.dp)
+                ),
             emojis = emojiList,
             onClick = onClick,
             emojiMap = emojiMap,
@@ -826,7 +817,7 @@ val EmojiAction = Action(
                         if(!isRepeated) {
                             manager.performHapticAndAudioFeedback(Constants.CODE_DELETE, view)
                         }
-                    }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = state.emojiMap, keyBackground = manager.getThemeProvider().keyBackground,
+                    }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = state.emojiMap,
                         isSearching = searching.value, searchFilter = searchText.value)
                 }
             }
@@ -919,7 +910,6 @@ fun EmojiGridPreview() {
         },
         keyboardShown = false,
         emojiMap = hashMapOf(),
-        keyBackground = context.getDrawable(R.drawable.btn_keyboard_spacebar_lxx_dark)!!,
         isSearching = false,
         searchFilter = ""
     )
