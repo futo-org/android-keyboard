@@ -9,6 +9,8 @@ import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialLight
 import org.futo.inputmethod.latin.uix.theme.presets.CottonCandy
 import org.futo.inputmethod.latin.uix.theme.presets.DeepSeaDark
 import org.futo.inputmethod.latin.uix.theme.presets.DeepSeaLight
+import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
+import org.futo.inputmethod.latin.uix.theme.presets.DefaultLightScheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
@@ -28,7 +30,8 @@ data class ThemeOption(
 )
 
 val ThemeOptions = mapOf(
-    VoiceInputTheme.key to VoiceInputTheme,
+    DefaultDarkScheme.key to DefaultDarkScheme,
+    DefaultLightScheme.key to DefaultLightScheme,
 
     DynamicSystemTheme.key to DynamicSystemTheme,
     DynamicDarkTheme.key to DynamicDarkTheme,
@@ -47,6 +50,7 @@ val ThemeOptions = mapOf(
     DeepSeaLight.key to DeepSeaLight,
     DeepSeaDark.key to DeepSeaDark,
 
+    VoiceInputTheme.key to VoiceInputTheme,
     HotDog.key to HotDog
 )
 

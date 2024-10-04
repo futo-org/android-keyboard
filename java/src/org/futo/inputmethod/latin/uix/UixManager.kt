@@ -732,7 +732,7 @@ class UixManager(private val latinIME: LatinIME) {
                 left = padding.left.toDp().coerceAtLeast(0.dp),
                 right = padding.right.toDp().coerceAtLeast(0.dp),
             )) {
-                CompositionLocalProvider(LocalContentColor provides contentColorFor(backgroundColor)) {
+                CompositionLocalProvider(LocalContentColor provides LocalKeyboardScheme.current.onKeyboardContainer) {
                     content()
                 }
             }

@@ -29,6 +29,9 @@
     <string name="action_kind_more">More Actions</string>
     <string name="action_kind_disabled">Hidden Actions</string>
 
+    <string name="default_dark_theme_name">Dark Mode</string>
+    <string name="default_light_theme_name">Light Mode</string>
+
     <string name="amoled_dark_theme_name">AMOLED Dark Purple</string>
     <string name="classic_material_dark_theme_name">AOSP Material Dark</string>
     <string name="classic_material_light_theme_name">AOSP Material Light</string>

@@ -1,22 +1,30 @@
 package org.futo.inputmethod.latin.uix
 
+import androidx.annotation.FloatRange
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.core.graphics.ColorUtils
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
+import androidx.core.math.MathUtils
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 val LocalKeyboardScheme = staticCompositionLocalOf {
-    wrapColorScheme(lightColorScheme())
+   wrapLightColorScheme(lightColorScheme())
 }
 
 data class ExtraColors(
-    val backgroundContainer: Color,
-    val backgroundContainerDim: Color,
-    val onBackgroundContainer: Color,
-    val outlineBright: Color,
-    val outlineDim: Color,
+    val keyboardSurface: Color,
+    val keyboardContainer: Color,
+    val keyboardContainerVariant: Color,
+    val onKeyboardContainer: Color,
+    val keyboardPress: Color,
+    val keyboardBackgroundGradient: Brush?,
+    val primaryTransparent: Color,
+    val onSurfaceTransparent: Color
 )
 
 data class KeyboardColorScheme(
@@ -98,69 +106,270 @@ data class KeyboardColorScheme(
         get() = base.surfaceContainerLowest
 
     // Extended colors
-    val backgroundContainer: Color
-        get() = extended.backgroundContainer
-    val backgroundContainerDim: Color
-        get() = extended.backgroundContainerDim
-    val onBackgroundContainer: Color
-        get() = extended.onBackgroundContainer
-    val outlineBright: Color
-        get() = extended.outlineBright
-    val outlineDim: Color
-        get() = extended.outlineDim
+    val keyboardSurface: Color
+        get() = extended.keyboardSurface
+    val keyboardContainer: Color
+        get() = extended.keyboardContainer
+    val keyboardContainerVariant: Color
+        get() = extended.keyboardContainerVariant
+    val onKeyboardContainer: Color
+        get() = extended.onKeyboardContainer
+    val keyboardPress: Color
+        get() = extended.keyboardPress
+    val keyboardBackgroundGradient: Brush?
+        get() = extended.keyboardBackgroundGradient
+
+    val primaryTransparent: Color
+        get() = extended.primaryTransparent
+    val onSurfaceTransparent: Color
+        get() = extended.onSurfaceTransparent
 }
 
-fun wrapColorScheme(base: ColorScheme): KeyboardColorScheme =
+fun extendedDarkColorScheme(
+    primary: Color,
+    onPrimary: Color,
+    primaryContainer: Color,
+    onPrimaryContainer: Color,
+    secondary: Color,
+    onSecondary: Color,
+    secondaryContainer: Color,
+    onSecondaryContainer: Color,
+    tertiary: Color,
+    onTertiary: Color,
+    tertiaryContainer: Color,
+    onTertiaryContainer: Color,
+    error: Color,
+    onError: Color,
+    errorContainer: Color,
+    onErrorContainer: Color,
+    outline: Color,
+    outlineVariant: Color,
+    surface: Color,
+    onSurface: Color,
+    onSurfaceVariant: Color,
+    surfaceContainerHighest: Color,
+    shadow: Color = Color.Black,
+    keyboardSurface: Color,
+    keyboardContainer: Color,
+    keyboardContainerVariant: Color,
+    onKeyboardContainer: Color,
+    keyboardPress: Color,
+    keyboardFade0: Color = surface,
+    keyboardFade1: Color = surface,
+    keyboardBackgroundGradient: Brush? = null,
+    primaryTransparent: Color,
+    onSurfaceTransparent: Color
+): KeyboardColorScheme =
     KeyboardColorScheme(
-        base,
-        generateExtraColorsAutomatically(base)
+        darkColorScheme(
+            primary                    = primary,
+            onPrimary                  = onPrimary,
+            primaryContainer           = primaryContainer,
+            onPrimaryContainer         = onPrimaryContainer,
+            secondary                  = secondary,
+            onSecondary                = onSecondary,
+            secondaryContainer         = secondaryContainer,
+            onSecondaryContainer       = onSecondaryContainer,
+            tertiary                   = tertiary,
+            onTertiary                 = onTertiary,
+            tertiaryContainer          = tertiaryContainer,
+            onTertiaryContainer        = onTertiaryContainer,
+            error                      = error,
+            onError                    = onError,
+            errorContainer             = errorContainer,
+            onErrorContainer           = onErrorContainer,
+            outline                    = outline,
+            outlineVariant             = outlineVariant,
+            surface                    = surface,
+            onSurface                  = onSurface,
+            onSurfaceVariant           = onSurfaceVariant,
+            surfaceContainerHighest    = surfaceContainerHighest,
+            background                 = surface,
+            onBackground               = onSurface
+        ),
+
+        ExtraColors(
+            keyboardSurface            = keyboardSurface,
+            keyboardContainer          = keyboardContainer,
+            keyboardContainerVariant   = keyboardContainerVariant,
+            onKeyboardContainer        = onKeyboardContainer,
+            keyboardPress              = keyboardPress,
+            keyboardBackgroundGradient = keyboardBackgroundGradient,
+            primaryTransparent         = primaryTransparent,
+            onSurfaceTransparent       = onSurfaceTransparent,
+        )
     )
 
-private fun generateExtraColorsAutomatically(base: ColorScheme): ExtraColors {
-    val ratio = 1.5f
-    val background = base.background.toArgb()
 
-    var backgroundContainer = adjustColorBrightnessForContrast(background, background, 1.5f)
-    if(backgroundContainer == background) {
-        // May happen if the color is already 100% white
-        backgroundContainer = adjustColorBrightnessForContrast(background, background, 1.0f / (ratio / 2.0f + 0.5f))
+fun extendedLightColorScheme(
+    primary: Color,
+    onPrimary: Color,
+    primaryContainer: Color,
+    onPrimaryContainer: Color,
+    secondary: Color,
+    onSecondary: Color,
+    secondaryContainer: Color,
+    onSecondaryContainer: Color,
+    tertiary: Color,
+    onTertiary: Color,
+    tertiaryContainer: Color,
+    onTertiaryContainer: Color,
+    error: Color,
+    onError: Color,
+    errorContainer: Color,
+    onErrorContainer: Color,
+    outline: Color,
+    outlineVariant: Color,
+    surface: Color,
+    onSurface: Color,
+    onSurfaceVariant: Color,
+    surfaceContainerHighest: Color,
+    shadow: Color = Color.Black,
+    keyboardSurface: Color,
+    keyboardContainer: Color,
+    keyboardContainerVariant: Color,
+    onKeyboardContainer: Color,
+    keyboardPress: Color,
+    keyboardFade0: Color = surface,
+    keyboardFade1: Color = surface,
+    keyboardBackgroundGradient: Brush? = null,
+    primaryTransparent: Color,
+    onSurfaceTransparent: Color
+): KeyboardColorScheme =
+    KeyboardColorScheme(
+        lightColorScheme(
+            primary                    = primary,
+            onPrimary                  = onPrimary,
+            primaryContainer           = primaryContainer,
+            onPrimaryContainer         = onPrimaryContainer,
+            secondary                  = secondary,
+            onSecondary                = onSecondary,
+            secondaryContainer         = secondaryContainer,
+            onSecondaryContainer       = onSecondaryContainer,
+            tertiary                   = tertiary,
+            onTertiary                 = onTertiary,
+            tertiaryContainer          = tertiaryContainer,
+            onTertiaryContainer        = onTertiaryContainer,
+            error                      = error,
+            onError                    = onError,
+            errorContainer             = errorContainer,
+            onErrorContainer           = onErrorContainer,
+            outline                    = outline,
+            outlineVariant             = outlineVariant,
+            surface                    = surface,
+            onSurface                  = onSurface,
+            onSurfaceVariant           = onSurfaceVariant,
+            surfaceContainerHighest    = surfaceContainerHighest,
+            background                 = surface,
+            onBackground               = onSurface
+        ),
+
+        ExtraColors(
+            keyboardSurface            = keyboardSurface,
+            keyboardContainer          = keyboardContainer,
+            keyboardContainerVariant   = keyboardContainerVariant,
+            onKeyboardContainer        = onKeyboardContainer,
+            keyboardPress              = keyboardPress,
+            keyboardBackgroundGradient = keyboardBackgroundGradient,
+            primaryTransparent         = primaryTransparent,
+            onSurfaceTransparent       = onSurfaceTransparent,
+        )
+    )
+
+
+// Taken from androidx/compose/material3/DynamicTonalPalette.android.kt
+// Copyright 2021 The Android Open Source Project, subject to Apache-2.0 license
+internal fun Color.setLuminance(
+    @FloatRange(from = 0.0, to = 100.0)
+    newLuminance: Float
+): Color {
+    if ((newLuminance < 0.0001) or (newLuminance > 99.9999)) {
+        // aRGBFromLstar() from monet ColorUtil.java
+        val y = 100 * labInvf((newLuminance + 16) / 116)
+        val component = delinearized(y)
+        return Color(
+            /* red = */component,
+            /* green = */component,
+            /* blue = */component,
+        )
     }
 
-    val backgroundContainerDim = adjustColorBrightnessForContrast(background, background, ratio / 2.0f + 0.5f, adjustSaturation = true)
+    val sLAB = this.convert(ColorSpaces.CieLab)
+    return Color(
+        /* luminance = */newLuminance,
+        /* a = */sLAB.component2(),
+        /* b = */sLAB.component3(),
+        colorSpace = ColorSpaces.CieLab
+    ).convert(ColorSpaces.Srgb)
+}
 
-    val onBackgroundContainer = base.onBackground
+// Taken from androidx/compose/material3/DynamicTonalPalette.android.kt
+// Copyright 2021 The Android Open Source Project, subject to Apache-2.0 license
+/** Helper method from monet ColorUtils.java */
+private fun labInvf(ft: Float): Float {
+    val e = 216f / 24389f
+    val kappa = 24389f / 27f
+    val ft3 = ft * ft * ft
+    return if (ft3 > e) {
+        ft3
+    } else {
+        (116 * ft - 16) / kappa
+    }
+}
 
-    val outlineDim = base.outline.copy(alpha = 0.5f)
-    val outlineBright = base.outline.copy(alpha = 1.0f)
+// Taken from androidx/compose/material3/DynamicTonalPalette.android.kt
+// Copyright 2021 The Android Open Source Project, subject to Apache-2.0 license
+/**
+ * Helper method from monet ColorUtils.java
+ *
+ * Delinearizes an RGB component.
+ *
+ * @param rgbComponent 0.0 <= rgb_component <= 100.0, represents linear R/G/B channel
+ * @return 0 <= output <= 255, color channel converted to regular RGB space
+ */
+private fun delinearized(rgbComponent: Float): Int {
+    val normalized = rgbComponent / 100
+    val delinearized = if (normalized <= 0.0031308) {
+        normalized * 12.92
+    } else {
+        1.055 * normalized.toDouble().pow(1.0 / 2.4) - 0.055
+    }
+    return MathUtils.clamp((delinearized * 255.0).roundToInt(), 0, 255)
+}
 
-    return ExtraColors(
-        backgroundContainer = Color(backgroundContainer),
-        backgroundContainerDim = Color(backgroundContainerDim),
-        onBackgroundContainer = onBackgroundContainer,
-        outlineDim = outlineDim,
-        outlineBright = outlineBright
+
+fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
+    val secondary20 = scheme.secondary.setLuminance(20.0f)
+
+    return KeyboardColorScheme(
+        scheme,
+        ExtraColors(
+            keyboardSurface = scheme.surface,
+            keyboardContainer = scheme.surfaceContainer,
+            keyboardContainerVariant = scheme.surfaceContainerLow,
+            onKeyboardContainer = scheme.onSurface,
+            keyboardPress = secondary20,
+            keyboardBackgroundGradient = null,
+            primaryTransparent = scheme.primary.copy(alpha = 0.3f),
+            onSurfaceTransparent = scheme.onSurface.copy(alpha = 0.1f)
+        )
     )
 }
 
-private fun adjustColorBrightnessForContrast(bgColor: Int, fgColor: Int, desiredContrast: Float, adjustSaturation: Boolean = false): Int {
-    // Convert RGB colors to HSL
-    val bgHSL = FloatArray(3)
-    ColorUtils.colorToHSL(bgColor, bgHSL)
-    val fgHSL = FloatArray(3)
-    ColorUtils.colorToHSL(fgColor, fgHSL)
+fun wrapLightColorScheme(scheme: ColorScheme): KeyboardColorScheme {
+    val secondary80 = scheme.secondary.setLuminance(80.0f)
 
-    // Estimate the adjustment needed in lightness to achieve the desired contrast
-    // This is a simplified approach and may not be perfectly accurate
-    val lightnessAdjustment = (desiredContrast - 1) / 10.0f // Simplified and heuristic-based adjustment
-
-    // Adjust the background color's lightness
-    bgHSL[2] = bgHSL[2] + lightnessAdjustment
-    bgHSL[2] = bgHSL[2].coerceIn(0f, 1f) // Ensure the lightness stays within valid range
-
-    if(adjustSaturation) {
-        bgHSL[1] = (bgHSL[1] + lightnessAdjustment).coerceIn(0f, 1f)
-    }
-
-    // Convert back to RGB and return the adjusted color
-    return ColorUtils.HSLToColor(bgHSL)
+    return KeyboardColorScheme(
+        scheme,
+        ExtraColors(
+            keyboardSurface = scheme.secondaryContainer,
+            keyboardContainer = scheme.surfaceContainerLow,
+            keyboardContainerVariant = scheme.surfaceContainer,
+            onKeyboardContainer = scheme.onSurface,
+            keyboardPress = secondary80,
+            keyboardBackgroundGradient = null,
+            primaryTransparent = scheme.primary.copy(alpha = 0.3f),
+            onSurfaceTransparent = scheme.onSurface.copy(alpha = 0.1f)
+        )
+    )
 }

@@ -97,9 +97,12 @@ import org.futo.inputmethod.latin.uix.actions.PinnedActions
 import org.futo.inputmethod.latin.uix.actions.toActionList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
-import org.futo.inputmethod.latin.uix.theme.DarkColorScheme
+import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
+import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
+import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -227,9 +230,13 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
     val isVerbatim = wordInfo?.kind == KIND_TYPED
     val word = wordInfo?.mWord
 
-    val actualIsPrimary = isPrimary && (words.mWillAutoCorrect || ((wordInfo?.isExactMatch) == true))
+    val isAutocorrect = isPrimary && words.mWillAutoCorrect
 
-    val iconColor = MaterialTheme.colorScheme.onBackground
+    val color = when(isAutocorrect) {
+        true -> LocalKeyboardScheme.current.onSurface
+        else -> LocalKeyboardScheme.current.onSurfaceVariant
+    }
+
     val topSuggestionIcon = painterResource(id = R.drawable.transformer_suggestion)
     val textButtonModifier = when (wordInfo?.mOriginatesFromTransformerLM) {
         true -> Modifier.drawBehind {
@@ -241,8 +248,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
                 ) {
                     draw(
                         topSuggestionIcon.intrinsicSize,
-                        alpha = if(actualIsPrimary){ 1.0f } else { 0.66f } / 1.25f,
-                        colorFilter = ColorFilter.tint(color = iconColor)
+                        colorFilter = ColorFilter.tint(color = color)
                     )
                 }
             }
@@ -250,15 +256,10 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         else -> Modifier
     }
 
-    val textModifier = when (actualIsPrimary) {
-        true -> Modifier
-        false -> Modifier.alpha(0.75f)
-    }
-
-    val textStyle = when (actualIsPrimary) {
+    val textStyle = when(isAutocorrect) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
-    }.copy(color = MaterialTheme.colorScheme.onBackground)
+    }.copy(color = color)
 
     Box(
         modifier = textButtonModifier
@@ -270,9 +271,9 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
                 onLongClick = onLongClick
             ),
     ) {
-        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
+        CompositionLocalProvider(LocalContentColor provides color) {
             if (word != null) {
-                val modifier = textModifier.align(Center).padding(2.dp)
+                val modifier = Modifier.align(Center).padding(2.dp)
                 if(isVerbatim) {
                     AutoFitText('"' + word + '"', style = textStyle.copy(fontStyle = FontStyle.Italic), modifier = modifier)
                 } else {
@@ -322,11 +323,11 @@ fun SuggestedWords.getInfoOrNull(idx: Int): SuggestedWordInfo? = try {
     null
 }
 
-fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist): SuggestionLayout {
+fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?): SuggestionLayout {
     val typedWord = words.getInfoOrNull(SuggestedWords.INDEX_OF_TYPED_WORD)?.let {
         if(it.kind == KIND_TYPED) { it } else { null }
     }?.let {
-        if(blacklist.isSuggestedWordOk(it)) {
+        if(blacklist?.isSuggestedWordOk(it) != false) {
             it
         } else {
             null
@@ -373,7 +374,14 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist):
 
 @Composable
 fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
-    val layout = makeSuggestionLayout(words, LocalManager.current.getSuggestionBlacklist())
+    val layout = makeSuggestionLayout(
+        words,
+        if(!LocalInspectionMode.current) {
+            LocalManager.current.getSuggestionBlacklist()
+        } else {
+            null
+        }
+    )
 
     val suggestionItem = @Composable { suggestion: SuggestedWordInfo? ->
         if(suggestion != null) {
@@ -455,8 +463,8 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
-    val bgCol = LocalKeyboardScheme.current.backgroundContainer
-    val fgCol = LocalKeyboardScheme.current.onBackgroundContainer
+    val bgCol = LocalKeyboardScheme.current.keyboardContainer
+    val fgCol = LocalKeyboardScheme.current.onKeyboardContainer
 
     val circleRadius = with(LocalDensity.current) {
         16.dp.toPx()
@@ -525,7 +533,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
         }
     }
 
-    val gradientColor = LocalKeyboardScheme.current.background
+    val gradientColor = LocalKeyboardScheme.current.keyboardSurface
 
     val drawLeftGradient = lazyListState.firstVisibleItemIndex > 0
     val drawRightGradient = lazyListState.layoutInfo.visibleItemsInfo.isNotEmpty() && actionItems.isNotEmpty() && (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key != actionItems.lastOrNull()?.name)
@@ -585,8 +593,8 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
 
 @Composable
 fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
-    val bgCol = LocalKeyboardScheme.current.backgroundContainer
-    val fgCol = LocalKeyboardScheme.current.onBackgroundContainer
+    val bgCol = LocalKeyboardScheme.current.keyboardContainer
+    val fgCol = LocalKeyboardScheme.current.onKeyboardContainer
 
     val circleRadius = with(LocalDensity.current) {
         16.dp.toPx()
@@ -680,7 +688,7 @@ fun RowScope.PinnedActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action
 
 @Composable
 fun ActionSep() {
-    val sepCol = LocalKeyboardScheme.current.backgroundContainer
+    val sepCol = LocalKeyboardScheme.current.keyboardContainer
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -713,7 +721,7 @@ fun ActionBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1.0f),
-                color = MaterialTheme.colorScheme.background
+                color = LocalKeyboardScheme.current.keyboardSurface
             ) {
                 ActionItems(onActionActivated, onActionAltActivated)
             }
@@ -724,7 +732,7 @@ fun ActionBar(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.0f), color = MaterialTheme.colorScheme.background
+                .weight(1.0f), color = LocalKeyboardScheme.current.keyboardSurface
         ) {
             Row(Modifier.safeKeyboardPadding()) {
                 ExpandActionsButton(isActionsExpanded) {
@@ -797,7 +805,7 @@ fun ActionWindowBar(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.0f), color = MaterialTheme.colorScheme.background
+                .weight(1.0f), color = LocalKeyboardScheme.current.keyboardSurface
         )
         {
             Row(Modifier.safeKeyboardPadding()) {
@@ -838,7 +846,7 @@ fun CollapsibleSuggestionsBar(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.0f), color = MaterialTheme.colorScheme.background
+                .weight(1.0f), color = LocalKeyboardScheme.current.keyboardSurface
         )
         {
             Row(Modifier.safeKeyboardPadding()) {
@@ -947,8 +955,8 @@ val exampleSuggestedWordsEmpty = SuggestedWords(
 
 @Composable
 @Preview
-fun PreviewActionBarWithSuggestions(colorScheme: ColorScheme = DarkColorScheme) {
-    UixThemeWrapper(wrapColorScheme(colorScheme)) {
+fun PreviewActionBarWithSuggestions(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
         ActionBar(
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
@@ -963,8 +971,8 @@ fun PreviewActionBarWithSuggestions(colorScheme: ColorScheme = DarkColorScheme) 
 
 @Composable
 @Preview
-fun PreviewActionBarWithNotice(colorScheme: ColorScheme = DarkColorScheme) {
-    UixThemeWrapper(wrapColorScheme(colorScheme)) {
+fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
         ActionBar(
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
@@ -994,8 +1002,8 @@ fun PreviewActionBarWithNotice(colorScheme: ColorScheme = DarkColorScheme) {
 
 @Composable
 @Preview
-fun PreviewActionBarWithEmptySuggestions(colorScheme: ColorScheme = DarkColorScheme) {
-    UixThemeWrapper(wrapColorScheme(colorScheme)) {
+fun PreviewActionBarWithEmptySuggestions(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
         ActionBar(
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
@@ -1010,8 +1018,8 @@ fun PreviewActionBarWithEmptySuggestions(colorScheme: ColorScheme = DarkColorSch
 
 @Composable
 @Preview
-fun PreviewExpandedActionBar(colorScheme: ColorScheme = DarkColorScheme) {
-    UixThemeWrapper(wrapColorScheme(colorScheme)) {
+fun PreviewExpandedActionBar(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
         ActionBar(
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
@@ -1026,7 +1034,7 @@ fun PreviewExpandedActionBar(colorScheme: ColorScheme = DarkColorScheme) {
 
 @Composable
 @Preview
-fun PreviewCollapsibleBar(colorScheme: ColorScheme = DarkColorScheme) {
+fun PreviewCollapsibleBar(colorScheme: ThemeOption = DefaultDarkScheme) {
     CollapsibleSuggestionsBar(
         onCollapse = { },
         onClose = { },
@@ -1041,40 +1049,40 @@ fun PreviewCollapsibleBar(colorScheme: ColorScheme = DarkColorScheme) {
 @Composable
 @Preview
 fun PreviewActionBarWithSuggestionsDynamicLight() {
-    PreviewActionBarWithSuggestions(dynamicLightColorScheme(LocalContext.current))
+    PreviewActionBarWithSuggestions(DynamicLightTheme)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithEmptySuggestionsDynamicLight() {
-    PreviewActionBarWithEmptySuggestions(dynamicLightColorScheme(LocalContext.current))
+    PreviewActionBarWithEmptySuggestions(DynamicLightTheme)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewExpandedActionBarDynamicLight() {
-    PreviewExpandedActionBar(dynamicLightColorScheme(LocalContext.current))
+    PreviewExpandedActionBar(DynamicLightTheme)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithSuggestionsDynamicDark() {
-    PreviewActionBarWithSuggestions(dynamicDarkColorScheme(LocalContext.current))
+    PreviewActionBarWithSuggestions(DynamicDarkTheme)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewActionBarWithEmptySuggestionsDynamicDark() {
-    PreviewActionBarWithEmptySuggestions(dynamicDarkColorScheme(LocalContext.current))
+    PreviewActionBarWithEmptySuggestions(DynamicDarkTheme)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
 fun PreviewExpandedActionBarDynamicDark() {
-    PreviewExpandedActionBar(dynamicDarkColorScheme(LocalContext.current))
+    PreviewExpandedActionBar(DynamicDarkTheme)
 }

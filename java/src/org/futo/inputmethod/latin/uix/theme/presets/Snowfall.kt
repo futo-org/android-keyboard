@@ -1,88 +1,47 @@
 package org.futo.inputmethod.latin.uix.theme.presets
 
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.extendedLightColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
-import org.futo.inputmethod.latin.uix.wrapColorScheme
 
-private val primaryLightHighContrast = Color(0xFF212223)
-private val onPrimaryLightHighContrast = Color(0xFFFFFFFF)
-private val primaryContainerLightHighContrast = Color(0xFF424343)
-private val onPrimaryContainerLightHighContrast = Color(0xFFFFFFFF)
-private val secondaryLightHighContrast = Color(0xFF222222)
-private val onSecondaryLightHighContrast = Color(0xFFFFFFFF)
-private val secondaryContainerLightHighContrast = Color(0xFF434343)
-private val onSecondaryContainerLightHighContrast = Color(0xFFFFFFFF)
-private val tertiaryLightHighContrast = Color(0xFF242223)
-private val onTertiaryLightHighContrast = Color(0xFFFFFFFF)
-private val tertiaryContainerLightHighContrast = Color(0xFF454244)
-private val onTertiaryContainerLightHighContrast = Color(0xFFFFFFFF)
-private val errorLightHighContrast = Color(0xFF4E0002)
-private val onErrorLightHighContrast = Color(0xFFFFFFFF)
-private val errorContainerLightHighContrast = Color(0xFF8C0009)
-private val onErrorContainerLightHighContrast = Color(0xFFFFFFFF)
-private val backgroundLightHighContrast = Color(0xFFF8F8F8)
-private val onBackgroundLightHighContrast = Color(0xFF1C1B1B)
-private val surfaceLightHighContrast = Color(0xFFF8F8F8)
-private val onSurfaceLightHighContrast = Color(0xFF000000)
-private val surfaceVariantLightHighContrast = Color(0xFFE0E3E3)
-private val onSurfaceVariantLightHighContrast = Color(0xFF212525)
-private val outlineLightHighContrast = Color(0xFF404344)
-private val outlineVariantLightHighContrast = Color(0xFF404344)
-private val scrimLightHighContrast = Color(0xFF000000)
-private val inverseSurfaceLightHighContrast = Color(0xFF313030)
-private val inverseOnSurfaceLightHighContrast = Color(0xFFFFFFFF)
-private val inversePrimaryLightHighContrast = Color(0xFFECECEC)
-private val surfaceDimLightHighContrast = Color(0xFFDDD9D9)
-private val surfaceBrightLightHighContrast = Color(0xFFFCF8F8)
-private val surfaceContainerLowestLightHighContrast = Color(0xFFFFFFFF)
-private val surfaceContainerLowLightHighContrast = Color(0xFFF7F3F2)
-private val surfaceContainerLightHighContrast = Color(0xFFF1EDEC)
-private val surfaceContainerHighLightHighContrast = Color(0xFFEBE7E7)
-private val surfaceContainerHighestLightHighContrast = Color(0xFFE5E2E1)
-
-private val highContrastLightColorScheme = lightColorScheme(
-    primary = primaryLightHighContrast,
-    onPrimary = onPrimaryLightHighContrast,
-    primaryContainer = primaryContainerLightHighContrast,
-    onPrimaryContainer = onPrimaryContainerLightHighContrast,
-    secondary = secondaryLightHighContrast,
-    onSecondary = onSecondaryLightHighContrast,
-    secondaryContainer = secondaryContainerLightHighContrast,
-    onSecondaryContainer = onSecondaryContainerLightHighContrast,
-    tertiary = tertiaryLightHighContrast,
-    onTertiary = onTertiaryLightHighContrast,
-    tertiaryContainer = tertiaryContainerLightHighContrast,
-    onTertiaryContainer = onTertiaryContainerLightHighContrast,
-    error = errorLightHighContrast,
-    onError = onErrorLightHighContrast,
-    errorContainer = errorContainerLightHighContrast,
-    onErrorContainer = onErrorContainerLightHighContrast,
-    background = backgroundLightHighContrast,
-    onBackground = onBackgroundLightHighContrast,
-    surface = surfaceLightHighContrast,
-    onSurface = onSurfaceLightHighContrast,
-    surfaceVariant = surfaceVariantLightHighContrast,
-    onSurfaceVariant = onSurfaceVariantLightHighContrast,
-    outline = outlineLightHighContrast,
-    outlineVariant = outlineVariantLightHighContrast,
-    scrim = scrimLightHighContrast,
-    inverseSurface = inverseSurfaceLightHighContrast,
-    inverseOnSurface = inverseOnSurfaceLightHighContrast,
-    inversePrimary = inversePrimaryLightHighContrast,
-    surfaceDim = surfaceDimLightHighContrast,
-    surfaceBright = surfaceBrightLightHighContrast,
-    surfaceContainerLowest = surfaceContainerLowestLightHighContrast,
-    surfaceContainerLow = surfaceContainerLowLightHighContrast,
-    surfaceContainer = surfaceContainerLightHighContrast,
-    surfaceContainerHigh = surfaceContainerHighLightHighContrast,
-    surfaceContainerHighest = surfaceContainerHighestLightHighContrast,
+private val lightScheme = extendedLightColorScheme(
+    primary=Color(0xFF1D2023),
+    onPrimary=Color(0xFFFFFFFF),
+    primaryContainer=Color(0xFFBAC5DB),
+    onPrimaryContainer=Color(0xFF1A2026),
+    secondary=Color(0xFF303133),
+    onSecondary=Color(0xFFAFB5BA),
+    secondaryContainer=Color(0xFFE5E5E5),
+    onSecondaryContainer=Color(0xFF4B5054),
+    tertiary=Color(0xFF223D78),
+    onTertiary=Color(0xFFDAE3F7),
+    tertiaryContainer=Color(0xFF819EDE),
+    onTertiaryContainer=Color(0xFF00082B),
+    error=Color(0xFF8C2A2D),
+    onError=Color(0xFFF2BFC1),
+    errorContainer=Color(0xFFF2C2C5),
+    onErrorContainer=Color(0xFF80262C),
+    outline=Color(0xFF4B5052),
+    outlineVariant=Color(0xFFB8BDBF),
+    surface=Color(0xFFF8F8F8),
+    onSurface=Color(0xFF17181A),
+    onSurfaceVariant=Color(0xFF404344),
+    surfaceContainerHighest=Color(0xFFCCCCCC),
+    shadow=Color(0xFF000000).copy(alpha = 0.7f),
+    keyboardSurface=Color(0xFFF8F8F8),
+    keyboardContainer=Color(0xFFE5E5E5),
+    keyboardContainerVariant=Color(0xFFF0F0F0),
+    onKeyboardContainer=Color(0xFF17181A),
+    keyboardPress=Color(0xFFBABCBF),
+    keyboardFade0=Color(0xFFF8F8F8),
+    keyboardFade1=Color(0xFFF8F8F8),
+    primaryTransparent=Color(0xFF212223).copy(alpha = 0.3f),
+    onSurfaceTransparent=Color(0xFF17181A).copy(alpha = 0.1f),
 )
-
 
 val Snowfall = ThemeOption(
     dynamic = false,
@@ -90,7 +49,7 @@ val Snowfall = ThemeOption(
     name = R.string.snowfall_theme_name,
     available = { true }
 ) {
-    wrapColorScheme(highContrastLightColorScheme)
+    lightScheme
 }
 
 @Composable

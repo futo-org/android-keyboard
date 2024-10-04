@@ -7,7 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
-import org.futo.inputmethod.latin.uix.wrapColorScheme
+import org.futo.inputmethod.latin.uix.wrapLightColorScheme
 
 private val primaryLight = Color(0xFFC4FF00)
 private val onPrimaryLight = Color(0xFF000000)
@@ -78,17 +78,18 @@ val HotDog = ThemeOption(
     dynamic = false,
     key = "HotDog",
     name = R.string.hot_dog_theme_name,
-    available = { true }
+    available = { false }
 ) {
-    wrapColorScheme(lightScheme).let {
-        it.copy(
+    wrapLightColorScheme(lightScheme).let {
+        /*it.copy(
             base = it.base,
             extended = it.extended.copy(
                 backgroundContainer = backgroundContainerLight,
                 backgroundContainerDim = backgroundContainerDimLight,
                 onBackgroundContainer = onBackgroundContainerLight
             )
-        )
+        )*/
+        it
     }
 }
 

@@ -79,8 +79,7 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
 
     val textColor = colors.onBackground
 
-    // TODO: These have to be manually kept same as those in BasicThemeProvider
-    val spacebarColor = colors.outline.copy(alpha = 0.33f)
+    val spacebarColor = colors.keyboardContainer
     val actionColor = colors.primary
 
     val keyboardShape = RoundedCornerShape(8.dp)
@@ -97,7 +96,7 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
             .height(128.dp)
             .border(borderWidth, borderColor, keyboardShape)
             .clickable { onClick() },
-        color = colors.surface,
+        color = colors.keyboardSurface,
         shape = keyboardShape
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -107,7 +106,7 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .background(colors.background)
+                    .background(colors.keyboardSurface)
                     .fillMaxWidth()
                     .padding(4.dp),
                 color = textColor,
@@ -127,7 +126,7 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
                         .height(18.dp)
                         .align(Alignment.BottomCenter),
                     color = spacebarColor,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(4.dp)
                 ) { }
 
                 // Enter key

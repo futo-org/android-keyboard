@@ -188,13 +188,13 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         val transparent = Color.Transparent.toArgb()
         primaryKeyboardColor = if(keyBorders) {
-            colorScheme.background.toArgb()
+            colorScheme.keyboardSurface.toArgb()
         } else {
             colorScheme.surface.toArgb()
         }
 
         val keyColor = if(keyBorders) {
-            colorScheme.backgroundContainer.toArgb()
+            colorScheme.keyboardContainer.toArgb()
         } else {
             transparent
         }
@@ -202,13 +202,13 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         this.keyColor = keyColor
 
         val functionalKeyColor = if(keyBorders) {
-            colorScheme.backgroundContainerDim.toArgb()
+            colorScheme.keyboardContainerVariant.toArgb()
         } else {
             transparent
         }
 
         val onKeyColor = if(keyBorders) {
-            colorScheme.onBackgroundContainer.toArgb()
+            colorScheme.onKeyboardContainer.toArgb()
         } else {
             onBackground
         }
@@ -282,9 +282,10 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         keyboardBackground = coloredRectangle(primaryKeyboardColor)
 
+        val keyCornerRadius = 9.dp
 
         val spaceCornerRadius = if(keyBorders) {
-            8.dp
+            keyCornerRadius
         } else {
             48.dp
         }
@@ -300,67 +301,67 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
             KeyVisualStyle.Normal to if(keyBorders) {
                 makeVisualStyle(
-                    colorScheme.backgroundContainer.toArgb(),
-                    colorScheme.onBackgroundContainer.toArgb(),
+                    keyColor,
+                    onKeyColor,
                     highlight,
-                    8.dp
+                    keyCornerRadius
                 )
             } else {
                 makeVisualStyle(
                     transparent,
                     onBackground,
                     highlight,
-                    8.dp
+                    keyCornerRadius
                 )
             },
 
             KeyVisualStyle.MoreKey to VisualStyleDescriptor(
-                backgroundDrawable = coloredRoundedRectangle(primaryContainer, dp(8.dp)),
-                foregroundColor = onPrimaryContainer,
+                backgroundDrawable = coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius)),
+                foregroundColor = colorScheme.onKeyboardContainer.toArgb(),
 
-                backgroundDrawablePressed = coloredRoundedRectangle(primary, dp(8.dp)),
+                backgroundDrawablePressed = coloredRoundedRectangle(primary, dp(keyCornerRadius)),
                 foregroundColorPressed = onPrimary
             ),
 
             KeyVisualStyle.Functional to if(keyBorders) {
                 makeVisualStyle(
-                    colorScheme.backgroundContainerDim.toArgb(),
-                    colorScheme.onBackgroundContainer.toArgb(),
+                    functionalKeyColor,
+                    onKeyColor,
                     highlight,
-                    8.dp
+                    keyCornerRadius
                 )
             } else {
                 makeVisualStyle(
                     transparent,
                     onBackground,
                     highlight,
-                    8.dp
+                    keyCornerRadius
                 )
             },
 
             KeyVisualStyle.StickyOff to if(keyBorders) {
                 makeVisualStyle(
-                    colorScheme.backgroundContainerDim.toArgb(),
-                    colorScheme.onBackgroundContainer.toArgb(),
+                    keyColor,
+                    onKeyColor,
                     highlight,
-                    8.dp
+                    keyCornerRadius
                 )
             } else {
                 makeVisualStyle(
                     transparent,
                     onBackground,
                     highlight,
-                    8.dp
+                    keyCornerRadius
                 )
             },
 
-            KeyVisualStyle.NoBackground to makeVisualStyle(transparent, onBackground, highlight, 8.dp),
+            KeyVisualStyle.NoBackground to makeVisualStyle(transparent, onBackground, highlight, keyCornerRadius),
 
             KeyVisualStyle.StickyOn to makeVisualStyle(
                 colorScheme.secondaryContainer.toArgb(),
                 colorScheme.onSecondaryContainer.toArgb(),
                 highlight,
-                8.dp
+                keyCornerRadius
             ),
 
             KeyVisualStyle.Spacebar to when {
@@ -406,15 +407,15 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         keyFeedback = GradientDrawable(
             GradientDrawable.Orientation.TOP_BOTTOM,
-            intArrayOf(primaryContainer, primaryContainer),
+            intArrayOf(colorScheme.keyboardPress.toArgb(), colorScheme.keyboardPress.toArgb()),
         ).apply {
-            cornerRadius = dp(8.dp)
+            cornerRadius = dp(keyCornerRadius)
         }
 
-        colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = onPrimaryContainer
+        colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = colorScheme.onKeyboardContainer.toArgb()
 
-        moreKeysTextColor = onPrimaryContainer
-        moreKeysKeyboardBackground = coloredRoundedRectangle(primaryContainer, dp(8.dp))
+        moreKeysTextColor = colorScheme.onKeyboardContainer.toArgb()
+        moreKeysKeyboardBackground = coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius))
 
         assert(icons.keys == KeyboardIconsSet.validIcons) {
             "Icons differ. Missing: ${KeyboardIconsSet.validIcons - icons.keys}, extraneous: ${icons.keys - KeyboardIconsSet.validIcons}"

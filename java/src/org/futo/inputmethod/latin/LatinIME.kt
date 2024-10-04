@@ -78,7 +78,7 @@ import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
-import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
+import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
@@ -177,7 +177,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     val sizingCalculator = KeyboardSizingCalculator(this, uixManager)
 
     private var activeThemeOption: ThemeOption? = null
-    private var activeColorScheme = VoiceInputTheme.obtainColors(this)
+    private var activeColorScheme = DefaultDarkScheme.obtainColors(this)
     private var pendingRecreateKeyboard: Boolean = false
 
     val themeOption get() = activeThemeOption
@@ -353,8 +353,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         getSettingBlocking(THEME_KEY).let {
             val themeOptionFromSettings = ThemeOptions[it]
             val themeOption = when {
-                themeOptionFromSettings == null -> VoiceInputTheme
-                !themeOptionFromSettings.available(this@LatinIME) -> VoiceInputTheme
+                themeOptionFromSettings == null -> DefaultDarkScheme
+                !themeOptionFromSettings.available(this@LatinIME) -> DefaultDarkScheme
                 else -> themeOptionFromSettings
             }
 

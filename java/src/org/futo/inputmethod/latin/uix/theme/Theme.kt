@@ -6,9 +6,7 @@ import android.os.Build
 import android.view.View
 import android.view.Window
 import androidx.annotation.ColorInt
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -19,39 +17,8 @@ import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
-import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
+import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import kotlin.math.sqrt
-
-val DarkColorScheme = darkColorScheme(
-    primary = Slate500,
-    onPrimary = Slate50,
-
-    primaryContainer = Slate700,
-    onPrimaryContainer = Slate50,
-
-    secondary = Slate700,
-    onSecondary = Slate50,
-
-    secondaryContainer = Slate600,
-    onSecondaryContainer = Slate50,
-
-    tertiary = Stone700,
-    onTertiary = Stone50,
-
-    tertiaryContainer = Stone600,
-    onTertiaryContainer = Stone50,
-
-    background = Slate900,
-    onBackground = Slate50,
-
-    surface = Slate800,
-    onSurface = Slate50,
-
-    outline = Slate300,
-
-    surfaceVariant = Slate800,
-    onSurfaceVariant = Slate300
-)
 
 fun applyWindowColors(window: Window, @ColorInt color: Int, statusBar: Boolean) {
     if(statusBar) {
@@ -116,7 +83,7 @@ fun UixThemeAuto(content: @Composable () -> Unit) {
     val themeIdx = useDataStoreValue(THEME_KEY)
 
     val theme: ThemeOption = themeIdx?.let { ThemeOptions[it].ensureAvailable(context) }
-        ?: VoiceInputTheme
+        ?: DefaultDarkScheme
 
     val colors = remember(theme.key) { theme.obtainColors(context) }
 
