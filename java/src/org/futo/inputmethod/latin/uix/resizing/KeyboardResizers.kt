@@ -321,7 +321,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
         }, true, {
             resizing.value = false
         }, {
-            // Reset
+            latinIME.sizingCalculator.resetCurrentMode()
         })
     }
 
@@ -348,7 +348,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
         }, true, {
             resizing.value = false
         }, {
-            // TODO: Reset
+            latinIME.sizingCalculator.resetCurrentMode()
         })
     }
 
@@ -376,7 +376,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
         }, true, {
             resizing.value = false
         }, {
-            // TODO: Reset
+            latinIME.sizingCalculator.resetCurrentMode()
         })
     }
 
@@ -410,7 +410,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
             }, true, {
                 resizing.value = false
             }, {
-
+                latinIME.sizingCalculator.resetCurrentMode()
             })
         }
     }

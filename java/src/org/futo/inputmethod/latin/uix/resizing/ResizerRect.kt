@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -134,9 +134,9 @@ fun BoxScope.ResizerRect(onDragged: (DragDelta) -> Boolean, showResetApply: Bool
         })
 
         if (showResetApply) {
-            Row(Modifier.align(Alignment.BottomCenter).padding(16.dp)) {
+            Row(Modifier.align(Alignment.Center).absoluteOffset(y = 48.dp)) {
                 TextButton({ onReset() }) { Text("Reset") }
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(16.dp))
                 TextButton({ onApply() }) { Text("Apply") }
             }
         }

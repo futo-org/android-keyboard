@@ -266,6 +266,33 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         }
     }
 
+    fun resetCurrentMode() {
+        val defaultSettings = DefaultKeyboardSettings[sizeStateProvider.currentSizeState]!!
+        editSavedSettings {
+            when(it.currentMode) {
+                KeyboardMode.Regular -> it.copy(
+                    heightMultiplier = defaultSettings.heightMultiplier,
+                    heightAdditionDp = defaultSettings.heightAdditionDp,
+                    paddingDp = defaultSettings.paddingDp
+                )
+                KeyboardMode.Split -> it.copy(
+                    splitPaddingDp = defaultSettings.splitPaddingDp,
+                    splitHeightAdditionDp = defaultSettings.splitHeightAdditionDp,
+                    splitWidthFraction = defaultSettings.splitWidthFraction
+                )
+                KeyboardMode.OneHanded -> it.copy(
+                    oneHandedRectDp = defaultSettings.oneHandedRectDp,
+                    oneHandedHeightAdditionDp = defaultSettings.oneHandedHeightAdditionDp
+                )
+                KeyboardMode.Floating -> it.copy(
+                    floatingHeightDp = defaultSettings.floatingHeightDp,
+                    floatingWidthDp = defaultSettings.floatingWidthDp,
+                    floatingBottomOriginDp = defaultSettings.floatingBottomOriginDp
+                )
+            }
+        }
+    }
+
     fun exitOneHandedMode() = editSavedSettings { it.copy(
         currentMode = if(it.prefersSplit) KeyboardMode.Split else KeyboardMode.Regular
     ) }
