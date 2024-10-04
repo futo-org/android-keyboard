@@ -409,7 +409,6 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
         }
     }
 
-    println(layout)
     when {
         layout.isGestureBatch ||
         layout.presentableSuggestions.size <= 1 -> suggestionItem(layout.presentableSuggestions.firstOrNull())
