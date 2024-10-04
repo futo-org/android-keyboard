@@ -182,7 +182,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     val themeOption get() = activeThemeOption
     val colorScheme get() = activeColorScheme
-    val keyboardColor get() = drawableProvider?.primaryKeyboardColor?.let { androidx.compose.ui.graphics.Color(it) } ?: colorScheme.surface
+    val keyboardColor get() = drawableProvider?.keyboardColor?.let { androidx.compose.ui.graphics.Color(it) } ?: colorScheme.keyboardSurface
+    val actionBarColor get() = drawableProvider?.actionBarColor ?: colorScheme.surface
 
     val size: MutableState<ComputedKeyboardSize?> = mutableStateOf(null)
     private fun calculateSize(): ComputedKeyboardSize
@@ -221,7 +222,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     fun updateNavigationBarVisibility(visible: Boolean? = null) {
         if(visible != null) isNavigationBarVisible = visible
 
-        val color = drawableProvider?.primaryKeyboardColor
+        val color = drawableProvider?.keyboardColor
 
         window.window?.let { window ->
             if(color == null || !isNavigationBarVisible) {

@@ -303,7 +303,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
 
     fun updateEdgeToEdge() {
         themeProvider?.let {
-            val color = it.primaryKeyboardColor
+            val color = it.keyboardColor
 
             val luminance = sqrt(
                 0.299 * Color.red(color) / 255.0

@@ -183,6 +183,15 @@ val suggestionStyleAlternative = TextStyle(
 )
 
 
+@Composable
+fun actionBarColor(): Color =
+    if(LocalInspectionMode.current) {
+        LocalKeyboardScheme.current.keyboardSurface
+    } else {
+        LocalThemeProvider.current.actionBarColor
+    }
+
+
 // Automatically try to fit the given text to the available space in one line.
 // If text is too long, the text gets scaled horizontally to fit.
 // TODO: Could also put ellipsis in the middle
@@ -533,7 +542,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
         }
     }
 
-    val gradientColor = LocalKeyboardScheme.current.keyboardSurface
+    val gradientColor = actionBarColor()
 
     val drawLeftGradient = lazyListState.firstVisibleItemIndex > 0
     val drawRightGradient = lazyListState.layoutInfo.visibleItemsInfo.isNotEmpty() && actionItems.isNotEmpty() && (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key != actionItems.lastOrNull()?.name)
@@ -721,7 +730,7 @@ fun ActionBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1.0f),
-                color = LocalKeyboardScheme.current.keyboardSurface
+                color = actionBarColor()
             ) {
                 ActionItems(onActionActivated, onActionAltActivated)
             }
@@ -732,7 +741,7 @@ fun ActionBar(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.0f), color = LocalKeyboardScheme.current.keyboardSurface
+                .weight(1.0f), color = actionBarColor()
         ) {
             Row(Modifier.safeKeyboardPadding()) {
                 ExpandActionsButton(isActionsExpanded) {
@@ -805,7 +814,7 @@ fun ActionWindowBar(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.0f), color = LocalKeyboardScheme.current.keyboardSurface
+                .weight(1.0f), color = actionBarColor()
         )
         {
             Row(Modifier.safeKeyboardPadding()) {
@@ -846,7 +855,7 @@ fun CollapsibleSuggestionsBar(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.0f), color = LocalKeyboardScheme.current.keyboardSurface
+                .weight(1.0f), color = actionBarColor()
         )
         {
             Row(Modifier.safeKeyboardPadding()) {

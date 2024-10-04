@@ -4,10 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
-import android.graphics.drawable.shapes.RoundRectShape
-import android.os.Build
 import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.ColorInt
@@ -24,7 +21,6 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
-import kotlin.math.roundToInt
 
 val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), true)
 val HiddenKeysSetting = SettingsKey(booleanPreferencesKey("hiddenKeys"), false)
@@ -39,7 +35,8 @@ fun<T> Preferences.get(key: SettingsKey<T>): T {
 
 class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorScheme) :
     DynamicThemeProvider {
-    override val primaryKeyboardColor: Int
+    override val keyboardColor: Int
+    override val actionBarColor: Color
     override val keyColor: Int
 
     override val keyboardBackground: Drawable
@@ -187,10 +184,11 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         val onBackgroundThird = colorScheme.onBackground.copy(alpha = 0.33f).toArgb()
 
         val transparent = Color.Transparent.toArgb()
-        primaryKeyboardColor = if(keyBorders) {
-            colorScheme.keyboardSurface.toArgb()
+        keyboardColor = colorScheme.keyboardSurface.toArgb()
+        actionBarColor = if(keyBorders) {
+            colorScheme.keyboardSurface
         } else {
-            colorScheme.surface.toArgb()
+            colorScheme.surface
         }
 
         val keyColor = if(keyBorders) {
@@ -280,7 +278,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
             colors[R.styleable.Keyboard_Key_functionalTextColor] = onKeyColorThird
         }
 
-        keyboardBackground = coloredRectangle(primaryKeyboardColor)
+        keyboardBackground = coloredRectangle(keyboardColor)
 
         val keyCornerRadius = 9.dp
 

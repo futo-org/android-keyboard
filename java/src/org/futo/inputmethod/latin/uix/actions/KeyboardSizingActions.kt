@@ -17,6 +17,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +36,7 @@ private fun RowScope.KeyboardMode(iconRes: Int, checkedIconRes: Int, name: Strin
     val isChecked = sizingCalculator.getSavedSettings().currentMode == mode
 
     Surface(
+        color = Color.Transparent,
         modifier = Modifier.weight(1.0f).height(54.dp),
         onClick = {
             sizingCalculator.editSavedSettings { settings ->

@@ -5,6 +5,7 @@ import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
+import androidx.compose.ui.graphics.Color
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
 /** Visual style descriptor for a key */
@@ -25,7 +26,7 @@ data class VisualStyleDescriptor(
 )
 
 interface DynamicThemeProvider {
-    val primaryKeyboardColor: Int
+    val keyboardColor: Int
     val keyColor: Int
 
     val keyboardBackground: Drawable
@@ -72,4 +73,6 @@ interface DynamicThemeProvider {
             throw IllegalArgumentException("Could not find DynamicThemeProviderOwner")
         }
     }
+
+    val actionBarColor: Color
 }
