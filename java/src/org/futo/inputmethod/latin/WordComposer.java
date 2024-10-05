@@ -355,6 +355,13 @@ public final class WordComposer {
     }
 
     /**
+     * Returns true if the composing word is entirely digits.
+     */
+    public boolean isEntirelyDigits() {
+        return mDigitsCount == mCodePointSize;
+    }
+
+    /**
      * Saves the caps mode at the start of composing.
      *
      * WordComposer needs to know about the caps mode for several reasons. The first is, we need

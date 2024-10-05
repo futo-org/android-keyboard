@@ -207,6 +207,9 @@ public final class Suggest {
                 // If the word has digits, we never auto-correct because it's likely the word
                 // was type with a lot of care, unless number row is active
                 || (wordComposer.hasDigits() && !numberRowActive)
+                // If the word is entirely digits, never autocorrect regardless of number row
+                // being active or not
+                || wordComposer.isEntirelyDigits()
                 // If the word is mostly caps, we never auto-correct because this is almost
                 // certainly intentional (and careful input)
                 || wordComposer.isMostlyCaps()
