@@ -141,12 +141,45 @@ val Context.isDirectBootUnlocked: Boolean
         return userManager.isUserUnlocked
     }
 
+class DataStoreHelper {
+    companion object {
+        private var initialized: Boolean = false
+        private var currentPreferences: Preferences = preferencesOf()
+
+        @JvmStatic
+        fun init(context: Context, scope: CoroutineScope) {
+            if(initialized) return
+            initialized = true
+
+            scope.launch {
+                context.dataStore.data.collect {
+                    currentPreferences = it
+                }
+            }
+        }
+
+        @JvmStatic
+        fun<T> getSettingOrNull(key: Preferences.Key<T>): T? = currentPreferences[key]
+
+        @JvmStatic
+        fun<T> getSetting(key: Preferences.Key<T>, default: T): T = getSettingOrNull(key) ?: default
+
+        @JvmStatic
+        fun<T> getSettingOrNull(setting: SettingsKey<T>): T? = getSettingOrNull(setting.key)
+
+        @JvmStatic
+        fun<T> getSetting(setting: SettingsKey<T>): T = getSettingOrNull(setting.key) ?: setting.default
+    }
+}
+
 
 suspend fun <T> Context.getSetting(key: Preferences.Key<T>, default: T): T {
-    val valueFlow: Flow<T> =
+    /*val valueFlow: Flow<T> =
         this.dataStore.data.map { preferences -> preferences[key] ?: default }.take(1)
 
-    return valueFlow.first()
+    return valueFlow.first()*/
+
+    return DataStoreHelper.getSetting(key, default)
 }
 
 fun <T> Context.getSettingFlow(key: Preferences.Key<T>, default: T): Flow<T> {
@@ -161,11 +194,14 @@ suspend fun <T> Context.setSetting(key: Preferences.Key<T>, value: T) {
 
 
 fun <T> Context.getSettingBlocking(key: Preferences.Key<T>, default: T): T {
+    /*
     val context = this
 
     return runBlocking {
         context.getSetting(key, default)
-    }
+    }*/
+
+    return DataStoreHelper.getSetting(key, default)
 }
 
 fun <T> Context.getSettingBlocking(key: SettingsKey<T>): T {
