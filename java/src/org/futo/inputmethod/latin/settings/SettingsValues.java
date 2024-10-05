@@ -269,7 +269,10 @@ public class SettingsValues {
 
     public boolean isWordCodePoint(final int code) {
         return Character.isLetter(code) || isWordConnector(code)
-                || Character.COMBINING_SPACING_MARK == Character.getType(code);
+                || Character.COMBINING_SPACING_MARK == Character.getType(code)
+                // A digit can be a word codepoint because the user may have mistapped a number
+                // instead of a letter, in which case the digit should be considered part of a word.
+                || (Character.isDigit(code) && mIsNumberRowEnabled);
     }
 
     public boolean isUsuallyPrecededBySpace(final int code) {
