@@ -412,7 +412,7 @@ public class LanguageModelFacilitator(
             val wordComposer = inputLogic.mWordComposer ?: return
 
             val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
-                wordComposer, values.inputStyle, true, -1, locale, suggestionResults, settingsValues.mAutoCorrectionThreshold)
+                wordComposer, values.inputStyle, settingsValues.mAutoCorrectionEnabledPerUserSettings, -1, locale, suggestionResults, settingsValues.mAutoCorrectionThreshold)
 
             job.cancel()
 
