@@ -153,7 +153,8 @@ public class SettingsValues {
                         RegistryKt.getDefaultActionKey()
                 ));
         mShowsActionKey = mActionKeyId != -1;
-        mIsNumberRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false);
+        mIsNumberRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false)
+                || inputAttributes.mIsPasswordField;
         mIsArrowRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_ARROW_ROW, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
