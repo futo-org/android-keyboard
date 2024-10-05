@@ -458,8 +458,14 @@ public class KeyboardView extends View {
         if (hintLabel != null) {
             paint.setTextSize(key.selectHintTextSize(mDrawableProvider, params));
             paint.setColor(key.selectHintTextColor(mDrawableProvider, params));
-            // TODO: Should add a way to specify type face for hint letters
-            paint.setTypeface(Typeface.DEFAULT);
+
+            // Bold explicit hints
+            if(key.getHintLabel() != null) {
+                paint.setTypeface(Typeface.DEFAULT_BOLD);
+            } else {
+                paint.setTypeface(Typeface.DEFAULT);
+            }
+
             blendAlpha(paint, params.mAnimAlpha);
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
