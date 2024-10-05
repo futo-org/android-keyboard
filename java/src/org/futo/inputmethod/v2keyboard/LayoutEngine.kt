@@ -501,6 +501,8 @@ data class LayoutEngine(
         }
     }
 
+    private val validNumbersForHint = "1234567890".map { params.mTextsSet.resolveTextReference("!text/keyspec_symbols_$it") ?: it }.toSet()
+    private val showAllHintsSetting = params.mId.mLongPressKeySettings.showHints
     private fun addKey(data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int, leftGap: LayoutEntry.Gap?, rightGap: LayoutEntry.Gap?) {
         // These keys are empty keys and do not get added, leaving an empty gap in place of the key
         // The hitbox of other keys does not get expanded to include this gap though, unlike
@@ -521,6 +523,24 @@ data class LayoutEngine(
                 0.0
         } + verticalGapPx
 
+        val hasExplicitHint = data.hint.isNotEmpty()
+
+        val hint = when {
+            // If we have an explicit hint, use the specified hint
+            hasExplicitHint -> data.hint
+
+            // If we have no explicit hint, and show hints setting is disabled,
+            // then either show a number or nothing
+            !showAllHintsSetting ->
+                data.moreKeys.mapNotNull { it.mLabel }.firstOrNull { validNumbersForHint.contains(it) } ?: ""
+
+            // If we have no explicit hint and show hints setting is enabled,
+            // set this to null which will later automatically select a hint based on
+            // the first element of moreKeys
+            else -> null
+        }
+
+
         val key = org.futo.inputmethod.keyboard.Key(
             code = data.code,
             label = data.label,
@@ -537,7 +557,7 @@ data class LayoutEngine(
             moreKeysColumnAndFlags = data.moreKeyFlags,
             visualStyle = data.style,
             outputText = data.outputText,
-            hintLabel = data.hint.ifEmpty { null },
+            hintLabel = hint,
 
             // Add leftGap and rightGap to the hitbox
             // This makes the following area tappable,

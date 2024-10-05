@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin.settings
 import android.content.Context
 import androidx.datastore.preferences.core.stringPreferencesKey
 import org.futo.inputmethod.keyboard.internal.MoreKeySpec
+import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 
@@ -100,11 +101,14 @@ fun List<LongPressKey>.toEncodedString(): String {
     }
 }
 
-data class LongPressKeySettings(val currentOrder: List<LongPressKey>) {
+data class LongPressKeySettings(val currentOrder: List<LongPressKey>, val showHints: Boolean) {
     companion object {
         @JvmStatic
         fun load(context: Context): LongPressKeySettings =
-            LongPressKeySettings(context.getSettingBlocking(LongPressKeyLayoutSetting).toLongPressKeyLayoutItems())
+            LongPressKeySettings(
+                context.getSettingBlocking(LongPressKeyLayoutSetting).toLongPressKeyLayoutItems(),
+                context.getSettingBlocking(KeyHintsSetting)
+            )
 
         @JvmStatic
         fun joinMoreKeys(keys: List<String>): String =
@@ -115,7 +119,7 @@ data class LongPressKeySettings(val currentOrder: List<LongPressKey>) {
 
         @JvmStatic
         fun forTest(): LongPressKeySettings =
-            LongPressKeySettings(listOf(LongPressKey.Numbers, LongPressKey.LanguageKeys, LongPressKey.MiscLetters))
+            LongPressKeySettings(listOf(LongPressKey.Numbers, LongPressKey.LanguageKeys, LongPressKey.MiscLetters), false)
     }
 
     fun reorderMoreKeys(moreKeys: String): String =
