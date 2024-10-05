@@ -1037,7 +1037,7 @@ namespace latinime {
         int numSkippedDueToNoCoordinate = 0;
         for(size_t i=0; i<inputSize; i++) {
             char wc = partialWordString[i];
-            if (!(wc >= 'a' && wc <= 'z') && !(wc >= 'A' && wc <= 'Z')) {
+            if (!(wc >= 'a' && wc <= 'z') && !(wc >= 'A' && wc <= 'Z') && !(wc >= '0' && wc <= '9')) {
                 //AKLOGI("%d | Char %c skipped due to not within range", i, wc);
                 continue;
             }
@@ -1047,7 +1047,14 @@ namespace latinime {
                 continue;
             }
 
-            std::vector<float> proportions = pInfo->decomposeTapPosition(xCoordinates[i], yCoordinates[i]);
+            int tapY = yCoordinates[i];
+            if(wc >= '0' && wc <= '9') {
+                // If this is a number key, move the tap a little down
+                // to find the key below when typing with number row active
+                tapY += pInfo->getMostCommonKeyWidth() * 2 / 3;
+            }
+
+            std::vector<float> proportions = pInfo->decomposeTapPosition(xCoordinates[i], tapY);
             for(float &f : proportions) {
                 if(f < 0.05f) f = 0.0f;
             }

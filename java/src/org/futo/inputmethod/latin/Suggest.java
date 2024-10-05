@@ -152,7 +152,7 @@ public final class Suggest {
             final WordComposer wordComposer, final int inputStyleIfNotPrediction,
             final boolean isCorrectionEnabled, final int sequenceNumber,
             final Locale locale, final SuggestionResults suggestionResults,
-            final float autoCorrectionThreshold
+            final float autoCorrectionThreshold, final boolean numberRowActive
     ) {
         final String typedWordString = wordComposer.getTypedWord();
         final int trailingSingleQuotesCount =
@@ -205,8 +205,8 @@ public final class Suggest {
                 // for auto-correction
                 || suggestionResults.isEmpty()
                 // If the word has digits, we never auto-correct because it's likely the word
-                // was type with a lot of care
-                || wordComposer.hasDigits()
+                // was type with a lot of care, unless number row is active
+                || (wordComposer.hasDigits() && !numberRowActive)
                 // If the word is mostly caps, we never auto-correct because this is almost
                 // certainly intentional (and careful input)
                 || wordComposer.isMostlyCaps()
@@ -297,7 +297,8 @@ public final class Suggest {
 
         callback.onGetSuggestedWords(
             obtainNonBatchedInputSuggestedWords(wordComposer, inputStyleIfNotPrediction,
-                isCorrectionEnabled, sequenceNumber, locale, suggestionResults, mAutoCorrectionThreshold)
+                isCorrectionEnabled, sequenceNumber, locale, suggestionResults, mAutoCorrectionThreshold,
+                    keyboard.mId.mNumberRow)
         );
     }
 
