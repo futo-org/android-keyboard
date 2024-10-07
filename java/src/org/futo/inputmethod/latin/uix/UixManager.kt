@@ -751,7 +751,6 @@ class UixManager(private val latinIME: LatinIME) {
         pointerInputKey: Any?,
         onDragged: (Offset) -> Unit,
         onDragEnd: () -> Unit,
-        onResizerOpen: () -> Unit,
         content: @Composable BoxScope.(actionBarGap: Dp) -> Unit
     ) {
         // Content
@@ -760,7 +759,7 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         // Bottom drag bar
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier
             .fillMaxWidth()
             .height(20.dp)
@@ -771,15 +770,19 @@ class UixManager(private val latinIME: LatinIME) {
             }) {
 
             IconButton(onClick = {
-                onResizerOpen()
+                onActionActivated(KeyboardModeAction)
             }, Modifier.align(Alignment.CenterEnd)) {
-                Icon(Icons.Default.Menu, contentDescription = "resize")
+                Icon(
+                    painterResource(R.drawable.keyboard_gear),
+                    contentDescription = "Keyboard modes",
+                    tint = LocalKeyboardScheme.current.onSurfaceVariant
+                )
             }
 
             Box(
                 modifier = Modifier.fillMaxWidth(0.6f).height(4.dp)
-                    .align(Alignment.TopCenter).background(
-                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    .align(Alignment.Center).background(
+                        LocalKeyboardScheme.current.onSurfaceVariant,
                         RoundedCornerShape(100)
                     )
             )
@@ -834,9 +837,6 @@ class UixManager(private val latinIME: LatinIME) {
                                     )
                                 )
                             }
-                        },
-                        onResizerOpen = {
-                            resizers.displayResizer()
                         },
                         content = content
                     )
