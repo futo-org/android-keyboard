@@ -1168,7 +1168,7 @@ namespace latinime {
 
         // If it's still empty, probably a number is being entered or something. Do not generate
         // predictions.
-        if(mixes.empty()) {
+        if(mixes.empty() && !partialWordString.empty()) {
             AKLOGE("Mixes is empty even after non-mixing, returning no suggestions.");
             return;
         }
