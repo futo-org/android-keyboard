@@ -72,6 +72,7 @@ import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.differsFrom
+import org.futo.inputmethod.latin.uix.forceUnlockDatastore
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
@@ -845,7 +846,10 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     private fun onDeviceUnlocked() {
-        Log.i("LatinIME", "DEVICE has UNLOCKED!!! Reloading settings...")
+        forceUnlockDatastore(this)
+
+        Log.i("LatinIME", "Device has been unlocked, reloading settings")
+
         // Every place that called getDefaultSharedPreferences now needs to be refreshed or call it again
 
         // Mainly Settings singleton needs to be refreshed

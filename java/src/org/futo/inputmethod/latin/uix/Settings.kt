@@ -85,50 +85,55 @@ private var unlockedDataStore: DataStore<Preferences>? = null
 // To prevent two threads trying to create a datastore at once
 private val dataStoreCreationMutex = Mutex()
 
-// Initializes unlockedDataStore, or uses DefaultDataStore if device is still locked (direct boot)
 @OptIn(DelicateCoroutinesApi::class)
+fun forceUnlockDatastore(context: Context): DataStore<Preferences>? {
+    val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
+    return if (userManager.isUserUnlocked && dataStoreCreationMutex.tryLock()) {
+        try {
+            // The device has been unlocked
+            val newDataStore = PreferenceDataStoreFactory.create(
+                corruptionHandler = null,
+                migrations = listOf(),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+            ) {
+                context.applicationContext.preferencesDataStoreFile("settings")
+            }
+
+            unlockedDataStore = newDataStore
+
+            // Send new values to the DefaultDataStore for any listeners
+            GlobalScope.launch {
+                newDataStore.data.collect { value ->
+                    DefaultDataStore.sharedData.emit(value)
+                }
+            }
+
+            newDataStore
+        } finally {
+            dataStoreCreationMutex.unlock()
+        }
+    } else {
+        null
+    }
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+private fun lockedDatastoreWithSubtypes(context: Context): DataStore<Preferences> {
+    if (!DefaultDataStore.subtypesInitialized) {
+        DefaultDataStore.subtypesInitialized = true
+
+        GlobalScope.launch {
+            DefaultDataStore.updateSubtypes(Subtypes.getDirectBootInitialLayouts(context))
+        }
+    }
+
+    return DefaultDataStore
+}
+
+// Initializes unlockedDataStore, or uses DefaultDataStore if device is still locked (direct boot)
 val Context.dataStore: DataStore<Preferences>
     get() {
-        return unlockedDataStore ?: run {
-            val userManager = getSystemService(Context.USER_SERVICE) as UserManager
-            return if (userManager.isUserUnlocked && dataStoreCreationMutex.tryLock()) {
-                try {
-                    // The device has been unlocked
-                    val newDataStore = PreferenceDataStoreFactory.create(
-                        corruptionHandler = null,
-                        migrations = listOf(),
-                        scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-                    ) {
-                        applicationContext.preferencesDataStoreFile("settings")
-                    }
-
-                    unlockedDataStore = newDataStore
-
-                    // Send new values to the DefaultDataStore for any listeners
-                    GlobalScope.launch {
-                        newDataStore.data.collect { value ->
-                            DefaultDataStore.sharedData.emit(value)
-                        }
-                    }
-
-                    newDataStore
-                } finally {
-                    dataStoreCreationMutex.unlock()
-                }
-            } else {
-                // The device is still locked (or an unlocked datastore is in the process of being
-                // created), return default data store
-                if (!DefaultDataStore.subtypesInitialized) {
-                    DefaultDataStore.subtypesInitialized = true
-
-                    GlobalScope.launch {
-                        DefaultDataStore.updateSubtypes(Subtypes.getDirectBootInitialLayouts(this@dataStore))
-                    }
-                }
-
-                DefaultDataStore
-            }
-        }
+        return unlockedDataStore ?: forceUnlockDatastore(this) ?: lockedDatastoreWithSubtypes(this)
     }
 
 
