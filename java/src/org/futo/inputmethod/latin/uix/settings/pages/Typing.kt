@@ -30,9 +30,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeOptions
+import androidx.compose.ui.text.input.PlatformImeOptions
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.TextInputSession
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.zIndex
@@ -56,12 +61,9 @@ import org.futo.inputmethod.latin.settings.toEncodedString
 import org.futo.inputmethod.latin.settings.toLongPressKeyLayoutItems
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
-import org.futo.inputmethod.latin.uix.KeyboardBottomOffsetSetting
-import org.futo.inputmethod.latin.uix.KeyboardHeightMultiplierSetting
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
-import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionsEditor
 import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
 import org.futo.inputmethod.latin.uix.getSettingBlocking
@@ -78,10 +80,10 @@ import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
+import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsInt
 import org.futo.inputmethod.v2keyboard.KeyboardSettings
-import org.futo.inputmethod.v2keyboard.SavedKeyboardSizingSettings
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import kotlin.math.sign
@@ -118,9 +120,27 @@ fun ActionEditorScreen(navController: NavHostController = rememberNavController(
 @Composable
 fun ResizeScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
+    val textInputService = LocalTextInputService.current
+    val session = remember { mutableStateOf<TextInputSession?>(null) }
+
+    LaunchedEffect(Unit) {
+        session.value = textInputService?.startInput(
+            TextFieldValue(""),
+            imeOptions = ImeOptions.Default.copy(
+                platformImeOptions = PlatformImeOptions(
+                    privateImeOptions = "org.futo.inputmethod.latin.ResizeMode=1"
+                )
+            ),
+            onEditCommand = { },
+            onImeActionPerformed = { }
+        )
+    }
+
     Box {
         ScrollableList {
             ScreenTitle("Resize Keyboard", showBack = true, navController)
+
+            Tip("Resizing has moved to the button in the top right of the Keyboard Modes action. You can set a different size for the different modes as well as portrait and landscape.")
 
             NavigationItem(
                 "Reset all size settings",
