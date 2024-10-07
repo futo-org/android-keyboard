@@ -130,7 +130,7 @@ enum WordCapitalizeMode {
 bool isFirstCharLowercase(const char* str) {
     if (str == nullptr || str[0] == '\0')
         return false;
-    return islower(static_cast<unsigned char>(str[0])) != 0;
+    return isupper(static_cast<unsigned char>(str[0])) == 0;
 }
 
 
@@ -139,7 +139,7 @@ bool hasLowercase(const char* str) {
         return false;
 
     for (; *str != '\0'; ++str) {
-        if (islower(static_cast<unsigned char>(*str)))
+        if (isupper(static_cast<unsigned char>(*str)) == 0)
             return true;
     }
     return false;
