@@ -80,6 +80,7 @@ import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
+import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
@@ -89,6 +90,7 @@ import org.futo.inputmethod.v2keyboard.KeyboardSettings
 import org.futo.inputmethod.v2keyboard.KeyboardSizeSettingKind
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
+import org.futo.inputmethod.v2keyboard.LayoutManager
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -336,7 +338,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun onCreate() {
         super.onCreate()
 
-        DataStoreHelper.init(this, lifecycleScope)
+        LayoutManager.init(this)
+
+        DataStoreHelper.init(this)
 
         val filter = IntentFilter(Intent.ACTION_USER_UNLOCKED)
         registerReceiver(unlockReceiver, filter)
@@ -356,12 +360,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         )
 
         getSettingBlocking(THEME_KEY).let {
-            val themeOptionFromSettings = ThemeOptions[it]
-            val themeOption = when {
-                themeOptionFromSettings == null -> DefaultDarkScheme
-                !themeOptionFromSettings.available(this@LatinIME) -> DefaultDarkScheme
-                else -> themeOptionFromSettings
-            }
+            val themeOption = ThemeOptions[it].orDefault(this@LatinIME)
 
             activeThemeOption = themeOption
             activeColorScheme = themeOption.obtainColors(this@LatinIME)
@@ -858,6 +857,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         languageModelFacilitator.loadHistoryLog()
 
         uixManager.onPersistentStatesUnlocked()
+
+        updateTheme(ThemeOptions[getSettingBlocking(THEME_KEY)].orDefault(this))
 
         // TODO: Spell checker service
     }

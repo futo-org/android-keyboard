@@ -46,8 +46,7 @@ import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
-import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
-import org.futo.inputmethod.latin.uix.theme.presets.DefaultLightScheme
+import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.checkForUpdateAndSaveToPreferences
 import java.io.File
@@ -199,12 +198,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
 
         lifecycleScope.launch {
             getSettingFlow(THEME_KEY).collect {
-                val themeOptionFromSettings = ThemeOptions[it]
-                val themeOption = when {
-                    themeOptionFromSettings == null -> DefaultDarkScheme
-                    !themeOptionFromSettings.available(this@SettingsActivity) -> DefaultDarkScheme
-                    else -> themeOptionFromSettings
-                }
+                val themeOption = ThemeOptions[it].orDefault(this@SettingsActivity)
 
                 this@SettingsActivity.themeOption.value = themeOption
                 this@SettingsActivity.themeProvider = BasicThemeProvider(
@@ -217,12 +211,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
         }
 
         getSettingBlocking(THEME_KEY).let {
-            val themeOptionFromSettings = ThemeOptions[it]
-            val themeOption = when {
-                themeOptionFromSettings == null -> DefaultDarkScheme
-                !themeOptionFromSettings.available(this) -> DefaultLightScheme
-                else -> themeOptionFromSettings
-            }
+            val themeOption = ThemeOptions[it].orDefault(this@SettingsActivity)
 
             this.themeOption.value = themeOption
             this.themeProvider = BasicThemeProvider(

@@ -57,3 +57,14 @@ val ThemeOptions = mapOf(
 )
 
 val ThemeOptionKeys = ThemeOptions.keys
+
+fun ThemeOption?.orDefault(context: Context): ThemeOption {
+    val themeOptionFromSettings = this
+    val themeOption = when {
+        themeOptionFromSettings == null -> DefaultDarkScheme
+        !themeOptionFromSettings.available(context) -> DefaultDarkScheme
+        else -> themeOptionFromSettings
+    }
+
+    return themeOption
+}

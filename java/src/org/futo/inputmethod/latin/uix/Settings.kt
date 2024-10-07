@@ -23,18 +23,16 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.ActiveSubtype
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
-import org.futo.inputmethod.v2keyboard.LayoutManager
 
 // Used before first unlock (direct boot)
 private object DefaultDataStore : DataStore<Preferences> {
@@ -84,39 +82,44 @@ private object DefaultDataStore : DataStore<Preferences> {
 // Set and used after first unlock (direct boot)
 private var unlockedDataStore: DataStore<Preferences>? = null
 
+// To prevent two threads trying to create a datastore at once
+private val dataStoreCreationMutex = Mutex()
+
 // Initializes unlockedDataStore, or uses DefaultDataStore if device is still locked (direct boot)
 @OptIn(DelicateCoroutinesApi::class)
 val Context.dataStore: DataStore<Preferences>
     get() {
         return unlockedDataStore ?: run {
             val userManager = getSystemService(Context.USER_SERVICE) as UserManager
-            return if (userManager.isUserUnlocked) {
-                // The device has been unlocked
-                val newDataStore = PreferenceDataStoreFactory.create(
-                    corruptionHandler = null,
-                    migrations = listOf(),
-                    scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-                ) {
-                    applicationContext.preferencesDataStoreFile("settings")
-                }
-
-                unlockedDataStore = newDataStore
-
-                // Send new values to the DefaultDataStore for any listeners
-                GlobalScope.launch {
-                    newDataStore.data.collect { value ->
-                        DefaultDataStore.sharedData.emit(value)
+            return if (userManager.isUserUnlocked && dataStoreCreationMutex.tryLock()) {
+                try {
+                    // The device has been unlocked
+                    val newDataStore = PreferenceDataStoreFactory.create(
+                        corruptionHandler = null,
+                        migrations = listOf(),
+                        scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+                    ) {
+                        applicationContext.preferencesDataStoreFile("settings")
                     }
-                }
 
-                newDataStore
+                    unlockedDataStore = newDataStore
+
+                    // Send new values to the DefaultDataStore for any listeners
+                    GlobalScope.launch {
+                        newDataStore.data.collect { value ->
+                            DefaultDataStore.sharedData.emit(value)
+                        }
+                    }
+
+                    newDataStore
+                } finally {
+                    dataStoreCreationMutex.unlock()
+                }
             } else {
-                // The device is still locked, return default data store
+                // The device is still locked (or an unlocked datastore is in the process of being
+                // created), return default data store
                 if (!DefaultDataStore.subtypesInitialized) {
                     DefaultDataStore.subtypesInitialized = true
-
-                    // Necessary to init LayoutManager in advance to avoid race condition
-                    LayoutManager.init(this@dataStore)
 
                     GlobalScope.launch {
                         DefaultDataStore.updateSubtypes(Subtypes.getDirectBootInitialLayouts(this@dataStore))
@@ -147,16 +150,17 @@ val Context.isDirectBootUnlocked: Boolean
     }
 
 class DataStoreHelper {
+    @OptIn(DelicateCoroutinesApi::class)
     companion object {
         private var initialized: Boolean = false
         private var currentPreferences: Preferences = preferencesOf()
 
         @JvmStatic
-        fun init(context: Context, scope: CoroutineScope) {
+        fun init(context: Context) {
             if(initialized) return
             initialized = true
 
-            scope.launch {
+            GlobalScope.launch {
                 context.dataStore.data.collect {
                     currentPreferences = it
                 }

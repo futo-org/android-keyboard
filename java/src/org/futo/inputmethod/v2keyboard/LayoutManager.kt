@@ -70,21 +70,21 @@ object LayoutManager {
         }
     }
 
+    private fun ensureInitialized() {
+        if(!initialized) throw IllegalStateException("LayoutManager method called without being initialized")
+    }
     fun getLayout(context: Context, name: String): Keyboard {
-        init(context)
-
+        ensureInitialized()
         return layoutsById?.get(name) ?: throw IllegalArgumentException("Failed to find keyboard layout $name. Available layouts: ${layoutsById?.keys}")
     }
 
     fun getLayoutMapping(context: Context): Map<Locale, List<String>> {
-        init(context)
-
+        ensureInitialized()
         return localeToLayoutsMappings!!
     }
 
     fun getAllLayoutNames(context: Context): List<String> {
-        init(context)
-
+        ensureInitialized()
         return getAllLayoutPaths(context.assets).map {
             it.split("/").last().split(".yaml").first()
         }

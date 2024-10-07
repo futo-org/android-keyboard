@@ -51,8 +51,7 @@ import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
-import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
-import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
+import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.voiceinput.shared.BUILTIN_ENGLISH_MODEL
@@ -498,14 +497,7 @@ class ImportResourceActivity : ComponentActivity() {
         }
 
         deferGetSetting(THEME_KEY) {
-            val themeOptionFromSettings = ThemeOptions[it]
-            val themeOption = when {
-                themeOptionFromSettings == null -> DefaultDarkScheme
-                !themeOptionFromSettings.available(this) -> DefaultDarkScheme
-                else -> themeOptionFromSettings
-            }
-
-            this.themeOption.value = themeOption
+            this.themeOption.value = ThemeOptions[it].orDefault(this)
         }
     }
 }
