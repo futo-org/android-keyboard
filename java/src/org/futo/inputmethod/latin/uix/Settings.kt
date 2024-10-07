@@ -34,6 +34,7 @@ import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
+import org.futo.inputmethod.v2keyboard.LayoutManager
 
 // Used before first unlock (direct boot)
 private object DefaultDataStore : DataStore<Preferences> {
@@ -113,6 +114,10 @@ val Context.dataStore: DataStore<Preferences>
                 // The device is still locked, return default data store
                 if (!DefaultDataStore.subtypesInitialized) {
                     DefaultDataStore.subtypesInitialized = true
+
+                    // Necessary to init LayoutManager in advance to avoid race condition
+                    LayoutManager.init(this@dataStore)
+
                     GlobalScope.launch {
                         DefaultDataStore.updateSubtypes(Subtypes.getDirectBootInitialLayouts(this@dataStore))
                     }
