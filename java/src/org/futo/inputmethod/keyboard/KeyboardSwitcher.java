@@ -258,6 +258,7 @@ public final class KeyboardSwitcher implements SwitchActions {
 
     @Override
     public void setKeyboard(@NonNull KeyboardLayoutElement element) {
+        if(mKeyboardView == null) return;
         setKeyboard(element, KeyboardSwitchState.OTHER);
     }
 
