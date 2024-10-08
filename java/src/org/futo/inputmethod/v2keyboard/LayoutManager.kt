@@ -73,9 +73,15 @@ object LayoutManager {
     private fun ensureInitialized() {
         if(!initialized) throw IllegalStateException("LayoutManager method called without being initialized")
     }
+
     fun getLayout(context: Context, name: String): Keyboard {
         ensureInitialized()
         return layoutsById?.get(name) ?: throw IllegalArgumentException("Failed to find keyboard layout $name. Available layouts: ${layoutsById?.keys}")
+    }
+
+    fun getLayoutOrNull(context: Context, name: String): Keyboard? {
+        ensureInitialized()
+        return layoutsById?.get(name)
     }
 
     fun getLayoutMapping(context: Context): Map<Locale, List<String>> {

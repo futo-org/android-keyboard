@@ -573,47 +573,4 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
          This resource is copied from packages/apps/Settings/res/values/strings.xml -->
     <!-- This resource is corresponding to msgid="5433275485499039199" -->
     <string name="user_dict_fast_scroll_alphabet">\u0020ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
-
-    <string name="layout_arabic">Arabic</string>
-    <string name="layout_armenian_phonetic">Armenian (Phonetic)</string>
-    <string name="layout_azerty">AZERTY</string>
-    <string name="layout_bengali">Bengali</string>
-    <string name="layout_bengali_akkhor">Bengali (Akkhor)</string>
-    <string name="layout_bepo">BÉPO</string>
-    <string name="layout_bulgarian">Bulgarian</string>
-    <string name="layout_bulgarian_bds">Bulgarian (BDS)</string>
-    <string name="layout_colemak">Colemak</string>
-    <string name="layout_dvorak">Dvorak</string>
-    <string name="layout_east_slavic">East Slavic</string>
-    <string name="layout_east_slavic_phonetic">East Slavic (Phonetic)</string>
-    <string name="layout_farsi">Farsi</string>
-    <string name="layout_georgian">Georgian</string>
-    <string name="layout_greek">Greek</string>
-    <string name="layout_hebrew">Hebrew</string>
-    <string name="layout_hindi">Hindi</string>
-    <string name="layout_hindi_compact">Hindi (Compact)</string>
-    <string name="layout_kannada">Kannada</string>
-    <string name="layout_khmer">Khmer</string>
-    <string name="layout_lao">Lao</string>
-    <string name="layout_malayalam">Malayalam</string>
-    <string name="layout_marathi">Marathi</string>
-    <string name="layout_mongolian">Mongolian</string>
-    <string name="layout_nepali_romanized">Nepali (Romanized)</string>
-    <string name="layout_nepali_traditional">Nepali (Traditional)</string>
-    <string name="layout_nordic">Nordic</string>
-    <string name="layout_pcqwerty">PC QWERTY</string>
-    <string name="layout_qwerty">QWERTY</string>
-    <string name="layout_qwertz">QWERTZ</string>
-    <string name="layout_serbian_qwertz">Serbian (QWERTZ)</string>
-    <string name="layout_sinhala">Sinhala</string>
-    <string name="layout_south_slavic">South Slavic</string>
-    <string name="layout_spanish">QWERTY+</string>
-    <string name="layout_swiss">Swiss</string>
-    <string name="layout_tamil">Tamil</string>
-    <string name="layout_telugu">Telugu</string>
-    <string name="layout_thai">Thai</string>
-    <string name="layout_uzbek">Uzbek</string>
-    <string name="layout_kurdish">Kurdish</string>
-    <string name="layout_turkish">Turkish</string>
-    <string name="layout_default">Default</string>
 </resources>

@@ -211,12 +211,7 @@ object Subtypes {
     }
 
     fun getLayoutName(context: Context, layout: String): String {
-        val resourceId = context.resources.getIdentifier("layout_$layout", "string", context.packageName)
-        if(resourceId == 0){
-            return layout
-        } else {
-            return context.getString(resourceId)
-        }
+        return LayoutManager.getLayoutOrNull(context, layout)?.name ?: layout
     }
 
     fun layoutsMappedByLanguage(layouts: Set<String>): Map<String, List<InputMethodSubtype>> {
