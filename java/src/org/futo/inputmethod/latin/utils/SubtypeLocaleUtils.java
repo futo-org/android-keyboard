@@ -151,8 +151,12 @@ public final class SubtypeLocaleUtils {
         }
     }
 
+    private static String normalizeLocaleString(final String localeString) {
+        return localeString.replace("#", "");
+    }
+
     public static boolean isExceptionalLocale(final String localeString) {
-        return sExceptionalLocaleToNameIdsMap.containsKey(localeString);
+        return sExceptionalLocaleToNameIdsMap.containsKey(normalizeLocaleString(localeString));
     }
 
     private static final String getNoLanguageLayoutKey(final String keyboardLayoutName) {
@@ -162,7 +166,7 @@ public final class SubtypeLocaleUtils {
     public static int getSubtypeNameId(final String localeString, final String keyboardLayoutName) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
                 && isExceptionalLocale(localeString)) {
-            return sExceptionalLocaleToWithLayoutNameIdsMap.get(localeString);
+            return sExceptionalLocaleToWithLayoutNameIdsMap.get(normalizeLocaleString(localeString));
         }
         final String key = NO_LANGUAGE.equals(localeString)
                 ? getNoLanguageLayoutKey(keyboardLayoutName)
@@ -176,7 +180,7 @@ public final class SubtypeLocaleUtils {
         if (NO_LANGUAGE.equals(localeString)) {
             return sResources.getConfiguration().locale;
         }
-        if (sExceptionalLocaleDisplayedInRootLocale.containsKey(localeString)) {
+        if (sExceptionalLocaleDisplayedInRootLocale.containsKey(normalizeLocaleString(localeString))) {
             return Locale.ROOT;
         }
         return LocaleUtils.constructLocaleFromString(localeString);
@@ -207,7 +211,7 @@ public final class SubtypeLocaleUtils {
     }
 
     @Nonnull
-    private static String getSubtypeLocaleDisplayNameInternal(@Nonnull final String localeString,
+    public static String getSubtypeLocaleDisplayNameInternal(@Nonnull final String localeString,
             @Nonnull final Locale displayLocale) {
         if (NO_LANGUAGE.equals(localeString)) {
             // No language subtype should be displayed in system locale.
@@ -216,12 +220,9 @@ public final class SubtypeLocaleUtils {
         final Integer exceptionalNameResId;
         if (displayLocale.equals(Locale.ROOT)
                 && sExceptionalLocaleDisplayedInRootLocale.containsKey(localeString)) {
-            exceptionalNameResId = sExceptionalLocaleDisplayedInRootLocale.get(localeString);
-        } else if (sExceptionalLocaleToNameIdsMap.containsKey(localeString)) {
-            exceptionalNameResId = sExceptionalLocaleToNameIdsMap.get(localeString);
-        } else {
-            exceptionalNameResId = null;
-        }
+            exceptionalNameResId = sExceptionalLocaleDisplayedInRootLocale.get(normalizeLocaleString(localeString));
+        } else
+            exceptionalNameResId = sExceptionalLocaleToNameIdsMap.getOrDefault(normalizeLocaleString(localeString), null);
 
         final String displayName;
         if (exceptionalNameResId != null && exceptionalNameResId != 0) {

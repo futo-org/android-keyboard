@@ -214,6 +214,15 @@ object Subtypes {
         return LayoutManager.getLayoutOrNull(context, layout)?.name ?: layout
     }
 
+    fun getLocaleDisplayName(locale: Locale, nameLocale: Locale): String {
+        val localeString = locale.toString()
+        if(SubtypeLocaleUtils.isExceptionalLocale(localeString)) {
+            return SubtypeLocaleUtils.getSubtypeLocaleDisplayNameInternal(localeString, nameLocale)
+        } else {
+            return locale.getDisplayName(nameLocale)
+        }
+    }
+
     fun layoutsMappedByLanguage(layouts: Set<String>): Map<String, List<InputMethodSubtype>> {
         val subtypes = layouts.map {
             convertToSubtype(it)

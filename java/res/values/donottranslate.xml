@@ -31,7 +31,9 @@
         <item>en_GB</item>
         <item>es_US</item>
         <item>hi_ZZ</item>
+        <item>hi__Latn</item>
         <item>sr_ZZ</item>
+        <item>ipa</item>
     </string-array>
 
     <!-- Subtype locale whose name should be displayed in Locale.ROOT. -->

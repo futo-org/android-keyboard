@@ -238,9 +238,13 @@
     <string name="subtype_es_US">Spanish (US)</string>
     <!-- Description for Hinglish (https://en.wikipedia.org/wiki/Hinglish) keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_hi_ZZ">Hinglish</string>
+    <string name="subtype_hi__Latn">Hinglish</string>
     <!-- Description for Serbian (Latin) keyboard subtype [CHAR LIMIT=25]
          (Latin) can be an abbreviation to fit in the CHAR LIMIT. -->
     <string name="subtype_sr_ZZ">Serbian (Latin)</string>
+
+    <string name="subtype_ipa">International Phonetic Alphabet</string>
+
     <!-- Description for English (UK) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
          (UK) should be an abbreviation of United Kingdom to fit in the CHAR LIMIT.
          This should be identical to subtype_en_GB aside from the trailing (%s). -->

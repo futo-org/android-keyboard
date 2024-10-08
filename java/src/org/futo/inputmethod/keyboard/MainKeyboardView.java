@@ -56,6 +56,7 @@ import org.futo.inputmethod.latin.SuggestedWords;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.CoordinateUtils;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
+import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.List;
@@ -840,6 +841,12 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
             if (fitsTextIntoWidth(width, fullText, paint)) {
                 return fullText;
             }
+        }
+
+        if(SubtypeLocaleUtils.isExceptionalLocale(locale.toString())
+                || locale.toString().equals(SubtypeLocaleUtils.NO_LANGUAGE)
+        ) {
+            return SubtypeLocaleUtils.getSubtypeLanguageDisplayName(locale.toString());
         }
 
         final String middleText = (new Locale(locale.getLanguage())).getDisplayName(locale);

@@ -76,7 +76,9 @@ fun SelectLanguageScreen(navController: NavHostController = rememberNavControlle
     } else {
         locales.searchMultiple(textFieldValue.value.text.lowercase(), limitLength = true, maxDistance = Int.MAX_VALUE) {
             listOf(
-                it.language, it.getDisplayName(systemLocale), it.getDisplayName(it)
+                it.language,
+                Subtypes.getLocaleDisplayName(it, systemLocale),
+                Subtypes.getLocaleDisplayName(it, it),
             ).map { normalize(it.lowercase()) }.flatMap { it.split(" ") }.filter { it.isNotBlank() }
         }
     }
@@ -110,8 +112,8 @@ fun SelectLanguageScreen(navController: NavHostController = rememberNavControlle
 
         items(searchKeys) {
             NavigationItem(
-                title = it.getDisplayName(systemLocale),
-                subtitle = it.getDisplayName(it),
+                title = Subtypes.getLocaleDisplayName(it, systemLocale),
+                subtitle = Subtypes.getLocaleDisplayName(it, it),
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = {
                     navController.navigate("addLayout/" + it.toLanguageTag().urlEncode())
@@ -162,7 +164,7 @@ fun SelectLayoutsScreen(navController: NavHostController = rememberNavController
 
     val relevantLayouts = remember {
         layoutMapping.entries.filter {
-            it.key.language == locale.language
+            (it.key.language == locale.language) && (it.key.script == locale.script)
         }.flatMap { it.value }.toSet()
     }
 
