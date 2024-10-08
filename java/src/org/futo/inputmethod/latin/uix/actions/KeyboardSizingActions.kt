@@ -93,10 +93,13 @@ val KeyboardModeAction = Action(
             override fun WindowContents(keyboardShown: Boolean) {
                 Column {
                     Row(Modifier.height(ActionBarHeight)) {
-                        IconButton(onClick = {
-                            manager.closeActionWindow()
-                        }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Go back")
+                        // Hide the back button in the resize tutorial
+                        if(manager.getTutorialMode() != TutorialMode.ResizerTutorial) {
+                            IconButton(onClick = {
+                                manager.closeActionWindow()
+                            }) {
+                                Icon(Icons.Default.ArrowBack, contentDescription = "Go back")
+                            }
                         }
                         Spacer(Modifier.weight(1.0f))
                         TextButton(onClick = {
