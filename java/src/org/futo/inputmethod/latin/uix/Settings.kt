@@ -23,6 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -164,6 +165,12 @@ class DataStoreHelper {
         fun init(context: Context) {
             if(initialized) return
             initialized = true
+
+            runBlocking {
+                context.dataStore.data.first().let {
+                    currentPreferences = it
+                }
+            }
 
             GlobalScope.launch {
                 context.dataStore.data.collect {
