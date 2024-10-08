@@ -174,10 +174,6 @@ data class LayoutEngine(
         layoutWidth
     }
 
-    // TODO: Remove
-    private val padding = Rect(0, 0, 0, 0)
-    private val xOffset = 0
-
     private val minimumBottomFunctionalKeyWidth = (layoutWidth * keyboard.minimumBottomRowFunctionalKeyWidth)
 
     private val regularKeyWidth = computeRegularKeyWidth()
@@ -540,6 +536,13 @@ data class LayoutEngine(
             else -> null
         }
 
+        // For the spacebar specifically, extend the hitbox all the way down to include the padded area,
+        // unless arrow row is active
+        val extendedBottomPadding = if(data.style == KeyVisualStyle.Spacebar && data.code == Constants.CODE_SPACE && !params.mId.mArrowRow) {
+            layoutParams.size.padding.bottom
+        } else {
+            0
+        }
 
         val key = org.futo.inputmethod.keyboard.Key(
             code = data.code,
@@ -566,11 +569,12 @@ data class LayoutEngine(
             // #a s d f g h j k l#
             // ^                 ^
             // taps A       taps L
+            // Also add bottom padding for spacebar
             hitBox = Rect(
                 x - (leftGap?.widthPx?.roundToInt() ?: 0),
                 y,
                 x + width + (rightGap?.widthPx?.roundToInt() ?: 0),
-                y + height
+                y + height + extendedBottomPadding
             ),
         )
 
@@ -596,10 +600,10 @@ data class LayoutEngine(
     }
 
     private fun addRowAlignLeft(row: List<LayoutEntry>, y: Int, height: Int)
-            = addRow(row, 0.0f + padding.left + xOffset, y, height)
+            = addRow(row, 0.0f, y, height)
 
     private fun addRowAlignRight(row: List<LayoutEntry>, y: Int, height: Int) {
-        val startingOffset = params.mId.mWidth - row.sumOf { it.widthPx.toDouble() }.toFloat() + padding.left
+        val startingOffset = params.mId.mWidth - row.sumOf { it.widthPx.toDouble() }.toFloat()
         addRow(row, startingOffset, y, height)
     }
 
@@ -615,7 +619,7 @@ data class LayoutEngine(
     }
 
     private fun addKeys(rows: List<LayoutRow>): Int {
-        var currentY = 0.0f + padding.top
+        var currentY = 0.0f
         rows.forEach { row ->
             addRow(row, currentY.toInt())
             currentY += row.height
@@ -633,12 +637,12 @@ data class LayoutEngine(
 
         val rows = computeRows(this.rows)
 
-        val totalKeyboardHeight = addKeys(rows).let { totalRowHeight.roundToInt() } + padding.top + padding.bottom
+        val totalKeyboardHeight = addKeys(rows).let { totalRowHeight.roundToInt() } + layoutParams.size.padding.bottom
 
         params.mOccupiedHeight = totalKeyboardHeight - verticalGapPx.roundToInt()
-        params.mOccupiedWidth = params.mId.mWidth + padding.left + padding.right
+        params.mOccupiedWidth = params.mId.mWidth
         params.mTopPadding    = 0
-        params.mBottomPadding = 0
+        params.mBottomPadding = layoutParams.size.padding.bottom
         params.mLeftPadding   = 0
         params.mRightPadding  = 0
 

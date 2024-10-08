@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.LatinIME
+import org.futo.inputmethod.latin.uix.keyboardBottomPadding
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
 import org.futo.inputmethod.v2keyboard.FloatingKeyboardSize
@@ -421,7 +422,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
     fun Resizer(boxScope: BoxScope, size: ComputedKeyboardSize) = with(boxScope) {
         if(!resizing.value) return
 
-        Box(Modifier.matchParentSize().safeKeyboardPadding()) {
+        Box(Modifier.matchParentSize().safeKeyboardPadding().keyboardBottomPadding(size)) {
             when (size) {
                 is OneHandedKeyboardSize -> OneHandedResizer(size)
                 is RegularKeyboardSize -> RegularKeyboardResizer(size)

@@ -157,6 +157,11 @@ fun Modifier.safeKeyboardPadding(): Modifier {
     return this.absolutePadding(left = padding.left.coerceAtLeast(0.dp), right = padding.right.coerceAtLeast(0.dp))
 }
 
+@Composable
+fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(LocalDensity.current) {
+    this@keyboardBottomPadding.absolutePadding(bottom = size.padding.bottom.toDp())
+}
+
 
 private class LatinIMEActionInputTransaction(
     private val inputLogic: InputLogic,
@@ -731,7 +736,7 @@ class UixManager(private val latinIME: LatinIME) {
             .requiredWidth(requiredWidthPx.toDp())
             .absolutePadding(
                 //top = padding.top.toDp().coerceAtLeast(0.dp),
-                bottom = padding.bottom.toDp().coerceAtLeast(0.dp),
+                //bottom = padding.bottom.toDp().coerceAtLeast(0.dp),
             )
             .clipToBounds()
         ) {
