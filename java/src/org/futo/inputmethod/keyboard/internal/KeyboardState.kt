@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.ViewConfiguration
 import android.view.inputmethod.EditorInfo
 import org.futo.inputmethod.event.Event
+import org.futo.inputmethod.keyboard.Key
+import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.v2keyboard.getKeyboardMode
@@ -126,8 +128,16 @@ internal data class SavedKeyboardState(
 class KeyboardState(private val switchActions: SwitchActions) {
     companion object {
         private const val TAG = "KeyboardState"
-        private const val DEBUG_EVENT = false
+        private const val DEBUG_EVENT = true
         private const val DEBUG_INTERNAL_ACTION = false
+
+        @JvmStatic
+        fun shouldReleaseAllPointers(keyboard: Keyboard?, key: Key?): Boolean = when {
+            keyboard == null || key == null -> false
+            key.isModifier -> true
+            Constants.isLetterCode(key.code) && !keyboard.mId.mElement.page.locked -> true
+            else -> false
+        }
     }
 
     private val shiftKeyState = ShiftKeyState("Shift")
@@ -452,7 +462,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
         if (DEBUG_EVENT) {
             Log.d(
                 TAG, "onEvent: code=" + Constants.printableCode(code)
-                        + "flags($autoCapsFlags, $recapitalizeMode)"
+                        + " flags($autoCapsFlags, $recapitalizeMode)"
                         + " " + debugState
             )
         }

@@ -209,7 +209,8 @@ class KeyboardLayoutSetV2 internal constructor(
             false,
             isNumberRowActive,
             params.arrowRow,
-            params.longPressKeySettings ?: LongPressKeySettings.load(context)
+            params.longPressKeySettings ?: LongPressKeySettings.load(context),
+            element
         )
 
         val layout = getKeyboardLayoutForElement(element)

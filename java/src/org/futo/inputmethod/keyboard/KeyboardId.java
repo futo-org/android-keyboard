@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
 
 import org.futo.inputmethod.compat.EditorInfoCompatUtils;
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement;
 import org.futo.inputmethod.latin.settings.LongPressKeySettings;
 import org.futo.inputmethod.latin.utils.InputTypeUtils;
 
@@ -70,10 +71,11 @@ public final class KeyboardId {
     public final boolean mNumberRow;
     public final boolean mArrowRow;
     public final LongPressKeySettings mLongPressKeySettings;
+    public final KeyboardLayoutElement mElement;
 
     private final int mHashCode;
 
-    public KeyboardId(String mKeyboardLayoutSetName, Locale mLocale, int mWidth, int mHeight, int mMode, int mElementId, EditorInfo mEditorInfo, boolean mClobberSettingsKey, boolean mBottomEmojiKeyEnabled, int mBottomActionKeyId, String mCustomActionLabel, boolean mHasShortcutKey, boolean mIsSplitLayout, boolean mNumberRow, boolean mArrowRow, LongPressKeySettings mLongPressKeySettings) {
+    public KeyboardId(String mKeyboardLayoutSetName, Locale mLocale, int mWidth, int mHeight, int mMode, int mElementId, EditorInfo mEditorInfo, boolean mClobberSettingsKey, boolean mBottomEmojiKeyEnabled, int mBottomActionKeyId, String mCustomActionLabel, boolean mHasShortcutKey, boolean mIsSplitLayout, boolean mNumberRow, boolean mArrowRow, LongPressKeySettings mLongPressKeySettings, KeyboardLayoutElement mElement) {
         this.mKeyboardLayoutSetName = mKeyboardLayoutSetName;
         this.mLocale = mLocale;
         this.mWidth = mWidth;
@@ -90,6 +92,7 @@ public final class KeyboardId {
         this.mNumberRow = mNumberRow;
         this.mArrowRow = mArrowRow;
         this.mLongPressKeySettings = mLongPressKeySettings;
+        this.mElement = mElement;
 
         mHashCode = computeHashCode(this);
     }
@@ -114,7 +117,8 @@ public final class KeyboardId {
                 id.mLocale,
                 id.mIsSplitLayout,
                 id.mNumberRow,
-                id.mLongPressKeySettings.hashCode()
+                id.mLongPressKeySettings.hashCode(),
+                id.mElement.hashCode()
         });
     }
 
@@ -139,7 +143,8 @@ public final class KeyboardId {
                 && other.mLocale.equals(mLocale)
                 && other.mIsSplitLayout == mIsSplitLayout
                 && other.mNumberRow == mNumberRow
-                && other.mLongPressKeySettings.equals(mLongPressKeySettings);
+                && other.mLongPressKeySettings.equals(mLongPressKeySettings)
+                && other.mElement.equals(mElement);
     }
 
     private static boolean isAlphabetKeyboard(final int elementId) {

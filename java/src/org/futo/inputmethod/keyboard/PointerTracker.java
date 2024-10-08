@@ -30,6 +30,7 @@ import org.futo.inputmethod.keyboard.internal.GestureEnabler;
 import org.futo.inputmethod.keyboard.internal.GestureStrokeDrawingParams;
 import org.futo.inputmethod.keyboard.internal.GestureStrokeDrawingPoints;
 import org.futo.inputmethod.keyboard.internal.GestureStrokeRecognitionParams;
+import org.futo.inputmethod.keyboard.internal.KeyboardState;
 import org.futo.inputmethod.keyboard.internal.PointerTrackerQueue;
 import org.futo.inputmethod.keyboard.internal.TimerProxy;
 import org.futo.inputmethod.keyboard.internal.TypingTimeRecorder;
@@ -650,9 +651,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         final Key key = getKeyOn(x, y);
         mBogusMoveEventDetector.onActualDownEvent(x, y);
-        if (key != null && key.isModifier()) {
-            // Before processing a down event of modifier key, all pointers already being
-            // tracked should be released.
+
+        boolean needsToReleasePointers = KeyboardState.shouldReleaseAllPointers(mKeyboard, key);
+        if (needsToReleasePointers) {
+            // Before processing a down event, all pointers already being tracked should be released
+            // Triggers when a modifier key is pressed (e.g. shift), or the layout is not
+            // shift-locked
             sPointerTrackerQueue.releaseAllPointers(eventTime);
         }
         sPointerTrackerQueue.add(this);
