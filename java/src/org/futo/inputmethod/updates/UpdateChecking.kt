@@ -22,7 +22,7 @@ import java.lang.Exception
 const val UPDATE_URL = "https://keyboard.futo.org/keyboard_version"
 
 suspend fun checkForUpdate(): UpdateResult? {
-    if(!BuildConfig.UPDATE_CHECKING) return null
+    if(!BuildConfig.UPDATE_CHECKING || !BuildConfig.UPDATE_CHECKING_NETWORK) return null
 
     return withContext(Dispatchers.IO) {
         val httpClient = OkHttpClient()
