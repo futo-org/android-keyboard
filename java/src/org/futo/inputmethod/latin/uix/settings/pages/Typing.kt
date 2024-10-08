@@ -5,11 +5,17 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
@@ -17,9 +23,11 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,16 +38,21 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeOptions
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TextInputSession
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -80,9 +93,9 @@ import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
-import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsInt
+import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.v2keyboard.KeyboardSettings
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
@@ -116,6 +129,7 @@ fun ActionEditorScreen(navController: NavHostController = rememberNavController(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Preview(showBackground = true)
 @Composable
 fun ResizeScreen(navController: NavHostController = rememberNavController()) {
@@ -123,7 +137,7 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
     val textInputService = LocalTextInputService.current
     val session = remember { mutableStateOf<TextInputSession?>(null) }
 
-    LaunchedEffect(Unit) {
+    DisposableEffect(Unit) {
         session.value = textInputService?.startInput(
             TextFieldValue(""),
             imeOptions = ImeOptions.Default.copy(
@@ -134,17 +148,59 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
             onEditCommand = { },
             onImeActionPerformed = { }
         )
+
+        onDispose {
+            textInputService?.stopInput(session.value ?: return@onDispose)
+        }
+    }
+
+    val wasImeVisible = remember { mutableStateOf(false) }
+    val isImeVisible = WindowInsets.isImeVisible
+    LaunchedEffect(isImeVisible) {
+        wasImeVisible.value = wasImeVisible.value || isImeVisible
+
+        if(!isImeVisible && wasImeVisible.value) {
+            navController.navigateUp()
+        }
     }
 
     Box {
         ScrollableList {
             ScreenTitle("Resize Keyboard", showBack = true, navController)
 
-            Tip("Resizing has moved to the button in the top right of the Keyboard Modes action. You can set a different size for the different modes as well as portrait and landscape.")
+            PaymentSurface(
+                isPrimary = false,
+                title = "Tip"
+            ) {
+                Text(
+                    buildAnnotatedString {
+                        append("You can access this anywhere with the new Keyboard Modes action: ")
+                        appendInlineContent("icon")
+                        appendLine()
+                        appendLine()
+                        append("Tap the \"Resize Keyboard\" button to resize.")
+                    },
+                    modifier = Modifier.padding(16.dp, 8.dp),
+                    style = Typography.bodyMedium,
+                    color = LocalContentColor.current,
+                    inlineContent = mapOf(
+                        "icon" to InlineTextContent(
+                            Placeholder(
+                                width = with(LocalDensity.current) { 24.dp.toPx().toSp() },
+                                height = with(LocalDensity.current) { 24.dp.toPx().toSp() },
+                                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                            )
+                        ){
+                            Icon(painterResource(R.drawable.keyboard_gear), contentDescription = null)
+                        }
+                    ))
+            }
 
             NavigationItem(
-                "Reset all size settings",
-                style = NavigationItemStyle.MiscNoArrow,
+                "Reset size settings",
+                subtitle = "Tap to reset all sizes and modes for both portrait and landscape to default",
+                style = NavigationItemStyle.Misc,
+                icon = painterResource(R.drawable.close),
                 navigate = {
                     KeyboardSettings.values.forEach {
                         context.setSettingBlocking(it.key, it.default)

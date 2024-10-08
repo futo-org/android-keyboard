@@ -847,6 +847,7 @@ fun ActionWindowBar(
 fun CollapsibleSuggestionsBar(
     onClose: () -> Unit,
     onCollapse: () -> Unit,
+    showClose: Boolean,
     showCollapse: Boolean,
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripViewListener,
@@ -862,21 +863,25 @@ fun CollapsibleSuggestionsBar(
             Row(Modifier.safeKeyboardPadding()) {
                 val color = MaterialTheme.colorScheme.primary
 
-                IconButton(
-                    onClick = onClose,
-                    modifier = Modifier
-                        .width(42.dp)
-                        .fillMaxHeight()
-                        .drawBehind {
-                            drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
-                        },
+                if(showClose) {
+                    IconButton(
+                        onClick = onClose,
+                        modifier = Modifier
+                            .width(42.dp)
+                            .fillMaxHeight()
+                            .drawBehind {
+                                drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
+                            },
 
-                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.close),
-                        contentDescription = "Close"
-                    )
+                        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.close),
+                            contentDescription = "Close"
+                        )
+                    }
+                } else {
+                    Spacer(Modifier.width(42.dp))
                 }
 
                 if (words != null) {
@@ -1049,6 +1054,7 @@ fun PreviewCollapsibleBar(colorScheme: ThemeOption = DefaultDarkScheme) {
         onCollapse = { },
         onClose = { },
         words = exampleSuggestedWords,
+        showClose = true,
         showCollapse = true,
         suggestionStripListener = ExampleListener()
     )

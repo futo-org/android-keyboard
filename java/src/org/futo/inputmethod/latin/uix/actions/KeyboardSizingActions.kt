@@ -18,15 +18,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBarHeight
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.TutorialMode
 import org.futo.inputmethod.v2keyboard.KeyboardMode
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import org.futo.voiceinput.shared.ui.theme.Typography
@@ -73,6 +76,15 @@ val KeyboardModeAction = Action(
     windowImpl = { manager, _ ->
         val sizeCalculator = manager.getSizingCalculator()
         object : ActionWindow {
+            override val showCloseButton: Boolean
+                get() = false
+
+            override val onlyShowAboveKeyboard: Boolean
+                get() = true
+
+            override val fixedWindowHeight: Dp?
+                get() = 54.dp + ActionBarHeight
+
             @Composable
             override fun windowName(): String =
                 stringResource(R.string.keyboard_modes_action_title)
@@ -89,6 +101,14 @@ val KeyboardModeAction = Action(
                         Spacer(Modifier.weight(1.0f))
                         TextButton(onClick = {
                             manager.showResizer()
+
+                            if(manager.getTutorialMode() == TutorialMode.ResizerTutorial) {
+                                manager.markTutorialCompleted()
+                            }
+                        }, Modifier.onGloballyPositioned {
+                            if(manager.getTutorialMode() == TutorialMode.ResizerTutorial) {
+                                manager.setTutorialArrowPosition(it)
+                            }
                         }) {
                             Text("Resize Keyboard", style = Typography.titleSmall.copy(fontSize = 16.sp, fontWeight = FontWeight.W500))
                         }
@@ -126,10 +146,10 @@ val KeyboardModeAction = Action(
             }
 
             override fun close() {
-
+                if(manager.getTutorialMode() == TutorialMode.ResizerTutorial) {
+                    manager.markTutorialCompleted()
+                }
             }
         }
     },
-    onlyShowAboveKeyboard = true,
-    fixedWindowHeight = 54.dp + ActionBarHeight
 )

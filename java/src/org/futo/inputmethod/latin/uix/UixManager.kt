@@ -37,11 +37,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -67,7 +67,9 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -127,6 +129,7 @@ import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
 import org.futo.inputmethod.v2keyboard.SplitKeyboardSize
 import org.futo.inputmethod.v2keyboard.opposite
 import java.util.Locale
+import kotlin.math.roundToInt
 
 val LocalManager = staticCompositionLocalOf<KeyboardManagerForAction> {
     error("No LocalManager provided")
@@ -352,6 +355,18 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         }
     }
 
+    override fun getTutorialMode(): TutorialMode {
+        return uixManager.tutorialMode
+    }
+
+    override fun setTutorialArrowPosition(coordinates: LayoutCoordinates) {
+        uixManager.tutorialArrowPosition.value = coordinates
+    }
+
+    override fun markTutorialCompleted() {
+        uixManager.tutorialCompleted.value = true
+    }
+
     override fun isDeviceLocked(): Boolean {
         return getContext().isDeviceLocked
     }
@@ -493,8 +508,6 @@ class UixManager(private val latinIME: LatinIME) {
     private fun enterActionWindowView(action: Action) {
         assert(action.windowImpl != null)
 
-        mainKeyboardHidden = action.onlyShowAboveKeyboard == false
-
         currWindowAction = action
 
         if (persistentStates[action] == null) {
@@ -502,6 +515,8 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         currWindowActionWindow = (action.windowImpl!!)(keyboardManagerForAction, persistentStates[action])
+
+        mainKeyboardHidden = currWindowActionWindow?.onlyShowAboveKeyboard == false
 
         if(action.keepScreenAwake) {
             latinIME.window.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -562,7 +577,7 @@ class UixManager(private val latinIME: LatinIME) {
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(with(LocalDensity.current) {
-                    currWindowAction?.fixedWindowHeight ?: ((latinIME
+                    currWindowActionWindow?.fixedWindowHeight ?: ((latinIME
                         .getInputViewHeight()
                         .toFloat() / heightDiv.toFloat()).toDp() +
                             if (actionsExpanded) ActionBarHeight else 0.dp)
@@ -583,7 +598,8 @@ class UixManager(private val latinIME: LatinIME) {
                     onCollapse = { toggleExpandAction() },
                     onClose = { returnBackToMainKeyboardViewFromAction() },
                     words = suggestedWordsOrNull,
-                    showCollapse = currWindowAction?.onlyShowAboveKeyboard == false,
+                    showClose = currWindowActionWindow?.showCloseButton == true,
+                    showCollapse = currWindowActionWindow?.onlyShowAboveKeyboard == false,
                     suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
                 )
             }
@@ -943,7 +959,9 @@ class UixManager(private val latinIME: LatinIME) {
                     CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                             CompositionLocalProvider(LocalFoldingState provides foldingOptions.value) {
-                                content()
+                                Box(Modifier.fillMaxSize()) {
+                                    content()
+                                }
                             }
                         }
                     }
@@ -959,6 +977,8 @@ class UixManager(private val latinIME: LatinIME) {
                     closeActionWindow()
                     isShowingActionEditor.value = false
                 }
+
+                TutorialArrow()
 
                 KeyboardWindowSelector { gap ->
                     Column {
@@ -1172,8 +1192,50 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
+    var editorInfo: EditorInfo? = null
+
+
+    // TODO: Move tutorial stuff to a separate class
+
+    val tutorialMode: TutorialMode
+        get() = when {
+            editorInfo?.privateImeOptions?.contains("org.futo.inputmethod.latin.ResizeMode=1") == true ->
+                TutorialMode.ResizerTutorial
+
+            else ->
+                TutorialMode.None
+        }
+
+    val tutorialArrowPosition: MutableState<LayoutCoordinates?> = mutableStateOf(null)
+    val tutorialCompleted = mutableStateOf(false)
+
+    @Composable
+    private fun TutorialArrow() = with(LocalDensity.current) {
+        if(tutorialMode == TutorialMode.ResizerTutorial && !tutorialCompleted.value) {
+            tutorialArrowPosition.value?.let { position ->
+                val pos = position.positionInWindow()
+                Icon(
+                    painterResource(R.drawable.pointy_arrow),
+                    contentDescription = null,
+                    tint = LocalKeyboardScheme.current.primary,
+                    modifier = Modifier.size(128.dp).offset {
+                        IntOffset(
+                            pos.x.roundToInt(),
+                            (pos.y - 128.dp.toPx()).roundToInt()
+                        )
+                    }
+                )
+            }
+        }
+    }
+
     fun inputStarted(editorInfo: EditorInfo?) {
-        if(editorInfo?.privateImeOptions?.contains("org.futo.inputmethod.latin.ResizeMode=1") == true) {
+        this.editorInfo = editorInfo
+
+        tutorialCompleted.value = false
+        tutorialArrowPosition.value = null
+
+        if(tutorialMode == TutorialMode.ResizerTutorial) {
             onActionActivated(KeyboardModeAction)
         }
     }

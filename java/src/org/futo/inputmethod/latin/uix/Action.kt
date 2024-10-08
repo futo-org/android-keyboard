@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.LatinIME
@@ -31,6 +32,11 @@ data class DialogRequestItem(
     val option: String,
     val onClick: () -> Unit
 )
+
+enum class TutorialMode {
+    None,
+    ResizerTutorial
+}
 
 interface KeyboardManagerForAction {
     fun getContext(): Context
@@ -77,9 +83,22 @@ interface KeyboardManagerForAction {
 
     fun getSizingCalculator(): KeyboardSizingCalculator
     fun showResizer()
+
+    fun getTutorialMode(): TutorialMode
+    fun setTutorialArrowPosition(coordinates: LayoutCoordinates)
+    fun markTutorialCompleted()
 }
 
 interface ActionWindow {
+    val onlyShowAboveKeyboard: Boolean
+        get() = false
+
+    val showCloseButton: Boolean
+        get() = true
+
+    val fixedWindowHeight: Dp?
+        get() = null
+
     @Composable
     fun windowName(): String
 
@@ -127,7 +146,5 @@ data class Action(
     val persistentStateInitialization: PersistentStateInitialization = PersistentStateInitialization.OnActionTrigger,
     val altPressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)? = null,
 
-    val shownInEditor: Boolean = true,
-    val onlyShowAboveKeyboard: Boolean = false,
-    val fixedWindowHeight: Dp? = null
+    val shownInEditor: Boolean = true
 )
