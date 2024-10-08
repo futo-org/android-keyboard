@@ -128,7 +128,7 @@ internal data class SavedKeyboardState(
 class KeyboardState(private val switchActions: SwitchActions) {
     companion object {
         private const val TAG = "KeyboardState"
-        private const val DEBUG_EVENT = true
+        private const val DEBUG_EVENT = false
         private const val DEBUG_INTERNAL_ACTION = false
 
         @JvmStatic
