@@ -26,6 +26,8 @@ data class VisualStyleDescriptor(
 )
 
 interface DynamicThemeProvider {
+    val keyBorders: Boolean
+
     val keyboardColor: Int
     val keyColor: Int
 

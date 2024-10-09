@@ -35,6 +35,8 @@ fun<T> Preferences.get(key: SettingsKey<T>): T {
 
 class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorScheme) :
     DynamicThemeProvider {
+    override val keyBorders: Boolean
+
     override val keyboardColor: Int
     override val actionBarColor: Color
     override val keyColor: Int
@@ -133,7 +135,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     }
 
     val expertMode: Boolean
-    val keyBorders: Boolean
     val showKeyHints: Boolean
 
     val keyboardHeight: Float
@@ -188,7 +189,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         actionBarColor = if(keyBorders) {
             colorScheme.keyboardSurface
         } else {
-            colorScheme.surface
+            colorScheme.keyboardSurfaceVariant
         }
 
         val keyColor = if(keyBorders) {

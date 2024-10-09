@@ -1,6 +1,5 @@
 package org.futo.inputmethod.latin.uix.theme.presets
 
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -9,11 +8,9 @@ import org.futo.inputmethod.latin.uix.extendedDarkColorScheme
 import org.futo.inputmethod.latin.uix.extendedLightColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
-import org.futo.inputmethod.latin.uix.wrapDarkColorScheme
-import org.futo.inputmethod.latin.uix.wrapLightColorScheme
 
 private val darkColorScheme = extendedDarkColorScheme(
-    primary=Color(0xFF63E5D9),
+    primary=Color(0xFF80CBC4),
     onPrimary=Color(0xFF1D3030),
     primaryContainer=Color(0xFF2C4A4A),
     onPrimaryContainer=Color(0xFF99FFF8),
@@ -29,22 +26,23 @@ private val darkColorScheme = extendedDarkColorScheme(
     onError=Color(0xFF631E21),
     errorContainer=Color(0xFF7A252B),
     onErrorContainer=Color(0xFFFFD6D6),
-    outline=Color(0xFF90ADA8),
+    outline=Color(0xFF9EA3A6),
     outlineVariant=Color(0xFF3C6158),
     surface=Color(0xFF131717),
     onSurface=Color(0xFFD8EBE4),
     onSurfaceVariant=Color(0xFFBFD9D4),
     surfaceContainerHighest=Color(0xFF2C3838),
     shadow=Color(0xFF000000).copy(alpha = 0.7f),
-    keyboardSurface=Color(0xFF1F2A2B),
-    keyboardContainer=Color(0xFF293738),
-    keyboardContainerVariant=Color(0xFF212F30),
-    onKeyboardContainer=Color(0xFFD8EBE4),
+    keyboardSurface=Color(0xFF263238),
+    keyboardSurfaceVariant=Color(0xFF21272B),
+    keyboardContainer=Color(0xFF3C474C),
+    keyboardContainerVariant=Color(0xFF2F3A40),
+    onKeyboardContainer=Color(0xFFD4D6D7),
     keyboardPress=Color(0xFF3A5A5C),
     keyboardFade0=Color(0xFF1F2A2B),
-    keyboardFade1=Color(0xFF1F2A2B),
-    primaryTransparent=Color(0xFF80CBC4).copy(alpha = 0.3f),
-    onSurfaceTransparent=Color(0xFFD8EBE4).copy(alpha = 0.1f),
+    keyboardFade1=Color(0xFF1F2A2B).copy(alpha = 0.3f),
+    primaryTransparent=Color(0xFF80CBC4).copy(alpha = 0.1f),
+    onSurfaceTransparent=Color(0xFFD8EBE4)
 )
 
 private val lightColorScheme = extendedLightColorScheme(
@@ -71,15 +69,16 @@ private val lightColorScheme = extendedLightColorScheme(
     onSurfaceVariant=Color(0xFF363F40),
     surfaceContainerHighest=Color(0xFFCAE5E5),
     shadow=Color(0xFF000000).copy(alpha = 0.7f),
-    keyboardSurface=Color(0xFFCAE8EB),
-    keyboardContainer=Color(0xFFE8FDFF),
-    keyboardContainerVariant=Color(0xFFD9FCFF),
-    onKeyboardContainer=Color(0xFF202929),
-    keyboardPress=Color(0xFFA3E0E5),
+    keyboardSurface=Color(0xFFECEFF1),
+    keyboardSurfaceVariant=Color(0xFFE4E7E9),
+    keyboardContainer=Color(0xFFFFFFFF),
+    keyboardContainerVariant=Color(0xFFE2E7EB),
+    onKeyboardContainer=Color(0xFF37474F),
+    keyboardPress=Color(0xFFD0F2F5),
     keyboardFade0=Color(0xFFCAE8EB),
-    keyboardFade1=Color(0xFFCAE8EB),
-    primaryTransparent=Color(0xFF127A70).copy(alpha = 0.3f),
-    onSurfaceTransparent=Color(0xFF202929).copy(alpha = 0.1f),
+    keyboardFade1=Color(0xFFCAE8EB).copy(alpha = 0.3f),
+    primaryTransparent=Color(0xFF127A70).copy(alpha = 0.1f),
+    onSurfaceTransparent=Color(0xFF202929)
 )
 
 

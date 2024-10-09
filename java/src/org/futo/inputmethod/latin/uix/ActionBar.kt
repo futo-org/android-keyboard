@@ -28,7 +28,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -37,8 +36,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -48,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
@@ -697,7 +693,9 @@ fun RowScope.PinnedActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action
 }
 
 @Composable
-fun ActionSep() {
+fun ActionSep(isExtra: Boolean = false) {
+    if(isExtra && (LocalInspectionMode.current || LocalThemeProvider.current.keyBorders)) return
+
     val sepCol = LocalKeyboardScheme.current.keyboardContainer
 
     Box(modifier = Modifier
@@ -800,6 +798,8 @@ fun ActionBar(
                 }
             }
         }
+
+        ActionSep(true)
     }
 }
 
@@ -915,6 +915,8 @@ fun CollapsibleSuggestionsBar(
                 }
             }
         }
+
+        ActionSep(true)
     }
 }
 
