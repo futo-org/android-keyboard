@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.extendedLightColorScheme
+import org.futo.inputmethod.latin.uix.extendedDarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
 
-private val lightScheme = extendedLightColorScheme(
+private val darkScheme = extendedDarkColorScheme(
     primary=Color(0xFFBBD5F0),
     onPrimary=Color(0xFF393E47),
     primaryContainer=Color(0xFF393E47),
@@ -49,7 +49,7 @@ val SteelGray = ThemeOption(
     name = R.string.steel_gray_theme_name,
     available = { true }
 ) {
-    lightScheme
+    darkScheme
 }
 
 @Composable
