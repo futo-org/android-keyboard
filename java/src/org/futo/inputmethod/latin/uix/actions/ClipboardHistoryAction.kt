@@ -64,6 +64,7 @@ import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.pages.ParagraphText
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurface
+import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurfaceHeading
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.Typography
 import java.io.File
@@ -97,12 +98,13 @@ data class ClipboardEntry(
     val mimeTypes: List<String>
 )
 
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPaste: (ClipboardEntry) -> Unit, onRemove: (ClipboardEntry) -> Unit, onPin: (ClipboardEntry) -> Unit) {
     Surface(
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outlineVariant),
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = modifier
             .padding(2.dp)
             .combinedClickable(
@@ -123,9 +125,9 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
                         painterResource(id = R.drawable.push_pin),
                         contentDescription = "Pin",
                         tint = if(clipboardEntry.pinned) {
-                            MaterialTheme.colorScheme.onSurfaceVariant
+                            MaterialTheme.colorScheme.onSecondaryContainer
                         } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                            MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.2f)
                         },
                         modifier = Modifier.size(16.dp)
                     )
@@ -140,9 +142,9 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
                         painterResource(id = R.drawable.close),
                         contentDescription = "Close",
                         tint = if(clipboardEntry.pinned) {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                            MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.2f)
                         } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
+                            MaterialTheme.colorScheme.onSecondaryContainer
                         },
                         modifier = Modifier.size(16.dp)
                     )
@@ -157,7 +159,7 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
                 }
             }
 
-            Text(text, modifier = Modifier.padding(8.dp, 2.dp), style = Typography.bodySmall)
+            Text(text, modifier = Modifier.padding(8.dp, 2.dp), style = Typography.SmallMl)
 
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -311,9 +313,10 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
     }
 
     fun onPaste(item: ClipboardEntry) {
+        val itemPos = clipboardHistory.indexOf(item)
         clipboardHistory.remove(item)
 
-        clipboardHistory.add(
+        clipboardHistory.add(itemPos,
             ClipboardEntry(
                 timestamp = System.currentTimeMillis(),
                 pinned = item.pinned,
@@ -461,18 +464,20 @@ val ClipboardHistoryAction = Action(
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!unlocked) {
                     ScrollableList {
-                        PaymentSurface(isPrimary = true, title = "Device Locked") {
+                        PaymentSurface(isPrimary = true) {
+                            PaymentSurfaceHeading(title = "Device Locked")
+
                             ParagraphText("Please unlock your device to access clipboard history")
                         }
                     }
                 } else if(!clipboardHistory.value) {
                     ScrollableList {
-                        PaymentSurface(isPrimary = true, title = "Clipboard History Inactive") {
+                        PaymentSurface(isPrimary = true) {
+                            PaymentSurfaceHeading(title = "Clipboard History Inactive")
                             ParagraphText("Clipboard history is not enabled. To save clipboard items, you can enable clipboard history. This will keep up to 25 items for 3 days unless pinned. Passwords and other items marked sensitive are excluded from history.")
                             Button(onClick = {
                                 clipboardHistory.setValue(true)
                             }, modifier = Modifier
-                                .padding(8.dp)
                                 .fillMaxWidth()) {
                                 Text("Enable Clipboard History")
                             }

@@ -1,14 +1,23 @@
 package org.futo.inputmethod.latin.uix.settings
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,10 +32,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -56,6 +62,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.role
@@ -67,9 +74,12 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
@@ -93,7 +103,7 @@ fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHost
             Icon(Icons.Default.ArrowBack, contentDescription = null, modifier = Modifier.align(CenterVertically))
             Spacer(modifier = Modifier.width(18.dp))
         }
-        Text(title, style = Typography.titleLarge, modifier = Modifier
+        Text(title, style = Typography.Heading.Medium, modifier = Modifier
             .align(CenterVertically)
             .padding(0.dp, 16.dp))
     }
@@ -106,7 +116,7 @@ fun ScreenTitleWithIcon(title: String, painter: Painter) {
 
         Icon(painter, contentDescription = null, modifier = Modifier.align(CenterVertically))
         Spacer(modifier = Modifier.width(18.dp))
-        Text(title, style = Typography.titleLarge, modifier = Modifier
+        Text(title, style = Typography.Heading.Medium, modifier = Modifier
             .align(CenterVertically)
             .padding(0.dp, 16.dp))
     }
@@ -123,9 +133,16 @@ fun Tip(text: String = "This is an example tip") {
         Text(
             text,
             modifier = Modifier.padding(8.dp),
-            style = Typography.bodyMedium,
+            style = Typography.Body.RegularMl,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
+    }
+}
+
+@Composable
+fun SpacedColumn(gap: Dp, modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(gap)) {
+        content()
     }
 }
 
@@ -149,7 +166,7 @@ fun SettingItem(
                     onClick()
                 }
             })
-            .padding(0.dp, 4.dp, 0.dp, 4.dp)
+            .padding(4.dp)
     ) {
         Spacer(modifier = Modifier.width(16.dp))
         Column(
@@ -178,14 +195,19 @@ fun SettingItem(
                     }
                 )
         ) {
-            Column {
-                Text(title, style = Typography.bodyLarge)
+            SpacedColumn(4.dp) {
+                Text(
+                    title,
+                    style = Typography.Heading.RegularMl,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.heightIn(min = 24.dp)
+                )
 
                 if (subtitle != null) {
                     Text(
                         subtitle,
-                        style = Typography.bodySmall,
-                        color = LocalContentColor.current.copy(alpha = 0.5f)
+                        style = Typography.SmallMl,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -338,7 +360,7 @@ private fun<T: Number> SettingSliderForDataStoreItem(
     Column {
         ScreenTitle(title, showBack = false)
         if(subtitle != null) {
-            Text(subtitle, style = Typography.bodyMedium, modifier = Modifier.padding(12.dp, 0.dp))
+            Text(subtitle, style = Typography.Body.MediumMl, modifier = Modifier.padding(12.dp, 0.dp))
         }
         Row(modifier = Modifier.padding(16.dp, 0.dp)) {
             if (isTextFieldVisible) {
@@ -377,7 +399,7 @@ private fun<T: Number> SettingSliderForDataStoreItem(
                         }
                     ),
                     singleLine = true,
-                    textStyle = Typography.labelMedium.copy(color = MaterialTheme.colorScheme.onBackground),
+                    textStyle = Typography.SmallMl.copy(color = MaterialTheme.colorScheme.onBackground),
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
                 )
             } else {
@@ -390,7 +412,7 @@ private fun<T: Number> SettingSliderForDataStoreItem(
                             hasTextFieldFocusedYet = false
                             isTextFieldVisible = true
                         },
-                    style = Typography.labelMedium
+                    style = Typography.SmallMl
                 )
             }
             Slider(
@@ -463,13 +485,14 @@ fun SettingSliderSharedPrefsInt(
 }
 
 @Composable
-fun ScrollableList(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun ScrollableList(modifier: Modifier = Modifier, spacing: Dp = 0.dp, content: @Composable () -> Unit) {
     val scrollState = rememberScrollState()
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.spacedBy(spacing)
     ) {
         content()
     }
@@ -492,6 +515,7 @@ enum class NavigationItemStyle {
     HomeTertiary,
     MiscNoArrow,
     Misc,
+    ExternalLink,
     Mail
 }
 
@@ -510,6 +534,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
 
                     NavigationItemStyle.MiscNoArrow,
                     NavigationItemStyle.Misc,
+                    NavigationItemStyle.ExternalLink,
                     NavigationItemStyle.Mail -> Color.Transparent
                 }
 
@@ -520,6 +545,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
 
                     NavigationItemStyle.MiscNoArrow,
                     NavigationItemStyle.Mail,
+                    NavigationItemStyle.ExternalLink,
                     NavigationItemStyle.Misc -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
                 }
 
@@ -540,6 +566,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
         when(style) {
             NavigationItemStyle.Misc -> Icon(Icons.Default.ArrowForward, contentDescription = null)
             NavigationItemStyle.Mail -> Icon(Icons.Default.Send, contentDescription = null)
+            NavigationItemStyle.ExternalLink -> Icon(painterResource(R.drawable.external_link), contentDescription = null)
             else -> {}
         }
     }
@@ -571,6 +598,7 @@ fun SettingTextField(title: String, placeholder: String, field: SettingsKey<Stri
     )
 }
 
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun<T> DropDownPicker(
@@ -627,6 +655,91 @@ fun<T> DropDownPicker(
                         expanded = false
                     }
                 )
+            }
+        }
+    }
+}*/
+
+private val DropDownShape = RoundedCornerShape(12.dp)
+@Composable
+fun<T> DropDownPicker(
+    label: String,
+    options: List<T>,
+    selection: T?,
+    onSet: (T) -> Unit,
+    getDisplayName: (T) -> String,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+
+    Column {
+        Box(
+            Modifier.fillMaxWidth().background(
+                MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape
+            ).border(
+                if(expanded) { 2.dp } else { 1.dp },
+                MaterialTheme.colorScheme.outline,
+                DropDownShape
+            ).heightIn(min = 44.dp).clip(DropDownShape).clickable {
+                expanded = !expanded
+            }.padding(16.dp)
+        ) {
+            selection?.let {
+                Text(
+                    text = getDisplayName(it),
+                    style = Typography.Body.Regular,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                )
+            }
+
+            Icon(
+                painterResource(R.drawable.chevron_down),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.align(Alignment.CenterEnd)
+            )
+        }
+
+        AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
+            Column {
+                Spacer(Modifier.height(9.dp))
+                Column(
+                    Modifier.fillMaxWidth().background(
+                        MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape
+                    ).border(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline,
+                        DropDownShape
+                    ).clip(DropDownShape)
+                ) {
+                    options.forEach {
+                        Box(
+                            Modifier.fillMaxWidth().heightIn(min = 44.dp).background(
+                                if(selection == it) {
+                                    LocalKeyboardScheme.current.onSurfaceTransparent
+                                } else {
+                                    Color.Transparent
+                                }
+                            ).clickable {
+                                onSet(it)
+                                expanded = false
+                            }.padding(16.dp)
+                        ) {
+                            Text(
+                                getDisplayName(it),
+                                style = Typography.Body.Regular,
+                                color = if(selection == it) {
+                                    MaterialTheme.colorScheme.onSurface
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                                modifier = Modifier.align(Alignment.CenterStart)
+                            )
+                        }
+                    }
+                }
             }
         }
     }

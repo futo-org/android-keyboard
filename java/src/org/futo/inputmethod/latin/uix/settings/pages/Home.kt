@@ -140,7 +140,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             if(isPaid || LocalInspectionMode.current) {
                 Text(
                     stringResource(R.string.thank_you_for_using_paid),
-                    style = Typography.bodyMedium,
+                    style = Typography.SmallMl,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
@@ -149,7 +149,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
             Text(
                 "v${BuildConfig.VERSION_NAME}",
-                style = Typography.labelSmall,
+                style = Typography.Small,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )

@@ -137,7 +137,7 @@ fun ManageModelScreen(model: ModelInfo = PreviewModels[0], navController: NavHos
                             .weight(1f)
                             .align(Alignment.CenterVertically),
                         textAlign = TextAlign.Center,
-                        style = Typography.bodyMedium
+                        style = Typography.Body.MediumMl
                     )
                 }
             }

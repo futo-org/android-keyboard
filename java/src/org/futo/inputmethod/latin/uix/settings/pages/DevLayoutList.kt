@@ -33,6 +33,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.uix.KeyboardLayoutPreview
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
+import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.v2keyboard.LayoutManager
 
 @Composable
@@ -90,7 +91,7 @@ fun DevLayoutList(navController: NavHostController = rememberNavController()) {
                     KeyboardLayoutPreview(id = name, width = 172.dp)
                     Text(
                         name,
-                        style = TextSmallStyle,
+                        style = Typography.SmallMl,
                         modifier = Modifier.padding(4.dp),
                         textAlign = TextAlign.Center
                     )

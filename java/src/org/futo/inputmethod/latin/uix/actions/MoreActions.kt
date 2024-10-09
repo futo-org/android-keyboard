@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
@@ -53,9 +54,9 @@ import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
-import org.futo.voiceinput.shared.ui.theme.Typography
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
+import org.futo.inputmethod.latin.uix.theme.Typography
 
 
 @Composable
@@ -81,7 +82,7 @@ fun ActionItem(action: Action, modifier: Modifier = Modifier, dragIcon: Boolean 
 
             Column(modifier = Modifier
                 .align(Center)
-                .padding(8.dp)) {
+                .padding(6.dp)) {
                 Spacer(modifier = Modifier.weight(1.0f))
                 Icon(
                     painterResource(id = action.icon), contentDescription = null, modifier = Modifier.align(
@@ -91,7 +92,7 @@ fun ActionItem(action: Action, modifier: Modifier = Modifier, dragIcon: Boolean 
                 Spacer(modifier = Modifier.weight(1.0f))
 
                 Text(stringResource(id = action.name), modifier = Modifier.align(
-                    CenterHorizontally), style = Typography.labelSmall, textAlign = TextAlign.Center)
+                    CenterHorizontally), style = Typography.Small.copy(lineHeight = 12.sp), textAlign = TextAlign.Center)
             }
 
         }
@@ -142,9 +143,6 @@ fun MoreActionsView() {
         }
     }
 }
-
-val CategoryTitleStyle = Typography.titleMedium.copy(fontWeight = FontWeight.W500)
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -223,7 +221,7 @@ fun ActionsEditor(header: @Composable () -> Unit) {
                                     Tip("You have more pinned actions than seems reasonable. Consider moving some to favorites")
                                 }
                             }
-                            Text(it.category.name(context), modifier = Modifier.padding(top = 24.dp), style = CategoryTitleStyle, color = LocalContentColor.current.copy(alpha = 0.6f))
+                            Text(it.category.name(context), modifier = Modifier.padding(top = 24.dp), style = Typography.Heading.MediumMl, color = LocalContentColor.current.copy(alpha = 0.6f))
 
                             if(actionMap[it.category]?.isEmpty() == true && it.category != ActionCategory.entries.last()) {
                                 TextButton(onClick = {

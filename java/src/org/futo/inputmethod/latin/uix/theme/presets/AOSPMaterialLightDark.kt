@@ -40,9 +40,9 @@ private val darkColorScheme = extendedDarkColorScheme(
     onKeyboardContainer=Color(0xFFD4D6D7),
     keyboardPress=Color(0xFF3A5A5C),
     keyboardFade0=Color(0xFF1F2A2B),
-    keyboardFade1=Color(0xFF1F2A2B).copy(alpha = 0.3f),
-    primaryTransparent=Color(0xFF80CBC4).copy(alpha = 0.1f),
-    onSurfaceTransparent=Color(0xFFD8EBE4)
+    keyboardFade1=Color(0xFF1F2A2B),
+    primaryTransparent=Color(0xFF80CBC4).copy(alpha = 0.3f),
+    onSurfaceTransparent=Color(0xFFD8EBE4).copy(alpha = 0.1f),
 )
 
 private val lightColorScheme = extendedLightColorScheme(
@@ -76,9 +76,9 @@ private val lightColorScheme = extendedLightColorScheme(
     onKeyboardContainer=Color(0xFF37474F),
     keyboardPress=Color(0xFFD0F2F5),
     keyboardFade0=Color(0xFFCAE8EB),
-    keyboardFade1=Color(0xFFCAE8EB).copy(alpha = 0.3f),
-    primaryTransparent=Color(0xFF127A70).copy(alpha = 0.1f),
-    onSurfaceTransparent=Color(0xFF202929)
+    keyboardFade1=Color(0xFFCAE8EB),
+    primaryTransparent=Color(0xFF127A70).copy(alpha = 0.3f),
+    onSurfaceTransparent=Color(0xFF202929).copy(alpha = 0.1f),
 )
 
 

@@ -729,7 +729,7 @@ fun ActionBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1.0f),
-                color = actionBarColor()
+                color = LocalKeyboardScheme.current.keyboardSurfaceVariant//actionBarColor()
             ) {
                 ActionItems(onActionActivated, onActionAltActivated)
             }
@@ -826,7 +826,7 @@ fun ActionWindowBar(
                     )
                 }
 
-                CompositionLocalProvider(LocalTextStyle provides Typography.titleMedium) {
+                CompositionLocalProvider(LocalTextStyle provides Typography.Body.MediumMl) {
                     windowTitleBar()
                 }
 

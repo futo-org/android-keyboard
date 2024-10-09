@@ -32,7 +32,7 @@ import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.TutorialMode
 import org.futo.inputmethod.v2keyboard.KeyboardMode
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
-import org.futo.voiceinput.shared.ui.theme.Typography
+import org.futo.inputmethod.latin.uix.theme.Typography
 
 @Composable
 private fun RowScope.KeyboardMode(iconRes: Int, checkedIconRes: Int, name: String, sizingCalculator: KeyboardSizingCalculator, mode: KeyboardMode) {
@@ -63,7 +63,7 @@ private fun RowScope.KeyboardMode(iconRes: Int, checkedIconRes: Int, name: Strin
                     painterResource(if(isChecked) checkedIconRes else iconRes),
                     contentDescription = null
                 )
-                Text(name, style = Typography.labelSmall.copy(fontSize = 14.sp))
+                Text(name, style = Typography.SmallMl)
             }
         }
     }
@@ -113,7 +113,7 @@ val KeyboardModeAction = Action(
                                 manager.setTutorialArrowPosition(it)
                             }
                         }) {
-                            Text("Resize Keyboard", style = Typography.titleSmall.copy(fontSize = 16.sp, fontWeight = FontWeight.W500))
+                            Text("Resize Keyboard", style = Typography.Heading.MediumMl)
                         }
                     }
                     Row {

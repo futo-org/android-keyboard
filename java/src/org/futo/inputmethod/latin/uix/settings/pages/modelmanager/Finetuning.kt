@@ -50,7 +50,7 @@ fun FinetuningStateDisplay(navController: NavHostController, trainingState: Trai
 
     Spacer(modifier = Modifier.height(12.dp))
 
-    Text("TRAINING IN PROGRESS", style = Typography.headlineMedium, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+    Text("TRAINING IN PROGRESS", style = Typography.Heading.MediumMl, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
 
 
     Column(modifier = Modifier.padding(16.dp, 16.dp)) {

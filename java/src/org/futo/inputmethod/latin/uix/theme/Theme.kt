@@ -58,7 +58,7 @@ fun UixThemeWrapper(colorScheme: KeyboardColorScheme, content: @Composable () ->
     CompositionLocalProvider(LocalKeyboardScheme provides colorScheme) {
         MaterialTheme(
             colorScheme = colorScheme.base,
-            typography = Typography,
+            //typography = Typography,
             content = content,
         )
     }

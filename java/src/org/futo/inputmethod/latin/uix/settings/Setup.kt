@@ -88,7 +88,7 @@ fun Step(fraction: Float, text: String) {
             this.text = AnnotatedString(text)
         }
     ) {
-        Text(text, style = Typography.labelSmall)
+        Text(text, style = Typography.SmallMl)
         LinearProgressIndicator(progress = fraction, modifier = Modifier.fillMaxWidth())
     }
 }

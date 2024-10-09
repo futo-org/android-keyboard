@@ -170,8 +170,9 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
 
             PaymentSurface(
                 isPrimary = false,
-                title = "Tip"
             ) {
+                PaymentSurfaceHeading(title = "Tip")
+
                 Text(
                     buildAnnotatedString {
                         append("You can access this anywhere with the new Keyboard Modes action: ")
@@ -180,8 +181,7 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
                         appendLine()
                         append("Tap the \"Resize Keyboard\" button to resize.")
                     },
-                    modifier = Modifier.padding(16.dp, 8.dp),
-                    style = Typography.bodyMedium,
+                    style = Typography.Body.MediumMl,
                     color = LocalContentColor.current,
                     inlineContent = mapOf(
                         "icon" to InlineTextContent(
@@ -461,7 +461,7 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             subtitle = "When active, the number row is shown on top of the keyboard on supported layouts",
             key = Settings.PREF_ENABLE_NUMBER_ROW,
             default = false,
-            icon = { Text("123", style = TextBodyRegularMlStyle, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) }
+            icon = { Text("123", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) }
         )
 
         SettingToggleSharedPrefs(
@@ -547,7 +547,7 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             key = Settings.PREF_AUTO_CAP,
             default = true,
             icon = {
-                Text("Aa", style = TextBodyRegularMlStyle, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+                Text("Aa", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
         )
 
@@ -557,7 +557,7 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
             key = Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD,
             default = true,
             icon = {
-                Text(".", style = TextBodyRegularMlStyle, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+                Text(".", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
         )
 

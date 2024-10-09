@@ -1,5 +1,8 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -21,6 +24,13 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.updates.openURI
 
+private fun Context.copyToClipboard(text: CharSequence, label: String = "Copied Text") {
+    val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clipData = ClipData.newPlainText(label, text)
+    clipboardManager.setPrimaryClip(clipData)
+}
+
+
 @Preview(showBackground = true)
 @Composable
 fun HelpScreen(navController: NavHostController = rememberNavController()) {
@@ -36,7 +46,7 @@ fun HelpScreen(navController: NavHostController = rememberNavController()) {
             title = "Version Name: ${BuildConfig.VERSION_NAME}",
             style = NavigationItemStyle.MiscNoArrow,
             navigate = {
-
+                context.copyToClipboard(BuildConfig.VERSION_NAME)
             }
         )
         NavigationItem(

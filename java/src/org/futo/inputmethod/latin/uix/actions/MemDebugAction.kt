@@ -28,8 +28,8 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 
-val DebugLabel = Typography.labelSmall.copy(fontFamily = FontFamily.Monospace)
-val DebugTitle = Typography.titleSmall.copy(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
+val DebugLabel = Typography.Small.copy(fontFamily = FontFamily.Monospace)
+val DebugTitle = Typography.Body.Medium.copy(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
 
 private fun getInputTypeAsString(inputType: Int): String {
     val types = mutableListOf<String>()

@@ -110,7 +110,7 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
                     .fillMaxWidth()
                     .padding(4.dp),
                 color = textColor,
-                style = Typography.labelSmall
+                style = Typography.SmallMl
             )
 
             // Keyboard contents

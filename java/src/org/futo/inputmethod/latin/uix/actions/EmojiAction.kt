@@ -106,11 +106,11 @@ import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
-import org.futo.voiceinput.shared.ui.theme.Typography
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.streams.toList
+import org.futo.inputmethod.latin.uix.theme.Typography
 
 private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
     val lhsLen = lhs.length
@@ -561,7 +561,7 @@ private fun EmojiCategoriesContainer(
                 } else {
                     AutoFitText(
                         it.title,
-                        style = Typography.labelSmall.copy(color = color)
+                        style = Typography.SmallMl.copy(color = color)
                     )
                 }
             }
@@ -859,7 +859,7 @@ val EmojiAction = Action(
                         Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterStart) {
                             Row {
                                 Icon(Icons.Default.Search, contentDescription = null)
-                                Text("Search", style = Typography.bodySmall, modifier = Modifier
+                                Text("Search", style = Typography.SmallMl, modifier = Modifier
                                     .alpha(0.75f)
                                     .align(Alignment.CenterVertically))
                             }

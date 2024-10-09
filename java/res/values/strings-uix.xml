@@ -97,9 +97,11 @@
     <string name="pay_via_google">Pay via Google Play (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
     <string name="pay">Pay (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
     <string name="i_already_paid">I already paid</string>
+    <string name="more_options">More options</string>
     <string name="i_already_paid_2">I already paid (tap again to confirm)</string>
     <string name="remind_me_in_x">"Remind me in "</string>
     <string name="in_x_days">" days"</string>
+    <string name="confirm_reminder">Confirm reminder</string>
     <string name="developer_mode_payment_methods">You are on the Developer release, so you are seeing all payment methods</string>
     <string name="pay_now">Pay Now</string>
     <string name="unpaid_indicator">Unpaid</string>

@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -79,15 +80,6 @@ data class LanguageItem (
     val layouts: List<String>
 )
 
-val TextHeadingMediumMlStyle = Typography.titleLarge.copy(
-    fontSize = 20.sp,
-    lineHeight = 30.sp,
-    fontWeight = FontWeight(500)
-)
-
-val TextSmallStyle = Typography.titleSmall.copy(fontWeight = FontWeight.W400)
-val TextBodyRegularMlStyle = Typography.titleMedium.copy(fontWeight = FontWeight.W400)
-
 @Composable
 fun LanguageConfigurable(
     kind: FileKind,
@@ -101,13 +93,14 @@ fun LanguageConfigurable(
         Column(modifier = Modifier
             .weight(1.0f)
             .align(Alignment.CenterVertically)) {
-            Row(modifier = Modifier.alpha(0.75f)) {
+            Row {
                 Icon(
                     painterResource(kind.icon()),
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(16.dp)
+                        .size(16.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -115,7 +108,8 @@ fun LanguageConfigurable(
                 Text(
                     kind.kindTitle(),
                     modifier = Modifier.align(Alignment.CenterVertically),
-                    style = TextSmallStyle
+                    style = Typography.Small,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -123,7 +117,7 @@ fun LanguageConfigurable(
 
             Text(
                 selection,
-                style = TextBodyRegularMlStyle
+                style = Typography.Body.RegularMl
             )
 
         }
@@ -150,7 +144,7 @@ fun LayoutConfigurable(
         .height(44.dp)) {
         Text(
             name,
-            style = TextBodyRegularMlStyle,
+            style = Typography.Body.RegularMl,
             modifier = Modifier.align(Alignment.CenterVertically)
         )
 
@@ -185,7 +179,7 @@ fun ActionableItem(
         Row {
             Icon(icon, contentDescription = null, modifier = Modifier.align(Alignment.CenterVertically))
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text, modifier = Modifier.align(Alignment.CenterVertically), style = Typography.labelLarge)
+            Text(text, modifier = Modifier.align(Alignment.CenterVertically), style = Typography.Body.Medium)
         }
     }
 }
@@ -205,16 +199,20 @@ fun LanguageSurface(
                 .padding(start = 32.dp, end = 32.dp)
                 .widthIn(296.dp, 400.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                    shape = RoundedCornerShape(size = 16.dp)
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(16.dp)
+                ).border(
+                    1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    shape = RoundedCornerShape(16.dp)
                 )
                 .padding(top = 14.dp, bottom = 12.dp)
         ) {
-            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
+            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onPrimaryContainer) {
                 Text(
                     item.languageName,
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                    style = TextHeadingMediumMlStyle
+                    style = Typography.Heading.MediumMl
                 )
 
                 if (item.options.dictionary == null) {
@@ -241,9 +239,9 @@ fun LanguageSurface(
                 Text(
                     "Keyboard Layouts",
                     modifier = Modifier
-                        .alpha(0.75f)
                         .padding(start = 16.dp, end = 16.dp),
-                    style = TextSmallStyle
+                    style = Typography.SmallMl,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Spacer(modifier = Modifier.height(9.dp))

@@ -35,6 +35,7 @@ import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.pages.ParagraphText
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurface
+import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurfaceHeading
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 
 val LAST_UPDATE_CHECK_RESULT = stringPreferencesKey("last_update_check_result")
@@ -136,11 +137,13 @@ val dismissedMigrateUpdateNotice = SettingsKey(
 @Composable
 @Preview
 fun ConditionalMigrateUpdateNotice() {
-    if(LocalInspectionMode.current) { return }
+    if(true || LocalInspectionMode.current) { return }
     val context = LocalContext.current
     val value = useDataStore(dismissedMigrateUpdateNotice, blocking = true)
     if(!value.value) {
-        PaymentSurface(isPrimary = true, title = "Use F-Droid or Obtainium") {
+        PaymentSurface(isPrimary = true) {
+            PaymentSurfaceHeading("Use F-Droid or Obtainium")
+
             ParagraphText("The standalone APK has been updated to remove the network permission.")
 
             ParagraphText("As a consequence, it can no longer offer automatic updates.")

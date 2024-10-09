@@ -315,7 +315,7 @@ fun LanguageSwitcherDialog(
             Text(
                 "Select language",
                 textAlign = TextAlign.Center,
-                style = Typography.titleLarge,
+                style = Typography.Heading.MediumMl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(0.dp, 16.dp)

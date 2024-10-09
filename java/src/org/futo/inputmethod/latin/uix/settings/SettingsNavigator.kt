@@ -13,6 +13,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
+import org.futo.inputmethod.latin.uix.settings.pages.AlreadyPaidDialog
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
 import org.futo.inputmethod.latin.uix.settings.pages.CreditsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DevEditTextVariationsScreen
@@ -85,6 +86,9 @@ fun SettingsNavigator(
         }
         dialog("update") {
             UpdateDialog(navController = navController)
+        }
+        dialog("alreadyPaid") {
+            AlreadyPaidDialog(navController = navController)
         }
         addModelManagerNavigation(navController)
     }

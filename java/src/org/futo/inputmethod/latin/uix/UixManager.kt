@@ -642,7 +642,7 @@ class UixManager(private val latinIME: LatinIME) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
                                     activeDialogRequest.value?.text ?: "",
-                                    style = Typography.bodyMedium
+                                    style = Typography.Body.Medium
                                 )
 
                                 Row {
