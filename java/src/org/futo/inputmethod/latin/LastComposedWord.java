@@ -49,7 +49,7 @@ public final class LastComposedWord {
     public final ArrayList<Event> mEvents;
     public final String mTypedWord;
     public final CharSequence mCommittedWord;
-    public final String mSeparatorString;
+    public String mSeparatorString;
     public final NgramContext mNgramContext;
     public final int mCapitalizedMode;
     public final InputPointers mInputPointers =

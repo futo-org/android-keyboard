@@ -946,6 +946,15 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     /**
+     * Returns true if there is a space immediately before the cursor
+     */
+    public boolean spacePrecedesCursor() {
+        final CharSequence s = getTextBeforeCursor(1, 0);
+        if(s.length() <= 0) return false;
+        return s.charAt(0) == Constants.CODE_SPACE;
+    }
+
+    /**
      * Returns true if there is a digit immediately before the cursor
      */
     public boolean digitPrecedesCursor() {

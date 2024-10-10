@@ -1038,16 +1038,31 @@ public final class InputLogic {
                 mSpaceState = SpaceState.PHANTOM;
             }
 
-            boolean digitPrecedesCursor = mConnection.digitPrecedesCursor();
+            boolean autoInsertSpaces = canInsertAutoSpace(settingsValues)
+                    && (settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL)
+                    && !mConnection.digitPrecedesCursor();
+
+            if(autoInsertSpaces
+                    && settingsValues.isUsuallyPrecededBySpace(codePoint)
+                    && !mConnection.spacePrecedesCursor()
+            ) {
+                sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
+
+                if(inputTransaction.didAutoCorrect()) {
+                    mLastComposedWord.mSeparatorString = " " + mLastComposedWord.mSeparatorString;
+                }
+            }
 
             sendKeyCodePoint(settingsValues, codePoint);
 
-            if(settingsValues.isUsuallyFollowedBySpace(codePoint)
-                    && (settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL)
-                    && !settingsValues.mInputAttributes.mIsUriField
-                    && settingsValues.mInputAttributes.mShouldInsertSpacesAutomatically
-                    && !digitPrecedesCursor) {
+            if(autoInsertSpaces
+                    && settingsValues.isUsuallyFollowedBySpace(codePoint)
+                    && !mConnection.spaceFollowsCursor()) {
                 insertOrSetPhantomSpace(settingsValues);
+
+                if(inputTransaction.didAutoCorrect()) {
+                    mLastComposedWord.mSeparatorString = mLastComposedWord.mSeparatorString + " ";
+                }
             }
 
             inputTransaction.setRequiresUpdateSuggestions();
@@ -1444,12 +1459,15 @@ public final class InputLogic {
                 inputTransaction.mSettingsValues.shouldInsertSpacesAutomatically()
                     || inputTransaction.mSettingsValues.mInputAttributes.mIsUriField;
 
-        // Character needs to be usually followed by space (eg . , ? !)
+        // Character needs to be usually followed by space (eg . , ? !), and it cannot be usually
+        // preceded by space (e.g. ? ! in the case of French)
         // or be an ending quotation mark, or be a schema to strip the space in case of https: //
         // TODO: Maybe just do mConnection.removeTrailingSpace() here in case of schema
-        final boolean characterFitForSwapping = (inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(codePoint)
-                || isInsideDoubleQuoteOrAfterDigit
-                || isPotentiallyWritingSchema);
+        final boolean characterFitForSwapping = (
+                inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(codePoint)
+                    || isInsideDoubleQuoteOrAfterDigit
+                    || isPotentiallyWritingSchema
+        ) && (!inputTransaction.mSettingsValues.isUsuallyPrecededBySpace(codePoint));
 
         return settingsPermitSwapping && textFieldFitForSwapping && characterFitForSwapping;
     }
@@ -1841,12 +1859,6 @@ public final class InputLogic {
         final boolean usePhantomSpace = separatorString.equals(Constants.STRING_SPACE);
         // We want java chars, not codepoints for the following.
         int separatorLength = separatorString.length();
-
-        if(!usePhantomSpace && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM) {
-            // The automatically inserted space should be considered part of the separator
-            // so that we delete the correct number of characters for reverting this commit.
-            separatorLength++;
-        }
         // TODO: should we check our saved separator against the actual contents of the text view?
         final int deleteLength = cancelLength + separatorLength;
         if (DebugFlags.DEBUG_ENABLED) {
@@ -2226,20 +2238,20 @@ public final class InputLogic {
         }
     }
 
-
+    private boolean canInsertAutoSpace(final SettingsValues settingsValues) {
+        return (settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_SUGGESTIONS)
+                && settingsValues.shouldInsertSpacesAutomatically()
+                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                && !settingsValues.mInputAttributes.mIsUriField
+                && !mConnection.textBeforeCursorLooksLikeURL();
+    }
 
     private void insertOrSetPhantomSpace(final SettingsValues settingsValues) {
         if(mConnection.spaceFollowsCursor()) return;
 
-        if ((settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_SUGGESTIONS)
-                && settingsValues.shouldInsertSpacesAutomatically()
-                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-                && !settingsValues.mInputAttributes.mIsUriField
-                && !mConnection.textBeforeCursorLooksLikeURL()) {
-
+        if(canInsertAutoSpace(settingsValues)){
             mSpaceState = SpaceState.ANTIPHANTOM;
             sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
-
         } else {
             mSpaceState = SpaceState.PHANTOM;
         }
