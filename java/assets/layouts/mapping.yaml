@@ -272,6 +272,7 @@ languages:
     - pcqwerty
     - nordic
   is:
+    - icelandic
     - qwerty
     - qwertz
     - dvorak
