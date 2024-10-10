@@ -1291,6 +1291,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     @Override
     public void onMovePointer(int steps) {
+        setNeutralSuggestionStrip();
+
         int shiftMode = mKeyboardSwitcher.getKeyboardShiftMode();
         boolean select = (shiftMode == WordComposer.CAPS_MODE_MANUAL_SHIFTED) || (shiftMode == WordComposer.CAPS_MODE_MANUAL_SHIFT_LOCKED);
 
@@ -1307,6 +1309,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     @Override
     public void onMoveDeletePointer(int steps) {
+        setNeutralSuggestionStrip();
         if (mInputLogic.mConnection.hasCursorPosition()) {
             boolean stepOverWords = mSettings.getCurrent().mBackspaceMode == Settings.BACKSPACE_MODE_WORDS;
             if(steps < 0) {
