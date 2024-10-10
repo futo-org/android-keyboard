@@ -1429,10 +1429,26 @@ public final class InputLogic {
         final boolean isPotentiallyWritingSchema = codePoint == '/'
                 && mConnection.isPotentiallyWritingSchema();
 
-        return (inputTransaction.mSettingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL)
-                && (inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(codePoint)
+
+        final boolean settingsPermitSwapping =
+                inputTransaction.mSettingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL;
+
+        // Text field either needs to be fit for automatic spaces, or be a uri field
+        // (in the case of uri field, we will strip trailing space without adding it back
+        // in trySwapSwapperAndSpace)
+        // TODO: Maybe just do mConnection.removeTrailingSpace() here in case of uri field
+        final boolean textFieldFitForSwapping =
+                inputTransaction.mSettingsValues.shouldInsertSpacesAutomatically()
+                    || inputTransaction.mSettingsValues.mInputAttributes.mIsUriField;
+
+        // Character needs to be usually followed by space (eg . , ? !)
+        // or be an ending quotation mark, or be a schema to strip the space in case of https: //
+        // TODO: Maybe just do mConnection.removeTrailingSpace() here in case of schema
+        final boolean characterFitForSwapping = (inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(codePoint)
                 || isInsideDoubleQuoteOrAfterDigit
                 || isPotentiallyWritingSchema);
+
+        return settingsPermitSwapping && textFieldFitForSwapping && characterFitForSwapping;
     }
 
     public void startDoubleSpacePeriodCountdown(final InputTransaction inputTransaction) {
