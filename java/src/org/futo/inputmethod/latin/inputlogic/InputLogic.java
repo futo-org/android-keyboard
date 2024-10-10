@@ -1840,7 +1840,13 @@ public final class InputLogic {
         // on the next keypress
         final boolean usePhantomSpace = separatorString.equals(Constants.STRING_SPACE);
         // We want java chars, not codepoints for the following.
-        final int separatorLength = separatorString.length();
+        int separatorLength = separatorString.length();
+
+        if(!usePhantomSpace && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM) {
+            // The automatically inserted space should be considered part of the separator
+            // so that we delete the correct number of characters for reverting this commit.
+            separatorLength++;
+        }
         // TODO: should we check our saved separator against the actual contents of the text view?
         final int deleteLength = cancelLength + separatorLength;
         if (DebugFlags.DEBUG_ENABLED) {
