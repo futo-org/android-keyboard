@@ -539,7 +539,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
         }
     }
 
-    val gradientColor = actionBarColor()
+    val gradientColor = LocalKeyboardScheme.current.keyboardSurfaceDim
 
     val drawLeftGradient = lazyListState.firstVisibleItemIndex > 0
     val drawRightGradient = lazyListState.layoutInfo.visibleItemsInfo.isNotEmpty() && actionItems.isNotEmpty() && (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key != actionItems.lastOrNull()?.name)
@@ -563,7 +563,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
                 .fillMaxHeight()
                 .width(72.dp)
                 .align(Alignment.CenterStart)) {
-                for(i in 0 until 2) {
+                for(i in 0 until 1) {
                     drawRect(
                         Brush.linearGradient(
                             0.0f to gradientColor,
@@ -581,7 +581,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
                 .fillMaxHeight()
                 .width(72.dp)
                 .align(Alignment.CenterEnd)) {
-                for(i in 0 until 2) {
+                for(i in 0 until 1) {
                     drawRect(
                         Brush.linearGradient(
                             0.0f to Color.Transparent,
