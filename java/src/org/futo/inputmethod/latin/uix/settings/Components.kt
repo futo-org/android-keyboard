@@ -674,6 +674,10 @@ fun<T> DropDownPicker(
 
 
     Column {
+        if(label.isNotEmpty()) {
+            ScreenTitle(label)
+        }
+
         Box(
             Modifier.fillMaxWidth().background(
                 MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape

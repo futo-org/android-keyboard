@@ -113,7 +113,7 @@ val KeyboardModeAction = Action(
                                 manager.setTutorialArrowPosition(it)
                             }
                         }) {
-                            Text("Resize Keyboard", style = Typography.Heading.MediumMl)
+                            Text("Resize Keyboard", style = Typography.Body.MediumMl)
                         }
                     }
                     Row {

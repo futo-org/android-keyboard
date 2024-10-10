@@ -348,7 +348,7 @@ public final class InputLogic {
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
         // Space state must be updated before calling updateShiftState
-        mSpaceState = SpaceState.PHANTOM;
+        insertOrSetPhantomSpace(settingsValues);
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
 
         // If we're not showing the "Touch again to save", then update the suggestion strip.
@@ -472,6 +472,7 @@ public final class InputLogic {
                 || inputTransaction.mTimestamp > mLastKeyTime + Constants.LONG_PRESS_MILLISECONDS) {
             mDeleteCount = 0;
         }
+
         mLastKeyTime = inputTransaction.mTimestamp;
         mConnection.beginBatchEdit();
         if (!mWordComposer.isComposingWord()) {
@@ -818,6 +819,12 @@ public final class InputLogic {
             final LatinIMELegacy.UIHandler handler) {
         final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
+
+        if(codePoint == Constants.CODE_SPACE
+                && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM) {
+            return;
+        }
+
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
             handleSeparatorEvent(event, inputTransaction, handler);
@@ -992,8 +999,12 @@ public final class InputLogic {
             inputTransaction.setRequiresUpdateSuggestions();
             StatsUtils.onDoubleSpacePeriod();
         } else if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
-            mSpaceState = SpaceState.SWAP_PUNCTUATION;
-            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            if(inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM) {
+                mSpaceState = SpaceState.ANTIPHANTOM;
+            } else {
+                mSpaceState = SpaceState.SWAP_PUNCTUATION;
+            }
+            inputTransaction.setRequiresUpdateSuggestions();
         } else if (Constants.CODE_SPACE == codePoint) {
             if (!mSuggestedWords.isPunctuationSuggestions()) {
                 mSpaceState = SpaceState.WEAK;
@@ -1009,7 +1020,8 @@ public final class InputLogic {
             }
         } else {
             if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
-                    && settingsValues.isUsuallyFollowedBySpace(codePoint))
+                    && settingsValues.isUsuallyFollowedBySpace(codePoint)
+                    && !settingsValues.mInputAttributes.mIsUriField)
                     || (Constants.CODE_DOUBLE_QUOTE == codePoint
                             && isInsideDoubleQuoteOrAfterDigit)) {
                 // If we are in phantom space state, and the user presses a separator, we want to
@@ -1028,9 +1040,14 @@ public final class InputLogic {
 
             sendKeyCodePoint(settingsValues, codePoint);
 
-            // Set punctuation right away. onUpdateSelection will fire but tests whether it is
-            // already displayed or not, so it's okay.
-            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            if(settingsValues.isUsuallyFollowedBySpace(codePoint)
+                    && (settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL)
+                    && !settingsValues.mInputAttributes.mIsUriField
+                    && settingsValues.mInputAttributes.mShouldInsertSpacesAutomatically) {
+                insertOrSetPhantomSpace(settingsValues);
+            }
+
+            inputTransaction.setRequiresUpdateSuggestions();
         }
 
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
@@ -1365,8 +1382,15 @@ public final class InputLogic {
         if (Constants.CODE_SPACE != codePointBeforeCursor) {
             return false;
         }
+        final boolean isWritingSchema = event.mCodePoint == '/'
+                && mConnection.isPotentiallyWritingSchema();
         mConnection.deleteTextBeforeCursor(1);
-        final String text = event.getTextToCommit() + " ";
+
+        boolean stripSpace = inputTransaction.mSettingsValues.mInputAttributes.mIsUriField || isWritingSchema;
+
+        final String text = event.getTextToCommit() +
+                (stripSpace ? "" : " ");
+
         mConnection.commitText(text, 1);
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
         return true;
@@ -1398,7 +1422,17 @@ public final class InputLogic {
             }
             mConnection.removeTrailingSpace();
         }
-        return false;
+
+        final boolean isInsideDoubleQuoteOrAfterDigit = Constants.CODE_DOUBLE_QUOTE == codePoint
+                && mConnection.isInsideDoubleQuoteOrAfterDigit();
+
+        final boolean isPotentiallyWritingSchema = codePoint == '/'
+                && mConnection.isPotentiallyWritingSchema();
+
+        return (inputTransaction.mSettingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL)
+                && (inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(codePoint)
+                || isInsideDoubleQuoteOrAfterDigit
+                || isPotentiallyWritingSchema);
     }
 
     public void startDoubleSpacePeriodCountdown(final InputTransaction inputTransaction) {
@@ -2165,6 +2199,24 @@ public final class InputLogic {
             sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
         }
     }
+
+
+
+    private void insertOrSetPhantomSpace(final SettingsValues settingsValues) {
+        if ((settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_SUGGESTIONS)
+                && settingsValues.shouldInsertSpacesAutomatically()
+                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                && !settingsValues.mInputAttributes.mIsUriField
+                && !mConnection.textBeforeCursorLooksLikeURL()) {
+
+            mSpaceState = SpaceState.ANTIPHANTOM;
+            sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
+
+        } else {
+            mSpaceState = SpaceState.PHANTOM;
+        }
+    }
+
 
     /**
      * Do the final processing after a batch input has ended. This commits the word to the editor.

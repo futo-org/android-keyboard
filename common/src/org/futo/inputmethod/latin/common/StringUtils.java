@@ -551,6 +551,23 @@ public final class StringUtils {
         return Constants.CODE_DOUBLE_QUOTE == codePoint;
     }
 
+    public static boolean isPotentiallyWritingSchema(@Nonnull final CharSequence text) {
+        int i = text.length();
+        if (i < 2) {
+            return false;
+        }
+
+        final int expectedSpace = Character.codePointBefore(text, i);
+        if(expectedSpace != Constants.CODE_SPACE) return false;
+
+        i -= Character.charCount(expectedSpace);
+
+        final int expectedColon = Character.codePointBefore(text, i);
+        if(expectedColon != ':') return false;
+
+        return true;
+    }
+
     public static boolean isEmptyStringOrWhiteSpaces(@Nonnull final String s) {
         final int N = codePointCount(s);
         for (int i = 0; i < N; ++i) {

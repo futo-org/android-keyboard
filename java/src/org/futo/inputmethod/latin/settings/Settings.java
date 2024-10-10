@@ -125,6 +125,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final int BACKSPACE_MODE_CHARACTERS = 0; // Long-press backspace and swipe backspace removes just characters
     public static final int BACKSPACE_MODE_WORDS = 1; // Long-press backspace and swipe backspace removes entire words
 
+    public static final String PREF_ALT_SPACES_MODE = "pref_alt_spaces";
+    public static final int SPACES_MODE_LEGACY = 0; // Only use phantom spaces
+    public static final int SPACES_MODE_SUGGESTIONS = 1; // Use antiphantom for suggestion, none for punctuation
+    public static final int SPACES_MODE_ALL = 2; // Use antiphantom for all
 
     // Emoji
     public static final String PREF_EMOJI_RECENT_KEYS = "emoji_recent_keys";

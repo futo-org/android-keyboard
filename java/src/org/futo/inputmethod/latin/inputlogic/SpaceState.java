@@ -19,7 +19,7 @@ package org.futo.inputmethod.latin.inputlogic;
 /**
  * Class for managing space states.
  *
- * At any given time, the input logic is in one of five possible space states. Depending on the
+ * At any given time, the input logic is in one of six possible space states. Depending on the
  * current space state, some behavior will change; the prime example of this is the PHANTOM state,
  * in which any subsequent letter input will input a space before the letter. Read on the
  * description inside this class for each of the space states.
@@ -47,6 +47,12 @@ public class SpaceState {
     // Phantom spaces happen when a user chooses a word from the suggestion strip. In this state,
     // non-separators insert a space before they get inserted.
     public static final int PHANTOM = 4;
+    // Anti-phantom space: an automatically inserted space that should avoid being doubled.
+    // If the user attempts to insert another space during this space, it should get ignored
+    // and space state should be reset to NONE. If a separator is inserted, its position may
+    // be swapped with the space and space state should be kept as ANTIPHANTOM. If any non-separator
+    // is inserted after then the space state should be reset.
+    public static final int ANTIPHANTOM = 5;
 
     private SpaceState() {
         // This class is not publicly instantiable.

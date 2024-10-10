@@ -30,11 +30,13 @@ public final class InputTypeUtils implements InputType {
             TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_PASSWORD;
     private static final int TEXT_VISIBLE_PASSWORD_INPUT_TYPE =
             TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+
     private static final int[] SUPPRESSING_AUTO_SPACES_FIELD_VARIATION = {
-        InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
         InputType.TYPE_TEXT_VARIATION_PASSWORD,
         InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
-        InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD };
+        InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
+    };
+
     public static final int IME_ACTION_CUSTOM_LABEL = EditorInfo.IME_MASK_ACTION + 1;
 
     private InputTypeUtils() {
@@ -102,6 +104,14 @@ public final class InputTypeUtils implements InputType {
             if (variation == fieldVariation) return false;
         }
         return true;
+    }
+
+    public static boolean isUriType(final int inputType) {
+        if (TYPE_CLASS_TEXT != (TYPE_MASK_CLASS & inputType)) return false;
+        final int variation = TYPE_MASK_VARIATION & inputType;
+        return (variation == TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                || variation == TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
+                || variation == TYPE_TEXT_VARIATION_URI);
     }
 
     public static int getImeOptionsActionIdFromEditorInfo(final EditorInfo editorInfo) {

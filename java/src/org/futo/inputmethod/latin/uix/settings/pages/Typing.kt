@@ -82,6 +82,7 @@ import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
+import org.futo.inputmethod.latin.uix.settings.DropDownPicker
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -430,6 +431,27 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
     }
 }
 
+@Composable
+private fun AutoSpacesSetting() {
+    val altSpacesMode = useSharedPrefsInt(Settings.PREF_ALT_SPACES_MODE, Settings.SPACES_MODE_ALL)
+    val autoSpaceModes = mapOf(
+        Settings.SPACES_MODE_ALL to "Suggestions + Symbols",
+        Settings.SPACES_MODE_SUGGESTIONS to "Suggestions only",
+        Settings.SPACES_MODE_LEGACY to "Legacy"
+    )
+    DropDownPicker(
+        label = "Automatic spaces mode",
+        options = autoSpaceModes.keys.toList(),
+        selection = altSpacesMode.value,
+        onSet = {
+            altSpacesMode.setValue(it)
+        },
+        getDisplayName = {
+            autoSpaceModes[it] ?: "?"
+        }
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 fun TypingScreen(navController: NavHostController = rememberNavController()) {
@@ -550,6 +572,8 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
                 Text("Aa", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
         )
+
+        AutoSpacesSetting()
 
         SettingToggleSharedPrefs(
             title = stringResource(R.string.use_double_space_period),
