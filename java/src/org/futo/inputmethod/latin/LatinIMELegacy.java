@@ -1351,6 +1351,8 @@ public class LatinIMELegacy implements KeyboardActionListener,
                     Constants.CODE_DELETE,
                     Constants.NOT_A_COORDINATE,
                     Constants.NOT_A_COORDINATE, false);
+        } else {
+            onUpWithPointerActive();
         }
     }
 
