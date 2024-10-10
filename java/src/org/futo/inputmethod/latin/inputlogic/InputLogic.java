@@ -2219,6 +2219,8 @@ public final class InputLogic {
 
 
     private void insertOrSetPhantomSpace(final SettingsValues settingsValues) {
+        if(mConnection.spaceFollowsCursor()) return;
+
         if ((settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_SUGGESTIONS)
                 && settingsValues.shouldInsertSpacesAutomatically()
                 && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces

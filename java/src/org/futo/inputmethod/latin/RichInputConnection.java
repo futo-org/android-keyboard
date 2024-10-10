@@ -937,6 +937,15 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     /**
+     * Returns true if there is a space immediately after the cursor
+     */
+    public boolean spaceFollowsCursor() {
+        final CharSequence s = getTextAfterCursor(1, 0);
+        if(s.length() <= 0) return false;
+        return s.charAt(0) == Constants.CODE_SPACE;
+    }
+
+    /**
      * Looks at the text just before the cursor to find out if we are inside a double quote.
      *
      * As with #textBeforeCursorLooksLikeURL, this is dependent on how much text we have cached.
