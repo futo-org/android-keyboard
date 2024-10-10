@@ -729,7 +729,7 @@ fun ActionBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1.0f),
-                color = LocalKeyboardScheme.current.keyboardSurfaceVariant//actionBarColor()
+                color = LocalKeyboardScheme.current.keyboardSurfaceDim//actionBarColor()
             ) {
                 ActionItems(onActionActivated, onActionAltActivated)
             }

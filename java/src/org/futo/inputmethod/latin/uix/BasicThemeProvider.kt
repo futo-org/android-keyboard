@@ -189,7 +189,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         actionBarColor = if(keyBorders) {
             colorScheme.keyboardSurface
         } else {
-            colorScheme.keyboardSurfaceVariant
+            colorScheme.keyboardSurfaceDim
         }
 
         val keyColor = if(keyBorders) {

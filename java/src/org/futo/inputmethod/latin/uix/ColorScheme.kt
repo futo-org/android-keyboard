@@ -18,7 +18,7 @@ val LocalKeyboardScheme = staticCompositionLocalOf {
 
 data class ExtraColors(
     val keyboardSurface: Color,
-    val keyboardSurfaceVariant: Color,
+    val keyboardSurfaceDim: Color,
     val keyboardContainer: Color,
     val keyboardContainerVariant: Color,
     val onKeyboardContainer: Color,
@@ -111,8 +111,8 @@ data class KeyboardColorScheme(
     // Extended colors
     val keyboardSurface: Color
         get() = extended.keyboardSurface
-    val keyboardSurfaceVariant: Color
-        get() = extended.keyboardSurfaceVariant
+    val keyboardSurfaceDim: Color
+        get() = extended.keyboardSurfaceDim
     val keyboardContainer: Color
         get() = extended.keyboardContainer
     val keyboardContainerVariant: Color
@@ -158,7 +158,7 @@ fun extendedDarkColorScheme(
     surfaceContainerHighest: Color,
     shadow: Color = Color.Black,
     keyboardSurface: Color,
-    keyboardSurfaceVariant: Color = keyboardSurface,
+    keyboardSurfaceDim: Color = keyboardSurface,
     keyboardContainer: Color,
     keyboardContainerVariant: Color,
     onKeyboardContainer: Color,
@@ -200,7 +200,7 @@ fun extendedDarkColorScheme(
 
         ExtraColors(
             keyboardSurface            = keyboardSurface,
-            keyboardSurfaceVariant     = keyboardSurfaceVariant,
+            keyboardSurfaceDim     = keyboardSurfaceDim,
             keyboardContainer          = keyboardContainer,
             keyboardContainerVariant   = keyboardContainerVariant,
             onKeyboardContainer        = onKeyboardContainer,
@@ -238,7 +238,7 @@ fun extendedLightColorScheme(
     surfaceContainerHighest: Color,
     shadow: Color = Color.Black,
     keyboardSurface: Color,
-    keyboardSurfaceVariant: Color = keyboardSurface,
+    keyboardSurfaceDim: Color = keyboardSurface,
     keyboardContainer: Color,
     keyboardContainerVariant: Color,
     onKeyboardContainer: Color,
@@ -280,7 +280,7 @@ fun extendedLightColorScheme(
 
         ExtraColors(
             keyboardSurface            = keyboardSurface,
-            keyboardSurfaceVariant     = keyboardSurfaceVariant,
+            keyboardSurfaceDim     = keyboardSurfaceDim,
             keyboardContainer          = keyboardContainer,
             keyboardContainerVariant   = keyboardContainerVariant,
             onKeyboardContainer        = onKeyboardContainer,
@@ -361,7 +361,7 @@ fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
         scheme,
         ExtraColors(
             keyboardSurface = scheme.surface,
-            keyboardSurfaceVariant = scheme.surface,
+            keyboardSurfaceDim = scheme.surfaceContainerLowest,
             keyboardContainer = scheme.surfaceContainer,
             keyboardContainerVariant = scheme.surfaceContainerLow,
             onKeyboardContainer = scheme.onSurface,
@@ -375,12 +375,13 @@ fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
 
 fun wrapLightColorScheme(scheme: ColorScheme): KeyboardColorScheme {
     val secondary80 = scheme.secondary.setLuminance(80.0f)
+    val neutralVariant90 = scheme.secondaryContainer.setLuminance(90.0f)
 
     return KeyboardColorScheme(
         scheme,
         ExtraColors(
             keyboardSurface = scheme.secondaryContainer,
-            keyboardSurfaceVariant = scheme.secondaryContainer,
+            keyboardSurfaceDim = neutralVariant90,
             keyboardContainer = scheme.surfaceContainerLow,
             keyboardContainerVariant = scheme.surfaceContainer,
             onKeyboardContainer = scheme.onSurface,

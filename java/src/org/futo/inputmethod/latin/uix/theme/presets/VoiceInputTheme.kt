@@ -33,6 +33,7 @@ private val darkScheme = extendedDarkColorScheme(
     surfaceContainerHighest=Color(0xFF252E42),
     shadow=Color(0xFF000000).copy(alpha = 0.7f),
     keyboardSurface=Color(0xFF0F172A),
+    keyboardSurfaceDim=Color(0xFF0C121F),
     keyboardContainer=Color(0xFF16213D),
     keyboardContainerVariant=Color(0xFF131C34),
     onKeyboardContainer=Color(0xFFF8FAFC),
