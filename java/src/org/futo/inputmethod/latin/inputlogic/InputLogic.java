@@ -1038,12 +1038,15 @@ public final class InputLogic {
                 mSpaceState = SpaceState.PHANTOM;
             }
 
+            boolean digitPrecedesCursor = mConnection.digitPrecedesCursor();
+
             sendKeyCodePoint(settingsValues, codePoint);
 
             if(settingsValues.isUsuallyFollowedBySpace(codePoint)
                     && (settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL)
                     && !settingsValues.mInputAttributes.mIsUriField
-                    && settingsValues.mInputAttributes.mShouldInsertSpacesAutomatically) {
+                    && settingsValues.mInputAttributes.mShouldInsertSpacesAutomatically
+                    && !digitPrecedesCursor) {
                 insertOrSetPhantomSpace(settingsValues);
             }
 

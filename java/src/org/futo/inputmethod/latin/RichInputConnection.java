@@ -946,6 +946,15 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     /**
+     * Returns true if there is a digit immediately before the cursor
+     */
+    public boolean digitPrecedesCursor() {
+        final CharSequence s = getTextBeforeCursor(1, 0);
+        if(s.length() <= 0) return false;
+        return Character.isDigit(s.charAt(0));
+    }
+
+    /**
      * Looks at the text just before the cursor to find out if we are inside a double quote.
      *
      * As with #textBeforeCursorLooksLikeURL, this is dependent on how much text we have cached.
