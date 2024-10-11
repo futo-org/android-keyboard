@@ -937,7 +937,6 @@ public final class InputLogic {
 
                 if(autoInsertSpaces
                         && spacePrecedesCursor
-                        && !mConnection.spaceFollowsCursor()
                         && settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint)) {
                     insertOrSetPhantomSpace(settingsValues);
                 }
@@ -1078,9 +1077,7 @@ public final class InputLogic {
                         && settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint))
                     || (codePoint == Constants.CODE_DOUBLE_QUOTE && isInsideDoubleQuoteOrAfterDigit);
 
-            if(autoInsertSpaces
-                    && codeShouldBeFollowedBySpace
-                    && !mConnection.spaceFollowsCursor()) {
+            if(autoInsertSpaces && codeShouldBeFollowedBySpace) {
                 insertOrSetPhantomSpace(settingsValues);
 
                 if(inputTransaction.didAutoCorrect()) {
@@ -2270,7 +2267,7 @@ public final class InputLogic {
     }
 
     private void insertOrSetPhantomSpace(final SettingsValues settingsValues) {
-        if(mConnection.spaceFollowsCursor()) return;
+        if(mConnection.spaceFollowsCursor()) mConnection.removeLeadingSpace();
 
         if(canInsertAutoSpace(settingsValues)){
             mSpaceState = SpaceState.ANTIPHANTOM;
