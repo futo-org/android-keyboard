@@ -529,26 +529,33 @@ public final class StringUtils {
             return true;
         }
         int prevCodePoint = 0;
+        int numQuotes = 0;
         while (i > 0) {
             codePoint = Character.codePointBefore(text, i);
             if (Constants.CODE_DOUBLE_QUOTE == codePoint) {
+                numQuotes++;
                 // If we see a double quote followed by whitespace, then that
                 // was a closing quote.
                 if (Character.isWhitespace(prevCodePoint)) {
                     return false;
                 }
-            }
+            } else if(Constants.CODE_ENTER == codePoint) break;
+
             if (Character.isWhitespace(codePoint) && Constants.CODE_DOUBLE_QUOTE == prevCodePoint) {
                 // If we see a double quote preceded by whitespace, then that
                 // was an opening quote. No need to continue seeking.
                 return true;
+            }else if(Character.isLetter(codePoint) && Constants.CODE_DOUBLE_QUOTE == prevCodePoint) {
+                // If we see a double quote preceded by letter, then that
+                // was a closing quote. No need to continue seeking.
+                return false;
             }
             i -= Character.charCount(codePoint);
             prevCodePoint = codePoint;
         }
-        // We reached the start of text. If the first char is a double quote, then we're inside
-        // a double quote. Otherwise we're not.
-        return Constants.CODE_DOUBLE_QUOTE == codePoint;
+        // We reached the start of text/line. If there is an even number of quotes, then we are
+        // outside of a quote. Otherwise, it's unbalanced and we're inside a quote.
+        return numQuotes % 2 != 0;
     }
 
     public static boolean isPotentiallyWritingSchema(@Nonnull final CharSequence text) {
