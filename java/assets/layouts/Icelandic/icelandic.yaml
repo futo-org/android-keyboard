@@ -1,0 +1,7 @@
+# Contributed by ornstrange
+name: Íslenska
+languages: is
+rows:
+  - letters: q w e r t y u i o p ð
+  - letters: a s d f g h j k l æ ö
+  - letters: z x c v b n m þ

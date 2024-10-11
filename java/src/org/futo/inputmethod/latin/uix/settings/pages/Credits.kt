@@ -24,6 +24,7 @@ private fun contributor(name: String, vararg features: String) = ContributorInfo
 val contributors = listOf<ContributorInfo>(
     contributor("Ravyar Tahir (@ravarage)", "Central Kurdish keyboard layout"),
     contributor("Emre Eren (@remreren)", "Turkish keyboard layout"),
+    contributor("@ornstrange", "Icelandic keyboard layout"),
 )
 
 @Preview(showBackground = true)
