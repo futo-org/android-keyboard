@@ -961,12 +961,20 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     /**
+     * Returns the codepoint immediately after cursor, or NOT_A_CODE
+     */
+    public int getCodePointAfterCursor() {
+        // TODO: only does char at the moment
+        final CharSequence s = getTextAfterCursor(1, 0);
+        if(s.length() <= 0) return Constants.NOT_A_CODE;
+        return s.charAt(0);
+    }
+
+    /**
      * Returns true if there is a space immediately after the cursor
      */
     public boolean spaceFollowsCursor() {
-        final CharSequence s = getTextAfterCursor(1, 0);
-        if(s.length() <= 0) return false;
-        return s.charAt(0) == Constants.CODE_SPACE;
+        return getCodePointAfterCursor() == Constants.CODE_SPACE;
     }
 
     /**
