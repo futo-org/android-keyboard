@@ -1296,10 +1296,18 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     private void startKeyRepeatTimer(final int code, final int repeatCount) {
-        int delay = (repeatCount == 1) ? sParams.mKeyRepeatStartTimeout : sParams.mKeyRepeatInterval;
+        final SettingsValues settingsValues = Settings.getInstance().getCurrent();
+
+        // The repeat timeouts are linked to the longpress timeout setting
+        final int keyRepeatStartTimeout = settingsValues.mKeyLongpressTimeout * 4 / 3;
+        final int keyRepeatTimeout = Math.max(30, settingsValues.mKeyLongpressTimeout * 5 / 30);
+
+        int delay = (repeatCount == 1) ? keyRepeatStartTimeout : keyRepeatTimeout;
 
         // Slow down the repeat key if we are deleting whole words
-        if(code == Constants.CODE_DELETE && Settings.getInstance().getCurrent().mBackspaceMode == Settings.BACKSPACE_MODE_WORDS && repeatCount > 1) {
+        if(code == Constants.CODE_DELETE
+                && settingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS
+                && repeatCount > 1) {
             delay = (int)((float)delay * (7.0f * (1.0f / ((float)(repeatCount - 1))) + 1.0f));
         }
 
