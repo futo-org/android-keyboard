@@ -909,6 +909,28 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return true;
     }
 
+    public boolean revertPrefixSpace() {
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+
+        final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
+        // NOTE: This does not work with surrogate pairs. Hopefully when the keyboard is able to
+        // enter surrogate pairs this code will have been removed.
+        if (TextUtils.isEmpty(textBeforeCursor)
+                || (Constants.CODE_SPACE != textBeforeCursor.charAt(0))) {
+            // We may only come here if the application is changing the text while we are typing.
+            // This is quite a broken case, but not logically impossible, so we shouldn't crash,
+            // but some debugging log may be in order.
+            Log.d(TAG, "Tried to revert a prefix space but we didn't "
+                    + "find a space just before the symbol.");
+            return false;
+        }
+
+        deleteTextBeforeCursor(2);
+        final String text = String.valueOf(textBeforeCursor.charAt(1));
+        commitText(text, 1);
+        return true;
+    }
+
     /**
      * Heuristic to determine if this is an expected update of the cursor.
      *

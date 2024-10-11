@@ -23,11 +23,11 @@
     <!-- Symbols that are suggested between words -->
     <string name="suggested_punctuations">!,?,\\,,:,;,\",(,),\',-,/,@,_</string>
     <!-- Symbols that are normally preceded by a space (used to add an auto-space before these) -->
-    <string name="symbols_preceded_by_space">([{&amp;</string>
+    <string name="symbols_preceded_by_space"></string>
     <!-- Symbols that are normally followed by a space (used to add an auto-space after these) -->
-    <string name="symbols_followed_by_space">.,;:!?)]}&amp;</string>
+    <string name="symbols_followed_by_space">.,;!?)]}</string>
     <!-- Symbols that are normally followed by a space only if preceded by a space -->
-    <string name="symbols_followed_by_space_iff_preceded_by_space">-</string>
+    <string name="symbols_followed_by_space_iff_preceded_by_space">-&amp;</string>
     <!-- Symbols that behave like a single punctuation when typed next to each other -->
     <string name="symbols_clustering_together"></string>
     <!-- Symbols that separate words -->

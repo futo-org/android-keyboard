@@ -22,7 +22,7 @@
     <!-- U+055D: "՝" ARMENIAN COMMA -->
     <!-- U+0589: "։" ARMENIAN FULL STOP -->
     <!-- Symbols that are normally followed by a space (used to add an auto-space after these) -->
-    <string name="symbols_followed_by_space">.,;:!?)]}&amp;&#x0589;&#x055D;</string>
+    <string name="symbols_followed_by_space">.,;:!?)]}&#x0589;&#x055D;</string>
     <!-- Symbols that separate words. Adding armenian period and comma. -->
     <!-- Don't remove the enclosing double quotes, they protect whitespace (not just U+0020) -->
     <string name="symbols_word_separators">"&#x0009;&#x0020;&#x000A;&#x00A0;"()[]{}*&amp;&lt;&gt;+=|.,;:!?/_\"&#x0589;&#x055D;</string>

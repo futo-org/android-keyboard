@@ -19,9 +19,9 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Symbols that are normally preceded by a space (used to add an auto-space before these) -->
-    <string name="symbols_preceded_by_space">([{&amp;;:!?</string>
+    <string name="symbols_preceded_by_space">;:!?</string>
     <!-- Symbols that are normally followed by a space (used to add an auto-space after these) -->
-    <string name="symbols_followed_by_space">.,;:!?)]}&amp;</string>
+    <string name="symbols_followed_by_space">.,;:!?)]}</string>
     <!-- Symbols that behave like a single punctuation when typed next to each other -->
     <string name="symbols_clustering_together">!?</string>
     <!-- Symbols that separate words -->

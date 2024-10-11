@@ -43,6 +43,7 @@ public final class InputAttributes {
     final public boolean mApplicationSpecifiedCompletionOn;
     final public boolean mShouldInsertSpacesAutomatically;
     final public boolean mIsUriField;
+    final public boolean mIsCodeField;
 
     /**
      * Whether the floating gesture preview should be disabled. If true, this should override the
@@ -67,6 +68,7 @@ public final class InputAttributes {
         mIsPasswordField = InputTypeUtils.isPasswordInputType(inputType)
                 || InputTypeUtils.isVisiblePasswordInputType(inputType);
         mIsUriField = InputTypeUtils.isUriType(inputType);
+        mIsCodeField = isCodeField(editorInfo);
         if (inputClass != InputType.TYPE_CLASS_TEXT) {
             // If we are not looking at a TYPE_CLASS_TEXT field, the following strange
             // cases may arise, so we do a couple validity checks for them. If it's a
@@ -111,7 +113,8 @@ public final class InputAttributes {
                 || forceNoSuggestionsByPrivateFlag;
         mShouldShowSuggestions = !shouldSuppressSuggestions;
 
-        mShouldInsertSpacesAutomatically = InputTypeUtils.isAutoSpaceFriendlyType(inputType);
+        mShouldInsertSpacesAutomatically = InputTypeUtils.isAutoSpaceFriendlyType(inputType)
+            && !mIsCodeField;
 
         mDisableGestureFloatingPreviewText = InputAttributes.inPrivateImeOptions(
                 mPackageNameForPrivateImeOptions, NO_FLOATING_GESTURE_PREVIEW, editorInfo);
@@ -122,7 +125,8 @@ public final class InputAttributes {
                 || InputTypeUtils.isEmailVariation(variation)
                 || InputType.TYPE_TEXT_VARIATION_URI == variation
                 || InputType.TYPE_TEXT_VARIATION_FILTER == variation
-                || flagNoSuggestions;
+                || flagNoSuggestions
+                || mIsCodeField;
 
         // If it's a browser edit field and auto correct is not ON explicitly, then
         // disable auto correction, but keep suggestions on.
@@ -149,7 +153,7 @@ public final class InputAttributes {
             noLearning = (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
         }
 
-        mNoLearning = noLearning || mIsPasswordField;
+        mNoLearning = noLearning || mIsPasswordField || mIsCodeField;
     }
 
     public boolean isTypeNull() {
@@ -310,5 +314,16 @@ public final class InputAttributes {
         if (editorInfo == null) return false;
         final String findingKey = (packageName != null) ? packageName + "." + key : key;
         return StringUtils.containsInCommaSplittableText(findingKey, editorInfo.privateImeOptions);
+    }
+
+    private static boolean isCodeField(final EditorInfo editorInfo) {
+        if(editorInfo == null) return false;
+
+        boolean noAutocorrect = (editorInfo.inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0;
+
+        if(editorInfo.packageName.startsWith("com.replit")) return noAutocorrect;
+        if(editorInfo.packageName.startsWith("com.termux")) return noAutocorrect;
+
+        return false;
     }
 }

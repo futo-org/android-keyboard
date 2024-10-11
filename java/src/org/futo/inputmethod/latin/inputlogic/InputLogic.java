@@ -1056,8 +1056,10 @@ public final class InputLogic {
 
             boolean spacePrecedesCursor = mConnection.spacePrecedesCursor();
 
-            boolean codeShouldBePrecededBySpace = settingsValues.isUsuallyPrecededBySpace(codePoint)
-                    || (codePoint == Constants.CODE_DOUBLE_QUOTE && !isInsideDoubleQuoteOrAfterDigit);
+            boolean codeShouldBePrecededBySpace = settingsValues.isUsuallyPrecededBySpace(codePoint);
+            // Disabled: this behavior is annoying in some circumstances (e.g. coding) and other
+            // keyboards seem to not do it
+                    //|| (codePoint == Constants.CODE_DOUBLE_QUOTE && !isInsideDoubleQuoteOrAfterDigit);
 
             codeShouldBePrecededBySpace = codeShouldBePrecededBySpace
                     && !symbolRequiringPrecedingSpaceShouldSkipPrecedingSpace(
@@ -1068,6 +1070,7 @@ public final class InputLogic {
                     && !spacePrecedesCursor
             ) {
                 sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
+                mSpaceState = SpaceState.SYMBOL_PREFIX;
 
                 if(inputTransaction.didAutoCorrect()) {
                     mLastComposedWord.mSeparatorString = " " + mLastComposedWord.mSeparatorString;
@@ -1209,6 +1212,10 @@ public final class InputLogic {
                 if (mConnection.revertSwapPunctuation()) {
                     StatsUtils.onRevertSwapPunctuation();
                     // Likewise
+                    return;
+                }
+            } else if (SpaceState.SYMBOL_PREFIX == inputTransaction.mSpaceState) {
+                if (mConnection.revertPrefixSpace()) {
                     return;
                 }
             }
@@ -2703,15 +2710,18 @@ public final class InputLogic {
      * @param select Whether or not to start/continue selection
      */
     public void cursorLeft(int steps, boolean stepOverWords, boolean select) {
+        final SettingsValues settingsValues = Settings.getInstance().getCurrent();
         steps = Math.abs(steps);
-        if(!mConnection.hasCursorPosition() || Settings.getInstance().getCurrent().mIsRTL) {
+        if(!mConnection.hasCursorPosition() || settingsValues.mIsRTL || settingsValues.mInputAttributes.mIsCodeField) {
+            mConnection.finishComposingText();
             int meta = 0;
             if(stepOverWords) meta = meta | KeyEvent.META_CTRL_ON;
             if(select) meta = meta | KeyEvent.META_SHIFT_ON;
 
+            mConnection.beginBatchEdit();
             for(int i=0; i<steps; i++)
                 sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta);
-
+            mConnection.endBatchEdit();
             return;
         }
 
@@ -2729,14 +2739,18 @@ public final class InputLogic {
      * @param select Whether or not to start/continue selection
      */
     public void cursorRight(int steps, boolean stepOverWords, boolean select) {
+        final SettingsValues settingsValues = Settings.getInstance().getCurrent();
         steps = Math.abs(steps);
-        if(!mConnection.hasCursorPosition() || Settings.getInstance().getCurrent().mIsRTL) {
+        if(!mConnection.hasCursorPosition() || settingsValues.mIsRTL || settingsValues.mInputAttributes.mIsCodeField) {
+            mConnection.finishComposingText();
             int meta = 0;
             if(stepOverWords) meta = meta | KeyEvent.META_CTRL_ON;
             if(select) meta = meta | KeyEvent.META_SHIFT_ON;
 
+            mConnection.beginBatchEdit();
             for(int i=0; i<steps; i++)
                 sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta);
+            mConnection.endBatchEdit();
 
             return;
         }
