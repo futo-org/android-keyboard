@@ -25,6 +25,7 @@ val contributors = listOf<ContributorInfo>(
     contributor("Ravyar Tahir (@ravarage)", "Central Kurdish keyboard layout"),
     contributor("Emre Eren (@remreren)", "Turkish keyboard layout"),
     contributor("@ornstrange", "Icelandic keyboard layout"),
+    contributor("@roguesensei", "Colemak DH / DH ANSI layouts")
 )
 
 @Preview(showBackground = true)

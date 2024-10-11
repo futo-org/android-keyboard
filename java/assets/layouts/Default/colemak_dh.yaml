@@ -1,0 +1,15 @@
+name: "Colemak DH"
+rows:
+  - letters:
+    - q
+    - w
+    - f
+    - p
+    - b
+    - j
+    - l
+    - u
+    - y
+    - {type: case, normal: ";", shifted: ":"}
+  - letters: a r s t g m n e i o
+  - letters: z x c d v k h
