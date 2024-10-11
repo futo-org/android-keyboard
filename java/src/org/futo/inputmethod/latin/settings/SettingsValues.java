@@ -21,8 +21,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import org.futo.inputmethod.compat.AppWorkaroundsUtils;
@@ -61,6 +62,7 @@ public class SettingsValues {
     public final Locale mLocale;
     public final boolean mHasHardwareKeyboard;
     public final int mDisplayOrientation;
+    public final boolean mIsRTL;
     // From preferences, in the same order as xml/prefs.xml:
     public final boolean mAutoCap;
     public final boolean mVibrateOn;
@@ -130,6 +132,7 @@ public class SettingsValues {
     public SettingsValues(final Context context, final SharedPreferences prefs, final Resources res,
             @Nonnull final InputAttributes inputAttributes) {
         mLocale = res.getConfiguration().locale;
+        mIsRTL = TextUtils.getLayoutDirectionFromLocale(mLocale) == View.LAYOUT_DIRECTION_RTL;
         // Get the resources
         mSpacingAndPunctuations = new SpacingAndPunctuations(res);
 

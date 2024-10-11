@@ -2634,13 +2634,15 @@ public final class InputLogic {
      */
     public void cursorLeft(int steps, boolean stepOverWords, boolean select) {
         steps = Math.abs(steps);
-        if(!mConnection.hasCursorPosition()) {
+        if(!mConnection.hasCursorPosition() || Settings.getInstance().getCurrent().mIsRTL) {
             int meta = 0;
             if(stepOverWords) meta = meta | KeyEvent.META_CTRL_ON;
             if(select) meta = meta | KeyEvent.META_SHIFT_ON;
 
             for(int i=0; i<steps; i++)
                 sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta);
+
+            return;
         }
 
         finishInput();
@@ -2658,13 +2660,15 @@ public final class InputLogic {
      */
     public void cursorRight(int steps, boolean stepOverWords, boolean select) {
         steps = Math.abs(steps);
-        if(!mConnection.hasCursorPosition()) {
+        if(!mConnection.hasCursorPosition() || Settings.getInstance().getCurrent().mIsRTL) {
             int meta = 0;
             if(stepOverWords) meta = meta | KeyEvent.META_CTRL_ON;
             if(select) meta = meta | KeyEvent.META_SHIFT_ON;
 
             for(int i=0; i<steps; i++)
                 sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta);
+
+            return;
         }
 
         finishInput();
