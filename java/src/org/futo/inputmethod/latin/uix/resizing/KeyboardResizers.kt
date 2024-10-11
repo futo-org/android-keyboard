@@ -202,6 +202,16 @@ class OneHandedKeyboardResizeHelper(
             )
         )
     }
+
+    fun limitMinimumWidth() = with(density) {
+        editedSettings = editedSettings.copy(
+            oneHandedRectDp = editedSettings.oneHandedRectDp.copy(
+                right = editedSettings.oneHandedRectDp.right.coerceAtLeast(
+                    editedSettings.oneHandedRectDp.left + minimumKeyboardWidth
+                )
+            )
+        )
+    }
 }
 
 class FloatingKeyboardResizeHelper(
@@ -368,6 +378,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
                 helper.editBottomPaddingAndHeightAddition()
                 helper.moveSideToSide()
                 helper.limitToCorrectSide()
+                helper.limitMinimumWidth()
 
                 result = result && helper.result
 

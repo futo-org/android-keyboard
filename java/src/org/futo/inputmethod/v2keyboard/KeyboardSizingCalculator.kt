@@ -366,6 +366,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     singleRowHeight = singularRowHeight.roundToInt(),
                     padding = padding,
                     splitLayoutWidth = (displayMetrics.widthPixels * savedSettings.splitWidthFraction).toInt()
+                        .coerceIn(dp(48), displayMetrics.widthPixels * 9 / 10)
                 )
 
             savedSettings.currentMode == KeyboardMode.OneHanded ->
@@ -374,7 +375,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     height = recommendedHeight.roundToInt(),
                     singleRowHeight = singularRowHeight.roundToInt(),
                     padding = padding,
-                    layoutWidth = dp(savedSettings.oneHandedRectDp.width).coerceAtMost(displayMetrics.widthPixels * 9 / 10),
+                    layoutWidth = dp(savedSettings.oneHandedRectDp.width)
+                        .coerceIn(dp(48), displayMetrics.widthPixels * 9 / 10),
                     direction = savedSettings.oneHandedDirection
                 )
 
@@ -386,8 +388,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                         dp(savedSettings.floatingBottomOriginDp.first),
                         dp(savedSettings.floatingBottomOriginDp.second)
                     ),
-                    width = dp(savedSettings.floatingWidthDp),
-                    height = recommendedHeightFloat.toInt(),
+                    width = dp(savedSettings.floatingWidthDp).coerceIn(dp(48), displayMetrics.widthPixels),
+                    height = recommendedHeightFloat.toInt().coerceIn(dp(88), displayMetrics.heightPixels),
                     singleRowHeight = singularRowHeightFloat.roundToInt(),
                     padding = padding
                 )
@@ -395,7 +397,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
             else ->
                 RegularKeyboardSize(
-                    width = width,
+                    width = width.coerceIn(dp(48), displayMetrics.widthPixels),
                     height = recommendedHeight.roundToInt(),
                     singleRowHeight = singularRowHeight.roundToInt(),
                     padding = padding,
