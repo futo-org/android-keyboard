@@ -1057,8 +1057,11 @@ public final class InputLogic {
 
             boolean spacePrecedesCursor = mConnection.spacePrecedesCursor();
 
+            boolean codeShouldBePrecededBySpace = settingsValues.isUsuallyPrecededBySpace(codePoint)
+                    || (codePoint == Constants.CODE_DOUBLE_QUOTE && !isInsideDoubleQuoteOrAfterDigit);
+
             if(autoInsertSpaces
-                    && settingsValues.isUsuallyPrecededBySpace(codePoint)
+                    && codeShouldBePrecededBySpace
                     && !spacePrecedesCursor
             ) {
                 sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
@@ -1070,10 +1073,13 @@ public final class InputLogic {
 
             sendKeyCodePoint(settingsValues, codePoint);
 
+            boolean codeShouldBeFollowedBySpace = settingsValues.isUsuallyFollowedBySpace(codePoint)
+                    || (spacePrecedesCursor
+                        && settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint))
+                    || (codePoint == Constants.CODE_DOUBLE_QUOTE && isInsideDoubleQuoteOrAfterDigit);
+
             if(autoInsertSpaces
-                    && (settingsValues.isUsuallyFollowedBySpace(codePoint)
-                        || (spacePrecedesCursor
-                            && settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint)))
+                    && codeShouldBeFollowedBySpace
                     && !mConnection.spaceFollowsCursor()) {
                 insertOrSetPhantomSpace(settingsValues);
 
