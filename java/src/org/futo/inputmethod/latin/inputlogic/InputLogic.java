@@ -1059,6 +1059,10 @@ public final class InputLogic {
             boolean codeShouldBePrecededBySpace = settingsValues.isUsuallyPrecededBySpace(codePoint)
                     || (codePoint == Constants.CODE_DOUBLE_QUOTE && !isInsideDoubleQuoteOrAfterDigit);
 
+            codeShouldBePrecededBySpace = codeShouldBePrecededBySpace
+                    && !symbolRequiringPrecedingSpaceShouldSkipPrecedingSpace(
+                            codePoint, mConnection.getCodePointBeforeCursor(), inputTransaction);
+
             if(autoInsertSpaces
                     && codeShouldBePrecededBySpace
                     && !spacePrecedesCursor
@@ -1435,6 +1439,24 @@ public final class InputLogic {
     }
 
     /*
+     * Special case for symbols that are usually preceded by space.
+     * Given the codepoint and the prior codepoint (skipping over a space if one is there),
+     * it will return true if the preceding space should be skipped.
+     *
+     * This is mainly applicable for French question marks, so that typing ...??!? would not result
+     * in ... ? ? ! ?
+     */
+    private boolean symbolRequiringPrecedingSpaceShouldSkipPrecedingSpace(final int codePoint,
+          final int priorCodePoint, final InputTransaction inputTransaction) {
+
+        if(!inputTransaction.mSettingsValues.isUsuallyPrecededBySpace(codePoint)) return false;
+        if(!inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(priorCodePoint)) return false;
+
+        return (codePoint == priorCodePoint)
+                || inputTransaction.mSettingsValues.mSpacingAndPunctuations.isSentenceTerminator(priorCodePoint);
+    }
+
+    /*
      * Strip a trailing space if necessary and returns whether it's a swap weak space situation.
      * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
@@ -1471,6 +1493,15 @@ public final class InputLogic {
         final boolean settingsPermitSwapping =
                 inputTransaction.mSettingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL;
 
+        // If we are typing a bunch of dashes, strip the space instead of padding them with spaces
+        if(inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM
+                && inputTransaction.mSettingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint)
+                && codePoint == mConnection.getNthCodePointBeforeCursor(1)
+        ) {
+            mConnection.removeTrailingSpace();
+            return false;
+        }
+
         // Text field either needs to be fit for automatic spaces, or be a uri field
         // (in the case of uri field, we will strip trailing space without adding it back
         // in trySwapSwapperAndSpace)
@@ -1479,15 +1510,31 @@ public final class InputLogic {
                 inputTransaction.mSettingsValues.shouldInsertSpacesAutomatically()
                     || inputTransaction.mSettingsValues.mInputAttributes.mIsUriField;
 
-        // Character needs to be usually followed by space (eg . , ? !), and it cannot be usually
-        // preceded by space (e.g. ? ! in the case of French)
+        // Character needs to be usually followed by space (eg . , ? !)
         // or be an ending quotation mark, or be a schema to strip the space in case of https: //
         // TODO: Maybe just do mConnection.removeTrailingSpace() here in case of schema
-        final boolean characterFitForSwapping = (
+        boolean characterFitForSwapping = (
                 inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(codePoint)
                     || isInsideDoubleQuoteOrAfterDigit
                     || isPotentiallyWritingSchema
-        ) && (!inputTransaction.mSettingsValues.isUsuallyPrecededBySpace(codePoint));
+        );
+
+        // If this codepoint is preceded by a space, we swap it only if the preceding space is
+        // skippable, and if we are in antiphantom state.
+        //
+        // French example: if I type "je..", a space is automatically inserted, and I type a
+        // question mark, the space will be swapped to produce "je..? "
+        // If I type "je..", the space is automatically inserted, I tap space manually which unsets
+        // antiphantom state, the space will NOT be swapped and will instead get "je.. ? "
+        if(characterFitForSwapping
+                && inputTransaction.mSettingsValues.isUsuallyPrecededBySpace(codePoint)) {
+
+            characterFitForSwapping = symbolRequiringPrecedingSpaceShouldSkipPrecedingSpace(
+                    codePoint,
+                    mConnection.getNthCodePointBeforeCursor(1),
+                    inputTransaction
+            ) && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM;
+        }
 
         return settingsPermitSwapping && textFieldFitForSwapping && characterFitForSwapping;
     }
