@@ -927,7 +927,20 @@ public final class InputLogic {
             if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
                 mSpaceState = SpaceState.WEAK;
             } else {
+                boolean autoInsertSpaces = canInsertAutoSpace(settingsValues)
+                        && (settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL)
+                        && !mConnection.digitPrecedesCursor();
+
+                boolean spacePrecedesCursor = mConnection.spacePrecedesCursor();
+
                 sendKeyCodePoint(settingsValues, codePoint);
+
+                if(autoInsertSpaces
+                        && spacePrecedesCursor
+                        && !mConnection.spaceFollowsCursor()
+                        && settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint)) {
+                    insertOrSetPhantomSpace(settingsValues);
+                }
             }
         }
         inputTransaction.setRequiresUpdateSuggestions();
@@ -1042,9 +1055,11 @@ public final class InputLogic {
                     && (settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL)
                     && !mConnection.digitPrecedesCursor();
 
+            boolean spacePrecedesCursor = mConnection.spacePrecedesCursor();
+
             if(autoInsertSpaces
                     && settingsValues.isUsuallyPrecededBySpace(codePoint)
-                    && !mConnection.spacePrecedesCursor()
+                    && !spacePrecedesCursor
             ) {
                 sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
 
@@ -1056,7 +1071,9 @@ public final class InputLogic {
             sendKeyCodePoint(settingsValues, codePoint);
 
             if(autoInsertSpaces
-                    && settingsValues.isUsuallyFollowedBySpace(codePoint)
+                    && (settingsValues.isUsuallyFollowedBySpace(codePoint)
+                        || (spacePrecedesCursor
+                            && settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint)))
                     && !mConnection.spaceFollowsCursor()) {
                 insertOrSetPhantomSpace(settingsValues);
 

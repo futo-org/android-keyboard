@@ -31,6 +31,7 @@ import java.util.Locale;
 public final class SpacingAndPunctuations {
     private final int[] mSortedSymbolsPrecededBySpace;
     private final int[] mSortedSymbolsFollowedBySpace;
+    private final int[] mSortedSymbolsFollowedBySpaceIffPrecededBySpace;
     private final int[] mSortedSymbolsClusteringTogether;
     private final int[] mSortedWordConnectors;
     public final int[] mSortedWordSeparators;
@@ -50,6 +51,8 @@ public final class SpacingAndPunctuations {
         // To be able to binary search the code point. See {@link #isUsuallyFollowedBySpace(int)}.
         mSortedSymbolsFollowedBySpace = StringUtils.toSortedCodePointArray(
                 res.getString(R.string.symbols_followed_by_space));
+        mSortedSymbolsFollowedBySpaceIffPrecededBySpace = StringUtils.toSortedCodePointArray(
+                res.getString(R.string.symbols_followed_by_space_iff_preceded_by_space));
         mSortedSymbolsClusteringTogether = StringUtils.toSortedCodePointArray(
                 res.getString(R.string.symbols_clustering_together));
         // To be able to binary search the code point. See {@link #isWordConnector(int)}.
@@ -79,6 +82,7 @@ public final class SpacingAndPunctuations {
             final int[] overrideSortedWordSeparators) {
         mSortedSymbolsPrecededBySpace = model.mSortedSymbolsPrecededBySpace;
         mSortedSymbolsFollowedBySpace = model.mSortedSymbolsFollowedBySpace;
+        mSortedSymbolsFollowedBySpaceIffPrecededBySpace = model.mSortedSymbolsFollowedBySpaceIffPrecededBySpace;
         mSortedSymbolsClusteringTogether = model.mSortedSymbolsClusteringTogether;
         mSortedWordConnectors = model.mSortedWordConnectors;
         mSortedWordSeparators = overrideSortedWordSeparators;
@@ -110,6 +114,10 @@ public final class SpacingAndPunctuations {
 
     public boolean isUsuallyFollowedBySpace(final int code) {
         return Arrays.binarySearch(mSortedSymbolsFollowedBySpace, code) >= 0;
+    }
+
+    public boolean isUsuallyFollowedBySpaceIffPrecededBySpace(final int code) {
+        return Arrays.binarySearch(mSortedSymbolsFollowedBySpaceIffPrecededBySpace, code) >= 0;
     }
 
     public boolean isClusteringSymbol(final int code) {

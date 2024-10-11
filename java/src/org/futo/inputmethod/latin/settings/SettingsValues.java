@@ -288,6 +288,10 @@ public class SettingsValues {
         return mSpacingAndPunctuations.isUsuallyFollowedBySpace(code);
     }
 
+    public boolean isUsuallyFollowedBySpaceIffPrecededBySpace(final int code) {
+        return mSpacingAndPunctuations.isUsuallyFollowedBySpaceIffPrecededBySpace(code);
+    }
+
     public boolean shouldInsertSpacesAutomatically() {
         return mInputAttributes.mShouldInsertSpacesAutomatically;
     }
