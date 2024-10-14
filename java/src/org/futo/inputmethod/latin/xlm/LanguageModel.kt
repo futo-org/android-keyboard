@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.keyboard.KeyDetector
@@ -47,46 +48,14 @@ class LanguageModel(
 
         val inputPointers = composedData.mInputPointers
         val isGesture = composedData.mIsBatchMode
-        val inputSize: Int = inputPointers.pointerSize
 
-        val xCoords: IntArray
-        val yCoords: IntArray
         var inputMode = 0
         if (isGesture) {
-            /*Log.w("LanguageModel", "Using experimental gesture support")
-            inputMode = 1
-            val xCoordsList = mutableListOf<Int>()
-            val yCoordsList = mutableListOf<Int>()
-            // Partial word is gonna be derived from batch data
-            partialWord = convertToString(
-                composedData.mInputPointers.xCoordinates,
-                composedData.mInputPointers.yCoordinates,
-                inputSize,
-                keyDetector,
-                xCoordsList,
-                yCoordsList
-            )
-            xCoords = IntArray(xCoordsList.size)
-            yCoords = IntArray(yCoordsList.size)
-            for (i in xCoordsList.indices) xCoords[i] = xCoordsList[i]
-            for (i in yCoordsList.indices) yCoords[i] = yCoordsList[i]*/
-
             partialWord = ""
-
-            xCoords = IntArray(composedData.mInputPointers.pointerSize)
-            yCoords = IntArray(composedData.mInputPointers.pointerSize)
-            val xCoordsI = composedData.mInputPointers.xCoordinates
-            val yCoordsI = composedData.mInputPointers.yCoordinates
-            for (i in 0 until composedData.mInputPointers.pointerSize) xCoords[i] = xCoordsI[i]
-            for (i in 0 until composedData.mInputPointers.pointerSize) yCoords[i] = yCoordsI[i]
-        } else {
-            xCoords = IntArray(composedData.mInputPointers.pointerSize)
-            yCoords = IntArray(composedData.mInputPointers.pointerSize)
-            val xCoordsI = composedData.mInputPointers.xCoordinates
-            val yCoordsI = composedData.mInputPointers.yCoordinates
-            for (i in 0 until composedData.mInputPointers.pointerSize) xCoords[i] = xCoordsI[i]
-            for (i in 0 until composedData.mInputPointers.pointerSize) yCoords[i] = yCoordsI[i]
         }
+
+        val xCoords: IntArray = inputPointers.xCoordinates.toList().toIntArray()
+        val yCoords: IntArray = inputPointers.yCoordinates.toList().toIntArray()
 
         return ComposeInfo(
             partialWord = partialWord,
@@ -95,6 +64,7 @@ class LanguageModel(
             inputMode = inputMode
         )
     }
+
     private fun getContext(composeInfo: ComposeInfo, ngramContext: NgramContext): String {
         var context = ngramContext.extractPrevWordsContext()
             .replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim { it <= ' ' }
@@ -198,7 +168,15 @@ class LanguageModel(
             return@withContext null
         }
 
-        var composeInfo = getComposeInfo(composedData, keyDetector)
+        var composeInfo = withContext(Dispatchers.Main) {
+            getComposeInfo(composedData, keyDetector)
+        }
+
+        if(composeInfo.xCoords.size != composeInfo.yCoords.size) {
+            Log.w("LanguageModel", "Dropping composeInfo in rescoreSuggestions with mismatching coords size")
+            return@withContext null
+        }
+
         var context = getContext(composeInfo, ngramContext)
 
         composeInfo = safeguardComposeInfo(composeInfo)
@@ -260,7 +238,15 @@ class LanguageModel(
         }
 
 
-        var composeInfo = getComposeInfo(composedData, keyDetector)
+        var composeInfo = with(Dispatchers.Main) {
+            getComposeInfo(composedData, keyDetector)
+        }
+
+        if(composeInfo.xCoords.size != composeInfo.yCoords.size) {
+            Log.w("LanguageModel", "Dropping composeInfo with mismatching coords size")
+            return@withContext null
+        }
+
         var context = getContext(composeInfo, ngramContext)
 
         composeInfo = safeguardComposeInfo(composeInfo)
