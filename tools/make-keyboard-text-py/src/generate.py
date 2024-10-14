@@ -90,12 +90,15 @@ def generate_templated_code(names, texts_by_locale):
                 out += line
     return out
 
+def dedup(t):
+    return list(dict.fromkeys(t))
+
 if __name__ == "__main__":
     data = load_data()
 
     data = list(map(transform_to_texts, data))
 
-    all_names = set([k for texts in data for k in texts.keys()])
+    all_names = dedup([k for texts in data for k in texts.keys()])
     names_and_uses = [
         (name, sum([
                        1 if name in texts else 0
