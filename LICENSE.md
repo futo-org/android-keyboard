@@ -1,4 +1,4 @@
-# FUTO Source First License 1.0-kb
+# FUTO Source First License 1.1-kb
 
 ## Acceptance
 By using the software, you agree to all of the terms and conditions below.
@@ -18,7 +18,7 @@ Notwithstanding the above, you may not remove or obscure any functionality in th
 You may not alter, remove, or obscure any licensing, copyright, or other notices of the Licensor in the software. Any use of the Licensor’s trademarks is subject to applicable law.
 
 ## Patents
-If you make any written claim that the software infringes or contributes to infringement of any patent, your patent license for the software granted under these terms ends immediately. If your company makes such a claim, your patent license ends immediately for work on behalf of your company.
+If you make any written claim that the software infringes or contributes to infringement of any patent, your license for the software granted under these terms ends immediately. If your company makes such a claim, your license ends immediately for work on behalf of your company.
 
 ## Notices
 You must ensure that anyone who gets a copy of any part of the software from you also gets a copy of these terms. If you modify the software, you must include in any modified copies of the software a prominent notice stating that you have modified the software, such as but not limited to, a statement in a readme file or an in-application about section.
