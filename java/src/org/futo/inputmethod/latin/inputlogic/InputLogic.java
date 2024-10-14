@@ -2321,12 +2321,15 @@ public final class InputLogic {
     }
 
     private void insertOrSetPhantomSpace(final SettingsValues settingsValues) {
-        if(mConnection.spaceFollowsCursor()) mConnection.removeLeadingSpace();
-
         if(canInsertAutoSpace(settingsValues)
                 // If the next character is usually followed by space, it likely doesn't make sense
                 // to put a space immediately (e.g. cursor at "example sentence|.")
                 && !settingsValues.isUsuallyFollowedBySpace(mConnection.getCodePointAfterCursor())){
+
+            // If a space already follows the cursor it should be removed then re-inserted, so that
+            // the cursor is after the space.
+            if(mConnection.spaceFollowsCursor()) mConnection.removeLeadingSpace();
+
             mSpaceState = SpaceState.ANTIPHANTOM;
             sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
         } else {
