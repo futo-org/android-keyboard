@@ -129,15 +129,6 @@ android {
     flavorDimensions = ["buildType"]
 
     productFlavors {
-        stable {
-            dimension "buildType"
-            buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "false"
-            buildConfigField "boolean", "UPDATE_CHECKING", "true"
-            buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
-
-            buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
-            buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
-        }
         unstable {
             dimension "buildType"
             applicationIdSuffix ".unstable"
@@ -152,6 +143,17 @@ android {
             buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
             buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
         }
+
+        stable {
+            dimension "buildType"
+            buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "false"
+            buildConfigField "boolean", "UPDATE_CHECKING", "true"
+            buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
+
+            buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
+            buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
+        }
+
         playstore {
             dimension "buildType"
             applicationIdSuffix ".playstore"
