@@ -53,6 +53,8 @@
     <string name="cotton_candy_theme_name">Cotton Candy</string>
     <string name="hot_dog_theme_name">Hot Dog</string>
 
+    <string name="dev_theme_name">Construction Theme</string>
+
     <string name="dynamic_system_theme_name">Dynamic Auto</string>
     <string name="dynamic_light_theme_name">Dynamic Light</string>
     <string name="dynamic_dark_theme_name">Dynamic Dark</string>

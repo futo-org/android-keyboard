@@ -21,4 +21,6 @@
     <!-- Whether this input method should be used as the default for a locale. Override it
          for supported languages. -->
     <bool name="im_is_default">false</bool>
+
+    <bool name="use_dev_styling">false</bool>
 </resources>

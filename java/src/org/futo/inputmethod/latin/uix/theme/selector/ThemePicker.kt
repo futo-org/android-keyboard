@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -90,14 +91,14 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
         modifier
     }
 
-    Surface(
+    Box(
         modifier = previewModifier
             .padding(12.dp)
             .height(128.dp)
+            .background(colors.keyboardBackgroundGradient ?: SolidColor(colors.keyboardSurface), keyboardShape)
             .border(borderWidth, borderColor, keyboardShape)
-            .clickable { onClick() },
-        color = colors.keyboardSurface,
-        shape = keyboardShape
+            .clickable { onClick() }
+            .clip(keyboardShape),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             // Theme name and action bar
@@ -106,7 +107,7 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .background(colors.keyboardSurface)
+                    .background(colors.keyboardSurfaceDim)
                     .fillMaxWidth()
                     .padding(4.dp),
                 color = textColor,

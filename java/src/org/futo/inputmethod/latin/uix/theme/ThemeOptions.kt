@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
 import androidx.annotation.StringRes
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
@@ -21,6 +22,7 @@ import org.futo.inputmethod.latin.uix.theme.presets.Snowfall
 import org.futo.inputmethod.latin.uix.theme.presets.SteelGray
 import org.futo.inputmethod.latin.uix.theme.presets.Sunflower
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
+import org.futo.inputmethod.latin.uix.theme.presets.DevTheme
 
 data class ThemeOption(
     val dynamic: Boolean,
@@ -53,16 +55,28 @@ val ThemeOptions = mapOf(
 
     Gradient1.key to Gradient1,
     VoiceInputTheme.key to VoiceInputTheme,
-    HotDog.key to HotDog
+    HotDog.key to HotDog,
+    DevTheme.key to DevTheme
 )
 
 val ThemeOptionKeys = ThemeOptions.keys
 
+fun defaultThemeOption(context: Context): ThemeOption =
+    if(context.resources.getBoolean(R.bool.use_dev_styling)) {
+        DevTheme
+    } else {
+        if(DynamicSystemTheme.available(context)) {
+            DynamicSystemTheme
+        } else {
+            DefaultDarkScheme
+        }
+    }
+
 fun ThemeOption?.orDefault(context: Context): ThemeOption {
     val themeOptionFromSettings = this
     val themeOption = when {
-        themeOptionFromSettings == null -> DefaultDarkScheme
-        !themeOptionFromSettings.available(context) -> DefaultDarkScheme
+        themeOptionFromSettings == null -> defaultThemeOption(context)
+        !themeOptionFromSettings.available(context) -> defaultThemeOption(context)
         else -> themeOptionFromSettings
     }
 

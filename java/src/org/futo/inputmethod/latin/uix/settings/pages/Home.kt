@@ -50,7 +50,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 .verticalScroll(scrollState)
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-            ScreenTitle("FUTO Keyboard Settings")
+            ScreenTitle(stringResource(R.string.english_ime_settings))
 
             ConditionalMigrateUpdateNotice()
             ConditionalUpdate(navController)

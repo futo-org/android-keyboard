@@ -286,7 +286,7 @@ fun <T> LifecycleOwner.deferSetSetting(key: SettingsKey<T>, value: T): Job {
 
 val THEME_KEY = SettingsKey(
     key = stringPreferencesKey("activeThemeOption"),
-    default = DynamicSystemTheme.key
+    default = ""
 )
 
 val USE_SYSTEM_VOICE_INPUT = SettingsKey(

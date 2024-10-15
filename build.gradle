@@ -135,6 +135,18 @@ android {
             buildConfigField "boolean", "UPDATE_CHECKING", "true"
             buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
 
+            buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
+            buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
+        }
+        unstable {
+            dimension "buildType"
+            applicationIdSuffix ".unstable"
+            versionNameSuffix "-unstable"
+
+            buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "false"
+            buildConfigField "boolean", "UPDATE_CHECKING", "true"
+            buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
+
             getIsDefault().set(true)
 
             buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
@@ -175,6 +187,12 @@ android {
         stable {
             java.srcDirs = ['common/src', 'java/src', 'java/stable/java']
             manifest.srcFile 'java/stable/AndroidManifest.xml'
+        }
+
+        unstable {
+            java.srcDirs = ['common/src', 'java/src', 'java/stable/java']
+            manifest.srcFile 'java/stable/AndroidManifest.xml'
+            res.srcDirs = ['java/unstable/res']
         }
 
         androidTest {
@@ -234,6 +252,8 @@ dependencies {
 
     stableImplementation 'ch.acra:acra-mail:5.11.1'
     stableImplementation 'ch.acra:acra-dialog:5.11.1'
+    unstableImplementation 'ch.acra:acra-mail:5.11.1'
+    unstableImplementation 'ch.acra:acra-dialog:5.11.1'
 
     implementation 'sh.calvin.reorderable:reorderable:2.2.0'
 
