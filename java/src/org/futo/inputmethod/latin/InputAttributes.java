@@ -317,7 +317,7 @@ public final class InputAttributes {
     }
 
     private static boolean isCodeField(final EditorInfo editorInfo) {
-        if(editorInfo == null) return false;
+        if(editorInfo == null || editorInfo.packageName == null) return false;
 
         boolean noAutocorrect = (editorInfo.inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0;
 

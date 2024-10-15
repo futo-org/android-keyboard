@@ -85,6 +85,7 @@ fun ActionTextEditor(text: MutableState<String>) {
 
                 val editorInfo = EditorInfo().apply {
                     this.inputType = inputType
+                    this.packageName = context.packageName
                 }
                 onCreateInputConnection(editorInfo)
 
