@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
@@ -21,14 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.BuildConfig
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
@@ -139,16 +139,17 @@ fun ConditionalMigrateUpdateNotice() {
         PaymentSurface(isPrimary = true) {
             PaymentSurfaceHeading("Updates Notice")
 
-            ParagraphText("This app doesn't have network permission and it can't check for updates by itself. You can check for updates manually though.")
+            ParagraphText("This app doesn't connect to the internet and it won't be able to check for automatic updates. You can check for updates manually though.")
 
-            ParagraphText("Please use F-Droid or Obtainium for automatic updates. Visit keyboard.futo.org for download options.")
+            if(booleanResource(R.bool.use_dev_styling)) {
+                ParagraphText("You are on the development build of FUTO Keyboard. Visit keyboard.futo.org if you want to download the stable build.")
+            } else {
+                ParagraphText("Please use F-Droid or Obtainium for automatic updates. Visit keyboard.futo.org for download options.")
+            }
 
             Row(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
-
                 Box(modifier = Modifier.weight(1.0f)) {
                     Button(onClick = {
                         context.openURI("https://keyboard.futo.org/#downloads")
