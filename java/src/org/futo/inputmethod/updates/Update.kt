@@ -137,20 +137,15 @@ val dismissedMigrateUpdateNotice = SettingsKey(
 @Composable
 @Preview
 fun ConditionalMigrateUpdateNotice() {
-    if(true || LocalInspectionMode.current) { return }
     val context = LocalContext.current
     val value = useDataStore(dismissedMigrateUpdateNotice, blocking = true)
     if(!value.value) {
         PaymentSurface(isPrimary = true) {
-            PaymentSurfaceHeading("Use F-Droid or Obtainium")
+            PaymentSurfaceHeading("Updates Notice")
 
-            ParagraphText("The standalone APK has been updated to remove the network permission.")
+            ParagraphText("This app doesn't have network permission and it can't check for updates by itself. You can check for updates manually though.")
 
-            ParagraphText("As a consequence, it can no longer offer automatic updates.")
-
-            ParagraphText("If you are still using the apk, we recommend downloading the app from F-Droid, Obtainium or Play Store so that you receive updates.")
-
-            ParagraphText("Visit keyboard.futo.org for download options.")
+            ParagraphText("Please use F-Droid or Obtainium for automatic updates. Visit keyboard.futo.org for download options.")
 
             Row(
                 modifier = Modifier
