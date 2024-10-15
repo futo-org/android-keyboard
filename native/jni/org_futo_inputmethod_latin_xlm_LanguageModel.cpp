@@ -940,6 +940,8 @@ namespace latinime {
 
             item.tokens = state->model->tokenize(trim(item.word) + " ");
             words.push_back(item);
+
+            env->DeleteLocalRef(jstr);
         }
 
 
@@ -1021,10 +1023,13 @@ namespace latinime {
         std::vector<std::string> bannedWords;
         size_t numBannedWords = env->GetArrayLength(bannedWordsArray);
         for(size_t i=0; i<numBannedWords; i++) {
+            auto bannedWord = (jstring)env->GetObjectArrayElement(bannedWordsArray, (jsize) i);
             bannedWords.push_back(jstring2string(
                 env,
-                (jstring)env->GetObjectArrayElement(bannedWordsArray, (jsize) i)
+                bannedWord
             ));
+
+            env->DeleteLocalRef(bannedWord);
         }
 
         TIME_START(GettingMixes)
