@@ -174,9 +174,9 @@
             android:name=".uix.TextEditPopupActivity"
             android:exported="true"
             android:label="Testing Popup"
-            android:clearTaskOnLaunch="true"
-            android:launchMode="singleInstance"
-            android:visibleToInstantApps="true"
+            android:clearTaskOnLaunch="false"
+            android:launchMode="standard"
+            android:noHistory="true"
             android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
             android:process=":texteditpopup"
             android:theme="@style/Theme.TextEditPopup">
