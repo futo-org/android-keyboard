@@ -110,7 +110,8 @@ val DefaultNumberRow = Row(
     numbers = "1234567890".mapIndexed { i, c ->
         CaseSelector(
             normal = BaseKey(c.toString()),
-            shiftedManually = BaseKey("!@#$%^&*()"[i].toString())
+            shiftedManually = BaseKey("!@#$%^&*()"[i].toString()),
+            shiftLocked = BaseKey(c.toString())
         )
     }
 )

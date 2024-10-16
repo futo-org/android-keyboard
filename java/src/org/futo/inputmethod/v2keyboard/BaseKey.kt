@@ -419,9 +419,9 @@ data class CaseSelector(
     val shiftedManually: Key = shifted,
 
     /**
-     * Key to use when shift locked (caps lock), defaults to [shifted]
+     * Key to use when shift locked (caps lock), defaults to [shiftedManually]
      */
-    val shiftLocked: Key = shifted,
+    val shiftLocked: Key = shiftedManually,
 
     /**
      * Key to use when in symbols layout, defaults to [normal]. Mainly used internally for
