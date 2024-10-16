@@ -199,9 +199,15 @@ class KeyboardState(private val switchActions: SwitchActions) {
     }
 
     private fun setAlphabetLayout(autoCapsFlags: Int, recapitalizeMode: Int) {
+        val page = when {
+            alphabetShiftState.isShiftLocked -> KeyboardLayoutPage.ShiftLocked
+            alphabetShiftState.isManualShifted -> KeyboardLayoutPage.ManuallyShifted
+            else -> KeyboardLayoutPage.Base
+        }
+
         setLayout(KeyboardLayoutElement(
             kind = KeyboardLayoutKind.Alphabet,
-            page = KeyboardLayoutPage.Base
+            page = page
         ))
 
         switchActions.requestUpdatingShiftState(autoCapsFlags, recapitalizeMode)
@@ -275,7 +281,9 @@ class KeyboardState(private val switchActions: SwitchActions) {
             }
         }))
 
-        alphabetShiftState.isShiftLocked = currentLayout.page == KeyboardLayoutPage.ShiftLocked
+        if(isAlphabet) {
+            alphabetShiftState.isShiftLocked = currentLayout.page == KeyboardLayoutPage.ShiftLocked
+        }
     }
 
     private fun lockShift() {
