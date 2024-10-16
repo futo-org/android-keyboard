@@ -4,10 +4,10 @@ attributes: {shiftable: false} # Automatic shifting breaks many of the character
 rows:
   - letters:
     - 'ქ'
-    - {type: case, normal: ['წ', 'ჭ'], shifted: ['ჭ']}
+    - {type: case, normal: ['წ', 'ჭ'], shiftedManually: ['ჭ']}
     - ['ე', '%', 'ჱ']
-    - {type: case, normal: ['რ', 'ღ'], shifted: ['ღ']}
-    - {type: case, normal: ['ტ', 'თ'], shifted: ['თ']}
+    - {type: case, normal: ['რ', 'ღ'], shiftedManually: ['ღ']}
+    - {type: case, normal: ['ტ', 'თ'], shiftedManually: ['თ']}
     - ['ყ', '%', 'ჸ']
     - 'უ'
     - ['ი', '%', 'ჲ']
@@ -15,18 +15,18 @@ rows:
     - 'პ'
   - letters:
     - ['ა', 'ჺ']
-    - {type: case, normal: ['ს', 'შ'], shifted: ['შ']}
+    - {type: case, normal: ['ს', 'შ'], shiftedManually: ['შ']}
     - 'დ'
     - ['ფ', 'ჶ']
     - ['გ', 'ჹ']
     - ['ჰ', 'ჵ']
-    - {type: case, normal: ['ჯ', 'ჟ', 'ჷ'], shifted: ['ჟ']}
+    - {type: case, normal: ['ჯ', 'ჟ', 'ჷ'], shiftedManually: ['ჟ']}
     - 'კ'
     - 'ლ'
   - letters:
-    - {type: case, normal: ['ზ', 'ძ'], shifted: ['ძ']}
+    - {type: case, normal: ['ზ', 'ძ'], shiftedManually: ['ძ']}
     - ['ხ', 'ჴ']
-    - {type: case, normal: ['ც', 'ჩ'], shifted: ['ჩ']}
+    - {type: case, normal: ['ც', 'ჩ'], shiftedManually: ['ჩ']}
     - ['ვ', 'ჳ']
     - 'ბ'
     - ['ნ', 'ჼ']
