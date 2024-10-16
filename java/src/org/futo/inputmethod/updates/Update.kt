@@ -44,7 +44,7 @@ val LAST_UPDATE_CHECK_FAILED = booleanPreferencesKey("last_update_check_failed")
 val DISABLE_UPDATE_REMINDER = SettingsKey(booleanPreferencesKey("disable_update_reminder"), false)
 
 val DEFER_MANUAL_UPDATE_UNTIL = longPreferencesKey("defer_manual_update_until")
-const val MANUAL_UPDATE_PERIOD_MS = 1000L * 60L * 60L * 24L * 14L // Every two weeks
+const val MANUAL_UPDATE_PERIOD_MS = 1000L * 60L * 60L * 24L * 7L * 8L // Every eight weeks (~2 months)
 
 suspend fun deferManualUpdate(context: Context) {
     context.setSetting(

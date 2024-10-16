@@ -1065,11 +1065,15 @@ class UixManager(private val latinIME: LatinIME) {
                 currentNotice.value = object : ImportantNotice {
                     @Composable
                     override fun getText(): String {
-                        return "Please tap to check for updates"
+                        return "Please tap to check for updates, or check in settings"
                     }
 
                     override fun onDismiss(context: Context) {
                         currentNotice.value = null
+
+                        runBlocking {
+                            deferManualUpdate(latinIME)
+                        }
                     }
 
                     override fun onOpen(context: Context) {
@@ -1122,10 +1126,10 @@ class UixManager(private val latinIME: LatinIME) {
         setContent()
 
         if(currentNotice.value != null) {
-            numSuggestionsSinceNotice += 1
-            if(numSuggestionsSinceNotice > 4) {
+            if(numSuggestionsSinceNotice > 1) {
                 currentNotice.value?.onDismiss(latinIME)
             }
+            numSuggestionsSinceNotice += 1
         }
     }
 
