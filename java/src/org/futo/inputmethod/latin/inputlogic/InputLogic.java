@@ -217,6 +217,7 @@ public final class InputLogic {
             StatsUtils.onWordCommitUserTyped(
                     mWordComposer.getTypedWord(), mWordComposer.isBatchMode());
         }
+        mIsAutoCorrectionIndicatorOn = false;
         resetComposingState(true /* alsoResetLastComposedWord */);
         mInputLogicHandler.reset();
     }
