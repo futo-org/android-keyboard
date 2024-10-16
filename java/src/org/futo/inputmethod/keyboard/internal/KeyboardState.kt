@@ -377,6 +377,16 @@ class KeyboardState(private val switchActions: SwitchActions) {
                 if(!withSliding)
                     symbolKeyState.onRelease()
             }
+
+            // Return back to main layout if on symbols, and space or enter was pressed
+            Constants.CODE_SPACE, Constants.CODE_ENTER -> {
+                if(symbolKeyState.isReleasing
+                    && currentLayout.page == KeyboardLayoutPage.Base
+                    && currentLayout.kind == KeyboardLayoutKind.Symbols
+                ) {
+                    setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+                }
+            }
             else -> {
 
             }
