@@ -1473,9 +1473,10 @@ public final class InputLogic {
             final InputTransaction inputTransaction) {
         final int codePoint = event.mCodePoint;
         final boolean isFromSuggestionStrip = event.isSuggestionStripPress();
-        if (Constants.CODE_ENTER == codePoint &&
+        if (Constants.CODE_ENTER == codePoint && (
                 (SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) ||
-                (SpaceState.ANTIPHANTOM == inputTransaction.mSpaceState)) {
+                (SpaceState.ANTIPHANTOM == inputTransaction.mSpaceState)
+        )) {
             mConnection.removeTrailingSpace();
             return false;
         }
