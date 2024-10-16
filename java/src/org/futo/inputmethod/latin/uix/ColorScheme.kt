@@ -355,17 +355,15 @@ private fun delinearized(rgbComponent: Float): Int {
 
 
 fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
-    val secondary20 = scheme.secondary.setLuminance(20.0f)
-
     return KeyboardColorScheme(
         scheme,
         ExtraColors(
             keyboardSurface = scheme.surface,
             keyboardSurfaceDim = scheme.surfaceContainerLowest,
-            keyboardContainer = scheme.surfaceContainer,
+            keyboardContainer = scheme.surfaceContainerHigh,
             keyboardContainerVariant = scheme.surfaceContainerLow,
             onKeyboardContainer = scheme.onSurface,
-            keyboardPress = secondary20,
+            keyboardPress = scheme.inversePrimary,
             keyboardBackgroundGradient = null,
             primaryTransparent = scheme.primary.copy(alpha = 0.3f),
             onSurfaceTransparent = scheme.onSurface.copy(alpha = 0.1f)
@@ -374,18 +372,15 @@ fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
 }
 
 fun wrapLightColorScheme(scheme: ColorScheme): KeyboardColorScheme {
-    val secondary80 = scheme.secondary.setLuminance(80.0f)
-    val neutralVariant90 = scheme.secondaryContainer.setLuminance(90.0f)
-
     return KeyboardColorScheme(
         scheme,
         ExtraColors(
-            keyboardSurface = scheme.secondaryContainer,
-            keyboardSurfaceDim = neutralVariant90,
-            keyboardContainer = scheme.surfaceContainerLow,
-            keyboardContainerVariant = scheme.surfaceContainer,
+            keyboardSurface = scheme.surfaceContainerHigh,
+            keyboardSurfaceDim = scheme.surfaceContainerHighest,
+            keyboardContainer = scheme.surfaceContainerLowest,
+            keyboardContainerVariant = scheme.surfaceContainerLow,
             onKeyboardContainer = scheme.onSurface,
-            keyboardPress = secondary80,
+            keyboardPress = scheme.inversePrimary,
             keyboardBackgroundGradient = null,
             primaryTransparent = scheme.primary.copy(alpha = 0.3f),
             onSurfaceTransparent = scheme.onSurface.copy(alpha = 0.1f)
