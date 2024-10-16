@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,6 +42,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -68,6 +70,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.ComposeView
@@ -97,6 +100,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
+import org.futo.inputmethod.latin.SupportsNavbarExtension
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
@@ -141,6 +145,15 @@ val LocalThemeProvider = compositionLocalOf<DynamicThemeProvider> {
 
 val LocalFoldingState = compositionLocalOf<FoldingOptions> {
     FoldingOptions(null)
+}
+
+@Composable
+fun navBarHeight(): Dp = with(LocalDensity.current) {
+    if(SupportsNavbarExtension) {
+        WindowInsets.systemBars.getBottom(this).toDp()
+    } else {
+        0.dp
+    }
 }
 
 
@@ -686,7 +699,7 @@ class UixManager(private val latinIME: LatinIME) {
 
     @Composable
     fun ActionEditorHost() {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        Box(modifier = Modifier.fillMaxSize().padding(bottom = navBarHeight()), contentAlignment = Alignment.BottomCenter) {
             AnimatedVisibility(
                 visible = isShowingActionEditor.value,
                 enter = slideInVertically { it },
@@ -810,6 +823,8 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
+    var floatingPosition = Offset.Zero
+
     @Composable
     private fun FloatingKeyboardWindow(
         size: FloatingKeyboardSize,
@@ -817,12 +832,15 @@ class UixManager(private val latinIME: LatinIME) {
     ) = with(LocalDensity.current) {
         val offset = remember(size) { mutableStateOf(Offset(size.bottomOrigin.first.toFloat(), size.bottomOrigin.second.toFloat())) }
 
-        OffsetPositioner(offset.value) {
+        OffsetPositioner(offset.value + Offset(0.0f, navBarHeight().toPx())) {
             KeyboardSurface(
                 requiredWidthPx = size.width,
                 backgroundColor = latinIME.keyboardColor,
                 shape = RoundedCornerShape(16.dp),
-                padding = size.padding
+                padding = size.padding,
+                modifier = Modifier.onGloballyPositioned {
+                    floatingPosition = it.positionInWindow()
+                }
             ) {
                 Column {
                     FloatingKeyboardContents(
@@ -897,6 +915,8 @@ class UixManager(private val latinIME: LatinIME) {
                 }) {
                     Icon(painterResource(R.drawable.maximize), contentDescription = "Exit one-handed mode")
                 }
+
+                Spacer(Modifier.height(navBarHeight()))
             }
         }
     }
@@ -906,7 +926,7 @@ class UixManager(private val latinIME: LatinIME) {
         size: ComputedKeyboardSize,
         content: @Composable BoxScope.(actionBarGap: Dp) -> Unit
     ) = with(LocalDensity.current) {
-        OffsetPositioner(Offset(0.0f, 0.0f)) {
+        OffsetPositioner(Offset.Zero) {
             KeyboardSurface(
                 requiredWidthPx = size.width,
                 backgroundColor = latinIME.keyboardColor,
@@ -926,7 +946,6 @@ class UixManager(private val latinIME: LatinIME) {
 
                 CompositionLocalProvider(LocalKeyboardPadding provides paddingOverride) {
                     content(size.padding.top.toDp().coerceAtLeast(4.dp))
-
                     resizers.Resizer(this, size)
                 }
 
@@ -993,6 +1012,10 @@ class UixManager(private val latinIME: LatinIME) {
                         Spacer(modifier = Modifier.height(gap))
 
                         latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
+
+                        if(latinIME.size.value !is FloatingKeyboardSize) {
+                            Spacer(Modifier.height(navBarHeight()))
+                        }
                     }
 
                     ForgetWordDialog()

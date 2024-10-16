@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -92,6 +93,10 @@ import org.futo.inputmethod.v2keyboard.KeyboardSizeSettingKind
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import org.futo.inputmethod.v2keyboard.LayoutManager
+import kotlin.math.roundToInt
+
+/** Whether or not we can render into the navbar */
+val SupportsNavbarExtension = Build.VERSION.SDK_INT >= 28
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -171,7 +176,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         this as LatinIMELegacy.SuggestionStripController
     )
 
-
     val inputLogic get() = latinIMELegacy.mInputLogic
 
     lateinit var languageModelFacilitator: LanguageModelFacilitator
@@ -227,13 +231,28 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     fun updateNavigationBarVisibility(visible: Boolean? = null) {
         if(visible != null) isNavigationBarVisible = visible
 
-        val color = colorScheme.navigationBarColor?.toArgb() ?: drawableProvider?.keyboardColor
+        if(SupportsNavbarExtension) {
+            val shouldMaintainContrast = size.value is FloatingKeyboardSize
 
-        window.window?.let { window ->
-            if(color == null || !isNavigationBarVisible) {
-                applyWindowColors(window, Color.TRANSPARENT, statusBar = false)
-            } else {
+            val color = (colorScheme.navigationBarColor ?: colorScheme.keyboardSurface).copy(alpha = 0.0f).toArgb()
+
+            window.window?.let { window ->
                 applyWindowColors(window, color, statusBar = false)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    window.setNavigationBarContrastEnforced(shouldMaintainContrast)
+                }
+
+                WindowCompat.setDecorFitsSystemWindows(window, false)
+            }
+        } else {
+            val color = colorScheme.navigationBarColor?.toArgb() ?: drawableProvider?.keyboardColor
+
+            window.window?.let { window ->
+                if(color == null || !isNavigationBarVisible) {
+                    applyWindowColors(window, Color.TRANSPARENT, statusBar = false)
+                } else {
+                    applyWindowColors(window, color, statusBar = false)
+                }
             }
         }
     }
@@ -287,10 +306,12 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         if(shouldInvalidateKeyboard) {
             invalidateKeyboard(true)
         }
+        updateNavigationBarVisibility()
     }
 
     fun invalidateKeyboard(refreshSettings: Boolean = false) {
         size.value = calculateSize()
+        updateNavigationBarVisibility()
         settingsRefreshRequired = settingsRefreshRequired || refreshSettings
 
         if(!uixManager.isMainKeyboardHidden) {
@@ -471,6 +492,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun onConfigurationChanged(newConfig: Configuration) {
         Log.w("LatinIME", "Configuration changed")
         size.value = calculateSize()
+        updateNavigationBarVisibility()
         latinIMELegacy.onConfigurationChanged(newConfig)
         super.onConfigurationChanged(newConfig)
     }
@@ -662,16 +684,10 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 is FloatingKeyboardSize -> {
                     val height = uixManager.touchableHeight
 
-                    val left = size.bottomOrigin.first
-                    val bottomYFromBottom = size.bottomOrigin.second
-                    var bottom = viewHeight - bottomYFromBottom
-                    var top = bottom - height
-                    val right = left + size.width
-
-                    if(top < 0) {
-                        bottom -= top
-                        top -= top
-                    }
+                    val left   = uixManager.floatingPosition.x.toInt()
+                    val right  = (uixManager.floatingPosition.x + size.width).roundToInt()
+                    val top    = uixManager.floatingPosition.y.toInt()
+                    val bottom = (uixManager.floatingPosition.y + height).roundToInt()
 
                     touchableInsets = Insets.TOUCHABLE_INSETS_REGION
                     touchableRegion.set(left, top, right, bottom)
