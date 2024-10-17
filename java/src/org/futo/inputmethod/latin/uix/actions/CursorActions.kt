@@ -5,12 +5,18 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 
+/*
 private fun getMetaState(manager: KeyboardManagerForAction): Int =
     if(manager.isShifted()) {
         KeyEvent.META_SHIFT_ON
     } else {
         0
     }
+*/
+
+// Disabled due to confusion and inconsistent app behavior
+private fun getMetaState(manager: KeyboardManagerForAction): Int = 0
+
 
 val ArrowUpAction = Action(
     icon = R.drawable.chevron_up,
