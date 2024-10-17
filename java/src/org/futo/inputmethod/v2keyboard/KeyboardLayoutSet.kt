@@ -1,12 +1,12 @@
 package org.futo.inputmethod.v2keyboard
 
 import android.content.Context
-import android.graphics.Rect
 import android.text.InputType
 import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement
@@ -18,9 +18,11 @@ import org.futo.inputmethod.latin.uix.KeyboardHeightMultiplierSetting
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.settings.pages.CustomLayout
 import org.futo.inputmethod.latin.utils.InputTypeUtils
-import org.futo.inputmethod.latin.utils.ResourceUtils
 import java.util.Locale
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 @Serializable
 enum class Script(val id: Int, val iso4letterCode: String) {
@@ -99,20 +101,92 @@ class KeyboardLayoutSetV2 internal constructor(
     val forcedLayout = privateParams["org.futo.inputmethod.latin.ForceLayout"]
     val forcedLocale = privateParams["org.futo.inputmethod.latin.ForceLocale"]?.let { Locale.forLanguageTag(it) }
 
+
+    @OptIn(ExperimentalEncodingApi::class)
+    val forcedCustomLayout = privateParams["org.futo.inputmethod.latin.ForceCustomLayoutYamlB64"]?.let {
+        try {
+            Json.Default.decodeFromString(
+                CustomLayout.serializer(),
+                Base64.Default.decode(it.replace("_", "=")).decodeToString()
+            )
+        } catch (e: Exception) {
+            BugViewerState.pushBug(BugInfo(
+                name = "Custom layout",
+                details =
+                """
+Custom layout could not parsed.
+
+Cause: ${e.message}
+
+Stack trace: ${e.stackTrace.map { it.toString() }}
+
+Data: $it
+"""
+            ))
+            null
+        }
+    }
+
+    val errorLayout = LayoutManager.getLayout(context, "error")
+
+    val customLayout = forcedCustomLayout?.let {
+        val x = try {
+            parseKeyboardYamlString(it.layoutYaml)
+        } catch(e: Exception) {
+            BugViewerState.pushBug(BugInfo(
+                name = "Custom layout",
+                details =
+                """
+Custom layout could not be loaded.
+
+Cause: ${e.message}
+
+Stack trace: ${e.stackTrace.map { it.toString() }}
+
+Layout: $it
+"""
+            ))
+            errorLayout
+        }
+
+        Log.d("KeyboardLayoutSet", "$x")
+        x
+    }
+
+    init {
+        Log.d("KeyboardLayoutSet", "$forcedCustomLayout, ${privateParams["org.futo.inputmethod.latin.ForceCustomLayoutYamlB64"]}, $privateParams, ${editorInfo.privateImeOptions}")
+    }
+
     // Necessary for Java API
     fun getScriptId(): Int = script.id
 
     private val keyboardMode = getKeyboardMode(editorInfo)
 
-    val layoutName = forcedLayout ?: params.keyboardLayoutSet
-    val mainLayout = LayoutManager.getLayout(context, layoutName)
+    val layoutName = customLayout?.let { "custompreview" } ?: forcedLayout ?: params.keyboardLayoutSet
+    val mainLayout = customLayout ?: try {
+        LayoutManager.getLayout(context, layoutName)
+    } catch (e: Exception) {
+        BugViewerState.pushBug(BugInfo(
+            name = "Layout parser",
+            details =
+            """
+Layout could not be loaded.
+
+Cause: ${e.message}
+
+Stack trace: ${e.stackTrace.map { it.toString() }}
+
+Layout: $layoutName
+"""
+        ))
+        errorLayout
+    }
     val symbolsLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.symbols)
     val symbolsShiftedLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.symbolsShifted)
     val numberLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.number)
     val numberShiftLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.numberShifted)
     val phoneLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.phone)
     val phoneSymbolsLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.phoneShifted)
-    val errorLayout = LayoutManager.getLayout(context, "error")
 
     val elements = mapOf(
         KeyboardLayoutElement(

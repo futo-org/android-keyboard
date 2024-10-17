@@ -82,6 +82,11 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("devlayouts") }
         )
+        NavigationItem(
+            title = "Custom layouts",
+            style = NavigationItemStyle.Misc,
+            navigate = { navController.navigate("devlayouteditor") }
+        )
 
 
         ScreenTitle(title = "Payment stuff")

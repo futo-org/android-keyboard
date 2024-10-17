@@ -17,6 +17,8 @@ import org.futo.inputmethod.latin.uix.settings.pages.AlreadyPaidDialog
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
 import org.futo.inputmethod.latin.uix.settings.pages.CreditsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DevEditTextVariationsScreen
+import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutEdit
+import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutEditor
 import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutList
 import org.futo.inputmethod.latin.uix.settings.pages.DeveloperScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HelpScreen
@@ -66,6 +68,8 @@ fun SettingsNavigator(
         composable("developer") { DeveloperScreen(navController) }
         composable("devtextedit") { DevEditTextVariationsScreen(navController) }
         composable("devlayouts") { DevLayoutList(navController) }
+        composable("devlayouteditor") { DevLayoutEditor(navController) }
+        composable("devlayoutedit/{i}") { DevLayoutEdit(navController, it.arguments!!.getString("i")!!.toInt()) }
         composable("blacklist") { BlacklistScreen(navController) }
         composable("payment") { PaymentScreen(navController) { navController.navigateUp() } }
         composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }

@@ -10,6 +10,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.EmptySerializersModule
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
+import org.futo.inputmethod.latin.uix.settings.pages.CustomLayout
+import org.futo.inputmethod.latin.uix.settings.pages.getCustomLayout
 import java.util.Locale
 
 @Serializable
@@ -76,11 +78,19 @@ object LayoutManager {
 
     fun getLayout(context: Context, name: String): Keyboard {
         ensureInitialized()
+        if(name.startsWith("custom")) return CustomLayout.getCustomLayout(context, name)
+
         return layoutsById?.get(name) ?: throw IllegalArgumentException("Failed to find keyboard layout $name. Available layouts: ${layoutsById?.keys}")
     }
 
     fun getLayoutOrNull(context: Context, name: String): Keyboard? {
         ensureInitialized()
+        if(name.startsWith("custom")) return try {
+            CustomLayout.getCustomLayout(context, name)
+        } catch (_: Exception) {
+            null
+        }
+
         return layoutsById?.get(name)
     }
 
@@ -112,19 +122,24 @@ private fun parseMappings(context: Context, mappingsPath: String): Mappings {
     }
 }
 
-private fun parseKeyboardYaml(context: Context, layoutPath: String): Keyboard {
-    val yaml = Yaml(
-        EmptySerializersModule(),
-        YamlConfiguration(
-            polymorphismStyle = PolymorphismStyle.Property,
-            allowAnchorsAndAliases = true
-        )
+private val yaml = Yaml(
+    EmptySerializersModule(),
+    YamlConfiguration(
+        polymorphismStyle = PolymorphismStyle.Property,
+        allowAnchorsAndAliases = true
     )
+)
+
+fun parseKeyboardYamlString(yamlString: String): Keyboard {
+    return yaml.decodeFromString(Keyboard.serializer(), yamlString)
+}
+
+private fun parseKeyboardYaml(context: Context, layoutPath: String): Keyboard {
     return context.assets.open(layoutPath).use { inputStream ->
         val yamlString = inputStream.bufferedReader().use { it.readText() }
 
         try {
-            yaml.decodeFromString(Keyboard.serializer(), yamlString)
+            parseKeyboardYamlString(yamlString)
         } catch(e: Throwable) {
             Log.e("KeyboardParser", "Failed to parse $layoutPath")
             throw Exception("Error while parsing layout [$layoutPath]", e)
