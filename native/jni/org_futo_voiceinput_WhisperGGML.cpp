@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <map>
 #include <jni.h>
 #include <bits/sysconf.h>
 #include "ggml/whisper.h"
@@ -7,7 +8,6 @@
 #include "org_futo_voiceinput_WhisperGGML.h"
 #include "jni_common.h"
 #include "jni_utils.h"
-
 
 struct WhisperModelState {
     JNIEnv *env;
@@ -17,6 +17,7 @@ struct WhisperModelState {
     struct whisper_context *context = nullptr;
 
     std::vector<int> last_forbidden_languages;
+    std::map<int, std::string> partial_results;
 
     volatile int cancel_flag = 0;
 };
@@ -154,8 +155,18 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
         }
 
         auto *wstate = reinterpret_cast<WhisperModelState *>(user_data);
+        wstate->partial_results[whisper_full_n_segments_from_state(state)] = partial;
 
-        jstring pjstr = string2jstring(wstate->env, partial.c_str());
+        // Add previous segment partials
+        std::string final_partial;
+        for(int i=0; i<whisper_full_n_segments_from_state(state); i++) {
+            if(wstate->partial_results.count(i))
+                final_partial.append(wstate->partial_results[i]);
+        }
+
+        final_partial.append(partial);
+
+        jstring pjstr = string2jstring(wstate->env, final_partial.c_str());
         wstate->env->CallVoidMethod(wstate->partial_result_instance, wstate->partial_result_method, pjstr);
         wstate->env->DeleteLocalRef(pjstr);
     };

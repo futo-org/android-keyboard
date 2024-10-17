@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
+import org.futo.inputmethod.latin.uix.CAN_EXPAND_SPACE
 import org.futo.inputmethod.latin.uix.DISALLOW_SYMBOLS
 import org.futo.inputmethod.latin.uix.ENABLE_SOUND
 import org.futo.inputmethod.latin.uix.PREFER_BLUETOOTH
@@ -76,6 +77,12 @@ fun VoiceInputScreen(navController: NavHostController = rememberNavController())
             SettingToggleDataStore(
                 title = "Suppress symbols",
                 setting = DISALLOW_SYMBOLS
+            )
+
+            SettingToggleDataStore(
+                title = "Experimental long-form voice input",
+                subtitle = "This disables the 30 second limit, but the output quality may be degraded with long inputs.",
+                setting = CAN_EXPAND_SPACE
             )
 
             NavigationItem(

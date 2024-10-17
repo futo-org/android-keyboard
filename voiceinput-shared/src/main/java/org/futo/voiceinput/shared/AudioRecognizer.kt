@@ -15,6 +15,7 @@ import android.media.MicrophoneDirection
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.konovalov.vad.Vad
 import com.konovalov.vad.config.FrameSize
@@ -77,7 +78,8 @@ private fun getRecordingDeviceKind(type: Int): String {
 
 data class RecordingSettings(
     val preferBluetoothMic: Boolean,
-    val requestAudioFocus: Boolean
+    val requestAudioFocus: Boolean,
+    val canExpandSpace: Boolean
 )
 
 data class AudioRecognizerSettings(
@@ -100,7 +102,9 @@ class AudioRecognizer(
 
     private val modelRunner = MultiModelRunner(modelManager)
 
-    private val floatSamples: FloatBuffer = FloatBuffer.allocate(16000 * 30)
+    private val canExpandSpace = settings.recordingConfiguration.canExpandSpace
+
+    private var floatSamples: FloatBuffer = FloatBuffer.allocate(16000 * 30)
     private var recorderJob: Job? = null
     private var modelJob: Job? = null
     private var loadModelJob: Job? = null
@@ -314,7 +318,16 @@ class AudioRecognizer(
             if (nRead <= 0) break
             yield()
 
-            val isRunningOutOfSpace = floatSamples.remaining() < nRead.coerceAtLeast(1600)
+            var isRunningOutOfSpace = floatSamples.remaining() < nRead.coerceAtLeast(1600)
+            if(isRunningOutOfSpace && canExpandSpace) {
+                // Allocate an extra 30 seconds
+                val newSampleBuffer = FloatBuffer.allocate(floatSamples.capacity() + 16000 * 30)
+                Log.d("AudioRecognizer", "Allocating extra space: ${floatSamples.capacity() / 16000} -> ${newSampleBuffer.capacity() / 16000}")
+                newSampleBuffer.put(floatSamples.array(), 0, floatSamples.capacity() - floatSamples.remaining())
+                floatSamples = newSampleBuffer
+                isRunningOutOfSpace = false
+            }
+
             val hasNotTalkedRecently = hasTalked && (numConsecutiveNonSpeech > 66)
             if (isRunningOutOfSpace || hasNotTalkedRecently) {
                 yield()

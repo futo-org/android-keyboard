@@ -30,6 +30,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.CAN_EXPAND_SPACE
 import org.futo.inputmethod.latin.uix.DISALLOW_SYMBOLS
 import org.futo.inputmethod.latin.uix.ENABLE_SOUND
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
@@ -92,6 +93,7 @@ private class VoiceInputActionWindow(
         val disallowSymbols = async { context.getSetting(DISALLOW_SYMBOLS) }
         val useBluetoothAudio = async { context.getSetting(PREFER_BLUETOOTH) }
         val requestAudioFocus = async { context.getSetting(AUDIO_FOCUS) }
+        val canExpandSpace = async { context.getSetting(CAN_EXPAND_SPACE) }
 
         val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
@@ -115,7 +117,8 @@ private class VoiceInputActionWindow(
             ),
             recordingConfiguration = RecordingSettings(
                 preferBluetoothMic = useBluetoothAudio.await(),
-                requestAudioFocus = requestAudioFocus.await()
+                requestAudioFocus = requestAudioFocus.await(),
+                canExpandSpace = canExpandSpace.await()
             )
         )
     }
