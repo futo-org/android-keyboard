@@ -12,6 +12,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.utils.JniUtils
 import java.io.File
 import java.io.FileOutputStream
 
@@ -47,6 +48,7 @@ class ModelInfoLoader(
     val name: String,
 ) {
     fun loadDetails(): ModelInfo? {
+        JniUtils.loadNativeLibrary()
         return loadNative(path.absolutePath)
     }
 

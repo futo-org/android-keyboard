@@ -84,6 +84,7 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
+import org.futo.inputmethod.latin.utils.JniUtils
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
@@ -113,15 +114,9 @@ open class InputMethodServiceCompose : InputMethodService(), LifecycleOwner, Vie
 
     fun setOwners() {
         val decorView = window.window?.decorView
-        if (decorView?.findViewTreeLifecycleOwner() == null) {
-            decorView?.setViewTreeLifecycleOwner(this)
-        }
-        if (decorView?.findViewTreeViewModelStoreOwner() == null) {
-            decorView?.setViewTreeViewModelStoreOwner(this)
-        }
-        if (decorView?.findViewTreeSavedStateRegistryOwner() == null) {
-            decorView?.setViewTreeSavedStateRegistryOwner(this)
-        }
+        decorView?.setViewTreeLifecycleOwner(this)
+        decorView?.setViewTreeViewModelStoreOwner(this)
+        decorView?.setViewTreeSavedStateRegistryOwner(this)
     }
 
     override fun onCreate() {
@@ -135,18 +130,24 @@ open class InputMethodServiceCompose : InputMethodService(), LifecycleOwner, Vie
         mSavedStateRegistryController = SavedStateRegistryController.create(this)
         mSavedStateRegistryController.performRestore(null)
 
-        mLifecycleRegistry.currentState = Lifecycle.State.CREATED
-    }
-
-    override fun onStartInputView(editorInfo: EditorInfo?, restarting: Boolean) {
-        super.onStartInputView(editorInfo, restarting)
-
-        mLifecycleRegistry.currentState = Lifecycle.State.STARTED
+        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mLifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    }
+
+    override fun onWindowShown() {
+        super.onWindowShown()
+        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    }
+
+    override fun onWindowHidden() {
+        super.onWindowHidden()
+        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     }
 
     override val lifecycle: Lifecycle
@@ -359,6 +360,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onCreate() {
         super.onCreate()
+
+        JniUtils.loadNativeLibrary()
 
         LayoutManager.init(this)
 

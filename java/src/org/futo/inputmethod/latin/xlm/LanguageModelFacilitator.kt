@@ -314,10 +314,12 @@ public class LanguageModelFacilitator(
                         !suggestionBlacklist.isSuggestedWordOk(it)
                     }
 
-                    inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(finalResults)
+                    withContext(Dispatchers.Main) {
+                        inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(finalResults)
 
-                    if(values.composedData.mIsBatchMode) {
-                        inputLogic.showBatchSuggestions(finalResults, values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH);
+                        if(values.composedData.mIsBatchMode) {
+                            inputLogic.showBatchSuggestions(finalResults, values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH);
+                        }
                     }
 
                     sequenceIdFinishedFlow.emit(values.sequenceId)
@@ -426,10 +428,16 @@ public class LanguageModelFacilitator(
 
             // TODO
             if(values.sequenceId < currentSequenceId) return
-            inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords)
 
-            if(values.composedData.mIsBatchMode) {
-                inputLogic.showBatchSuggestions(suggestedWords, values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH);
+            withContext(Dispatchers.Main) {
+                inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords)
+
+                if (values.composedData.mIsBatchMode) {
+                    inputLogic.showBatchSuggestions(
+                        suggestedWords,
+                        values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
+                    )
+                }
             }
             sequenceIdFinishedFlow.emit(values.sequenceId)
         } finally {

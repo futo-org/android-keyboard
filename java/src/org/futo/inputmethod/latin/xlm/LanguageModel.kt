@@ -13,6 +13,7 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
+import org.futo.inputmethod.latin.utils.JniUtils
 import java.util.Arrays
 import java.util.Locale
 
@@ -33,6 +34,8 @@ class LanguageModel(
     val locale: Locale
 ) {
     private suspend fun loadModel() = withContext(LanguageModelScope) {
+        withContext(Dispatchers.Main) { JniUtils.loadNativeLibrary() }
+
         val modelPath = modelInfoLoader.path.absolutePath
         mNativeState = openNative(modelPath)
 
