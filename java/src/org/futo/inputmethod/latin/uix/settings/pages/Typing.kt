@@ -448,7 +448,8 @@ private fun AutoSpacesSetting() {
         },
         getDisplayName = {
             autoSpaceModes[it] ?: "?"
-        }
+        },
+        modifier = Modifier.padding(4.dp).padding(start = 76.dp, end = 12.dp)
     )
 }
 

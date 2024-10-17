@@ -33,7 +33,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
@@ -65,7 +64,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.text
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.state.ToggleableState
@@ -673,9 +676,16 @@ fun<T> DropDownPicker(
     var expanded by remember { mutableStateOf(false) }
 
 
-    Column {
+    SpacedColumn(4.dp, modifier = modifier.semantics {
+        role = Role.DropdownList
+    }) {
         if(label.isNotEmpty()) {
-            ScreenTitle(label)
+            Text(
+                label,
+                style = Typography.Heading.RegularMl,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.heightIn(min = 24.dp).clearAndSetSemantics {  }
+            )
         }
 
         Box(
@@ -687,7 +697,14 @@ fun<T> DropDownPicker(
                 DropDownShape
             ).heightIn(min = 44.dp).clip(DropDownShape).clickable {
                 expanded = !expanded
-            }.padding(16.dp)
+            }.padding(16.dp).semantics {
+                // TODO: Localization
+                if(label.isNotEmpty())
+                    contentDescription = label
+
+                stateDescription = if(expanded) "Expanded" else "Collapsed"
+                role = Role.DropdownList
+            }
         ) {
             selection?.let {
                 Text(
@@ -729,7 +746,10 @@ fun<T> DropDownPicker(
                             ).clickable {
                                 onSet(it)
                                 expanded = false
-                            }.padding(16.dp)
+                            }.padding(16.dp).semantics {
+                                selected = selection == it
+                                role = Role.DropdownList
+                            }
                         ) {
                             Text(
                                 getDisplayName(it),
