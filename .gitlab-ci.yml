@@ -27,7 +27,7 @@ buildUnstable:
     - touch VERSION_NAME_$VERSION_NAME.txt
     - echo "Keyboard (Unstable) $VERSION_NAME - https://gitlab.futo.org/alex/latinime/-/jobs/$CI_JOB_ID/artifacts/raw/keyboard-unstable-$VERSION_NAME.apk"
     - echo $VERSION_CODE $VERSION_NAME
-    - ./uploadNightly.sh ./keyboard-unstable-$VERSION_NAME.apk $VERSION_CODE $VERSION_NAME
+    - ./uploadNightly.sh ./keyboard-unstable-$VERSION_NAME.apk $VERSION_CODE $VERSION_NAME-unstable
   artifacts:
     name: "keyboard-unstable-$VERSION_NAME"
     paths:
