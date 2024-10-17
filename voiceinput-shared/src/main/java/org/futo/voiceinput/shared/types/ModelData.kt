@@ -40,6 +40,8 @@ interface ModelLoader {
     fun getRequiredDownloadList(context: Context): List<String>
 
     fun loadGGML(context: Context): WhisperGGML
+
+    fun key(context: Context): Any
 }
 
 internal class ModelBuiltInAsset(
@@ -57,6 +59,10 @@ internal class ModelBuiltInAsset(
     override fun loadGGML(context: Context): WhisperGGML {
         val file = loadMappedFile(context, ggmlFile)
         return WhisperGGML(file)
+    }
+
+    override fun key(context: Context): Any {
+        return "BuiltIn$ggmlFile"
     }
 }
 
@@ -95,6 +101,10 @@ internal class ModelDownloadable(
         val file = context.tryOpenDownloadedModel(ggmlFile)
         return WhisperGGML(file)
     }
+
+    override fun key(context: Context): Any {
+        return "Downloadable$ggmlFile$checksum"
+    }
 }
 
 public class ModelFileFile(
@@ -112,5 +122,9 @@ public class ModelFileFile(
     override fun loadGGML(context: Context): WhisperGGML {
         val file = tryOpenDownloadedModel(file)
         return WhisperGGML(file)
+    }
+
+    override fun key(context: Context): Any {
+        return "File${file.absolutePath}"
     }
 }

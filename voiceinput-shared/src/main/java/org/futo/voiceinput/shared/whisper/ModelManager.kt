@@ -8,14 +8,15 @@ import org.futo.voiceinput.shared.types.ModelLoader
 class ModelManager(
     val context: Context
 ) {
-    private val loadedModels: HashMap<ModelLoader, WhisperGGML> = hashMapOf()
+    private val loadedModels: HashMap<Any, WhisperGGML> = hashMapOf()
 
     fun obtainModel(model: ModelLoader): WhisperGGML {
-        if (!loadedModels.contains(model)) {
-            loadedModels[model] = model.loadGGML(context)
+        val key = model.key(context)
+        if (!loadedModels.contains(key)) {
+            loadedModels[key] = model.loadGGML(context)
         }
 
-        return loadedModels[model]!!
+        return loadedModels[key]!!
     }
 
     fun cancelAll() {
@@ -25,8 +26,8 @@ class ModelManager(
     }
 
     suspend fun cleanUp() {
-        for (model in loadedModels.values) {
-            model.close()
+        for (model in loadedModels.entries) {
+            model.value.close()
         }
 
         loadedModels.clear()
