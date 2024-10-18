@@ -2,9 +2,13 @@
 
 The goal is to make a good keyboard that doesn't spy on users. This repository is a fork of [LatinIME (the Android Open-Source Keyboard)](https://android.googlesource.com/platform/packages/inputmethods/LatinIME).
 
-The code is licensed under the [FUTO Source First License 1.0](LICENSE.md).
+The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
 Check out the [FUTO Keyboard Wiki](https://gitlab.futo.org/alex/keyboard-wiki/-/wikis/FUTO-Keyboard)
+
+## Layouts
+
+If you want to contribute layouts, check out the [layouts repo](https://github.com/futo-org/futo-keyboard-layouts).
 
 ## Building
 
