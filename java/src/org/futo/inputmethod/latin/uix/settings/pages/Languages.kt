@@ -422,7 +422,10 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
 
     val inputMethods = useDataStoreValue(SubtypesSetting)
     val inputMethodList = remember(inputMethods) {
-        Subtypes.layoutsMappedByLanguage(inputMethods)
+        // Filter out custom layouts because those are handled in custom layouts menu
+        Subtypes.layoutsMappedByLanguage(inputMethods.filter {
+            !it.contains("KeyboardLayoutSet=custom")
+        }.toSet())
     }
 
     val inputMethodKeys = remember(inputMethodList) { inputMethodList.keys.toList().sorted() }
@@ -501,7 +504,9 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             }
 
             val transformerName = runBlocking { ModelPaths.getModelOptions(context) }.get(locale.language)?.let {
-                it.loadDetails()?.name
+                it.loadDetails()?.let {
+                    it.name + if(it.isUnsupported()) " (Unsupported)" else ""
+                }
             }
 
             val options = LanguageOptions(
@@ -540,7 +545,11 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                     }
                 },
                 onConfigurableSelected = { kind ->
-                    deleteDialogInfo.value = DeleteInfo(locale, kind)
+                    if(kind == FileKind.Transformer && transformerName != null) {
+                        navController.navigate("models")
+                    } else {
+                        deleteDialogInfo.value = DeleteInfo(locale, kind)
+                    }
                 },
                 onLayoutAdditionRequested = {
                     navController.navigate("addLayout/${locale.toString().urlEncode()}")

@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.xlm;
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.CoroutineScope
@@ -218,18 +219,31 @@ public class LanguageModelFacilitator(
 
         val autocorrectThreshold = context.getSetting(AutocorrectThresholdSetting)
 
-        return languageModel?.getSuggestions(
-            values.composedData,
-            values.ngramContext,
-            keyboardSwitcher.mainKeyboardView.mKeyDetector,
-            settingsForPrediction,
-            proximityInfoHandle,
-            -1,
-            autocorrectThreshold,
-            floatArrayOf(),
-            userDictionary.getWords().map { it.word },
-            suggestionBlacklist.currentBlacklist.toTypedArray<String>()
-        )
+        try {
+            return languageModel?.getSuggestions(
+                values.composedData,
+                values.ngramContext,
+                keyboardSwitcher.mainKeyboardView.mKeyDetector,
+                settingsForPrediction,
+                proximityInfoHandle,
+                -1,
+                autocorrectThreshold,
+                floatArrayOf(),
+                userDictionary.getWords().map { it.word },
+                suggestionBlacklist.currentBlacklist.toTypedArray<String>()
+            )
+        }catch (e: ModelLoadingException) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    context,
+                    "Unable to load Transformer model for ${locale.getDisplayLanguage(locale)}, it may be corrupted or unsupported.",
+                    Toast.LENGTH_LONG
+                ).show()
+                transformerDisabled = true
+                e.printStackTrace()
+            }
+            return null
+        }
     }
 
     private suspend fun processUpdateSuggestionStrip(values: PredictionInputValues) {

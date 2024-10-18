@@ -1,0 +1,5 @@
+<lint>
+    <issue id="UnsafeOptInUsageError">
+        <option name="opt-in" value="kotlinx.serialization.InternalSerializationApi" />
+    </issue>
+</lint>

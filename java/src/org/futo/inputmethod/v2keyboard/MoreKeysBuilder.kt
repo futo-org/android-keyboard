@@ -109,7 +109,7 @@ data class MoreKeysBuilder(
             LongPressKey.Symbols -> (mode.autoSymFromCoord && (coordinate.regularRow > 0 || isNumberRowActive))
 
             // Language keys require a-z code
-            LongPressKey.LanguageKeys, LongPressKey.MiscLetters -> (row.isLetterRow && code >= 'a'.code && code <= 'z'.code)
+            LongPressKey.LanguageKeys, LongPressKey.MiscLetters -> (mode.autoFromLanguageKey && row.isLetterRow && code >= 'a'.code && code <= 'z'.code)
         }
 
     private fun moreKey(key: LongPressKey): String =

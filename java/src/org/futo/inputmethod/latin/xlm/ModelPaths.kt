@@ -41,6 +41,10 @@ data class ModelInfo(
     fun toLoader(): ModelInfoLoader {
         return ModelInfoLoader(File(path), name)
     }
+
+    fun isUnsupported(): Boolean {
+        return features.isEmpty() || tokenizer_type == "None" || languages.isEmpty()
+    }
 }
 
 class ModelInfoLoader(

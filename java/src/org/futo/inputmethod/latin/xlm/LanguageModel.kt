@@ -20,6 +20,8 @@ import java.util.Locale
 @OptIn(DelicateCoroutinesApi::class)
 val LanguageModelScope = newSingleThreadContext("LanguageModel")
 
+class ModelLoadingException(message: String): Exception(message)
+
 data class ComposeInfo(
     val partialWord: String,
     val xCoords: IntArray,
@@ -41,7 +43,7 @@ class LanguageModel(
 
         // TODO: Not sure how to handle finetuned model being corrupt. Maybe have finetunedA.gguf and finetunedB.gguf and swap between them
         if (mNativeState == 0L) {
-            throw RuntimeException("Failed to load models $modelPath")
+            throw ModelLoadingException("Failed to load models $modelPath")
         }
     }
 

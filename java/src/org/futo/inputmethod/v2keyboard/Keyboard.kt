@@ -1,7 +1,5 @@
 package org.futo.inputmethod.v2keyboard
-
 import android.content.Context
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import org.futo.inputmethod.keyboard.internal.KeyboardParams

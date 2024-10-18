@@ -84,20 +84,16 @@ fun getCustomLayouts(context: Context): List<CustomLayout> {
 fun updateCustomLayoutsAndSyncSubtypes(context: Context, newLayouts: List<CustomLayout>) {
     context.setSettingBlocking(CustomLayouts.key, Json.encodeToString(newLayouts))
 
-    // Remove old custom layouts
+    // Remove old custom layouts and add new ones
     val existingSubtypeSet = context.getSettingBlocking(SubtypesSetting)
-    existingSubtypeSet.forEach {
-        val subtype = Subtypes.convertToSubtype(it)
-        if(RichInputMethodSubtype(subtype).keyboardLayoutSetName.startsWith("custom")) {
-            Subtypes.removeLanguage(context, subtype)
-        }
+
+    val rectifiedList = existingSubtypeSet.filter { v ->
+        !v.contains("KeyboardLayoutSet=custom")
+    } + newLayouts.mapIndexed { i, it ->
+        Subtypes.subtypeToString(Subtypes.makeSubtype(it.language, "custom$i"))
     }
 
-    // Add new ones
-    newLayouts.forEachIndexed { i, it ->
-        Subtypes.addLanguage(context, Locale(it.language.replace("-", "_")), "custom$i")
-    }
-
+    context.setSettingBlocking(SubtypesSetting.key, rectifiedList.toSet())
 }
 
 fun CustomLayout.Companion.getCustomLayout(context: Context, idx: Int): Keyboard =

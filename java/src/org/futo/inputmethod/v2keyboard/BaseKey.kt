@@ -24,12 +24,17 @@ enum class KeyWidth {
      *
      * ##### Width calculation
      * Simply put, the width of this is calculated by dividing the total keyboard width by the
-     * maximum number of keys in a row. It is consistent across the entire keyboard.
+     * maximum number of keys in a row. It is consistent across the entire keyboard except in some cases.
      *
      * For example, if a keyboard has 3 rows, with 10, 9, and 7 keys respectively,
      * the regular key width will be 100% / 10 = 10% for the entire keyboard.
      * The rows with 9 and 7 keys will receive padding by default to keep them centered due
      * to the extra space.
+     *
+     * There are 3 cases where regular width will be inconsistent:
+     * 1. In the bottom row
+     * 2. In the split layout, to maintain middle alignment
+     * 3. In a row with functional keys (shift or delete), in order to maintain a minimum functional key width
      */
     Regular,
 
@@ -84,28 +89,24 @@ enum class KeyWidth {
 enum class MoreKeyMode(
     val autoFromKeyspec: Boolean,
     val autoNumFromCoord: Boolean,
-    val autoSymFromCoord: Boolean
+    val autoSymFromCoord: Boolean,
+    val autoFromLanguageKey: Boolean,
 ) {
     /**
      * Automatically insert morekeys from keyspec shortcuts, as well as numbers, symbols and actions
      * (if not disabled by user). These count towards KeyCoordinate.
      */
-    All(true, true, true),
+    All(true, true, true, true),
 
     /**
-     * Only automatically insert morekeys from keyspec shortcut.
+     * Only automatically insert morekeys from keyspec shortcut or language-related accents
      */
-    OnlyFromKeyspec(true, false, false),
-
-    /**
-     * Only automatically insert morekeys from coord, not keyspec shortcut.
-     */
-    OnlyFromCoord(false, true, true),
+    OnlyFromLetter(true, false, false, true),
 
     /**
      * Do not automatically insert any morekeys.
      */
-    OnlyExplicit(false, false, false),
+    OnlyExplicit(false, false, false, false),
 }
 
 private fun Int.and(other: Boolean): Int {
@@ -218,7 +219,7 @@ data class KeyAttributes(
         val defaultMoreKeyMode = if((row.isLetterRow || row.isBottomRow) && effectiveWidth == KeyWidth.Regular) {
             MoreKeyMode.All
         } else {
-            MoreKeyMode.OnlyFromKeyspec
+            MoreKeyMode.OnlyFromLetter
         }
 
         return KeyAttributes(
