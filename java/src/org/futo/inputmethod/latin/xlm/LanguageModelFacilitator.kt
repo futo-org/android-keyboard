@@ -129,7 +129,7 @@ public class LanguageModelFacilitator(
     private val sharedFlow = MutableSharedFlow<PredictionInputValues>(replay = 0, extraBufferCapacity = 1)
 
     private var currentSequenceId = 0
-    private val sequenceIdFinishedFlow = MutableSharedFlow<Int>(replay = 4, extraBufferCapacity = 4)
+    private val sequenceIdFinishedFlow = MutableSharedFlow<Pair<Int, SuggestedWords?>>(replay = 1, extraBufferCapacity = 1)
 
     private val computationSemaphore = Semaphore(1)
     public fun hasPendingUpdate(): Boolean =
@@ -144,10 +144,15 @@ public class LanguageModelFacilitator(
                 withTimeout(700L) {
                     computationSemaphore.acquire()
                     computationSemaphore.release()
-                    try {
-                        sequenceIdFinishedFlow.first { it >= currentSequenceId }
+                    val suggestedWords: SuggestedWords? = try {
+                        sequenceIdFinishedFlow.first { it.first >= currentSequenceId }.second
                     } catch (ignored: Exception) {
+                        null
+                    }
 
+                    // If it's non-null the processing thread is waiting on the main thread to send this to suggestionStripViewAccessor, so just send it ourselves
+                    suggestedWords?.let {
+                        inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(it)
                     }
                 }
                 numConsecutiveTimeouts = 0
@@ -251,7 +256,7 @@ public class LanguageModelFacilitator(
 
         computationSemaphore.acquire()
 
-        try {
+        val suggestedWords = try {
             inputLogic.mWordComposer.setAutoCorrection(null)
 
             if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH-1) {
@@ -328,6 +333,8 @@ public class LanguageModelFacilitator(
                         !suggestionBlacklist.isSuggestedWordOk(it)
                     }
 
+                    sequenceIdFinishedFlow.emit(Pair(values.sequenceId, finalResults))
+
                     withContext(Dispatchers.Main) {
                         inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(finalResults)
 
@@ -336,7 +343,7 @@ public class LanguageModelFacilitator(
                         }
                     }
 
-                    sequenceIdFinishedFlow.emit(values.sequenceId)
+                    sequenceIdFinishedFlow.emit(Pair(values.sequenceId, null))
                 }
                 return
             }
@@ -443,20 +450,25 @@ public class LanguageModelFacilitator(
             // TODO
             if(values.sequenceId < currentSequenceId) return
 
-            withContext(Dispatchers.Main) {
-                inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords)
-
-                if (values.composedData.mIsBatchMode) {
-                    inputLogic.showBatchSuggestions(
-                        suggestedWords,
-                        values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
-                    )
-                }
-            }
-            sequenceIdFinishedFlow.emit(values.sequenceId)
+            suggestedWords
         } finally {
             computationSemaphore.release()
         }
+
+        sequenceIdFinishedFlow.emit(Pair(values.sequenceId, suggestedWords))
+
+        withContext(Dispatchers.Main) {
+            inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords)
+
+            if (values.composedData.mIsBatchMode) {
+                inputLogic.showBatchSuggestions(
+                    suggestedWords,
+                    values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
+                )
+            }
+        }
+
+        sequenceIdFinishedFlow.emit(Pair(values.sequenceId, null))
     }
 
     public suspend fun destroyModel() {
