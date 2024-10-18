@@ -42,6 +42,7 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.updates.openURI
 import org.futo.inputmethod.v2keyboard.Keyboard
 import org.futo.inputmethod.v2keyboard.parseKeyboardYamlString
 import java.util.Locale
@@ -319,6 +320,14 @@ fun DevLayoutEditor(navController: NavHostController = rememberNavController()) 
                 navController.navigate("devlayoutedit/${customLayouts.size}")
             },
             icon = painterResource(R.drawable.plus_circle)
+        )
+
+        NavigationItem(
+            title = "Layout documentation",
+            style = NavigationItemStyle.Misc,
+            navigate = {
+                context.openURI("https://github.com/futo-org/futo-keyboard-layouts/blob/main/LayoutSpec.md")
+            },
         )
     }
 }
