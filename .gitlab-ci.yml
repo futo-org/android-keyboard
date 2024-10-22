@@ -42,7 +42,7 @@ buildStable:
   stage: build
   before_script:
     - git fetch origin master:master
-    - export VERSION_NAME=`git describe --tags --dirty`
+    - export VERSION_NAME=`git describe --tags`
     - export VERSION_CODE=`git rev-list --first-parent --count master`
     - echo $VERSION_CODE $VERSION_NAME
     - ./setUpPropertiesCI.sh
