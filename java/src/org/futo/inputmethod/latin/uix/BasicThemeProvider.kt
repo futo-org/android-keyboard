@@ -26,9 +26,6 @@ val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), true)
 val HiddenKeysSetting = SettingsKey(booleanPreferencesKey("hiddenKeys"), false)
 val KeyHintsSetting   = SettingsKey(booleanPreferencesKey("keyHints"), false)
 
-val KeyboardHeightMultiplierSetting = SettingsKey(floatPreferencesKey("keyboardHeightMultiplier"), 1.0f)
-val KeyboardBottomOffsetSetting = SettingsKey(floatPreferencesKey("keyboardOffset"), 0.0f)
-
 fun<T> Preferences.get(key: SettingsKey<T>): T {
     return this[key.key] ?: key.default
 }
@@ -70,10 +67,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         }
 
         return icons[iconName]
-    }
-
-    override fun getKeyboardHeightMultiplier(): Float {
-        return keyboardHeight
     }
 
     val keyStyles: Map<KeyVisualStyle, VisualStyleDescriptor>
@@ -137,13 +130,10 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     val expertMode: Boolean
     val showKeyHints: Boolean
 
-    val keyboardHeight: Float
-
     fun hasUpdated(np: Preferences): Boolean {
         return np.get(HiddenKeysSetting) != expertMode
                 || np.get(KeyBordersSetting) != keyBorders
                 || np.get(KeyHintsSetting) != showKeyHints
-                || np.get(KeyboardHeightMultiplierSetting) != keyboardHeight
     }
 
 
@@ -164,7 +154,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         expertMode = context.getSettingBlocking(HiddenKeysSetting)
         keyBorders = context.getSettingBlocking(KeyBordersSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
-        keyboardHeight = context.getSettingBlocking(KeyboardHeightMultiplierSetting)
 
         val primary = colorScheme.primary.toArgb()
         val secondary = colorScheme.secondary.toArgb()

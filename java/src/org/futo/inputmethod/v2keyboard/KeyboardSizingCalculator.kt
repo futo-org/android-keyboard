@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.width
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.window.layout.FoldingFeature
 import kotlinx.serialization.KSerializer
@@ -25,10 +26,14 @@ import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.settings.SettingsValues
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.UixManager
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.utils.ResourceUtils
 import kotlin.math.roundToInt
+
+val OldKeyboardHeightMultiplierSetting = SettingsKey(floatPreferencesKey("keyboardHeightMultiplier"), 1.0f)
+val OldKeyboardBottomOffsetSetting = SettingsKey(floatPreferencesKey("keyboardOffset"), 0.0f)
 
 interface KeyboardSizeStateProvider {
     val currentSizeState: KeyboardSizeSettingKind
@@ -173,55 +178,80 @@ data class SavedKeyboardSizingSettings(
     }
 }
 
+fun getDefaultSettingForKind(kind: KeyboardSizeSettingKind, context: Context): SavedKeyboardSizingSettings {
+    val oldHeightMultiplier = context.getSettingBlocking(OldKeyboardHeightMultiplierSetting)
+    val oldBottomOffset = context.getSettingBlocking(OldKeyboardBottomOffsetSetting).dp
+
+    val metrics = context.resources.displayMetrics
+    val density = metrics.density.toFloat()
+    val minDimDp = (minOf(metrics.widthPixels, metrics.heightPixels).toFloat() / density).dp
+
+    println("widthPx: ${metrics.widthPixels}, heightPx: ${metrics.heightPixels}, density: ${density}")
+    val extraSidePadding = when {
+        minDimDp > 600.dp -> 24.dp
+        else -> 0.dp
+    }
+
+    val portraitDeviceSizeHeightMultiplier = when {
+        minDimDp > 600.dp -> 0.8f
+        else -> 1.0f
+    }
+
+    val portraitSplitWidthFraction = when {
+        minDimDp > 600.dp -> 3.0f / 5.0f
+        else -> 4.0f / 5.0f
+    }
+
+    return when(kind) {
+        KeyboardSizeSettingKind.Portrait -> SavedKeyboardSizingSettings(
+            currentMode = KeyboardMode.Regular,
+            heightMultiplier = 1.0f * oldHeightMultiplier * portraitDeviceSizeHeightMultiplier,
+            paddingDp = DpRect(2.dp + extraSidePadding, 4.dp, 2.dp + extraSidePadding, 10.dp + oldBottomOffset),
+            splitPaddingDp = DpRect(2.dp, 4.dp, 2.dp, 10.dp + oldBottomOffset),
+            splitWidthFraction = portraitSplitWidthFraction,
+            oneHandedDirection = OneHandedDirection.Right,
+            oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp + oldBottomOffset),
+            floatingBottomOriginDp = Pair(0.0f, 0.0f),
+            floatingHeightDp = 240.0f,
+            floatingWidthDp = 360.0f,
+            prefersSplit = false
+        )
+
+        KeyboardSizeSettingKind.Landscape -> SavedKeyboardSizingSettings(
+            currentMode = KeyboardMode.Split,
+            heightMultiplier = 0.9f * oldHeightMultiplier,
+            paddingDp = DpRect(8.dp + extraSidePadding, 2.dp, 8.dp + extraSidePadding, 2.dp),
+            splitPaddingDp = DpRect(8.dp, 2.dp, 8.dp, 2.dp),
+            splitWidthFraction = 3.0f / 5.0f,
+            oneHandedDirection = OneHandedDirection.Right,
+            oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
+            floatingBottomOriginDp = Pair(0.0f, 0.0f),
+            floatingHeightDp = 240.0f,
+            floatingWidthDp = 360.0f,
+            prefersSplit = true
+        )
+
+        KeyboardSizeSettingKind.FoldableInnerDisplay -> SavedKeyboardSizingSettings(
+            currentMode = KeyboardMode.Split,
+            heightMultiplier = 0.67f * oldHeightMultiplier,
+            paddingDp = DpRect(44.dp, 4.dp, 44.dp, 8.dp),
+            splitPaddingDp = DpRect(44.dp, 4.dp, 44.dp, 8.dp),
+            splitWidthFraction = 3.0f / 5.0f,
+            oneHandedDirection = OneHandedDirection.Right,
+            oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
+            floatingBottomOriginDp = Pair(0.0f, 0.0f),
+            floatingHeightDp = 240.0f,
+            floatingWidthDp = 360.0f,
+            prefersSplit = true
+        )
+    }
+}
+
 enum class KeyboardSizeSettingKind {
     Portrait,
     Landscape,
     FoldableInnerDisplay
 }
-
-val DefaultKeyboardSettings = mapOf(
-    KeyboardSizeSettingKind.Portrait to SavedKeyboardSizingSettings(
-        currentMode = KeyboardMode.Regular,
-        heightMultiplier = 1.0f,
-        paddingDp = DpRect(2.dp, 4.dp, 2.dp, 10.dp),
-        splitPaddingDp = DpRect(2.dp, 4.dp, 2.dp, 10.dp),
-        splitWidthFraction = 4.0f / 5.0f,
-        oneHandedDirection = OneHandedDirection.Right,
-        oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
-        floatingBottomOriginDp = Pair(0.0f, 0.0f),
-        floatingHeightDp = 240.0f,
-        floatingWidthDp = 360.0f,
-        prefersSplit = false
-    ),
-
-    KeyboardSizeSettingKind.Landscape to SavedKeyboardSizingSettings(
-        currentMode = KeyboardMode.Split,
-        heightMultiplier = 0.9f,
-        paddingDp = DpRect(8.dp, 2.dp, 8.dp, 2.dp),
-        splitPaddingDp = DpRect(8.dp, 2.dp, 8.dp, 2.dp),
-        splitWidthFraction = 3.0f / 5.0f,
-        oneHandedDirection = OneHandedDirection.Right,
-        oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
-        floatingBottomOriginDp = Pair(0.0f, 0.0f),
-        floatingHeightDp = 240.0f,
-        floatingWidthDp = 360.0f,
-        prefersSplit = true
-    ),
-
-    KeyboardSizeSettingKind.FoldableInnerDisplay to SavedKeyboardSizingSettings(
-        currentMode = KeyboardMode.Split,
-        heightMultiplier = 0.67f,
-        paddingDp = DpRect(44.dp, 4.dp, 44.dp, 8.dp),
-        splitPaddingDp = DpRect(44.dp, 4.dp, 44.dp, 8.dp),
-        splitWidthFraction = 3.0f / 5.0f,
-        oneHandedDirection = OneHandedDirection.Right,
-        oneHandedRectDp = DpRect(4.dp, 4.dp, 364.dp, 30.dp),
-        floatingBottomOriginDp = Pair(0.0f, 0.0f),
-        floatingHeightDp = 240.0f,
-        floatingWidthDp = 360.0f,
-        prefersSplit = true
-    ),
-)
 
 val KeyboardSettings = mapOf(
     KeyboardSizeSettingKind.Portrait to SettingsKey(
@@ -250,14 +280,14 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
     fun getSavedSettings(): SavedKeyboardSizingSettings =
         SavedKeyboardSizingSettings.fromJsonString(context.getSettingBlocking(
             KeyboardSettings[sizeStateProvider.currentSizeState]!!
-        )) ?: DefaultKeyboardSettings[sizeStateProvider.currentSizeState]!!
+        )) ?: getDefaultSettingForKind(sizeStateProvider.currentSizeState, context)
 
     fun editSavedSettings(transform: (SavedKeyboardSizingSettings) -> SavedKeyboardSizingSettings) {
         val sizeState = sizeStateProvider.currentSizeState
 
         val savedSettings = SavedKeyboardSizingSettings.fromJsonString(context.getSettingBlocking(
             KeyboardSettings[sizeState]!!
-        )) ?: DefaultKeyboardSettings[sizeState]!!
+        )) ?: getDefaultSettingForKind(sizeState, context)
 
         val transformed = transform(savedSettings)
 
@@ -267,7 +297,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
     }
 
     fun resetCurrentMode() {
-        val defaultSettings = DefaultKeyboardSettings[sizeStateProvider.currentSizeState]!!
+        val defaultSettings = getDefaultSettingForKind(sizeStateProvider.currentSizeState, context)
         editSavedSettings {
             when(it.currentMode) {
                 KeyboardMode.Regular -> it.copy(

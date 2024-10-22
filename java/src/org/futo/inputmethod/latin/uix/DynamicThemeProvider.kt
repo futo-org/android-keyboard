@@ -47,8 +47,6 @@ interface DynamicThemeProvider {
 
     fun getIcon(iconName: String): Drawable?
 
-    fun getKeyboardHeightMultiplier(): Float
-
     fun getKeyStyleDescriptor(visualStyle: KeyVisualStyle): VisualStyleDescriptor
 
     companion object {

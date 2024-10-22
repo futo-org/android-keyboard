@@ -14,10 +14,8 @@ import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutPage
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.latin.settings.LongPressKeySettings
-import org.futo.inputmethod.latin.uix.KeyboardHeightMultiplierSetting
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
-import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.pages.CustomLayout
 import org.futo.inputmethod.latin.utils.InputTypeUtils
 import java.util.Locale
@@ -327,7 +325,6 @@ Stack trace: ${e.stackTrace.map { it.toString() }}
     }
 
     companion object {
-        var keyboardHeightMultiplier: Float = 1.0f
 
         @JvmStatic
         fun onSystemLocaleChanged() {
@@ -336,8 +333,6 @@ Stack trace: ${e.stackTrace.map { it.toString() }}
 
         @JvmStatic
         fun onKeyboardThemeChanged(context: Context) {
-            keyboardHeightMultiplier = context.getSettingBlocking(KeyboardHeightMultiplierSetting)
-
             // This is where we would clear all caches if we had any
         }
     }
