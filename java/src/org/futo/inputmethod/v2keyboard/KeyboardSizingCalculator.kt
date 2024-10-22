@@ -186,7 +186,6 @@ fun getDefaultSettingForKind(kind: KeyboardSizeSettingKind, context: Context): S
     val density = metrics.density.toFloat()
     val minDimDp = (minOf(metrics.widthPixels, metrics.heightPixels).toFloat() / density).dp
 
-    println("widthPx: ${metrics.widthPixels}, heightPx: ${metrics.heightPixels}, density: ${density}")
     val extraSidePadding = when {
         minDimDp > 600.dp -> 24.dp
         else -> 0.dp
