@@ -179,12 +179,16 @@ data class SavedKeyboardSizingSettings(
 }
 
 fun getDefaultSettingForKind(kind: KeyboardSizeSettingKind, context: Context): SavedKeyboardSizingSettings {
-    val oldHeightMultiplier = context.getSettingBlocking(OldKeyboardHeightMultiplierSetting)
+
     val oldBottomOffset = context.getSettingBlocking(OldKeyboardBottomOffsetSetting).dp
 
     val metrics = context.resources.displayMetrics
     val density = metrics.density.toFloat()
     val minDimDp = (minOf(metrics.widthPixels, metrics.heightPixels).toFloat() / density).dp
+
+    val oldHeightMultiplier = context.getSettingBlocking(OldKeyboardHeightMultiplierSetting) + run {
+        (oldBottomOffset.value * density) / metrics.heightPixels.toFloat()
+    }
 
     val extraSidePadding = when {
         minDimDp > 600.dp -> 24.dp
