@@ -347,7 +347,7 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun announce(s: String) {
         AccessibilityUtils.init(getContext())
-        if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
+        if(AccessibilityUtils.getInstance().isAccessibilityEnabled && uixManager.composeView != null) {
             AccessibilityUtils.getInstance().announceForAccessibility(uixManager.composeView, s)
         }
     }
