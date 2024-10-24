@@ -155,16 +155,6 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
         }
     }
 
-    val wasImeVisible = remember { mutableStateOf(false) }
-    val isImeVisible = WindowInsets.isImeVisible
-    LaunchedEffect(isImeVisible) {
-        wasImeVisible.value = wasImeVisible.value || isImeVisible
-
-        if(!isImeVisible && wasImeVisible.value) {
-            navController.navigateUp()
-        }
-    }
-
     Box {
         ScrollableList {
             ScreenTitle("Resize Keyboard", showBack = true, navController)
