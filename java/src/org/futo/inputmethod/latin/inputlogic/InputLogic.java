@@ -2709,6 +2709,24 @@ public final class InputLogic {
         mRecapitalizeStatus.disable();
     }
 
+
+    private void cursorLeftInternal(int steps, boolean stepOverWords, boolean select) {
+        finishInput();
+
+        if(!mConnection.hasSelection()) isRightSidePointer = true;
+
+        cursorStep(-steps, stepOverWords, select);
+    }
+
+    private void cursorRightInternal(int steps, boolean stepOverWords, boolean select) {
+        finishInput();
+
+        if(!mConnection.hasSelection()) isRightSidePointer = false;
+
+        cursorStep(steps, stepOverWords, select);
+    }
+
+
     /**
      * Shifts the cursor left by a number of characters
      * @param steps How many characters to step over, or the direction if stepOverWords
@@ -2718,7 +2736,7 @@ public final class InputLogic {
     public void cursorLeft(int steps, boolean stepOverWords, boolean select) {
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
         steps = Math.abs(steps);
-        if(!mConnection.hasCursorPosition() || settingsValues.mIsRTL || settingsValues.mInputAttributes.mIsCodeField) {
+        if(!mConnection.hasCursorPosition() || settingsValues.mInputAttributes.mIsCodeField) {
             mConnection.finishComposingText();
             int meta = 0;
             if(stepOverWords) meta = meta | KeyEvent.META_CTRL_ON;
@@ -2728,14 +2746,13 @@ public final class InputLogic {
             for(int i=0; i<steps; i++)
                 sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta);
             mConnection.endBatchEdit();
-            return;
+        } else {
+            if(settingsValues.mIsRTL) {
+                cursorRightInternal(steps, stepOverWords, select);
+            } else {
+                cursorLeftInternal(steps, stepOverWords, select);
+            }
         }
-
-        finishInput();
-
-        if(!mConnection.hasSelection()) isRightSidePointer = true;
-
-        cursorStep(-steps, stepOverWords, select);
     }
 
     /**
@@ -2747,7 +2764,7 @@ public final class InputLogic {
     public void cursorRight(int steps, boolean stepOverWords, boolean select) {
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
         steps = Math.abs(steps);
-        if(!mConnection.hasCursorPosition() || settingsValues.mIsRTL || settingsValues.mInputAttributes.mIsCodeField) {
+        if(!mConnection.hasCursorPosition() || settingsValues.mInputAttributes.mIsCodeField) {
             mConnection.finishComposingText();
             int meta = 0;
             if(stepOverWords) meta = meta | KeyEvent.META_CTRL_ON;
@@ -2757,14 +2774,12 @@ public final class InputLogic {
             for(int i=0; i<steps; i++)
                 sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta);
             mConnection.endBatchEdit();
-
-            return;
+        } else {
+            if(settingsValues.mIsRTL) {
+                cursorLeftInternal(steps, stepOverWords, select);
+            } else {
+                cursorRightInternal(steps, stepOverWords, select);
+            }
         }
-
-        finishInput();
-
-        if(!mConnection.hasSelection()) isRightSidePointer = false;
-
-        cursorStep(steps, stepOverWords, select);
     }
 }

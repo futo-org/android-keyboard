@@ -959,6 +959,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                 sTimerProxy.cancelKeyTimersOf(this);
                 mCursorMoved = true;
                 mStartX += steps * pointerStep;
+
+                if(settingsValues.mIsRTL) steps = -steps;
+
                 sListener.onMoveDeletePointer(steps);
             }
 
