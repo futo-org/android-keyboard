@@ -22,7 +22,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,7 +39,6 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,11 +50,11 @@ import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.LocalManager
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
-import org.futo.inputmethod.latin.uix.settings.Tip
+import org.futo.inputmethod.latin.uix.settings.WarningTip
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.theme.Typography
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
-import org.futo.inputmethod.latin.uix.theme.Typography
 
 
 @Composable
@@ -216,9 +214,9 @@ fun ActionsEditor(header: @Composable () -> Unit) {
                                 header()
                                 
                                 if (actionMap[ActionCategory.ActionKey]?.let { it.size > 1 } == true) {
-                                    Tip("Only one Action Key can be set, anything after the first is ignored")
-                                } else if (actionMap[ActionCategory.PinnedKey]?.let { it.size > 4 } == true) {
-                                    Tip("You have more pinned actions than seems reasonable. Consider moving some to favorites")
+                                    WarningTip("Please assign only one action key. You cannot assign more than one action to the action key.")
+                                } else if (actionMap[ActionCategory.PinnedKey]?.let { it.size >= 3 } == true) {
+                                    WarningTip("Please consider pinning less actions. The suggestion bar will need to be shrunk to accommodate this many actions.")
                                 }
                             }
                             Text(it.category.name(context), modifier = Modifier.padding(top = 24.dp), style = Typography.Heading.MediumMl, color = LocalContentColor.current.copy(alpha = 0.6f))

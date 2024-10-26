@@ -25,13 +25,16 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -61,6 +64,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -73,7 +77,10 @@ import androidx.compose.ui.semantics.text
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -139,6 +146,38 @@ fun Tip(text: String = "This is an example tip") {
             style = Typography.Body.RegularMl,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
+    }
+}
+
+@Composable
+@Preview
+fun WarningTip(text: String = "This is an example tip") {
+    Surface(
+        color = MaterialTheme.colorScheme.errorContainer, modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp), shape = RoundedCornerShape(4.dp)
+    ) {
+
+        Text(
+            buildAnnotatedString {
+                appendInlineContent("icon")
+                append(' ')
+                append(text)
+            },
+            modifier = Modifier.padding(8.dp),
+            style = Typography.Body.RegularMl,
+            color = MaterialTheme.colorScheme.onErrorContainer,
+            inlineContent = mapOf(
+                "icon" to InlineTextContent(
+                    Placeholder(
+                        width = with(LocalDensity.current) { 24.dp.toPx().toSp() },
+                        height = with(LocalDensity.current) { 24.dp.toPx().toSp() },
+                        placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                    )
+                ){
+                    Icon(Icons.Default.Warning, contentDescription = null)
+                }
+            ))
     }
 }
 
