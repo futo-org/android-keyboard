@@ -410,7 +410,10 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
         return when {
             // Special case: 50% screen height no matter the row count or settings
-            foldState != null && foldState.state == FoldingFeature.State.HALF_OPENED && foldState.orientation == FoldingFeature.Orientation.HORIZONTAL -> {
+            sizeStateProvider.currentSizeState == KeyboardSizeSettingKind.FoldableInnerDisplay
+                    && foldState != null
+                    && foldState.state == FoldingFeature.State.HALF_OPENED
+                    && foldState.orientation == FoldingFeature.Orientation.HORIZONTAL -> {
                 val totalHeight = displayMetrics.heightPixels / 2 - (displayMetrics.density * 80.0f).toInt()
                 val singleRowHeight = totalHeight / numRows
                 SplitKeyboardSize(
