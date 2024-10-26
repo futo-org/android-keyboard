@@ -103,14 +103,6 @@
 
         </activity>
 
-        <activity
-            android:name=".uix.voiceinput.downloader.DownloadActivity"
-            android:exported="false"
-            android:label="@string/model_downloader"
-            android:clearTaskOnLaunch="true"
-            android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-
         <activity android:name=".permissions.PermissionsActivity"
              android:theme="@android:style/Theme.Translucent.NoTitleBar"
              android:exported="false"

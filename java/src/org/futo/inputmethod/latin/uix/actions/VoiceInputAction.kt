@@ -1,7 +1,5 @@
 package org.futo.inputmethod.latin.uix.actions
 
-import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -40,7 +38,6 @@ import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
-import org.futo.inputmethod.latin.uix.voiceinput.downloader.DownloadActivity
 import org.futo.inputmethod.latin.xlm.UserDictionaryObserver
 import org.futo.inputmethod.updates.openURI
 import org.futo.voiceinput.shared.ModelDoesNotExistException
@@ -69,6 +66,23 @@ val SystemVoiceInputAction = Action(
     shownInEditor = false
 )
 
+
+@Composable
+fun NoModelInstalled(locale: Locale) {
+    val context = LocalContext.current
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .clickable(enabled = true,
+            onClickLabel = null,
+            onClick = {
+                context.openURI("https://keyboard.futo.org/voice-input-models", true)
+            },
+            role = null,
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() })) {
+        Text("No voice input model installed for ${locale.getDisplayName(locale)}, tap to check options?", modifier = Modifier.align(Alignment.Center).padding(8.dp), textAlign = TextAlign.Center)
+    }
+}
 
 class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : PersistentActionState {
     val modelManager = ModelManager(manager.getContext())
@@ -159,19 +173,7 @@ private class VoiceInputActionWindow(
 
     @Composable
     private fun ModelDownloader(modelException: ModelDoesNotExistException) {
-        val context = LocalContext.current
-        Box(modifier = Modifier.fillMaxSize().clickable {
-            val intent = Intent(context, DownloadActivity::class.java)
-            intent.putStringArrayListExtra("models", ArrayList(modelException.models.map { model -> model.getRequiredDownloadList(context) }.flatten()))
-
-            if(context !is Activity) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-
-            context.startActivity(intent)
-        }) {
-            Text("Tap to complete setup", modifier = Modifier.align(Alignment.Center))
-        }
+        NoModelInstalled(locale)
     }
 
     @Composable
@@ -257,19 +259,7 @@ private class VoiceInputNoModelWindow(val locale: Locale) : ActionWindow {
 
     @Composable
     override fun WindowContents(keyboardShown: Boolean) {
-        val context = LocalContext.current
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .clickable(enabled = true,
-                onClickLabel = null,
-                onClick = {
-                    context.openURI("https://keyboard.futo.org/voice-input-models", true)
-                },
-                role = null,
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() })) {
-            Text("No voice input model installed for ${locale.displayLanguage}, tap to check options?", modifier = Modifier.align(Alignment.Center).padding(8.dp), textAlign = TextAlign.Center)
-        }
+        NoModelInstalled(locale)
     }
 
     override fun close() {
