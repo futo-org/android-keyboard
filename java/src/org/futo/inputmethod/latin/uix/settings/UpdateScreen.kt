@@ -41,8 +41,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
+//import okhttp3.OkHttpClient
+//import okhttp3.Request
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.InfoDialog
 import org.futo.inputmethod.latin.uix.getSetting
@@ -164,7 +164,10 @@ private suspend fun downloadAndInstall(scope: CoroutineScope, context: Context, 
 
     var inputStream: InputStream? = null;
     try {
-        val httpClient = OkHttpClient()
+        // TODO: Move this code to a different source directory so we can enable or disable
+        // it per build flavor (e.g. so nightly can have update checking)
+
+        /*val httpClient = OkHttpClient()
         val request = Request.Builder().method("GET", null).url(updateResult.apkUrl).build()
 
         val response = httpClient.newCall(request).execute()
@@ -173,9 +176,9 @@ private suspend fun downloadAndInstall(scope: CoroutineScope, context: Context, 
             inputStream = body.byteStream();
             val dataLength = body.contentLength();
             install(scope, context, inputStream, dataLength, updateStatusText)
-        } else {
+        } else {*/
             throw Exception("Failed to download latest version of app.");
-        }
+        //}
     } catch (e: Throwable) {
         Log.w("UpdateScreen", "Exception thrown while downloading and installing latest version of app.", e);
         withContext(Dispatchers.Main) {

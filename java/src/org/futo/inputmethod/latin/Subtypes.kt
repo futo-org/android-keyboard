@@ -34,7 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-import okhttp3.internal.toImmutableList
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
@@ -233,7 +232,7 @@ object Subtypes {
                 val list = this.getOrPut(it.locale) { mutableListOf() }
                 list.add(it)
             }
-        }.mapValues { it.value.toImmutableList() }
+        }
     }
 
     fun getDirectBootInitialLayouts(context: Context): Set<String> {

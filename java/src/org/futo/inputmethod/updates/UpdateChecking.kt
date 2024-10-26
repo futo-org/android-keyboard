@@ -11,9 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.internal.closeQuietly
+//import okhttp3.OkHttpClient
+//import okhttp3.Request
+//import okhttp3.internal.closeQuietly
 import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.BuildConfig
@@ -23,7 +23,11 @@ const val UPDATE_URL = "https://keyboard.futo.org/keyboard_version"
 
 suspend fun checkForUpdate(): UpdateResult? {
     if(!BuildConfig.UPDATE_CHECKING || !BuildConfig.UPDATE_CHECKING_NETWORK) return null
+    else return null
 
+    // TODO: Move this code to a different source directory so we can enable or disable
+    // it per build flavor (e.g. so nightly can have update checking)
+    /*
     return withContext(Dispatchers.IO) {
         val httpClient = OkHttpClient()
 
@@ -64,7 +68,7 @@ suspend fun checkForUpdate(): UpdateResult? {
             e.printStackTrace()
             null
         }
-    }
+    }*/
 }
 
 suspend fun checkForUpdateAndSaveToPreferences(context: Context): Boolean {
