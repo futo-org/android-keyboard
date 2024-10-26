@@ -234,7 +234,7 @@ Layout: $layoutName
             element.page.altIdx?.let { altIdx ->
                 val baseElement = element.copy(page = KeyboardLayoutPage.Base)
                 val baseLayout = elements[baseElement]
-                baseLayout?.altPages?.get(altIdx)
+                baseLayout?.altPages?.getOrNull(altIdx)
             }?.let {
                 mainLayout.copy(rows = it)
             }
