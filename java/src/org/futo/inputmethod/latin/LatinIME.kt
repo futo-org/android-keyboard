@@ -91,6 +91,7 @@ import org.futo.inputmethod.v2keyboard.KeyboardSizeSettingKind
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import org.futo.inputmethod.v2keyboard.LayoutManager
+import org.futo.inputmethod.v2keyboard.isFoldableInnerDisplayAllowed
 import kotlin.math.roundToInt
 
 /** Whether or not we can render into the navbar */
@@ -888,7 +889,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override val currentSizeState: KeyboardSizeSettingKind
         get() = when {
-            foldState.feature != null ->
+            (foldState.feature != null && isFoldableInnerDisplayAllowed()) ->
                 KeyboardSizeSettingKind.FoldableInnerDisplay
 
             resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE ->

@@ -2,6 +2,7 @@ package org.futo.inputmethod.v2keyboard
 
 import android.content.Context
 import android.graphics.Rect
+import android.os.Build
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
@@ -254,6 +255,35 @@ enum class KeyboardSizeSettingKind {
     Portrait,
     Landscape,
     FoldableInnerDisplay
+}
+
+/** Returns whether or not FoldableInnerDisplay size kind is allowed for this device */
+fun Context.isFoldableInnerDisplayAllowed(): Boolean {
+    val model = Build.MODEL
+    return when {
+        // Samsung Galaxy Z Flip models
+        model.startsWith("SM-F7") -> false
+
+        // Samsung Galaxy Z Fold models
+        model.startsWith("SM-F9") -> true
+
+        // Pixel folds
+        model == "GGH2X"
+                || model == "GC15S"
+                || model == "G9FPL" -> true
+
+        // Check based on minimum width and aspect ratio
+        else -> {
+            val metrics = resources.displayMetrics
+            val density = metrics.density.toFloat()
+            val minDimDp = (minOf(metrics.widthPixels, metrics.heightPixels).toFloat() / density).dp
+
+            val aspectRatio = maxOf(metrics.widthPixels, metrics.heightPixels).toFloat() / minOf(metrics.widthPixels, metrics.heightPixels).toFloat()
+
+            // 1.426 is currently the widest foldable (Mate XT Ultimate)
+            (minDimDp > 600.dp) && (aspectRatio < 1.5)
+        }
+    }
 }
 
 val KeyboardSettings = mapOf(
