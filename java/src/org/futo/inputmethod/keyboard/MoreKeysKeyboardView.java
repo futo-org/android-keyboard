@@ -152,7 +152,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             mOriginY = (int)container.getY() - CoordinateUtils.y(mCoordinates);
         } else {
             mOriginX = CoordinateUtils.x(touchOrigin) - getDefaultCoordX();
-            mOriginY = CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight();
+
+            // For basing off of touch position: CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight()
+            // Using container Y instead though
+            mOriginY = (int)container.getY() - CoordinateUtils.y(mCoordinates);
         }
         controller.onShowMoreKeysPanel(this);
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
