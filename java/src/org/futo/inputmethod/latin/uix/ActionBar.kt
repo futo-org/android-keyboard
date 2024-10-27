@@ -44,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
@@ -61,8 +62,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -276,11 +281,12 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
                 enabled = word != null,
                 onClick = onClick,
                 onLongClick = onLongClick
-            ),
+            )
+            .testTag("SuggestionItem"),
     ) {
         CompositionLocalProvider(LocalContentColor provides color) {
             if (word != null) {
-                val modifier = Modifier.align(Center).padding(2.dp)
+                val modifier = Modifier.align(Center).padding(2.dp).testTag("SuggestionItemText")
                 if(isVerbatim) {
                     AutoFitText('"' + word + '"', style = textStyle.copy(fontStyle = FontStyle.Italic), modifier = modifier)
                 } else {
@@ -704,6 +710,7 @@ fun ActionSep(isExtra: Boolean = false) {
         .background(sepCol)) {}
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ActionBar(
     words: SuggestedWords?,
@@ -721,7 +728,10 @@ fun ActionBar(
 
     val oldActionBar = useDataStore(OldStyleActionsBar)
 
-    Column(Modifier.height(ActionBarHeight * if(isActionsExpanded) 2 else 1)) {
+    Column(Modifier.height(ActionBarHeight * if(isActionsExpanded) 2 else 1).semantics {
+        testTag = "ActionBar"
+        testTagsAsResourceId = true
+    }) {
         if(isActionsExpanded && !oldActionBar.value) {
             ActionSep()
 
