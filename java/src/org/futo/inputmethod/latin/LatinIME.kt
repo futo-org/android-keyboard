@@ -91,6 +91,7 @@ import org.futo.inputmethod.v2keyboard.KeyboardSizeSettingKind
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import org.futo.inputmethod.v2keyboard.LayoutManager
+import org.futo.inputmethod.v2keyboard.dimensionsSameAs
 import org.futo.inputmethod.v2keyboard.isFoldableInnerDisplayAllowed
 import kotlin.math.roundToInt
 
@@ -289,14 +290,14 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         }
     }
 
-    private fun onSizeUpdated() {
+    fun onSizeUpdated() {
         val newSize = calculateSize()
         val shouldInvalidateKeyboard = size.value?.let { oldSize ->
             when {
                 oldSize is FloatingKeyboardSize && newSize is FloatingKeyboardSize -> {
                     oldSize.width != newSize.width || oldSize.height != newSize.height
                 }
-                else -> true
+                else -> !newSize.dimensionsSameAs(oldSize)
             }
         } ?: true
 
@@ -304,8 +305,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         if(shouldInvalidateKeyboard) {
             invalidateKeyboard(true)
+            updateNavigationBarVisibility()
         }
-        updateNavigationBarVisibility()
     }
 
     fun invalidateKeyboard(refreshSettings: Boolean = false) {

@@ -80,6 +80,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
@@ -970,6 +971,7 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
+    var prevSize: IntSize = IntSize.Zero
     @Composable
     private fun ProvidersAndWrapper(content: @Composable () -> Unit) {
         UixThemeWrapper(latinIME.colorScheme) {
@@ -978,7 +980,14 @@ class UixManager(private val latinIME: LatinIME) {
                     CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                             CompositionLocalProvider(LocalFoldingState provides foldingOptions.value) {
-                                Box(Modifier.fillMaxSize()) {
+                                Box(Modifier.fillMaxSize().onSizeChanged {
+                                    // If the size changes, call the service to check if the size needs
+                                    // to be recalculated and keyboard recreated
+                                    if(it != prevSize) {
+                                        prevSize = it
+                                        latinIME.onSizeUpdated()
+                                    }
+                                }) {
                                     content()
                                 }
                             }

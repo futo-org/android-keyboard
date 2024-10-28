@@ -85,6 +85,17 @@ val ComputedKeyboardSize.totalKeyboardWidth: Int
         is SplitKeyboardSize -> width - padding.left - padding.right
     }
 
+fun ComputedKeyboardSize.dimensionsSameAs(other: ComputedKeyboardSize?): Boolean {
+    if(other == null) return false
+
+    return when(this) {
+        is FloatingKeyboardSize -> other is FloatingKeyboardSize && other.height == height && other.width == width && other.padding == padding && other.singleRowHeight == singleRowHeight && other.bottomOrigin == bottomOrigin
+        is OneHandedKeyboardSize -> other is OneHandedKeyboardSize && other.layoutWidth == layoutWidth && other.width == width && other.padding == padding && other.direction == direction && other.singleRowHeight == singleRowHeight
+        is RegularKeyboardSize -> other is RegularKeyboardSize && other.width == width && other.padding == padding && other.height == height && other.singleRowHeight == singleRowHeight
+        is SplitKeyboardSize -> other is SplitKeyboardSize && other.height == height && other.padding == padding && other.singleRowHeight == singleRowHeight && other.splitLayoutWidth == splitLayoutWidth && other.width == width
+    }
+}
+
 enum class KeyboardMode {
     Regular,
     Split,
