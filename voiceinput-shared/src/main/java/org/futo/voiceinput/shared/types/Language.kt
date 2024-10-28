@@ -233,6 +233,7 @@ fun getLanguageFromWhisperString(str: String): Language? {
         "fi" -> Language.Finnish
         "vi" -> Language.Vietnamese
         "he" -> Language.Hebrew
+        "iw" -> Language.Hebrew
         "uk" -> Language.Ukrainian
         "el" -> Language.Greek
         "ms" -> Language.Malay
