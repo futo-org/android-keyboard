@@ -5165,9 +5165,15 @@ int whisper_full_with_state(
         // initial prompt
         if (!params.prompt_tokens && params.initial_prompt) {
             prompt_tokens.resize(1024);
-            prompt_tokens.resize(whisper_tokenize(ctx, params.initial_prompt, prompt_tokens.data(), prompt_tokens.size()));
-            params.prompt_tokens   = prompt_tokens.data();
-            params.prompt_n_tokens = prompt_tokens.size();
+
+            int size = whisper_tokenize(ctx, params.initial_prompt, prompt_tokens.data(), prompt_tokens.size());
+            if(size != -1) {
+                prompt_tokens.resize(size);
+                params.prompt_tokens = prompt_tokens.data();
+                params.prompt_n_tokens = prompt_tokens.size();
+            } else {
+                prompt_tokens.resize(0);
+            }
         }
 
         // prepend the prompt tokens to the prompt_past

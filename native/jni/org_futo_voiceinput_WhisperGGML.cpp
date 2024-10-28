@@ -128,7 +128,7 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
 
     std::string prompt_str = jstring2string(env, prompt);
     wparams.initial_prompt = prompt_str.c_str();
-    //AKLOGI("Initial prompt is [%s]", prompt_str.c_str());
+    AKLOGI("Initial prompt size: %d", prompt_str.size());
 
     state->env = env;
     state->partial_result_instance = instance;

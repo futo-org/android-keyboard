@@ -57,15 +57,15 @@ class UserDictionaryObserver(context: Context) {
         var approxNumTokens = 0
         var cutoffIndex = -1
         for(index in 0 until words.size) {
-            approxNumTokens += words[index].word.length / 4
-            if(approxNumTokens > 600) {
+            approxNumTokens += (4+words[index].word.length) / 4
+            if(approxNumTokens > 200) {
                 cutoffIndex = index
                 break
             }
         }
 
         if(cutoffIndex != -1) {
-            Log.w("UserDictionaryObserver", "User Dictionary is being trimmed to $cutoffIndex due to reaching num token limit")
+            Log.w("UserDictionaryObserver", "User Dictionary is being trimmed to $cutoffIndex / ${words.size} due to reaching num token limit")
             words = words.subList(0, cutoffIndex)
         }
     }
