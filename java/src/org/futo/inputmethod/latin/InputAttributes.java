@@ -39,6 +39,7 @@ public final class InputAttributes {
     final public String mTargetApplicationPackageName;
     final public boolean mInputTypeNoAutoCorrect;
     final public boolean mIsPasswordField;
+    final public boolean mIsEmailField;
     final public boolean mShouldShowSuggestions;
     final public boolean mApplicationSpecifiedCompletionOn;
     final public boolean mShouldInsertSpacesAutomatically;
@@ -91,6 +92,7 @@ public final class InputAttributes {
             mDisableGestureFloatingPreviewText = false;
             mIsGeneralTextInput = false;
             mNoLearning = false;
+            mIsEmailField = false;
             return;
         }
         // inputClass == InputType.TYPE_CLASS_TEXT
@@ -118,6 +120,8 @@ public final class InputAttributes {
 
         mDisableGestureFloatingPreviewText = InputAttributes.inPrivateImeOptions(
                 mPackageNameForPrivateImeOptions, NO_FLOATING_GESTURE_PREVIEW, editorInfo);
+
+        mIsEmailField = InputTypeUtils.isEmailVariation(variation);
 
         // TODO: This may need adjustment
         mInputTypeNoAutoCorrect = shouldSuppressSuggestions
