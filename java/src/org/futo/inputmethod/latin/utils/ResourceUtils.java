@@ -186,10 +186,10 @@ public final class ResourceUtils {
         return matchedAll;
     }
 
-    public static int getDefaultKeyboardWidth(final Window window, final Resources res) {
+        public static int getDefaultKeyboardWidth(final Window window, final Resources res) {
         if(window != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)) {
             WindowMetrics metrics = window.getWindowManager().getCurrentWindowMetrics();
-            Insets insets = metrics.getWindowInsets().getInsetsIgnoringVisibility(WindowInsets.Type.navigationBars() | WindowInsets.Type.displayCutout());
+            Insets insets = metrics.getWindowInsets().getInsetsIgnoringVisibility(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
 
             return metrics.getBounds().width() - (insets.left + insets.right);
         }
