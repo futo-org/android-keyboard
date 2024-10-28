@@ -1179,8 +1179,10 @@ public final class InputLogic {
                                 .mCurrentLanguageHasSpaces
                         && !mConnection.isCursorFollowedByWordCharacter(
                                 inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
+                    final int spaceState = mSpaceState; // Need to preserve space state, which restart resets
                     restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
                             false /* forStartInput */, currentKeyboardScriptId);
+                    mSpaceState = spaceState;
                 }
                 return;
             }
