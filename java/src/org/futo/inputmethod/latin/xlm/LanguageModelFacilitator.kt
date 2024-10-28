@@ -477,7 +477,7 @@ public class LanguageModelFacilitator(
         languageModel = null
     }
 
-    private var trainingEnabled = true
+    private var trainingEnabled = false
 
     public fun launchProcessor() = lifecycleScope.launch {
         Log.d("LanguageModelFacilitator", "Starting processor")
@@ -514,12 +514,16 @@ public class LanguageModelFacilitator(
             }
         }
 
+        trainingEnabled = context.getSetting(USE_TRANSFORMER_FINETUNING)
         launch {
             withContext(Dispatchers.Default) {
-                trainingEnabled = context.getSetting(USE_TRANSFORMER_FINETUNING)
-
                 val shouldTrain = context.getSettingFlow(USE_TRANSFORMER_FINETUNING)
                 shouldTrain.collect {
+
+                    if(!trainingEnabled && it) {
+                        scheduleTrainingWorkerBackground(context)
+                    }
+
                     trainingEnabled = it
                 }
             }
@@ -535,7 +539,9 @@ public class LanguageModelFacilitator(
             }
         }
 
-        scheduleTrainingWorkerBackground(context)
+        if(trainingEnabled) {
+            scheduleTrainingWorkerBackground(context)
+        }
     }
 
     public fun shouldPassThroughToLegacy(): Boolean =
