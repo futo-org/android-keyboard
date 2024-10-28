@@ -420,7 +420,7 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
 
 @Composable
 private fun AutoSpacesSetting() {
-    val altSpacesMode = useSharedPrefsInt(Settings.PREF_ALT_SPACES_MODE, Settings.SPACES_MODE_ALL)
+    val altSpacesMode = useSharedPrefsInt(Settings.PREF_ALT_SPACES_MODE, Settings.DEFAULT_ALT_SPACES_MODE)
     val autoSpaceModes = mapOf(
         Settings.SPACES_MODE_ALL to "Automatically insert spaces after punctuation or after inserting suggestions",
         Settings.SPACES_MODE_SUGGESTIONS to "Automatically insert spaces only after inserting suggestions",

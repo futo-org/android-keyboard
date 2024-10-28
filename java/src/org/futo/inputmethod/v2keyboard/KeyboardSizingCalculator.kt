@@ -397,8 +397,22 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
         val numRows = 4.0 +
                 ((effectiveRowCount - 5) / 2.0).coerceAtLeast(0.0) +
-                if(settings.mIsNumberRowEnabled) { 0.5 } else { 0.0 } +
-                if(settings.mIsArrowRowEnabled)  { 0.8 } else { 0.0 }
+                when { // Number row height
+                    // If it's enabled but not explicitly by user, it means it's enabled due to
+                    // the input field (e.g. password field). In this case, the full height of the
+                    // number row needs to be added to keep the existing keys consistently positioned
+                    settings.mIsNumberRowEnabled && !settings.mIsNumberRowEnabledByUser ->
+                        layout.effectiveRows.first { it.isNumberRow }.rowHeight
+
+                    // If it's enabled by user, add only 0.5 to make the keyboard slightly less tall
+                    settings.mIsNumberRowEnabled -> 0.5
+
+                    else -> 0.0
+                } +
+                when { // Arrow row height
+                    settings.mIsArrowRowEnabled -> 0.8
+                    else -> 0.0
+                }
 
         val recommendedHeight = numRows * singularRowHeight + padding.bottom
 

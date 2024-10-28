@@ -92,6 +92,7 @@ public class SettingsValues {
     public final boolean mEnableMetricsLogging;
     public final boolean mShouldShowLxxSuggestionUi;
     public final boolean mIsNumberRowEnabled;
+    public final boolean mIsNumberRowEnabledByUser;
     public final boolean mIsArrowRowEnabled;
     public final int mScreenMetrics;
 
@@ -156,8 +157,8 @@ public class SettingsValues {
                         RegistryKt.getDefaultActionKey()
                 ));
         mShowsActionKey = mActionKeyId != -1;
-        mIsNumberRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false)
-                || inputAttributes.mIsPasswordField;
+        mIsNumberRowEnabledByUser = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false);
+        mIsNumberRowEnabled = mIsNumberRowEnabledByUser || inputAttributes.mIsPasswordField;
         mIsArrowRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_ARROW_ROW, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
@@ -178,7 +179,7 @@ public class SettingsValues {
         mSpacebarMode = prefs.getInt(Settings.PREF_SPACEBAR_MODE, Settings.SPACEBAR_MODE_SWIPE_CURSOR);
         mBackspaceMode = prefs.getInt(Settings.PREF_BACKSPACE_MODE, Settings.BACKSPACE_MODE_CHARACTERS);
 
-        mAltSpacesMode = prefs.getInt(Settings.PREF_ALT_SPACES_MODE, Settings.SPACES_MODE_ALL);
+        mAltSpacesMode = prefs.getInt(Settings.PREF_ALT_SPACES_MODE, Settings.DEFAULT_ALT_SPACES_MODE);
 
         mShouldShowLxxSuggestionUi = Settings.SHOULD_SHOW_LXX_SUGGESTION_UI
                 && prefs.getBoolean(DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI, true);
