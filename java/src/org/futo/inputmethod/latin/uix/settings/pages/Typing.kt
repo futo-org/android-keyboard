@@ -6,10 +6,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.isImeVisible
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -82,7 +79,7 @@ import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
-import org.futo.inputmethod.latin.uix.settings.DropDownPicker
+import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -425,12 +422,12 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
 private fun AutoSpacesSetting() {
     val altSpacesMode = useSharedPrefsInt(Settings.PREF_ALT_SPACES_MODE, Settings.SPACES_MODE_ALL)
     val autoSpaceModes = mapOf(
-        Settings.SPACES_MODE_ALL to "Suggestions + Symbols",
-        Settings.SPACES_MODE_SUGGESTIONS to "Suggestions only",
-        Settings.SPACES_MODE_LEGACY to "Legacy"
+        Settings.SPACES_MODE_ALL to "Automatically insert spaces after punctuation or after inserting suggestions",
+        Settings.SPACES_MODE_SUGGESTIONS to "Automatically insert spaces only after inserting suggestions",
+        Settings.SPACES_MODE_LEGACY to "Do not automatically insert any spaces (legacy mode)"
     )
-    DropDownPicker(
-        label = "Automatic spaces mode",
+    DropDownPickerSettingItem(
+        label = "Automatic spaces mode (new)",
         options = autoSpaceModes.keys.toList(),
         selection = altSpacesMode.value,
         onSet = {
@@ -439,7 +436,9 @@ private fun AutoSpacesSetting() {
         getDisplayName = {
             autoSpaceModes[it] ?: "?"
         },
-        modifier = Modifier.padding(4.dp).padding(start = 76.dp, end = 12.dp)
+        icon = {
+            Icon(painterResource(R.drawable.space), contentDescription = null)
+        }
     )
 }
 
@@ -522,6 +521,8 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
 
         ScreenTitle(title = "Typing preferences")
 
+        AutoSpacesSetting()
+
         SettingToggleSharedPrefs(
             title = "Swipe Typing (alpha)",
             subtitle = "Allow swiping from key to key to write words.",
@@ -563,8 +564,6 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
                 Text("Aa", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
         )
-
-        AutoSpacesSetting()
 
         SettingToggleSharedPrefs(
             title = stringResource(R.string.use_double_space_period),

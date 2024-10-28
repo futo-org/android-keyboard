@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -88,6 +89,13 @@ fun <T> useDataStore(key: SettingsKey<T>, blocking: Boolean = false): DataStoreI
 @Composable
 fun<T> useSharedPrefsGeneric(key: String, default: T, get: (SharedPreferences, String, T) -> T, put: (SharedPreferences, String, T) -> Unit): DataStoreItem<T> {
     val coroutineScope = rememberCoroutineScope()
+
+    if(LocalInspectionMode.current) {
+        return DataStoreItem(
+            default
+        ) { coroutineScope.launch {} }
+    }
+
     val context = LocalContext.current
     val sharedPrefs = remember { PreferenceUtils.getDefaultSharedPreferences(context) }
 

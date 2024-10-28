@@ -572,7 +572,6 @@ fun PaymentScreen(
                         val selection = remember { mutableStateOf(remindOptions.first()) }
 
                         DropDownPicker(
-                            "",
                             remindOptions,
                             selection.value,
                             onSet = { selection.value = it },

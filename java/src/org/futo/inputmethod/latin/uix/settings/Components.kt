@@ -197,17 +197,24 @@ fun SettingItem(
     icon: (@Composable () -> Unit)? = null,
     disabled: Boolean = false,
     modifier: Modifier = Modifier,
+    subcontent: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(0.dp, 68.dp)
-            .clickable(enabled = !disabled && onClick != null, onClick = {
-                if (!disabled && onClick != null) {
-                    onClick()
+            .let {
+                if(onClick != null) {
+                    it.clickable(enabled = !disabled, onClick = {
+                        if (!disabled) {
+                            onClick()
+                        }
+                    })
+                } else {
+                    it
                 }
-            })
+            }
             .padding(4.dp)
     ) {
         Spacer(modifier = Modifier.width(16.dp))
@@ -251,6 +258,8 @@ fun SettingItem(
                         style = Typography.SmallMl,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                } else if(subcontent != null) {
+                    subcontent()
                 }
             }
         }
@@ -705,7 +714,6 @@ fun<T> DropDownPicker(
 private val DropDownShape = RoundedCornerShape(12.dp)
 @Composable
 fun<T> DropDownPicker(
-    label: String,
     options: List<T>,
     selection: T?,
     onSet: (T) -> Unit,
@@ -718,16 +726,7 @@ fun<T> DropDownPicker(
     SpacedColumn(4.dp, modifier = modifier.semantics {
         role = Role.DropdownList
     }) {
-        if(label.isNotEmpty()) {
-            Text(
-                label,
-                style = Typography.Heading.RegularMl,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.heightIn(min = 24.dp).clearAndSetSemantics {  }
-            )
-        }
-
-        Box(
+        Row(
             Modifier.fillMaxWidth().background(
                 MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape
             ).border(
@@ -738,27 +737,25 @@ fun<T> DropDownPicker(
                 expanded = !expanded
             }.padding(16.dp).semantics {
                 // TODO: Localization
-                if(label.isNotEmpty())
-                    contentDescription = label
-
                 stateDescription = if(expanded) "Expanded" else "Collapsed"
                 role = Role.DropdownList
             }
         ) {
-            selection?.let {
+            if(selection != null) {
                 Text(
-                    text = getDisplayName(it),
+                    text = getDisplayName(selection),
                     style = Typography.Body.Regular,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.align(Alignment.CenterStart)
+                    modifier = Modifier.weight(1.0f)
                 )
+            } else {
+                Spacer(Modifier.weight(1.0f))
             }
 
             Icon(
                 painterResource(R.drawable.chevron_down),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.align(Alignment.CenterEnd)
             )
         }
 
@@ -805,5 +802,27 @@ fun<T> DropDownPicker(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun<T> DropDownPickerSettingItem(
+    label: String,
+    options: List<T>,
+    selection: T?,
+    onSet: (T) -> Unit,
+    getDisplayName: (T) -> String,
+    modifier: Modifier = Modifier,
+    icon: @Composable (() -> Unit)? = null,
+) {
+    SettingItem(
+        title = label,
+        icon = icon,
+        subcontent = {
+            DropDownPicker(options, selection, onSet, getDisplayName)
+        },
+        modifier = modifier
+    ) {
+
     }
 }
