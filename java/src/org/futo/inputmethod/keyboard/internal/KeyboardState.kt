@@ -135,7 +135,9 @@ class KeyboardState(private val switchActions: SwitchActions) {
         fun shouldReleaseAllPointers(keyboard: Keyboard?, key: Key?): Boolean = when {
             keyboard == null || key == null -> false
             key.isModifier -> true
-            Constants.isLetterCode(key.code) && !keyboard.mId.mElement.page.locked -> true
+            Constants.isLetterCode(key.code)
+                    && !keyboard.mId.mElement.page.locked
+                    && !keyboard.mShiftKeys.any { it.pressed } -> true
             else -> false
         }
     }

@@ -415,6 +415,9 @@ data class Key(
         return iconSet.getIconDrawable(iconId)
     }
 
+    val pressed: Boolean
+        get() = mPressed
+
     /**
      * Informs the key that it has been pressed, in case it needs to change its appearance or
      * state.
