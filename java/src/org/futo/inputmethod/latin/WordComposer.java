@@ -30,6 +30,7 @@ import org.futo.inputmethod.latin.define.DecoderSpecificConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -359,6 +360,16 @@ public final class WordComposer {
      */
     public boolean isEntirelyDigits() {
         return mDigitsCount == mCodePointSize;
+    }
+
+    /**
+     * Returns true if the composing word is an ordinal
+     */
+    public boolean isOrdinal(Locale locale) {
+        final String word = getTypedWord();
+
+        // TODO: This is English-only
+        return word.matches("^(\\d+)(st|nd|rd|th)$");
     }
 
     /**

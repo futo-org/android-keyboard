@@ -210,6 +210,8 @@ public final class Suggest {
                 // If the word is entirely digits, never autocorrect regardless of number row
                 // being active or not
                 || wordComposer.isEntirelyDigits()
+                // If it's an ordinal (1st, 2nd, 3rd), do not autocorrect
+                || wordComposer.isOrdinal(locale)
                 // If the word is mostly caps, we never auto-correct because this is almost
                 // certainly intentional (and careful input)
                 || wordComposer.isMostlyCaps()
