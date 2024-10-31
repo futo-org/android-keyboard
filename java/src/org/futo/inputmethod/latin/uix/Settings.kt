@@ -194,7 +194,7 @@ class DataStoreHelper {
 }
 
 
-suspend fun <T> Context.getSetting(key: Preferences.Key<T>, default: T): T {
+fun <T> Context.getSetting(key: Preferences.Key<T>, default: T): T {
     /*val valueFlow: Flow<T> =
         this.dataStore.data.map { preferences -> preferences[key] ?: default }.take(1)
 
@@ -263,7 +263,7 @@ data class SettingsKey<T>(
     val default: T
 )
 
-suspend fun <T> Context.getSetting(key: SettingsKey<T>): T {
+ fun <T> Context.getSetting(key: SettingsKey<T>): T {
     return getSetting(key.key, key.default)
 }
 

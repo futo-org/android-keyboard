@@ -101,13 +101,13 @@ private class VoiceInputActionWindow(
     val context = manager.getContext()
 
     private var shouldPlaySounds: Boolean = false
-    private suspend fun loadSettings(): RecognizerViewSettings = coroutineScope {
-        val enableSound = async { context.getSetting(ENABLE_SOUND) }
-        val verboseFeedback = async { context.getSetting(VERBOSE_PROGRESS) }
-        val disallowSymbols = async { context.getSetting(DISALLOW_SYMBOLS) }
-        val useBluetoothAudio = async { context.getSetting(PREFER_BLUETOOTH) }
-        val requestAudioFocus = async { context.getSetting(AUDIO_FOCUS) }
-        val canExpandSpace = async { context.getSetting(CAN_EXPAND_SPACE) }
+    private fun loadSettings(): RecognizerViewSettings {
+        val enableSound = context.getSetting(ENABLE_SOUND)
+        val verboseFeedback = context.getSetting(VERBOSE_PROGRESS)
+        val disallowSymbols = context.getSetting(DISALLOW_SYMBOLS)
+        val useBluetoothAudio = context.getSetting(PREFER_BLUETOOTH)
+        val requestAudioFocus = context.getSetting(AUDIO_FOCUS)
+        val canExpandSpace = context.getSetting(CAN_EXPAND_SPACE)
 
         val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
@@ -115,11 +115,11 @@ private class VoiceInputActionWindow(
             getLanguageFromWhisperString(locale.language)
         ).filterNotNull().toSet()
 
-        shouldPlaySounds = enableSound.await()
+        shouldPlaySounds = enableSound
 
-        return@coroutineScope RecognizerViewSettings(
+        return RecognizerViewSettings(
             shouldShowInlinePartialResult = false,
-            shouldShowVerboseFeedback = verboseFeedback.await(),
+            shouldShowVerboseFeedback = verboseFeedback,
             modelRunConfiguration = MultiModelRunConfiguration(
                 primaryModel = primaryModel,
                 languageSpecificModels = languageSpecificModels
@@ -127,12 +127,12 @@ private class VoiceInputActionWindow(
             decodingConfiguration = DecodingConfiguration(
                 glossary = state.userDictionaryObserver.getWords().map { it.word },
                 languages = allowedLanguages,
-                suppressSymbols = disallowSymbols.await()
+                suppressSymbols = disallowSymbols
             ),
             recordingConfiguration = RecordingSettings(
-                preferBluetoothMic = useBluetoothAudio.await(),
-                requestAudioFocus = requestAudioFocus.await(),
-                canExpandSpace = canExpandSpace.await()
+                preferBluetoothMic = useBluetoothAudio,
+                requestAudioFocus = requestAudioFocus,
+                canExpandSpace = canExpandSpace
             )
         )
     }
@@ -142,9 +142,7 @@ private class VoiceInputActionWindow(
 
     private val initJob = manager.getLifecycleScope().launch {
         yield()
-        val settings = withContext(Dispatchers.IO) {
-            loadSettings()
-        }
+        val settings = loadSettings()
 
         yield()
         val recognizerView = try {
