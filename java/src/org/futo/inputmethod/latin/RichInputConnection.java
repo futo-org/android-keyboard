@@ -424,6 +424,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return Constants.NOT_A_CODE;
     }
 
+    @Nullable
     public CharSequence getTextBeforeCursor(final int n, final int flags) {
         final int cachedLength =
                 mCommittedTextBeforeComposingText.length() + mComposingText.length();
@@ -991,7 +992,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public int getCodePointAfterCursor() {
         // TODO: only does char at the moment
         final CharSequence s = getTextAfterCursor(1, 0);
-        if(s.length() <= 0) return Constants.NOT_A_CODE;
+        if(s == null || s.length() <= 0) return Constants.NOT_A_CODE;
         return s.charAt(0);
     }
 
@@ -1007,7 +1008,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public boolean spacePrecedesCursor() {
         final CharSequence s = getTextBeforeCursor(1, 0);
-        if(s.length() <= 0) return false;
+        if(s == null || s.length() <= 0) return false;
         return s.charAt(0) == Constants.CODE_SPACE;
     }
 
@@ -1016,7 +1017,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public boolean digitPrecedesCursor() {
         final CharSequence s = getTextBeforeCursor(1, 0);
-        if(s.length() <= 0) return false;
+        if(s == null || s.length() <= 0) return false;
         return Character.isDigit(s.charAt(0));
     }
 
