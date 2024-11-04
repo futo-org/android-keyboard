@@ -326,7 +326,7 @@ public final class InputAttributes {
         boolean noAutocorrect = (editorInfo.inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0;
 
         if(editorInfo.packageName.startsWith("com.replit")) return noAutocorrect;
-        if(editorInfo.packageName.startsWith("com.termux")) return noAutocorrect;
+        if(editorInfo.packageName.startsWith("com.termux")) return editorInfo.inputType == 0;
 
         return false;
     }
