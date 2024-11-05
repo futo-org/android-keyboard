@@ -530,7 +530,7 @@ public final class InputLogic {
 
     /**
      * Updates keys whose hitboxes are boosted. This works by looking at the word being composed,
-     * and checking for next letters that would still produce a valid word within the dictionary.
+     * and checking for next letters that would still produce a valid word within the dictionary
      */
     private void updateBoostedCodePoints(
             final SettingsValues settingsValues,
