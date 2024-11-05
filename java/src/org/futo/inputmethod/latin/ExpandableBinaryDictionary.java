@@ -428,6 +428,37 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         });
     }
 
+
+    @Override
+    public ArrayList<Integer> getNextValidCodePoints(ComposedData composedData) {
+        reloadDictionaryIfRequired();
+        boolean lockAcquired = false;
+        try {
+            lockAcquired = mLock.readLock().tryLock(
+                    TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
+            if (lockAcquired) {
+                if (mBinaryDictionary == null) {
+                    return null;
+                }
+                final ArrayList<Integer> codePoints =
+                        mBinaryDictionary.getNextValidCodePoints(composedData);
+                if (mBinaryDictionary.isCorrupted()) {
+                    Log.i(TAG, "Dictionary (" + mDictName +") is corrupted. "
+                            + "Remove and regenerate it.");
+                    removeBinaryDictionary();
+                }
+                return codePoints;
+            }
+        } catch (final InterruptedException e) {
+            Log.e(TAG, "Interrupted tryLock() in getNextValidCodePoints().", e);
+        } finally {
+            if (lockAcquired) {
+                mLock.readLock().unlock();
+            }
+        }
+        return null;
+    }
+
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
             final NgramContext ngramContext, final long proximityInfoHandle,

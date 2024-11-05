@@ -190,6 +190,8 @@ public final class BinaryDictionary extends Dictionary {
             ArrayList<int[]> outShortcutTargets, ArrayList<Integer> outShortcutProbabilities);
     private static native int getNextWordNative(long dict, int token, int[] outCodePoints,
             boolean[] outIsBeginningOfSentence);
+    private static native void getNextValidCodePointsNative(long dict, long traverseSession,
+            int[] inputCodePoints, int inputSize, int[] outValidCodePoints);
     private static native void getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int[] suggestOptions,
@@ -262,6 +264,30 @@ public final class BinaryDictionary extends Dictionary {
                 attributes.get(DictionaryHeader.HAS_HISTORICAL_INFO_KEY));
         return new DictionaryHeader(outHeaderSize[0], new DictionaryOptions(attributes),
                 new FormatSpec.FormatOptions(outFormatVersion[0], hasHistoricalInfo));
+    }
+
+    @Override
+    public ArrayList<Integer> getNextValidCodePoints(final ComposedData composedData) {
+        final DicTraverseSession session = getTraverseSession(-1);
+
+        int inputSize =
+                composedData.copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
+                        session.mInputCodePoints);
+
+        int[] outCodePoints = new int[256];
+        getNextValidCodePointsNative(
+                mNativeDict, session.getSession(),
+                session.mInputCodePoints, inputSize,
+                outCodePoints
+        );
+
+        ArrayList<Integer> output = new ArrayList<>();
+        for(int i=0; i<256; i++) {
+            if(outCodePoints[i] == 0) break;
+            output.add(outCodePoints[i]);
+        }
+
+        return output;
     }
 
     @Override

@@ -59,6 +59,21 @@ public final class DictionaryCollection extends Dictionary {
     }
 
     @Override
+    public ArrayList<Integer> getNextValidCodePoints(ComposedData composedData) {
+        final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
+        if (dictionaries.isEmpty()) return null;
+        ArrayList<Integer> allCodePoints = new ArrayList<>();
+        final int length = dictionaries.size();
+        for (int i = 0; i < length; ++ i) {
+            final ArrayList<Integer> codePoints = dictionaries.get(i).getNextValidCodePoints(
+                    composedData
+            );
+            if (null != codePoints) allCodePoints.addAll(codePoints);
+        }
+        return allCodePoints;
+    }
+
+    @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
             final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,

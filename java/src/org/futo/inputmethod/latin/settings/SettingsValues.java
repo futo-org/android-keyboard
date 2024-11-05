@@ -94,6 +94,7 @@ public class SettingsValues {
     public final boolean mIsNumberRowEnabled;
     public final boolean mIsNumberRowEnabledByUser;
     public final boolean mIsArrowRowEnabled;
+    public final boolean mUseDictionaryKeyBoosting;
     public final int mScreenMetrics;
 
     public final int mSpacebarMode;
@@ -162,6 +163,7 @@ public class SettingsValues {
                 || inputAttributes.mIsPasswordField
                 || inputAttributes.mIsEmailField;
         mIsArrowRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_ARROW_ROW, false);
+        mUseDictionaryKeyBoosting = prefs.getBoolean(Settings.PREF_USE_DICT_KEY_BOOSTING, true);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true)

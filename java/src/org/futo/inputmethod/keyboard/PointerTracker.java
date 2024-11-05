@@ -1201,11 +1201,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         // Here curKey points to the different key from newKey.
         final int keyHysteresisDistanceSquared = mKeyDetector.getKeyHysteresisDistanceSquared(
                 mIsInSlidingKeyInput);
-        final int distanceFromKeyEdgeSquared = curKey.squaredDistanceToEdge(x, y);
-        if (distanceFromKeyEdgeSquared >= keyHysteresisDistanceSquared) {
+        final float distanceFromKeyEdge = curKey.distanceToEdge(x, y);
+        if ((distanceFromKeyEdge * distanceFromKeyEdge) >= keyHysteresisDistanceSquared) {
             if (DEBUG_MODE) {
-                final float distanceToEdgeRatio = (float)Math.sqrt(distanceFromKeyEdgeSquared)
-                        / mKeyboard.mMostCommonKeyWidth;
+                final float distanceToEdgeRatio = distanceFromKeyEdge / mKeyboard.mMostCommonKeyWidth;
                 Log.d(TAG, String.format("[%d] isMajorEnoughMoveToBeOnNewKey:"
                         +" %.2f key width from key edge", mPointerId, distanceToEdgeRatio));
             }

@@ -16,6 +16,13 @@
 
 package org.futo.inputmethod.keyboard;
 
+import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.settings.SettingsValues;
+
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
 /**
  * This class handles key detection.
  */
@@ -26,6 +33,9 @@ public class KeyDetector {
     private Keyboard mKeyboard;
     private int mCorrectionX;
     private int mCorrectionY;
+
+    @Nullable
+    private Set<Integer> mBoostedCodePoints;
 
     public KeyDetector() {
         this(0.0f /* keyHysteresisDistance */, 0.0f /* keyHysteresisDistanceForSlidingModifier */);
@@ -92,15 +102,41 @@ public class KeyDetector {
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
-        int minDistance = Integer.MAX_VALUE;
+        float minDistance = Float.POSITIVE_INFINITY;
         Key primaryKey = null;
+
+        final SettingsValues settingsValues = Settings.getInstance().getCurrent();
+
+        if(mBoostedCodePoints != null && !mBoostedCodePoints.isEmpty()) {
+            for (final Key key : mKeyboard.getNearestKeys(touchX, touchY)) {
+                if (mBoostedCodePoints.contains(key.getCode())) {
+                    // Using min distance to edge for boosted codepoints,
+                    // versus min distance to center for non boosted ones.
+                    final float distance = key.distanceToEdge(touchX, touchY);
+
+                    if(distance < minDistance) {
+                        minDistance = distance;
+                        primaryKey = key;
+                    }
+                }
+
+                // If we are on a non-word key (e.g. shift, backspace), disable boosting
+                // (break out of the loop and reset what we found)
+                if(key.isOnKey(touchX, touchY) && !settingsValues.isWordCodePoint(key.getCode())) {
+                    minDistance = Integer.MAX_VALUE;
+                    primaryKey = null;
+                    break;
+                }
+            }
+        }
+
         for (final Key key: mKeyboard.getNearestKeys(touchX, touchY)) {
             // An edge key always has its enlarged hitbox to respond to an event that occurred in
             // the empty area around the key. (@see Key#markAsLeftEdge(KeyboardParams)} etc.)
             if (!key.isOnKey(touchX, touchY)) {
                 continue;
             }
-            final int distance = key.squaredDistanceToEdge(touchX, touchY);
+            final float distance = key.distanceToCenter(touchX, touchY);
             if (distance > minDistance) {
                 continue;
             }
@@ -112,5 +148,9 @@ public class KeyDetector {
             }
         }
         return primaryKey;
+    }
+
+    public void updateBoostedCodePoints(@Nullable Set<Integer> validNextCodePoints) {
+        mBoostedCodePoints = validNextCodePoints;
     }
 }

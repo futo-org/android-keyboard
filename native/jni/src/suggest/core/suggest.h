@@ -82,5 +82,15 @@ class Suggest : public SuggestInterface {
     const Weighting *const WEIGHTING;
 
 };
+
+
+void processGetValidNextCodePoints(
+        DicTraverseSession *traverseSession,
+        const int *inputCodePoints,
+        int inputCodePointSize,
+        int *outputCodePoints,
+        int outputCodePointSize
+);
+
 } // namespace latinime
 #endif // LATINIME_SUGGEST_IMPL_H

@@ -345,7 +345,7 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
             for (int centerY = yStart; centerY <= yEnd; centerY += mCellHeight) {
                 int index = baseIndexOfCurrentRow;
                 for (int centerX = xStart; centerX <= xEnd; centerX += mCellWidth) {
-                    if (key.squaredDistanceToEdge(centerX, centerY) < thresholdSquared) {
+                    if (key.distanceToEdge(centerX, centerY) < threshold) {
                         neighborsFlatBuffer[index * keyCount + neighborCountPerCell[index]] = key;
                         ++neighborCountPerCell[index];
                     }

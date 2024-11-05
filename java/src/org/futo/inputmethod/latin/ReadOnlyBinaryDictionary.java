@@ -50,6 +50,18 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
     }
 
     @Override
+    public ArrayList<Integer> getNextValidCodePoints(ComposedData composedData) {
+        if (mLock.readLock().tryLock()) {
+            try {
+                return mBinaryDictionary.getNextValidCodePoints(composedData);
+            } finally {
+                mLock.readLock().unlock();
+            }
+        }
+        return null;
+    }
+
+    @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
             final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,

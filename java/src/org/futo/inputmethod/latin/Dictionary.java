@@ -84,6 +84,13 @@ public abstract class Dictionary {
     }
 
     /**
+     * Given the typed word, finds the valid next codepoints that will still produce a valid word.
+     * Used to determine which key hitboxes to boost. Currently does not return probabilities or
+     * scores, just letters which are valid at all.
+     */
+    abstract public ArrayList<Integer> getNextValidCodePoints(final ComposedData composedData);
+
+    /**
      * Searches for suggestions for a given context.
      * @param composedData the key sequence to match with coordinate info
      * @param ngramContext the context for n-gram.
@@ -198,6 +205,11 @@ public abstract class Dictionary {
         @UsedForTesting
         PhonyDictionary(final String type) {
             super(type, null);
+        }
+
+        @Override
+        public ArrayList<Integer> getNextValidCodePoints(ComposedData composedData) {
+            return null;
         }
 
         @Override

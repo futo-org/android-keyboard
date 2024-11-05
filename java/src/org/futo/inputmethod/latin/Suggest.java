@@ -34,7 +34,9 @@ import org.futo.inputmethod.latin.utils.SuggestionResults;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -146,6 +148,14 @@ public final class Suggest {
             return null;
         }
         return firstSuggestedWordInfo;
+    }
+
+    public Set<Integer> getValidNextCodePoints(final WordComposer wordComposer) {
+        final ArrayList<Integer> nextCodePoints = mDictionaryFacilitator.getValidNextCodePoints(
+                wordComposer.getComposedDataSnapshot()
+        );
+
+        return new HashSet<>(nextCodePoints);
     }
 
     public static SuggestedWords obtainNonBatchedInputSuggestedWords(

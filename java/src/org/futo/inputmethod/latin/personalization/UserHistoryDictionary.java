@@ -24,7 +24,6 @@ import org.futo.inputmethod.latin.BinaryDictionary;
 import org.futo.inputmethod.latin.Dictionary;
 import org.futo.inputmethod.latin.ExpandableBinaryDictionary;
 import org.futo.inputmethod.latin.NgramContext;
-import org.futo.inputmethod.latin.define.DecoderSpecificConstants;
 import org.futo.inputmethod.latin.define.ProductionFlags;
 import org.futo.inputmethod.latin.makedict.DictionaryHeader;
 
