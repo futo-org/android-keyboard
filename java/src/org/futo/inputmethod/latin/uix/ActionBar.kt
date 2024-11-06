@@ -728,7 +728,11 @@ fun ActionBar(
 
     val oldActionBar = useDataStore(OldStyleActionsBar)
 
-    Column(Modifier.height(ActionBarHeight * if(isActionsExpanded) 2 else 1).semantics {
+    val useDoubleHeight = isActionsExpanded && oldActionBar.value == false
+
+    Column(Modifier.height(
+        ActionBarHeight * if(useDoubleHeight) 2 else 1
+    ).semantics {
         testTag = "ActionBar"
         testTagsAsResourceId = true
     }) {
