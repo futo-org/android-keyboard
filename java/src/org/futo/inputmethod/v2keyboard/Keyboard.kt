@@ -120,6 +120,7 @@ val DefaultBottomRow = Row(
         ContextualKey(fallbackKey = BaseKey(",")),
         TemplateActionKey,
         TemplateSpaceKey,
+        TemplateOptionalZWNJKey,
         BaseKey("."),
         TemplateEnterKey
     )

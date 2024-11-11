@@ -238,6 +238,32 @@ data class ContextualKey(
     }
 }
 
+@Serializable
+@SerialName("optionalzwnj")
+data class OptionalZWNJKey(
+    val attributes: KeyAttributes = KeyAttributes(),
+    val fallbackKey: Key? = null
+) : AbstractKey {
+    private fun selectKey(params: KeyboardParams, keyboard: Keyboard): Key? {
+        if(keyboard.useZWNJKey) return TemplateZWNJKey
+
+        return fallbackKey
+    }
+
+    override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean {
+        return selectKey(params, keyboard)?.countsToKeyCoordinate(params, row, keyboard) ?: false
+    }
+
+    override fun computeData(
+        params: KeyboardParams,
+        row: Row,
+        keyboard: Keyboard,
+        coordinate: KeyCoordinate
+    ): ComputedKeyData? {
+        return selectKey(params, keyboard)?.computeData(params, row, keyboard, coordinate)
+    }
+}
+
 val TemplateEnterKey = EnterKey()
 val TemplateActionKey = ActionKey()
 val TemplateContextualKey = ContextualKey()
@@ -250,6 +276,7 @@ val TemplateZWNJKey = BaseKey(
         moreKeyMode = MoreKeyMode.OnlyExplicit
     )
 )
+val TemplateOptionalZWNJKey = OptionalZWNJKey()
 
 val TemplateKeys = mapOf(
     "shift" to TemplateShiftKey,
@@ -262,6 +289,7 @@ val TemplateKeys = mapOf(
     "number" to TemplateNumberKey,
     "contextual" to TemplateContextualKey,
     "zwnj" to TemplateZWNJKey,
+    "optionalzwnj" to TemplateOptionalZWNJKey,
     "gap" to TemplateGapKey,
     "alt0" to TemplateAlt0Key,
     "alt1" to TemplateAlt1Key,
