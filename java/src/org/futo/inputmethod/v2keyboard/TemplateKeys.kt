@@ -213,16 +213,12 @@ data class ContextualKey(
     val keys = mapOf(
         KeyboardId.MODE_EMAIL    to BaseKey(spec = "@", attributes = attributes),
         KeyboardId.MODE_URL      to BaseKey(spec = "/", attributes = attributes),
-        KeyboardId.MODE_DATETIME to BaseKey(spec = "/", moreKeys = listOf(":"), attributes = attributes),
+        KeyboardId.MODE_DATETIME to BaseKey(spec = "/", moreKeys = listOf(":"), hint = ":", attributes = attributes),
         KeyboardId.MODE_DATE     to BaseKey(spec = "/", attributes = attributes),
         KeyboardId.MODE_TIME     to BaseKey(spec = ":", attributes = attributes),
     )
 
     private fun selectKey(params: KeyboardParams, keyboard: Keyboard): Key? {
-        if(keyboard.useZWNJKey) {
-            return TemplateZWNJKey
-        }
-
         val key = keys[params.mId.mMode] ?: fallbackKey
 
         return key

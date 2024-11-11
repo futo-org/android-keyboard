@@ -182,9 +182,9 @@ Layout: $layoutName
     val symbolsLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.symbols)
     val symbolsShiftedLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.symbolsShifted)
     val numberLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.number)
-    val numberShiftLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.numberShifted)
     val phoneLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.phone)
     val phoneSymbolsLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.phoneShifted)
+    val numberBasicLayout = LayoutManager.getLayout(context, "number_basic")
 
     val elements = mapOf(
         KeyboardLayoutElement(
@@ -223,9 +223,9 @@ Layout: $layoutName
         ) to numberLayout,
 
         KeyboardLayoutElement(
-            kind = KeyboardLayoutKind.Number,
-            page = KeyboardLayoutPage.Shifted
-        ) to numberShiftLayout,
+            kind = KeyboardLayoutKind.NumberBasic,
+            page = KeyboardLayoutPage.Base
+        ) to numberBasicLayout,
     )
 
     private fun getKeyboardLayoutForElement(element: KeyboardLayoutElement): org.futo.inputmethod.v2keyboard.Keyboard {

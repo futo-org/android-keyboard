@@ -159,7 +159,7 @@ public class SettingsValues {
         mShowsActionKey = mActionKeyId != -1;
         mIsNumberRowEnabledByUser = prefs.getBoolean(Settings.PREF_ENABLE_NUMBER_ROW, false);
         mIsNumberRowEnabled = mIsNumberRowEnabledByUser
-                || inputAttributes.mIsPasswordField
+                || (inputAttributes.mIsPasswordField && !inputAttributes.mIsNumericalPasswordField)
                 || inputAttributes.mIsEmailField;
         mIsArrowRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_ARROW_ROW, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);

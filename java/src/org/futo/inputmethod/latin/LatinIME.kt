@@ -92,6 +92,7 @@ import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import org.futo.inputmethod.v2keyboard.LayoutManager
 import org.futo.inputmethod.v2keyboard.dimensionsSameAs
+import org.futo.inputmethod.v2keyboard.getPrimaryLayoutOverride
 import org.futo.inputmethod.v2keyboard.isFoldableInnerDisplayAllowed
 import kotlin.math.roundToInt
 
@@ -197,7 +198,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     val size: MutableState<ComputedKeyboardSize?> = mutableStateOf(null)
     private fun calculateSize(): ComputedKeyboardSize
             = sizingCalculator.calculate(
-        latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName ?: "qwerty",
+        getPrimaryLayoutOverride(currentInputEditorInfo)
+            ?: latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName ?: "qwerty",
+
         Settings.getInstance().current
     )
 

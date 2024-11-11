@@ -165,7 +165,6 @@ data class LayoutSetOverrides(
     val symbols: String = "symbols",
     val symbolsShifted: String = "symbols_shift",
     val number: String = "number",
-    val numberShifted: String = "number_shift",
     val phone: String = "phone",
     val phoneShifted: String = "phone_shift"
 )

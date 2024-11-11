@@ -39,6 +39,7 @@ public final class InputAttributes {
     final public String mTargetApplicationPackageName;
     final public boolean mInputTypeNoAutoCorrect;
     final public boolean mIsPasswordField;
+    final public boolean mIsNumericalPasswordField;
     final public boolean mIsEmailField;
     final public boolean mShouldShowSuggestions;
     final public boolean mApplicationSpecifiedCompletionOn;
@@ -68,6 +69,7 @@ public final class InputAttributes {
         mInputType = inputType;
         mIsPasswordField = InputTypeUtils.isPasswordInputType(inputType)
                 || InputTypeUtils.isVisiblePasswordInputType(inputType);
+        mIsNumericalPasswordField = mIsPasswordField && (inputClass == InputType.TYPE_CLASS_NUMBER);
         mIsUriField = InputTypeUtils.isUriType(inputType);
         mIsCodeField = isCodeField(editorInfo);
         if (inputClass != InputType.TYPE_CLASS_TEXT) {

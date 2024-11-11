@@ -410,6 +410,9 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         val numRows = 4.0 +
                 ((effectiveRowCount - 5) / 2.0).coerceAtLeast(0.0) +
                 when { // Number row height
+                    // If layout requires no number row, never add any number row height
+                    layout.numberRowMode == NumberRowMode.AlwaysDisabled -> 0.0
+
                     // If it's enabled but not explicitly by user, it means it's enabled due to
                     // the input field (e.g. password field). In this case, the full height of the
                     // number row needs to be added to keep the existing keys consistently positioned

@@ -15,7 +15,8 @@ enum class KeyboardLayoutKind {
     Alphabet,
     Symbols,
     Phone,
-    Number
+    Number,
+    NumberBasic
 }
 
 enum class KeyboardLayoutPage(val locked: Boolean, val altIdx: Int? = null) {
@@ -70,7 +71,7 @@ data class KeyboardLayoutElement(
                 else -> KeyboardId.ELEMENT_PHONE
             }
 
-            KeyboardLayoutKind.Number -> KeyboardId.ELEMENT_NUMBER
+            KeyboardLayoutKind.Number, KeyboardLayoutKind.NumberBasic -> KeyboardId.ELEMENT_NUMBER
         }
 
     companion object {
@@ -86,7 +87,7 @@ data class KeyboardLayoutElement(
                 KeyboardId.ELEMENT_SYMBOLS_SHIFTED             -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Symbols, page = KeyboardLayoutPage.Shifted)
                 KeyboardId.ELEMENT_PHONE                       -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Phone, page = KeyboardLayoutPage.Base)
                 KeyboardId.ELEMENT_PHONE_SYMBOLS               -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Phone, page = KeyboardLayoutPage.Shifted)
-                KeyboardId.ELEMENT_NUMBER                      -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Number, page = KeyboardLayoutPage.Base)
+                KeyboardId.ELEMENT_NUMBER                      -> KeyboardLayoutElement(kind = KeyboardLayoutKind.NumberBasic, page = KeyboardLayoutPage.Base)
                 else -> throw IllegalArgumentException("Invalid elementId $value")
             }
     }
@@ -200,6 +201,13 @@ class KeyboardState(private val switchActions: SwitchActions) {
         ))
     }
 
+    private fun setNumberBasicLayout() {
+        setLayout(KeyboardLayoutElement(
+            kind = KeyboardLayoutKind.NumberBasic,
+            page = KeyboardLayoutPage.Base
+        ))
+    }
+
     private fun setAlphabetLayout(autoCapsFlags: Int, recapitalizeMode: Int) {
         val page = when {
             alphabetShiftState.isShiftLocked -> KeyboardLayoutPage.ShiftLocked
@@ -224,8 +232,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
 
         when(getKeyboardMode(editorInfo ?: EditorInfo())) {
             KeyboardId.MODE_NUMBER, KeyboardId.MODE_DATE, KeyboardId.MODE_TIME, KeyboardId.MODE_DATETIME ->
-                // TODO: Datetime selection could be improved by adding symbols specific for them
-                setNumberLayout(prefer = false)
+                setNumberBasicLayout()
 
             KeyboardId.MODE_PHONE ->
                 setPhoneLayout()
