@@ -61,16 +61,33 @@ val KeySpecShortcuts = listOf(
         // Cyrillic
         "щ" to listOf("keyspec_east_slavic_row1_9"),
         "ы" to listOf("keyspec_east_slavic_row2_2", "morekeys_east_slavic_row2_2"),
-        "э" to listOf("keyspec_east_slavic_row2_11", "morekeys_east_slaiv_row2_11"),
-        "и" to listOf("keyspec_east_slavic_row3_5"),
+        "э" to listOf("keyspec_east_slavic_row2_11", "morekeys_east_slavic_row2_11"),
+
+        // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
         "\u044c" to listOf("\u044c", "morekeys_cyrillic_soft_sign"),
+
+        // U+0443: "у" CYRILLIC SMALL LETTER U
         "\u0443" to listOf("\u0443", "morekeys_cyrillic_u"),
+
+        // U+043A: "к" CYRILLIC SMALL LETTER KA
         "\u043a" to listOf("\u043a", "morekeys_cyrillic_ka"),
+
+        // U+043D: "н" CYRILLIC SMALL LETTER EN
         "\u043d" to listOf("\u043d", "morekeys_cyrillic_en"),
+
+        // U+0433: "г" CYRILLIC SMALL LETTER GHE
         "\u0433" to listOf("\u0433", "morekeys_cyrillic_ghe"),
+
+        // U+0430: "а" CYRILLIC SMALL LETTER A
         "\u0430" to listOf("\u0430", "morekeys_cyrillic_a"),
+
+        // U+043E: "о" CYRILLIC SMALL LETTER O
         "\u043e" to listOf("\u043e", "morekeys_cyrillic_o"),
-        "\u0438" to listOf("\u0438", "morekeys_cyrillic_i"),
+
+        // U+0438: "и" CYRILLIC SMALL LETTER I
+        "\u0438" to listOf("keyspec_east_slavic_row3_5", "morekeys_cyrillic_i"),
+
+        // U+0435: "е" CYRILLIC SMALL LETTER IE
         "\u0435" to listOf("\u0435", "morekeys_cyrillic_ie"),
     ),
 
