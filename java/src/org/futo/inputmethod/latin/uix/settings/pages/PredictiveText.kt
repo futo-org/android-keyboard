@@ -89,7 +89,14 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
             key = Settings.PREF_AUTO_CORRECTION,
             default = true
         )
-        
+
+        SettingToggleSharedPrefs(
+            title = "Key hitbox boosting",
+            subtitle = "Uses dictionary to determine relevant next keys, and boosts their hit area",
+            key = Settings.PREF_USE_DICT_KEY_BOOSTING,
+            default = true
+        )
+
         SettingToggleSharedPrefs(
             title = stringResource(R.string.prefs_show_suggestions),
             subtitle = stringResource(R.string.prefs_show_suggestions_summary),

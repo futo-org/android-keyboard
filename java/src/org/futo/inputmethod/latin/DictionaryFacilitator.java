@@ -157,6 +157,9 @@ public interface DictionaryFacilitator {
             @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,
             final int eventType);
 
+
+    @Nonnull ArrayList<Integer> getValidNextCodePoints(final ComposedData composedData);
+
     // TODO: Revise the way to fusion suggestion results.
     @Nonnull SuggestionResults getSuggestionResults(final ComposedData composedData,
             final NgramContext ngramContext, @Nonnull final Keyboard keyboard,

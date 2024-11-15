@@ -22,6 +22,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LruCache;
 
+import androidx.annotation.NonNull;
+
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.latin.NgramContext.WordInfo;
@@ -609,6 +611,21 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         // Update the spelling cache after unlearning. Words that are removed from user history
         // and appear in no other language model are not considered valid.
         putWordIntoValidSpellingWordCache("unlearnFromUserHistory", word.toLowerCase());
+    }
+
+    @NonNull
+    @Override
+    public ArrayList<Integer> getValidNextCodePoints(ComposedData composedData) {
+        final ArrayList<Integer> codePoints = new ArrayList<>();
+        for (final String dictType : ALL_DICTIONARY_TYPES) {
+            final Dictionary dictionary = mDictionaryGroup.getDict(dictType);
+            if (null == dictionary) continue;
+            final ArrayList<Integer> codes =
+                    dictionary.getNextValidCodePoints(composedData);
+            if (null == codes) continue;
+            codePoints.addAll(codes);
+        }
+        return codePoints;
     }
 
     // TODO: Revise the way to fusion suggestion results.

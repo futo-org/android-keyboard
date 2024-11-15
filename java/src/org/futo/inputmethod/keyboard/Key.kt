@@ -32,6 +32,7 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.StringUtils
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
+import kotlin.math.sqrt
 
 
 data object KeyConsts {
@@ -449,12 +450,12 @@ data class Key(
     }
 
     /**
-     * Returns the square of the distance to the nearest edge of the key and the given point.
+     * Returns the distance to the nearest edge of the key and the given point.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @return the square of the distance of the point from the nearest edge of the key
+     * @return the distance of the point from the nearest edge of the key
      */
-    fun squaredDistanceToEdge(x: Int, y: Int): Int {
+    fun distanceToEdge(x: Int, y: Int): Float {
         val left = this.x
         val right = left + width
         val top = this.y
@@ -463,7 +464,16 @@ data class Key(
         val edgeY = if (y < top) top else (if (y > bottom) bottom else y)
         val dx = x - edgeX
         val dy = y - edgeY
-        return dx * dx + dy * dy
+        return sqrt((dx * dx + dy * dy).toFloat())
+    }
+
+    fun distanceToCenter(x: Int, y: Int): Float {
+        val cx = (this.x + width / 2)
+        val cy = (this.y + height / 2)
+
+        val dx = x - cx
+        val dy = y - cy
+        return sqrt((dx * dx + dy * dy).toFloat())
     }
 
     companion object {

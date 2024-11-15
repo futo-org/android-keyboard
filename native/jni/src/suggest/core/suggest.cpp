@@ -463,4 +463,69 @@ void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode
         traverseSession->getDicTraverseCache()->copyPushNextActive(&newDicNode);
     }
 }
+
+
+
+void processGetValidNextCodePoints(
+        DicTraverseSession *traverseSession,
+        const int *inputCodePoints,
+        int inputCodePointSize,
+        int *outputCodePoints,
+        int outputCodePointSize
+) {
+    if(inputCodePointSize == 0) return;
+
+    traverseSession->resetCache(0, 0);
+
+    DicNode rootNode;
+    DicNodeUtils::initAsRoot(
+            traverseSession->getDictionaryStructurePolicy(),
+            traverseSession->getPrevWordIds(),
+            &rootNode);
+
+
+    std::unique_ptr<DicNode> activeNode = std::make_unique<DicNode>(rootNode);
+    DicNodeVector childDicNodes;
+    bool nodeFound = false;
+    for(int depth = 0; depth < inputCodePointSize; depth++) {
+        childDicNodes.clear();
+        DicNodeUtils::getAllChildDicNodes(activeNode.get(),
+            traverseSession->getDictionaryStructurePolicy(), &childDicNodes);
+
+        nodeFound = false;
+        int size = childDicNodes.getSizeAndLock();
+        for(int i=0; i<size; ++i) {
+            DicNode *const childDicNode = childDicNodes[i];
+            if(childDicNode->getNodeCodePoint() == inputCodePoints[depth]) {
+                activeNode = std::make_unique<DicNode>(*childDicNode);
+                nodeFound = true;
+            }
+        }
+
+
+        if(!nodeFound) break;
+    }
+
+    if(nodeFound) {
+        // Search succeeded up to final codepoint, now find valid next codepoints
+        childDicNodes.clear();
+        DicNodeUtils::getAllChildDicNodes(activeNode.get(),
+            traverseSession->getDictionaryStructurePolicy(), &childDicNodes);
+
+        int head = 0;
+
+        if(activeNode->isTerminalDicNode()) {
+            outputCodePoints[head++] = ' ';
+        }
+
+        int size = childDicNodes.getSizeAndLock();
+        for(int i=0; i<size; ++i) {
+            DicNode *const childDicNode = childDicNodes[i];
+
+            outputCodePoints[head++] = childDicNode->getNodeCodePoint();
+            if(head == outputCodePointSize) break;
+        }
+    }
+}
+
 } // namespace latinime

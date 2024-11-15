@@ -29,9 +29,11 @@ import android.view.KeyEvent;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 
+import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.compat.SuggestionSpanUtils;
 import org.futo.inputmethod.event.Event;
 import org.futo.inputmethod.event.InputTransaction;
+import org.futo.inputmethod.keyboard.KeyDetector;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardSwitcher;
 import org.futo.inputmethod.latin.Dictionary;
@@ -515,7 +517,40 @@ public final class InputLogic {
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
+
+
+        updateBoostedCodePoints(
+                settingsValues,
+                settingsValues.isWordCodePoint(processedEvent.mCodePoint)
+        );
+
+
         return inputTransaction;
+    }
+
+    /**
+     * Updates keys whose hitboxes are boosted. This works by looking at the word being composed,
+     * and checking for next letters that would still produce a valid word within the dictionary
+     */
+    private void updateBoostedCodePoints(
+            final SettingsValues settingsValues,
+            final boolean wasWordCodePoint
+    ) {
+        final KeyDetector keyDetector = mLatinIMELegacy.mKeyboardSwitcher.getMainKeyboardView().mKeyDetector;
+
+        // Require key boosting setting to be enabled
+        if(settingsValues.mUseDictionaryKeyBoosting
+                // text field must allow autocorrection
+                && settingsValues.mAutoCorrectionEnabledPerUserSettings
+                // previous codepoint must have been a word codepoint (i.e. exclude boosting after backspace or symbols)
+                && wasWordCodePoint
+                // accessibility must not be enabled
+                && !AccessibilityUtils.getInstance().isAccessibilityEnabled()
+        ) {
+            keyDetector.updateBoostedCodePoints(mSuggest.getValidNextCodePoints(mWordComposer));
+        } else {
+            keyDetector.updateBoostedCodePoints(null);
+        }
     }
 
     public void showBatchSuggestions(final SuggestedWords suggestedWordsForBatchInput,

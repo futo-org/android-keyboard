@@ -37,6 +37,7 @@
 #include "utils/log_utils.h"
 #include "utils/profiler.h"
 #include "utils/time_keeper.h"
+#include "suggest/core/suggest.h"
 
 namespace latinime {
 
@@ -173,6 +174,31 @@ static int latinime_BinaryDictionary_getFormatVersion(JNIEnv *env, jclass clazz,
     const DictionaryHeaderStructurePolicy *const headerPolicy =
             dictionary->getDictionaryStructurePolicy()->getHeaderStructurePolicy();
     return headerPolicy->getFormatVersionNumber();
+}
+
+static void latinime_BinaryDictionary_getNextValidCodePoints(
+    JNIEnv *env, jclass clazz, jlong dict, jlong dicTraverseSession,
+    jintArray inputCodePointsArray, jint inputSize, jintArray outValidCodePointsArray
+) {
+    DicTraverseSession *traverseSession =
+            reinterpret_cast<DicTraverseSession *>(dicTraverseSession);
+    if (!traverseSession) {
+        return;
+    }
+
+    const jsize inputCodePointsLength = env->GetArrayLength(inputCodePointsArray);
+    int inputCodePoints[inputCodePointsLength];
+
+    env->GetIntArrayRegion(inputCodePointsArray, 0, inputCodePointsLength, inputCodePoints);
+
+    const jsize outCodePointsLength = env->GetArrayLength(outValidCodePointsArray);
+    int outValidCodePoints[outCodePointsLength];
+
+    for(int i=0; i<outCodePointsLength; i++) outValidCodePoints[i] = 0;
+
+    processGetValidNextCodePoints(traverseSession, inputCodePoints, inputSize, outValidCodePoints, outCodePointsLength);
+
+    env->SetIntArrayRegion(outValidCodePointsArray, 0, outCodePointsLength, outValidCodePoints);
 }
 
 static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, jlong dict,
@@ -661,6 +687,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("getSuggestionsNative"),
         const_cast<char *>("(JJJ[I[I[I[I[II[I[[I[ZI[I[I[I[I[I[I[F)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)
+    },
+    {
+        const_cast<char *>("getNextValidCodePointsNative"),
+        const_cast<char *>("(JJ[II[I)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getNextValidCodePoints)
     },
     {
         const_cast<char *>("getProbabilityNative"),
