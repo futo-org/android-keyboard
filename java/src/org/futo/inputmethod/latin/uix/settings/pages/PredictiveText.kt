@@ -84,18 +84,19 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
         // TODO: It doesn't make a lot of sense in the case of having autocorrect on but show_suggestions off
 
         SettingToggleSharedPrefs(
-            title = "Dictionary-based key hitbox boosting",
-            key = Settings.PREF_USE_DICT_KEY_BOOSTING,
-            default = true
-        )
-
-        SettingToggleSharedPrefs(
             title = stringResource(R.string.auto_correction),
             subtitle = stringResource(R.string.auto_correction_summary),
             key = Settings.PREF_AUTO_CORRECTION,
             default = true
         )
-        
+
+        SettingToggleSharedPrefs(
+            title = "Key hitbox boosting",
+            subtitle = "Uses dictionary to determine relevant next keys, and boosts their hit area",
+            key = Settings.PREF_USE_DICT_KEY_BOOSTING,
+            default = true
+        )
+
         SettingToggleSharedPrefs(
             title = stringResource(R.string.prefs_show_suggestions),
             subtitle = stringResource(R.string.prefs_show_suggestions_summary),
