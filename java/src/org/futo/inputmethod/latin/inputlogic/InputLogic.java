@@ -547,10 +547,8 @@ public final class InputLogic {
                 // accessibility must not be enabled
                 && !AccessibilityUtils.getInstance().isAccessibilityEnabled()
         ) {
-            Log.d(TAG, "Using boosting");
             keyDetector.updateBoostedCodePoints(mSuggest.getValidNextCodePoints(mWordComposer));
         } else {
-            Log.d(TAG, "Avoiding boosting");
             keyDetector.updateBoostedCodePoints(null);
         }
     }
