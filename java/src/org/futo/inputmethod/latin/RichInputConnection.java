@@ -1013,6 +1013,15 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     /**
+     * Returns true if there is a space immediately before the composing text
+     */
+    public boolean spacePrecedesComposingText() {
+        final CharSequence s = mCommittedTextBeforeComposingText;
+        if(s == null || s.length() <= 0) return false;
+        return s.charAt(s.length() - 1) == Constants.CODE_SPACE;
+    }
+
+    /**
      * Returns true if there is a digit immediately before the cursor
      */
     public boolean digitPrecedesCursor() {

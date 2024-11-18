@@ -327,7 +327,9 @@ public final class InputLogic {
             final int firstChar = Character.codePointAt(suggestion, 0);
             if (!settingsValues.isWordSeparator(firstChar)
                     || settingsValues.isUsuallyPrecededBySpace(firstChar)) {
-                insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
+
+                if(!mConnection.spacePrecedesComposingText())
+                    insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
             }
         }
 
