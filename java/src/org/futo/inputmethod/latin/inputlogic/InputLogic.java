@@ -1117,7 +1117,7 @@ public final class InputLogic {
 
             sendKeyCodePoint(settingsValues, codePoint);
 
-            boolean codeShouldBeFollowedBySpace = settingsValues.isUsuallyFollowedBySpace(codePoint)
+            boolean codeShouldBeFollowedBySpace = (settingsValues.isUsuallyFollowedBySpace(codePoint) && !settingsValues.isOptionallyPrecededBySpace(codePoint))
                     || (spacePrecedesCursor
                         && settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint))
                     || (codePoint == Constants.CODE_DOUBLE_QUOTE && isInsideDoubleQuoteOrAfterDigit);
@@ -1583,6 +1583,14 @@ public final class InputLogic {
                     mConnection.getNthCodePointBeforeCursor(1),
                     inputTransaction
             ) && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM;
+        }
+
+        // If this codepoint can be preceded by space optionally, only perform the swap if the
+        // preceding space was automatically added. If I type "hello", space, and ":)", it should
+        // type "hello :)"
+        if(characterFitForSwapping
+                && inputTransaction.mSettingsValues.isOptionallyPrecededBySpace(codePoint)) {
+            characterFitForSwapping = inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM;
         }
 
         return settingsPermitSwapping && textFieldFitForSwapping && characterFitForSwapping;

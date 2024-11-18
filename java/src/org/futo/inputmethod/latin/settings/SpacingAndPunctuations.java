@@ -30,6 +30,7 @@ import java.util.Locale;
 
 public final class SpacingAndPunctuations {
     private final int[] mSortedSymbolsPrecededBySpace;
+    private final int[] mSortedSymbolsOptionallyPrecededBySpace;
     private final int[] mSortedSymbolsFollowedBySpace;
     private final int[] mSortedSymbolsFollowedBySpaceIffPrecededBySpace;
     private final int[] mSortedSymbolsClusteringTogether;
@@ -51,6 +52,8 @@ public final class SpacingAndPunctuations {
         // To be able to binary search the code point. See {@link #isUsuallyFollowedBySpace(int)}.
         mSortedSymbolsFollowedBySpace = StringUtils.toSortedCodePointArray(
                 res.getString(R.string.symbols_followed_by_space));
+        mSortedSymbolsOptionallyPrecededBySpace = StringUtils.toSortedCodePointArray(
+                res.getString(R.string.symbols_optionally_preceded_by_space));
         mSortedSymbolsFollowedBySpaceIffPrecededBySpace = StringUtils.toSortedCodePointArray(
                 res.getString(R.string.symbols_followed_by_space_iff_preceded_by_space));
         mSortedSymbolsClusteringTogether = StringUtils.toSortedCodePointArray(
@@ -82,6 +85,7 @@ public final class SpacingAndPunctuations {
             final int[] overrideSortedWordSeparators) {
         mSortedSymbolsPrecededBySpace = model.mSortedSymbolsPrecededBySpace;
         mSortedSymbolsFollowedBySpace = model.mSortedSymbolsFollowedBySpace;
+        mSortedSymbolsOptionallyPrecededBySpace = model.mSortedSymbolsOptionallyPrecededBySpace;
         mSortedSymbolsFollowedBySpaceIffPrecededBySpace = model.mSortedSymbolsFollowedBySpaceIffPrecededBySpace;
         mSortedSymbolsClusteringTogether = model.mSortedSymbolsClusteringTogether;
         mSortedWordConnectors = model.mSortedWordConnectors;
@@ -110,6 +114,10 @@ public final class SpacingAndPunctuations {
 
     public boolean isUsuallyPrecededBySpace(final int code) {
         return Arrays.binarySearch(mSortedSymbolsPrecededBySpace, code) >= 0;
+    }
+
+    public boolean isOptionallyPrecededBySpace(final int code) {
+        return Arrays.binarySearch(mSortedSymbolsOptionallyPrecededBySpace, code) >= 0;
     }
 
     public boolean isUsuallyFollowedBySpace(final int code) {
