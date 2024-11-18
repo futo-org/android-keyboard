@@ -1317,7 +1317,8 @@ public final class InputLogic {
                         // broken apps expect something to happen in this case so that they can
                         // catch it and have their broken interface react. If you need the keyboard
                         // to do this, you're doing it wrong -- please fix your app.
-                        mConnection.deleteTextBeforeCursor(1);
+                        //mConnection.deleteTextBeforeCursor(1);
+                        sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0);
                         // TODO: Add a new StatsUtils method onBackspaceWhenNoText()
                         return;
                     }
