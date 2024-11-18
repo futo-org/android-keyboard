@@ -807,7 +807,9 @@ fun ActionBar(
                             Spacer(modifier = Modifier.weight(1.0f))
                         }
 
-                        PinnedActionItems(onActionActivated, onActionAltActivated)
+                        if(inlineSuggestions.isEmpty()) {
+                            PinnedActionItems(onActionActivated, onActionAltActivated)
+                        }
                     }
                 }
             }
