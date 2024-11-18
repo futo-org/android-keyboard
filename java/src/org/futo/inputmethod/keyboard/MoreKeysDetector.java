@@ -32,6 +32,11 @@ public final class MoreKeysDetector extends KeyDetector {
         return true;
     }
 
+    private int mExtraAllowance = 0;
+    public void setExtraAllowance(final int extraAllowance) {
+        mExtraAllowance = extraAllowance;
+    }
+
     @Override
     public Key detectHitKey(final int x, final int y) {
         final Keyboard keyboard = getKeyboard();
@@ -42,7 +47,7 @@ public final class MoreKeysDetector extends KeyDetector {
         final int touchY = getTouchY(y);
 
         Key nearestKey = null;
-        int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
+        int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : (mSlideAllowanceSquare + (mExtraAllowance * mExtraAllowance));
         for (final Key key : keyboard.getSortedKeys()) {
             final float dist = key.distanceToEdge(touchX, touchY);
             final int distSq = (int)(dist * dist);
