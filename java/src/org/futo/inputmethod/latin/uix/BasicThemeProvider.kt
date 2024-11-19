@@ -346,8 +346,8 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
             KeyVisualStyle.NoBackground to makeVisualStyle(transparent, onBackground, highlight, keyCornerRadius),
 
             KeyVisualStyle.StickyOn to makeVisualStyle(
-                colorScheme.secondaryContainer.toArgb(),
-                colorScheme.onSecondaryContainer.toArgb(),
+                colorScheme.secondary.toArgb(),
+                colorScheme.onSecondary.toArgb(),
                 highlight,
                 keyCornerRadius
             ),
