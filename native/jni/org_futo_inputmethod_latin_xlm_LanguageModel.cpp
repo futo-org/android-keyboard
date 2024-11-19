@@ -126,20 +126,27 @@ enum WordCapitalizeMode {
     AllCapitals      // partialWord = "TE" or partialWord = "TEST"
 };
 
+bool isLowercase(unsigned char c, bool strict) {
+    if(strict) {
+        return islower(c);
+    } else {
+        return isupper(c) == 0;
+    }
+}
 
-bool isFirstCharLowercase(const char* str) {
+bool isFirstCharLowercase(const char* str, bool strict) {
     if (str == nullptr || str[0] == '\0')
         return false;
-    return isupper(static_cast<unsigned char>(str[0])) == 0;
+    return isLowercase(static_cast<unsigned char>(str[0]), strict);
 }
 
 
-bool hasLowercase(const char* str) {
+bool hasLowercase(const char* str, bool strict) {
     if (str == nullptr)
         return false;
 
     for (; *str != '\0'; ++str) {
-        if (isupper(static_cast<unsigned char>(*str)) == 0)
+        if (isLowercase(static_cast<unsigned char>(*str), strict))
             return true;
     }
     return false;
@@ -256,10 +263,10 @@ struct LanguageModelState {
         size_t n_vocab = llama_n_vocab(model->model());
         for(int i=0; i < (int)n_vocab; i++) {
             const char *text = model->adapter->getToken(i);
-            if(isFirstCharLowercase(text)) {
+            if(isFirstCharLowercase(text, true)) {
                 specialTokens.banned_tokens_for_first_capital.push_back(i);
                 specialTokens.banned_tokens_for_all_capitals.push_back(i);
-            }else if(hasLowercase(text)){
+            }else if(hasLowercase(text, true)){
                 specialTokens.banned_tokens_for_all_capitals.push_back(i);
             }
 
@@ -1012,8 +1019,8 @@ namespace latinime {
 
         WordCapitalizeMode capitals = WordCapitalizeMode::IgnoredCapitals;
 
-        if(!partialWordString.empty() && !isFirstCharLowercase(partialWordString.c_str())) {
-            if(partialWordString.size() > 1 && !hasLowercase(partialWordString.c_str())) {
+        if(!partialWordString.empty() && !isFirstCharLowercase(partialWordString.c_str(), false)) {
+            if(partialWordString.size() > 1 && !hasLowercase(partialWordString.c_str(), false)) {
                 capitals = WordCapitalizeMode::AllCapitals;
             } else {
                 capitals = WordCapitalizeMode::FirstCapital;
