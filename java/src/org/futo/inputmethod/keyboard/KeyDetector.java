@@ -114,6 +114,9 @@ public class KeyDetector {
                     // versus min distance to center for non boosted ones.
                     final float distance = key.distanceToEdge(touchX, touchY);
 
+                    if(distance > Math.min(key.getWidth(), key.getHeight()) * 0.5f)
+                        continue;
+
                     if(distance < minDistance) {
                         minDistance = distance;
                         primaryKey = key;
