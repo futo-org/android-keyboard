@@ -1,6 +1,5 @@
 package org.futo.inputmethod.latin.uix.theme.presets
 
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -8,7 +7,6 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.extendedDarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
-import org.futo.inputmethod.latin.uix.wrapDarkColorScheme
 
 private val darkScheme = extendedDarkColorScheme(
     primary=Color(0xFFD0BCFF),
@@ -35,9 +33,9 @@ private val darkScheme = extendedDarkColorScheme(
     surfaceContainerHighest=Color(0xFF232129),
     shadow=Color(0xFF000000).copy(alpha = 0.7f),
     keyboardSurface=Color(0xFF000000),
-    keyboardContainer=Color(0xFF1E192B),
-    keyboardContainerVariant=Color(0xFF181324),
-    onKeyboardContainer=Color(0xFFE6E1E5),
+    keyboardContainer=Color(0xFF1E192B).copy(alpha = 0.6f),
+    keyboardContainerVariant=Color(0xFF181324).copy(alpha = 0.2f),
+    onKeyboardContainer=Color(0xFFE6E1E5).copy(alpha = 0.8f),
     keyboardPress=Color(0xFF31264F),
     keyboardFade0=Color(0xFF000000),
     keyboardFade1=Color(0xFF000000),
