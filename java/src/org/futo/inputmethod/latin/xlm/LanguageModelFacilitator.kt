@@ -192,7 +192,7 @@ public class LanguageModelFacilitator(
         if(transformerDisabled) return null
 
         val locale = dictionaryFacilitator.locale ?: return null
-        if ((languageModel == null && locale.language != skipLanguage) || (languageModel?.locale?.language != locale.language)) {
+        if ((languageModel == null && locale.language != skipLanguage) || (languageModel != null && languageModel?.locale?.language != locale.language)) {
             skipLanguage = null
             Log.d(
                 "LanguageModelFacilitator",
