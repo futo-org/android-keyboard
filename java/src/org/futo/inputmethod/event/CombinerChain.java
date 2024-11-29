@@ -19,6 +19,7 @@ package org.futo.inputmethod.event;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 
+import org.futo.inputmethod.event.combiners.KoreanCombiner;
 import org.futo.inputmethod.latin.common.Constants;
 
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class CombinerChain {
         mCombiners = new ArrayList<>();
         // The dead key combiner is always active, and always first
         mCombiners.add(new DeadKeyCombiner());
+        mCombiners.add(new KoreanCombiner());
         mCombinedText = new StringBuilder(initialText);
         mStateFeedback = new SpannableStringBuilder();
     }
