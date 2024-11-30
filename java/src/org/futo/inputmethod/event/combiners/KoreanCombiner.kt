@@ -6,6 +6,10 @@ import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.common.Constants
 
 class KoreanCombiner: Combiner {
+    // General implementation:
+    // A StringBuilder called `buffer` stores a  uncombined Hangul letters from keypresses.
+    // On every keypress these uncombined letters are converted to a list of combined syllable blocks
+    // using the toBlocks() function, and passed to the system using getCombiningStateFeedback()
 
     private val initials = listOf(
         'ㄱ' /*g*/,  'ㄲ' /*gg*/, 'ㄴ' /*n*/,  'ㄷ' /*d*/,
@@ -50,37 +54,36 @@ class KoreanCombiner: Combiner {
     // and final (0 if no final) character in the above lists.
 
     private val mergedClusters = mapOf(
-        "ㅗㅏ" to 'ㅘ',
-        "ㅗㅐ" to 'ㅙ',
-        "ㅗㅣ" to 'ㅚ',
-        "ㅜㅓ" to 'ㅝ',
-        "ㅜㅔ" to 'ㅞ',
-        "ㅜㅣ" to 'ㅟ',
-        "ㅡㅣ" to 'ㅢ', //vowels
+        'ㅗ' to 'ㅏ' to 'ㅘ',
+        'ㅗ' to 'ㅐ' to 'ㅙ',
+        'ㅗ' to 'ㅣ' to 'ㅚ',
+        'ㅜ' to 'ㅓ' to 'ㅝ',
+        'ㅜ' to 'ㅔ' to 'ㅞ',
+        'ㅜ' to 'ㅣ' to 'ㅟ',
+        'ㅡ' to 'ㅣ' to 'ㅢ', //vowels
 
-        "ㅏㅏ" to 'ㅑ',
-        "ㅐㅐ" to 'ㅒ',
-        "ㅓㅓ" to 'ㅕ',
-        "ㅔㅔ" to 'ㅖ',
-        "ㅗㅗ" to 'ㅛ',
-        "ㅜㅜ" to 'ㅠ', //gboard 단모음 layout uses these mappings
+        'ㅏ' to 'ㅏ' to 'ㅑ',
+        'ㅐ' to 'ㅐ' to 'ㅒ',
+        'ㅓ' to 'ㅓ' to 'ㅕ',
+        'ㅔ' to 'ㅔ' to 'ㅖ',
+        'ㅗ' to 'ㅗ' to 'ㅛ',
+        'ㅜ' to 'ㅜ' to 'ㅠ', //gboard 단모음 layout uses these mappings
 
-        "ㄱㄱ" to 'ㄲ',
-        "ㄱㅅ" to 'ㄳ',
-        "ㄴㅈ" to 'ㄵ',
-        "ㄴㅎ" to 'ㄶ',
-        "ㄹㄱ" to 'ㄺ',
-        "ㄹㅁ" to 'ㄻ',
-        "ㄹㅂ" to 'ㄼ',
-        "ㄹㅅ" to 'ㄽ',
-        "ㄹㅌ" to 'ㄾ',
-        "ㄹㅍ" to 'ㄿ',
-        "ㄹㅎ" to 'ㅀ',
-        "ㅂㅅ" to 'ㅄ',
-        "ㅅㅅ" to 'ㅆ' //finals
+        'ㄱ' to 'ㄱ' to 'ㄲ',
+        'ㄱ' to 'ㅅ' to 'ㄳ',
+        'ㄴ' to 'ㅈ' to 'ㄵ',
+        'ㄴ' to 'ㅎ' to 'ㄶ',
+        'ㄹ' to 'ㄱ' to 'ㄺ',
+        'ㄹ' to 'ㅁ' to 'ㄻ',
+        'ㄹ' to 'ㅂ' to 'ㄼ',
+        'ㄹ' to 'ㅅ' to 'ㄽ',
+        'ㄹ' to 'ㅌ' to 'ㄾ',
+        'ㄹ' to 'ㅍ' to 'ㄿ',
+        'ㄹ' to 'ㅎ' to 'ㅀ',
+        'ㅂ' to 'ㅅ' to 'ㅄ',
+        'ㅅ' to 'ㅅ' to 'ㅆ' //finals
     ) // The `initials`, `vowels`, and `finals` mentioned above are not the simplest possible
     // elements, and mostly need to be constructed from multiple keypresses.
-    // This along with the following map make this possible.
 
     private fun toBlock(initial: Char, vowel: Char, final: Char?): Char {
         //merge initial, vowel and optional final letters into a hangul syllable block
@@ -88,7 +91,7 @@ class KoreanCombiner: Combiner {
         return (GA_LOCATION + 588*initials.binarySearch(initial) + 28*vowels.binarySearch(vowel) +
                 if (final != null) finals.binarySearch(final) else 0).toChar()
     }
-    private fun isLetter(char: Char): Boolean { return char.code in 0x3131..0x3163}
+    private fun isHangulLetter(char: Char): Boolean { return char.code in 0x3131..0x3163}
     private fun isInitial(char: Char): Boolean { return initials.binarySearch(char) >= 0 }
     private fun isVowel(char: Char): Boolean { return char.code in 0x314F..0x3163 }
     private fun isFinal(char: Char): Boolean { return finals.binarySearch(char) >= 0 }
@@ -140,7 +143,7 @@ class KoreanCombiner: Combiner {
             }
 
             if (final == null) { // There is initial and vowel, but no final
-                val possibleCluster = vowel.toString() + char
+                val possibleCluster = Pair(vowel, char)
                 if (mergedClusters.containsKey(possibleCluster)) {
                     vowel = mergedClusters[possibleCluster]!!
                     continue
@@ -164,8 +167,7 @@ class KoreanCombiner: Combiner {
             }
 
             if (final2 == null) {
-                val possibleCluster = final.toString() + char
-                if (mergedClusters.containsKey(possibleCluster)) {
+                if (mergedClusters.containsKey(Pair(final, char))) {
                     final2 = char
                     continue
                 } // if it's a valid second final, add it
@@ -204,7 +206,7 @@ class KoreanCombiner: Combiner {
             // instead of the first final
 
             if (isInitial(char)) {
-                val finalCluster = mergedClusters[final.toString() + final2]!!
+                val finalCluster = mergedClusters[Pair(final, final2)]!!
                 combined.append(toBlock(initial, vowel, finalCluster))
                 initial = char
                 vowel = null
@@ -217,14 +219,14 @@ class KoreanCombiner: Combiner {
         }
 
         // Final iteration: output whatever is in initial, vowel and final variables
-        if (initial != null && vowel == null && final == null && final2 == null) {
+        if (initial != null && vowel == null) {
             combined.append(initial)
         }
         if (initial != null && vowel != null && final2 == null) {
             combined.append(toBlock(initial, vowel, final))
         }
         if (final2 != null) {
-            val finalCluster = mergedClusters[final.toString() + final2]!!
+            val finalCluster = mergedClusters[Pair(final, final2)]!!
             combined.append(toBlock(initial!!, vowel!!, finalCluster))
         }
         return combined
@@ -234,19 +236,19 @@ class KoreanCombiner: Combiner {
         if (event == null) return Event.createNotHandledEvent()
         val keypress = event.mCodePoint.toChar()
 
-        if (!isLetter(keypress)) {
+        if (!isHangulLetter(keypress)) {
             if (!TextUtils.isEmpty(buffer)) {
                 if (event.mKeyCode == Constants.CODE_DELETE) {
-                    if (buffer.length == 1) {
+                    return if (buffer.length == 1) {
                         reset()
-                        return Event.createHardwareKeypressEvent(0x20, Constants.CODE_SPACE,
+                        Event.createHardwareKeypressEvent(0x20, Constants.CODE_SPACE,
                             event, event.isKeyRepeat)
                         // for some reason, this is needed, otherwise if there is only one letter
                         // in the buffer it won't be deleted
                     }
                     else {
                         buffer.setLength(buffer.length - 1)
-                        return Event.createConsumedEvent(event)
+                        Event.createConsumedEvent(event)
                     }
                 }
             }
