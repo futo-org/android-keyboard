@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -33,7 +34,6 @@ import org.futo.inputmethod.latin.ActiveSubtype
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
-import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 
 // Used before first unlock (direct boot)
 private object DefaultDataStore : DataStore<Preferences> {
@@ -233,6 +233,16 @@ fun <T> Context.setSettingBlocking(key: Preferences.Key<T>, value: T) {
     val context = this
     runBlocking {
         context.setSetting(key, value)
+    }
+}
+
+suspend fun <T> Context.getUnlockedSetting(key: SettingsKey<T>): T? {
+    return unlockedDataStore?.let {
+        val valueFlow: Flow<T> =
+            it.data.map { preferences -> preferences[key.key] ?: key.default }.take(1)
+
+
+        valueFlow.first()
     }
 }
 

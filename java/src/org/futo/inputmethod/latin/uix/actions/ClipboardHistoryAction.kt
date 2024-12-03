@@ -30,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
@@ -41,6 +42,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -60,6 +62,7 @@ import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.PersistentStateInitialization
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.getUnlockedSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.pages.ParagraphText
@@ -194,6 +197,8 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         uri = null,
         mimeTypes = listOf()
     ))
+
+    var clipboardLoaded = false
     
     override suspend fun onDeviceUnlocked() {
         loadClipboard()
@@ -274,8 +279,21 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         }
     }
 
+    val clipboardSaveFailure = mutableStateOf(false)
     private fun saveClipboard() {
         if(!context.isDirectBootUnlocked) return
+        if(!clipboardLoaded) {
+            val currentEntries = clipboardHistory.toList()
+            runBlocking {
+                loadClipboard()
+            }
+            if(clipboardLoaded) {
+                clipboardHistory.addAll(currentEntries)
+            } else {
+                clipboardSaveFailure.value = true
+                return
+            }
+        }
 
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
@@ -285,19 +303,38 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
                 val file = File(context.filesDir, "clipboard.json")
                 file.writeText(json)
+
+                clipboardSaveFailure.value = false
             }
         }
     }
 
+    fun deleteClipboard() {
+        val file = File(context.filesDir, "clipboard.json")
+        file.delete()
+    }
+
+    var clipboardLoadFailureReason = ""
     private suspend fun loadClipboard() {
-        if(!context.isDirectBootUnlocked) return
+        if(!context.isDirectBootUnlocked) {
+            clipboardLoadFailureReason = "Direct Boot not unlocked"
+            clipboardSaveFailure.value = true
+            return
+        }
+
+        val clipboardSetting = runBlocking { context.getUnlockedSetting(ClipboardHistoryEnabled) }
+        if(clipboardSetting == null) {
+            clipboardLoadFailureReason = "Settings not unlocked"
+            clipboardSaveFailure.value = true
+            return
+        }
 
         try {
             val file = File(context.filesDir, "clipboard.json")
 
-            if(!context.getSettingBlocking(ClipboardHistoryEnabled)) {
+            if(clipboardSetting == false) {
                 file.delete()
-            }else if (file.exists()) {
+            } else if (file.exists()) {
                 val reader = file.bufferedReader()
                 val inputString = reader.use { it.readText() }
 
@@ -307,8 +344,22 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                 clipboardHistory.addAll(data)
                 pruneOldItems()
             }
+
+            clipboardLoaded = true
+            clipboardLoadFailureReason = ""
+            clipboardSaveFailure.value = false
         } catch (e: Exception) {
             e.printStackTrace()
+            clipboardLoadFailureReason = "Exception: ${e.message}"
+            clipboardSaveFailure.value = true
+
+            BugViewerState.pushBug(BugInfo("ClipboardHistoryManager", """
+Clipboard history could not be loaded
+
+Cause: ${e.message}
+
+Stack trace: ${e.stackTrace.map { it.toString() }}
+"""))
         }
     }
 
@@ -403,7 +454,7 @@ val ClipboardHistoryAction = Action(
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!clipboardHistory.value) return
 
-                if(unlocked) {
+                if(unlocked && !clipboardHistoryManager.clipboardSaveFailure.value) {
                     IconButton(onClick = {
                         val numUnpinnedItems =
                             clipboardHistoryManager.clipboardHistory.count { !it.pinned }
@@ -468,6 +519,31 @@ val ClipboardHistoryAction = Action(
                             PaymentSurfaceHeading(title = "Device Locked")
 
                             ParagraphText("Please unlock your device to access clipboard history")
+                        }
+                    }
+                } else if(clipboardHistoryManager.clipboardSaveFailure.value) {
+                    ScrollableList {
+                        PaymentSurface(isPrimary = true) {
+                            PaymentSurfaceHeading(title = "Clipboard Error")
+                            ParagraphText("The clipboard history could not be saved or loaded. It may be corrupted. You can try deleting it, or restarting the keyboard. Please report this as a bug. Reason: ${clipboardHistoryManager.clipboardLoadFailureReason}")
+                            Button(onClick = {
+                                manager.requestDialog(
+                                    "Delete the clipboard? ALL items will be lost.",
+                                    listOf(
+                                        DialogRequestItem("Cancel") {},
+                                        DialogRequestItem("Delete") {
+                                            clipboardHistoryManager.clipboardSaveFailure.value = false
+                                            clipboardHistory.setValue(false)
+                                            clipboardHistoryManager.deleteClipboard()
+                                        },
+                                    ),
+                                    {}
+                                )
+
+                            }, modifier = Modifier
+                                .fillMaxWidth()) {
+                                Text("Delete")
+                            }
                         }
                     }
                 } else if(!clipboardHistory.value) {
