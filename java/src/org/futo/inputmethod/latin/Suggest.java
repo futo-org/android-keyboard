@@ -221,7 +221,9 @@ public final class Suggest {
                 // being active or not
                 || wordComposer.isEntirelyDigits()
                 // If it's an ordinal (1st, 2nd, 3rd), do not autocorrect
-                || wordComposer.isOrdinal(locale)
+                //|| wordComposer.isOrdinal(locale)
+                // If it starts with a digit, do not autocorrect
+                || wordComposer.startsWithDigit()
                 // If the word is mostly caps, we never auto-correct because this is almost
                 // certainly intentional (and careful input)
                 || wordComposer.isMostlyCaps()

@@ -372,6 +372,13 @@ public final class WordComposer {
         return word.matches("^(\\d+)(st|nd|rd|th)$");
     }
 
+    public boolean startsWithDigit() {
+        final String word = getTypedWord();
+        if(word.isEmpty()) return false;
+
+        return Character.isDigit(word.charAt(0));
+    }
+
     /**
      * Saves the caps mode at the start of composing.
      *
