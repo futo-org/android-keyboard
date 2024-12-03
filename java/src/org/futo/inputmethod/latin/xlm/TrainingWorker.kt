@@ -289,8 +289,15 @@ class TrainingWorker(val context: Context, val parameters: WorkerParameters) : C
 }
 
 private val WORKER_TAG: String = "TRAINING_WORKER"
+private var workManagerInitialized = false
 public fun scheduleTrainingWorkerBackground(context: Context) {
     if(!context.isDirectBootUnlocked) return
+
+    if(!workManagerInitialized) {
+        workManagerInitialized = true
+        WorkManager.initialize(context, androidx.work.Configuration.Builder().build())
+    }
+
     val workManager = WorkManager.getInstance(context)
     workManager.cancelAllWorkByTag(WORKER_TAG)
 
