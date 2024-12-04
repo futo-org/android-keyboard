@@ -65,6 +65,8 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             KeyboardLayoutSetV2.onSystemLocaleChanged();
         }
 
+        // TODO: remove completely? it causes killing in a loop sometimes, receiving ACTION_BOOT_COMPLETED
+        /*
         // The process that hosts this broadcast receiver is invoked and remains alive even after
         // 1) the package has been re-installed,
         // 2) the device has just booted,
@@ -81,6 +83,6 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
             final int myPid = Process.myPid();
             Log.i(TAG, "Killing my process: pid=" + myPid);
             Process.killProcess(myPid);
-        }
+        }*/
     }
 }
