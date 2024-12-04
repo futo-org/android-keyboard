@@ -35,7 +35,7 @@ open class KeyboardResizeHelper(
     val maximumKeyboardWidth = with(density) { viewSize.width.toDp() }
 
     val minimumKeyboardHeight = 32.dp * 3
-    val maximumKeyboardHeight = 128.dp * 3
+    val maximumKeyboardHeight = with(density) { (viewSize.height * 2.0f / 3.0f).toDp() }.coerceAtLeast(128.dp * 3)
 
     val maximumSidePadding = 64.dp
     val maximumBottomPadding = 72.dp
