@@ -459,8 +459,8 @@ public final class StringUtils {
                 // If it's an email address, it's essentially a URL, we don't want to correct those
                 return true;
             }
-            if (codePoint < Constants.CODE_PERIOD || codePoint > 'z') {
-                // Handwavy heuristic to see if that's a URL character. Anything between period
+            if (codePoint < '-' || codePoint > 'z') {
+                // Handwavy heuristic to see if that's a URL character. Anything between dash
                 // and z. This includes all lower- and upper-case ascii letters, period,
                 // underscore, arrobase, question mark, equal sign. It excludes spaces, exclamation
                 // marks, double quotes...
