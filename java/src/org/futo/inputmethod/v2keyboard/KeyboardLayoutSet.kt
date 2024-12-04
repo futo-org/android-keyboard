@@ -165,7 +165,7 @@ Layout: $it
             LayoutManager.getLayout(context, name)
         } catch (e: Exception) {
             BugViewerState.pushBug(BugInfo(
-                name = "Layout parser",
+                name = if(layoutName.startsWith("custom")) { "your custom layout" } else { "layout $layoutName" },
                 details =
                 """
 Layout $name could not be loaded.
