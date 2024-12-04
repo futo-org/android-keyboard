@@ -704,7 +704,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             // {@link #setKeyboard}. In those cases, we should update key according to the new
             // keyboard layout.
             if (callListenerOnPressAndCheckKeyboardLayoutChange(key, 0 /* repeatCount */)) {
-                key = onDownKey(x, y, eventTime);
+                key = getKeyOn(x, y);
+                if(!key.isModifier())
+                    key = null;
+                else
+                    key = onDownKey(x, y, eventTime);
             }
 
             if(key == null) return;
