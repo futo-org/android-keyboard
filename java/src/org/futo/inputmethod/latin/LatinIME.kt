@@ -315,7 +315,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         updateNavigationBarVisibility()
         settingsRefreshRequired = settingsRefreshRequired || refreshSettings
 
-        if(!uixManager.isMainKeyboardHidden) {
+        if(!uixManager.isMainKeyboardHidden.value) {
             println("Recreating keyboard")
             recreateKeyboard()
         } else {
