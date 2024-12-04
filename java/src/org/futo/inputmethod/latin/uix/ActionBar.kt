@@ -549,7 +549,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
     val gradientColor = LocalKeyboardScheme.current.keyboardSurfaceDim
 
     val drawLeftGradient = remember { derivedStateOf { lazyListState.firstVisibleItemIndex > 0 } }
-    val drawRightGradient = remember { derivedStateOf {
+    val drawRightGradient = remember(actionItems) { derivedStateOf {
         lazyListState.layoutInfo.visibleItemsInfo.isNotEmpty()
                 && actionItems.isNotEmpty()
                 && (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key != actionItems.lastOrNull()?.name)
