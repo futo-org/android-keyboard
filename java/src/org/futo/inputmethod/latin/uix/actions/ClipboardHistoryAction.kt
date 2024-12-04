@@ -41,8 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -280,19 +280,27 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
     }
 
     val clipboardSaveFailure = mutableStateOf(false)
+    var saveClipboardLoadJob: Job? = null
     private fun saveClipboard() {
         if(!context.isDirectBootUnlocked) return
         if(!clipboardLoaded) {
+            if(saveClipboardLoadJob?.isActive == true) return
+
             val currentEntries = clipboardHistory.toList()
-            runBlocking {
-                loadClipboard()
+            saveClipboardLoadJob = coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    loadClipboard()
+                }
+
+                if(clipboardLoaded) {
+                    clipboardHistory.addAll(currentEntries)
+                    saveClipboard()
+                } else {
+                    clipboardSaveFailure.value = true
+                }
             }
-            if(clipboardLoaded) {
-                clipboardHistory.addAll(currentEntries)
-            } else {
-                clipboardSaveFailure.value = true
-                return
-            }
+
+            return
         }
 
         coroutineScope.launch {
@@ -322,7 +330,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
             return
         }
 
-        val clipboardSetting = runBlocking { context.getUnlockedSetting(ClipboardHistoryEnabled) }
+        val clipboardSetting = context.getUnlockedSetting(ClipboardHistoryEnabled)
         if(clipboardSetting == null) {
             clipboardLoadFailureReason = "Settings not unlocked"
             clipboardSaveFailure.value = true
