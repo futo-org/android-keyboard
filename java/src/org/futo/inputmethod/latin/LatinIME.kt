@@ -67,7 +67,6 @@ import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.dataStore
-import org.futo.inputmethod.latin.uix.deferGetSetting
 import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.forceUnlockDatastore
@@ -286,10 +285,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             }
         }
 
-        deferGetSetting(THEME_KEY) { key ->
-            if(key != activeThemeOption?.key) {
-                ThemeOptions[key]?.let { if(it.available(this)) updateTheme(it) }
-            }
+        val key = getSetting(THEME_KEY)
+        if(key != activeThemeOption?.key) {
+            ThemeOptions[key]?.let { if(it.available(this)) updateTheme(it) }
         }
     }
 
@@ -332,7 +330,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         if (activeThemeOption != newTheme) {
             activeThemeOption = newTheme
             updateDrawableProvider(newTheme.obtainColors(this))
-            deferSetSetting(THEME_KEY, newTheme.key)
+            deferSetSetting(this, THEME_KEY, newTheme.key)
             invalidateKeyboard()
         }
     }

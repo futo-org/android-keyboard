@@ -246,21 +246,7 @@ suspend fun <T> Context.getUnlockedSetting(key: SettingsKey<T>): T? {
     }
 }
 
-fun <T> LifecycleOwner.deferGetSetting(key: Preferences.Key<T>, default: T, onObtained: (T) -> Unit): Job {
-    val context = (this as Context)
-    return lifecycleScope.launch {
-        withContext(Dispatchers.Default) {
-            val value = context.getSetting(key, default)
-
-            withContext(Dispatchers.Main) {
-                onObtained(value)
-            }
-        }
-    }
-}
-
-fun <T> LifecycleOwner.deferSetSetting(key: Preferences.Key<T>, value: T): Job {
-    val context = (this as Context)
+fun <T> LifecycleOwner.deferSetSetting(context: Context, key: Preferences.Key<T>, value: T): Job {
     return lifecycleScope.launch {
         withContext(Dispatchers.Default) {
             context.setSetting(key, value)
@@ -285,12 +271,8 @@ suspend fun <T> Context.setSetting(key: SettingsKey<T>, value: T) {
     return setSetting(key.key, value)
 }
 
-fun <T> LifecycleOwner.deferGetSetting(key: SettingsKey<T>, onObtained: (T) -> Unit): Job {
-    return deferGetSetting(key.key, key.default, onObtained)
-}
-
-fun <T> LifecycleOwner.deferSetSetting(key: SettingsKey<T>, value: T): Job {
-    return deferSetSetting(key.key, value)
+fun <T> LifecycleOwner.deferSetSetting(context: Context, key: SettingsKey<T>, value: T): Job {
+    return deferSetSetting(context, key.key, value)
 }
 
 

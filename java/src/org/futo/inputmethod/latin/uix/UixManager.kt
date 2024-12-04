@@ -399,7 +399,19 @@ data class ActiveDialogRequest(
     val onCancel: () -> Unit
 )
 
+@RequiresOptIn(level = RequiresOptIn.Level.ERROR, message = "This is for debug purposes only.")
+@Retention(AnnotationRetention.BINARY)
+annotation class DebugOnly
+
+@DebugOnly
+var UixManagerInstanceForDebug: UixManager? = null
+
 class UixManager(private val latinIME: LatinIME) {
+    init {
+        @OptIn(DebugOnly::class)
+        UixManagerInstanceForDebug = this
+    }
+
     internal val composeView: ComposeView?
         get() = latinIME.composeView
 
@@ -420,7 +432,7 @@ class UixManager(private val latinIME: LatinIME) {
     private var isActionsExpanded = mutableStateOf(false)
     private fun toggleActionsExpanded() {
         isActionsExpanded.value = !isActionsExpanded.value
-        latinIME.deferSetSetting(ActionBarExpanded, isActionsExpanded.value)
+        latinIME.deferSetSetting(latinIME, ActionBarExpanded, isActionsExpanded.value)
     }
 
 
@@ -998,40 +1010,45 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
-    fun setContent() {
-        composeView?.setContent {
-            ProvidersAndWrapper {
-                InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
-                    closeActionWindow()
-                    isShowingActionEditor.value = false
-                }
+    @Composable
+    fun Content() {
+        ProvidersAndWrapper {
+            InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
+                closeActionWindow()
+                isShowingActionEditor.value = false
+            }
 
-                TutorialArrow()
+            TutorialArrow()
 
-                KeyboardWindowSelector { gap ->
-                    Column {
-                        when {
-                            currWindowActionWindow != null -> ActionViewWithHeader(
-                                currWindowActionWindow!!
-                            )
+            KeyboardWindowSelector { gap ->
+                Column {
+                    when {
+                        currWindowActionWindow != null -> ActionViewWithHeader(
+                            currWindowActionWindow!!
+                        )
 
-                            else -> MainKeyboardViewWithActionBar()
-                        }
-
-                        Spacer(modifier = Modifier.height(gap))
-
-                        latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
-
-                        if(latinIME.size.value !is FloatingKeyboardSize) {
-                            Spacer(Modifier.height(navBarHeight()))
-                        }
+                        else -> MainKeyboardViewWithActionBar()
                     }
 
-                    ForgetWordDialog()
+                    Spacer(modifier = Modifier.height(gap))
+
+                    latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
+
+                    if(latinIME.size.value !is FloatingKeyboardSize) {
+                        Spacer(Modifier.height(navBarHeight()))
+                    }
                 }
 
-                ActionEditorHost()
+                ForgetWordDialog()
             }
+
+            ActionEditorHost()
+        }
+    }
+
+    fun setContent() {
+        composeView?.setContent {
+            Content()
         }
     }
 
@@ -1218,6 +1235,8 @@ class UixManager(private val latinIME: LatinIME) {
                 latinIME.invalidateKeyboard(true)
             }
         }
+
+        setContent()
     }
 
     fun onPersistentStatesUnlocked() {

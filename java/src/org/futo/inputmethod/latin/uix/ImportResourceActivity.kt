@@ -496,8 +496,7 @@ class ImportResourceActivity : ComponentActivity() {
             }
         }
 
-        deferGetSetting(THEME_KEY) {
-            this.themeOption.value = ThemeOptions[it].orDefault(this)
-        }
+        val key = getSetting(THEME_KEY)
+        this.themeOption.value = ThemeOptions[key].orDefault(this)
     }
 }
