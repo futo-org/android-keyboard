@@ -113,7 +113,7 @@ fun DialogComposeView.dismiss() {
 
 val Context.isDeviceLocked: Boolean
     get() {
-        if(!isDirectBootUnlocked) return false
+        if(!isDirectBootUnlocked) return true
 
         val keyguardManager: KeyguardManager? = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
 
