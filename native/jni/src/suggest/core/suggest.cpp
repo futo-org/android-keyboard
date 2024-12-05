@@ -466,6 +466,80 @@ void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode
 
 
 
+void appendCodepoint(std::string& str, int codepoint) {
+    if (codepoint <= 0x7F) {
+        // 1-byte UTF-8 encoding
+        str.push_back(static_cast<char>(codepoint));
+    } else if (codepoint <= 0x7FF) {
+        // 2-byte UTF-8 encoding
+        str.push_back(static_cast<char>(0xC0 | ((codepoint >> 6) & 0x1F)));
+        str.push_back(static_cast<char>(0x80 | (codepoint & 0x3F)));
+    } else if (codepoint <= 0xFFFF) {
+        // 3-byte UTF-8 encoding
+        str.push_back(static_cast<char>(0xE0 | ((codepoint >> 12) & 0x0F)));
+        str.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F)));
+        str.push_back(static_cast<char>(0x80 | (codepoint & 0x3F)));
+    } else if (codepoint <= 0x10FFFF) {
+        // 4-byte UTF-8 encoding
+        str.push_back(static_cast<char>(0xF0 | ((codepoint >> 18) & 0x07)));
+        str.push_back(static_cast<char>(0x80 | ((codepoint >> 12) & 0x3F)));
+        str.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F)));
+        str.push_back(static_cast<char>(0x80 | (codepoint & 0x3F)));
+    }
+    // If codepoint is greater than 0x10FFFF, it's not a valid Unicode codepoint
+    // and won't be appended to the string.
+}
+
+// Builds trie.json using depth first traversal
+void buildJsonRecursively(
+        DicNode *dicNode,
+        DicTraverseSession *traverseSession,
+        std::string &outJson
+) {
+    if(dicNode->getNodeCodePoint() > 0) {
+        if(!outJson.empty() && outJson[outJson.size() - 1] != ',' && outJson[outJson.size() - 1] != '{') {
+            outJson.push_back(',');
+        }
+        outJson.push_back('"');
+        //outJson.push_back((char) dicNode->getNodeCodePoint());
+        appendCodepoint(outJson, dicNode->getNodeCodePoint());
+        outJson.push_back('"');
+        outJson.push_back(':');
+    }
+    outJson.push_back('{');
+
+
+    if(dicNode->isTerminalDicNode()) {
+        outJson.push_back('"');
+        outJson.push_back(';');
+        outJson.push_back('"');
+        outJson.push_back(':');
+
+        const float languageImprobability =
+                DicNodeUtils::getBigramNodeImprobability(
+                        traverseSession->getDictionaryStructurePolicy(),
+                        dicNode,
+                        traverseSession->getMultiBigramMap()
+                );
+
+        char tmp[50];
+        snprintf(tmp, 50, "%.3f", languageImprobability);
+        outJson.append(tmp);
+    }
+
+    DicNodeVector childDicNodes;
+    DicNodeUtils::getAllChildDicNodes(dicNode, traverseSession->getDictionaryStructurePolicy(), &childDicNodes);
+
+    int size = childDicNodes.getSizeAndLock();
+    for(int i=0; i<size; ++i) {
+        DicNode *const childDicNode = childDicNodes[i];
+        buildJsonRecursively(childDicNode, traverseSession, outJson);
+    }
+
+    outJson.push_back('}');
+}
+
+
 void processGetValidNextCodePoints(
         DicTraverseSession *traverseSession,
         const int *inputCodePoints,
@@ -483,6 +557,10 @@ void processGetValidNextCodePoints(
             traverseSession->getPrevWordIds(),
             &rootNode);
 
+
+    std::string outJson;
+    buildJsonRecursively(&rootNode, traverseSession, outJson);
+    AKLOGI("Out JSON length is %d", outJson.size());
 
     std::unique_ptr<DicNode> activeNode = std::make_unique<DicNode>(rootNode);
     DicNodeVector childDicNodes;
