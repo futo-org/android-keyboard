@@ -7,7 +7,7 @@ import org.futo.inputmethod.latin.common.Constants
 
 class KoreanCombiner: Combiner {
     // General implementation:
-    // A StringBuilder called `buffer` stores a  uncombined Hangul letters from keypresses.
+    // A StringBuilder called `buffer` stores a word of uncombined Hangul letters from keypresses.
     // On every keypress these uncombined letters are converted to a list of combined syllable blocks
     // using the toBlocks() function, and passed to the system using getCombiningStateFeedback()
 
