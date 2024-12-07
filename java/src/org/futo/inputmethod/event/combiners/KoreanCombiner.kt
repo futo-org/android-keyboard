@@ -10,80 +10,81 @@ class KoreanCombiner: Combiner {
     // A StringBuilder called `buffer` stores a word of uncombined Hangul letters from keypresses.
     // On every keypress these uncombined letters are converted to a list of combined syllable blocks
     // using the toBlocks() function, and passed to the system using getCombiningStateFeedback()
+    companion object Data {
+        private val initials = listOf(
+            'ㄱ' /*g*/,  'ㄲ' /*gg*/, 'ㄴ' /*n*/,  'ㄷ' /*d*/,
+            'ㄸ' /*dd*/, 'ㄹ' /*r*/,  'ㅁ' /*m*/,  'ㅂ' /*b*/,
+            'ㅃ' /*bb*/, 'ㅅ' /*s*/,  'ㅆ' /*ss*/, 'ㅇ' /*ng*/,
+            'ㅈ' /*j*/,  'ㅉ' /*jj*/, 'ㅊ' /*ch*/, 'ㅋ' /*k*/,
+            'ㅌ' /*t*/,  'ㅍ' /*p*/,  'ㅎ' /*h*/
+        ) // Only these characters can appear at the START of a Hangul syllable,
+        // and any syllable MUST have one of these
 
-    private val initials = listOf(
-        'ㄱ' /*g*/,  'ㄲ' /*gg*/, 'ㄴ' /*n*/,  'ㄷ' /*d*/,
-        'ㄸ' /*dd*/, 'ㄹ' /*r*/,  'ㅁ' /*m*/,  'ㅂ' /*b*/,
-        'ㅃ' /*bb*/, 'ㅅ' /*s*/,  'ㅆ' /*ss*/, 'ㅇ' /*ng*/,
-        'ㅈ' /*j*/,  'ㅉ' /*jj*/, 'ㅊ' /*ch*/, 'ㅋ' /*k*/,
-        'ㅌ' /*t*/,  'ㅍ' /*p*/,  'ㅎ' /*h*/
-    ) // Only these characters can appear at the START of a Hangul syllable,
-    // and any syllable MUST have one of these
+        private val doubleableInitials = listOf('ㄱ', 'ㄷ', 'ㅂ', 'ㅅ', 'ㅈ')
+        // These initials can be doubled, by adding 1 to the codepoint number.
+        // For example, ㄱ = U+3131, ㄲ = U+3132
 
-    private val doubleableInitials = listOf('ㄱ', 'ㄷ', 'ㅂ', 'ㅅ', 'ㅈ')
-    // These initials can be doubled, by adding 1 to the codepoint number.
-    // For example, ㄱ = U+3131, ㄲ = U+3132
+        private val vowels = listOf(
+            'ㅏ' /*a*/,   'ㅐ' /*ae*/,  'ㅑ' /*ya*/,   'ㅒ' /*yae*/,
+            'ㅓ' /*eo*/,  'ㅔ' /*e*/,   'ㅕ' /*yeo*/,  'ㅖ' /*ye*/,
+            'ㅗ' /*o*/,   'ㅘ' /*o+a*/, 'ㅙ' /*o+ae*/, 'ㅚ' /*o+i*/,
+            'ㅛ' /*yo*/,  'ㅜ' /*u*/,   'ㅝ' /*u+eo*/, 'ㅞ' /*u+e*/,
+            'ㅟ' /*u+i*/, 'ㅠ' /*yu*/,  'ㅡ' /*eu*/,   'ㅢ' /*eu+i*/,
+            'ㅣ' /*i*/
+        ) // Only these characters can appear in the MIDDLE (as a vowel) of a Hangul syllable,
+        // and any syllable MUST have one of these
 
-    private val vowels = listOf(
-        'ㅏ' /*a*/,   'ㅐ' /*ae*/,  'ㅑ' /*ya*/,   'ㅒ' /*yae*/,
-        'ㅓ' /*eo*/,  'ㅔ' /*e*/,   'ㅕ' /*yeo*/,  'ㅖ' /*ye*/,
-        'ㅗ' /*o*/,   'ㅘ' /*o+a*/, 'ㅙ' /*o+ae*/, 'ㅚ' /*o+i*/,
-        'ㅛ' /*yo*/,  'ㅜ' /*u*/,   'ㅝ' /*u+eo*/, 'ㅞ' /*u+e*/,
-        'ㅟ' /*u+i*/, 'ㅠ' /*yu*/,  'ㅡ' /*eu*/,   'ㅢ' /*eu+i*/,
-        'ㅣ' /*i*/
-    ) // Only these characters can appear in the MIDDLE (as a vowel) of a Hangul syllable,
-    // and any syllable MUST have one of these
+        private val finals = listOf(
+            null,       'ㄱ' /*g*/,  'ㄲ' /*gg*/, 'ㄳ' /*gs*/,
+            'ㄴ' /*n*/,  'ㄵ' /*nj*/, 'ㄶ' /*nh*/, 'ㄷ' /*d*/,
+            'ㄹ' /*r*/,  'ㄺ' /*rg*/, 'ㄻ' /*rm*/, 'ㄼ' /*rb*/,
+            'ㄽ' /*rs*/, 'ㄾ' /*rt*/, 'ㄿ' /*rp*/, 'ㅀ' /*rh*/,
+            'ㅁ' /*m*/,  'ㅂ' /*b*/,  'ㅄ' /*bs*/, 'ㅅ' /*s*/,
+            'ㅆ' /*ss*/, 'ㅇ' /*ng*/, 'ㅈ' /*j*/,  'ㅊ' /*ch*/,
+            'ㅋ' /*k*/,  'ㅌ' /*t*/,  'ㅍ' /*p*/,  'ㅎ' /*h*/
+        ) // Only these characters can appear at the END of a Hangul syllable.
+        // These are optional, and any syllable can only have either no final, or one of these finals.
+        // The NULL at index 0 represents the possibility of having no final.
 
-    private val finals = listOf(
-        null,       'ㄱ' /*g*/,  'ㄲ' /*gg*/, 'ㄳ' /*gs*/,
-        'ㄴ' /*n*/,  'ㄵ' /*nj*/, 'ㄶ' /*nh*/, 'ㄷ' /*d*/,
-        'ㄹ' /*r*/,  'ㄺ' /*rg*/, 'ㄻ' /*rm*/, 'ㄼ' /*rb*/,
-        'ㄽ' /*rs*/, 'ㄾ' /*rt*/, 'ㄿ' /*rp*/, 'ㅀ' /*rh*/,
-        'ㅁ' /*m*/,  'ㅂ' /*b*/,  'ㅄ' /*bs*/, 'ㅅ' /*s*/,
-        'ㅆ' /*ss*/, 'ㅇ' /*ng*/, 'ㅈ' /*j*/,  'ㅊ' /*ch*/,
-        'ㅋ' /*k*/,  'ㅌ' /*t*/,  'ㅍ' /*p*/,  'ㅎ' /*h*/
-    ) // Only these characters can appear at the END of a Hangul syllable.
-    // These are optional, and any syllable can only have either no final, or one of these finals.
-    // The NULL at index 0 represents the possibility of having no final.
+        private const val GA_LOCATION = '가'.code //44032
+        // This value is important because, it is the start of the Unicode Hangul Syllables block,
+        // and the Unicode codepoint (U+XXXX number) for any Hangul syllable is given by the formula:
+        // syllable = [(initial) × 588 + (vowel) × 28 + (final)] + 44032
+        // where `initial`, `vowel` and `final` are the indices of the initial, vowel,
+        // and final (0 if no final) character in the above lists.
 
-    private val GA_LOCATION = '가'.code //44032
-    // This value is important because, it is the start of the Unicode Hangul Syllables block,
-    // and the Unicode codepoint (U+XXXX number) for any Hangul syllable is given by the formula:
-    // syllable = [(initial) × 588 + (vowel) × 28 + (final)] + 44032
-    // where `initial`, `vowel` and `final` are the indices of the initial, vowel,
-    // and final (0 if no final) character in the above lists.
+        private val mergedClusters = mapOf(
+            'ㅗ' to 'ㅏ' to 'ㅘ',
+            'ㅗ' to 'ㅐ' to 'ㅙ',
+            'ㅗ' to 'ㅣ' to 'ㅚ',
+            'ㅜ' to 'ㅓ' to 'ㅝ',
+            'ㅜ' to 'ㅔ' to 'ㅞ',
+            'ㅜ' to 'ㅣ' to 'ㅟ',
+            'ㅡ' to 'ㅣ' to 'ㅢ', //vowels
 
-    private val mergedClusters = mapOf(
-        'ㅗ' to 'ㅏ' to 'ㅘ',
-        'ㅗ' to 'ㅐ' to 'ㅙ',
-        'ㅗ' to 'ㅣ' to 'ㅚ',
-        'ㅜ' to 'ㅓ' to 'ㅝ',
-        'ㅜ' to 'ㅔ' to 'ㅞ',
-        'ㅜ' to 'ㅣ' to 'ㅟ',
-        'ㅡ' to 'ㅣ' to 'ㅢ', //vowels
+            'ㅏ' to 'ㅏ' to 'ㅑ',
+            'ㅐ' to 'ㅐ' to 'ㅒ',
+            'ㅓ' to 'ㅓ' to 'ㅕ',
+            'ㅔ' to 'ㅔ' to 'ㅖ',
+            'ㅗ' to 'ㅗ' to 'ㅛ',
+            'ㅜ' to 'ㅜ' to 'ㅠ', //gboard 단모음 layout uses these mappings
 
-        'ㅏ' to 'ㅏ' to 'ㅑ',
-        'ㅐ' to 'ㅐ' to 'ㅒ',
-        'ㅓ' to 'ㅓ' to 'ㅕ',
-        'ㅔ' to 'ㅔ' to 'ㅖ',
-        'ㅗ' to 'ㅗ' to 'ㅛ',
-        'ㅜ' to 'ㅜ' to 'ㅠ', //gboard 단모음 layout uses these mappings
-
-        'ㄱ' to 'ㄱ' to 'ㄲ',
-        'ㄱ' to 'ㅅ' to 'ㄳ',
-        'ㄴ' to 'ㅈ' to 'ㄵ',
-        'ㄴ' to 'ㅎ' to 'ㄶ',
-        'ㄹ' to 'ㄱ' to 'ㄺ',
-        'ㄹ' to 'ㅁ' to 'ㄻ',
-        'ㄹ' to 'ㅂ' to 'ㄼ',
-        'ㄹ' to 'ㅅ' to 'ㄽ',
-        'ㄹ' to 'ㅌ' to 'ㄾ',
-        'ㄹ' to 'ㅍ' to 'ㄿ',
-        'ㄹ' to 'ㅎ' to 'ㅀ',
-        'ㅂ' to 'ㅅ' to 'ㅄ',
-        'ㅅ' to 'ㅅ' to 'ㅆ' //finals
-    ) // The `initials`, `vowels`, and `finals` mentioned above are not the simplest possible
-    // elements, and mostly need to be constructed from multiple keypresses.
+            'ㄱ' to 'ㄱ' to 'ㄲ',
+            'ㄱ' to 'ㅅ' to 'ㄳ',
+            'ㄴ' to 'ㅈ' to 'ㄵ',
+            'ㄴ' to 'ㅎ' to 'ㄶ',
+            'ㄹ' to 'ㄱ' to 'ㄺ',
+            'ㄹ' to 'ㅁ' to 'ㄻ',
+            'ㄹ' to 'ㅂ' to 'ㄼ',
+            'ㄹ' to 'ㅅ' to 'ㄽ',
+            'ㄹ' to 'ㅌ' to 'ㄾ',
+            'ㄹ' to 'ㅍ' to 'ㄿ',
+            'ㄹ' to 'ㅎ' to 'ㅀ',
+            'ㅂ' to 'ㅅ' to 'ㅄ',
+            'ㅅ' to 'ㅅ' to 'ㅆ' //finals
+        ) // The `initials`, `vowels`, and `finals` mentioned above are not the simplest possible
+        // elements, and mostly need to be constructed from multiple keypresses.
+    }
 
     private fun toBlock(initial: Char, vowel: Char, final: Char?): Char {
         //merge initial, vowel and optional final letters into a hangul syllable block
