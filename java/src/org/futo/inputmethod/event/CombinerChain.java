@@ -20,8 +20,11 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 
 import org.futo.inputmethod.latin.common.Constants;
+import org.futo.inputmethod.v2keyboard.CombinerKind;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -58,6 +61,15 @@ public class CombinerChain {
         mCombiners = new ArrayList<>();
         // The dead key combiner is always active, and always first
         mCombiners.add(new DeadKeyCombiner());
+        mCombinedText = new StringBuilder(initialText);
+        mStateFeedback = new SpannableStringBuilder();
+    }
+
+    public CombinerChain(@NotNull List<@NotNull CombinerKind> combiners, final String initialText) {
+        mCombiners = new ArrayList<>();
+        for (final CombinerKind combiner : combiners) {
+            mCombiners.add(combiner.getFactory().invoke());
+        }
         mCombinedText = new StringBuilder(initialText);
         mStateFeedback = new SpannableStringBuilder();
     }

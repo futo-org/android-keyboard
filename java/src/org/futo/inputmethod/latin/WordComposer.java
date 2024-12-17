@@ -27,9 +27,12 @@ import org.futo.inputmethod.latin.common.InputPointers;
 import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.define.DebugFlags;
 import org.futo.inputmethod.latin.define.DecoderSpecificConstants;
+import org.futo.inputmethod.v2keyboard.CombinerKind;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -109,6 +112,11 @@ public final class WordComposer {
                     mCombinerChain.getComposingWordWithCombiningFeedback().toString());
             mCombiningSpec = nonNullCombiningSpec;
         }
+    }
+
+    public void setCombiners(@NotNull List<@NotNull CombinerKind> combiners) {
+        mCombinerChain = new CombinerChain(combiners,
+                mCombinerChain.getComposingWordWithCombiningFeedback().toString());
     }
 
     /**

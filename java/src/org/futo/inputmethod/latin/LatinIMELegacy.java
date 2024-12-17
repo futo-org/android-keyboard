@@ -96,10 +96,13 @@ import org.futo.inputmethod.latin.utils.StatsUtilsManager;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.latin.utils.ViewLayoutUtils;
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator;
+import org.futo.inputmethod.v2keyboard.CombinerKind;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -1964,5 +1967,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     public void onCodePointDeleted(String textBeforeCursor) {
         ((LatinIME)(mInputMethodService)).onEmojiDeleted(textBeforeCursor);
+    }
+
+    public void setCombiners(@NotNull List<@NotNull CombinerKind> combiners) {
+        mInputLogic.mWordComposer.setCombiners(combiners);
     }
 }

@@ -256,8 +256,13 @@ data class Keyboard(
     /**
      * (optional) Alternative pages for this layout, use in conjunction with $alt0, $alt1, $alt2
      */
-    val altPages: List<List<Row>> = listOf()
+    val altPages: List<List<Row>> = listOf(),
 
+
+    /**
+     * (optional) Which combiners to use for this layout
+     */
+    val combiners: List<CombinerKind> = listOf(CombinerKind.DeadKey)
     // TODO: Custom long-press key settings configuration
     //val element: KeyboardElement = KeyboardElement.Alphabet,
     //val rowWidthMode: RowWidthMode = RowWidthMode.PadSides,

@@ -157,6 +157,7 @@ public final class KeyboardSwitcher implements SwitchActions {
             );
 
             mState.onLoadKeyboard(editorInfo, currentAutoCapsState, currentRecapitalizeState);
+            mLatinIMELegacy.setCombiners(mKeyboardLayoutSet.getMainLayout().getCombiners());
             mKeyboardTextsSet.setLocale(mRichImm.getCurrentSubtypeLocale(), mThemeContext);
         } catch (Exception e) {
             Log.e(TAG, "loading keyboard failed: ", e);
