@@ -5,7 +5,12 @@ import org.futo.inputmethod.event.Combiner
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.common.Constants
 
-class KoreanCombiner(combineInitials: Boolean = false): Combiner {
+/**
+ * Combiner for Korean/Hangul script.
+ * If [combineInitials] is true, pressing ㄱㄱ or any other doubleable initial twice combines it into
+ * ㄲ and so on (only in the initial position, final ㄱㄱ is always combined)
+ */
+class KoreanCombiner(private val combineInitials: Boolean = false): Combiner {
     // General implementation:
     // A StringBuilder called `buffer` stores a word of uncombined Hangul letters from keypresses.
     // On every keypress these uncombined letters are converted to a list of combined syllable blocks
@@ -85,9 +90,6 @@ class KoreanCombiner(combineInitials: Boolean = false): Combiner {
         ) // The `initials`, `vowels`, and `finals` mentioned above are not the simplest possible
         // elements, and sometimes need to be constructed from multiple keypresses.
     }
-    private val combineInitials = combineInitials
-    // If this is true, if the user presses ㄱ or any other doubleable initial twice,
-    // it is converted into the doubled version ㄲ. Disabled for Dubeolsik, enabled for Danmoeum.
 
     private fun toBlock(initial: Char, vowel: Char, final: Char?): Char {
         //merge initial, vowel and optional final letters into a hangul syllable block

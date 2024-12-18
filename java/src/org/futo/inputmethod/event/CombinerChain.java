@@ -19,7 +19,6 @@ package org.futo.inputmethod.event;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 
-import org.futo.inputmethod.event.combiners.KoreanCombiner;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.v2keyboard.CombinerKind;
 import org.jetbrains.annotations.NotNull;
