@@ -5,7 +5,7 @@ import org.futo.inputmethod.event.Combiner
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.common.Constants
 
-class KoreanCombiner: Combiner {
+class KoreanCombiner(combineInitials: Boolean = false): Combiner {
     // General implementation:
     // A StringBuilder called `buffer` stores a word of uncombined Hangul letters from keypresses.
     // On every keypress these uncombined letters are converted to a list of combined syllable blocks
@@ -83,8 +83,11 @@ class KoreanCombiner: Combiner {
             'ㅂ' to 'ㅅ' to 'ㅄ',
             'ㅅ' to 'ㅅ' to 'ㅆ' //finals
         ) // The `initials`, `vowels`, and `finals` mentioned above are not the simplest possible
-        // elements, and mostly need to be constructed from multiple keypresses.
+        // elements, and sometimes need to be constructed from multiple keypresses.
     }
+    private val combineInitials = combineInitials
+    // If this is true, if the user presses ㄱ or any other doubleable initial twice,
+    // it is converted into the doubled version ㄲ. Disabled for Dubeolsik, enabled for Danmoeum.
 
     private fun toBlock(initial: Char, vowel: Char, final: Char?): Char {
         //merge initial, vowel and optional final letters into a hangul syllable block
@@ -98,7 +101,7 @@ class KoreanCombiner: Combiner {
     private fun isFinal(char: Char): Boolean { return finals.binarySearch(char) >= 0 }
 
 
-    val buffer = StringBuilder() // This buffer holds a single word of UNCOMBINED Hangul letters.
+    private val buffer = StringBuilder() // This buffer holds a single word of UNCOMBINED Hangul letters.
 
     private fun toBlocks(): CharSequence {
         val combined = StringBuilder()
@@ -119,7 +122,7 @@ class KoreanCombiner: Combiner {
             }
 
             if (vowel == null) { // There is an initial, but no vowel
-                if (initial == char && doubleableInitials.binarySearch(initial) >= 0) {
+                if (combineInitials && initial == char && doubleableInitials.binarySearch(initial) >= 0) {
                     initial = (initial.code + 1).toChar()
                     continue
                 } // If current char is the same as the initial, then double the initial

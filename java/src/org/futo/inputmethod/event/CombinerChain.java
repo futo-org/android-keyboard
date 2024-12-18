@@ -62,7 +62,6 @@ public class CombinerChain {
         mCombiners = new ArrayList<>();
         // The dead key combiner is always active, and always first
         mCombiners.add(new DeadKeyCombiner());
-        mCombiners.add(new KoreanCombiner());
         mCombinedText = new StringBuilder(initialText);
         mStateFeedback = new SpannableStringBuilder();
     }
