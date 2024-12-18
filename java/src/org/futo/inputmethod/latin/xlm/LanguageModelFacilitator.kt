@@ -139,6 +139,7 @@ public class LanguageModelFacilitator(
     private var numConsecutiveTimeouts = 0
     private var transformerDisabled = false
     public fun blockUntilComplete(): Boolean {
+        if(languageModel == null) return false
         runBlocking {
             try {
                 withTimeout(700L) {
@@ -192,7 +193,7 @@ public class LanguageModelFacilitator(
         if(transformerDisabled) return null
 
         val locale = dictionaryFacilitator.locale ?: return null
-        if ((languageModel == null && locale.language != skipLanguage) || (languageModel?.locale?.language != locale.language)) {
+        if ((languageModel == null && locale.language != skipLanguage) || (languageModel != null && languageModel?.locale?.language != locale.language)) {
             skipLanguage = null
             Log.d(
                 "LanguageModelFacilitator",
@@ -544,11 +545,11 @@ public class LanguageModelFacilitator(
         }
     }
 
-    public fun shouldPassThroughToLegacy(): Boolean =
-        (!settings.current.mTransformerPredictionEnabled) ||
-                (languageModel?.let {
-                    it.locale.language != dictionaryFacilitator.locale.language
-                } ?: false)
+    public fun shouldPassThroughToLegacy(): Boolean = when {
+        (!settings.current.mTransformerPredictionEnabled) -> true
+        (dictionaryFacilitator.locale.language == skipLanguage) -> true
+        else -> false
+    }
 
     public fun updateSuggestionStripAsync(inputStyle: Int) {
         val settingsValues = settings.current

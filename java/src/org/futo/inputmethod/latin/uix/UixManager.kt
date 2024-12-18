@@ -108,7 +108,6 @@ import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
 import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
-import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.actions.KeyboardModeAction
 import org.futo.inputmethod.latin.uix.resizing.KeyboardResizers
 import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
@@ -182,8 +181,7 @@ fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(
 
 private class LatinIMEActionInputTransaction(
     private val inputLogic: InputLogic,
-    shouldApplySpace: Boolean,
-    private val context: Context
+    shouldApplySpace: Boolean
 ): ActionInputTransaction {
     private val isSpaceNecessary: Boolean
     private var isFinished = false
@@ -233,12 +231,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         return latinIME.lifecycleScope
     }
 
-    override fun triggerContentUpdate() {
-        uixManager.setContent()
-    }
-
     override fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction {
-        return LatinIMEActionInputTransaction(latinIME.inputLogic, applySpaceIfNeeded, latinIME)
+        return LatinIMEActionInputTransaction(latinIME.inputLogic, applySpaceIfNeeded)
     }
 
     override fun typeText(v: String) {
@@ -277,7 +271,6 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun closeActionWindow() {
-        if(uixManager.currWindowActionWindow == null) return
         uixManager.returnBackToMainKeyboardViewFromAction()
     }
 
@@ -287,7 +280,7 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
             Constants.SUGGESTION_STRIP_COORDINATE,
             Constants.SUGGESTION_STRIP_COORDINATE,
             false
-        );
+        )
     }
 
     override fun updateTheme(newTheme: ThemeOption) {
@@ -399,20 +392,32 @@ data class ActiveDialogRequest(
     val onCancel: () -> Unit
 )
 
+@RequiresOptIn(level = RequiresOptIn.Level.ERROR, message = "This is for debug purposes only.")
+@Retention(AnnotationRetention.BINARY)
+annotation class DebugOnly
+
+@DebugOnly
+var UixManagerInstanceForDebug: UixManager? = null
+
 class UixManager(private val latinIME: LatinIME) {
+    init {
+        @OptIn(DebugOnly::class)
+        UixManagerInstanceForDebug = this
+    }
+
     internal val composeView: ComposeView?
         get() = latinIME.composeView
 
-    private var shouldShowSuggestionStrip: Boolean = true
-    private var suggestedWords: SuggestedWords? = null
+    private var shouldShowSuggestionStrip = mutableStateOf(true)
+    private var suggestedWords: MutableState<SuggestedWords?> = mutableStateOf(null)
 
-    var currWindowAction: Action? = null
+    var currWindowAction: MutableState<Action?> = mutableStateOf(null)
     private var persistentStates: HashMap<Action, PersistentActionState?> = hashMapOf()
 
-    private var inlineSuggestions: List<MutableState<View?>> = listOf()
+    private var inlineSuggestions: MutableState<List<MutableState<View?>>> = mutableStateOf(emptyList())
     private val keyboardManagerForAction = UixActionKeyboardManager(this, latinIME)
 
-    private var mainKeyboardHidden = false
+    private var mainKeyboardHidden = mutableStateOf(false)
 
     private var numSuggestionsSinceNotice = 0
     private var currentNotice: MutableState<ImportantNotice?> = mutableStateOf(null)
@@ -420,7 +425,7 @@ class UixManager(private val latinIME: LatinIME) {
     private var isActionsExpanded = mutableStateOf(false)
     private fun toggleActionsExpanded() {
         isActionsExpanded.value = !isActionsExpanded.value
-        latinIME.deferSetSetting(ActionBarExpanded, isActionsExpanded.value)
+        latinIME.deferSetSetting(latinIME, ActionBarExpanded, isActionsExpanded.value)
     }
 
 
@@ -438,9 +443,7 @@ class UixManager(private val latinIME: LatinIME) {
 
     var isInputOverridden = mutableStateOf(false)
 
-    var currWindowActionWindow: ActionWindow? = null
-    val isActionWindowDocked: Boolean
-        get() = currWindowActionWindow != null
+    var currWindowActionWindow: MutableState<ActionWindow?> = mutableStateOf(null)
 
     private var measuredTouchableHeight = 0
     val touchableHeight: Int
@@ -483,8 +486,8 @@ class UixManager(private val latinIME: LatinIME) {
 
         Column {
             // Don't show suggested words when it's not meant to be shown
-            val suggestedWordsOrNull = if(shouldShowSuggestionStrip) {
-                suggestedWords
+            val suggestedWordsOrNull = if(shouldShowSuggestionStrip.value) {
+                suggestedWords.value
             } else {
                 null
             }
@@ -493,7 +496,7 @@ class UixManager(private val latinIME: LatinIME) {
                 ActionBar(
                     suggestedWordsOrNull,
                     latinIME.latinIMELegacy as SuggestionStripViewListener,
-                    inlineSuggestions = inlineSuggestions,
+                    inlineSuggestions = inlineSuggestions.value,
                     onActionActivated = {
                         keyboardManagerForAction.performHapticAndAudioFeedback(
                             Constants.CODE_TAB,
@@ -522,67 +525,61 @@ class UixManager(private val latinIME: LatinIME) {
     private fun enterActionWindowView(action: Action) {
         assert(action.windowImpl != null)
 
-        currWindowAction = action
+        currWindowAction.value = action
 
         if (persistentStates[action] == null) {
             persistentStates[action] = action.persistentState?.let { it(keyboardManagerForAction) }
         }
 
-        currWindowActionWindow = (action.windowImpl!!)(keyboardManagerForAction, persistentStates[action])
+        currWindowActionWindow.value = (action.windowImpl!!)(keyboardManagerForAction, persistentStates[action])
 
-        mainKeyboardHidden = currWindowActionWindow?.onlyShowAboveKeyboard == false
+        mainKeyboardHidden.value = currWindowActionWindow.value?.onlyShowAboveKeyboard == false
 
         if(action.keepScreenAwake) {
             latinIME.window.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
 
-        setContent()
-
         keyboardManagerForAction.announce("${latinIME.resources.getString(action.name)} mode")
     }
 
     fun returnBackToMainKeyboardViewFromAction() {
-        if(currWindowActionWindow == null) return
+        if(currWindowActionWindow.value == null) return
 
-        val name = latinIME.resources.getString(currWindowAction!!.name)
+        val name = latinIME.resources.getString(currWindowAction.value!!.name)
 
-        currWindowActionWindow!!.close()
+        currWindowActionWindow.value!!.close()
 
-        currWindowAction = null
-        currWindowActionWindow = null
+        currWindowAction.value = null
+        currWindowActionWindow.value = null
 
-        mainKeyboardHidden = false
+        mainKeyboardHidden.value = false
 
         latinIME.onKeyboardShown()
 
         latinIME.window.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        setContent()
-
         keyboardManagerForAction.announce("$name closed")
     }
 
     fun toggleExpandAction(to: Boolean? = null) {
-        mainKeyboardHidden = !(to ?: mainKeyboardHidden)
-        if(!mainKeyboardHidden) {
+        mainKeyboardHidden.value = !(to ?: mainKeyboardHidden.value)
+        if(!mainKeyboardHidden.value) {
             latinIME.onKeyboardShown()
         }
-
-        setContent()
     }
 
     @Composable
     private fun ActionViewWithHeader(windowImpl: ActionWindow) {
-        val heightDiv = if(mainKeyboardHidden) {
+        val heightDiv = if(mainKeyboardHidden.value) {
             1
         } else {
             1.5
         }
         Column {
-            if(mainKeyboardHidden || latinIME.isInputConnectionOverridden) {
+            if(mainKeyboardHidden.value || latinIME.isInputConnectionOverridden) {
                 ActionWindowBar(
                     onBack = { returnBackToMainKeyboardViewFromAction() },
-                    canExpand = currWindowAction!!.canShowKeyboard,
+                    canExpand = currWindowAction.value!!.canShowKeyboard,
                     onExpand = { toggleExpandAction() },
                     windowTitleBar = { windowImpl.WindowTitleBar(this) }
                 )
@@ -591,19 +588,19 @@ class UixManager(private val latinIME: LatinIME) {
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(with(LocalDensity.current) {
-                    currWindowActionWindow?.fixedWindowHeight ?: ((latinIME
+                    currWindowActionWindow.value?.fixedWindowHeight ?: ((latinIME
                         .getInputViewHeight()
                         .toFloat() / heightDiv.toFloat()).toDp() +
                             if (actionsExpanded) ActionBarHeight else 0.dp)
                 })
                 .safeKeyboardPadding()
             ) {
-                windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden)
+                windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden.value)
             }
 
-            if(!mainKeyboardHidden && !latinIME.isInputConnectionOverridden) {
-                val suggestedWordsOrNull = if (shouldShowSuggestionStrip) {
-                    suggestedWords
+            if(!mainKeyboardHidden.value && !latinIME.isInputConnectionOverridden) {
+                val suggestedWordsOrNull = if (shouldShowSuggestionStrip.value) {
+                    suggestedWords.value
                 } else {
                     null
                 }
@@ -612,8 +609,8 @@ class UixManager(private val latinIME: LatinIME) {
                     onCollapse = { toggleExpandAction() },
                     onClose = { returnBackToMainKeyboardViewFromAction() },
                     words = suggestedWordsOrNull,
-                    showClose = currWindowActionWindow?.showCloseButton == true,
-                    showCollapse = currWindowActionWindow?.onlyShowAboveKeyboard == false,
+                    showClose = currWindowActionWindow.value?.showCloseButton == true,
+                    showCollapse = currWindowActionWindow.value?.onlyShowAboveKeyboard == false,
                     suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
                 )
             }
@@ -998,40 +995,45 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
-    fun setContent() {
-        composeView?.setContent {
-            ProvidersAndWrapper {
-                InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
-                    closeActionWindow()
-                    isShowingActionEditor.value = false
-                }
+    @Composable
+    fun Content() {
+        ProvidersAndWrapper {
+            InputDarkener(isInputOverridden.value || isShowingActionEditor.value) {
+                closeActionWindow()
+                isShowingActionEditor.value = false
+            }
 
-                TutorialArrow()
+            TutorialArrow()
 
-                KeyboardWindowSelector { gap ->
-                    Column {
-                        when {
-                            currWindowActionWindow != null -> ActionViewWithHeader(
-                                currWindowActionWindow!!
-                            )
+            KeyboardWindowSelector { gap ->
+                Column {
+                    when {
+                        currWindowActionWindow.value != null -> ActionViewWithHeader(
+                            currWindowActionWindow.value!!
+                        )
 
-                            else -> MainKeyboardViewWithActionBar()
-                        }
-
-                        Spacer(modifier = Modifier.height(gap))
-
-                        latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden)
-
-                        if(latinIME.size.value !is FloatingKeyboardSize) {
-                            Spacer(Modifier.height(navBarHeight()))
-                        }
+                        else -> MainKeyboardViewWithActionBar()
                     }
 
-                    ForgetWordDialog()
+                    Spacer(modifier = Modifier.height(gap))
+
+                    latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden.value)
+
+                    if(latinIME.size.value !is FloatingKeyboardSize) {
+                        Spacer(Modifier.height(navBarHeight()))
+                    }
                 }
 
-                ActionEditorHost()
+                ForgetWordDialog()
             }
+
+            ActionEditorHost()
+        }
+    }
+
+    fun setContent() {
+        composeView?.setContent {
+            Content()
         }
     }
 
@@ -1120,19 +1122,16 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     fun closeActionWindow() {
-        if(currWindowActionWindow == null) return
         returnBackToMainKeyboardViewFromAction()
     }
 
 
     fun updateVisibility(shouldShowSuggestionsStrip: Boolean, fullscreenMode: Boolean) {
-        this.shouldShowSuggestionStrip = shouldShowSuggestionsStrip
-        setContent()
+        this.shouldShowSuggestionStrip.value = shouldShowSuggestionsStrip
     }
 
     fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean) {
-        this.suggestedWords = suggestedWords
-        setContent()
+        this.suggestedWords.value = suggestedWords
 
         if(currentNotice.value != null) {
             if(numSuggestionsSinceNotice > 1) {
@@ -1146,18 +1145,11 @@ class UixManager(private val latinIME: LatinIME) {
     fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
         currentNotice.value?.onDismiss(latinIME)
 
-        inlineSuggestions = response.inlineSuggestions.map {
+        inlineSuggestions.value = response.inlineSuggestions.map {
             latinIME.inflateInlineSuggestion(it)
         }
-        setContent()
 
         return true
-    }
-
-    fun openEmojiKeyboard() {
-        if(currWindowAction == null) {
-            onActionActivated(EmojiAction)
-        }
     }
 
     fun triggerAction(id: Int, alt: Boolean) {
@@ -1166,7 +1158,7 @@ class UixManager(private val latinIME: LatinIME) {
         if(alt) {
             onActionAltActivated(action)
         } else {
-            if (currWindowAction != null && action.windowImpl != null) {
+            if (currWindowAction.value != null && action.windowImpl != null) {
                 closeActionWindow()
             }
 
@@ -1191,9 +1183,8 @@ class UixManager(private val latinIME: LatinIME) {
                 )
             } else {
                 listOf()
-            },
-            { }
-        )
+            }
+        ) { }
 
         val v = latinIME.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -1218,6 +1209,8 @@ class UixManager(private val latinIME: LatinIME) {
                 latinIME.invalidateKeyboard(true)
             }
         }
+
+        setContent()
     }
 
     fun onPersistentStatesUnlocked() {
@@ -1242,12 +1235,13 @@ class UixManager(private val latinIME: LatinIME) {
                 TutorialMode.None
         }
 
+    val currTutorialMode = mutableStateOf(TutorialMode.None)
     val tutorialArrowPosition: MutableState<LayoutCoordinates?> = mutableStateOf(null)
     val tutorialCompleted = mutableStateOf(false)
 
     @Composable
     private fun TutorialArrow() = with(LocalDensity.current) {
-        if(tutorialMode == TutorialMode.ResizerTutorial && !tutorialCompleted.value) {
+        if(currTutorialMode.value == TutorialMode.ResizerTutorial && !tutorialCompleted.value) {
             tutorialArrowPosition.value?.let { position ->
                 val pos = position.positionInWindow()
                 Icon(
@@ -1266,8 +1260,10 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     fun inputStarted(editorInfo: EditorInfo?) {
+        inlineSuggestions.value = emptyList()
         this.editorInfo = editorInfo
 
+        currTutorialMode.value = tutorialMode
         tutorialCompleted.value = false
         tutorialArrowPosition.value = null
 

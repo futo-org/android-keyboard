@@ -160,15 +160,15 @@ Layout: $it
 
     private val keyboardMode = getKeyboardMode(editorInfo)
 
-    val layoutName = customLayout?.let { "custompreview" } ?: forcedLayout ?: params.keyboardLayoutSet
-    val mainLayout = customLayout ?: try {
-        LayoutManager.getLayout(context, layoutName)
-    } catch (e: Exception) {
-        BugViewerState.pushBug(BugInfo(
-            name = "Layout parser",
-            details =
-            """
-Layout could not be loaded.
+    private fun safeGetLayout(name: String): org.futo.inputmethod.v2keyboard.Keyboard =
+        try {
+            LayoutManager.getLayout(context, name)
+        } catch (e: Exception) {
+            BugViewerState.pushBug(BugInfo(
+                name = if(layoutName.startsWith("custom")) { "your custom layout" } else { "layout $layoutName" },
+                details =
+                """
+Layout $name could not be loaded.
 
 Cause: ${e.message}
 
@@ -176,15 +176,19 @@ Stack trace: ${e.stackTrace.map { it.toString() }}
 
 Layout: $layoutName
 """
-        ))
-        errorLayout
-    }
-    val symbolsLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.symbols)
-    val symbolsShiftedLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.symbolsShifted)
-    val numberLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.number)
-    val phoneLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.phone)
-    val phoneSymbolsLayout = LayoutManager.getLayout(context, mainLayout.layoutSetOverrides.phoneShifted)
-    val numberBasicLayout = LayoutManager.getLayout(context, "number_basic")
+            ))
+            errorLayout
+        }
+
+    val layoutName = customLayout?.let { "custompreview" } ?: forcedLayout ?: params.keyboardLayoutSet
+    val mainLayout = customLayout ?: safeGetLayout(layoutName)
+
+    val symbolsLayout = safeGetLayout(mainLayout.layoutSetOverrides.symbols)
+    val symbolsShiftedLayout = safeGetLayout(mainLayout.layoutSetOverrides.symbolsShifted)
+    val numberLayout = safeGetLayout(mainLayout.layoutSetOverrides.number)
+    val phoneLayout = safeGetLayout(mainLayout.layoutSetOverrides.phone)
+    val phoneSymbolsLayout = safeGetLayout(mainLayout.layoutSetOverrides.phoneShifted)
+    val numberBasicLayout = safeGetLayout("number_basic")
 
     val elements = mapOf(
         KeyboardLayoutElement(

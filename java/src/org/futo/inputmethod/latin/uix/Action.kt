@@ -42,8 +42,6 @@ interface KeyboardManagerForAction {
     fun getContext(): Context
     fun getLifecycleScope(): LifecycleCoroutineScope
 
-    fun triggerContentUpdate()
-
     fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction
 
     fun typeText(v: String)

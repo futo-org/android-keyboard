@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -16,9 +17,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.AndroidTextInput
+import org.futo.inputmethod.latin.uix.DebugOnly
 import org.futo.inputmethod.latin.uix.HiddenKeysSetting
 import org.futo.inputmethod.latin.uix.OldStyleActionsBar
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.UixManagerInstanceForDebug
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -31,9 +35,23 @@ import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 import org.futo.inputmethod.updates.dismissedMigrateUpdateNotice
 
 
+
 val IS_DEVELOPER = SettingsKey(booleanPreferencesKey("isDeveloperMode"), false)
 
 val TMP_PAYMENT_URL = SettingsKey(stringPreferencesKey("temporaryPaymentUrl"), BuildConfig.PAYMENT_URL)
+
+@OptIn(DebugOnly::class)
+@Composable
+fun DevKeyboardScreen(navController: NavHostController = rememberNavController()) {
+    Box {
+        ScrollableList {
+            ScreenTitle("Keyboard screen", showBack = true, navController)
+
+            AndroidTextInput()
+        }
+        UixManagerInstanceForDebug?.Content()
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -57,20 +75,6 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
         SettingToggleDataStore(title = "Dismissed migration notice", setting = dismissedMigrateUpdateNotice)
 
         SettingToggleDataStore(title = "Old action bar", setting = OldStyleActionsBar)
-
-        NavigationItem(
-            title = "Crash the app",
-            style = NavigationItemStyle.MiscNoArrow,
-            navigate = {
-                scope.lifecycleScope.launch {
-                    withContext(Dispatchers.Default) {
-                        delay(300L)
-                        throw RuntimeException("User requested app to crash :3")
-                    }
-                }
-            },
-            icon = painterResource(id = R.drawable.close)
-        )
 
         NavigationItem(
             title = "Text edit variations",
@@ -133,5 +137,29 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
         )
 
         SettingTextField("Payment URL", "https://example.com", TMP_PAYMENT_URL)
+
+
+        ScreenTitle(title = "Here be dragons")
+        NavigationItem(
+            title = "Crash the app",
+            style = NavigationItemStyle.MiscNoArrow,
+            navigate = {
+                scope.lifecycleScope.launch {
+                    withContext(Dispatchers.Default) {
+                        delay(300L)
+                        throw RuntimeException("User requested app to crash :3")
+                    }
+                }
+            },
+            icon = painterResource(id = R.drawable.close)
+        )
+
+        NavigationItem(
+            title = "Inline Keyboard",
+            subtitle = "This can break everything, force stop or crash the app to fix",
+            style = NavigationItemStyle.Misc,
+            navigate = { navController.navigate("devkeyboard") }
+        )
+
     }
 }

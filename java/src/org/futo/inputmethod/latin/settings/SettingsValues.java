@@ -289,6 +289,10 @@ public class SettingsValues {
         return mSpacingAndPunctuations.isUsuallyPrecededBySpace(code);
     }
 
+    public boolean isOptionallyPrecededBySpace(final int code) {
+        return mSpacingAndPunctuations.isOptionallyPrecededBySpace(code);
+    }
+
     public boolean isUsuallyFollowedBySpace(final int code) {
         return mSpacingAndPunctuations.isUsuallyFollowedBySpace(code);
     }

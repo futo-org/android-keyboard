@@ -291,6 +291,7 @@ class TrainingWorker(val context: Context, val parameters: WorkerParameters) : C
 private val WORKER_TAG: String = "TRAINING_WORKER"
 public fun scheduleTrainingWorkerBackground(context: Context) {
     if(!context.isDirectBootUnlocked) return
+
     val workManager = WorkManager.getInstance(context)
     workManager.cancelAllWorkByTag(WORKER_TAG)
 

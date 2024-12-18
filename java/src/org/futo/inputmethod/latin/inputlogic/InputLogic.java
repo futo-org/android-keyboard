@@ -327,7 +327,9 @@ public final class InputLogic {
             final int firstChar = Character.codePointAt(suggestion, 0);
             if (!settingsValues.isWordSeparator(firstChar)
                     || settingsValues.isUsuallyPrecededBySpace(firstChar)) {
-                insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
+
+                if(!mConnection.spacePrecedesComposingText())
+                    insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
             }
         }
 
@@ -1115,7 +1117,7 @@ public final class InputLogic {
 
             sendKeyCodePoint(settingsValues, codePoint);
 
-            boolean codeShouldBeFollowedBySpace = settingsValues.isUsuallyFollowedBySpace(codePoint)
+            boolean codeShouldBeFollowedBySpace = (settingsValues.isUsuallyFollowedBySpace(codePoint) && !settingsValues.isOptionallyPrecededBySpace(codePoint))
                     || (spacePrecedesCursor
                         && settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint))
                     || (codePoint == Constants.CODE_DOUBLE_QUOTE && isInsideDoubleQuoteOrAfterDigit);
@@ -1315,7 +1317,8 @@ public final class InputLogic {
                         // broken apps expect something to happen in this case so that they can
                         // catch it and have their broken interface react. If you need the keyboard
                         // to do this, you're doing it wrong -- please fix your app.
-                        mConnection.deleteTextBeforeCursor(1);
+                        //mConnection.deleteTextBeforeCursor(1);
+                        sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0);
                         // TODO: Add a new StatsUtils method onBackspaceWhenNoText()
                         return;
                     }
@@ -1581,6 +1584,14 @@ public final class InputLogic {
                     mConnection.getNthCodePointBeforeCursor(1),
                     inputTransaction
             ) && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM;
+        }
+
+        // If this codepoint can be preceded by space optionally, only perform the swap if the
+        // preceding space was automatically added. If I type "hello", space, and ":)", it should
+        // type "hello :)"
+        if(characterFitForSwapping
+                && inputTransaction.mSettingsValues.isOptionallyPrecededBySpace(codePoint)) {
+            characterFitForSwapping = inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM;
         }
 
         return settingsPermitSwapping && textFieldFitForSwapping && characterFitForSwapping;

@@ -2,7 +2,6 @@ package org.futo.inputmethod.latin.uix.settings
 
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,6 +16,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.AlreadyPaidDialog
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
 import org.futo.inputmethod.latin.uix.settings.pages.CreditsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DevEditTextVariationsScreen
+import org.futo.inputmethod.latin.uix.settings.pages.DevKeyboardScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutEdit
 import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutEditor
 import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutList
@@ -69,6 +69,7 @@ fun SettingsNavigator(
         composable("devtextedit") { DevEditTextVariationsScreen(navController) }
         composable("devlayouts") { DevLayoutList(navController) }
         composable("devlayouteditor") { DevLayoutEditor(navController) }
+        composable("devkeyboard") { DevKeyboardScreen(navController) }
         composable("devlayoutedit/{i}") { DevLayoutEdit(navController, it.arguments!!.getString("i")!!.toInt()) }
         composable("blacklist") { BlacklistScreen(navController) }
         composable("payment") { PaymentScreen(navController) { navController.navigateUp() } }

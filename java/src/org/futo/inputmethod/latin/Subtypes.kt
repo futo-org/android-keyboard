@@ -291,7 +291,7 @@ fun LanguageSwitcherDialog(
     val inspection = LocalInspectionMode.current
     val context = LocalContext.current
     val subtypeSet = if(inspection) {
-        setOf("en_US:", "pt_PT:", "lt:", "fr:KeyboardLayoutSet=bepo:")
+        setOf("en_US:", "pt_PT:KeyboardLayoutSet=portugues:", "lt:", "fr:KeyboardLayoutSet=bepo:")
     } else {
         useDataStoreValue(SubtypesSetting)
     }
@@ -303,7 +303,7 @@ fun LanguageSwitcherDialog(
     val keys = remember(subtypes) { subtypes.keys.toList().sorted() }
 
     val activeSubtype = if(inspection) {
-        "pt_PT:"
+        "pt_PT:KeyboardLayoutSet=portugues:"
     } else {
         useDataStoreValue(ActiveSubtype)
     }
@@ -324,10 +324,9 @@ fun LanguageSwitcherDialog(
                 items(keys) { locale ->
 
                     subtypes[locale]!!.forEach { subtype ->
-                        val layout = Subtypes.getLayoutName(context,
-                            subtype.getExtraValueOf(Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET) ?: ""
-                        )
+                        val layoutSetName = subtype.getExtraValueOf(Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET) ?: ""
 
+                        val layout = if(inspection) { layoutSetName } else { Subtypes.getLayoutName(context, layoutSetName) }
                         val title = if(inspection) { subtype.locale } else { Subtypes.getName(subtype) }
 
                         val selected = activeSubtype == Subtypes.subtypeToString(subtype)

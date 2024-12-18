@@ -40,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
@@ -540,15 +541,19 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
 
     DisposableEffect(Unit) {
         onDispose {
-            lifecycle.deferSetSetting(ActionBarScrollIndexSetting, lazyListState.firstVisibleItemIndex)
-            lifecycle.deferSetSetting(ActionBarScrollOffsetSetting, lazyListState.firstVisibleItemScrollOffset)
+            lifecycle.deferSetSetting(context, ActionBarScrollIndexSetting, lazyListState.firstVisibleItemIndex)
+            lifecycle.deferSetSetting(context, ActionBarScrollOffsetSetting, lazyListState.firstVisibleItemScrollOffset)
         }
     }
 
     val gradientColor = LocalKeyboardScheme.current.keyboardSurfaceDim
 
-    val drawLeftGradient = lazyListState.firstVisibleItemIndex > 0
-    val drawRightGradient = lazyListState.layoutInfo.visibleItemsInfo.isNotEmpty() && actionItems.isNotEmpty() && (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key != actionItems.lastOrNull()?.name)
+    val drawLeftGradient = remember { derivedStateOf { lazyListState.firstVisibleItemIndex > 0 } }
+    val drawRightGradient = remember(actionItems) { derivedStateOf {
+        lazyListState.layoutInfo.visibleItemsInfo.isNotEmpty()
+                && actionItems.isNotEmpty()
+                && (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key != actionItems.lastOrNull()?.name)
+    } }
 
     Box(Modifier.safeKeyboardPadding()) {
         LazyRow(state = lazyListState) {
@@ -564,7 +569,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
         }
 
 
-        if(drawLeftGradient) {
+        if(drawLeftGradient.value) {
             Canvas(modifier = Modifier
                 .fillMaxHeight()
                 .width(72.dp)
@@ -582,7 +587,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
             }
         }
 
-        if(drawRightGradient) {
+        if(drawRightGradient.value) {
             Canvas(modifier = Modifier
                 .fillMaxHeight()
                 .width(72.dp)
@@ -807,7 +812,9 @@ fun ActionBar(
                             Spacer(modifier = Modifier.weight(1.0f))
                         }
 
-                        PinnedActionItems(onActionActivated, onActionAltActivated)
+                        if(inlineSuggestions.isEmpty()) {
+                            PinnedActionItems(onActionActivated, onActionAltActivated)
+                        }
                     }
                 }
             }

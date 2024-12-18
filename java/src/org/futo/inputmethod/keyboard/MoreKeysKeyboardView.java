@@ -55,6 +55,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     private int mActivePointerId;
 
+    private final float sideAllowance;
+
     protected MoreKeysKeyboardAccessibilityDelegate mAccessibilityDelegate;
 
     public MoreKeysKeyboardView(final Context context, final AttributeSet attrs) {
@@ -72,8 +74,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             mDivider.setAlpha(128);
         }
         moreKeysKeyboardViewAttr.recycle();
-        mKeyDetector = new MoreKeysDetector(getResources().getDimension(
-                R.dimen.config_more_keys_keyboard_slide_allowance));
+
+        sideAllowance = getResources().getDimension(
+                R.dimen.config_more_keys_keyboard_slide_allowance);
+        mKeyDetector = new MoreKeysDetector(sideAllowance);
     }
 
     @Override
@@ -150,12 +154,19 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         if(AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
             mOriginX = (int)container.getX() - CoordinateUtils.x(mCoordinates);
             mOriginY = (int)container.getY() - CoordinateUtils.y(mCoordinates);
+
+            mKeyDetector.setExtraAllowance(0);
         } else {
             mOriginX = CoordinateUtils.x(touchOrigin) - getDefaultCoordX();
 
             // For basing off of touch position: CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight()
             // Using container Y instead though
             mOriginY = (int)container.getY() - CoordinateUtils.y(mCoordinates);
+
+            // If we hit the key too low, keyDetector may not even register the moreKey hit. Need to set extra allowance
+            int touchOriginY = CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight();
+            int extraAllowance = Math.max(0, touchOriginY - mOriginY - (int)(sideAllowance));
+            mKeyDetector.setExtraAllowance(extraAllowance);
         }
         controller.onShowMoreKeysPanel(this);
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;

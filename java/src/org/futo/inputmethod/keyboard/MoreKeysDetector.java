@@ -17,19 +17,24 @@
 package org.futo.inputmethod.keyboard;
 
 public final class MoreKeysDetector extends KeyDetector {
-    private final int mSlideAllowanceSquare;
-    private final int mSlideAllowanceSquareTop;
+    private final float mSlideAllowance;
+    private final float mSlideAllowanceTop;
 
     public MoreKeysDetector(float slideAllowance) {
         super();
-        mSlideAllowanceSquare = (int)(slideAllowance * slideAllowance);
+        mSlideAllowance = slideAllowance;
         // Top slide allowance is slightly longer (sqrt(2) times) than other edges.
-        mSlideAllowanceSquareTop = mSlideAllowanceSquare * 2;
+        mSlideAllowanceTop = (mSlideAllowance * 1.414f);
     }
 
     @Override
     public boolean alwaysAllowsKeySelectionByDraggingFinger() {
         return true;
+    }
+
+    private int mExtraAllowance = 0;
+    public void setExtraAllowance(final int extraAllowance) {
+        mExtraAllowance = extraAllowance;
     }
 
     @Override
@@ -42,13 +47,12 @@ public final class MoreKeysDetector extends KeyDetector {
         final int touchY = getTouchY(y);
 
         Key nearestKey = null;
-        int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
+        float nearestDist = ((y < 0) ? mSlideAllowanceTop : mSlideAllowance) + mExtraAllowance;
         for (final Key key : keyboard.getSortedKeys()) {
             final float dist = key.distanceToEdge(touchX, touchY);
-            final int distSq = (int)(dist * dist);
-            if (distSq < nearestDist) {
+            if (dist < nearestDist) {
                 nearestKey = key;
-                nearestDist = distSq;
+                nearestDist = dist;
             }
         }
         return nearestKey;

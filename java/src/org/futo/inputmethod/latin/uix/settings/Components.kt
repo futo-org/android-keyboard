@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
@@ -200,6 +201,22 @@ fun SettingItem(
     subcontent: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
+    val textColor = when(LocalContentColor.current) {
+        MaterialTheme.colorScheme.onPrimary,
+        MaterialTheme.colorScheme.onSecondary,
+        MaterialTheme.colorScheme.onTertiary -> LocalContentColor.current
+
+        else -> MaterialTheme.colorScheme.onSurface
+    }
+
+    val subTextColor = when(textColor) {
+        MaterialTheme.colorScheme.onPrimary,
+        MaterialTheme.colorScheme.onSecondary,
+        MaterialTheme.colorScheme.onTertiary -> textColor.copy(alpha = 0.6f)
+
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -248,7 +265,7 @@ fun SettingItem(
                 Text(
                     title,
                     style = Typography.Heading.RegularMl,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = textColor,
                     modifier = Modifier.heightIn(min = 24.dp)
                 )
 
@@ -256,7 +273,7 @@ fun SettingItem(
                     Text(
                         subtitle,
                         style = Typography.SmallMl,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = subTextColor
                     )
                 } else if(subcontent != null) {
                     subcontent()

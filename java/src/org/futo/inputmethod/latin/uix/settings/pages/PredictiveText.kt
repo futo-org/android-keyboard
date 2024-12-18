@@ -91,8 +91,8 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
         )
 
         SettingToggleSharedPrefs(
-            title = "Key hitbox boosting",
-            subtitle = "Uses dictionary to determine relevant next keys, and boosts their hit area",
+            title = "Smart key-hit detection",
+            subtitle = "Uses dictionary to determine relevant next keys, and boosts their hit area. Boosting is avoided after a backspace",
             key = Settings.PREF_USE_DICT_KEY_BOOSTING,
             default = true
         )
