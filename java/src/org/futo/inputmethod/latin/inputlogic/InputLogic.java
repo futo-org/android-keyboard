@@ -1117,10 +1117,23 @@ public final class InputLogic {
 
             sendKeyCodePoint(settingsValues, codePoint);
 
-            boolean codeShouldBeFollowedBySpace = (settingsValues.isUsuallyFollowedBySpace(codePoint) && !settingsValues.isOptionallyPrecededBySpace(codePoint))
-                    || (spacePrecedesCursor
-                        && settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint))
-                    || (codePoint == Constants.CODE_DOUBLE_QUOTE && isInsideDoubleQuoteOrAfterDigit);
+            boolean codeShouldBeFollowedBySpace = false;
+            if(settingsValues.isUsuallyFollowedBySpace(codePoint)) {
+                if(settingsValues.isOptionallyPrecededBySpace(codePoint)) {
+                    // If it's optionally preceded by space, only auto-insert space if there is no space before cursor
+                    // i.e. typing "hello :" will not auto insert space
+                    // but typing "hello: " will auto insert space
+                    codeShouldBeFollowedBySpace = !spacePrecedesCursor;
+                } else {
+                    // otherwise it's safe to follow with space
+                    codeShouldBeFollowedBySpace = true;
+                }
+            } else if(settingsValues.isUsuallyFollowedBySpaceIffPrecededBySpace(codePoint)) {
+                // For some symbols like - and & we only insert if its preceded by a space
+                codeShouldBeFollowedBySpace = spacePrecedesCursor;
+            } else if(codePoint == Constants.CODE_DOUBLE_QUOTE) {
+                codeShouldBeFollowedBySpace = isInsideDoubleQuoteOrAfterDigit;
+            }
 
             if(autoInsertSpaces && codeShouldBeFollowedBySpace) {
                 insertOrSetPhantomSpace(settingsValues);
