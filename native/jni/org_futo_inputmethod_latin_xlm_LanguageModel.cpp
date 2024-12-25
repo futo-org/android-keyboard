@@ -519,6 +519,8 @@ struct LanguageModelState {
     bool MatchesBanned(const token_sequence &prior, int prior_hash, llama_token next, const std::vector<banned_sequence> &banned_sequences) const {
         int new_hash = append_sequence_hash(prior_hash, next);
         for(const auto &banned_sequence : banned_sequences) {
+            if(banned_sequence.sequence.empty()) continue;
+
             if(banned_sequence.sequence.back() == specialTokens.STAR && (prior.size() >= banned_sequence.sequence.size() - 1)) {
                 bool matches = true;
                 for(size_t i = 0; i < banned_sequence.sequence.size() - 1; i++) {
