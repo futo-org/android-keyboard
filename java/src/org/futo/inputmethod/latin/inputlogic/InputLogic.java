@@ -1115,6 +1115,9 @@ public final class InputLogic {
                 }
             }
 
+            final boolean fieldEmptyBeforeText =
+                    (mConnection.getCodePointBeforeCursor() == Constants.NOT_A_CODE);
+
             sendKeyCodePoint(settingsValues, codePoint);
 
             boolean codeShouldBeFollowedBySpace = false;
@@ -1138,8 +1141,7 @@ public final class InputLogic {
             // Do not automatically insert a space if there is no text preceding the cursor
             // (e.g. if we are typing "!g", do not insert space after exclamation mark,
             // and if we are typing ":)", do not insert space after colon)
-            codeShouldBeFollowedBySpace = codeShouldBeFollowedBySpace
-                    && (mConnection.getCodePointBeforeCursor() != Constants.NOT_A_CODE);
+            codeShouldBeFollowedBySpace = codeShouldBeFollowedBySpace && !fieldEmptyBeforeText;
 
             if(autoInsertSpaces && codeShouldBeFollowedBySpace) {
                 insertOrSetPhantomSpace(settingsValues);
