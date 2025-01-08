@@ -31,7 +31,7 @@ namespace util {
         if(bx == 0 && by == 0) {
             int dx = px - ax;
             int dy = py - ay;
-            return (dx * dx + dy * dy);
+            return sqrtf((float)(dx * dx + dy * dy));
         }
 
         int p_dot_b = px * bx + py * by;
