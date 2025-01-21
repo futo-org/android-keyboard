@@ -22,22 +22,14 @@ class KoreanCombiner(private val combineInitials: Boolean = false): Combiner {
             'ㅃ' /*bb*/, 'ㅅ' /*s*/,  'ㅆ' /*ss*/, 'ㅇ' /*ng*/,
             'ㅈ' /*j*/,  'ㅉ' /*jj*/, 'ㅊ' /*ch*/, 'ㅋ' /*k*/,
             'ㅌ' /*t*/,  'ㅍ' /*p*/,  'ㅎ' /*h*/
-        ) // Only these characters can appear at the START of a Hangul syllable,
+        ).withIndex().associate { it.value to it.index }
+            // This is a map, mapping 'ㄱ' to 0, 'ㄲ' to 1 and so on, same with `finals`
+        // Only these characters can appear at the START of a Hangul syllable,
         // and any syllable MUST have one of these
 
-        private val doubleableInitials = listOf('ㄱ', 'ㄷ', 'ㅂ', 'ㅅ', 'ㅈ')
+        private val doubleableInitials = setOf('ㄱ', 'ㄷ', 'ㅂ', 'ㅅ', 'ㅈ')
         // These initials can be doubled, by adding 1 to the codepoint number.
         // For example, ㄱ = U+3131, ㄲ = U+3132
-
-        private val vowels = listOf(
-            'ㅏ' /*a*/,   'ㅐ' /*ae*/,  'ㅑ' /*ya*/,   'ㅒ' /*yae*/,
-            'ㅓ' /*eo*/,  'ㅔ' /*e*/,   'ㅕ' /*yeo*/,  'ㅖ' /*ye*/,
-            'ㅗ' /*o*/,   'ㅘ' /*o+a*/, 'ㅙ' /*o+ae*/, 'ㅚ' /*o+i*/,
-            'ㅛ' /*yo*/,  'ㅜ' /*u*/,   'ㅝ' /*u+eo*/, 'ㅞ' /*u+e*/,
-            'ㅟ' /*u+i*/, 'ㅠ' /*yu*/,  'ㅡ' /*eu*/,   'ㅢ' /*eu+i*/,
-            'ㅣ' /*i*/
-        ) // Only these characters can appear in the MIDDLE (as a vowel) of a Hangul syllable,
-        // and any syllable MUST have one of these
 
         private val finals = listOf(
             null,       'ㄱ' /*g*/,  'ㄲ' /*gg*/, 'ㄳ' /*gs*/,
@@ -47,7 +39,8 @@ class KoreanCombiner(private val combineInitials: Boolean = false): Combiner {
             'ㅁ' /*m*/,  'ㅂ' /*b*/,  'ㅄ' /*bs*/, 'ㅅ' /*s*/,
             'ㅆ' /*ss*/, 'ㅇ' /*ng*/, 'ㅈ' /*j*/,  'ㅊ' /*ch*/,
             'ㅋ' /*k*/,  'ㅌ' /*t*/,  'ㅍ' /*p*/,  'ㅎ' /*h*/
-        ) // Only these characters can appear at the END of a Hangul syllable.
+        ).withIndex().associate { it.value to it.index }
+        // Only these characters can appear at the END of a Hangul syllable.
         // These are optional, and any syllable can only have either no final, or one of these finals.
         // The NULL at index 0 represents the possibility of having no final.
 
@@ -94,13 +87,13 @@ class KoreanCombiner(private val combineInitials: Boolean = false): Combiner {
     private fun toBlock(initial: Char, vowel: Char, final: Char?): Char {
         //merge initial, vowel and optional final letters into a hangul syllable block
         //using this formula: syllable = [(initial) × 588 + (vowel) × 28 + (final)] + 44032
-        return (GA_LOCATION + 588*initials.binarySearch(initial) + 28*vowels.binarySearch(vowel) +
-                if (final != null) finals.binarySearch(final) else 0).toChar()
+        return (GA_LOCATION + 588* initials[initial]!! + 28*(vowel.code - 0x314F) +
+                finals[final]!!).toChar()
     }
     private fun isHangulLetter(char: Char): Boolean { return char.code in 0x3131..0x3163}
-    private fun isInitial(char: Char): Boolean { return initials.binarySearch(char) >= 0 }
+    private fun isInitial(char: Char): Boolean { return initials.containsKey(char) }
     private fun isVowel(char: Char): Boolean { return char.code in 0x314F..0x3163 }
-    private fun isFinal(char: Char): Boolean { return finals.binarySearch(char) >= 0 }
+    private fun isFinal(char: Char): Boolean { return finals.containsKey(char) }
 
 
     private val buffer = StringBuilder() // This buffer holds a single word of UNCOMBINED Hangul letters.
@@ -115,7 +108,7 @@ class KoreanCombiner(private val combineInitials: Boolean = false): Combiner {
 
         for (char in buffer) {
             if (initial == null) { // Starting case
-                if (initials.binarySearch(char) < 0) {
+                if (!isInitial(char)) {
                     combined.append(char)
                     continue
                 } // If the current char is not an initial, just add it to the result
@@ -124,7 +117,7 @@ class KoreanCombiner(private val combineInitials: Boolean = false): Combiner {
             }
 
             if (vowel == null) { // There is an initial, but no vowel
-                if (combineInitials && initial == char && doubleableInitials.binarySearch(initial) >= 0) {
+                if (combineInitials && initial == char && doubleableInitials.contains(initial)) {
                     initial = (initial.code + 1).toChar()
                     continue
                 } // If current char is the same as the initial, then double the initial
