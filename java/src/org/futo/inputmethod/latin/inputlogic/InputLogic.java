@@ -1897,6 +1897,15 @@ public final class InputLogic {
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
                     true /* checkTextAfter */)) {
+
+            //Log.d(TAG, "Reset input state");
+            resetEntireInputState(
+                    mConnection.getExpectedSelectionStart(),
+                    mConnection.getExpectedSelectionEnd(),
+                    true
+            );
+            //Log.d(TAG, "ComposingText1 [" + mConnection.getComposingTextForDebug() + "] , TypedWord [" + mWordComposer.getTypedWord() + "]");
+
             // Show predictions.
             mWordComposer.setCapitalizedModeAtStartComposingTime(WordComposer.CAPS_MODE_OFF);
             mLatinIMELegacy.mHandler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_RECORRECTION);
