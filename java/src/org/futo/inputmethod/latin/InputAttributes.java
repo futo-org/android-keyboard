@@ -29,6 +29,7 @@ import org.futo.inputmethod.latin.utils.InputTypeUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Class to hold attributes of the input field.
@@ -54,6 +55,7 @@ public final class InputAttributes {
      */
     final public boolean mDisableGestureFloatingPreviewText;
     final public boolean mIsGeneralTextInput;
+    final public boolean mIsWebField;
     final public boolean mNoLearning;
     final private int mInputType;
     final private EditorInfo mEditorInfo;
@@ -95,6 +97,7 @@ public final class InputAttributes {
             mIsGeneralTextInput = false;
             mNoLearning = false;
             mIsEmailField = false;
+            mIsWebField = false;
             return;
         }
         // inputClass == InputType.TYPE_CLASS_TEXT
@@ -127,12 +130,17 @@ public final class InputAttributes {
 
         // TODO: This may need adjustment
         mInputTypeNoAutoCorrect = shouldSuppressSuggestions
-                || (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !flagAutoCorrect)
+                //|| (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !flagAutoCorrect)
                 || InputTypeUtils.isEmailVariation(variation)
                 || InputType.TYPE_TEXT_VARIATION_URI == variation
                 || InputType.TYPE_TEXT_VARIATION_FILTER == variation
-                || flagNoSuggestions
+                || (flagNoSuggestions && variation != InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT)
                 || mIsCodeField;
+
+        // TODO: Firefox-based browsers don't set it to WEB_EDIT_TEXT
+        // Currently only checking against Firefox package name
+        mIsWebField = (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT)
+                || Objects.equals(editorInfo.packageName, "org.mozilla.firefox");
 
         // If it's a browser edit field and auto correct is not ON explicitly, then
         // disable auto correction, but keep suggestions on.
