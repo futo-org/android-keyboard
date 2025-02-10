@@ -407,6 +407,17 @@ public class LanguageModelFacilitator(
                 filtered.add(maxWord)
             }
 
+            // In some cases the LM will predict an uppercased word but dictionary predicts lowercased,
+            // we should prefer the lowercase version to reduce automatically capitalizing which can be
+            // annoying
+            val bothAlgorithmsCameToSameConclusionButLowerCased = maxWordDict?.mWord == maxWord?.mWord?.lowercase()
+            if(bothAlgorithmsCameToSameConclusionButLowerCased && maxWord != null && maxWordDict != null) {
+                val clone = maxWordDict.scoreAtLeast(maxWord)
+                autocorrectWord = clone
+                suggestionResults.add(clone)
+                filtered.add(maxWordDict)
+            }
+
             if(transformerWeight <= 0.0f) {
                 if(suggestedWordsDictList.isNullOrEmpty()) {
                     transformerWeight = 1.0f
