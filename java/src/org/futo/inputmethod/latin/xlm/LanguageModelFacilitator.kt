@@ -39,6 +39,7 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.utils.AsyncResultHolder
 import org.futo.inputmethod.latin.utils.SuggestionResults
+import kotlin.math.ceil
 
 
 val AutocorrectThresholdSetting = SettingsKey(
@@ -68,6 +69,21 @@ private fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
     )
 
     result.mOriginatesFromTransformerLM = mOriginatesFromTransformerLM || other.mOriginatesFromTransformerLM
+
+    return result
+}
+
+
+private fun SuggestedWordInfo.scoreAtLeast(other: SuggestedWordInfo): SuggestedWordInfo {
+    val result = SuggestedWordInfo(
+        mWord,
+        mPrevWordsContext,
+        mScore.coerceAtLeast(other.mScore + 1),
+        SuggestedWordInfo.KIND_WHITELIST or SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION,
+        null,
+        0,
+        0
+    )
 
     return result
 }
@@ -397,7 +413,33 @@ public class LanguageModelFacilitator(
                 }
             }
 
-            suggestionResults.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
+            // Add reweightedSuggestions, with space replacement logic. It can replace one of the LM
+            // suggestions if the top dictionary result has a space, based on heuristics about the
+            // relative quality of the LM suggestion
+            val spaceReplacementPossible = maxWordDict != null && maxWordDict.word.count { it == ' ' } == 1
+            var spaceReplacementPerformed = false
+            for(i in 0 until reweightedSuggestions.size) {
+                val word = reweightedSuggestions[i]
+                if(filtered.contains(word)) continue
+
+                if(!spaceReplacementPerformed && spaceReplacementPossible && (
+                            // If the dict score is high enough, allow the space suggestion
+                            ((maxWordDict.mScore) > (word.mScore / 3))
+                                    // Most LM-generated dashed suggestions are distractions, so accept the space suggestion
+                                    || (word.word.contains('-'))
+                                    // If the typed word is much longer than the transformer word, just accept the space suggestion
+                                    || (values.composedData.mTypedWord.length > ceil(word.word.length * 3.0 / 2.0))
+                            )
+                ) {
+                    val clone = maxWordDict.scoreAtLeast(word)
+                    suggestionResults.add(clone)
+                    spaceReplacementPerformed = true
+                    continue
+                }
+
+                suggestionResults.add(word)
+            }
+
             if(suggestionResults.mRawSuggestions != null) {
                 suggestionResults.mRawSuggestions.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
             }
