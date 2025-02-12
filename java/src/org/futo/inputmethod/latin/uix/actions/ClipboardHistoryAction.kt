@@ -267,6 +267,9 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
             (!it.pinned) && (it.timestamp < minimumTimestamp)
         }
 
+        // Remove copies of default clipboard entry (TODO: this can be removed eventually)
+        if(clipboardHistory.count { it == DefaultClipboardEntry } > 1)
+            clipboardHistory.removeAll { it == DefaultClipboardEntry }
 
         val maxItems = 25
         val numUnpinnedItems = clipboardHistory.filter { !it.pinned }.size
