@@ -187,16 +187,18 @@ fun ClipboardEntryViewPreview() {
     }
 }
 
+val DefaultClipboardEntry = ClipboardEntry(
+    timestamp = 0L,
+    pinned = true,
+    text = "Clipboard entries will appear here",
+    uri = null,
+    mimeTypes = listOf()
+)
+
 class ClipboardHistoryManager(val context: Context, val coroutineScope: LifecycleCoroutineScope) : PersistentActionState {
     private val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-    val clipboardHistory = mutableStateListOf(ClipboardEntry(
-        timestamp = 0L,
-        pinned = true,
-        text = "Clipboard entries will appear here",
-        uri = null,
-        mimeTypes = listOf()
-    ))
+    val clipboardHistory = mutableStateListOf<ClipboardEntry>()
 
     var clipboardLoaded = false
     
@@ -351,6 +353,8 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                 clipboardHistory.clear()
                 clipboardHistory.addAll(data)
                 pruneOldItems()
+            } else {
+                clipboardHistory.add(DefaultClipboardEntry)
             }
 
             clipboardLoaded = true
