@@ -36,7 +36,7 @@ val PREFER_BLUETOOTH = SettingsKey(
 
 val CAN_EXPAND_SPACE = SettingsKey(
     key = booleanPreferencesKey("can_expand_space"),
-    default = false
+    default = true
 )
 
 val AUDIO_FOCUS = SettingsKey(
