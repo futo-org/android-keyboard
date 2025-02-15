@@ -79,7 +79,8 @@ private fun getRecordingDeviceKind(type: Int): String {
 data class RecordingSettings(
     val preferBluetoothMic: Boolean,
     val requestAudioFocus: Boolean,
-    val canExpandSpace: Boolean
+    val canExpandSpace: Boolean,
+    val useVADAutoStop: Boolean
 )
 
 data class AudioRecognizerSettings(
@@ -103,6 +104,7 @@ class AudioRecognizer(
     private val modelRunner = MultiModelRunner(modelManager)
 
     private val canExpandSpace = settings.recordingConfiguration.canExpandSpace
+    private val useVAD = settings.recordingConfiguration.useVADAutoStop
 
     private var floatSamples: FloatBuffer = FloatBuffer.allocate(16000 * 30)
     private var recorderJob: Job? = null
@@ -293,7 +295,7 @@ class AudioRecognizer(
         modelRunner.preload(settings.modelRunConfiguration)
     }
 
-    private suspend fun recordingJob(recorder: AudioRecord, vad: VadModel) {
+    private suspend fun recordingJob(recorder: AudioRecord, vad: VadModel?) {
         var hasTalked = false
         var anyNoiseAtAll = false
 
@@ -328,7 +330,7 @@ class AudioRecognizer(
                 isRunningOutOfSpace = false
             }
 
-            val hasNotTalkedRecently = hasTalked && (numConsecutiveNonSpeech > 66)
+            val hasNotTalkedRecently = hasTalked && (numConsecutiveNonSpeech > 66) && useVAD
             if (isRunningOutOfSpace || hasNotTalkedRecently) {
                 yield()
                 withContext(Dispatchers.Main) {
@@ -338,30 +340,32 @@ class AudioRecognizer(
             }
 
             // Run VAD
-            var remainingSamples = nRead
-            var offset = 0
-            while (remainingSamples > 0) {
-                if (!vadSampleBuffer.hasRemaining()) {
-                    val isSpeech = vad.isSpeech(vadSampleBuffer.array())
-                    vadSampleBuffer.clear()
-                    vadSampleBuffer.rewind()
+            if(useVAD && vad != null) {
+                var remainingSamples = nRead
+                var offset = 0
+                while (remainingSamples > 0) {
+                    if (!vadSampleBuffer.hasRemaining()) {
+                        val isSpeech = vad.isSpeech(vadSampleBuffer.array())
+                        vadSampleBuffer.clear()
+                        vadSampleBuffer.rewind()
 
-                    if (!isSpeech) {
-                        numConsecutiveNonSpeech++
-                        numConsecutiveSpeech = 0
-                    } else {
-                        numConsecutiveNonSpeech = 0
-                        numConsecutiveSpeech++
+                        if (!isSpeech) {
+                            numConsecutiveNonSpeech++
+                            numConsecutiveSpeech = 0
+                        } else {
+                            numConsecutiveNonSpeech = 0
+                            numConsecutiveSpeech++
+                        }
                     }
-                }
 
-                val samplesToRead = min(min(remainingSamples, 480), vadSampleBuffer.remaining())
-                for (i in 0 until samplesToRead) {
-                    vadSampleBuffer.put(
-                        samples[offset]
-                    )
-                    offset += 1
-                    remainingSamples -= 1
+                    val samplesToRead = min(min(remainingSamples, 480), vadSampleBuffer.remaining())
+                    for (i in 0 until samplesToRead) {
+                        vadSampleBuffer.put(
+                            samples[offset]
+                        )
+                        offset += 1
+                        remainingSamples -= 1
+                    }
                 }
             }
 
@@ -456,8 +460,12 @@ class AudioRecognizer(
 
             recorderJob = lifecycleScope.launch {
                 withContext(Dispatchers.Default) {
-                    createVad().use { vad ->
-                        recordingJob(recorder, vad)
+                    if(useVAD) {
+                        createVad().use { vad ->
+                            recordingJob(recorder, vad)
+                        }
+                    } else {
+                        recordingJob(recorder, null)
                     }
                 }
             }

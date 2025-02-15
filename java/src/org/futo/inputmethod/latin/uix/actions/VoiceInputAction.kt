@@ -35,6 +35,7 @@ import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.PREFER_BLUETOOTH
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.ResourceHelper
+import org.futo.inputmethod.latin.uix.USE_VAD_AUTOSTOP
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
@@ -108,6 +109,7 @@ private class VoiceInputActionWindow(
         val useBluetoothAudio = context.getSetting(PREFER_BLUETOOTH)
         val requestAudioFocus = context.getSetting(AUDIO_FOCUS)
         val canExpandSpace = context.getSetting(CAN_EXPAND_SPACE)
+        val useVAD = context.getSetting(USE_VAD_AUTOSTOP)
 
         val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
@@ -132,7 +134,8 @@ private class VoiceInputActionWindow(
             recordingConfiguration = RecordingSettings(
                 preferBluetoothMic = useBluetoothAudio,
                 requestAudioFocus = requestAudioFocus,
-                canExpandSpace = canExpandSpace
+                canExpandSpace = canExpandSpace,
+                useVADAutoStop = useVAD
             )
         )
     }
