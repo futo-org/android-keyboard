@@ -113,6 +113,7 @@ import org.futo.inputmethod.latin.uix.resizing.KeyboardResizers
 import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
+import org.futo.inputmethod.latin.uix.settings.pages.InlineAutofillSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
@@ -1143,6 +1144,9 @@ class UixManager(private val latinIME: LatinIME) {
 
     @RequiresApi(Build.VERSION_CODES.R)
     fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
+        if(latinIME.getSetting(ActionBarDisplayedSetting) == false) return false
+        if(latinIME.getSetting(InlineAutofillSetting) == false) return false
+
         currentNotice.value?.onDismiss(latinIME)
 
         inlineSuggestions.value = response.inlineSuggestions.map {
