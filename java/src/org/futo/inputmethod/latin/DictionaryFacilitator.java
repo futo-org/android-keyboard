@@ -73,7 +73,7 @@ public interface DictionaryFacilitator {
      *
      * @param locale the locale to test against
      */
-    boolean isForLocale(final Locale locale);
+    boolean isForLocales(final List<Locale> locale);
 
     /**
      * Returns whether this facilitator is exactly for this account.
@@ -106,7 +106,8 @@ public interface DictionaryFacilitator {
 
     boolean isActive();
 
-    Locale getLocale();
+    Locale getPrimaryLocale();
+    List<Locale> getLocales();
 
     boolean usesContacts();
 
@@ -114,7 +115,7 @@ public interface DictionaryFacilitator {
 
     void resetDictionaries(
             final Context context,
-            final Locale newLocale,
+            final List<Locale> newLocales,
             final boolean useContactsDict,
             final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
@@ -149,9 +150,13 @@ public interface DictionaryFacilitator {
     void waitForLoadingDictionariesForTesting(final long timeout, final TimeUnit unit)
             throws InterruptedException;
 
+    void onWordCommitted(String word);
+
+    Locale getMostConfidentLocale();
+
     void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
-            @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,
-            final boolean blockPotentiallyOffensive);
+                          @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,
+                          final boolean blockPotentiallyOffensive);
 
     void unlearnFromUserHistory(final String word,
             @Nonnull final NgramContext ngramContext, final long timeStampInSeconds,

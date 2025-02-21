@@ -98,6 +98,7 @@ import org.futo.inputmethod.latin.FoldingOptions
 import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
@@ -316,8 +317,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(code, view)
     }
 
-    override fun getActiveLocale(): Locale {
-        return latinIME.latinIMELegacy.locale
+    override fun getActiveLocales(): List<Locale> {
+        return RichInputMethodManager.getInstance().currentSubtypeLocales
     }
 
     override fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo) {

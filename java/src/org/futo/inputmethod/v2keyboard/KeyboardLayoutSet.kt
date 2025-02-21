@@ -13,6 +13,7 @@ import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutPage
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
+import org.futo.inputmethod.keyboard.internal.KeyboardTextsMultiSet
 import org.futo.inputmethod.latin.settings.LongPressKeySettings
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
@@ -79,6 +80,7 @@ data class KeyboardLayoutSetV2Params(
     val computedSize: ComputedKeyboardSize,
     val keyboardLayoutSet: String,
     val locale: Locale,
+    val multilingualTypingLocales: List<Locale>? = null,
     val editorInfo: EditorInfo?,
     val numberRow: Boolean,
     val arrowRow: Boolean,
@@ -98,6 +100,7 @@ class KeyboardLayoutSetV2 internal constructor(
     val privateParams = editorInfo.getPrivateImeOptions()
     val forcedLayout = privateParams["org.futo.inputmethod.latin.ForceLayout"]
     val forcedLocale = privateParams["org.futo.inputmethod.latin.ForceLocale"]?.let { Locale.forLanguageTag(it) }
+    val forcedMultilingualTypingLanguages: List<Locale>? = forcedLocale?.let { emptyList() }
 
 
     @OptIn(ExperimentalEncodingApi::class)
@@ -269,6 +272,8 @@ Layout: $layoutName
 
     fun getKeyboard(element: KeyboardLayoutElement): Keyboard {
 
+        val multilingualTypingLocales = forcedMultilingualTypingLanguages ?: params.multilingualTypingLocales
+
         val keyboardId = KeyboardId(
             params.keyboardLayoutSet,
             forcedLocale ?: params.locale,
@@ -294,6 +299,10 @@ Layout: $layoutName
         val keyboardParams = KeyboardParams().apply {
             mId = keyboardId
             mTextsSet.setLocale(keyboardId.locale, context)
+
+            if(multilingualTypingLocales?.isNotEmpty() == true) {
+                mTextsSet = KeyboardTextsMultiSet(context, keyboardId.locale, multilingualTypingLocales)
+            }
         }
 
         val layoutParams = LayoutParams(

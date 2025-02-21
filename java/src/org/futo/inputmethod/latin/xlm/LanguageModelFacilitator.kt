@@ -208,7 +208,7 @@ public class LanguageModelFacilitator(
     private suspend fun runLanguageModel(values: PredictionInputValues): ArrayList<SuggestedWordInfo>? {
         if(transformerDisabled) return null
 
-        val locale = dictionaryFacilitator.locale ?: return null
+        val locale = dictionaryFacilitator.primaryLocale ?: return null
         if ((languageModel == null && locale.language != skipLanguage) || (languageModel != null && languageModel?.locale?.language != locale.language)) {
             skipLanguage = null
             Log.d(
@@ -229,6 +229,8 @@ public class LanguageModelFacilitator(
                 return null
             }
         }
+
+        if(dictionaryFacilitator.mostConfidentLocale != languageModel?.locale) return null
 
         val settingsValues = settings.current ?: return null
 
@@ -282,6 +284,7 @@ public class LanguageModelFacilitator(
             }
 
             var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
+            if(dictionaryFacilitator.locales.size > 1) transformerWeight = 1.0f
 
             val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
 
@@ -485,7 +488,7 @@ public class LanguageModelFacilitator(
             }
 
             val settingsValues = settings.current ?: return
-            val locale = dictionaryFacilitator.locale ?: return
+            val locale = dictionaryFacilitator.primaryLocale ?: return
             val wordComposer = inputLogic.mWordComposer ?: return
 
             val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
@@ -600,7 +603,7 @@ public class LanguageModelFacilitator(
 
     public fun shouldPassThroughToLegacy(): Boolean = when {
         (!settings.current.mTransformerPredictionEnabled) -> true
-        (dictionaryFacilitator.locale.language == skipLanguage) -> true
+        (dictionaryFacilitator.primaryLocale.language == skipLanguage) -> true
         else -> false
     }
 
@@ -656,6 +659,8 @@ public class LanguageModelFacilitator(
         if(!trainingEnabled) return
         if(settings.current?.mInputAttributes?.mNoLearning != false) return
 
+        if(dictionaryFacilitator.mostConfidentLocale != languageModel?.locale) return
+
         val wordCtx = ngramContext.fullContext.trim().lines().last()
         var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
         if(committedNgramCtx.isEmpty()) {
@@ -688,7 +693,7 @@ public class LanguageModelFacilitator(
                 misspelledWord.trim(),
                 word,
                 importance,
-                dictionaryFacilitator.locale.language,
+                dictionaryFacilitator.primaryLocale.language,
                 timeStampInSeconds
             )
         } else {
@@ -700,7 +705,7 @@ public class LanguageModelFacilitator(
                 null,
                 word,
                 importance,
-                dictionaryFacilitator.locale.language,
+                dictionaryFacilitator.primaryLocale.language,
                 timeStampInSeconds
             )
         }

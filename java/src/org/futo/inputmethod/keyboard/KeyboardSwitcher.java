@@ -50,6 +50,9 @@ import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params;
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator;
 
+import java.util.List;
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -129,9 +132,11 @@ public final class KeyboardSwitcher implements SwitchActions {
         final RichInputMethodSubtype subtype = mRichImm.getCurrentSubtype();
 
         String layoutSetName = subtype.getKeyboardLayoutSetName();
+        List<Locale> multilingualTypingLanguages = subtype.getMultilingualTypingLanguages(mThemeContext);
         String overrideLayoutSet = KeyboardLayoutSetKt.getPrimaryLayoutOverride(editorInfo);
         if(overrideLayoutSet != null) {
             layoutSetName = overrideLayoutSet;
+            multilingualTypingLanguages = null;
         }
 
 
@@ -142,6 +147,7 @@ public final class KeyboardSwitcher implements SwitchActions {
                 computedSize,
                 layoutSetName,
                 subtype.getLocale(),
+                multilingualTypingLanguages,
                 editorInfo == null ? new EditorInfo() : editorInfo,
                 settingsValues.mIsNumberRowEnabled,
                 settingsValues.mIsArrowRowEnabled,

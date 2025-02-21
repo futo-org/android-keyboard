@@ -16,15 +16,12 @@
 
 package org.futo.inputmethod.latin;
 
-import static org.futo.inputmethod.latin.common.Constants.Subtype.KEYBOARD_MODE;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -32,14 +29,12 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.compat.InputMethodManagerCompatWrapper;
-import org.futo.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.uix.PreferenceUtils;
 import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
-import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -202,6 +197,17 @@ public class RichInputMethodManager {
             return sForcedSubtypeForTesting.getLocale();
         }
         return getCurrentSubtype().getLocale();
+    }
+
+    @Nonnull
+    public List<Locale> getCurrentSubtypeLocales() {
+        final RichInputMethodSubtype subtype = getCurrentSubtype();
+        final Locale currentLocale = subtype.getLocale();
+
+        final ArrayList<Locale> result = new ArrayList<>();
+        result.add(currentLocale);
+        result.addAll(subtype.getMultilingualTypingLanguages(mContext));
+        return result;
     }
 
     @Nonnull

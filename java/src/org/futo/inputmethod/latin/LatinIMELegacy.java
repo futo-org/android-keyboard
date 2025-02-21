@@ -622,7 +622,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         // been displayed. Opening dictionaries never affects responsivity as dictionaries are
         // asynchronously loaded.
         if (!mHandler.hasPendingReopenDictionaries()) {
-            resetDictionaryFacilitator(mLocale);
+            resetDictionaryFacilitator(mRichImm.getCurrentSubtypeLocales());
         }
         refreshPersonalizationDictionarySession(currentSettingsValues);
         resetDictionaryFacilitatorIfNecessary();
@@ -652,9 +652,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     void resetDictionaryFacilitatorIfNecessary() {
-        final Locale subtypeSwitcherLocale = mRichImm.getCurrentSubtypeLocale();
-        final Locale subtypeLocale;
-        if (subtypeSwitcherLocale == null) {
+        final List<Locale> subtypeSwitcherLocale = mRichImm.getCurrentSubtypeLocales();
+        final List<Locale> subtypeLocale;
+        /*if (subtypeSwitcherLocale == null) {
             // This happens in very rare corner cases - for example, immediately after a switch
             // to LatinIME has been requested, about a frame later another switch happens. In this
             // case, we are about to go down but we still don't know it, however the system tells
@@ -663,8 +663,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
             subtypeLocale = mInputMethodService.getResources().getConfiguration().locale;
         } else {
             subtypeLocale = subtypeSwitcherLocale;
-        }
-        if (mDictionaryFacilitator.isForLocale(subtypeLocale)
+        }*/
+        subtypeLocale = subtypeSwitcherLocale;
+        if (mDictionaryFacilitator.isForLocales(subtypeLocale)
                 && mDictionaryFacilitator.isForAccount(mSettings.getCurrent().mAccount)) {
             return;
         }
@@ -675,12 +676,12 @@ public class LatinIMELegacy implements KeyboardActionListener,
      * Reset the facilitator by loading dictionaries for the given locale and
      * the current settings values.
      *
-     * @param locale the locale
+     * @param locales the locales
      */
     // TODO: make sure the current settings always have the right locales, and read from them.
-    private void resetDictionaryFacilitator(final Locale locale) {
+    private void resetDictionaryFacilitator(final List<Locale> locales) {
         final SettingsValues settingsValues = mSettings.getCurrent();
-        mDictionaryFacilitator.resetDictionaries(mInputMethodService, locale,
+        mDictionaryFacilitator.resetDictionaries(mInputMethodService, locales,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
                 false /* forceReloadMainDictionary */,
                 settingsValues.mAccount, "" /* dictNamePrefix */,
@@ -698,7 +699,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     /* package private */ void resetSuggestMainDict() {
         final SettingsValues settingsValues = mSettings.getCurrent();
         mDictionaryFacilitator.resetDictionaries(mInputMethodService,
-                mDictionaryFacilitator.getLocale(), settingsValues.mUseContactsDict,
+                mDictionaryFacilitator.getLocales(), settingsValues.mUseContactsDict,
                 settingsValues.mUsePersonalizedDicts,
                 true /* forceReloadMainDictionary */,
                 settingsValues.mAccount, "" /* dictNamePrefix */,
@@ -1894,8 +1895,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
     // DO NOT USE THIS for any other purpose than testing. This can break the keyboard badly.
     @UsedForTesting
     void replaceDictionariesForTest(final Locale locale) {
+        final ArrayList<Locale> locales = new ArrayList<>();
+        locales.add(locale);
+
         final SettingsValues settingsValues = mSettings.getCurrent();
-        mDictionaryFacilitator.resetDictionaries(mInputMethodService, locale,
+        mDictionaryFacilitator.resetDictionaries(mInputMethodService, locales,
             settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
             false /* forceReloadMainDictionary */,
             settingsValues.mAccount, "", /* dictionaryNamePrefix */

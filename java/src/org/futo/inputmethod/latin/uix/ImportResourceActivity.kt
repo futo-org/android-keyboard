@@ -339,8 +339,8 @@ object ResourceHelper {
     suspend fun findKeyForLocaleAndKind(context: Context, locale: Locale, kind: FileKind): String? {
         val keysToTry = listOf(
             locale.language,
-            "${locale.language}_${locale.country}",
-            "${locale.language.lowercase()}_${locale.country.uppercase()}",
+            "${locale.language}_${locale.country.ifEmpty { locale.language }}",
+            "${locale.language.lowercase()}_${locale.country.ifEmpty { locale.language }.uppercase()}",
         )
 
         val key: String = keysToTry.firstNotNullOfOrNull { key ->

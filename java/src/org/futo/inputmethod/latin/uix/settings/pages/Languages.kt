@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -34,26 +35,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.BinaryDictionaryGetter
+import org.futo.inputmethod.latin.MultilingualBucketSetting
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.ResourceHelper
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.icon
 import org.futo.inputmethod.latin.uix.kindTitle
@@ -63,6 +64,7 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.openModelImporter
+import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
@@ -77,7 +79,8 @@ import java.util.Locale
 data class LanguageItem (
     val languageName: String,
     val options: LanguageOptions,
-    val layouts: List<String>
+    val layouts: List<String>,
+    val inMultilingualBucket: Boolean
 )
 
 @Composable
@@ -191,7 +194,8 @@ fun LanguageSurface(
     onConfigurableSelected: (FileKind) -> Unit,
     onLayoutRemoved: (String) -> Unit,
     onLayoutAdditionRequested: () -> Unit,
-    onLanguageRemoved: () -> Unit
+    onLanguageRemoved: () -> Unit,
+    onToggleMultilingualBucket: (Boolean) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
@@ -258,6 +262,25 @@ fun LanguageSurface(
 
                 Spacer(modifier = Modifier.height(21.dp))
 
+                Row(Modifier.padding(start = 16.dp, end = 6.dp)) {
+                    Text(
+                        "Multilingual Typing",
+                        modifier = Modifier
+                            .weight(1.0f)
+                            .align(Alignment.CenterVertically),
+                        style = Typography.SmallMl,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Checkbox(
+                        checked = item.inMultilingualBucket,
+                        onCheckedChange = { onToggleMultilingualBucket(it) },
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+
+
+                Spacer(modifier = Modifier.height(21.dp))
+
                 ActionableItem(
                     icon = painterResource(id = R.drawable.plus_circle),
                     text = "Add Keyboard Layout",
@@ -292,8 +315,11 @@ fun LanguageSurfacePreview() {
             layouts = listOf(
                 "Keyboard Name",
                 "Keyboard Name"
-            )
-        ), onLanguageRemoved = { }, onLayoutRemoved = { }, onConfigurableSelected = { }, onLayoutAdditionRequested = { })
+            ),
+            inMultilingualBucket = true
+        ),
+            onLanguageRemoved = { }, onLayoutRemoved = { }, onConfigurableSelected = { },
+            onLayoutAdditionRequested = { }, onToggleMultilingualBucket = { })
     }
 }
 
@@ -428,6 +454,8 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
         }.toSet())
     }
 
+    val multilingualBucket = useDataStore(MultilingualBucketSetting)
+
     val inputMethodKeys = remember(inputMethodList) { inputMethodList.keys.toList().sorted() }
 
     if(deleteDialogInfo.value != null) {
@@ -527,7 +555,10 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                             context,
                             it.getExtraValueOf(Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET) ?: "default"
                         )
-                    }
+                    },
+                    inMultilingualBucket = multilingualBucket.value.contains(
+                        localeString
+                    )
                 ),
                 onLanguageRemoved = {
                     languageDeleteInfo.value = locale
@@ -553,6 +584,16 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 },
                 onLayoutAdditionRequested = {
                     navController.navigate("addLayout/${locale.toString().urlEncode()}")
+                },
+                onToggleMultilingualBucket = { to ->
+                    val newSet = multilingualBucket.value.toMutableSet()
+                    if(to) {
+                        newSet.add(localeString)
+                    } else {
+                        newSet.remove(localeString)
+                    }
+
+                    multilingualBucket.setValue(newSet)
                 }
             )
 
