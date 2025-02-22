@@ -76,8 +76,7 @@ public final class TestsUkrainian extends LayoutTestsBase {
                     // U+0438: "и" CYRILLIC SMALL LETTER I
                     .replaceKeyOfLabel(EastSlavic.ROW3_5, "\u0438")
                     // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
-                    // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
-                    .setMoreKeysOf("\u044C", "\u044A");
+                    .setMoreKeysOf("\u044C");
         }
     }
 }
