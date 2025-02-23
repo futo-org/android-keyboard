@@ -138,8 +138,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         // TODO: Run evaluation to determine a reasonable value for these constants. The current
         // values are ad-hoc and chosen without any particular care or methodology.
         public static final float WEIGHT_FOR_MOST_PROBABLE_LANGUAGE = 1.0f;
-        public static final float WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.95f;
-        public static final float WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.6f;
+        public static final float WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.6f;
+        public static final float WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.8f;
 
         /**
          * The locale associated with the dictionary group.
@@ -738,6 +738,23 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return codePoints;
     }
 
+    private void updateDictionaryGroupWeights() {
+        int maxConfidence = 0;
+        for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
+            if(dictionaryGroup.mConfidence > maxConfidence) maxConfidence = dictionaryGroup.mConfidence;
+        }
+
+        for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
+            if(dictionaryGroup.mConfidence >= maxConfidence) {
+                dictionaryGroup.mWeightForTypingInLocale = DictionaryGroup.WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
+                dictionaryGroup.mWeightForGesturingInLocale = DictionaryGroup.WEIGHT_FOR_MOST_PROBABLE_LANGUAGE;
+            } else {
+                dictionaryGroup.mWeightForTypingInLocale = DictionaryGroup.WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE;
+                dictionaryGroup.mWeightForGesturingInLocale = DictionaryGroup.WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE;
+            }
+        }
+    }
+
     // TODO: Revise the way to fusion suggestion results.
     @Override
     @Nonnull public SuggestionResults getSuggestionResults(ComposedData composedData,
@@ -750,6 +767,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 false /* firstSuggestionExceedsConfidenceThreshold */);
         final float[] weightOfLangModelVsSpatialModel =
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
+
+        updateDictionaryGroupWeights();
+
         for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
             for (final String dictType : ALL_DICTIONARY_TYPES) {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
