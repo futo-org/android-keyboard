@@ -39,11 +39,14 @@ public final class KeyboardTextsMultiSet extends KeyboardTextsSet {
     public String getText(String name) {
         // TODO: Blacklist certain ones like period key, comma key, since they break it. Should disable duplication too
         if(name.startsWith("morekeys_")) {
-            StringBuilder combined = new StringBuilder(base.getText(name));
+            ArrayList<String> texts = new ArrayList<>();
+            texts.add(base.getText(name));
             for(KeyboardTextsSet extra : this.extra) {
-                combined.append(",").append(extra.getText(name));
+                String extraText = extra.getText(name);
+                if(!texts.contains(extraText)) texts.add(extraText);
             }
-            return combined.toString();
+
+            return String.join(",", texts);
         } else {
             return base.getText(name);
         }
