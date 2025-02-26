@@ -16,6 +16,7 @@
 
 package org.futo.inputmethod.latin;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +37,7 @@ public class DictionaryFacilitatorLruCache {
     private final Object mLock = new Object();
     private final DictionaryFacilitator mDictionaryFacilitator;
     private boolean mUseContactsDictionary;
-    private Locale mLocale;
+    private List<Locale> mLocales;
 
     public DictionaryFacilitatorLruCache(final Context context, final String dictionaryNamePrefix) {
         mContext = context;
@@ -66,9 +67,9 @@ public class DictionaryFacilitatorLruCache {
 
     private void resetDictionariesForLocaleLocked() {
         // Nothing to do if the locale is null.  This would be the case before any get() calls.
-        if (mLocale != null) {
+        if (mLocales != null && !mLocales.isEmpty()) {
           // Note: Given that personalized dictionaries are not used here; we can pass null account.
-          mDictionaryFacilitator.resetDictionaries(mContext, mLocale,
+          mDictionaryFacilitator.resetDictionaries(mContext, mLocales,
               mUseContactsDictionary, false /* usePersonalizedDicts */,
               false /* forceReloadMainDictionary */, null /* account */,
               mDictionaryNamePrefix, null /* listener */);
@@ -87,10 +88,10 @@ public class DictionaryFacilitatorLruCache {
         }
     }
 
-    public DictionaryFacilitator get(final Locale locale) {
+    public DictionaryFacilitator get(final List<Locale> locales) {
         synchronized (mLock) {
-            if (!mDictionaryFacilitator.isForLocale(locale)) {
-                mLocale = locale;
+            if (!mDictionaryFacilitator.isForLocales(locales)) {
+                mLocales = locales;
                 resetDictionariesForLocaleLocked();
             }
             waitForLoadingMainDictionary(mDictionaryFacilitator);

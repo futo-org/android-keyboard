@@ -40,6 +40,8 @@ interface DynamicThemeProvider {
     val moreKeysTextColor: Int
     val moreKeysKeyboardBackground: Drawable
 
+    val displayDpi: Int
+
     @ColorInt
     fun getColor(i: Int): Int?
 

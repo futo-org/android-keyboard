@@ -39,6 +39,7 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.utils.AsyncResultHolder
 import org.futo.inputmethod.latin.utils.SuggestionResults
+import kotlin.math.ceil
 
 
 val AutocorrectThresholdSetting = SettingsKey(
@@ -68,6 +69,21 @@ private fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
     )
 
     result.mOriginatesFromTransformerLM = mOriginatesFromTransformerLM || other.mOriginatesFromTransformerLM
+
+    return result
+}
+
+
+private fun SuggestedWordInfo.scoreAtLeast(other: SuggestedWordInfo): SuggestedWordInfo {
+    val result = SuggestedWordInfo(
+        mWord,
+        mPrevWordsContext,
+        mScore.coerceAtLeast(other.mScore + 1),
+        SuggestedWordInfo.KIND_WHITELIST or SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION,
+        null,
+        0,
+        0
+    )
 
     return result
 }
@@ -192,7 +208,7 @@ public class LanguageModelFacilitator(
     private suspend fun runLanguageModel(values: PredictionInputValues): ArrayList<SuggestedWordInfo>? {
         if(transformerDisabled) return null
 
-        val locale = dictionaryFacilitator.locale ?: return null
+        val locale = dictionaryFacilitator.primaryLocale ?: return null
         if ((languageModel == null && locale.language != skipLanguage) || (languageModel != null && languageModel?.locale?.language != locale.language)) {
             skipLanguage = null
             Log.d(
@@ -213,6 +229,8 @@ public class LanguageModelFacilitator(
                 return null
             }
         }
+
+        if(dictionaryFacilitator.mostConfidentLocale != languageModel?.locale) return null
 
         val settingsValues = settings.current ?: return null
 
@@ -266,6 +284,7 @@ public class LanguageModelFacilitator(
             }
 
             var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
+            if(dictionaryFacilitator.locales.size > 1) transformerWeight = 1.0f
 
             val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
 
@@ -391,13 +410,50 @@ public class LanguageModelFacilitator(
                 filtered.add(maxWord)
             }
 
+            // In some cases the LM will predict an uppercased word but dictionary predicts lowercased,
+            // we should prefer the lowercase version to reduce automatically capitalizing which can be
+            // annoying
+            val bothAlgorithmsCameToSameConclusionButLowerCased = maxWordDict?.mWord == maxWord?.mWord?.lowercase()
+            if(bothAlgorithmsCameToSameConclusionButLowerCased && maxWord != null && maxWordDict != null) {
+                val clone = maxWordDict.scoreAtLeast(maxWord)
+                autocorrectWord = clone
+                suggestionResults.add(clone)
+                filtered.add(maxWordDict)
+            }
+
             if(transformerWeight <= 0.0f) {
                 if(suggestedWordsDictList.isNullOrEmpty()) {
                     transformerWeight = 1.0f
                 }
             }
 
-            suggestionResults.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
+            // Add reweightedSuggestions, with space replacement logic. It can replace one of the LM
+            // suggestions if the top dictionary result has a space, based on heuristics about the
+            // relative quality of the LM suggestion
+            val spaceReplacementPossible = maxWordDict != null && maxWordDict.word.count { it == ' ' } == 1
+            var spaceReplacementPerformed = false
+            for(i in 0 until reweightedSuggestions.size) {
+                val word = reweightedSuggestions[i]
+                if(filtered.contains(word)) continue
+
+                if(!spaceReplacementPerformed && spaceReplacementPossible && (
+                            // If the dict score is high enough, allow the space suggestion
+                            ((maxWordDict.mScore) > (word.mScore / 3))
+                                    // Most LM-generated dashed suggestions are distractions, so accept the space suggestion
+                                    || (word.word.contains('-'))
+                                    // If the typed word is much longer than the transformer word, just accept the space suggestion
+                                    || (values.composedData.mTypedWord.length > ceil(word.word.length * 3.0 / 2.0))
+                            )
+                ) {
+                    val clone = maxWordDict.scoreAtLeast(word)
+                    suggestionResults.add(clone)
+                    spaceReplacementPerformed = true
+                    continue
+                }
+
+                suggestionResults.add(word)
+            }
+
             if(suggestionResults.mRawSuggestions != null) {
                 suggestionResults.mRawSuggestions.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
             }
@@ -432,7 +488,7 @@ public class LanguageModelFacilitator(
             }
 
             val settingsValues = settings.current ?: return
-            val locale = dictionaryFacilitator.locale ?: return
+            val locale = dictionaryFacilitator.primaryLocale ?: return
             val wordComposer = inputLogic.mWordComposer ?: return
 
             val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
@@ -547,7 +603,7 @@ public class LanguageModelFacilitator(
 
     public fun shouldPassThroughToLegacy(): Boolean = when {
         (!settings.current.mTransformerPredictionEnabled) -> true
-        (dictionaryFacilitator.locale.language == skipLanguage) -> true
+        (dictionaryFacilitator.primaryLocale.language == skipLanguage) -> true
         else -> false
     }
 
@@ -603,6 +659,8 @@ public class LanguageModelFacilitator(
         if(!trainingEnabled) return
         if(settings.current?.mInputAttributes?.mNoLearning != false) return
 
+        if(dictionaryFacilitator.mostConfidentLocale != languageModel?.locale) return
+
         val wordCtx = ngramContext.fullContext.trim().lines().last()
         var committedNgramCtx = ngramContext.extractPrevWordsContext().replace(NgramContext.BEGINNING_OF_SENTENCE_TAG, " ").trim();
         if(committedNgramCtx.isEmpty()) {
@@ -635,7 +693,7 @@ public class LanguageModelFacilitator(
                 misspelledWord.trim(),
                 word,
                 importance,
-                dictionaryFacilitator.locale.language,
+                dictionaryFacilitator.primaryLocale.language,
                 timeStampInSeconds
             )
         } else {
@@ -647,7 +705,7 @@ public class LanguageModelFacilitator(
                 null,
                 word,
                 importance,
-                dictionaryFacilitator.locale.language,
+                dictionaryFacilitator.primaryLocale.language,
                 timeStampInSeconds
             )
         }

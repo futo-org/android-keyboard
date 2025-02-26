@@ -35,6 +35,7 @@ import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.PREFER_BLUETOOTH
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.ResourceHelper
+import org.futo.inputmethod.latin.uix.USE_VAD_AUTOSTOP
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
@@ -96,7 +97,7 @@ class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : Persist
 
 private class VoiceInputActionWindow(
     val manager: KeyboardManagerForAction, val state: VoiceInputPersistentState,
-    val model: ModelLoader, val locale: Locale
+    val model: ModelLoader, val locales: List<Locale>
 ) : ActionWindow, RecognizerViewListener {
     val context = manager.getContext()
 
@@ -108,12 +109,12 @@ private class VoiceInputActionWindow(
         val useBluetoothAudio = context.getSetting(PREFER_BLUETOOTH)
         val requestAudioFocus = context.getSetting(AUDIO_FOCUS)
         val canExpandSpace = context.getSetting(CAN_EXPAND_SPACE)
+        val useVAD = context.getSetting(USE_VAD_AUTOSTOP)
 
         val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
-        val allowedLanguages = listOf(
-            getLanguageFromWhisperString(locale.language)
-        ).filterNotNull().toSet()
+        val allowedLanguages = locales.map { getLanguageFromWhisperString(it.language) }
+            .filterNotNull().toSet()
 
         shouldPlaySounds = enableSound
 
@@ -132,7 +133,8 @@ private class VoiceInputActionWindow(
             recordingConfiguration = RecordingSettings(
                 preferBluetoothMic = useBluetoothAudio,
                 requestAudioFocus = requestAudioFocus,
-                canExpandSpace = canExpandSpace
+                canExpandSpace = canExpandSpace,
+                useVADAutoStop = useVAD
             )
         )
     }
@@ -171,7 +173,7 @@ private class VoiceInputActionWindow(
 
     @Composable
     private fun ModelDownloader(modelException: ModelDoesNotExistException) {
-        NoModelInstalled(locale)
+        NoModelInstalled(locales.firstOrNull() ?: Locale.ROOT)
     }
 
     @Composable
@@ -272,16 +274,16 @@ val VoiceInputAction = Action(icon = R.drawable.mic_fill,
     keepScreenAwake = true,
     persistentState = { VoiceInputPersistentState(it) },
     windowImpl = { manager, persistentState ->
-        val locale = manager.getActiveLocale()
+        val locales = manager.getActiveLocales()
 
-        val model = ResourceHelper.tryFindingVoiceInputModelForLocale(manager.getContext(), locale)
+        val model = ResourceHelper.tryFindingVoiceInputModelForLocale(manager.getContext(), locales.firstOrNull() ?: Locale.ROOT)
 
         if(model == null) {
-            VoiceInputNoModelWindow(locale)
+            VoiceInputNoModelWindow(locales.firstOrNull() ?: Locale.ROOT)
         } else {
             VoiceInputActionWindow(
                 manager = manager, state = persistentState as VoiceInputPersistentState,
-                locale = locale, model = model
+                locales = locales, model = model
             )
         }
     }

@@ -28,7 +28,7 @@ import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import java.util.Locale;
 
 // TODO: Make this an immutable class.
-public final class KeyboardTextsSet {
+public class KeyboardTextsSet {
     public static final String PREFIX_TEXT = "!text/";
     private static final String PREFIX_RESOURCE = "!string/";
     public static final String SWITCH_TO_ALPHA_KEY_LABEL = "keylabel_to_alpha";

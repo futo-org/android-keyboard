@@ -18,6 +18,7 @@ package org.futo.inputmethod.latin;
 
 import static org.futo.inputmethod.latin.common.Constants.Subtype.KEYBOARD_MODE;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
@@ -29,6 +30,7 @@ import org.futo.inputmethod.latin.common.LocaleUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -163,6 +165,11 @@ public class RichInputMethodSubtype {
     @Nonnull
     public String getKeyboardLayoutSetName() {
         return SubtypeLocaleUtils.getKeyboardLayoutSetName(mSubtype);
+    }
+
+    @Nonnull
+    public List<Locale> getMultilingualTypingLanguages(Context context) {
+        return Subtypes.INSTANCE.getMultilingualBucket(context, mLocale);
     }
 
     public static RichInputMethodSubtype getRichInputMethodSubtype(

@@ -98,6 +98,7 @@ import org.futo.inputmethod.latin.FoldingOptions
 import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
@@ -113,6 +114,7 @@ import org.futo.inputmethod.latin.uix.resizing.KeyboardResizers
 import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
+import org.futo.inputmethod.latin.uix.settings.pages.InlineAutofillSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
@@ -315,8 +317,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(code, view)
     }
 
-    override fun getActiveLocale(): Locale {
-        return latinIME.latinIMELegacy.locale
+    override fun getActiveLocales(): List<Locale> {
+        return RichInputMethodManager.getInstance().currentSubtypeLocales
     }
 
     override fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo) {
@@ -1143,6 +1145,9 @@ class UixManager(private val latinIME: LatinIME) {
 
     @RequiresApi(Build.VERSION_CODES.R)
     fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
+        if(latinIME.getSetting(ActionBarDisplayedSetting) == false) return false
+        if(latinIME.getSetting(InlineAutofillSetting) == false) return false
+
         currentNotice.value?.onDismiss(latinIME)
 
         inlineSuggestions.value = response.inlineSuggestions.map {

@@ -36,6 +36,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.setSettingBlocking
@@ -67,6 +68,11 @@ val SubtypesSetting = SettingsKey(
 val ActiveSubtype = SettingsKey(
     stringPreferencesKey("activeSubtype"),
     ""
+)
+
+val MultilingualBucketSetting = SettingsKey(
+    stringSetPreferencesKey("multilingual_bucket"),
+    emptySet()
 )
 
 object Subtypes {
@@ -177,6 +183,7 @@ object Subtypes {
         }
     }
 
+    // TODO: Set extra value MultilingualTyping=en;lt;etc
     fun makeSubtype(locale: String, layout: String): InputMethodSubtype =
         InputMethodSubtypeBuilder()
             .setSubtypeLocale(locale)
@@ -279,6 +286,17 @@ object Subtypes {
         }
 
         context.setSettingBlocking(ActiveSubtype.key, enabledSubtypes[nextIndex])
+    }
+
+    fun getMultilingualBucket(context: Context, locale: Locale): List<Locale> {
+        val set = context.getSetting(MultilingualBucketSetting).map {
+            getLocale(it)
+        }
+        if(!set.contains(locale)) {
+            return emptyList()
+        } else {
+            return set.filter { it != locale }
+        }
     }
 }
 

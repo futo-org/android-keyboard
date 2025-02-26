@@ -109,6 +109,11 @@ val ActionBarDisplayedSetting = SettingsKey(
     true
 )
 
+val InlineAutofillSetting = SettingsKey(
+    booleanPreferencesKey("inline_autofill"),
+    true
+)
+
 fun NavGraphBuilder.addTypingNavigation(
     navController: NavHostController
 ) {
@@ -518,6 +523,14 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
                 Icon(painterResource(id = R.drawable.more_horizontal), contentDescription = null)
             }
         )
+
+        if(useDataStore(ActionBarDisplayedSetting).value) {
+            SettingToggleDataStore(
+                title = "Inline autofill",
+                subtitle = "Display password manager autofill in suggestion bar",
+                setting = InlineAutofillSetting
+            )
+        }
 
         ScreenTitle(title = "Typing preferences")
 

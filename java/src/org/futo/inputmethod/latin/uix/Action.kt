@@ -65,7 +65,7 @@ interface KeyboardManagerForAction {
 
     fun performHapticAndAudioFeedback(code: Int, view: View)
     fun announce(s: String)
-    fun getActiveLocale(): Locale
+    fun getActiveLocales(): List<Locale>
 
     fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo)
     fun unsetInputConnection()

@@ -114,7 +114,7 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
 
     wparams.suppress_blank = false;
     wparams.suppress_non_speech_tokens = suppress_non_speech_tokens;
-    wparams.no_timestamps = true;
+    wparams.no_timestamps = num_samples < 16000 * 25;
 
     if(allowed_languages.size() == 0) {
         wparams.language = nullptr;
@@ -140,7 +140,10 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
     wparams.partial_text_callback_user_data = state;
     wparams.partial_text_callback = [](struct whisper_context * ctx, struct whisper_state * state, const whisper_token_data *tokens, size_t n_tokens, void * user_data) {
         std::string partial;
+
+        //AKLOGI(" -- - - - - -- ");
         for(size_t i=0; i < n_tokens; i++) {
+            bool skipping = false;
             if(tokens[i].id == whisper_token_beg(ctx) ||
                tokens[i].id == whisper_token_eot(ctx) ||
                tokens[i].id == whisper_token_nosp(ctx) ||
@@ -149,8 +152,17 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
                tokens[i].id == whisper_token_solm(ctx) ||
                tokens[i].id == whisper_token_sot(ctx) ||
                tokens[i].id == whisper_token_transcribe(ctx) ||
-               tokens[i].id == whisper_token_translate(ctx)) continue;
+               tokens[i].id == whisper_token_translate(ctx)) skipping = true;
 
+            // Skip timestamp token
+            if(tokens[i].id >= whisper_token_beg(ctx)
+                    && tokens[i].id <= whisper_token_beg(ctx)+1500) {
+                skipping = true;
+            }
+
+            //AKLOGI("[%d] %d: %d (%s) %c", whisper_full_n_segments_from_state(state), i, tokens[i].id, whisper_token_to_str(ctx, tokens[i].id), skipping ? '>' : ' ');
+
+            if(skipping) continue;
             partial += whisper_token_to_str(ctx, tokens[i].id);
         }
 
@@ -202,8 +214,11 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
     const int n_segments = whisper_full_n_segments(state->context);
 
     for (int i = 0; i < n_segments; i++) {
-        auto seg = whisper_full_get_segment_text(state->context, i);
+        auto seg = std::string(whisper_full_get_segment_text(state->context, i));
+        if(seg == " you" && i == n_segments - 1) continue;
         output.append(seg);
+
+        //AKLOGI("Final segment [%d]: %s", i, seg.c_str());
     }
 
     if(std::find(forbidden_languages.begin(),

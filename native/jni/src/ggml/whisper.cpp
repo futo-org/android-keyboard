@@ -5213,6 +5213,8 @@ int whisper_full_with_state(
 
     if (params.no_timestamps) {
         prompt_init.push_back(whisper_token_not(ctx));
+    } else {
+        prompt_init.push_back(whisper_token_beg(ctx));
     }
 
     int seek = seek_start;

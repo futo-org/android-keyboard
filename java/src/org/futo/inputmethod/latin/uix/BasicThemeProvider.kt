@@ -46,6 +46,8 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     override val moreKeysTextColor: Int
     override val moreKeysKeyboardBackground: Drawable
 
+    override val displayDpi: Int
+
     private val colors: HashMap<Int, Int> = HashMap()
     override fun getColor(i: Int): Int? {
         return colors[i]
@@ -150,6 +152,8 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     }
 
     init {
+        displayDpi = context.resources.displayMetrics.densityDpi
+
         expertMode = context.getSettingBlocking(HiddenKeysSetting)
         keyBorders = context.getSettingBlocking(KeyBordersSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)

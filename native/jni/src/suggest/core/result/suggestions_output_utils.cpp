@@ -183,10 +183,11 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                 indexToPartialCommit, computeFirstWordConfidence(terminalDicNode));
     }
 
+    bool canOutputWhitelistSuggestion = traverseSession->getSuggestOptions()->weightForLocale() > 0.99f;
     // Output shortcuts.
     // Shortcut is not supported for multiple words suggestions.
     // TODO: Check shortcuts during traversal for multiple words suggestions.
-    if (!terminalDicNode->hasMultipleWords()) {
+    if (!terminalDicNode->hasMultipleWords() && canOutputWhitelistSuggestion) {
         BinaryDictionaryShortcutIterator shortcutIt =
                 traverseSession->getDictionaryStructurePolicy()->getShortcutIterator(
                         terminalDicNode->getWordId());

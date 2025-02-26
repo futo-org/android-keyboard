@@ -1897,6 +1897,15 @@ public final class InputLogic {
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
                     true /* checkTextAfter */)) {
+
+            //Log.d(TAG, "Reset input state");
+            resetEntireInputState(
+                    mConnection.getExpectedSelectionStart(),
+                    mConnection.getExpectedSelectionEnd(),
+                    true
+            );
+            //Log.d(TAG, "ComposingText1 [" + mConnection.getComposingTextForDebug() + "] , TypedWord [" + mWordComposer.getTypedWord() + "]");
+
             // Show predictions.
             mWordComposer.setCapitalizedModeAtStartComposingTime(WordComposer.CAPS_MODE_OFF);
             mLatinIMELegacy.mHandler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_RECORRECTION);
@@ -2290,7 +2299,7 @@ public final class InputLogic {
      */
     @Nonnull
     private Locale getDictionaryFacilitatorLocale() {
-        return mDictionaryFacilitator != null ? mDictionaryFacilitator.getLocale() : Locale.ROOT;
+        return mDictionaryFacilitator != null ? mDictionaryFacilitator.getPrimaryLocale() : Locale.ROOT;
     }
 
     /**
@@ -2563,6 +2572,7 @@ public final class InputLogic {
             startTimeMillis = System.currentTimeMillis();
         }
         // Add the word to the user history dictionary
+        mDictionaryFacilitator.onWordCommitted(chosenWord);
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, ngramContext, importance);
         if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;

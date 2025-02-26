@@ -15,6 +15,7 @@ import org.futo.inputmethod.latin.uix.DISALLOW_SYMBOLS
 import org.futo.inputmethod.latin.uix.ENABLE_SOUND
 import org.futo.inputmethod.latin.uix.PREFER_BLUETOOTH
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
+import org.futo.inputmethod.latin.uix.USE_VAD_AUTOSTOP
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -67,7 +68,6 @@ fun VoiceInputScreen(navController: NavHostController = rememberNavController())
                 setting = PREFER_BLUETOOTH
             )
 
-
             SettingToggleDataStore(
                 title = "Audio Focus",
                 subtitle = "Pause videos/music when voice input is activated",
@@ -80,9 +80,15 @@ fun VoiceInputScreen(navController: NavHostController = rememberNavController())
             )
 
             SettingToggleDataStore(
-                title = "Experimental long-form voice input",
-                subtitle = "This disables the 30 second limit, but the output quality may be degraded with long inputs.",
+                title = "Long-form voice input",
+                subtitle = "If disabled, voice input will auto-stop after 30 seconds.",
                 setting = CAN_EXPAND_SPACE
+            )
+
+            SettingToggleDataStore(
+                title = "Auto-stop on silence",
+                subtitle = "Automatically stop when silence is detected. You may need to manually stop regardless if there's too much background noise. Please also enable long-form voice input to prevent stopping after 30s.",
+                setting = USE_VAD_AUTOSTOP
             )
 
             NavigationItem(

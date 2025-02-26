@@ -35,6 +35,7 @@ import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.ScriptUtils;
 import org.futo.inputmethod.latin.utils.SuggestionResults;
 
+import java.util.Collections;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -156,7 +157,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         mSemaphore.acquireUninterruptibly();
         try {
             DictionaryFacilitator dictionaryFacilitatorForLocale =
-                    mDictionaryFacilitatorCache.get(locale);
+                    mDictionaryFacilitatorCache.get(Collections.singletonList(locale));
             return dictionaryFacilitatorForLocale.isValidSpellingWord(word);
         } finally {
             mSemaphore.release();
@@ -171,7 +172,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         try {
             sessionId = mSessionIdPool.poll();
             DictionaryFacilitator dictionaryFacilitatorForLocale =
-                    mDictionaryFacilitatorCache.get(locale);
+                    mDictionaryFacilitatorCache.get(Collections.singletonList(locale));
             return dictionaryFacilitatorForLocale.getSuggestionResults(composedData, ngramContext,
                     keyboard, mSettingsValuesForSuggestion,
                     sessionId, SuggestedWords.INPUT_STYLE_TYPING);
@@ -187,7 +188,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         mSemaphore.acquireUninterruptibly();
         try {
             final DictionaryFacilitator dictionaryFacilitator =
-                    mDictionaryFacilitatorCache.get(locale);
+                    mDictionaryFacilitatorCache.get(Collections.singletonList(locale));
             return dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary();
         } finally {
             mSemaphore.release();

@@ -205,8 +205,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     private var drawableProvider: DynamicThemeProvider? = null
 
-    private var lastEditorInfo: EditorInfo? = null
-
     private var settingsRefreshRequired = false
     private fun recreateKeyboard() {
         latinIMELegacy.updateTheme()
@@ -275,6 +273,12 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     private fun updateColorsIfDynamicChanged() {
+        val key = getSetting(THEME_KEY)
+        if(key != activeThemeOption?.key) {
+            ThemeOptions[key]?.let { if(it.available(this)) updateTheme(it) }
+            return
+        }
+
         if(activeThemeOption?.dynamic == true) {
             val currColors = activeColorScheme
             val nextColors = activeThemeOption!!.obtainColors(this)
@@ -282,12 +286,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             if(currColors.differsFrom(nextColors)) {
                 updateDrawableProvider(nextColors)
                 recreateKeyboard()
+                return
             }
         }
 
-        val key = getSetting(THEME_KEY)
-        if(key != activeThemeOption?.key) {
-            ThemeOptions[key]?.let { if(it.available(this)) updateTheme(it) }
+        // TODO: Verify this actually fixes anything
+        if(drawableProvider?.displayDpi != resources.displayMetrics.densityDpi) {
+            updateDrawableProvider(activeColorScheme)
+            recreateKeyboard()
+            return
         }
     }
 
@@ -589,11 +596,10 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
-        lastEditorInfo = info
-
         super.onStartInputView(info, restarting)
         latinIMELegacy.onStartInputView(info, restarting)
         lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
+        updateColorsIfDynamicChanged()
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {

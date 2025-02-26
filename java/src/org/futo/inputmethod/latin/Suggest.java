@@ -310,7 +310,7 @@ public final class Suggest {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
                 settingsValuesForSuggestion, SESSION_ID_TYPING, inputStyleIfNotPrediction);
-        final Locale locale = mDictionaryFacilitator.getLocale();
+        final Locale locale = mDictionaryFacilitator.getPrimaryLocale();
 
         callback.onGetSuggestedWords(
             obtainNonBatchedInputSuggestedWords(wordComposer, inputStyleIfNotPrediction,
@@ -330,7 +330,7 @@ public final class Suggest {
                 wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
                 settingsValuesForSuggestion, SESSION_ID_GESTURE, inputStyle);
         // For transforming words that don't come from a dictionary, because it's our best bet
-        final Locale locale = mDictionaryFacilitator.getLocale();
+        final Locale locale = mDictionaryFacilitator.getPrimaryLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
