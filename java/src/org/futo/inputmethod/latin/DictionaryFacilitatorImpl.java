@@ -138,7 +138,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         // TODO: Run evaluation to determine a reasonable value for these constants. The current
         // values are ad-hoc and chosen without any particular care or methodology.
         public static final float WEIGHT_FOR_MOST_PROBABLE_LANGUAGE = 1.0f;
-        public static final float WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.6f;
+        public static final float WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.0f;
         public static final float WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.8f;
 
         /**

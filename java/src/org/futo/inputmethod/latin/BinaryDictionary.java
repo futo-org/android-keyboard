@@ -356,7 +356,8 @@ public final class BinaryDictionary extends Dictionary {
                 suggestions.add(new SuggestedWordInfo(
                         new String(session.mOutputCodePoints, start, len),
                         "" /* prevWordsContext */,
-                        (int)(session.mOutputScores[j] * weightForLocale),
+                        // TODO: 200.0f is an arbitrary number
+                        (int)(session.mOutputScores[j] - (200.0f * (1.0f - weightForLocale))),
                         session.mOutputTypes[j],
                         this /* sourceDict */,
                         session.mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
