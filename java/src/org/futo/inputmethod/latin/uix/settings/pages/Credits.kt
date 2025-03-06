@@ -25,7 +25,14 @@ val contributors = listOf<ContributorInfo>(
     contributor("Ravyar Tahir (@ravarage)", "Central Kurdish keyboard layout"),
     contributor("Emre Eren (@remreren)", "Turkish keyboard layout"),
     contributor("@ornstrange", "Icelandic keyboard layout"),
-    contributor("@roguesensei", "Colemak DH / DH ANSI layouts")
+    contributor("@roguesensei", "Colemak DH / DH ANSI layouts"),
+    contributor("@BoFFire", "Kabyle layout"),
+    contributor("@Midnight1938", "Optimized Devanagari layout"),
+    contributor("@NicolasLagaillardie", "BEPO Inclusive layouts"),
+    contributor("@abdelhaqueidali", "Amazigh layout"),
+    contributor("@lomtjjz", "Belarusian Latin layout"),
+    contributor("@Imold", "pcqwerty fix"),
+    contributor("@tenextractor", "Korean layout, Maltese, Hungarian, Romanian, Albanian, Hansa, Burmese/Myanmar, Bashkir, Kurdish, and more"),
 )
 
 @Preview(showBackground = true)
@@ -87,8 +94,8 @@ fun CreditsScreen(navController: NavHostController = rememberNavController()) {
 
             ScreenTitle("Contributors")
             SpacedColumn(10.dp) {
-                contributors.forEach {
-                    ParagraphText("Thank you to ${it.name} for contributing the following features: ${it.features.joinToString()}")
+                contributors.reversed().forEach {
+                    ParagraphText("Thank you to ${it.name} for contributing ${it.features.joinToString()}")
                 }
             }
 
