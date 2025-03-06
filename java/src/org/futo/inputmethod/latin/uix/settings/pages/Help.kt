@@ -79,8 +79,8 @@ fun HelpScreen(navController: NavHostController = rememberNavController()) {
 
         Tip("We want to hear from you! If you're reporting an issue, your version may be relevant: v${BuildConfig.VERSION_NAME}")
 
-        NavigationItem(title = "Wiki", subtitle = "Wanna read more about the project? Read the wiki", style = NavigationItemStyle.Misc, navigate = {
-            context.openURI("https://gitlab.futo.org/alex/keyboard-wiki/-/wikis/FUTO-Keyboard")
+         NavigationItem(title = "Documentation", subtitle = "Learn more about the keyboard's features and capabilities", style = NavigationItemStyle.Misc, navigate = {
+            context.openURI("https://docs.keyboard.futo.org/")
         })
         NavigationItem(title = "Discord Server", subtitle = "Wanna talk but don't like Zulip? Chat here", style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://keyboard.futo.org/discord")
