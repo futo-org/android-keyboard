@@ -222,6 +222,7 @@ public final class InputLogic {
         mIsAutoCorrectionIndicatorOn = false;
         resetComposingState(true /* alsoResetLastComposedWord */);
         mInputLogicHandler.reset();
+        mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
     }
 
     // Normally this class just gets out of scope after the process ends, but in unit tests, we
@@ -816,11 +817,24 @@ public final class InputLogic {
                 final EditorInfo editorInfo = getCurrentInputEditorInfo();
                 final int imeOptionsActionId =
                         InputTypeUtils.getImeOptionsActionIdFromEditorInfo(editorInfo);
-                if (InputTypeUtils.IME_ACTION_CUSTOM_LABEL == imeOptionsActionId) {
+
+                final boolean isCustomAction =
+                        InputTypeUtils.IME_ACTION_CUSTOM_LABEL == imeOptionsActionId;
+                final boolean isEditorAction =
+                        EditorInfo.IME_ACTION_NONE != imeOptionsActionId;
+
+                // In some websites on Chrome, Enter will not actually perform any action as long
+                // as we are still composing text. To work around this it makes sense to just finish
+                // input when we are sending editor action.
+                if(isCustomAction || isEditorAction) {
+                    finishInput();
+                }
+
+                if (isCustomAction) {
                     // Either we have an actionLabel and we should performEditorAction with
                     // actionId regardless of its value.
                     performEditorAction(editorInfo.actionId);
-                } else if (EditorInfo.IME_ACTION_NONE != imeOptionsActionId) {
+                } else if (isEditorAction) {
                     // We didn't have an actionLabel, but we had another action to execute.
                     // EditorInfo.IME_ACTION_NONE explicitly means no action. In contrast,
                     // EditorInfo.IME_ACTION_UNSPECIFIED is the default value for an action, so it
