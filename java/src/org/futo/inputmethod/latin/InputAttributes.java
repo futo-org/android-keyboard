@@ -73,7 +73,9 @@ public final class InputAttributes {
                 || InputTypeUtils.isVisiblePasswordInputType(inputType);
         mIsNumericalPasswordField = mIsPasswordField && (inputClass == InputType.TYPE_CLASS_NUMBER);
         mIsUriField = InputTypeUtils.isUriType(inputType);
-        mIsCodeField = isCodeField(editorInfo);
+
+        final int codeFieldType = getCodeFieldType(editorInfo);
+        mIsCodeField = codeFieldType != NOT_A_CODE_FIELD;
         if (inputClass != InputType.TYPE_CLASS_TEXT) {
             // If we are not looking at a TYPE_CLASS_TEXT field, the following strange
             // cases may arise, so we do a couple validity checks for them. If it's a
@@ -117,7 +119,8 @@ public final class InputAttributes {
         // TODO: Have a helper method in InputTypeUtils
         // Make sure that passwords are not displayed in {@link SuggestionStripView}.
         final boolean shouldSuppressSuggestions = mIsPasswordField
-                || forceNoSuggestionsByPrivateFlag;
+                || forceNoSuggestionsByPrivateFlag
+                || codeFieldType == CODE_FIELD_NO_COMPOSITION;
         mShouldShowSuggestions = !shouldSuppressSuggestions;
 
         mShouldInsertSpacesAutomatically = InputTypeUtils.isAutoSpaceFriendlyType(inputType)
@@ -330,18 +333,27 @@ public final class InputAttributes {
         return StringUtils.containsInCommaSplittableText(findingKey, editorInfo.privateImeOptions);
     }
 
-    private static boolean isCodeField(final EditorInfo editorInfo) {
-        if(editorInfo == null || editorInfo.packageName == null) return false;
+    static final int NOT_A_CODE_FIELD = 0;
+    static final int CODE_FIELD_WITH_COMPOSITION = 1;
+    static final int CODE_FIELD_NO_COMPOSITION = 2;
+
+    private static int getCodeFieldType(final EditorInfo editorInfo) {
+        if(editorInfo == null || editorInfo.packageName == null) return NOT_A_CODE_FIELD;
 
         final boolean noAutocorrect =
                 (editorInfo.inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0;
         final boolean noSuggestions =
                 (editorInfo.inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0;
 
-        if(editorInfo.packageName.startsWith("com.replit")) return noAutocorrect;
-        if(editorInfo.packageName.startsWith("com.termux")) return editorInfo.inputType == 0;
-        if(editorInfo.packageName.startsWith("com.android.virtualization.terminal")) return noSuggestions;
+        if(editorInfo.packageName.startsWith("com.replit") && noAutocorrect)
+            return CODE_FIELD_WITH_COMPOSITION;
 
-        return false;
+        if(editorInfo.packageName.startsWith("com.termux") && editorInfo.inputType == 0)
+            return CODE_FIELD_NO_COMPOSITION;
+
+        if(editorInfo.packageName.startsWith("com.android.virtualization.terminal") && noSuggestions)
+            return CODE_FIELD_NO_COMPOSITION;
+
+        return NOT_A_CODE_FIELD;
     }
 }
