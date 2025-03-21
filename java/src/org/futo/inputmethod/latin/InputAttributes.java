@@ -333,10 +333,14 @@ public final class InputAttributes {
     private static boolean isCodeField(final EditorInfo editorInfo) {
         if(editorInfo == null || editorInfo.packageName == null) return false;
 
-        boolean noAutocorrect = (editorInfo.inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0;
+        final boolean noAutocorrect =
+                (editorInfo.inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0;
+        final boolean noSuggestions =
+                (editorInfo.inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0;
 
         if(editorInfo.packageName.startsWith("com.replit")) return noAutocorrect;
         if(editorInfo.packageName.startsWith("com.termux")) return editorInfo.inputType == 0;
+        if(editorInfo.packageName.startsWith("com.android.virtualization.terminal")) return noSuggestions;
 
         return false;
     }
