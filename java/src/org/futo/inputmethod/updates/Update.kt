@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.booleanResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -104,7 +105,7 @@ fun ConditionalUpdate(navController: NavHostController = rememberNavController()
     val context = LocalContext.current
     if(lastUpdateResult != null && lastUpdateResult.isNewer()) {
         SettingItem(
-            title = "Update Available",
+            title = stringResource(R.string.settings_update_available),
             subtitle = "${UpdateResult.currentVersionString()} -> ${lastUpdateResult.nextVersionString}",
             onClick = {
                 navController.navigate("update")
@@ -115,7 +116,7 @@ fun ConditionalUpdate(navController: NavHostController = rememberNavController()
         }
     } else if(lastFailed) {
         SettingItem(
-            title = "Check for updates manually",
+            title = stringResource(R.string.settings_check_for_updates_manually),
             onClick = {
                 context.openManualUpdateCheck()
             }
@@ -137,14 +138,14 @@ fun ConditionalMigrateUpdateNotice() {
     val value = useDataStore(dismissedMigrateUpdateNotice, blocking = true)
     if(!value.value) {
         PaymentSurface(isPrimary = true) {
-            PaymentSurfaceHeading("Updates Notice")
+            PaymentSurfaceHeading(stringResource(R.string.manual_update_notice_title))
 
-            ParagraphText("This app doesn't connect to the internet and it won't be able to check for automatic updates. You can check for updates manually though.")
+            ParagraphText(stringResource(R.string.manual_update_notice_paragraph_1))
 
             if(booleanResource(R.bool.use_dev_styling)) {
-                ParagraphText("You are on the development build of FUTO Keyboard. Visit keyboard.futo.org if you want to download the stable build.")
+                ParagraphText(stringResource(R.string.manual_update_notice_dev_paragraph))
             } else {
-                ParagraphText("Please use F-Droid or Obtainium for automatic updates. Visit keyboard.futo.org for download options.")
+                ParagraphText(stringResource(R.string.manual_update_notice_paragraph_2))
             }
 
             Row(
@@ -154,7 +155,7 @@ fun ConditionalMigrateUpdateNotice() {
                     Button(onClick = {
                         context.openURI("https://keyboard.futo.org/#downloads")
                     }, modifier = Modifier.align(Alignment.Center)) {
-                        Text("Visit")
+                        Text(stringResource(R.string.manual_update_notice_visit_site_button))
                     }
                 }
                 Box(modifier = Modifier.weight(1.0f)) {
@@ -165,7 +166,7 @@ fun ConditionalMigrateUpdateNotice() {
                             contentColor = MaterialTheme.colorScheme.onSecondary
                         ), modifier = Modifier.align(Alignment.Center)
                     ) {
-                        Text("Dismiss")
+                        Text(stringResource(R.string.manual_update_notice_dismiss_notice_button))
                     }
                 }
             }

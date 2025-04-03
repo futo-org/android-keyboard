@@ -6,7 +6,9 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -127,7 +129,7 @@ fun NavGraphBuilder.addTypingNavigation(
 @Composable
 fun ActionEditorScreen(navController: NavHostController = rememberNavController()) {
     Column {
-        ScreenTitle("Edit Actions", showBack = true, navController)
+        ScreenTitle(stringResource(R.string.action_editor_title), showBack = true, navController)
         ActionsEditor { }
     }
 }
@@ -159,20 +161,20 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
 
     Box {
         ScrollableList {
-            ScreenTitle("Resize Keyboard", showBack = true, navController)
+            ScreenTitle(stringResource(R.string.size_settings_title), showBack = true, navController)
 
             PaymentSurface(
                 isPrimary = false,
             ) {
-                PaymentSurfaceHeading(title = "Tip")
+                PaymentSurfaceHeading(title = stringResource(R.string.settings_tip))
 
                 Text(
                     buildAnnotatedString {
-                        append("You can access this anywhere with the new Keyboard Modes action: ")
+                        append(stringResource(R.string.size_settings_keyboard_modes_tip))
                         appendInlineContent("icon")
                         appendLine()
                         appendLine()
-                        append("Tap the \"Resize Keyboard\" button to resize.")
+                        append(stringResource(R.string.size_settings_resize_tip))
                     },
                     style = Typography.Body.MediumMl,
                     color = LocalContentColor.current,
@@ -189,9 +191,10 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
                     ))
             }
 
+            Spacer(Modifier.height(8.dp))
             NavigationItem(
-                "Reset size settings",
-                subtitle = "Tap to reset all sizes and modes for both portrait and landscape to default",
+                stringResource(R.string.size_settings_reset),
+                subtitle = stringResource(R.string.size_settings_reset_subtitle),
                 style = NavigationItemStyle.Misc,
                 icon = painterResource(R.drawable.close),
                 navigate = {
@@ -263,7 +266,7 @@ private fun LazyItemScope.DraggableSettingItem(idx: Int, item: LongPressKey, mov
             }
     ) {
         IconButton(onClick = { disable(item) }) {
-            Icon(Icons.Default.Clear, contentDescription = "Remove")
+            Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.remove))
         }
     }
 }
@@ -271,14 +274,14 @@ private fun LazyItemScope.DraggableSettingItem(idx: Int, item: LongPressKey, mov
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.longPressKeyLayoutEditor(context: Context, setting: DataStoreItem<String>) {
     item {
-        ScreenTitle(title = "Layout of long-press keys")
+        ScreenTitle(title = stringResource(R.string.morekey_settings_layout))
     }
 
     item {
         Button(onClick = {
             setting.setValue(LongPressKeyLayoutSetting.default)
         }) {
-            Text("Reset to default")
+            Text(stringResource(R.string.morekey_settings_reset))
         }
     }
 
@@ -324,14 +327,14 @@ fun LazyListScope.longPressKeyLayoutEditor(context: Context, setting: DataStoreI
     }
 
     item {
-        Text("Active", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Text(stringResource(R.string.morekey_settings_active), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     }
     itemsIndexed(items, key = { i, v -> v.ordinal }) { i, v ->
         DraggableSettingItem(idx = i, item = v, moveItem = moveItem, disable = disable, dragIcon = dragIcon)
     }
 
     item {
-        Text("Inactive", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Text(stringResource(R.string.morekey_settings_inactive), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     }
     items(LongPressKey.entries.filter { !items.contains(it) }, key = { it.ordinal }) {
         SettingItem(
@@ -340,7 +343,7 @@ fun LazyListScope.longPressKeyLayoutEditor(context: Context, setting: DataStoreI
             modifier = Modifier.animateItemPlacement()
         ) {
             IconButton(onClick = { enable(it) }) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add))
             }
         }
     }
@@ -353,13 +356,13 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
     val setting = useDataStore(LongPressKeyLayoutSetting, blocking = true)
     SettingListLazy {
         item {
-            ScreenTitle("Long-Press Keys", showBack = true, navController)
+            ScreenTitle(stringResource(R.string.morekey_settings_keys), showBack = true, navController)
         }
 
         item {
             SettingToggleDataStore(
-                title = "Show hints",
-                subtitle = "Display a small hint on each key, showing the primary long-press key",
+                title = stringResource(R.string.morekey_settings_show_hints),
+                subtitle = stringResource(R.string.morekey_settings_show_hints_subtitle),
                 setting = KeyHintsSetting
             )
         }
@@ -371,8 +374,8 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
 
         item {
             SettingSliderSharedPrefsInt(
-                title = "Long Press Duration",
-                subtitle = "How long a key needs to be pressed to be considered a long-press",
+                title = stringResource(R.string.morekey_settings_duration),
+                subtitle = stringResource(R.string.morekey_settings_duration_subtitle),
                 key = Settings.PREF_KEY_LONGPRESS_TIMEOUT,
                 default = 300,
                 range = 100.0f..700.0f,
@@ -385,14 +388,14 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
 
         item {
             SettingRadio(
-                title = "Backspace Behavior when holding/swiping",
+                title = stringResource(R.string.morekey_settings_backspace_behavior),
                 options = listOf(
                     Settings.BACKSPACE_MODE_CHARACTERS,
                     Settings.BACKSPACE_MODE_WORDS
                 ),
                 optionNames = listOf(
-                    "Delete characters",
-                    "Delete entire words"
+                    stringResource(R.string.morekey_settings_backspace_behavior_delete_chars),
+                    stringResource(R.string.morekey_settings_backspace_behavior_delete_words)
                 ),
                 setting = useSharedPrefsInt(
                     key = Settings.PREF_BACKSPACE_MODE,
@@ -403,16 +406,16 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
 
         item {
             SettingRadio(
-                title = "Spacebar Behavior",
+                title = stringResource(R.string.morekey_settings_space_behavior),
                 options = listOf(
                     Settings.SPACEBAR_MODE_SWIPE_CURSOR,
                     Settings.SPACEBAR_MODE_SWIPE_LANGUAGE,
                     Settings.SPACEBAR_MODE_SWIPE_CURSOR_ONLY
                 ),
                 optionNames = listOf(
-                    "Swiping moves cursor, long-pressing switches language",
-                    "Swiping changes language, long-pressing moves cursor",
-                    "Swiping and long-pressing only moves cursor"
+                    stringResource(R.string.morekey_settings_space_behavior_swipe_cursor),
+                    stringResource(R.string.morekey_settings_space_behavior_swipe_lang),
+                    stringResource(R.string.morekey_settings_space_behavior_only_cursor)
                 ),
                 setting = useSharedPrefsInt(
                     key = Settings.PREF_SPACEBAR_MODE,
@@ -427,12 +430,12 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
 private fun AutoSpacesSetting() {
     val altSpacesMode = useSharedPrefsInt(Settings.PREF_ALT_SPACES_MODE, Settings.DEFAULT_ALT_SPACES_MODE)
     val autoSpaceModes = mapOf(
-        Settings.SPACES_MODE_ALL to "Automatically insert spaces after punctuation or after inserting suggestions",
-        Settings.SPACES_MODE_SUGGESTIONS to "Automatically insert spaces only after inserting suggestions",
-        Settings.SPACES_MODE_LEGACY to "Do not automatically insert any spaces (legacy mode)"
+        Settings.SPACES_MODE_ALL to stringResource(R.string.typing_settings_auto_space_mode_auto),
+        Settings.SPACES_MODE_SUGGESTIONS to stringResource(R.string.typing_settings_auto_space_mode_suggestions),
+        Settings.SPACES_MODE_LEGACY to stringResource(R.string.typing_settings_auto_space_mode_legacy)
     )
     DropDownPickerSettingItem(
-        label = "Automatic spaces mode (new)",
+        label = stringResource(R.string.typing_settings_auto_space_mode),
         options = autoSpaceModes.keys.toList(),
         selection = altSpacesMode.value,
         onSet = {
@@ -463,27 +466,27 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
     }
 
     ScrollableList {
-        ScreenTitle("Keyboard", showBack = true, navController)
+        ScreenTitle(stringResource(R.string.keyboard_settings_title), showBack = true, navController)
 
         NavigationItem(
-            title = "Resize Keyboard",
-            subtitle = "Change the height and offset of the keyboard",
+            title = stringResource(R.string.size_settings_title),
+            subtitle = stringResource(R.string.size_settings_subtitle),
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("resize") },
             icon = painterResource(id = R.drawable.maximize)
         )
 
         SettingToggleSharedPrefs(
-            title = "Show Number Row",
-            subtitle = "When active, the number row is shown on top of the keyboard on supported layouts",
+            title = stringResource(R.string.keyboard_settings_show_number_row),
+            subtitle = stringResource(R.string.keyboard_settings_show_number_row_subtitle),
             key = Settings.PREF_ENABLE_NUMBER_ROW,
             default = false,
             icon = { Text("123", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) }
         )
 
         SettingToggleSharedPrefs(
-            title = "Show Arrow Keys",
-            subtitle = "When active, the arrow keys row is shown on the bottom of the keyboard",
+            title = stringResource(R.string.keyboard_settings_show_arrow_row),
+            subtitle = stringResource(R.string.keyboard_settings_show_arrow_row_subtitle),
             key = Settings.PREF_ENABLE_ARROW_ROW,
             default = false,
             icon = {
@@ -492,32 +495,32 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
         )
 
         NavigationItem(
-            title = "Long-Press Keys & Spacebar",
-            subtitle = "Configure long-press duration, how to order letters/symbols, and behavior of spacebar and delete key.",
+            title = stringResource(R.string.morekey_settings_title),
+            subtitle = stringResource(R.string.morekey_settings_subtitle),
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("longPress") },
             icon = painterResource(id = R.drawable.arrow_up)
         )
 
         NavigationItem(
-            title = "Additional Layouts",
-            subtitle = "Configure additional layouts in the languages screen",
+            title = stringResource(R.string.keyboard_settings_extra_layouts),
+            subtitle = stringResource(R.string.keyboard_settings_extra_layouts_subtitle),
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("languages") },
             icon = painterResource(id = R.drawable.keyboard)
         )
 
         NavigationItem(
-            title = "Edit Actions",
-            subtitle = "Edit favorite actions, pinned actions, and the action key next to the spacebar",
+            title = stringResource(R.string.action_editor_title),
+            subtitle = stringResource(R.string.action_editor_subtitle),
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("actionEdit") },
             icon = painterResource(id = R.drawable.smile)
         )
 
         SettingToggleDataStore(
-            title = "Show action/suggestions bar",
-            subtitle = "Show the bar containing suggestions. Recommended to keep enabled",
+            title = stringResource(R.string.keyboard_settings_show_suggestion_row),
+            subtitle = stringResource(R.string.keyboard_settings_show_suggestion_row_subtitle),
             setting = ActionBarDisplayedSetting,
             icon = {
                 Icon(painterResource(id = R.drawable.more_horizontal), contentDescription = null)
@@ -526,19 +529,19 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
 
         if(useDataStore(ActionBarDisplayedSetting).value) {
             SettingToggleDataStore(
-                title = "Inline autofill",
-                subtitle = "Display password manager autofill in suggestion bar",
+                title = stringResource(R.string.keyboard_settings_inline_autofill),
+                subtitle = stringResource(R.string.keyboard_settings_inline_autofill_subtitle),
                 setting = InlineAutofillSetting
             )
         }
 
-        ScreenTitle(title = "Typing preferences")
+        ScreenTitle(title = stringResource(R.string.typing_settings_title))
 
         AutoSpacesSetting()
 
         SettingToggleSharedPrefs(
-            title = "Swipe Typing (alpha)",
-            subtitle = "Allow swiping from key to key to write words.",
+            title = stringResource(R.string.typing_settings_swipe),
+            subtitle = stringResource(R.string.typing_settings_swipe_subtitle),
             key = Settings.PREF_GESTURE_INPUT,
             default = true,
             icon = {
@@ -548,8 +551,8 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
         )
 
         SettingToggleDataStore(
-            title = "Emoji Suggestions",
-            subtitle = "Suggest emojis while you're typing",
+            title = stringResource(R.string.typing_settings_suggest_emojis),
+            subtitle = stringResource(R.string.typing_settings_suggest_emojis_subtitle),
             setting = SHOW_EMOJI_SUGGESTIONS,
             icon = {
                 Icon(painterResource(id = R.drawable.smile), contentDescription = null,
@@ -606,14 +609,14 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
         )
 
         SettingSlider(
-            title = "Vibration",
+            title = stringResource(R.string.typing_settings_vibration_strength),
             setting = vibrationDurationSetting,
             range = -1.0f .. 100.0f,
             hardRange = -1.0f .. 2000.0f,
             transform = { it.roundToInt() },
             indicator = {
                 if(it == -1) {
-                    "Default"
+                    context.getString(R.string.typing_settings_vibration_strength_default)
                 } else {
                     "$it ms"
                 }
@@ -621,7 +624,7 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
         )
 
         SettingToggleDataStore(
-            title = "Clipboard History",
+            title = stringResource(R.string.typing_settings_enable_clipboard_history),
             setting = ClipboardHistoryEnabled
         )
     }

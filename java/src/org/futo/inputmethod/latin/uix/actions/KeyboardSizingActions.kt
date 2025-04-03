@@ -21,10 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBarHeight
@@ -40,7 +38,9 @@ private fun RowScope.KeyboardMode(iconRes: Int, checkedIconRes: Int, name: Strin
 
     Surface(
         color = Color.Transparent,
-        modifier = Modifier.weight(1.0f).height(54.dp),
+        modifier = Modifier
+            .weight(1.0f)
+            .height(54.dp),
         onClick = {
             sizingCalculator.editSavedSettings { settings ->
                 settings.copy(
@@ -71,7 +71,7 @@ private fun RowScope.KeyboardMode(iconRes: Int, checkedIconRes: Int, name: Strin
 
 val KeyboardModeAction = Action(
     icon = R.drawable.keyboard_gear,
-    name = R.string.keyboard_modes_action_title,
+    name = R.string.action_keyboard_modes_title,
     simplePressImpl = null,
     windowImpl = { manager, _ ->
         val sizeCalculator = manager.getSizingCalculator()
@@ -87,7 +87,7 @@ val KeyboardModeAction = Action(
 
             @Composable
             override fun windowName(): String =
-                stringResource(R.string.keyboard_modes_action_title)
+                stringResource(R.string.action_keyboard_modes_title)
 
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
@@ -98,7 +98,7 @@ val KeyboardModeAction = Action(
                             IconButton(onClick = {
                                 manager.closeActionWindow()
                             }) {
-                                Icon(Icons.Default.ArrowBack, contentDescription = "Go back")
+                                Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.action_keyboard_modes_go_back))
                             }
                         }
                         Spacer(Modifier.weight(1.0f))
@@ -113,35 +113,35 @@ val KeyboardModeAction = Action(
                                 manager.setTutorialArrowPosition(it)
                             }
                         }) {
-                            Text("Resize Keyboard", style = Typography.Body.MediumMl)
+                            Text(stringResource(R.string.action_keyboard_modes_resize_keyboard), style = Typography.Body.MediumMl)
                         }
                     }
                     Row {
                         KeyboardMode(
                             R.drawable.keyboard_regular,
                             R.drawable.keyboard_fill_check,
-                            "Standard",
+                            stringResource(R.string.action_keyboard_modes_standard),
                             sizeCalculator, KeyboardMode.Regular
                         )
 
                         KeyboardMode(
                             R.drawable.keyboard_left_handed,
                             R.drawable.keyboard_left_handed_fill_check,
-                            "One Hand",
+                            stringResource(R.string.action_keyboard_modes_one_handed),
                             sizeCalculator, KeyboardMode.OneHanded
                         )
 
                         KeyboardMode(
                             R.drawable.keyboard_split,
                             R.drawable.keyboard_split_fill_check,
-                            "Split",
+                            stringResource(R.string.action_keyboard_modes_split),
                             sizeCalculator, KeyboardMode.Split
                         )
 
                         KeyboardMode(
                             R.drawable.keyboard_float,
                             R.drawable.keyboard_float_fill_check,
-                            "Float",
+                            stringResource(R.string.action_keyboard_modes_floating),
                             sizeCalculator, KeyboardMode.Floating
                         )
                     }

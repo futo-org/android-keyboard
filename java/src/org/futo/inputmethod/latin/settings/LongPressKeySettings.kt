@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin.settings
 import android.content.Context
 import androidx.datastore.preferences.core.stringPreferencesKey
 import org.futo.inputmethod.keyboard.internal.MoreKeySpec
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
@@ -17,20 +18,20 @@ enum class LongPressKey {
 
 fun LongPressKey.name(context: Context): String {
     return when(this) {
-        LongPressKey.Numbers -> "Numbers"
-        LongPressKey.LanguageKeys -> "Language keys"
-        LongPressKey.Symbols -> "Symbols"
-        LongPressKey.QuickActions -> "Quick actions"
-        LongPressKey.MiscLetters -> "Misc. letters from common languages"
+        LongPressKey.Numbers -> context.getString(R.string.morekey_settings_kind_numbers)
+        LongPressKey.LanguageKeys -> context.getString(R.string.morekey_settings_kind_language_keys)
+        LongPressKey.Symbols -> context.getString(R.string.morekey_settings_kind_symbols)
+        LongPressKey.QuickActions -> context.getString(R.string.morekey_settings_kind_actions)
+        LongPressKey.MiscLetters -> context.getString(R.string.morekey_settings_kind_misc_common)
     }
 }
 fun LongPressKey.description(context: Context): String {
     return when(this) {
-        LongPressKey.Numbers -> "e.g. [1] on [q]"
-        LongPressKey.LanguageKeys -> "e.g. [ñ] on [n] in Spanish"
-        LongPressKey.Symbols -> "e.g. [@] on [a]"
-        LongPressKey.QuickActions -> "e.g. [Copy] on [c]"
-        LongPressKey.MiscLetters -> "e.g. [ß] on [s] in all Latin script languages"
+        LongPressKey.Numbers -> context.getString(R.string.morekey_settings_kind_numbers_example)
+        LongPressKey.LanguageKeys -> context.getString(R.string.morekey_settings_kind_language_keys_example)
+        LongPressKey.Symbols -> context.getString(R.string.morekey_settings_kind_symbols_example)
+        LongPressKey.QuickActions -> context.getString(R.string.morekey_settings_kind_actions_example)
+        LongPressKey.MiscLetters -> context.getString(R.string.morekey_settings_kind_misc_common_example)
     }
 }
 

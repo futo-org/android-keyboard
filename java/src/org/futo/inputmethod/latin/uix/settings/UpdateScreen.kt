@@ -250,14 +250,14 @@ fun UpdateDialog(navController: NavHostController) {
                         }
                     } }
                 }, enabled = !isDownloading.value) {
-                    Text(stringResource(R.string.update))
+                    Text(stringResource(R.string.autoupdater_perform_update))
                 }
             },
             dismissButton = {
                 TextButton(onClick = {
                     navController.navigateUp()
                 }, enabled = !isDownloading.value) {
-                    Text(stringResource(R.string.dismiss))
+                    Text(stringResource(R.string.autoupdater_dismiss_update))
                 }
             }
         )

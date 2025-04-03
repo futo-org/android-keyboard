@@ -1,119 +1,344 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="voice_input_action_title">Voice Input</string>
-    <string name="system_voice_input_action_title">Voice Input (System)</string>
-    <string name="theme_switcher_action_title">Theme Switcher</string>
-    <string name="emoji_action_title">Emojis</string>
-    <string name="select_all_action_title">Select All</string>
-    <string name="cut_action_title">Cut to Clipboard</string>
-    <string name="copy_action_title">Copy to Clipboard</string>
-    <string name="clipboard_action_title">Paste from Clipboard</string>
-    <string name="clipboard_manager_action_title">Clipboard Manager</string>
-    <string name="undo_action_title">Undo</string>
-    <string name="redo_action_title">Redo</string>
-    <string name="text_edit_action_title">Text Editor</string>
-    <string name="mem_debug_action_title">Debug Info</string>
-    <string name="more_actions_action_title">All Actions</string>
-    <string name="bug_viewer_action_title">Bug Viewer</string>
+    <!-- Keyboard actions -->
+    <string name="action_voice_input_title">Voice Input</string>
+    <!-- Same as the one above but it uses the device's default system voice input instead of the built-in -->
+    <string name="action_system_voice_input_title">Voice Input (System)</string>
+    <string name="action_theme_switcher_title">Theme Switcher</string>
+    <string name="action_emoji_title">Emojis</string>
+    <string name="action_select_all_title">Select All</string>
+    <string name="action_cut_title">Cut to Clipboard</string>
+    <string name="action_copy_title">Copy to Clipboard</string>
+    <string name="action_paste_title">Paste from Clipboard</string>
+    <string name="action_clipboard_manager_title">Clipboard Manager</string>
+    <string name="action_undo_title">Undo</string>
+    <string name="action_redo_title">Redo</string>
+    <string name="action_text_editor_title">Text Editor</string>
+    <string name="action_debug_title">Debug Info</string>
+    <string name="action_more_actions_title">All Actions</string>
+    <string name="action_bug_viewer_title">Bug Viewer</string>
+    <!-- These move the text cursor up, down, left, right -->
+    <string name="action_cursor_up_title">Arrow Up</string>
+    <string name="action_cursor_down_title">Arrow Down</string>
+    <string name="action_cursor_left_title">Arrow Left</string>
+    <string name="action_cursor_right_title">Arrow Right</string>
 
-    <string name="arrow_up_action_title">Arrow Up</string>
-    <string name="arrow_down_action_title">Arrow Down</string>
-    <string name="arrow_left_action_title">Arrow Left</string>
-    <string name="arrow_right_action_title">Arrow Right</string>
+    <!-- For keyboard modes action -->
+    <string name="action_keyboard_modes_title">Keyboard Modes</string>
+    <string name="action_keyboard_modes_go_back">Go back</string>
+    <string name="action_keyboard_modes_resize_keyboard">Resize Keyboard</string>
+    <!-- This string must be super short (below 10 chars if possible) -->
+    <string name="action_keyboard_modes_standard">Standard</string>
+    <!-- This string must be super short (below 10 chars if possible) -->
+    <string name="action_keyboard_modes_one_handed">One Hand</string>
+    <!-- This string must be super short (below 10 chars if possible) -->
+    <string name="action_keyboard_modes_split">Split</string>
+    <!-- This string must be super short (below 10 chars if possible) -->
+    <string name="action_keyboard_modes_floating">Float</string>
+    <!-- This string must be super short (below 10 chars if possible) -->
+    <string name="action_keyboard_modes_resizing_reset_size">Reset</string>
+    <!-- This string must be super short (below 10 chars if possible) -->
+    <string name="action_keyboard_modes_resizing_apply_new_size">Apply</string>
 
-    <string name="keyboard_modes_action_title">Keyboard Modes</string>
-
+    <!-- Keyboard action kinds -->
     <string name="action_kind_action_key">Action Key</string>
     <string name="action_kind_pinned_key">Pinned Action(s)</string>
     <string name="action_kind_favorites">Favorite Actions</string>
     <string name="action_kind_more">More Actions</string>
     <string name="action_kind_disabled">Hidden Actions</string>
 
-    <string name="default_dark_theme_name">Dark Mode</string>
-    <string name="default_light_theme_name">Light Mode</string>
+    <!-- Keyboard themes -->
+    <string name="theme_default_dark">Dark Mode</string>
+    <string name="theme_default_light">Light Mode</string>
+    <string name="theme_amoled_dark">AMOLED Dark Purple</string>
+    <string name="theme_classic_dark">AOSP Material Dark</string>
+    <string name="theme_classic_light">AOSP Material Light</string>
+    <string name="theme_vi">FUTO VI Theme</string>
+    <string name="theme_deepsea_dark">Deep Sea Dark</string>
+    <string name="theme_deepsea_light">Deep Sea Light</string>
+    <string name="theme_emerald">Emerald</string>
+    <string name="theme_gradient1">Gradient 1</string>
+    <string name="theme_gradient2">Gradient 2</string>
+    <string name="theme_rainbow">Rainbow</string>
+    <string name="theme_snowfall">Snowfall</string>
+    <string name="theme_steel_gray">Steel Gray</string>
+    <string name="theme_sunflower">Sunflower</string>
+    <string name="theme_cotton_candy">Cotton Candy</string>
+    <string name="theme_hotdog">Hot Dog</string>
+    <string name="theme_dev">Construction Theme</string>
+    <string name="theme_dynamic_system">Dynamic Auto</string>
+    <string name="theme_dynamic_dark">Dynamic Dark</string>
+    <string name="theme_dynamic_light">Dynamic Light</string>
 
-    <string name="amoled_dark_theme_name">AMOLED Dark Purple</string>
-    <string name="classic_material_dark_theme_name">AOSP Material Dark</string>
-    <string name="classic_material_light_theme_name">AOSP Material Light</string>
-    <string name="voice_input_theme_name">FUTO VI Theme</string>
+    <!-- Auto update strings (note: the auto updater is currently inactive) -->
+    <string name="autoupdater_service_title">Update Checking service</string>
+    <string name="autoupdater_update_available_title">Update Available</string>
+    <string name="autoupdater_update_available_body">An update is available (<xliff:g name="versionDiff" example="v1 -> v2">%s</xliff:g>). Tap to download</string>
+    <string name="autoupdater_dismiss_update">Dismiss</string>
+    <string name="autoupdater_perform_update">Update</string>
+
+    <!-- These strings can appear in the keyboard itself -->
+    <string name="keyboard_suggest_blacklist_title">Blacklist</string>
+    <string name="keyboard_suggest_blacklist_body">Blacklist \"%1$s\" from being suggested?</string>
+    <string name="keyboard_suggest_disable_emojis">Disable emoji suggestions</string>
+    <string name="keyboard_version_status">Alpha</string>
+    <string name="keyboard_switch_keyboard">Switch Keyboard</string>
+    <string name="keyboard_language_settings">Settings</string>
+
+    <!-- Payment screen -->
+    <string name="payment_screen_short_title">Payment</string>
+    <string name="payment_screen_title">Pay for FUTO Keyboard</string>
+    <string name="payment_screen_sales_paragraph_1">You\'ve been using FUTO Keyboard for <xliff:g name="days" example="30">%d</xliff:g> days. If you find this app useful, please consider paying to support future development of FUTO software.</string>
+    <string name="payment_screen_sales_paragraph_1_alt">Thank you for trying out FUTO Keyboard! If you find this app useful, please consider paying to support future development of FUTO software.</string>
+    <string name="payment_screen_sales_paragraph_2">FUTO is dedicated to making good software that doesn\'t abuse you. This app will never serve you ads or collect your personal data.</string>
+    <string name="payment_screen_sales_point_development_title">Sustainable Development</string>
+    <string name="payment_screen_sales_point_development_body">FUTO\'s mission is for open-source software and non-malicious software business practices to become a sustainable income source for projects and their developers. For this reason, we are in favor of users actually paying for software.</string>
+    <string name="payment_screen_sales_point_privacy_title">Commitment to Privacy</string>
+    <string name="payment_screen_sales_point_privacy_body">This app will never serve you ads or sell your data. We are not in the business of doing that.</string>
+    <string name="payment_screen_error_build_unsupported_payment">Payment is unsupported on this build</string>
+    <string name="payment_screen_already_paid_title">Already paid?</string>
+    <string name="payment_screen_already_paid_body">If you already paid for FUTO Keyboard or FUTO Voice Input, tap below.</string>
+    <string name="payment_screen_already_paid_button">I already paid</string>
+    <string name="payment_screen_already_paid_confirmation">Confirm your choice</string>
+    <string name="payment_screen_already_paid_confirmation_body">Are you sure you want to confirm you already paid? Once confirmed, you won\'t be asked about paying again.</string>
+    <string name="payment_screen_already_paid_confirmation_confirm">I already paid</string>
+    <string name="payment_screen_already_paid_confirmation_cancel">Cancel</string>
+    <string name="payment_screen_set_reminder_title">Not ready to pay yet?</string>
+    <string name="payment_screen_set_reminder_body">This will hide the reminder in the settings screen for the period of days entered.</string>
+    <string name="payment_screen_set_reminder_setter">When would you like to be reminded?</string>
+    <string name="payment_screen_set_reminder_setter_7_days">in 7 days</string>
+    <string name="payment_screen_set_reminder_setter_1_month">in 1 month</string>
+    <string name="payment_screen_set_reminder_setter_6_months">in 6 months</string>
+    <string name="payment_screen_set_reminder_setter_next_century">next century</string>
+    <string name="payment_screen_set_reminder_setter_confirm">Confirm reminder</string>
+    <string name="payment_screen_other_options">Other Options</string>
+    <string name="payment_screen_need_help_title">Help</string>
+    <string name="payment_screen_need_help_subtitle">Need help? Visit our website</string>
+
+    <string name="payment_screen_pay_via_google">Pay via Google Play (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
+    <string name="payment_screen_pay_via_futopay">Pay (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
+    <string name="payment_screen_more_options">More options</string>
+
+    <string name="payment_screen_payment_complete_title">Payment Complete</string>
+    <string name="payment_screen_aftersales_title">Thank you</string>
+    <string name="payment_screen_aftersales_title_pending">Payment Pending</string>
+    <string name="payment_screen_aftersales_paragraph_1">Thank you for purchasing FUTO Keyboard!</string>
+    <string name="payment_screen_aftersales_paragraph_2">Your purchase will help continued development of FUTO Keyboard, and other FUTO projects.</string>
+    <string name="payment_screen_aftersales_paragraph_2_pending">Your payment is still pending, but it should clear soon.</string>
+    <string name="payment_screen_aftersales_paragraph_3">If you just paid, your payment may still be processing, you should get an email with more information.</string>
+    <string name="payment_screen_payment_failed_title">Payment Error</string>
+    <string name="payment_screen_payment_failed_body">Unfortunately, your payment has failed for one reason or another. Please contact us if you need help. You can reach us at keyboard@futo.org, with the button below, or with Send Feedback in Help</string>
+    <string name="payment_screen_payment_failed_body_unconfident">There may have been a problem with your payment. If it did go through, you should receive an email with a license key. Please contact us if you need help. You can reach us at keyboard@futo.org, with the button below, or with Share Feedback at the main screen.</string>
+    <string name="payment_screen_license_integrity_error">Failed to verify license. If you believe this to be an error, please contact us.</string>
+    <string name="payment_screen_continue_button">Continue</string>
+
+    <string name="payment_unpaid_version_title">Unpaid FUTO Keyboard</string>
+    <string name="payment_unpaid_version_indicator">Unpaid</string>
+    <string name="payment_paid_version_indicator">Thank you for using the paid version of FUTO Keyboard!</string>
 
 
-    <string name="deep_sea_light_theme_name">Deep Sea Light</string>
-    <string name="deep_sea_dark_theme_name">Deep Sea Dark</string>
+    <!-- Lack of automatic updates notice -->
+    <string name="manual_update_notice_title">Updates Notice</string>
+    <string name="manual_update_notice_paragraph_1">This app doesn\'t connect to the internet and it won\'t be able to check for automatic updates. You can check for updates manually though.</string>
+    <string name="manual_update_notice_paragraph_2">Please use F-Droid or Obtainium for automatic updates. Visit keyboard.futo.org for download options.</string>
+    <string name="manual_update_notice_dev_paragraph">You are on the development build of FUTO Keyboard. Visit keyboard.futo.org if you want to download the stable build.</string>
+    <string name="manual_update_notice_visit_site_button">Visit</string>
+    <!-- can be translated as "understood", etc -->
+    <string name="manual_update_notice_dismiss_notice_button">Dismiss</string>
 
-    <string name="emerald_theme_name">Emerald</string>
 
-    <string name="gradient1_theme_name">Gradient 1</string>
-    <string name="gradient2_theme_name">Gradient 2</string>
-    <string name="rainbow_theme_name">Rainbow</string>
+    <!-- General settings strings -->
+    <string name="settings_tip">Tip</string>
+    <string name="settings_unknown_error_title">Unknown Error</string>
+    <string name="settings_unknown_error_subtitle">An unknown error has occurred.</string>
+    <string name="settings_try_typing_here">Try typing here…</string>
+    <string name="settings_external_model_name">Externally imported model</string>
+    <string name="settings_check_for_updates_manually">Check for updates manually</string>
+    <string name="settings_update_available">Update Available</string>
 
-    <string name="snowfall_theme_name">Snowfall</string>
-    <string name="steel_gray_theme_name">Steel Gray</string>
-    <string name="sunflower_theme_name">Sunflower</string>
-    <string name="cotton_candy_theme_name">Cotton Candy</string>
-    <string name="hot_dog_theme_name">Hot Dog</string>
+    <!-- When adding a new language -->
+    <string name="language_settings_title">Languages &amp; Models</string>
+    <string name="language_settings_add_language_button">Add language</string>
+    <string name="language_settings_select_language">Select language to add</string>
+    <string name="language_settings_search">Search</string>
+    <string name="language_settings_select_layout">Select a layout to add</string>
+    <string name="language_settings_warning_language_has_no_dict">This language has no built-in dictionary. We recommend downloading and importing one to get autocorrect and word suggestions.</string>
+    <string name="language_settings_resource_none">(None)</string>
+    <string name="language_settings_layouts_of_this_language">Keyboard Layouts</string>
+    <string name="language_settings_add_layout_for_this_language">Add Keyboard Layout</string>
+    <string name="language_settings_enable_multilingual_typing_for_this_language">Multilingual Typing</string>
+    <string name="language_settings_remove_this_language">Remove Language</string>
 
-    <string name="dev_theme_name">Construction Theme</string>
+    <string name="language_settings_resource_imported_indicator">(Imported)</string>
+    <string name="language_settings_resource_unsupported_indicator">(Unsupported)</string>
+    <string name="language_settings_resource_builtin_dictionary_name">Built-in Dictionary</string>
+    <string name="language_settings_resource_voice_input_selected">Would you like to revert the voice input model to default, or replace it with another file?</string>
+    <string name="language_settings_resource_voice_input_selected_no_default_warning">No built-in voice input model exists for this language, so if you remove it, voice input will stop working for this language until you import a different model!</string>
+    <string name="language_settings_resource_voice_input_selected_unset">You have not configured a custom voice input model for this language. You can explore downloads online, or import one from a file.</string>
+    <string name="language_settings_resource_transformer_selected">Would you like to revert the transformer model to default, or replace it with another file?</string>
+    <string name="language_settings_resource_transformer_selected_no_default_warning">No built-in transformer model exists for this language, so if you remove it, transformer-based predictions will stop working for this language until you import a different model!</string>
+    <string name="language_settings_resource_transformer_selected_unset">You have not configured a custom transformer model for this language. You can explore downloads online, or import one from a file.</string>
+    <string name="language_settings_resource_dictionary_selected">Would you like to revert the dictionary to default, or replace it with another file?</string>
+    <string name="language_settings_resource_dictionary_selected_no_default_warning">No built-in dictionary exists for this language, so if you remove it, autocorrect and predictions will stop working for this language until you import a different dictionary!</string>
+    <string name="language_settings_resource_dictionary_selected_unset">You have not configured a custom dictionary for this language. You can explore downloads online, or import one from a file.</string>
+    <string name="language_settings_resource_replace_button">Replace</string>
+    <string name="language_settings_resource_import_file_button">Import</string>
+    <string name="language_settings_resource_revert_to_default_button">Revert to Default</string>
+    <string name="language_settings_resource_remove_button">Remove</string>
+    <string name="language_settings_resource_explore_online_button">Explore</string>
 
-    <string name="dynamic_system_theme_name">Dynamic Auto</string>
-    <string name="dynamic_light_theme_name">Dynamic Light</string>
-    <string name="dynamic_dark_theme_name">Dynamic Dark</string>
+    <string name="language_settings_remove_language_title">Delete %1$s?</string>
+    <string name="language_settings_remove_language_body">Remove %1$s, all of its associated layouts and custom resources?</string>
+    <string name="language_settings_remove_language_remove_button">Remove</string>
+    <string name="language_settings_remove_language_cancel_button">Cancel</string>
 
-    <string name="download_required">Voice Input Model Downloader</string>
-    <string name="download_required_body">Download of some model files is necessary for voice input functionality. This may incur data fees if you are using Mobile Data instead of Wi-Fi.</string>
-    <string name="continue_">Continue</string>
+    <string name="language_settings_other_options">Other options</string>
+    <string name="language_settings_import_resource_from_file">Import resource file</string>
+    <string name="language_settings_explore_voice_input_models_online">Explore voice input models</string>
+    <string name="language_settings_explore_dictionaries_online">Explore dictionaries</string>
+    <string name="language_settings_explore_transformers_online">Explore transformer models</string>
 
-    <string name="download_progress">Voice Input Model Download Progress</string>
-    <string name="download_failed">Download of one or more resources has failed. Please make sure you\'re connected to a network, the app has network permission, or try again later.</string>
-    <string name="download_in_progress">Downloading models…</string>
+    <!-- Reource importer -->
+    <string name="file_kind_voice_input_model">Voice Input Model</string>
+    <string name="file_kind_transformer_model">Transformer Model</string>
+    <string name="file_kind_dictionary">Dictionary</string>
+    <string name="file_kind_invalid_file">Invalid file</string>
+    <string name="resource_importer_import_title">Import - %1$s</string>
+    <string name="resource_importer_error_wordlist_1">Error: This file appears to be a source wordlist (_wordlist.combined) instead of a compiled dictionary (.dict) file.</string>
+    <string name="resource_importer_error_wordlist_2">Please download the compiled dictionary file, not the wordlist. If you made this wordlist yourself, compile it externally using dicttool.</string>
+    <string name="resource_importer_error_invalid_fiile">Error: This file could not be recognized. It may be invalid or it may have been corrupted. Try re-downloading it, or try a different file.</string>
+    <string name="resource_importer_cancel_button">Cancel</string>
+    <string name="resource_importer_file_info">File information: %1$s</string>
+    <string name="resource_importer_importing">Importing for language: %1$s</string>
+    <string name="resource_importer_select_language">Select the language to import for:</string>
+    <string name="resource_importer_warning_language_missing">This file appears to be intended for a language (%1$s) which is not enabled in settings</string>
 
-    <string name="model_downloader">Model Downloader</string>
+    <!-- Keyboard actions -->
+    <string name="action_editor_title">Edit Actions</string>
+    <string name="action_editor_subtitle">Edit favorite actions, pinned actions, and the action key next to the spacebar</string>
+    <string name="action_editor_edit_actions">Edit actions</string>
+    <string name="action_editor_warning_no_actions">No actions are enabled</string>
+    <string name="action_editor_error_more_than_one_action_key">Please assign only one action key. You cannot assign more than one action to the action key.</string>
+    <string name="action_editor_warning_too_many_pinned">Please consider pinning less actions. The suggestion bar will need to be shrunk to accommodate this many actions.</string>
+    <string name="action_editor_add_next_action">Add next</string>
 
-    <string name="update_checking_service">Update Checking service</string>
-    <string name="update_available">Update Available</string>
-    <string name="update_available_notification">An update is available (<xliff:g name="versionDiff" example="v1 -> v2">%s</xliff:g>). Tap to download</string>
-    <string name="unknown_error">Unknown Error</string>
-    <string name="an_unknown_error_has_occurred">An unknown error has occurred.</string>
-    <string name="model_import_failed">Model import failed</string>
-    <string name="failed_to_import_the_selected_model">Failed to import the selected model</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="update">Update</string>
+    <!-- Keyboard's size settings -->
+    <string name="size_settings_title">Resize Keyboard</string>
+    <string name="size_settings_subtitle">Change the height and offset of the keyboard</string>
+    <string name="size_settings_resize_tip">Tap the \"Resize Keyboard\" button to resize.</string>
+    <string name="size_settings_keyboard_modes_tip">"You can access this anywhere with the Keyboard Modes action: "</string>
+    <string name="size_settings_reset">Reset size settings</string>
+    <string name="size_settings_reset_subtitle">Tap to reset all sizes and modes for both portrait and landscape to default</string>
 
-    <string name="blacklist">Blacklist</string>
-    <string name="blacklist_from_suggestions">Blacklist \"%1$s\" from being suggested?</string>
-    <string name="disable_emoji">Disable emoji suggestions</string>
-    <string name="try_typing">Try typing here…</string>
-    <string name="externally_imported_model">Externally imported model</string>
-    <string name="spacebar_default_text">Alpha</string>
+    <!-- Long-press keys, or otherwise called secondary keys, more keys, additional keys -->
+    <string name="morekey_settings_title">Long-Press Keys &amp; Spacebar</string>
+    <string name="morekey_settings_subtitle">Configure long-press duration, how to order letters/symbols, and behavior of spacebar and delete key.</string>
+    <string name="morekey_settings_layout">Layout of long-press keys</string>
+    <string name="morekey_settings_reset">Reset to default</string>
+    <string name="morekey_settings_active">Active</string>
+    <string name="morekey_settings_inactive">Inactive</string>
+    <string name="morekey_settings_keys">Long-Press Keys</string>
+    <string name="morekey_settings_show_hints">Show hints</string>
+    <string name="morekey_settings_show_hints_subtitle">Display a small hint on each key, showing the primary long-press key</string>
+    <string name="morekey_settings_duration">Long Press Duration</string>
+    <string name="morekey_settings_duration_subtitle">How long a key needs to be pressed to be considered a long-press</string>
+    <string name="morekey_settings_backspace_behavior">Backspace Behavior when holding or swiping</string>
+    <string name="morekey_settings_backspace_behavior_delete_chars">Delete characters</string>
+    <string name="morekey_settings_backspace_behavior_delete_words">Delete entire words</string>
+    <string name="morekey_settings_space_behavior">Spacebar Behavior</string>
+    <string name="morekey_settings_space_behavior_swipe_cursor">Swiping moves cursor, long-pressing switches language</string>
+    <string name="morekey_settings_space_behavior_swipe_lang">Swiping changes language, long-pressing moves cursor</string>
+    <string name="morekey_settings_space_behavior_only_cursor">Swiping and long-pressing only moves cursor</string>
 
-    <string name="payment_text_1">You\'ve been using FUTO Keyboard for <xliff:g name="days" example="30">%d</xliff:g> days. If you find this app useful, please consider paying to support future development of FUTO software.</string>
-    <string name="payment_text_1_alt">Thank you for trying out FUTO Keyboard! If you find this app useful, please consider paying to support future development of FUTO software.</string>
-    <string name="payment_text_2">FUTO is dedicated to making good software that doesn\'t abuse you. This app will never serve you ads or collect your personal data.</string>
-    <string name="thank_you_for_purchasing_keyboard">Thank you for purchasing FUTO Keyboard!</string>
-    <string name="payment_pending_body">Your payment is still pending, but it should clear soon.</string>
-    <string name="purchase_will_help_body">Your purchase will help continued development of FUTO Keyboard, and other FUTO projects.</string>
-    <string name="thank_you">Thank you</string>
-    <string name="payment_pending">Payment Pending</string>
-    <string name="payment_failed_body">Unfortunately, your payment has failed for one reason or another. Please contact us if you need help. You can reach us at keyboard@futo.org, with the button below, or with Send Feedback in Help</string>
-    <string name="payment_failed_body_ex">There may have been a problem with your payment. If it did go through, you should receive an email with a license key. Please contact us if you need help. You can reach us at keyboard@futo.org, with the button below, or with Share Feedback at the main screen.</string>
-    <string name="pay_via_google">Pay via Google Play (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
-    <string name="pay">Pay (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
-    <string name="i_already_paid">I already paid</string>
-    <string name="more_options">More options</string>
-    <string name="i_already_paid_2">I already paid (tap again to confirm)</string>
-    <string name="remind_me_in_x">"Remind me in "</string>
-    <string name="in_x_days">" days"</string>
-    <string name="confirm_reminder">Confirm reminder</string>
-    <string name="developer_mode_payment_methods">You are on the Developer release, so you are seeing all payment methods</string>
-    <string name="pay_now">Pay Now</string>
-    <string name="unpaid_indicator">Unpaid</string>
-    <string name="unpaid_title">Unpaid FUTO Keyboard</string>
-    <string name="payment_error">Payment Error</string>
-    <string name="payment_complete">Payment Complete</string>
-    <string name="payment_title">Payment</string>
-    <string name="payment">Payment</string>
-    <string name="license_check_failed">Failed to verify license. If you believe this to be an error, please contact us.</string>
-    <string name="thank_you_for_using_paid">Thank you for using the paid version of FUTO Keyboard!</string>
-    <string name="payment_text_3">Note: If you already paid for either FUTO Keyboard or FUTO Voice Input in the past, feel free to tap I already paid.</string>
-    <string name="payment_processing_note">If you just paid, your payment may still be processing, you should get an email with more information.</string>
+    <!-- Types of morekeys that can be configured, and examples of them -->
+    <string name="morekey_settings_kind_numbers">Numbers</string>
+    <string name="morekey_settings_kind_numbers_example">e.g. [1] on [q]</string>
+    <string name="morekey_settings_kind_language_keys">Language keys</string>
+    <!-- This example can be adjusted per language for better understanding -->
+    <string name="morekey_settings_kind_language_keys_example">e.g. [ñ] on [n] in Spanish</string>
+    <string name="morekey_settings_kind_symbols">Symbols</string>
+    <string name="morekey_settings_kind_symbols_example">e.g. [@] on [a]</string>
+    <string name="morekey_settings_kind_actions">Quick actions</string>
+    <string name="morekey_settings_kind_actions_example">e.g. [Copy] on [c]</string>
+    <string name="morekey_settings_kind_misc_common">Misc. letters from common languages</string>
+    <string name="morekey_settings_kind_misc_common_example">e.g. [ß] on [s] in all Latin script languages</string>
+
+    <!-- typing settings -->
+    <string name="typing_settings_title">Typing preferences</string>
+    <string name="typing_settings_swipe">Swipe Typing (alpha)</string>
+    <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
+    <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
+    <string name="typing_settings_suggest_emojis_subtitle">Suggest emojis while you\'re typing</string>
+    <string name="typing_settings_vibration_strength">Vibration</string>
+    <string name="typing_settings_vibration_strength_default">Default</string>
+    <string name="typing_settings_enable_clipboard_history">Clipboard History</string>
+
+    <!-- Automatic space insertion -->
+    <string name="typing_settings_auto_space_mode">Automatic spaces mode</string>
+    <string name="typing_settings_auto_space_mode_auto">Automatically insert spaces after punctuation or after inserting suggestions</string>
+    <string name="typing_settings_auto_space_mode_suggestions">Automatically insert spaces only after inserting suggestions</string>
+    <string name="typing_settings_auto_space_mode_legacy">Do not automatically insert any spaces (legacy mode)</string>
+
+    <!-- Misc keyboard settings -->
+    <string name="keyboard_settings_title">Keyboard</string>
+    <string name="keyboard_settings_show_number_row">Show Number Row</string>
+    <string name="keyboard_settings_show_number_row_subtitle">When active, the number row is shown on top of the keyboard on supported layouts</string>
+    <string name="keyboard_settings_show_arrow_row">Show Arrow Keys</string>
+    <string name="keyboard_settings_show_arrow_row_subtitle">When active, the arrow keys row is shown on the bottom of the keyboard</string>
+    <string name="keyboard_settings_extra_layouts">Additional Layouts</string>
+    <string name="keyboard_settings_extra_layouts_subtitle">Configure additional layouts in the languages screen</string>
+    <string name="keyboard_settings_show_suggestion_row">Show action/suggestions bar</string>
+    <string name="keyboard_settings_show_suggestion_row_subtitle">Show the bar containing suggestions. Recommended to keep enabled</string>
+    <string name="keyboard_settings_inline_autofill">Inline autofill</string>
+    <string name="keyboard_settings_inline_autofill_subtitle">Display password manager autofill in suggestion bar</string>
+
+    <!-- misc titles -->
+    <string name="settings_keyboard_typing_title">Keyboard &amp; Typing</string>
+    <string name="voice_input_settings_title">Voice Input</string>
+    <string name="voice_input_settings_builtin_disabled_notice">Built-in voice input is disabled!</string>
+    <!-- Theme, as in visual style -->
+    <string name="theme_settings_title">Theme</string>
+    <string name="theme_settings_key_borders">Key borders</string>
+    <string name="dev_settings_title">Developer Settings</string>
+    <string name="credits_title">Credits</string>
+
+    <!-- Prediction menu -->
+    <string name="prediction_settings_title">Text Prediction</string>
+    <string name="prediction_settings_transformer">Transformer LM</string>
+    <string name="prediction_settings_transformer_finetuning">Transformer fine-tuning</string>
+    <string name="prediction_settings_transformer_finetuning_subtitle">May kill your battery if enabled! This feature is pending more work</string>
+    <string name="prediction_settings_transformer_models">Transformer Models</string>
+    <string name="prediction_settings_transformer_advanced_params">Advanced Parameters</string>
+    <string name="prediction_settings_transformer_alpha_notice">Note: Transformer LM is in alpha state</string>
+    <string name="prediction_settings_smart_keyhit_detection">Smart key-hit detection</string>
+    <string name="prediction_settings_smart_keyhit_detection_subtitle">Uses dictionary to determine relevant next keys, and boosts their hit area. Boosting is avoided after a backspace</string>
+    <string name="prediction_settings_word_blacklist">Word Blacklist</string>
+    <string name="prediction_settings_word_blacklist_add">Add to blacklist</string>
+    <string name="prediction_settings_word_blacklist_none">There are no blacklisted words.</string>
+
+    <!-- Help & feedback menu -->
+    <string name="help_menu_title">Help &amp; Feedback</string>
+    <string name="help_menu_version_name">Version Name: %1$s</string>
+    <string name="help_menu_version_code">Version Code: %1$s</string>
+    <string name="help_menu_version_tip">We want to hear from you! If you\'re reporting an issue, your version may be relevant: v%1$s</string>
+    <string name="help_menu_documentation">Documentation</string>
+    <string name="help_menu_documentation_subtitle">Learn more about the keyboard\'s features and capabilities</string>
+    <string name="help_menu_discord">Discord Server</string>
+    <string name="help_menu_discord_subtitle">Wanna talk but don\'t like Zulip? Chat here</string>
+    <string name="help_menu_futo_chat">FUTO Chat</string>
+    <string name="help_menu_futo_chat_subtitle">Wanna talk but don\'t like Discord? Chat here</string>
+    <string name="help_menu_github">Public issue tracker</string>
+    <string name="help_menu_github_subtitle">Specific bug or feature request? Post here</string>
+    <string name="help_menu_email">Email keyboard@futo.org</string>
+    <string name="help_menu_email_subtitle">Private feedback, help, or don\'t use GitHub? Email us</string>
+
+    <!-- Setup configuration -->
+    <string name="setup_step_1">Setup - Step 1</string>
+    <string name="setup_step_2">Setup - Step 2</string>
+    <string name="setup_step_3">Setup - Step 3</string>
+    <string name="setup_welcome_text">Welcome to FUTO Keyboard alpha! Please keep in mind things may be rough. This is not a finished product in any way.\n\nFirst, enable FUTO Keyboard as an input method.</string>
+    <string name="setup_open_input_settings">Open Input Method Settings</string>
+    <string name="setup_warning_multiple_versions">Warning: You seem to have both Play Store and Standalone versions installed, we only recommend installing one</string>
+    <string name="setup_active_input_method">Please select FUTO Keyboard as your active input method.</string>
+    <string name="setup_switch_input_methods">Switch Input Methods</string>
 </resources>

@@ -9,14 +9,14 @@ import androidx.compose.ui.platform.LocalView
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 
 @Composable
-fun SetupOrMain(inputMethodEnabled: Boolean, inputMethodSelected: Boolean, micPermissionGrantedOrUsingSystem: Boolean, doublePackage: Boolean, main: @Composable () -> Unit) {
+fun SetupOrMain(inputMethodEnabled: Boolean, inputMethodSelected: Boolean, doublePackage: Boolean, main: @Composable () -> Unit) {
     val wasSetupActive = remember { mutableStateOf(false) }
     val view = LocalView.current
     val context = LocalContext.current
-    LaunchedEffect(inputMethodSelected, inputMethodEnabled, micPermissionGrantedOrUsingSystem) {
-        wasSetupActive.value = wasSetupActive.value || !inputMethodEnabled || !inputMethodSelected || !micPermissionGrantedOrUsingSystem
+    LaunchedEffect(inputMethodSelected, inputMethodEnabled) {
+        wasSetupActive.value = wasSetupActive.value || !inputMethodEnabled || !inputMethodSelected
 
-        if(inputMethodSelected && inputMethodEnabled && micPermissionGrantedOrUsingSystem && wasSetupActive.value) {
+        if(inputMethodSelected && inputMethodEnabled && wasSetupActive.value) {
             AccessibilityUtils.init(context)
             if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
                 AccessibilityUtils.getInstance()
@@ -29,8 +29,6 @@ fun SetupOrMain(inputMethodEnabled: Boolean, inputMethodSelected: Boolean, micPe
         SetupEnableIME()
     } else if (!inputMethodSelected) {
         SetupChangeDefaultIME(doublePackage)
-    } else if (!micPermissionGrantedOrUsingSystem) {
-        SetupEnableMic()
     } else {
         main()
     }

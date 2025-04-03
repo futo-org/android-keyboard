@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
@@ -36,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.uix.KeyboardLayoutPreview
 import org.futo.inputmethod.latin.uix.actions.searchMultiple
@@ -86,13 +88,16 @@ fun SelectLanguageScreen(navController: NavHostController = rememberNavControlle
 
     LazyColumn {
         item {
-            ScreenTitle("Select language to add", showBack = true, navController)
+            ScreenTitle(stringResource(R.string.language_settings_select_language), showBack = true, navController)
         }
 
         item {
-            Surface(color = MaterialTheme.colorScheme.surfaceContainerHighest, shape = RoundedCornerShape(8.dp), modifier = Modifier.padding(8.dp).height(48.dp).fillMaxWidth()) {
+            Surface(color = MaterialTheme.colorScheme.surfaceContainerHighest, shape = RoundedCornerShape(8.dp), modifier = Modifier
+                .padding(8.dp)
+                .height(48.dp)
+                .fillMaxWidth()) {
                 Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Search, contentDescription = "Search")
+                    Icon(Icons.Default.Search, contentDescription = stringResource(R.string.language_settings_search))
                     Spacer(modifier = Modifier.width(8.dp))
                     BasicTextField(
                         value = textFieldValue.value,
@@ -131,13 +136,19 @@ fun LayoutPreview(name: String, locale: Locale, onClick: () -> Unit) {
     val layoutName = remember { LayoutManager.getLayout(context, name).name }
 
     Box(
-        Modifier.padding(4.dp).fillMaxWidth().border(
-            1.dp,
-            MaterialTheme.colorScheme.outlineVariant,
-            RoundedCornerShape(8.dp)
-        ).clickable { onClick() }) {
+        Modifier
+            .padding(4.dp)
+            .fillMaxWidth()
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.outlineVariant,
+                RoundedCornerShape(8.dp)
+            )
+            .clickable { onClick() }) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             KeyboardLayoutPreview(id = name, width = 172.dp, locale = locale)
@@ -172,7 +183,7 @@ fun SelectLayoutsScreen(navController: NavHostController = rememberNavController
     ScrollableList {
         ScreenTitle(locale.getDisplayName(locale), showBack = true, navController)
 
-        ScreenTitle("Select a layout to add")
+        ScreenTitle(stringResource(R.string.language_settings_select_layout))
 
         relevantLayouts.forEach {
             LayoutPreview(it, locale) {

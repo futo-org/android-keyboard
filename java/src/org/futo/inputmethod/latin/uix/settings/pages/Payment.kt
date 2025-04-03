@@ -161,19 +161,19 @@ fun PaymentBody(verbose: Boolean) {
         // Doesn't make sense to say "You've been using for ... days" if it's less than seven days
         if (numDaysInstalled.intValue >= 7) {
             ParagraphText(
-                stringResource(R.string.payment_text_1, numDaysInstalled.value),
+                stringResource(R.string.payment_screen_sales_paragraph_1, numDaysInstalled.value),
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         } else {
             ParagraphText(
-                stringResource(R.string.payment_text_1_alt),
+                stringResource(R.string.payment_screen_sales_paragraph_1_alt),
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
 
         if (!verbose) {
             ParagraphText(
-                stringResource(R.string.payment_text_2),
+                stringResource(R.string.payment_screen_sales_paragraph_2),
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
@@ -187,14 +187,14 @@ fun PaymentBulletPointList() {
         SpacedColumn(18.dp) {
             IconText(
                 icon = painterResource(id = R.drawable.activity),
-                title = "Sustainable Development",
-                body = "FUTO's mission is for open-source software and non-malicious software business practices to become a sustainable income source for projects and their developers. For this reason, we are in favor of users actually paying for software."
+                title = stringResource(R.string.payment_screen_sales_point_development_title),
+                body = stringResource(R.string.payment_screen_sales_point_development_body)
             )
 
             IconText(
                 icon = painterResource(id = R.drawable.unlock),
-                title = "Commitment to Privacy",
-                body = "This app will never serve you ads or sell your data. We are not in the business of doing that."
+                title = stringResource(R.string.payment_screen_sales_point_privacy_title),
+                body = stringResource(R.string.payment_screen_sales_point_privacy_body)
             )
         }
     }
@@ -261,7 +261,7 @@ fun ConditionalUnpaidNoticeInVoiceInputWindow(onClose: (() -> Unit)? = null) {
             context.startAppActivity(PaymentActivity::class.java)
             if (onClose != null) onClose()
         }) {
-            Text(stringResource(R.string.unpaid_indicator), color = MaterialTheme.colorScheme.onSurface)
+            Text(stringResource(R.string.payment_unpaid_version_indicator), color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }
@@ -270,14 +270,14 @@ fun ConditionalUnpaidNoticeInVoiceInputWindow(onClose: (() -> Unit)? = null) {
 @Preview
 fun UnpaidNotice(openMenu: () -> Unit = { }) {
     PaymentSurface(isPrimary = true, onClick = openMenu) {
-        PaymentSurfaceHeading(stringResource(R.string.unpaid_title))
+        PaymentSurfaceHeading(stringResource(R.string.payment_unpaid_version_title))
 
         PaymentBody(false)
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clearAndSetSemantics {  }
+                .clearAndSetSemantics { }
         ) {
             TextButton(
                 onClick = openMenu,
@@ -286,11 +286,11 @@ fun UnpaidNotice(openMenu: () -> Unit = { }) {
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.more_options), color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.payment_screen_more_options), color = MaterialTheme.colorScheme.primary)
             }
 
             Button(onClick = openMenu, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.pay, BuildConfig.PAYMENT_PRICE))
+                Text(stringResource(R.string.payment_screen_pay_via_futopay, BuildConfig.PAYMENT_PRICE))
             }
         }
     }
@@ -317,23 +317,23 @@ fun PaymentThankYouScreen(onExit: () -> Unit = { }) {
 
         ScreenTitle(
             if (isPending.value) {
-                stringResource(R.string.payment_pending)
+                stringResource(R.string.payment_screen_aftersales_title_pending)
             } else {
-                stringResource(R.string.thank_you)
+                stringResource(R.string.payment_screen_aftersales_title)
             },
             showBack = false
         )
 
         PaymentSurface(isPrimary = true) {
             SpacedColumn(24.dp) {
-                PaymentSurfaceHeading(stringResource(R.string.thank_you_for_purchasing_keyboard))
+                PaymentSurfaceHeading(stringResource(R.string.payment_screen_aftersales_paragraph_1))
 
                 if (isPending.value) {
-                    ParagraphText(stringResource(R.string.payment_pending_body))
+                    ParagraphText(stringResource(R.string.payment_screen_aftersales_paragraph_2_pending))
                 }
-                ParagraphText(stringResource(R.string.purchase_will_help_body))
+                ParagraphText(stringResource(R.string.payment_screen_aftersales_paragraph_2))
 
-                ParagraphText(stringResource(R.string.payment_processing_note))
+                ParagraphText(stringResource(R.string.payment_screen_aftersales_paragraph_3))
 
                 Button(
                     onClick = {
@@ -342,7 +342,7 @@ fun PaymentThankYouScreen(onExit: () -> Unit = { }) {
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(stringResource(R.string.continue_))
+                    Text(stringResource(R.string.payment_screen_continue_button))
                 }
             }
         }
@@ -357,15 +357,15 @@ fun PaymentFailedScreen(onExit: () -> Unit = { }) {
     val context = LocalContext.current
 
     ScrollableList {
-        ScreenTitle(stringResource(R.string.payment_error), showBack = false)
+        ScreenTitle(stringResource(R.string.payment_screen_payment_failed_title), showBack = false)
 
         @Suppress("KotlinConstantConditions")
         (ParagraphText(
         when (BuildConfig.FLAVOR) {
-            "fDroid" -> stringResource(R.string.payment_failed_body_ex)
-            "dev" -> stringResource(R.string.payment_failed_body_ex)
-            "standalone" -> stringResource(R.string.payment_failed_body_ex)
-            else -> stringResource(R.string.payment_failed_body)
+            "fDroid" -> stringResource(R.string.payment_screen_payment_failed_body_unconfident)
+            "dev" -> stringResource(R.string.payment_screen_payment_failed_body_unconfident)
+            "standalone" -> stringResource(R.string.payment_screen_payment_failed_body_unconfident)
+            else -> stringResource(R.string.payment_screen_payment_failed_body)
         }
     ))
         NavigationItem(title = "Email keyboard@futo.org", style = NavigationItemStyle.Mail, navigate = {
@@ -385,7 +385,7 @@ fun PaymentFailedScreen(onExit: () -> Unit = { }) {
                 },
                 modifier = Modifier.align(Center)
             ) {
-                Text(stringResource(R.string.continue_))
+                Text(stringResource(R.string.payment_screen_continue_button))
             }
         }
     }
@@ -414,7 +414,9 @@ fun PaymentSurface(isPrimary: Boolean, onClick: (() -> Unit)? = null, content: @
         MaterialTheme.colorScheme.onSecondaryContainer
     }
 
-    Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp), contentAlignment = Center) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 32.dp), contentAlignment = Center) {
         Surface(
             color = containerColor,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -473,16 +475,16 @@ fun PaymentScreen(
 
     val reminderTimeIsUp = (currentTime >= pushReminderTime.value) && ((numDaysInstalled.intValue >= TRIAL_PERIOD_DAYS) || forceShowNotice.value)
 
-    val counter = remember { mutableIntStateOf(0) }
-
     ScrollableList {
-        ScreenTitle(stringResource(R.string.payment_title), showBack = true, navController = navController)
+        ScreenTitle(stringResource(R.string.payment_screen_short_title), showBack = true, navController = navController)
 
-        Spacer(Modifier.height(51.dp))
+        Spacer(Modifier.height(8.dp))
 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Center) {
             Icon(painterResource(id = R.drawable.keyboard_icon), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
         }
+
+        Spacer(Modifier.height(8.dp))
 
         val context = LocalContext.current
 
@@ -490,7 +492,7 @@ fun PaymentScreen(
             PaymentSurface(isPrimary = true) {
                 TextColumn {
                     TitleAndBodyColumn {
-                        PaymentSurfaceHeading(title = "Pay for FUTO Keyboard")
+                        PaymentSurfaceHeading(title = stringResource(R.string.payment_screen_title))
                         PaymentBody(true)
                     }
                     PaymentBulletPointList()
@@ -504,7 +506,7 @@ fun PaymentScreen(
                         } else {
                             val toast = Toast.makeText(
                                 context,
-                                "Payment is unsupported on this build",
+                                context.getString(R.string.payment_screen_error_build_unsupported_payment),
                                 Toast.LENGTH_SHORT
                             )
                             toast.show()
@@ -515,18 +517,18 @@ fun PaymentScreen(
                         .heightIn(min = 44.dp),
                 ) {
                     if (BuildConfig.IS_PLAYSTORE_BUILD) {
-                        Text(stringResource(R.string.pay_via_google, BuildConfig.PAYMENT_PRICE), style = Typography.Body.Medium)
+                        Text(stringResource(R.string.payment_screen_pay_via_google, BuildConfig.PAYMENT_PRICE), style = Typography.Body.Medium)
                     } else {
-                        Text(stringResource(R.string.pay, BuildConfig.PAYMENT_PRICE), style = Typography.Body.Medium)
+                        Text(stringResource(R.string.payment_screen_pay_via_futopay, BuildConfig.PAYMENT_PRICE), style = Typography.Body.Medium)
                     }
                 }
             }
 
             PaymentSurface(isPrimary = false) {
                 TitleAndBodyColumn {
-                    PaymentSurfaceHeading(title = "Already paid?")
+                    PaymentSurfaceHeading(title = stringResource(R.string.payment_screen_already_paid_title))
 
-                    ParagraphText(it = "If you already paid for FUTO Keyboard or FUTO Voice Input, tap below.")
+                    ParagraphText(it = stringResource(R.string.payment_screen_already_paid_body))
                 }
 
                 OutlinedButton(
@@ -539,10 +541,7 @@ fun PaymentScreen(
                 ) {
                     Text(
                         stringResource(
-                            when (counter.intValue) {
-                                0 -> R.string.i_already_paid
-                                else -> R.string.i_already_paid_2
-                            }
+                            R.string.payment_screen_already_paid_button
                         ),
                         color = MaterialTheme.colorScheme.primary,
                         style = Typography.Body.Medium
@@ -553,23 +552,24 @@ fun PaymentScreen(
             if (reminderTimeIsUp) {
                 PaymentSurface(isPrimary = false) {
                     TitleAndBodyColumn {
-                        PaymentSurfaceHeading(title = "Not ready to pay yet?")
+                        PaymentSurfaceHeading(title = stringResource(R.string.payment_screen_set_reminder_title))
 
-                        ParagraphText("This will hide the reminder in the settings screen for the period of days entered.")
+                        ParagraphText(stringResource(R.string.payment_screen_set_reminder_body))
 
-                        ParagraphText("When would you like to be reminded?")
+                        ParagraphText(stringResource(R.string.payment_screen_set_reminder_setter))
                     }
 
                     ActionsColumn {
-                        val remindOptions = remember {
+                        val context = LocalContext.current
+                        val remindOptions = remember(context) {
                             listOf(
-                                7 to "in 7 days",
-                                30 to "in 1 month",
-                                182 to "in 6 months",
-                                36500 to "next century",
+                                7 to context.getString(R.string.payment_screen_set_reminder_setter_7_days),
+                                30 to context.getString(R.string.payment_screen_set_reminder_setter_1_month),
+                                182 to context.getString(R.string.payment_screen_set_reminder_setter_6_months),
+                                36500 to context.getString(R.string.payment_screen_set_reminder_setter_next_century),
                             )
                         }
-                        val selection = remember { mutableStateOf(remindOptions.first()) }
+                        val selection = remember(remindOptions) { mutableStateOf(remindOptions.first()) }
 
                         DropDownPicker(
                             remindOptions,
@@ -597,7 +597,7 @@ fun PaymentScreen(
                                     .fillMaxWidth()
                             ) {
                                 Text(
-                                    stringResource(R.string.confirm_reminder),
+                                    stringResource(R.string.payment_screen_set_reminder_setter_confirm),
                                     color = MaterialTheme.colorScheme.primary,
                                     style = Typography.Body.Medium
                                 )
@@ -610,8 +610,8 @@ fun PaymentScreen(
 
         Spacer(Modifier.height(51.dp))
 
-        ScreenTitle("Other Options")
-        NavigationItem(title = "Help", subtitle = "Need help? Visit our website", style = NavigationItemStyle.ExternalLink, navigate = {
+        ScreenTitle(stringResource(R.string.payment_screen_other_options))
+        NavigationItem(title = stringResource(R.string.payment_screen_need_help_title), subtitle = stringResource(R.string.payment_screen_need_help_subtitle), style = NavigationItemStyle.ExternalLink, navigate = {
             context.openURI("https://keyboard.futo.org/")
         })
     }
@@ -680,10 +680,11 @@ fun AlreadyPaidDialog(navController: NavHostController) {
         icon = {
         },
         title = {
-            Text("Confirm your choice", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(stringResource(R.string.payment_screen_already_paid_confirmation), style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onPrimaryContainer)
         },
         text = {
-            Text("Are you sure you want to confirm you already paid? Once confirmed, you won't be asked about paying again.",
+            Text(
+                stringResource(R.string.payment_screen_already_paid_confirmation_body),
                 style = Typography.SmallMl,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
@@ -698,14 +699,14 @@ fun AlreadyPaidDialog(navController: NavHostController) {
                 navController.navigateUp()
                 navController.navigate("paid", NavOptions.Builder().setLaunchSingleTop(true).build())
             }) {
-                Text("I already paid", color = MaterialTheme.colorScheme.primary, style = Typography.Body.Medium)
+                Text(stringResource(R.string.payment_screen_already_paid_confirmation_confirm), color = MaterialTheme.colorScheme.primary, style = Typography.Body.Medium)
             }
         },
         dismissButton = {
             TextButton(onClick = {
                 navController.navigateUp()
             }) {
-                Text("Cancel", color = MaterialTheme.colorScheme.primary, style = Typography.Body.Medium)
+                Text(stringResource(R.string.payment_screen_already_paid_confirmation_cancel), color = MaterialTheme.colorScheme.primary, style = Typography.Body.Medium)
             }
         }
     )

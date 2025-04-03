@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
@@ -95,7 +96,10 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
         modifier = previewModifier
             .padding(12.dp)
             .height(128.dp)
-            .background(colors.keyboardBackgroundGradient ?: SolidColor(colors.keyboardSurface), keyboardShape)
+            .background(
+                colors.keyboardBackgroundGradient ?: SolidColor(colors.keyboardSurface),
+                keyboardShape
+            )
             .border(borderWidth, borderColor, keyboardShape)
             .clickable { onClick() }
             .clip(keyboardShape),
@@ -272,7 +276,7 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                     CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
                         SettingToggleDataStore(
-                            title = "Key borders",
+                            title = stringResource(R.string.theme_settings_key_borders),
                             setting = KeyBordersSetting
                         )
                     }

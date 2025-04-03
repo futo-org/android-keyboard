@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -23,6 +24,7 @@ import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.updates.openURI
+import org.futo.inputmethod.latin.R
 
 private fun Context.copyToClipboard(text: CharSequence, label: String = "Copied Text") {
     val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -40,17 +42,17 @@ fun HelpScreen(navController: NavHostController = rememberNavController()) {
     var lastToast: MutableState<Toast?> = remember { mutableStateOf(null) }
 
     ScrollableList {
-        ScreenTitle("Help & Feedback", showBack = true, navController)
+        ScreenTitle(stringResource(R.string.help_menu_title), showBack = true, navController)
 
         NavigationItem(
-            title = "Version Name: ${BuildConfig.VERSION_NAME}",
+            title = stringResource(R.string.help_menu_version_name, BuildConfig.VERSION_NAME),
             style = NavigationItemStyle.MiscNoArrow,
             navigate = {
                 context.copyToClipboard(BuildConfig.VERSION_NAME)
             }
         )
         NavigationItem(
-            title = "Version Code: ${BuildConfig.VERSION_CODE}",
+            title = stringResource(R.string.help_menu_version_code, BuildConfig.VERSION_CODE),
             style = NavigationItemStyle.MiscNoArrow,
             navigate = {
                 val makeToast: (String) -> Unit = { text ->
@@ -77,21 +79,29 @@ fun HelpScreen(navController: NavHostController = rememberNavController()) {
             }
         )
 
-        Tip("We want to hear from you! If you're reporting an issue, your version may be relevant: v${BuildConfig.VERSION_NAME}")
+        Tip(
+            stringResource(
+                R.string.help_menu_version_tip,
+                BuildConfig.VERSION_NAME
+            ))
 
-         NavigationItem(title = "Documentation", subtitle = "Learn more about the keyboard's features and capabilities", style = NavigationItemStyle.Misc, navigate = {
+         NavigationItem(title = stringResource(R.string.help_menu_documentation), subtitle = stringResource(R.string.help_menu_documentation_subtitle), style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://docs.keyboard.futo.org/")
         })
-        NavigationItem(title = "Discord Server", subtitle = "Wanna talk but don't like Zulip? Chat here", style = NavigationItemStyle.Misc, navigate = {
+        NavigationItem(title = stringResource(R.string.help_menu_discord), subtitle = stringResource(R.string.help_menu_discord_subtitle), style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://keyboard.futo.org/discord")
         })
-        NavigationItem(title = "FUTO Chat", subtitle = "Wanna talk but don't like Discord? Chat here", style = NavigationItemStyle.Misc, navigate = {
+        NavigationItem(title = stringResource(R.string.help_menu_futo_chat), subtitle = stringResource(R.string.help_menu_futo_chat_subtitle), style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://chat.futo.org/")
         })
-        NavigationItem(title = "Public issue tracker", subtitle = "Specific bug or feature request? Post here", style = NavigationItemStyle.Misc, navigate = {
+        NavigationItem(title = stringResource(R.string.help_menu_github), subtitle = stringResource(
+            R.string.help_menu_github_subtitle
+        ), style = NavigationItemStyle.Misc, navigate = {
             context.openURI("https://github.com/futo-org/android-keyboard/issues")
         })
-        NavigationItem(title = "Email keyboard@futo.org", subtitle = "Private feedback, help, or don't use GitHub? Email us", style = NavigationItemStyle.Mail, navigate = {
+        NavigationItem(title = stringResource(R.string.help_menu_email), subtitle = stringResource(
+            R.string.help_menu_email_subtitle
+        ), style = NavigationItemStyle.Mail, navigate = {
             context.openURI("mailto:keyboard@futo.org")
         })
     }

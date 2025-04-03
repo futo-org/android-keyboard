@@ -77,7 +77,7 @@ private val lightScheme = lightColorScheme(
 val HotDog = ThemeOption(
     dynamic = false,
     key = "HotDog",
-    name = R.string.hot_dog_theme_name,
+    name = R.string.theme_hotdog,
     available = { false }
 ) {
     wrapLightColorScheme(lightScheme).let {

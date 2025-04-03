@@ -1,7 +1,6 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.annotation.UiThread
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,11 +47,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -774,7 +770,7 @@ class PersistentEmojiState : PersistentActionState {
 
 val EmojiAction = Action(
     icon = R.drawable.smile,
-    name = R.string.emoji_action_title,
+    name = R.string.action_emoji_title,
     canShowKeyboard = true,
     simplePressImpl = null,
     persistentState = { manager ->
@@ -793,7 +789,7 @@ val EmojiAction = Action(
 
             @Composable
             override fun windowName(): String {
-                return stringResource(R.string.emoji_action_title)
+                return stringResource(R.string.action_emoji_title)
             }
 
             @Composable

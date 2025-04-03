@@ -6,7 +6,7 @@ import org.futo.inputmethod.latin.uix.Action
 
 val SelectAllAction = Action(
     icon = R.drawable.maximize,
-    name = R.string.select_all_action_title,
+    name = R.string.action_select_all_title,
     simplePressImpl = { manager, _ ->
         manager.sendKeyEvent(KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON)
     },
@@ -15,7 +15,7 @@ val SelectAllAction = Action(
 
 val CutAction = Action(
     icon = R.drawable.scissors,
-    name = R.string.cut_action_title,
+    name = R.string.action_cut_title,
     simplePressImpl = { manager, _ ->
         manager.sendKeyEvent(KeyEvent.KEYCODE_X, KeyEvent.META_CTRL_ON)
     },
@@ -24,7 +24,7 @@ val CutAction = Action(
 
 val CopyAction = Action(
     icon = R.drawable.copy,
-    name = R.string.copy_action_title,
+    name = R.string.action_copy_title,
     simplePressImpl = { manager, _ ->
         manager.sendKeyEvent(KeyEvent.KEYCODE_C, KeyEvent.META_CTRL_ON)
     },
@@ -33,7 +33,7 @@ val CopyAction = Action(
 
 val PasteAction = Action(
     icon = R.drawable.clipboard,
-    name = R.string.clipboard_action_title,
+    name = R.string.action_paste_title,
     simplePressImpl = { manager, _ ->
         manager.sendKeyEvent(KeyEvent.KEYCODE_V, KeyEvent.META_CTRL_ON)
     },

@@ -35,7 +35,7 @@ fun ErrorDialog(title: String, body: String, navController: NavHostController = 
                     navController.navigateUp()
                 }
             ) {
-                Text(stringResource(R.string.dismiss))
+                Text(stringResource(R.string.autoupdater_dismiss_update))
             }
         }
     )
@@ -63,7 +63,7 @@ fun InfoDialog(title: String, body: String, navController: NavHostController = r
                     navController.navigateUp()
                 }
             ) {
-                Text(stringResource(R.string.dismiss))
+                Text(stringResource(R.string.autoupdater_dismiss_update))
             }
         }
     )

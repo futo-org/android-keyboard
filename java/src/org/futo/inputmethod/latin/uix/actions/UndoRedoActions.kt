@@ -6,7 +6,7 @@ import org.futo.inputmethod.latin.uix.Action
 
 val UndoAction = Action(
     icon = R.drawable.undo,
-    name = R.string.undo_action_title,
+    name = R.string.action_undo_title,
     simplePressImpl = { manager, _ ->
         manager.sendKeyEvent(KeyEvent.KEYCODE_Z, KeyEvent.META_CTRL_ON)
     },
@@ -14,7 +14,7 @@ val UndoAction = Action(
 )
 val RedoAction = Action(
     icon = R.drawable.redo,
-    name = R.string.redo_action_title,
+    name = R.string.action_redo_title,
     simplePressImpl = { manager, _ ->
         manager.sendKeyEvent(KeyEvent.KEYCODE_Y, KeyEvent.META_CTRL_ON)
     },

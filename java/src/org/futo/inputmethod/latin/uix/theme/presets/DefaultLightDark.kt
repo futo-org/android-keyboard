@@ -82,7 +82,7 @@ private val lightScheme = extendedLightColorScheme(
 val DefaultDarkScheme = ThemeOption(
     dynamic = false,
     key = "DefaultDarkScheme",
-    name = R.string.default_dark_theme_name,
+    name = R.string.theme_default_dark,
     available = { true }
 ) {
     darkScheme
@@ -91,7 +91,7 @@ val DefaultDarkScheme = ThemeOption(
 val DefaultLightScheme = ThemeOption(
     dynamic = false,
     key = "DefaultLightScheme",
-    name = R.string.default_light_theme_name,
+    name = R.string.theme_default_light,
     available = { true }
 ) {
     lightScheme

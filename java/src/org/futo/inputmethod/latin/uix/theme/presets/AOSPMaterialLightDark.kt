@@ -85,7 +85,7 @@ private val lightColorScheme = extendedLightColorScheme(
 val ClassicMaterialDark = ThemeOption(
     dynamic = false,
     key = "ClassicMaterialDark",
-    name = R.string.classic_material_dark_theme_name,
+    name = R.string.theme_classic_dark,
     available = { true }
 ) {
     darkColorScheme
@@ -95,7 +95,7 @@ val ClassicMaterialDark = ThemeOption(
 val ClassicMaterialLight = ThemeOption(
     dynamic = false,
     key = "ClassicMaterialLight",
-    name = R.string.classic_material_light_theme_name,
+    name = R.string.theme_classic_light,
     available = { true }
 ) {
     lightColorScheme

@@ -79,7 +79,7 @@ class PaymentCompleteActivity : ComponentActivity() {
                             ) {
                                 Column {
                                     Text(
-                                        getString(R.string.license_check_failed),
+                                        getString(R.string.payment_screen_license_integrity_error),
                                         modifier = Modifier.padding(8.dp)
                                     )
 

@@ -47,7 +47,7 @@ private val lightScheme = extendedLightColorScheme(
 val Sunflower = ThemeOption(
     dynamic = false,
     key = "Sunflower",
-    name = R.string.sunflower_theme_name,
+    name = R.string.theme_sunflower,
     available = { true }
 ) {
     lightScheme

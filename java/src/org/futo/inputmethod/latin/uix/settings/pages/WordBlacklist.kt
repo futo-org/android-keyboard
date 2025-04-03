@@ -53,7 +53,7 @@ fun BlacklistScreen(navController: NavHostController = rememberNavController()) 
 
     var newWord by remember { mutableStateOf("") }
     ScrollableList {
-        ScreenTitle("Word Blacklist", showBack = true, navController)
+        ScreenTitle(stringResource(R.string.prediction_settings_word_blacklist), showBack = true, navController)
 
         SettingToggleSharedPrefs(
             title = stringResource(R.string.prefs_block_potentially_offensive_title),
@@ -70,12 +70,12 @@ fun BlacklistScreen(navController: NavHostController = rememberNavController()) 
                 setBlacklistedWords(newSet)
                 newWord = ""
             }, modifier = Modifier.align(Alignment.CenterVertically)) {
-                Icon(Icons.Default.Add, contentDescription = "Add to blacklist")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.prediction_settings_word_blacklist_add))
             }
         }
 
         if(blacklistedWords.isEmpty()) {
-            Tip("There are no blacklisted words.")
+            Tip(stringResource(R.string.prediction_settings_word_blacklist_none))
         }
         blacklistedWords.forEach {
             BlacklistedWord(word = it) {

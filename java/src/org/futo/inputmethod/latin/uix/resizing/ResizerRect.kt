@@ -24,9 +24,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import org.futo.inputmethod.latin.R
 
 
 enum class CurrentDraggingTarget {
@@ -91,7 +93,13 @@ fun BoxScope.ResizerRect(onDragged: (DragDelta) -> Boolean, showResetApply: Bool
     Box(Modifier
         .matchParentSize()
         .background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f), shape)
-        .border(3.dp, if(!wasAccepted.value) { MaterialTheme.colorScheme.error } else { MaterialTheme.colorScheme.primary }, shape)
+        .border(
+            3.dp, if (!wasAccepted.value) {
+                MaterialTheme.colorScheme.error
+            } else {
+                MaterialTheme.colorScheme.primary
+            }, shape
+        )
         .pointerInput(Unit) {
             detectDragGestures(
                 onDragStart = { offset ->
@@ -134,10 +142,12 @@ fun BoxScope.ResizerRect(onDragged: (DragDelta) -> Boolean, showResetApply: Bool
         })
 
         if (showResetApply) {
-            Row(Modifier.align(Alignment.Center).absoluteOffset(y = 48.dp)) {
-                TextButton({ onReset() }) { Text("Reset") }
+            Row(Modifier
+                .align(Alignment.Center)
+                .absoluteOffset(y = 48.dp)) {
+                TextButton({ onReset() }) { Text(stringResource(R.string.action_keyboard_modes_resizing_reset_size)) }
                 Spacer(Modifier.width(16.dp))
-                TextButton({ onApply() }) { Text("Apply") }
+                TextButton({ onApply() }) { Text(stringResource(R.string.action_keyboard_modes_resizing_apply_new_size)) }
             }
         }
     }

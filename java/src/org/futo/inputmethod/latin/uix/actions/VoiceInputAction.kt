@@ -18,11 +18,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
@@ -58,7 +54,7 @@ import java.util.Locale
 
 val SystemVoiceInputAction = Action(
     icon = R.drawable.mic_fill,
-    name = R.string.system_voice_input_action_title,
+    name = R.string.action_system_voice_input_title,
     simplePressImpl = { it, _ ->
         it.triggerSystemVoiceInput()
     },
@@ -178,7 +174,7 @@ private class VoiceInputActionWindow(
 
     @Composable
     override fun windowName(): String {
-        return stringResource(R.string.voice_input_action_title)
+        return stringResource(R.string.action_voice_input_title)
     }
 
     @Composable
@@ -254,7 +250,7 @@ private class VoiceInputActionWindow(
 private class VoiceInputNoModelWindow(val locale: Locale) : ActionWindow {
     @Composable
     override fun windowName(): String {
-        return stringResource(R.string.voice_input_action_title)
+        return stringResource(R.string.action_voice_input_title)
     }
 
     @Composable
@@ -269,7 +265,7 @@ private class VoiceInputNoModelWindow(val locale: Locale) : ActionWindow {
 }
 
 val VoiceInputAction = Action(icon = R.drawable.mic_fill,
-    name = R.string.voice_input_action_title,
+    name = R.string.action_voice_input_title,
     simplePressImpl = null,
     keepScreenAwake = true,
     persistentState = { VoiceInputPersistentState(it) },

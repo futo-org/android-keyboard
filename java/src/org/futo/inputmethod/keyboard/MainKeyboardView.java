@@ -829,7 +829,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     private String layoutLanguageOnSpacebar(final Paint paint,
                                             final Locale locale, final int width) {
         if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_NONE) {
-            final String text = getContext().getString(R.string.spacebar_default_text);
+            final String text = getContext().getString(R.string.keyboard_version_status);
             if(fitsTextIntoWidth(width, text, paint)) {
                 return text;
             }

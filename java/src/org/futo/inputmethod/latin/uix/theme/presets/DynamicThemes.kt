@@ -14,7 +14,7 @@ import org.futo.inputmethod.latin.uix.wrapLightColorScheme
 val DynamicSystemTheme = ThemeOption(
     dynamic = true,
     key = "DynamicSystem",
-    name = R.string.dynamic_system_theme_name,
+    name = R.string.theme_dynamic_system,
     available = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
     obtainColors = {
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
@@ -40,7 +40,7 @@ val DynamicSystemTheme = ThemeOption(
 val DynamicDarkTheme = ThemeOption(
     dynamic = true,
     key = "DynamicDark",
-    name = R.string.dynamic_dark_theme_name,
+    name = R.string.theme_dynamic_dark,
     available = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
     obtainColors = {
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
@@ -54,7 +54,7 @@ val DynamicDarkTheme = ThemeOption(
 val DynamicLightTheme = ThemeOption(
     dynamic = true,
     key = "DynamicLight",
-    name = R.string.dynamic_light_theme_name,
+    name = R.string.theme_dynamic_light,
     available = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
     obtainColors = {
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {

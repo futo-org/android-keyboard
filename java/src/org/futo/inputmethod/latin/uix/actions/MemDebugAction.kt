@@ -167,7 +167,7 @@ private fun getImeOptionsString(imeOptions: Int): String {
 
 val MemoryDebugAction = Action(
     icon = R.drawable.code,
-    name = R.string.mem_debug_action_title,
+    name = R.string.action_debug_title,
     simplePressImpl = null,
     canShowKeyboard = true,
     windowImpl = { manager, _ ->
@@ -175,7 +175,7 @@ val MemoryDebugAction = Action(
         object : ActionWindow {
             @Composable
             override fun windowName(): String {
-                return stringResource(R.string.mem_debug_action_title)
+                return stringResource(R.string.action_debug_title)
             }
 
             @Composable

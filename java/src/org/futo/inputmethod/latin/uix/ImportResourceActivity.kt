@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
@@ -99,18 +100,18 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
     val importing = remember { mutableStateOf(false) }
     val importingLanguage = remember { mutableStateOf("") }
     ScrollableList {
-        ScreenTitleWithIcon(title = "Import ${fileKind.kind.kindTitle()}", painter = painterResource(id = fileKind.kind.icon()))
+        ScreenTitleWithIcon(title = stringResource(R.string.resource_importer_import_title, fileKind.kind.kindTitle(context)), painter = painterResource(id = fileKind.kind.icon()))
 
         if(fileKind.kind == FileKind.Invalid) {
             if(fileKind.invalidKindHint == InvalidFileHint.ImportedWordListInsteadOfDict) {
-                Text("Error: This file appears to be a source wordlist (_wordlist.combined) instead of a compiled dictionary (.dict) file.")
-                Tip("Please download the main dictionary file instead of the source wordlist. In the aosp-dictionaries repo, this would be the first blue link that says something like [German Main], instead of the long blue link to a wordlist.")
+                Text(stringResource(R.string.resource_importer_error_wordlist_1))
+                Tip(stringResource(R.string.resource_importer_error_wordlist_2))
             } else {
-                Text("Error: This file does not appear to be a dictionary, voice input or transformer model. It may be an invalid file or corrupted. Please try a different file.")
+                Text(stringResource(R.string.resource_importer_error_invalid_fiile))
             }
 
             NavigationItem(
-                title = "Cancel",
+                title = stringResource(R.string.resource_importer_cancel_button),
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = {
                     onCancel()
@@ -118,7 +119,7 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
             )
         } else {
             fileKind.name?.let {
-                Text("Info: $it", modifier = Modifier.padding(16.dp, 8.dp))
+                Text(stringResource(R.string.resource_importer_file_info, it), modifier = Modifier.padding(16.dp, 8.dp))
                 Spacer(modifier = Modifier.height(32.dp))
             }
 
@@ -128,10 +129,10 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
                     .padding(32.dp)) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
-                Text("Importing for ${importingLanguage.value}", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                Text(stringResource(R.string.resource_importer_importing, importingLanguage.value), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             } else {
                 Text(
-                    "Select the language to import for:",
+                    stringResource(R.string.resource_importer_select_language),
                     modifier = Modifier.padding(16.dp, 8.dp)
                 )
 
@@ -139,7 +140,11 @@ fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAnd
                     if(fileKind.locale != null) {
                         it.filter { it.tag.lowercase() == fileKind.locale.lowercase() || it.tag.split("_")[0].lowercase() == fileKind.locale.split("_")[0].lowercase() }.let {
                             if(it.isEmpty()) {
-                                Tip("⚠\uFE0F This file appears to be intended for a language (${fileKind.locale}) which is not enabled in settings")
+                                Tip("⚠\uFE0F " +
+                                    stringResource(
+                                        R.string.resource_importer_warning_language_missing,
+                                        fileKind.locale
+                                    ))
                                 getActiveLanguages(context)
                             } else {
                                 it
@@ -182,22 +187,12 @@ enum class FileKind {
     }
 }
 
-fun FileKind.youAreImporting(): String {
+fun FileKind.kindTitle(context: Context): String {
     return when(this) {
-        FileKind.VoiceInput -> "voice input model"
-        FileKind.Transformer -> "transformer model"
-        FileKind.Dictionary -> "dictionary"
-        FileKind.Invalid -> "invalid file"
-    }
-}
-
-
-fun FileKind.kindTitle(): String {
-    return when(this) {
-        FileKind.VoiceInput -> "Voice Input"
-        FileKind.Transformer -> "Transformer"
-        FileKind.Dictionary -> "Dictionary"
-        FileKind.Invalid -> "(invalid)"
+        FileKind.VoiceInput -> context.getString(R.string.file_kind_voice_input_model)
+        FileKind.Transformer -> context.getString(R.string.file_kind_transformer_model)
+        FileKind.Dictionary -> context.getString(R.string.file_kind_dictionary)
+        FileKind.Invalid -> context.getString(R.string.file_kind_invalid_file)
     }
 }
 
@@ -368,7 +363,7 @@ object ResourceHelper {
         val file = runBlocking { findFileForKind(context, locale, FileKind.VoiceInput) }
             ?: return BuiltInVoiceInputFallbacks[locale.language]
 
-        return ModelFileFile(R.string.externally_imported_model, file)
+        return ModelFileFile(R.string.settings_external_model_name, file)
     }
 
     fun tryOpeningCustomMainDictionaryForLocale(context: Context, locale: Locale): ReadOnlyBinaryDictionary? {

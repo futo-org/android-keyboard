@@ -57,30 +57,32 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             ConditionalUnpaidNoticeWithNav(navController)
 
             NavigationItem(
-                title = "Languages & Models",
+                title = stringResource(R.string.language_settings_title),
                 style = NavigationItemStyle.HomePrimary,
                 navigate = { navController.navigate("languages") },
                 icon = painterResource(id = R.drawable.globe)
             )
 
             NavigationItem(
-                title = "Keyboard & Typing",
+                title = stringResource(R.string.settings_keyboard_typing_title),
                 style = NavigationItemStyle.HomeSecondary,
                 navigate = { navController.navigate("typing") },
                 icon = painterResource(id = R.drawable.keyboard)
             )
 
             NavigationItem(
-                title = "Text Prediction",
+                title = stringResource(R.string.prediction_settings_title),
                 style = NavigationItemStyle.HomeTertiary,
                 navigate = { navController.navigate("predictiveText") },
                 icon = painterResource(id = R.drawable.text_prediction)
             )
 
             NavigationItem(
-                title = "Voice Input",
+                title = stringResource(R.string.voice_input_settings_title),
                 style = NavigationItemStyle.HomePrimary,
-                subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) { "Built-in voice input is disabled!" } else { null },
+                subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) {
+                    stringResource(R.string.voice_input_settings_builtin_disabled_notice)
+                } else { null },
                 navigate = { navController.navigate("voiceInput") },
                 icon = painterResource(id = R.drawable.mic_fill)
             )
@@ -97,7 +99,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             )
 
             NavigationItem(
-                title = "Theme",
+                title = stringResource(R.string.theme_settings_title),
                 style = NavigationItemStyle.HomeTertiary,
                 navigate = { navController.navigate("themes") },
                 icon = painterResource(id = R.drawable.themes)
@@ -105,7 +107,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
             if(!isPaid) {
                 NavigationItem(
-                    title = stringResource(R.string.payment),
+                    title = stringResource(R.string.payment_screen_short_title),
                     style = NavigationItemStyle.HomePrimary,
                     navigate = { navController.navigate("payment") },
                     icon = painterResource(R.drawable.dollar_sign)
@@ -113,7 +115,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             }
 
             NavigationItem(
-                title = "Help & Feedback",
+                title = stringResource(R.string.help_menu_title),
                 style = NavigationItemStyle.HomeSecondary,
                 navigate = { navController.navigate("help") },
                 icon = painterResource(id = R.drawable.help_circle)
@@ -121,7 +123,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
             if(isDeveloper || LocalInspectionMode.current) {
                 NavigationItem(
-                    title = "Developer Settings",
+                    title = stringResource(R.string.dev_settings_title),
                     style = NavigationItemStyle.HomeTertiary,
                     navigate = { navController.navigate("developer") },
                     icon = painterResource(id = R.drawable.code)
@@ -129,7 +131,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             }
 
             NavigationItem(
-                title = "Credits",
+                title = stringResource(R.string.credits_title),
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = { navController.navigate("credits") },
             )
@@ -139,7 +141,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
             if(isPaid || LocalInspectionMode.current) {
                 Text(
-                    stringResource(R.string.thank_you_for_using_paid),
+                    stringResource(R.string.payment_paid_version_indicator),
                     style = Typography.SmallMl,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
@@ -163,7 +165,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             )
             context.startActivity(intent)
         }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.try_typing), color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f), modifier = Modifier.fillMaxWidth())
+            Text(stringResource(R.string.settings_try_typing_here), color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f), modifier = Modifier.fillMaxWidth())
         }
     }
 }

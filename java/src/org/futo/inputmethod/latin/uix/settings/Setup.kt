@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.text
 import androidx.compose.ui.text.AnnotatedString
@@ -113,10 +114,10 @@ fun SetupEnableIME() {
 
     SetupContainer {
         Column {
-            Step(fraction = 1.0f/3.0f, text = "Setup - Step 1 of 3")
+            Step(fraction = 1.0f/3.0f, text = stringResource(R.string.setup_step_1))
 
             Text(
-                "Welcome to FUTO Keyboard alpha! Please keep in mind things may be rough. This is not a finished product in any way.\n\nFirst, enable FUTO Keyboard as an input method.",
+                stringResource(R.string.setup_welcome_text),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -126,7 +127,7 @@ fun SetupEnableIME() {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text("Open Input Method Settings")
+                Text(stringResource(R.string.setup_open_input_settings))
             }
         }
     }
@@ -150,13 +151,13 @@ fun SetupChangeDefaultIME(doublePackage: Boolean = true) {
     SetupContainer {
         Column {
             if(doublePackage) {
-                Tip("Warning: You seem to have both Play Store and Standalone versions installed, we only recommend installing one")
+                Tip(stringResource(R.string.setup_warning_multiple_versions))
             }
 
-            Step(fraction = 2.0f/3.0f, text = "Setup - Step 2 of 3")
+            Step(fraction = 2.0f/3.0f, text = stringResource(R.string.setup_step_2))
 
             Text(
-                "Please select FUTO Keyboard as your active input method.",
+                stringResource(R.string.setup_active_input_method),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -167,74 +168,8 @@ fun SetupChangeDefaultIME(doublePackage: Boolean = true) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text("Switch Input Methods")
+                Text(stringResource(R.string.setup_switch_input_methods))
             }
         }
     }
 }
-
-
-@Composable
-@Preview
-fun SetupEnableMic(onClick: () -> Unit = { }) {
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if(isGranted) { onClick() }
-    }
-
-    val context = LocalContext.current
-
-    var askedCount by remember { mutableStateOf(0) }
-    val askMicAccess = {
-        if (askedCount++ >= 2) {
-            val packageName = context.packageName
-            val myAppSettings = Intent(
-                Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse(
-                    "package:$packageName"
-                )
-            )
-            myAppSettings.addCategory(Intent.CATEGORY_DEFAULT)
-            myAppSettings.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(myAppSettings)
-        } else {
-            launcher.launch(Manifest.permission.RECORD_AUDIO)
-        }
-        onClick()
-    }
-
-    val (useSystemVoiceInput, setUseSystemVoiceInput) = useDataStore(key = USE_SYSTEM_VOICE_INPUT.key, default = USE_SYSTEM_VOICE_INPUT.default)
-
-    SetupContainer {
-        Column {
-            Step(fraction = 0.9f, text = "Setup - Step 3 of 3")
-            Text(
-                "Choose which voice input you'd like to use",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Button(
-                onClick = askMicAccess,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text("FUTO Keyboard (needs mic permission)")
-            }
-
-            Button(
-                onClick = {
-                    setUseSystemVoiceInput(true)
-                    (context as SettingsActivity).updateSystemState()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp, 4.dp)
-            ) {
-                Text("Device Default")
-            }
-        }
-    }
-}
-

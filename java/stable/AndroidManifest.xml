@@ -4,7 +4,7 @@
     <application>
         <service
             android:name="org.futo.inputmethod.updates.UpdateCheckingService"
-            android:label="@string/update_checking_service"
+            android:label="@string/autoupdater_service_title"
             android:permission="android.permission.BIND_JOB_SERVICE" >
         </service>
 

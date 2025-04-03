@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -330,7 +331,7 @@ fun LanguageSwitcherDialog(
         Column {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "Select language",
+                stringResource(R.string.select_language),
                 textAlign = TextAlign.Center,
                 style = Typography.Heading.MediumMl,
                 modifier = Modifier
@@ -384,7 +385,7 @@ fun LanguageSwitcherDialog(
 
                     onDismiss()
                 }) {
-                    Text("Switch Keyboard")
+                    Text(stringResource(R.string.keyboard_switch_keyboard))
                 }
                 TextButton(onClick = {
                     val intent = Intent()
@@ -397,7 +398,7 @@ fun LanguageSwitcherDialog(
 
                     onDismiss()
                 }) {
-                    Text("Languages")
+                    Text(stringResource(R.string.keyboard_language_settings))
                 }
                 Spacer(modifier = Modifier.width(32.dp))
             }

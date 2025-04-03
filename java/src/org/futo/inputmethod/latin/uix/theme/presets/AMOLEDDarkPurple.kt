@@ -46,7 +46,7 @@ private val darkScheme = extendedDarkColorScheme(
 val AMOLEDDarkPurple = ThemeOption(
     dynamic = false,
     key = "AMOLEDDarkPurple",
-    name = R.string.amoled_dark_theme_name,
+    name = R.string.theme_amoled_dark,
     available = { true }
 ) {
     darkScheme

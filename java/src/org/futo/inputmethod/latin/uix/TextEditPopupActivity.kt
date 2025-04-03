@@ -41,7 +41,7 @@ fun AndroidTextInput(allowPredictions: Boolean = true, customOptions: Set<String
                 isSingleLine = !allowPredictions
 
 
-                setHint(R.string.try_typing)
+                setHint(R.string.settings_try_typing_here)
                 setBackgroundColor(bgColor.toArgb())
                 setTextColor(fgColor.toArgb())
                 setHintTextColor(fgColor.copy(alpha = 0.7f).toArgb())

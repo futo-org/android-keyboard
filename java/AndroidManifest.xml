@@ -142,7 +142,7 @@
         <activity
             android:name=".payment.PaymentCompleteActivity"
             android:exported="true"
-            android:label="@string/payment_complete"
+            android:label="@string/payment_screen_payment_complete_title"
             android:clearTaskOnLaunch="false"
             android:launchMode="singleInstance">
             <intent-filter>
@@ -157,7 +157,7 @@
         <activity
             android:name=".payment.PaymentActivity"
             android:exported="false"
-            android:label="@string/payment"
+            android:label="@string/payment_screen_short_title"
             android:clearTaskOnLaunch="false"
             android:launchMode="singleInstance" />
 

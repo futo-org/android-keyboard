@@ -85,7 +85,7 @@ private val darkScheme = extendedDarkColorScheme(
 val DeepSeaLight = ThemeOption(
     dynamic = false,
     key = "DeepSeaLight",
-    name = R.string.deep_sea_light_theme_name,
+    name = R.string.theme_deepsea_light,
     available = { true }
 ) {
     lightScheme
@@ -94,7 +94,7 @@ val DeepSeaLight = ThemeOption(
 val DeepSeaDark = ThemeOption(
     dynamic = false,
     key = "DeepSeaDark",
-    name = R.string.deep_sea_dark_theme_name,
+    name = R.string.theme_deepsea_dark,
     available = { true }
 ) {
     darkScheme

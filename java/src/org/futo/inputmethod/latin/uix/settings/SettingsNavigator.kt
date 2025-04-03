@@ -77,8 +77,8 @@ fun SettingsNavigator(
         composable("credits") { CreditsScreen(navController) }
         dialog("error/{title}/{body}") {
             ErrorDialog(
-                it.arguments?.getString("title")?.urlDecode() ?: stringResource(R.string.unknown_error),
-                it.arguments?.getString("body")?.urlDecode() ?: stringResource(R.string.an_unknown_error_has_occurred),
+                it.arguments?.getString("title")?.urlDecode() ?: stringResource(R.string.settings_unknown_error_title),
+                it.arguments?.getString("body")?.urlDecode() ?: stringResource(R.string.settings_unknown_error_subtitle),
                 navController
             )
         }

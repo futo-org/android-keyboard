@@ -61,7 +61,7 @@ private val darkScheme = extendedDarkColorScheme(
 val DevTheme = ThemeOption(
     dynamic = false,
     key = "DevTheme",
-    name = R.string.dev_theme_name,
+    name = R.string.theme_dev,
     available = { true }
 ) {
     darkScheme

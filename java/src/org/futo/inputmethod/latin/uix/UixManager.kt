@@ -1173,15 +1173,15 @@ class UixManager(private val latinIME: LatinIME) {
 
     fun requestForgetWord(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {
         keyboardManagerForAction.requestDialog(
-            latinIME.getString(R.string.blacklist_from_suggestions, suggestedWordInfo.mWord),
+            latinIME.getString(R.string.keyboard_suggest_blacklist_body, suggestedWordInfo.mWord),
             listOf(
                 DialogRequestItem(latinIME.getString(R.string.cancel)) { },
-                DialogRequestItem(latinIME.getString(R.string.blacklist)) {
+                DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_blacklist_title)) {
                     latinIME.forceForgetWord(suggestedWordInfo)
                 },
             ) + if(suggestedWordInfo.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
                 listOf(
-                    DialogRequestItem(latinIME.getString(R.string.disable_emoji)) {
+                    DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_disable_emojis)) {
                         runBlocking { latinIME.setSetting(SHOW_EMOJI_SUGGESTIONS, false) }
                         latinIME.refreshSuggestions()
                     }

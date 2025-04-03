@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.extendedDarkColorScheme
-import org.futo.inputmethod.latin.uix.extendedLightColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 
 private val gradientScheme1 = extendedDarkColorScheme(
@@ -52,7 +51,7 @@ private val gradientScheme1 = extendedDarkColorScheme(
 val Gradient1 = ThemeOption(
     dynamic = false,
     key = "Gradient1",
-    name = R.string.gradient1_theme_name,
+    name = R.string.theme_gradient1,
     available = { true }
 ) {
     gradientScheme1

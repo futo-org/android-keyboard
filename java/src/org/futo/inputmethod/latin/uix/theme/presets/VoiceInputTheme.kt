@@ -47,7 +47,7 @@ private val darkScheme = extendedDarkColorScheme(
 val VoiceInputTheme = ThemeOption(
     dynamic = false,
     key = "VoiceInputTheme",
-    name = R.string.voice_input_theme_name,
+    name = R.string.theme_vi,
     available = { true }
 ) {
     darkScheme

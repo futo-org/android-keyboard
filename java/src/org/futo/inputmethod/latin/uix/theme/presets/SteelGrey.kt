@@ -47,7 +47,7 @@ private val darkScheme = extendedDarkColorScheme(
 val SteelGray = ThemeOption(
     dynamic = false,
     key = "SteelGray",
-    name = R.string.steel_gray_theme_name,
+    name = R.string.theme_steel_gray,
     available = { true }
 ) {
     darkScheme

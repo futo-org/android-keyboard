@@ -34,7 +34,7 @@ public object BugViewerState {
 
 val BugViewerAction = Action(
     icon = R.drawable.code,
-    name = R.string.bug_viewer_action_title,
+    name = R.string.action_bug_viewer_title,
     simplePressImpl = null,
     canShowKeyboard = true,
     windowImpl = { manager, _ ->
@@ -42,7 +42,7 @@ val BugViewerAction = Action(
         object : ActionWindow {
             @Composable
             override fun windowName(): String {
-                return stringResource(R.string.bug_viewer_action_title)
+                return stringResource(R.string.action_bug_viewer_title)
             }
 
             @Composable

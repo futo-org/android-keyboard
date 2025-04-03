@@ -26,39 +26,39 @@ import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
 fun PredictiveTextScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     ScrollableList {
-        ScreenTitle("Predictive Text", showBack = true, navController)
+        ScreenTitle(stringResource(R.string.prediction_settings_title), showBack = true, navController)
 
         val (transformerLmEnabled, _) = useSharedPrefsBool(Settings.PREF_KEY_USE_TRANSFORMER_LM, true)
 
 
         SettingToggleSharedPrefs(
-            title = "Transformer LM",
+            title = stringResource(R.string.prediction_settings_transformer),
             key = Settings.PREF_KEY_USE_TRANSFORMER_LM,
             default = true
         )
 
         if(transformerLmEnabled) {
             SettingToggleDataStore(
-                title = "Transformer fine-tuning",
-                subtitle = "May kill your battery if enabled! This feature is pending more work",
+                title = stringResource(R.string.prediction_settings_transformer_finetuning),
+                subtitle = stringResource(R.string.prediction_settings_transformer_finetuning_subtitle),
                 setting = USE_TRANSFORMER_FINETUNING
             )
 
             NavigationItem(
-                title = "Transformer Models",
+                title = stringResource(R.string.prediction_settings_transformer_models),
                 style = NavigationItemStyle.HomeTertiary,
                 navigate = { navController.navigate("models") },
                 icon = painterResource(id = R.drawable.cpu)
             )
 
             NavigationItem(
-                title = "Advanced Parameters",
+                title = stringResource(R.string.prediction_settings_transformer_advanced_params),
                 style = NavigationItemStyle.HomeSecondary,
                 navigate = { navController.navigate("advancedparams") },
                 icon = painterResource(id = R.drawable.code)
             )
 
-            Tip("Note: Transformer LM is in alpha state")
+            Tip(stringResource(R.string.prediction_settings_transformer_alpha_notice))
         }
 
         NavigationItem(
@@ -73,7 +73,7 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
         )
 
         NavigationItem(
-            title = "Blacklisted Suggestions",
+            title = stringResource(R.string.prediction_settings_word_blacklist),
             style = NavigationItemStyle.HomeSecondary,
             icon = painterResource(id = R.drawable.file_text),
             navigate = {
@@ -91,8 +91,8 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
         )
 
         SettingToggleSharedPrefs(
-            title = "Smart key-hit detection",
-            subtitle = "Uses dictionary to determine relevant next keys, and boosts their hit area. Boosting is avoided after a backspace",
+            title = stringResource(R.string.prediction_settings_smart_keyhit_detection),
+            subtitle = stringResource(R.string.prediction_settings_smart_keyhit_detection_subtitle),
             key = Settings.PREF_USE_DICT_KEY_BOOSTING,
             default = true
         )

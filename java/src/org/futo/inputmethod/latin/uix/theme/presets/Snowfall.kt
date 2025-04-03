@@ -47,7 +47,7 @@ private val lightScheme = extendedLightColorScheme(
 val Snowfall = ThemeOption(
     dynamic = false,
     key = "Snowfall",
-    name = R.string.snowfall_theme_name,
+    name = R.string.theme_snowfall,
     available = { true }
 ) {
     lightScheme

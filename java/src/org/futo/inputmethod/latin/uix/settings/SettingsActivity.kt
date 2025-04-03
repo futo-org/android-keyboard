@@ -91,7 +91,6 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
     private val inputMethodEnabled = mutableStateOf(false)
     private val inputMethodSelected = mutableStateOf(false)
     private val doublePackage = mutableStateOf(false)
-    private val micPermissionGrantedOrUsingSystem = mutableStateOf(false)
 
     private var wasImeEverDisabled = false
 
@@ -112,10 +111,6 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
         this.inputMethodSelected.value = inputMethodSelected
 
         this.doublePackage.value = this.doublePackage.value || isDoublePackage()
-
-        this.micPermissionGrantedOrUsingSystem.value = (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) || runBlocking {
-            getSetting(USE_SYSTEM_VOICE_INPUT)
-        }
 
         if(!inputMethodEnabled) {
             wasImeEverDisabled = true
@@ -169,7 +164,6 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
                             SetupOrMain(
                                 inputMethodEnabled.value,
                                 inputMethodSelected.value,
-                                micPermissionGrantedOrUsingSystem.value,
                                 doublePackage.value
                             ) {
                                 SettingsNavigator(navController = navController)

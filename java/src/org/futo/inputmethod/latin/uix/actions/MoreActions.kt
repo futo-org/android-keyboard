@@ -60,7 +60,9 @@ import sh.calvin.reorderable.rememberReorderableLazyGridState
 @Composable
 fun ActionItem(action: Action, modifier: Modifier = Modifier, dragIcon: Boolean = false, dragIconModifier: Modifier = Modifier) {
     Surface(color = LocalKeyboardScheme.current.keyboardContainer,
-        modifier = modifier.fillMaxWidth().height(92.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(92.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
         Box(modifier = Modifier
@@ -123,7 +125,7 @@ fun MoreActionsView() {
 
 
     if(actions.isEmpty()) {
-        ScreenTitle("No actions are enabled")
+        ScreenTitle(stringResource(R.string.action_editor_warning_no_actions))
     }
 
     LazyVerticalGrid(
@@ -214,9 +216,9 @@ fun ActionsEditor(header: @Composable () -> Unit) {
                                 header()
                                 
                                 if (actionMap[ActionCategory.ActionKey]?.let { it.size > 1 } == true) {
-                                    WarningTip("Please assign only one action key. You cannot assign more than one action to the action key.")
+                                    WarningTip(stringResource(R.string.action_editor_error_more_than_one_action_key))
                                 } else if (actionMap[ActionCategory.PinnedKey]?.let { it.size >= 3 } == true) {
-                                    WarningTip("Please consider pinning less actions. The suggestion bar will need to be shrunk to accommodate this many actions.")
+                                    WarningTip(stringResource(R.string.action_editor_warning_too_many_pinned))
                                 }
                             }
                             Text(it.category.name(context), modifier = Modifier.padding(top = 24.dp), style = Typography.Heading.MediumMl, color = LocalContentColor.current.copy(alpha = 0.6f))
@@ -235,7 +237,7 @@ fun ActionsEditor(header: @Composable () -> Unit) {
                                         list.add(selfIdx + 1, list.removeAt(idx))
                                     }
                                 }) {
-                                    Text("Add next")
+                                    Text(stringResource(R.string.action_editor_add_next_action))
                                 }
                             }
                         }
@@ -258,7 +260,7 @@ fun ActionEditor() {
         shape = RoundedCornerShape(32.dp, 32.dp, 0.dp, 0.dp)
     ) {
         ActionsEditor {
-            ScreenTitle(title = "Edit actions")
+            ScreenTitle(title = stringResource(R.string.action_editor_edit_actions))
         }
     }
 }
@@ -266,13 +268,13 @@ fun ActionEditor() {
 
 val MoreActionsAction = Action(
     icon = R.drawable.more_horizontal,
-    name = R.string.more_actions_action_title,
+    name = R.string.action_more_actions_title,
     simplePressImpl = null,
     shownInEditor = false,
     windowImpl = { manager, _ ->
         object : ActionWindow {
             @Composable
-            override fun windowName(): String = stringResource(id = R.string.more_actions_action_title)
+            override fun windowName(): String = stringResource(id = R.string.action_more_actions_title)
 
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
@@ -284,7 +286,7 @@ val MoreActionsAction = Action(
                 super.WindowTitleBar(rowScope)
 
                 OutlinedButton(onClick = { manager.showActionEditor() }, modifier = Modifier.padding(8.dp, 0.dp)) {
-                    Text("Edit actions", color = LocalKeyboardScheme.current.onKeyboardContainer)
+                    Text(stringResource(R.string.action_editor_edit_actions), color = LocalKeyboardScheme.current.onKeyboardContainer)
                 }
             }
 

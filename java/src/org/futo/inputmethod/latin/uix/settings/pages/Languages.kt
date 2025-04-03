@@ -42,7 +42,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.runBlocking
@@ -54,7 +53,6 @@ import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.ResourceHelper
-import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.icon
 import org.futo.inputmethod.latin.uix.kindTitle
@@ -70,7 +68,6 @@ import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.urlEncode
-import org.futo.inputmethod.latin.uix.youAreImporting
 import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.openURI
@@ -109,7 +106,7 @@ fun LanguageConfigurable(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    kind.kindTitle(),
+                    kind.kindTitle(LocalContext.current),
                     modifier = Modifier.align(Alignment.CenterVertically),
                     style = Typography.Small,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -205,7 +202,8 @@ fun LanguageSurface(
                 .background(
                     color = MaterialTheme.colorScheme.secondaryContainer,
                     shape = RoundedCornerShape(16.dp)
-                ).border(
+                )
+                .border(
                     1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
                     shape = RoundedCornerShape(16.dp)
@@ -220,28 +218,28 @@ fun LanguageSurface(
                 )
 
                 if (item.options.dictionary == null) {
-                    Tip("This language has no built-in dictionary. We recommend downloading and importing one to get autocorrect and word suggestions.")
+                    Tip(stringResource(R.string.language_settings_warning_language_has_no_dict))
                 } else {
                     Spacer(modifier = Modifier.height(32.dp))
                 }
 
                 LanguageConfigurable(
                     kind = FileKind.VoiceInput,
-                    selection = item.options.voiceInputModel ?: "(None)"
+                    selection = item.options.voiceInputModel ?: stringResource(R.string.language_settings_resource_none)
                 ) { onConfigurableSelected(FileKind.VoiceInput) }
                 LanguageConfigurable(
                     kind = FileKind.Dictionary,
-                    selection = item.options.dictionary ?: "(None)"
+                    selection = item.options.dictionary ?: stringResource(R.string.language_settings_resource_none)
                 ) { onConfigurableSelected(FileKind.Dictionary) }
                 LanguageConfigurable(
                     kind = FileKind.Transformer,
-                    selection = item.options.transformerModel ?: "(None)"
+                    selection = item.options.transformerModel ?: stringResource(R.string.language_settings_resource_none)
                 ) { onConfigurableSelected(FileKind.Transformer) }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    "Keyboard Layouts",
+                    stringResource(R.string.language_settings_layouts_of_this_language),
                     modifier = Modifier
                         .padding(start = 16.dp, end = 16.dp),
                     style = Typography.SmallMl,
@@ -264,7 +262,7 @@ fun LanguageSurface(
 
                 Row(Modifier.padding(start = 16.dp, end = 6.dp)) {
                     Text(
-                        "Multilingual Typing",
+                        stringResource(R.string.language_settings_enable_multilingual_typing_for_this_language),
                         modifier = Modifier
                             .weight(1.0f)
                             .align(Alignment.CenterVertically),
@@ -283,7 +281,7 @@ fun LanguageSurface(
 
                 ActionableItem(
                     icon = painterResource(id = R.drawable.plus_circle),
-                    text = "Add Keyboard Layout",
+                    text = stringResource(R.string.language_settings_add_layout_for_this_language),
                     color = MaterialTheme.colorScheme.primary,
                     onTrigger = onLayoutAdditionRequested
                 )
@@ -292,7 +290,7 @@ fun LanguageSurface(
 
                 ActionableItem(
                     icon = painterResource(id = R.drawable.trash),
-                    text = "Remove Language",
+                    text = stringResource(R.string.language_settings_remove_this_language),
                     color = MaterialTheme.colorScheme.error,
                     onTrigger = onLanguageRemoved
                 )
@@ -351,18 +349,36 @@ fun ConfirmResourceActionDialog(
 
     AlertDialog(
         icon = {
-            Icon(painterResource(id = resourceKind.icon()), contentDescription = "Action")
+            Icon(painterResource(id = resourceKind.icon()), contentDescription = null)
         },
         title = {
-            Text(text = "${locale.displayLanguage} - ${resourceKind.kindTitle()}")
+            Text(text = "${locale.displayLanguage} - ${resourceKind.kindTitle(LocalContext.current)}")
         },
         text = {
-            if(isCurrentlySet && hasBuiltInFallback) {
-                Text(text = "Would you like to revert ${resourceKind.youAreImporting()} to default for ${locale.displayLanguage}, or replace it with another file?")
-            } else if(isCurrentlySet) {
-                Text(text = "Would you like to remove the ${resourceKind.youAreImporting()} for ${locale.displayLanguage}, or replace it with another file?\n\nNo built-in ${resourceKind.youAreImporting()} exists for this language, so if you remove it, it will stop working until you import a different one!")
+            if(isCurrentlySet) {
+                Text(text = when(resourceKind) {
+                    FileKind.VoiceInput -> stringResource(R.string.language_settings_resource_voice_input_selected)
+                    FileKind.Transformer -> stringResource(R.string.language_settings_resource_transformer_selected)
+                    FileKind.Dictionary -> stringResource(R.string.language_settings_resource_dictionary_selected)
+                    FileKind.Invalid -> ""
+                } + if(!hasBuiltInFallback) {
+                    "\n\n" +
+                    when(resourceKind) {
+                        FileKind.VoiceInput -> stringResource(R.string.language_settings_resource_voice_input_selected_no_default_warning)
+                        FileKind.Transformer -> stringResource(R.string.language_settings_resource_transformer_selected_no_default_warning)
+                        FileKind.Dictionary -> stringResource(R.string.language_settings_resource_dictionary_selected_no_default_warning)
+                        FileKind.Invalid -> ""
+                    }
+                } else {
+                    ""
+                })
             } else {
-                Text(text = "No ${resourceKind.youAreImporting()} override is set for ${locale.displayLanguage}. You can explore downloads online, or import an existing file.")
+                Text(text = when(resourceKind) {
+                    FileKind.VoiceInput -> stringResource(R.string.language_settings_resource_voice_input_selected_unset)
+                    FileKind.Transformer -> stringResource(R.string.language_settings_resource_transformer_selected_unset)
+                    FileKind.Dictionary -> stringResource(R.string.language_settings_resource_dictionary_selected_unset)
+                    FileKind.Invalid -> ""
+                })
             }
         },
         onDismissRequest = {
@@ -374,9 +390,9 @@ fun ConfirmResourceActionDialog(
             }) {
                 Text(
                     if(isCurrentlySet) {
-                        "Replace"
+                        stringResource(R.string.language_settings_resource_replace_button)
                     } else {
-                        "Import"
+                        stringResource(R.string.language_settings_resource_import_file_button)
                     }
                 )
             }
@@ -385,15 +401,15 @@ fun ConfirmResourceActionDialog(
             if(isCurrentlySet) {
                 TextButton(onClick = { onDelete() }) {
                     if(hasBuiltInFallback) {
-                        Text("Revert to Default")
+                        Text(stringResource(R.string.language_settings_resource_revert_to_default_button))
                     } else {
-                        Text("Remove")
+                        Text(stringResource(R.string.language_settings_resource_remove_button))
                     }
 
                 }
             } else {
                 TextButton(onClick = { onExplore() }) {
-                    Text("Explore")
+                    Text(stringResource(R.string.language_settings_resource_explore_online_button))
                 }
             }
         }
@@ -412,22 +428,25 @@ fun ConfirmDeleteLanguageDialog(
             Icon(painterResource(id = R.drawable.trash), contentDescription = null)
         },
         title = {
-            Text(text = "Delete ${locale.displayLanguage}?")
+            Text(text = stringResource(R.string.language_settings_remove_language_title, locale.displayLanguage))
         },
         text = {
-            Text(text = "Remove ${locale.displayLanguage}, all of its associated layouts and custom resources?")
+            Text(text = stringResource(
+                R.string.language_settings_remove_language_body,
+                locale.displayLanguage
+            ))
         },
         onDismissRequest = {
             onDismissRequest()
         },
         confirmButton = {
             TextButton(onClick = onDelete) {
-                Text("Remove")
+                Text(stringResource(R.string.language_settings_remove_language_remove_button))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text("Cancel")
+                Text(stringResource(R.string.language_settings_remove_language_cancel_button))
             }
         }
     )
@@ -502,12 +521,12 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
     }
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
         item {
-            ScreenTitle("Languages & Models", showBack = true, navController)
+            ScreenTitle(stringResource(R.string.language_settings_title), showBack = true, navController)
         }
 
         item {
             NavigationItem(
-                title = "Add language",
+                title = stringResource(R.string.language_settings_add_language_button),
                 style = NavigationItemStyle.Misc,
                 navigate = {
                     navController.navigate("addLanguage")
@@ -524,16 +543,18 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
 
             val voiceInputModelName = ResourceHelper.tryFindingVoiceInputModelForLocale(context, locale)?.name?.let { stringResource(it) }
             val dictionaryName = runBlocking { ResourceHelper.findKeyForLocaleAndKind(context, locale, FileKind.Dictionary) }?.let {
-                runBlocking { context.getSetting(FileKind.Dictionary.namePreferenceKeyFor(it), "Dictionary") } + " (Imported)"
+                runBlocking { context.getSetting(FileKind.Dictionary.namePreferenceKeyFor(it), "Dictionary") } + " " + context.getString(
+                    R.string.language_settings_resource_imported_indicator
+                )
             } ?: if(BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false).isNotEmpty()) {
-                    "Built-in Dictionary"
+                context.getString(R.string.language_settings_resource_builtin_dictionary_name)
             } else {
                     null
             }
 
             val transformerName = runBlocking { ModelPaths.getModelOptions(context) }.get(locale.language)?.let {
                 it.loadDetails()?.let {
-                    it.name + if(it.isUnsupported()) " (Unsupported)" else ""
+                    it.name + if(it.isUnsupported()) (" " + context.getString(R.string.language_settings_resource_unsupported_indicator)) else ""
                 }
             }
 
@@ -602,16 +623,16 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
 
         item {
             Spacer(modifier = Modifier.height(32.dp))
-            ScreenTitle("Other options")
+            ScreenTitle(stringResource(R.string.language_settings_other_options))
             NavigationItem(
-                title = "Import resource file",
+                title = stringResource(R.string.language_settings_import_resource_from_file),
                 style = NavigationItemStyle.Misc,
                 navigate = {
                     openModelImporter(context)
                 },
             )
             NavigationItem(
-                title = "Explore voice input models",
+                title = stringResource(R.string.language_settings_explore_voice_input_models_online),
                 style = NavigationItemStyle.Misc,
                 navigate = {
                     context.openURI(
@@ -621,7 +642,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 },
             )
             NavigationItem(
-                title = "Explore dictionaries",
+                title = stringResource(R.string.language_settings_explore_dictionaries_online),
                 style = NavigationItemStyle.Misc,
                 navigate = {
                     context.openURI(
@@ -631,7 +652,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 },
             )
             NavigationItem(
-                title = "Explore transformer models",
+                title = stringResource(R.string.language_settings_explore_transformers_online),
                 style = NavigationItemStyle.Misc,
                 navigate = {
                     context.openURI(

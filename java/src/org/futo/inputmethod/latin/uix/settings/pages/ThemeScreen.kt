@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -12,6 +13,7 @@ import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePicker
+import org.futo.inputmethod.latin.R
 
 @Preview
 @Composable
@@ -20,7 +22,7 @@ fun ThemeScreen(navController: NavHostController = rememberNavController()) {
 
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
-        ScreenTitle("Theme", showBack = true, navController)
+        ScreenTitle(stringResource(R.string.theme_settings_title), showBack = true, navController)
         ThemePicker {
             setTheme(it.key)
         }

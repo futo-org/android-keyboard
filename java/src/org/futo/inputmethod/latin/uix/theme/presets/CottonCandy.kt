@@ -1,6 +1,5 @@
 package org.futo.inputmethod.latin.uix.theme.presets
 
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -8,7 +7,6 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.extendedLightColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePreview
-import org.futo.inputmethod.latin.uix.wrapLightColorScheme
 
 private val lightScheme = extendedLightColorScheme(
     primary=Color(0xFFB02378),
@@ -49,7 +47,7 @@ private val lightScheme = extendedLightColorScheme(
 val CottonCandy = ThemeOption(
     dynamic = false,
     key = "CottonCandy",
-    name = R.string.cotton_candy_theme_name,
+    name = R.string.theme_cotton_candy,
     available = { true }
 ) {
     lightScheme

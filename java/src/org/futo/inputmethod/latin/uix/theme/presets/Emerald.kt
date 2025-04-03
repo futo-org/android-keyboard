@@ -47,7 +47,7 @@ private val darkScheme = extendedDarkColorScheme(
 val Emerald = ThemeOption(
     dynamic = false,
     key = "Emerald",
-    name = R.string.emerald_theme_name,
+    name = R.string.theme_emerald,
     available = { true }
 ) {
     darkScheme
