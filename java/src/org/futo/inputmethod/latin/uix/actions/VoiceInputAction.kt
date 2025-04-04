@@ -69,7 +69,8 @@ fun NoModelInstalled(locale: Locale) {
     val context = LocalContext.current
     Box(modifier = Modifier
         .fillMaxSize()
-        .clickable(enabled = true,
+        .clickable(
+            enabled = true,
             onClickLabel = null,
             onClick = {
                 context.openURI("https://keyboard.futo.org/voice-input-models", true)
@@ -77,7 +78,13 @@ fun NoModelInstalled(locale: Locale) {
             role = null,
             indication = null,
             interactionSource = remember { MutableInteractionSource() })) {
-        Text("No voice input model installed for ${locale.getDisplayName(locale)}, tap to check options?", modifier = Modifier.align(Alignment.Center).padding(8.dp), textAlign = TextAlign.Center)
+        Text(
+            stringResource(
+                R.string.action_voice_input_no_model_for_language_x_installed,
+                locale.getDisplayName(locale)
+            ), modifier = Modifier
+                .align(Alignment.Center)
+                .padding(8.dp), textAlign = TextAlign.Center)
     }
 }
 
@@ -181,7 +188,8 @@ private class VoiceInputActionWindow(
     override fun WindowContents(keyboardShown: Boolean) {
         Box(modifier = Modifier
             .fillMaxSize()
-            .clickable(enabled = true,
+            .clickable(
+                enabled = true,
                 onClickLabel = null,
                 onClick = { recognizerView.value?.finish() },
                 role = null,

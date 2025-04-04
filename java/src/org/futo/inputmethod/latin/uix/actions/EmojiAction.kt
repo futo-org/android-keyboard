@@ -29,7 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -225,7 +224,10 @@ class EmojiGridAdapter(
         fun bind(item: CategoryItem) {
             itemView.layoutParams.width = emojiCellWidth * 9
             itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            itemView.findViewById<TextView>(R.id.text_section).text = item.title
+
+            val localizedName = localizedCategoryNameMap[item.title]?.let { itemView.context.getString(it) } ?: item.title
+
+            itemView.findViewById<TextView>(R.id.text_section).text = localizedName
             itemView.findViewById<TextView>(R.id.text_section).setTextColor(contentColor.toArgb())
         }
     }
@@ -477,7 +479,9 @@ fun EmojiNavigation(
     goToCategory: (CategoryItem) -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxWidth().height(48.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
     ) {
         Row(modifier = Modifier.padding(2.dp, 0.dp)) {
             if(showKeys) {
@@ -506,6 +510,22 @@ val iconMap = mapOf(
     "Flags" to R.drawable.flags,
     "ASCII" to R.drawable.ic_emoji_emoticons_activated_lxx_dark,
 )
+
+val localizedCategoryNameMap = mapOf(
+    "Recent" to R.string.action_emoji_category_most_recently_used,
+    "Smileys & Emotion" to R.string.action_emoji_category_smileys_emotion,
+    "People & Body" to R.string.action_emoji_category_people_body,
+    "Animals & Nature" to R.string.action_emoji_category_animals_nature,
+    "Food & Drink" to R.string.action_emoji_category_food_drink,
+    "Travel & Places" to R.string.action_emoji_category_travel_places,
+    "Activities" to R.string.action_emoji_category_activities,
+    "Objects" to R.string.action_emoji_category_objects,
+    "Symbols" to R.string.action_emoji_category_symbols,
+    "Flags" to R.string.action_emoji_category_flags,
+    "ASCII" to R.string.action_emoji_category_ascii,
+    "No results found" to R.string.action_emoji_search_no_results_found
+)
+
 @Composable
 private fun EmojiCategoriesContainer(
     modifier: Modifier,
@@ -523,8 +543,11 @@ private fun EmojiCategoriesContainer(
         }
     }
 
+    val context = LocalContext.current
+
     LazyRow(state = listState, modifier = modifier.padding(8.dp, 0.dp)) {
         items(categories) {
+            val localizedTitle = localizedCategoryNameMap[it.title]?.let { context.getString(it) } ?: it.title
             IconButton(
                 onClick = { goToCategory(it) }, modifier = if (it == activeCategoryItem) {
                     Modifier.background(
@@ -534,7 +557,7 @@ private fun EmojiCategoriesContainer(
                 } else {
                     Modifier
                 }.clearAndSetSemantics {
-                    contentDescription = "Jump to ${it.title}"
+                    contentDescription = context.getString(R.string.action_emoji_jump_to_category, localizedTitle)
                     toggleableState = ToggleableState(it == activeCategoryItem)
                 }
             ) {
@@ -556,7 +579,7 @@ private fun EmojiCategoriesContainer(
                     )
                 } else {
                     AutoFitText(
-                        it.title,
+                        localizedTitle,
                         style = Typography.SmallMl.copy(color = color)
                     )
                 }
@@ -567,13 +590,14 @@ private fun EmojiCategoriesContainer(
 
 @Composable
 private fun BackspaceKey(onBackspace: (Boolean) -> Unit) {
+    val context = LocalContext.current
     Box(modifier = Modifier
         .minimumInteractiveComponentSize()
         .repeatablyClickableAction(onTrigger = onBackspace)
         .size(48.dp)
         .clearAndSetSemantics {
             this.role = Role.Button
-            this.text = AnnotatedString("Delete")
+            this.text = AnnotatedString(context.getString(R.string.spoken_description_delete))
         },
         contentAlignment = Alignment.Center
     ) {
@@ -821,6 +845,7 @@ val EmojiAction = Action(
 
             @Composable
             override fun WindowTitleBar(rowScope: RowScope) {
+                val context = LocalContext.current
                 if(searching.value) {
                     with(rowScope) {
                         Surface(
@@ -855,19 +880,20 @@ val EmojiAction = Action(
                         Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterStart) {
                             Row {
                                 Icon(Icons.Default.Search, contentDescription = null)
-                                Text("Search", style = Typography.SmallMl, modifier = Modifier
-                                    .alpha(0.75f)
-                                    .align(Alignment.CenterVertically))
+                                Text(
+                                    stringResource(R.string.action_emoji_search_for_emojis), style = Typography.SmallMl, modifier = Modifier
+                                        .alpha(0.75f)
+                                        .align(Alignment.CenterVertically))
                             }
                         }
                     }
 
                     IconButton(onClick = {
                         manager.requestDialog(
-                            "Clear recent emojis?",
+                            context.getString(R.string.action_emoji_clear_recent_emojis_question),
                             listOf(
-                                DialogRequestItem("Cancel") {},
-                                DialogRequestItem("Clear") {
+                                DialogRequestItem(context.getString(R.string.action_emoji_clear_recent_emojis_cancel)) {},
+                                DialogRequestItem(context.getString(R.string.action_emoji_clear_recent_emojis_clear)) {
                                     runBlocking {
                                         manager.getContext().resetRecentEmojis()
                                     }
@@ -877,7 +903,9 @@ val EmojiAction = Action(
                             {}
                         )
                     }) {
-                        Icon(painterResource(id = R.drawable.close), contentDescription = "Clear recent emojis")
+                        Icon(painterResource(id = R.drawable.close), contentDescription = stringResource(
+                            R.string.action_emoji_clear_recent_emojis_content_description
+                        ))
                     }
 
                 }

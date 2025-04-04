@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Keyboard actions -->
-    <string name="action_voice_input_title">Voice Input</string>
-    <!-- Same as the one above but it uses the device's default system voice input instead of the built-in -->
-    <string name="action_system_voice_input_title">Voice Input (System)</string>
     <string name="action_theme_switcher_title">Theme Switcher</string>
-    <string name="action_emoji_title">Emojis</string>
     <string name="action_select_all_title">Select All</string>
     <string name="action_cut_title">Cut to Clipboard</string>
     <string name="action_copy_title">Copy to Clipboard</string>
     <string name="action_paste_title">Paste from Clipboard</string>
-    <string name="action_clipboard_manager_title">Clipboard Manager</string>
     <string name="action_undo_title">Undo</string>
     <string name="action_redo_title">Redo</string>
     <string name="action_text_editor_title">Text Editor</string>
@@ -22,18 +17,79 @@
     <string name="action_cursor_down_title">Arrow Down</string>
     <string name="action_cursor_left_title">Arrow Left</string>
     <string name="action_cursor_right_title">Arrow Right</string>
+    
+    <!-- For emoji menu action -->
+    <string name="action_emoji_title">Emojis</string>
+    <!-- Refers to the most recently used emojis -->
+    <string name="action_emoji_category_most_recently_used">Recent</string>
+    <string name="action_emoji_category_smileys_emotion">Smileys &amp; Emotion</string>
+    <string name="action_emoji_category_people_body">People &amp; Body</string>
+    <string name="action_emoji_category_animals_nature">Animals &amp; Nature</string>
+    <string name="action_emoji_category_food_drink">Food &amp; Drink</string>
+    <string name="action_emoji_category_travel_places">Travel &amp; Places</string>
+    <string name="action_emoji_category_activities">Activities</string>
+    <string name="action_emoji_category_objects">Objects</string>
+    <string name="action_emoji_category_symbols">Symbols</string>
+    <string name="action_emoji_category_flags">Flags</string>
+    <string name="action_emoji_category_ascii">ASCII</string>
+    <string name="action_emoji_search_no_results_found">No results found</string>
+    <string name="action_emoji_jump_to_category">Jump to <xliff:g name="category" example="Flags">%s</xliff:g></string>
+    <!-- Refers to clearing the most recently used emoji list -->
+    <string name="action_emoji_clear_recent_emojis_question">Clear recent emojis?</string>
+    <!-- Must be fairly short -->
+    <string name="action_emoji_clear_recent_emojis_cancel">Cancel</string>
+    <!-- Must be fairly short -->
+    <string name="action_emoji_clear_recent_emojis_clear">Clear</string>
+    <string name="action_emoji_clear_recent_emojis_content_description">Clear recent emojis</string>
+    <!-- Must be fairly short -->
+    <string name="action_emoji_search_for_emojis">Search</string>
+
+    <!-- For voice input action -->
+    <string name="action_voice_input_title">Voice Input</string>
+    <!-- Same as the one above but it uses the device's default system voice input instead of the built-in -->
+    <string name="action_system_voice_input_title">Voice Input (System)</string>
+    <string name="action_voice_input_no_model_for_language_x_installed">No voice input model installed for <xliff:g name="language" example="español">%s</xliff:g>, tap to check options?</string>
+
+    <!-- For clipboard manager action -->
+    <string name="action_clipboard_manager_title">Clipboard Manager</string>
+    <string name="action_clipboard_manager_unpin_item">Unpin item</string>
+    <string name="action_clipboard_manager_pin_item">Pin item</string>
+    <string name="action_clipboard_manager_remove_item">Remove item</string>
+    <!-- Must be fairly short -->
+    <string name="action_clipboard_manager_cancel_action_button">Cancel</string>
+    <string name="action_clipboard_manager_disable_text">There are no items to clear. Disable clipboard history?</string>
+    <!-- Must be fairly short, refers to disabling clipboard history -->
+    <string name="action_clipboard_manager_disable_button">Disable</string>
+    <string name="action_clipboard_manager_unpin_all_items_text">There are no unpinned items to clear. Unpin all items?</string>
+    <!-- Must be fairly short -->
+    <string name="action_clipboard_manager_unpin_all_items_button">Unpin</string>
+    <string name="action_clipboard_manager_clear_unpinned_items_text">Clear all unpinned items?</string>
+    <!-- Must be fairly short -->
+    <string name="action_clipboard_manager_clear_unpinned_items_button">Clear</string>
+    <string name="action_clipboard_manager_clear_clipboard">Clear clipboard</string>
+    <string name="action_clipboard_manager_error_device_locked_title">Device Locked</string>
+    <string name="action_clipboard_manager_error_device_locked_text">Please unlock your device to access clipboard history</string>
+    <string name="action_clipboard_manager_error_general_title">Clipboard Error</string>
+    <string name="action_clipboard_manager_error_general_text">The clipboard history could not be saved or loaded. It may be corrupted. You can try deleting it, or restarting the keyboard. Please report this as a bug. Reason: %1$s</string>
+    <string name="action_clipboard_manager_delete_corrupted_clipboard_text">Delete the clipboard? ALL items will be lost.</string>
+    <!-- Must be fairly short -->
+    <string name="action_clipboard_manager_delete_corrupted_clipboard_button">Delete</string>
+    <string name="action_clipboard_manager_error_clipboard_history_disabled_title">Clipboard History Inactive</string>
+    <string name="action_clipboard_manager_error_clipboard_history_disabled_text">Clipboard history is not enabled. To save clipboard items, you can enable clipboard history. This will keep up to 25 items for 3 days unless pinned. Passwords and other items marked sensitive are excluded from history.</string>
+    <string name="action_clipboard_manager_enable_clipboard_history_button">Enable Clipboard History</string>
+    <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
 
     <!-- For keyboard modes action -->
     <string name="action_keyboard_modes_title">Keyboard Modes</string>
     <string name="action_keyboard_modes_go_back">Go back</string>
     <string name="action_keyboard_modes_resize_keyboard">Resize Keyboard</string>
-    <!-- This string must be super short (below 10 chars if possible) -->
+    <!-- This string must be super short (below 10 chars if possible). Standard QWERTYUIOP keyboard, filling full screen width. -->
     <string name="action_keyboard_modes_standard">Standard</string>
-    <!-- This string must be super short (below 10 chars if possible) -->
+    <!-- This string must be super short (below 10 chars if possible). One-handed QWERTYUIOP keyboard, filling 2/3 screen width on one side -->
     <string name="action_keyboard_modes_one_handed">One Hand</string>
-    <!-- This string must be super short (below 10 chars if possible) -->
+    <!-- This string must be super short (below 10 chars if possible). Split QWERT - - YUIOP keyboard, with gap in middle -->
     <string name="action_keyboard_modes_split">Split</string>
-    <!-- This string must be super short (below 10 chars if possible) -->
+    <!-- This string must be super short (below 10 chars if possible). Free-form draggable and resizable QWERTYUIOP keyboard. -->
     <string name="action_keyboard_modes_floating">Float</string>
     <!-- This string must be super short (below 10 chars if possible) -->
     <string name="action_keyboard_modes_resizing_reset_size">Reset</string>

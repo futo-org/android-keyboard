@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -126,7 +127,11 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
                 }, modifier = Modifier.size(32.dp)) {
                     Icon(
                         painterResource(id = R.drawable.push_pin),
-                        contentDescription = "Pin",
+                        contentDescription = if(clipboardEntry.pinned) {
+                            stringResource(R.string.action_clipboard_manager_unpin_item)
+                        } else {
+                            stringResource(R.string.action_clipboard_manager_pin_item)
+                        },
                         tint = if(clipboardEntry.pinned) {
                             MaterialTheme.colorScheme.onSecondaryContainer
                         } else {
@@ -143,7 +148,7 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
                 }, modifier = Modifier.size(32.dp), enabled = !clipboardEntry.pinned) {
                     Icon(
                         painterResource(id = R.drawable.close),
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.action_clipboard_manager_remove_item),
                         tint = if(clipboardEntry.pinned) {
                             MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.2f)
                         } else {
@@ -466,6 +471,8 @@ val ClipboardHistoryAction = Action(
             override fun WindowTitleBar(rowScope: RowScope) {
                 super.WindowTitleBar(rowScope)
 
+                val context = LocalContext.current
+
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!clipboardHistory.value) return
 
@@ -475,10 +482,10 @@ val ClipboardHistoryAction = Action(
                             clipboardHistoryManager.clipboardHistory.count { !it.pinned }
                         if (clipboardHistoryManager.clipboardHistory.size == 0) {
                             manager.requestDialog(
-                                "There are no items to clear. Disable clipboard history?",
+                                context.getString(R.string.action_clipboard_manager_disable_text),
                                 listOf(
-                                    DialogRequestItem("Cancel") {},
-                                    DialogRequestItem("Disable") {
+                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
+                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_disable_button)) {
                                         clipboardHistory.setValue(false)
                                     },
                                 ),
@@ -486,10 +493,10 @@ val ClipboardHistoryAction = Action(
                             )
                         } else if (numUnpinnedItems == 0) {
                             manager.requestDialog(
-                                "There are no unpinned items to clear. Unpin all items?",
+                                context.getString(R.string.action_clipboard_manager_unpin_all_items_text),
                                 listOf(
-                                    DialogRequestItem("Cancel") {},
-                                    DialogRequestItem("Unpin") {
+                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
+                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_unpin_all_items_button)) {
                                         clipboardHistoryManager.clipboardHistory.toList().forEach {
                                             if (it.pinned) {
                                                 clipboardHistoryManager.onPin(it)
@@ -501,10 +508,10 @@ val ClipboardHistoryAction = Action(
                             )
                         } else {
                             manager.requestDialog(
-                                "Clear all unpinned items?",
+                                context.getString(R.string.action_clipboard_manager_clear_unpinned_items_text),
                                 listOf(
-                                    DialogRequestItem("Cancel") {},
-                                    DialogRequestItem("Clear") {
+                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
+                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_clear_unpinned_items_button)) {
                                         clipboardHistoryManager.clipboardHistory.toList().forEach {
                                             if (!it.pinned) {
                                                 clipboardHistoryManager.onRemove(it)
@@ -518,7 +525,7 @@ val ClipboardHistoryAction = Action(
                     }) {
                         Icon(
                             painterResource(id = R.drawable.close),
-                            contentDescription = "Clear clipboard"
+                            contentDescription = stringResource(R.string.action_clipboard_manager_clear_clipboard)
                         )
                     }
                 }
@@ -527,26 +534,31 @@ val ClipboardHistoryAction = Action(
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
                 val view = LocalView.current
+                val context = LocalContext.current
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!unlocked) {
                     ScrollableList {
                         PaymentSurface(isPrimary = true) {
-                            PaymentSurfaceHeading(title = "Device Locked")
+                            PaymentSurfaceHeading(title = stringResource(R.string.action_clipboard_manager_error_device_locked_title))
 
-                            ParagraphText("Please unlock your device to access clipboard history")
+                            ParagraphText(stringResource(R.string.action_clipboard_manager_error_device_locked_text))
                         }
                     }
                 } else if(clipboardHistoryManager.clipboardSaveFailure.value) {
                     ScrollableList {
                         PaymentSurface(isPrimary = true) {
-                            PaymentSurfaceHeading(title = "Clipboard Error")
-                            ParagraphText("The clipboard history could not be saved or loaded. It may be corrupted. You can try deleting it, or restarting the keyboard. Please report this as a bug. Reason: ${clipboardHistoryManager.clipboardLoadFailureReason}")
+                            PaymentSurfaceHeading(title = stringResource(R.string.action_clipboard_manager_error_general_title))
+                            ParagraphText(
+                                stringResource(
+                                    R.string.action_clipboard_manager_error_general_text,
+                                    clipboardHistoryManager.clipboardLoadFailureReason
+                                ))
                             Button(onClick = {
                                 manager.requestDialog(
-                                    "Delete the clipboard? ALL items will be lost.",
+                                    context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_text),
                                     listOf(
-                                        DialogRequestItem("Cancel") {},
-                                        DialogRequestItem("Delete") {
+                                        DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
+                                        DialogRequestItem(context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button)) {
                                             clipboardHistoryManager.clipboardSaveFailure.value = false
                                             clipboardHistory.setValue(false)
                                             clipboardHistoryManager.deleteClipboard()
@@ -557,20 +569,20 @@ val ClipboardHistoryAction = Action(
 
                             }, modifier = Modifier
                                 .fillMaxWidth()) {
-                                Text("Delete")
+                                Text(context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button))
                             }
                         }
                     }
                 } else if(!clipboardHistory.value) {
                     ScrollableList {
                         PaymentSurface(isPrimary = true) {
-                            PaymentSurfaceHeading(title = "Clipboard History Inactive")
-                            ParagraphText("Clipboard history is not enabled. To save clipboard items, you can enable clipboard history. This will keep up to 25 items for 3 days unless pinned. Passwords and other items marked sensitive are excluded from history.")
+                            PaymentSurfaceHeading(title = stringResource(R.string.action_clipboard_manager_error_clipboard_history_disabled_title))
+                            ParagraphText(stringResource(R.string.action_clipboard_manager_error_clipboard_history_disabled_text))
                             Button(onClick = {
                                 clipboardHistory.setValue(true)
                             }, modifier = Modifier
                                 .fillMaxWidth()) {
-                                Text("Enable Clipboard History")
+                                Text(stringResource(R.string.action_clipboard_manager_enable_clipboard_history_button))
                             }
                         }
                     }
@@ -605,7 +617,7 @@ val ClipboardHistoryAction = Action(
                                     if (!manager.typeUri(it.uri, it.mimeTypes)) {
                                         val toast = Toast.makeText(
                                             manager.getContext(),
-                                            "App does not support image insertion",
+                                            context.getString(R.string.action_clipboard_manager_error_app_image_insertion_unsupported),
                                             Toast.LENGTH_SHORT
                                         )
                                         toast.show()

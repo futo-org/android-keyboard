@@ -9,7 +9,6 @@
 
     <string name="extracting_features">Extracting features…</string>
     <string name="loading_model">Loading model…</string>
-    <string name="encoding">Running encoder…</string>
     <string name="decoding">Decoding started…</string>
     <string name="switching_model">Switching language…</string>
     <string name="processing">Processing…</string>
