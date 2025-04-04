@@ -171,6 +171,7 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
                 Text(
                     buildAnnotatedString {
                         append(stringResource(R.string.size_settings_keyboard_modes_tip))
+                        append(" ")
                         appendInlineContent("icon")
                         appendLine()
                         appendLine()
@@ -266,7 +267,7 @@ private fun LazyItemScope.DraggableSettingItem(idx: Int, item: LongPressKey, mov
             }
     ) {
         IconButton(onClick = { disable(item) }) {
-            Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.remove))
+            Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.morekey_settings_disable))
         }
     }
 }
@@ -343,7 +344,7 @@ fun LazyListScope.longPressKeyLayoutEditor(context: Context, setting: DataStoreI
             modifier = Modifier.animateItemPlacement()
         ) {
             IconButton(onClick = { enable(it) }) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add))
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.morekey_settings_enable))
             }
         }
     }
@@ -381,7 +382,7 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
                 range = 100.0f..700.0f,
                 hardRange = 25.0f..1200.0f,
                 transform = { it.roundToInt() },
-                indicator = { "$it ms" },
+                indicator = { context.getString(R.string.abbreviation_unit_milliseconds, "$it") },
                 steps = 23
             )
         }
@@ -618,7 +619,7 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
                 if(it == -1) {
                     context.getString(R.string.typing_settings_vibration_strength_default)
                 } else {
-                    "$it ms"
+                    context.getString(R.string.abbreviation_unit_milliseconds, "$it")
                 }
             }
         )

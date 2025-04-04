@@ -283,7 +283,7 @@
     <string name="size_settings_title">Resize Keyboard</string>
     <string name="size_settings_subtitle">Change the height and offset of the keyboard</string>
     <string name="size_settings_resize_tip">Tap the \"Resize Keyboard\" button to resize.</string>
-    <string name="size_settings_keyboard_modes_tip">"You can access this anywhere with the Keyboard Modes action: "</string>
+    <string name="size_settings_keyboard_modes_tip">You can access this anywhere with the Keyboard Modes action:</string>
     <string name="size_settings_reset">Reset size settings</string>
     <string name="size_settings_reset_subtitle">Tap to reset all sizes and modes for both portrait and landscape to default</string>
 
@@ -294,6 +294,8 @@
     <string name="morekey_settings_reset">Reset to default</string>
     <string name="morekey_settings_active">Active</string>
     <string name="morekey_settings_inactive">Inactive</string>
+    <string name="morekey_settings_enable">Activate</string>
+    <string name="morekey_settings_disable">Deactivate</string>
     <string name="morekey_settings_keys">Long-Press Keys</string>
     <string name="morekey_settings_show_hints">Show hints</string>
     <string name="morekey_settings_show_hints_subtitle">Display a small hint on each key, showing the primary long-press key</string>
@@ -322,6 +324,7 @@
 
     <!-- typing settings -->
     <string name="typing_settings_title">Typing preferences</string>
+    <!-- When translating, rename it to gesture typing if it makes more sense for that language -->
     <string name="typing_settings_swipe">Swipe Typing (alpha)</string>
     <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
@@ -413,7 +416,7 @@
     <string name="setup_step_1">Setup - Step 1</string>
     <string name="setup_step_2">Setup - Step 2</string>
     <string name="setup_step_3">Setup - Step 3</string>
-    <string name="setup_welcome_text">Welcome to FUTO Keyboard alpha! Please keep in mind things may be rough. This is not a finished product in any way.\n\nFirst, enable FUTO Keyboard as an input method.</string>
+    <string name="setup_welcome_text">Welcome to FUTO Keyboard (alpha)! This product is still under development and not yet finished, we appreciate your patience and understanding.\n\nTo get started, enable FUTO Keyboard as an input method.</string>
     <string name="setup_open_input_settings">Open Input Method Settings</string>
     <string name="setup_warning_multiple_versions">Warning: You seem to have both Play Store and Standalone versions installed, we only recommend installing one</string>
     <string name="setup_active_input_method">Please select FUTO Keyboard as your active input method.</string>

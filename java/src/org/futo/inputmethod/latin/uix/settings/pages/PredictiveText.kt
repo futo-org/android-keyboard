@@ -104,23 +104,6 @@ fun PredictiveTextScreen(navController: NavHostController = rememberNavControlle
             default = true
         )
 
-        if(!transformerLmEnabled) {
-
-            /*
-            NavigationItem(
-                title = stringResource(R.string.configure_dictionaries_title),
-                style = NavigationItemStyle.Misc,
-                navigate = {
-                    val intent = Intent()
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    intent.setClass(context, DictionarySettingsActivity::class.java)
-                    intent.putExtra("clientId", "org.futo.inputmethod.latin")
-                    context.startActivity(intent)
-                }
-            )
-            */
-        }
-
         SettingToggleSharedPrefs(
             title = stringResource(R.string.use_personalized_dicts),
             subtitle = stringResource(R.string.use_personalized_dicts_summary),

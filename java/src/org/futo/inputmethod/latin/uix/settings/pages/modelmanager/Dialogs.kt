@@ -45,7 +45,7 @@ fun ModelDeleteConfirmScreen(path: File = File("/example"), navController: NavHo
                     navController.navigateUp()
                 }
             ) {
-                Text(stringResource(R.string.delete_dict))
+                Text(stringResource(R.string.spoken_description_delete))
             }
         },
         dismissButton = {
