@@ -436,7 +436,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                     currentSubtype = activeSubtype
 
                     withContext(Dispatchers.Main) {
-                        changeInputMethodSubtype(Subtypes.convertToSubtype(activeSubtype))
+                        val subtype = Subtypes.convertToSubtype(activeSubtype)
+                        changeInputMethodSubtype(subtype)
+                        uixManager.updateLocale(Subtypes.getLocale(subtype))
                     }
                 }
             }

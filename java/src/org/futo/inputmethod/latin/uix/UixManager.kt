@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ClipDescription
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -148,6 +149,8 @@ val LocalThemeProvider = compositionLocalOf<DynamicThemeProvider> {
 val LocalFoldingState = compositionLocalOf<FoldingOptions> {
     FoldingOptions(null)
 }
+
+private val UixLocaleFollowsSubtypeLocale = true
 
 @Composable
 fun navBarHeight(): Dp = with(LocalDensity.current) {
@@ -1274,6 +1277,17 @@ class UixManager(private val latinIME: LatinIME) {
 
         if(tutorialMode == TutorialMode.ResizerTutorial) {
             onActionActivated(KeyboardModeAction)
+        }
+    }
+
+    fun updateLocale(locale: Locale) {
+        if(UixLocaleFollowsSubtypeLocale) {
+            latinIME.resources.apply {
+                val config = Configuration(configuration)
+                config.setLocale(locale)
+                updateConfiguration(config, displayMetrics)
+            }
+            setContent()
         }
     }
 }
