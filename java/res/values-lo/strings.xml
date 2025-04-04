@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"ຕົວເລືອກການປ້ອນຂໍ້ມູນ"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"ຊອກຫາລາຍຊື່ຜູ້ຕິດຕໍ່"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"ໂຕຊ່ວຍສະກົດໃຊ້ຂໍ້ມູນຈາກລາຍການຂອງລາຍຊື່ຜູ່ຕິດຕໍ່ຂອງທ່ານ"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"ສັ່ນເຕືອນເມື່ອພິມ"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"ສຽງໃນການກົດປຸ່ມ"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"ໂຕອັກສອນເວລາພິມ"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"​​ການ​ຕັ້ງ​ຄ່າ"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"ບັນຊີ ແລະ ຄວາມເປັນສ່ວນຕົວ"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"​ລັກ​ສະ​ນະ &amp; ໂຄງ​ຮ່າງ"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"​ກາ​ນ​ພິມ​ແບບ​ລາກ​ນິ້ວ"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"​ການ​ແປງ​ຄຳ​ໃຫ້​ຖືກ​ຕ້ອງ"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"​ຂັ້ນ​ສູງ"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"ຮູບແບບສີສັນ"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"ເປີດ​ນຳ​ໃຊ້​ແປ້ນ​ພິມ​ແຍກ​ຕົວ"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"ການ​ຊິງ​ຄ໌​ແປ້ນ​ພິມ Google"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"ຊິງ​ຄ໌​ເປ​ີດ​ແລ້ວ"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"ຊິງ​ຄ໌​ພົດ​ຈະ​ນາ​ນຸ​ກົມ​ສ່ວນ​ຕົວ​ຂອງ​ທ່ານ​ໃນ​ທຸກ​ອຸ​ປະ​ກອນ"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"ຊິງ​ຄ໌ດຽວນີ້"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"ລຶບ​ຂໍ້​ມູນ​ຄ​ລາວ"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"ລຶບ​ຂໍ້​ມູນ​ທີ່​ຊິງ​ຄ໌​ແລ້ວ​ຂອງ​ທ່ານ​ຈາກ Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"ຂໍ້​ມູນ​ທີ່​ຊິງ​ຄ໌​ແລ້ວ​ຂອງ​ທ່ານ​ຈະ​ຖືກ​ລຶບ​ໄປ​ຈາກ​ຄ​ລາວ. ທ່ານ​ແນ່​ໃຈ​ບໍ?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"ລຶບ"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"ຍົກເລີກ"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"ພົດ​ຈະ​ນາ​ນຸ​ກົມ​ສ່ວນ​ຕົວ​ຂອງ​ທ່ານ​ຈະ​ຖືກ​ຊິງ​ຄ໌ ແລະ​ສຳ​ຮອງ​ໄປ​ໃສ່​ເຊີບ​ເວີ Google. ຂໍ້​ມູນ​ສະ​ຖິ​ຕິ​ຂອງ​ຄວາມ​ຖີ່​ຄຳ​ເວົ້າ​ອາດ​ຈະ​ຖືກ​ເກັບ​ກຳ ເພື່ອ​ຊ່ວຍ​ປັບ​ປຸງ​ຜະ​ລິດ​ຕະ​ພັນ​ຂອງ​ທ່ານ. ການ​ເກັບ​ກຳ ແລະ​ການ​ນຳ​ໃຊ້​ທຸກ​ຂໍ້​ມູນ​ຈະ​ເປັນ​ໄປ​ຕາມ "<a href="https://www.google.com/policies/privacy">"ນະ​ໂຍ​ບາຍ​ຄວາມ​ເປັນ​ສ່ວນ​ຕົວ​ຂອງ Googl"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"ກະ​ລຸ​ນາ​ເພີ່ມ​ບັນ​ຊີ Google ໃສ່​ອຸ​ປະ​ກອນ​ນີ້ ເພື່ອ​ເປີດ​ໃຊ້​ງານ​ຄຸນ​ສົມ​ບັດ​ນີ້"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"ບໍ່​ມີ​ການ​ຊິງ​ຄ໌​ໃຫ້​ສຳ​ລັບ​ອຸ​ປະ​ກອນ​ທີ່​ມີ Google Apps ສຳ​ລັບ​ບັນ​ຊີ Business"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"ປ່ຽນໄປໃຊ້ການປ້ອນຂໍ້ມູນແບບອື່ນ"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"ໂຕປ່ຽນພາສາເປັນທັງໂຕປ່ຽນຮູບແບບການປ້ອນຂໍ້ມູນເຊັ່ນກັນ"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"ປຸ່ມປ່ຽນພາສາ"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"ສະແດງໃນເວລາທີ່ຕົວເລືອກການປ້ອນຂໍ້ມູນຫຼາຍໂຕຖືກເປີດຢູ່"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"ໄລຍະເວລາການສະແດງໂຕອັກສອນ"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"ບໍ່ຕ້ອໜ່ວງເວລາ"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"ຄ່າເລີ່ມຕົ້ນ"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g>ms"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"ຄ່າເລີ່ມຕົ້ນຂອງລະບົບ"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"ແນະນຳລາຍຊື່ຜູ່ຕິດຕໍ່"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"ໃຊ້ຊື່ຈາກລາຍຊື່ຜູ່ຕິດຕໍ່ສຳລັບການແນະນຳ ແລະ ການຊ່ວຍແກ້ຄຳ"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"ຄຳແນະນຳຕາມການນຳໃຊ້ຂອງທ່ານ"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"ປັບ​ປຸງ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"ຍະຫວ່າງສອງເທື່ອເພື່ອໃສ່ຈ້ຳເມັດ"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"ກົດທີ່ປຸ່ມຍະຫວ່າງສອງເທື່ອເພື່ອໃສ່ຈ້ຳເມັດແລ້ວຕາມດ້ວຍການຍະຫວ່າງ"</string>
     <string name="auto_cap" msgid="525628419128036324">"ເຮັດໂຕພິມໃຫຍ່ອັດຕະໂນມັດ"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"ເຮັດໂຕພິມໃຫຍ່ໃຫ້ໂຕອັກສອນທຳອິດຂອງແຕ່ລໃນປະໂຫຍກ"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"ວັດຈະນານຸກົມສ່ວນຕົວ"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"ໂຕເສີມວັດຈະນານຸກົມ"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"ວັດຈະນານຸກົມຫຼັກ"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"ສະແດງການແນະນຳຄຳທີ່ຖືກຕ້ອງ"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"ສະແດງຄຳສັບທີ່ແນະນຳໃນເວລາທີ່ກຳລັງພິມ"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"ປິດກັ້ນຄຳທີ່ບໍ່ສຸພາບ"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"ຫ້າມແນະນຳຄຳທີ່ບໍ່ສຸພາບ"</string>
     <string name="auto_correction" msgid="4585482324756913868">"ໂຕຊ່ວຍສະກົດຄຳ"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"ການຍະຫວ່າງ ແລະ ການໃສ່ເຄື່ອງໝາຍຈະຖືກປ່ຽນແປງໃຫ້ຖືກຕ້ອງ ໃນຄຳທີ່ພິມຜິດໂດຍອັດຕະໂນມັດ"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"ປິດ"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"ປານກາງ"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"ສູງ"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"ສູງສຸດ"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"ການແນະນຳຄຳຕໍ່ໄປ"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"ໃຊ້ຄຳທີ່ຜ່ານມາໃນການແນະນຳຄຳ"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"ເປີດນຳໃຊ້ການພິມແບບ Gesture"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"ໃສ່ຄຳສັບລົງໄປໂດຍການສະໄລ້ຜ່ານໂຕອັກສອນ"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"ສະແດງຫາງຂອງ Gesture"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"ມີຄຳຕົວຢ່າງລອຍຂຶ້ນມາ"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"ເບິ່ງຄຳທີ່ຖືກແນະນຳໃນເວລາທີ່ກຳລັງຊີ້"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"ການສະແດງທ່າທາງດ້ວຍປະໂຫຍກ"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"ໃສ່ຍະຫວ່າງເຂົ້າໄປໃນຂະນະທີ່ສະແດງທ່າທາງ ໂດຍການເລື່ອນໄປທີ່ປຸ່ມຍະຫວ່າງ"</string>
-    <string name="voice_input" msgid="7725046107052037926">"ປຸ່ມປ້ອນຂໍ້ມູນດ້ວຍສຽງ"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"ບໍ່ມີວິທີການປ້ອນສຽງເປີດນໍາໃຊ້. ໃຫ້ກວດເບິ່ງການຕັ້ງຄ່າໃນເມນູ ພາສາ ແລະ ການປ້ອນຂໍ້ມູນ."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"ຕັ້ງຄ່າຮູບແບບການປ້ອນຂໍ້ມູນ"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"ພາ​ສາ"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"ຊ່ວຍ​ເຫຼືອ &amp; ຄຳ​ຕິ​ຊົມ"</string>
     <string name="select_language" msgid="3379792010205373078">"ພາ​ສາ"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"ແຕະອີກຄັ້ງເພື່ອບັນທຶກ"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"ແຕະບ່ອນນີ້ເພື່ອບັນທຶກ"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"ມີວັດຈະນານຸກົມ"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"ສີສັນແປ້ນພິມ"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"ສະລັບບັນຊີ"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"​ບໍ່​ໄດ້​ເລືອກ​ບັນ​ຊີ​ເທື່ອ"</string>
-    <string name="account_selected" msgid="2929764293361296224">"ຕອນ​ນີ້​ກຳ​ລັງ​ໃຊ້ <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"ຕົກລົງ"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"​ຍົກ​ເລີກ"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"ອອກຈາກລະບົບ"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"​ເລືອກ​ບັນ​ຊີ​ທີ່​ຈະ​ໃຊ້"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"ອັງກິດ (ສະຫະລາດຊະອານາຈັກ)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"ອັງກິດ (ສະຫະລັດຯ)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"ສະເປນ (ອາເມລິກາ)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"ໂຕອັກສອນ (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"ໂຕອັກສອນ (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"ອີໂມຈິ"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"ຮູບ​ແບບ​ສີ​ສັນ​ແປ້ນ​ພິມ"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"ຮູບແບບການປ້ອນຂໍ້ມູນສ່ວນຕົວ"</string>
-    <string name="add_style" msgid="8304208538938230889">"ເພີ່ມຮູບແບບ"</string>
-    <string name="add" msgid="6822705504410731743">"ເພີ່ມ"</string>
-    <string name="remove" msgid="4473717811376496460">"ລຶບອອກ"</string>
-    <string name="save" msgid="1396012053841537145">"ບັນທຶກ"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"ພາສາ"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"ຮູບແບບ"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"ຮູບແບບການປ້ອນຂໍ້ມູນແບບສ່ວນຕົວຂອງທ່ານ ຕ້ອງຖືກເປີດນຳໃຊ້ຢູ່ກ່ອນທີ່ທ່ານຈະສາມາດໃຊ້ມັນໄດ້. ທ່ານຕ້ອງການທີ່ຈະເປີດໃຊ້ມັນດຽວນີ້ບໍ່?"</string>
-    <string name="enable" msgid="3465950915897490353">"ເປີດນຳໃຊ້"</string>
-    <string name="not_now" msgid="6385104011963838405">"ບໍ່ແມ່ນຕອນນີ້"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"ຮູບແບບການປ້ອນຂໍ້ມູນທີ່ຄືກັນມີຢູ່ແລ້ວ: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"ໄລຍະເວລາຂອງການສັ່ນໃນການກົດປຸ່ມ"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"ລະດັບສຽງຂອງການກົດປຸ່ມ"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"ໄລຍະເວລາຂອງການກົດປຸ່ມ"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"Emoji ສຳ​ລັບ​ແປ້ນ​ພິມ​ແທ້"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"ປຸ່ມ Alt ແທ້​ສະ​ແດງ​ແຜ່ນ​ຮອງ emoji"</string>
-    <string name="button_default" msgid="4824983794085575316">"ຄ່າເລີ່ມຕົ້ນ"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"ຍິນ​ດີ​ຕ້ອນ​ຮັບສູ່ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"ດ້ວຍການພິມແບບ Gesture"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"ເລີ່ມຕົ້ນ"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"ຂັ້ນຕອນຕໍ່ໄປ"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"ຕັ້ງຄ່າ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"ເປີດນຳໃຊ້ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"ກະລຸນາກວດເບິ່ງ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ໃນການຕັ້ງຄ່າພາສາ ແລະ ການປ້ອນຂໍ້ມູນຂອງທ່ານ. ນີ້ຈະເປັນການອະນຸຍາດໃຫ້ມັນເຮັດວຽກໃນອຸປະກອນຂອງທ່ານ."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ຖືກເປີດນຳໃຊ້ໃນການຕັ້ງຄ່າພາສາ ແລະ ການປ້ອນຂໍ້ມູນຂອງທ່ານແລ້ວ, ສະນັ້ນຂັ້ນຕອນນີ້ແມ່ນສຳເລັດໄປແລ້ວ. ໄປທີ່ຂັ້ນຕອນຕໍ່ໄປ!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"ເປີດນຳໃຊ້ໃນການຕັ້ງຄ່າ"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"ປ່ຽນເປັນ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"ຕໍ່ໄປ, ເລືອກເອົາ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ເປັນຮູບແບບການປ້ອນຂໍ້ມູນຂອງທ່ານ."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"ປ່ຽນຮູບແບບການປ້ອນຂໍ້ມູນ"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"ຍິນດີດ້ວຍ, ທ່ານເຮັດແລ້ວໆ!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"ຕອນນີ້ທ່ານສາມາດພິມໃນແອັບຯທີ່ທ່ານມັກໄດ້ທຸກແອັບຯດ້ວຍ <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"ປັບຄ່າພາສາເພີ່ມເຕີມ"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"ສຳເລັດແລ້ວ"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"ສະແດງໄອຄອນຂອງແອັບ"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"ສະແດງໄອຄອນຂອງແອັບໃນ Launcher"</string>
-    <string name="app_name" msgid="1388609705083271907">"ຜູ່​ສະ​ຫນອງ​ວັດຈະ​ນາ​ນຸ​ກົມ"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"ຜູ່​ສະ​ຫນອງ​ວັດຈະ​ນາ​ນຸ​ກົມ"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"ບໍລິການວັດຈະນານຸກົມ"</string>
-    <string name="download_description" msgid="7667377256582305064">"ຂໍ້ມູນການອັບເດດວັດຈະນານຸກົມ"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"ໂຕເສີມວັດຈະນານຸກົມ"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"ມີວັດຈະນານຸກົມ"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"ການຕັ້ງຄ່າສຳລັບວັດຈະນານຸກົມ"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"ວັດຈະນານຸກົມຜູ່ໃຊ້"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"ວັດຈະນານຸກົມຜູ່ໃຊ້"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"ມີວັດຈະນານຸກົມ"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"ກຳລັງດາວໂຫລດ"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"ຕິດຕັ້ງແລ້ວ"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"ຕິດຕັ້ງແລ້ວ, ປິດການນຳໃຊ້ແລ້ວ"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"ມີປັນຫາໃນການເຊື່ອມຕໍ່ກັບບໍລິການວັດຈະນານຸກົມ"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"ບໍ່ມີວັດຈະນານຸກົມ"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"ດຶງຂໍ້ມູນໃຫມ່"</string>
-    <string name="last_update" msgid="2377094521844654156">"ອັບເດດຫຼ້າສຸດ"</string>
-    <string name="message_updating" msgid="7158989361989504143">"ກຳລັງກວດການອັບເດດ"</string>
-    <string name="message_loading" msgid="9151934303930222809">"ກຳລັງໂຫຼດ..."</string>
-    <string name="main_dict_description" msgid="695289288722079926">"ວັດຈະນານຸກົມຫຼັກ"</string>
     <string name="cancel" msgid="5611033781118852820">"ຍົກເລີກ"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"ການຕັ້ງຄ່າ"</string>
     <string name="install_dict" msgid="8963966683066463555">"ຕິດຕັ້ງ"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"ຍົກເລີກ"</string>
-    <string name="delete_dict" msgid="293286833341025636">"ລຶບ"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"ພາສາທີ່ເລືອກໃນອຸປະກອນມືຖືຂອງທ່ານມີວັດຈະນານຸກົມທີ່ສາມາດໃຊ້ໄດ້.&lt;br/&gt; ພວກເຮົາແນະນຳໃຫ້ &lt;b&gt;ດາວໂຫລດ&lt;/b&gt; ວັດຈະນານຸກົມ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ເພື່ອປັບປຸງປະສົບການການພິມຂອງທ່ານ.&lt;br/&gt; &lt;br/&gt; ການດາວໂຫລດອາດໃຊ້ເວລາສອງສາມນາທີຜ່ານ 3G ເຊິ່ງອາດມີການຮຽກເກັບຄ່າຂໍ້ມູນໃນການດາວໂຫລດຫາກທ່ານບໍ່ມີ &lt;b&gt;ແພັກເກດແບບອັນລິມິດ&lt;/b&gt;.&lt;br/&gt; ຫາກທ່ານບໍ່ແນ່ໃຈວ່າໃຊ້ແພັກເກດໃດຢູ່, ພວກເຮົາແນະນຳໃຫ້ທ່ານຊອກຫາການເຊື່ອມຕໍ່ Wi-Fi ເພື່ອດາວໂຫລດໂດຍອັດຕະໂນມັດແທນ.&lt;br/&gt; &lt;br/&gt; ເຄັດລັບ: ທ່ານສາມາດດາວໂຫລດ ແລະ ລຶບວັດຈະນານຸກົມອອກໄດ້ໂດຍການໄປທີ່ &lt;b&gt;ພາສາ ແລະ ການປ້ອນຂໍ້ມູນເຂົ້າ&lt;/b&gt; ໃນເມນູ &lt;b&gt;ການຕັ້ງຄ່າ&lt;/b&gt; ຂອງອຸປະກອນມືຖືຂອງທ່ານ."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"ດາວໂຫລດດຽວນີ້ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"ດາວ​ໂຫລດຜ່ານ Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"ມີ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ທີ່​ສາ​ມາດ​ໃຊ້​ໄດ້​ກັບ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"ກົດທີ່ກວດຄືນ ແລະ ດາວໂຫລດ"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"ກຳ​ລັງ​ດາວ​ໂຫລດ: ການ​ແນະ​ນຳ​ສຳ​ລັບ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ຈະ​ພ້ອມ​ໃນ​ໄວໆ​ນີ້."</string>
     <string name="version_text" msgid="3213200439763585436">"ເວີຊັນ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"ເພີ່ມ"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"ເພີ່ມໄປທີ່ວັດຈະນານຸກົມ"</string>

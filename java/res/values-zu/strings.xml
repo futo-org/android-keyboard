@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"Okukhethwa kukho kokungenayo"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"Bheka amagama woxhumana nabo"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"Isihloli sokupela sisebenzisa okungenayo kusuka kuhlu lalabo oxhumana nabo"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"Dlidlizelisa ngokucindezela inkinobho"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"Umsindo wokucindezela ukhiye"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"Ugaxekile ngokucindezela ukhiye"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"Izintandokazi"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"Ama-akhawunti nobumfihlo"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"Ukubonakala nezakhiwo"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"Ukuthayipha ngokuthinta"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"Ukulungisa umbhalo"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"Okuthuthukisiwe"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"Itimu"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"Nika amandla ikhibhodi yokuhlukanisa"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Ukuvumlanisa kwekhibhodi ye-Google"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"Ukuvumelanisa kuvuliwe"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"Vumelanisa isichazamazwi sakho kuwo wonke amadivayisi wakho"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"Vumelanisa manje"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"Susa idatha yamafu"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Susa idatha yakho evumelanisiwe esuka ku-Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"Idatha yakho evumelanisiwe izosuswa emafini. Ingabe uqinisekile?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"Susa"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"Khansela"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Isichazamazwi sakho somuntu siqu sizovumelaniswa siphinde senziwe isipele kumaseva we-Google. Ulwazi lezibalo lemvamisa yegama lingaqoqwa ukusiza ukuthuthukisa imikhiqizo yethu. Ukuqoqwa nokusetshenziswa kwalo lonke ulwazi kuzohambisana ne-"<a href="https://www.google.com/policies/privacy">"Inqubomgomo Yobumfihlo ye-Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Sicela ungeze i-akhawunti ye-Google kule divayisi ukuze unike amandla lesi sici"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Ukuvumelanisa akutholakali kumadivayisi anezinhlelo zokusebenza ze-Google zama-akhawunti webhizinisi"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Shintshela kwezinye izindlela zokungena"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Ukhiye wokushintsha ulimi ubandakanya ezinye izindlela zokungenayo"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"Ukhiye wokushintsha ullimi"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"Bonisa uma izilimi zokufaka zinikwe amandla"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"Ukuvela kokhiye cashisa ukulibazisa"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"Cha ukulibazisa"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"Okuzenzakalelayo"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g>ms"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"Okuzenzakalelayo kwesistimu"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"Sikisela amagama Othintana nabo"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"Amagama abasebenzisi kusuka Kothintana nabo bokusikisela nokulungisa"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"Iziphakamiso ezenziwe okomuntu siqu"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"Thuthukisa i-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"Isikhathi se-Double-space"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"Ukuthepha kabili kubha yesikhala kufaka isikhathi esilandelwa yisikhala"</string>
     <string name="auto_cap" msgid="525628419128036324">"Ukwenza ofeleba okuzenzakalelayo"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"Yenza ufeleba wegama lokuqala lomusho ngamunye"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"Isichazamazwi somuntu"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"Faka izichazamazwi"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"Isichazamazwi sakho ngqangi"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"Bonisa ukusikesela kokulungisa"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"Bonisa amagama aphakamisiwe ngenkathi uthayipha"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"Vimba amagama ahlaselayo"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"Ungaphakamisi amagama angaba nokuhlaselayo"</string>
     <string name="auto_correction" msgid="4585482324756913868">"Ukulungisa okuzenzakalelayo"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"Ibha yesikhala nokubhala ngamagama amakhulu kulungisa amaphutha amagama athayiphwe kabi"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"Valiwe"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"Thobekile"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"Bukhali"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"Bukhali kakhulu"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"Iziphakamiso zegama elilandelayo"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"Sebenzisa igama langaphambilini ekwenzeni iziphakamiso"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"Nika amandla okuthayipha ngokuthinta"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"Faka igama ngokushelelisa ezinhlamvini"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"Bonisa i-trail yokuthinta"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"Ukuhlola kuqala okuntantayo okunamandla"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"Bona igama eliphakanyisiwe ngenkathi uthinta"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"Igama lokuthinta"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"Faka izikhala ngesikhathi sokuthinta ngokushelelela kukhiye wesikhala"</string>
-    <string name="voice_input" msgid="7725046107052037926">"Inkinobho yokufaka izwi"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"Azikho izindlela zokufaka zezwi ezinikwe amandla. Hlola izilungiselelo zolimi kanye nezokufaka."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"Misa izindlela zokufakwayo"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"Izilimi"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"Usizo nempendulo"</string>
     <string name="select_language" msgid="3379792010205373078">"Izilimi"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"Thepha futhi ukuze ulondoloze"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"Thepha lapha ukuze ulondoloze"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"Isichazamazwi siyatholakala"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"Indikimba yekhibhodi"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"Shintshanisa ama-akhawunti"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"Awekho ama-akhawunti akhethiwe"</string>
-    <string name="account_selected" msgid="2929764293361296224">"Okwamanje isebenzisa i-<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"KULUNGILE"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"Khansela"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"Phuma ngemvume"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"Khetha i-akhawunti ezosetshenziswa"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"i-English(UK)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"i-English (US)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"I-Spanish (US)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"Alfabhethi (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"Alfabhethi (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"I-Emoji"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"Itimu yekhibhodi"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"Izitayela zokufaka ngokwezifiso"</string>
-    <string name="add_style" msgid="8304208538938230889">"Engeza isitayela"</string>
-    <string name="add" msgid="6822705504410731743">"Engeza"</string>
-    <string name="remove" msgid="4473717811376496460">"Khipha"</string>
-    <string name="save" msgid="1396012053841537145">"Londoloza"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"Ulimi"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"Isakhiwo"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"Isitayela sakho sokufakwayo sokwenza ngokwezifiso sidinga ukunikwa amandla ngaphambi kokusisebenzisa. Ufuna ukusinika amandla manje?"</string>
-    <string name="enable" msgid="3465950915897490353">"Nika amandla"</string>
-    <string name="not_now" msgid="6385104011963838405">"Hhayi manje"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"Isitayela sokufaka esifanayo sesivele sikhona: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"Ubude besikhathi sokudlidliza ukucindezela ukhiye"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"Ivolumu yomsindo wokucindezela ukhiye"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"Ukulibazisa ukucindezela isikhashana ukhiye"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"I-Emoji wekhibhodi yangempela"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"Ukhiye we-Alt woqobo ubonisa i-emoji palette"</string>
-    <string name="button_default" msgid="4824983794085575316">"Okuzenzakalelayo"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"Siyakwamukela ku-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"nokuthayipha ngokuthinta"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"Qalisa"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"Isinyathelo esilandelayo"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"Kusethwa i-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"Nika amandla i-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"Sicela uhlole i-\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" kulimi lwakho nezilungiselelo zokokufaka. Lokhu kuzoyigunyaza ukuthi isebenze kudivayisi yakho."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"I-<xliff:g id="APPLICATION_NAME">%s</xliff:g> isivele inikwe amandla kulimi lwakho nakuzilungiselelo zokufaka, ngakho-ke lesi sinyathelo senziwe. Qhubekela kwesilandelayo!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"Nika amandla kuzilungiselelo"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"Shintshela ku-<xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"Okulandelayo, khetha i-\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" njengendlela yakho yokufaka umbhalo osebenzayo."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"Shintsha izindlela zokufaka"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"Siyakuhalalisela, usumi ngomumo!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"Manje usungathayipha ngokufaka zonke izinhlelo zokusebenza eziyizintandokazi zakho nge-<xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"Lungiselela izilimi ezingeziwe"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"Iqedile"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"Bonisa isithonjana sohlelo lokusebenza"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"Bonisa isithonjana sohlelo lokusebenza kusiqalisi"</string>
-    <string name="app_name" msgid="1388609705083271907">"Umhlinzeki wesichazamazwi"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"Umhlinzeki wesichazamazwi"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"Isevisi yesichazamazwi"</string>
-    <string name="download_description" msgid="7667377256582305064">"Ulwazi lokubuyekeza isichazamazwi"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"Izichazamazwi ezingezwayo"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"Isichazamazwi siyatholakala"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"Izilungiselelo zezichazamazwi"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"Izichazamazwi zomsebenzisi"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"Isichazamazwi somsebenzisi"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"Isichazamazwi siyatholakala"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"Okwamanje iyalanda"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"Kufakiwe"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"Kufakiwe, kukhutshaziwe"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"Inkinga yokuxhumanisa kusevisi yesichazamazwi"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"Azikho izachazimazwi ezitholakalayo"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"Qala kabusha"</string>
-    <string name="last_update" msgid="2377094521844654156">"Igcine ukulungiswa"</string>
-    <string name="message_updating" msgid="7158989361989504143">"Ihlola izibuyekezo"</string>
-    <string name="message_loading" msgid="9151934303930222809">"Iyalayisha..."</string>
-    <string name="main_dict_description" msgid="695289288722079926">"Isichazamazwi sakho esisemqoka"</string>
     <string name="cancel" msgid="5611033781118852820">"Khansela"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"Izilungiselelo"</string>
     <string name="install_dict" msgid="8963966683066463555">"Faka"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"Khansela"</string>
-    <string name="delete_dict" msgid="293286833341025636">"Susa"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"Ulimi olukhethiwe kudivayisi yakho yeselula lunesichazamazwi.&lt;br/&gt; Sincoma ukuthi &lt;b&gt;ulande&lt;/b&gt; isichazamazwi se-<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ukuze uthuthukise umuzwa wakho wokuthayipha.&lt;br/&gt; &lt;br/&gt; Ukulanda kungathatha iminithi noma amabili nge-3G. Izindleko zingasebenza uma ungenalo &lt;b&gt;icebo ledatha elingakhawulelwe&lt;/b&gt;.&lt;br/&gt; Uma ungenasiqiniseko sokuthi iliphi icebo ledatha onalo, sincoma ukuthi uthole uxhumo lwe-Wi-Fi ukuze uqale ukulanda ngokuzenzakalela.&lt;br/&gt; &lt;br/&gt; Ithiphu: Ungalanda futhi ususe izichazamazwi ngokuya kokuthi &lt;b&gt;Izilimi nokufaka&lt;/b&gt; kumenyu &lt;b&gt;izilungiselelo&lt;/b&gt; kudivayisi yakho yeselula."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"Landa manje (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Landa nge-Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"Isichazamazwi sitholakalela i-<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"Cindezela ukuze ubuyekeze uphinde ulande"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"Ukulanda: iziphakamiso ze-<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> zizolunga maduze."</string>
     <string name="version_text" msgid="3213200439763585436">"Inguqulo engu-<xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"Engeza"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"Faka kusichazamazwi"</string>

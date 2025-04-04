@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"Invoeropties"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"Contactnamen opzoeken"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"De spellingcontrole gebruikt items uit je contactenlijst"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"Trillen bij toetsaanslag"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"Geluid bij toetsaanslag"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"Pop-up bij toetsaanslag"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"Voorkeuren"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"Accounts en privacy"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"Uiterlijk en lay-out"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"Invoer met bewegingen"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"Tekstcorrectie"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"Geavanceerd"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"Thema"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"Gesplitst toetsenbord inschakelen"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Google-toetsenbordsynchronisatie"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"Synchronisatie is ingeschakeld"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"Je persoonlijke woordenboek synchroniseren op meerdere apparaten"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"Nu synchroniseren"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"Cloudgegevens verwijderen"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Hiermee worden je gesynchroniseerde gegevens verwijderd van Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"Wil je gesynchroniseerde gegevens echt verwijderen uit de cloud?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"Verwijderen"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"Annuleren"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Je persoonlijke woordenboek wordt gesynchroniseerd en er wordt een back-up gemaakt op servers van Google. De statistische gegevens voor woordfrequentie kunnen worden verzameld om onze producten te verbeteren. Het verzamelen en gebruik van alle gegevens is in overeenstemming met het "<a href="https://www.google.com/policies/privacy">"Privacybeleid van Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Voeg een Google-account toe om deze functie in te schakelen"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Synchronisatie is niet beschikbaar voor Google Apps for Business-accounts"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Invoermeth. overschakelen"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Schakelknop voor taal ook van toepassing op andere invoermethoden"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"Schakelknop voor taal"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"Weergeven wanneer meerdere invoertalen zijn geselecteerd"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"Pop-up vertraagd sluiten"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"Geen vertraging"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"Standaard"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"Systeemstandaard"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"Contactnamen suggereren"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"Namen uit Contacten gebruiken voor suggesties en correcties"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"Gepersonaliseerde suggesties"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> verbeteren"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"Dubbeltik is punt, spatie"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"Dubbeltik op spatiebalk voor een punt gevolgd door een spatie"</string>
     <string name="auto_cap" msgid="525628419128036324">"Auto-hoofdlettergebruik"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"Het eerste woord van elke zin met een hoofdletter schrijven"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"Persoonlijk woordenboek"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"Woordenboeken toevoegen"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"Algemeen woordenboek"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"Correctievoorstellen weergeven"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"Voorgestelde woorden weergeven tijdens typen"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"Grof taalgebruik blokkeren"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"Geen potentieel aanstootgevende woorden voorstellen"</string>
     <string name="auto_correction" msgid="4585482324756913868">"Autocorrectie"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"Met spatiebalk en interpunctie worden verkeerd gespelde woorden automatisch gecorrigeerd"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"Uitgeschakeld"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"Normaal"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"Agressief"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"Zeer agressief"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"Suggesties voor volgend woord"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"Het vorige woord gebruiken bij het doen van suggesties"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"Bewegingsinvoer inschakelen"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"Voer een woord in door van letter naar letter te bewegen"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"Gebarenspoor weergeven"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"Dynamisch zwevend voorbeeld"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"Het voorgestelde woord weergeven tijdens het tekenen"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"Gebaar voor woordgroep"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"Spaties invoeren door naar de spatietoets te bewegen"</string>
-    <string name="voice_input" msgid="7725046107052037926">"Toets voor spraakinvoer"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"Geen spraakinvoermethoden ingeschakeld. Bekijk de instellingen bij \'Talen en invoer\'."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"Invoermethoden configureren"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"Talen"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"Hulp en feedback"</string>
     <string name="select_language" msgid="3379792010205373078">"Talen"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"Tik nogmaals om op te slaan"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"Tik hier om op te slaan"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"Woordenboek beschikbaar"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"Toetsenbordthema"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"Schakelen tussen accounts"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"Geen accounts geselecteerd"</string>
-    <string name="account_selected" msgid="2929764293361296224">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> wordt momenteel gebruikt"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"OK"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"Annuleren"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"Uitloggen"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"Selecteer een account om te gebruiken"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"Engels (GB)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"Engels (VS)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"Spaans (VS)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"Alfabet (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"Alfabet (pc)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"Emoji"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"Toetsenbordthema"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"Aangepaste invoer"</string>
-    <string name="add_style" msgid="8304208538938230889">"Stijl toevoegen"</string>
-    <string name="add" msgid="6822705504410731743">"Toevoegen"</string>
-    <string name="remove" msgid="4473717811376496460">"Verwijderen"</string>
-    <string name="save" msgid="1396012053841537145">"Opslaan"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"Taal"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"Lay-out"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"Je moet je aangepaste invoerstijl inschakelen voor je deze kunt gebruiken. Wil je de invoerstijl nu inschakelen?"</string>
-    <string name="enable" msgid="3465950915897490353">"Inschakelen"</string>
-    <string name="not_now" msgid="6385104011963838405">"Niet nu"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"Dezelfde invoerstijl bestaat al: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"Trilingsduur bij toetsgebruik"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"Geluidsvolume bij toetsgebruik"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"Lengte toetsinvoer"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"Emoji voor fysiek toetsenbord"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"Emoji-palet weergeven met fysieke Alt-toets"</string>
-    <string name="button_default" msgid="4824983794085575316">"Standaard"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"Welkom bij <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"met Invoer met bewegingen"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"Aan de slag"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"Volgende stap"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> instellen"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> inschakelen"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"Vink \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' aan in de instellingen bij \'Talen en invoer\'. De app kan dan worden uitgevoerd op je apparaat."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> is al ingeschakeld in de instellingen bij \'Talen en invoer\', dus deze stap is voltooid. Op naar de volgende!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"Inschakelen in \'Instellingen\'"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"Overschakelen naar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"Selecteer vervolgens \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' als actieve tekstinvoermethode."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"Schakelen tussen invoermethoden"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"Gefeliciteerd, je kunt nu aan de slag."</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"Je kunt nu in al je favoriete apps typen met <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"Extra talen configureren"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"Voltooid"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"App-pictogram weergeven"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"App-pictogram weergeven in het opstartprogramma"</string>
-    <string name="app_name" msgid="1388609705083271907">"Woordenboekleverancier"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"Woordenboekleverancier"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"Woordenboekservice"</string>
-    <string name="download_description" msgid="7667377256582305064">"Informatie over woordenboekupdate"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"Woordenboeken toevoegen"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"Woordenboek beschikbaar"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"Instellingen voor woordenboeken"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"Gebruikerswoordenboeken"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"Gebruikerswoordenboek"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"Woordenboek beschikbaar"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"Wordt gedownload"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"Geïnstalleerd"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"Geïnstalleerd, uitgeschakeld"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"Verbindingsprobleem woordenboekservice"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"Geen woordenboeken"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"Vernieuwen"</string>
-    <string name="last_update" msgid="2377094521844654156">"Laatst bijgewerkt"</string>
-    <string name="message_updating" msgid="7158989361989504143">"Controleren op updates"</string>
-    <string name="message_loading" msgid="9151934303930222809">"Laden…"</string>
-    <string name="main_dict_description" msgid="695289288722079926">"Algemeen woordenboek"</string>
     <string name="cancel" msgid="5611033781118852820">"Annuleren"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"Instellingen"</string>
     <string name="install_dict" msgid="8963966683066463555">"Installeren"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"Annuleren"</string>
-    <string name="delete_dict" msgid="293286833341025636">"Verwijderen"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"Er is een woordenboek voor de geselecteerde taal beschikbaar op je mobiele apparaat.&lt;br/&gt; We raden je aan het woordenboek voor <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> te &lt;b&gt;downloaden&lt;/b&gt; om je typvaardigheid te verbeteren.&lt;br/&gt; &lt;br/&gt; De download kan één of twee minuten duren via 3G. Er kunnen kosten worden berekend als je geen &lt;b&gt;onbeperkt gegevensabonnement&lt;/b&gt; hebt.&lt;br/&gt; Als je niet zeker weet welk gegevensabonnement je hebt, raden we je aan een wifi-verbinding te zoeken om de download automatisch te starten.&lt;br/&gt; &lt;br/&gt; Tip: je kunt woordenboeken downloaden en verwijderen via &lt;b&gt;Talen en invoer&lt;/b&gt; in het menu &lt;b&gt;Instellingen&lt;/b&gt; van je mobiele apparaat."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"Nu downloaden (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Downloaden via wifi"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"Er is een woordenboek beschikbaar voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"Druk om te controleren en te downloaden"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"Downloaden: suggesties voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> zijn binnenkort beschikbaar."</string>
     <string name="version_text" msgid="3213200439763585436">"Versie <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"Toevoegen"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"Toevoegen aan woordenboek"</string>

@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"ਇਨਪੁਟ ਚੋਣਾਂ"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"ਸੰਪਰਕ ਨਾਮ ਤਲਾਸ਼ੋ"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"ਸਪੈੱਲ ਚੈਕਰ ਤੁਹਾਡੀ ਸੰਪਰਕ ਸੂਚੀ ਵਿੱਚੋਂ ਐਂਟਰੀਆਂ ਵਰਤਦਾ ਹੈ"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"ਕੁੰਜੀ ਦਬਾਉਣ ’ਤੇ ਥਰਥਰਾਹਟ ਕਰੋ"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"ਕੁੰਜੀ ਦਬਾਉਣ \'ਤੇ ਧੁਨ ਵਜਾਓ"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"ਕੁੰਜੀ ਦਬਾਉਣ ’ਤੇ ਪੌਪਅੱਪ ਕਰੋ"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"ਤਰਜੀਹਾਂ"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"ਖਾਤੇ &amp; ਪ੍ਰਾਈਵੇਸੀ"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"ਪ੍ਰਗਟਾਅ &amp; ਲੇਆਉਟਸ"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"ਸੰਕੇਤ ਟਾਈਪਿੰਗ"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"ਟੈਕਸਟ ਸੁਧਾਈ"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"ਵਿਕਸਿਤ"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"ਥੀਮ"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"ਸਪਲਿਟ ਕੀ-ਬੋਰਡ ਨੂੰ ਚਾਲੂ ਕਰੋ"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Google ਕੀ-ਬੋਰਡ ਸਿੰਕ"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"ਸਿੰਕ ਚਾਲੂ ਕੀਤਾ ਗਿਆ ਹੈ"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"ਡਿਵਾਈਸਾਂ ਵਿੱਚ ਆਪਣਾ ਨਿੱਜੀ ਸ਼ਬਦਕੋਸ਼ ਸਿੰਕ ਕਰੋ"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"ਹੁਣ ਸਮਕਾਲੀਕਰਨ ਕਰੋ"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"ਕਲਾਉਡ ਡਾਟਾ ਮਿਟਾਓ"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Google ਤੋਂ ਤੁਹਾਡਾ ਸਿੰਕ ਕੀਤਾ  ਡਾਟਾ  ਮਿਟਾਉਂਦਾ ਹੈ"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"ਤੁਹਾਡਾ ਸਿੰਕ ਕੀਤਾ ਡਾਟਾ ਕਲਾਊਡ ਤੋਂ ਮਿਟਾ ਦਿੱਤਾ ਜਾਏਗਾ। ਕੀ ਤੁਸੀਂ ਨਿਸ਼ਚਿਤ ਹੋ?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"ਮਿਟਾਓ"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"ਰੱਦ ਕਰੋ"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"ਤੁਹਾਡਾ ਨਿੱਜੀ ਸ਼ਬਦਕੋਸ਼ ਸਿੰਕ ਕੀਤਾ ਜਾਵੇਗਾ ਅਤੇ Google ਸਰਵਰਾਂ ਤੇ ਬੈੱਕਅੱਪ ਕੀਤਾ ਜਾਵੇਗਾ। ਸ਼ਬਦ ਬਾਰੰਬਾਰਤਾ ਦੀ ਅੰਕੜੇ ਸੰਬੰਧੀ ਜਾਣਕਾਰੀ ਸਾਡੇ ਉਤਪਾਦਾਂ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ ਇਕੱਤਰ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ। ਸਾਰੀ ਜਾਣਕਾਰੀ ਦਾ ਇਕੱਤਰੀਕਰਨ ਅਤੇ ਵਰਤੋਂ "<a href="https://www.google.com/policies/privacy">"Google ਦੀ ਪ੍ਰਾਈਵੇਸੀ ਨੀਤੀ"</a>"ਦੇ ਮੁਤਾਬਕ ਹੋਵੇਗੀ।"</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"ਇਸ ਵਿਸ਼ੇਸ਼ਤਾ ਨੂੰ ਸਮਰੱਥ ਬਣਾਉਣ ਲਈ ਇਸ ਡੀਵਾਈਸ \'ਤੇ Google ਖਾਤਾ ਸ਼ਾਮਲ ਕਰੋ।"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"ਕਾਰੋਬਾਰੀ ਖਾਤਿਆਂ ਲਈ Google ਐਪਾਂ ਵਾਲੇ ਡੀਵਾਈਸਾਂ ਲਈ ਸਮਕਾਲੀਕਰਨ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"ਹੋਰਾਂ ਇਨਪੁੱਟ ਵਿਧੀਆਂ ਤੇ ਸਵਿੱਚ ਕਰੋ"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"ਭਾਸ਼ਾ ਸਵਿੱਚ ਕੁੰਜੀ ਹੋਰਾਂ ਇਨਪੁੱਟ ਵਿਧੀਆਂ ਨੂੰ ਵੀ ਸ਼ਾਮਲ ਕਰਦੀ ਹੈ"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"ਭਾਸ਼ਾ ਸਵਿੱਚ ਕੁੰਜੀ"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"ਜਦੋਂ ਮਲਟੀਪਲ ਭਾਸਾਵਾਂ ਸਮਰਥਿਤ ਹੋਣ ਤਾਂ ਦਿਖਾਓ"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"ਕੁੰਜੀ ਪੌਪਅੱਪ ਖਾਰਜ ਦੇਰੀ"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"ਕੋਈ ਦੇਰੀ ਨਹੀਂ"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"ਪੂਰਵ-ਨਿਰਧਾਰਤ"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g>ms"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"ਸਿਸਟਮ ਪੂਰਵ-ਨਿਰਧਾਰਤ"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"ਸੰਪਰਕ ਨਾਵਾਂ ਦਾ ਸੁਝਾਅ ਦਿਓ"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"ਸੁਝਾਵਾਂ ਅਤੇ ਸੋਧਾਂ ਲਈ ਸੰਪਰਕਾਂ ਵਿੱਚੋਂ ਨਾਮ ਵਰਤੋ"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"ਨਿੱਜੀ ਬਣਾਏ ਸੁਝਾਅ"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਸੁਧਾਰ ਕਰੋ"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"ਡਬਲ-ਸਪੇਸ ਡੰਡੀ"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"ਸਪੇਸਬਾਰ ’ਤੇ ਡਬਲ ਟੈਪ ਕਰਨਾ ਇੱਕ ਡੰਡੀ ਤੋਂ ਬਾਅਦ ਇੱਕ ਸਪੇਸ ਦਾਖਲ ਕਰਦਾ ਹੈ"</string>
     <string name="auto_cap" msgid="525628419128036324">"ਆਟੋ-ਕੈਪਿਟਲਾਈਜ਼ੇਸ਼ਨ"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"ਹਰੇਕ ਵਾਕ ਦਾ ਪਹਿਲਾ ਅੱਖਰ ਵੱਡਾ ਕਰੋ"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"ਨਿੱਜੀ ਸ਼ਬਦਕੋਸ਼"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"ਐਡ-ਆਨ ਸ਼ਬਦਕੋਸ਼"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"ਮੁੱਖ ਸ਼ਬਦਕੋਸ਼"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"ਸੁਧਾਈ ਸੁਝਾਅ ਦਿਖਾਓ"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"ਟਾਈਪਿੰਗ ਕਰਦੇ ਸਮੇਂ ਸੁਝਾਏ ਗਏ ਸ਼ਬਦ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"ਅਪਮਾਨਜਨਕ ਸ਼ਬਦਾਂ ਨੂੰ ਬਲਾਕ ਕਰੋ"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"ਸੰਭਾਵੀ ਅਪਮਾਨਜਨਕ ਸ਼ਬਦਾਂ ਦਾ ਸੁਝਾਅ ਨਾ ਦਿਓ"</string>
     <string name="auto_correction" msgid="4585482324756913868">"ਆਟੋ-ਸੁਧਾਈ"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"ਸਪੇਸਬਾਰ ਅਤੇ ਵਿਸ਼ਰਾਮ ਚਿੰਨ੍ਹ ਗ਼ਲਤ ਟਾਈਪ ਕੀਤੇ ਸ਼ਬਦਾਂ ਨੂੰ ਆਟੋਮੈਟਿਕਲੀ ਠੀਕ ਕਰਦੇ ਹਨ"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"ਬੰਦ"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"ਸੰਕੋਚਵਾਨ"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"ਆਕਰਮਣਸ਼ੀਲ"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"ਬਹੁਤ ਆਕਰਮਣਸ਼ੀਲ"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"ਅਗਲਾ-ਸ਼ਬਦ ਸੁਝਾਅ"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"ਸੁਝਾਅ ਦੇਣ ਵਿੱਚ ਪਿਛਲਾ ਸ਼ਬਦ ਵਰਤੋ"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"ਸੰਕੇਤ ਟਾਈਪਿੰਗ ਚਾਲੂ ਕਰੋ"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"ਅੱਖਰਾਂ ਰਾਹੀਂ ਸਲਾਈਡ ਕਰਕੇ ਇੱਕ ਸ਼ਬਦ ਦਾਖਲ ਕਰੋ"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"ਸੰਕੇਤ ਲੀਹ ਦਿਖਾਓ"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"ਸਕਿਰਿਆ ਫਲੋਟਿੰਗ ਪੂਰਵ-ਝਲਕ"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"ਸੰਕੇਤ ਦਿੰਦੇ ਸਮੇਂ ਸੁਝਾਇਆ ਗਿਆ ਸ਼ਬਦ ਦੇਖੋ"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"ਵਾਕਾਂਸ਼ ਸੰਕੇਤ"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"ਸਪੇਸ ਕੁੰਜੀ ਸਰਕਾ ਕੇ ਸੰਕੇਤਾਂ ਦੇ ਦੌਰਾਨ ਸਪੇਸ ਇਨਪੁਟ ਕਰੋ"</string>
-    <string name="voice_input" msgid="7725046107052037926">"ਅਵਾਜ਼ੀ ਇਨਪੁੱਟ ਕੁੰਜੀ"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"ਕੋਈ ਵੌਇਸ ਇਨਪੁੱਟ ਵਿਧੀਆਂ ਚਾਲੂ ਨਹੀਂ ਕੀਤੀਆਂ ਹਨ। ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ ਸੈਟਿੰਗਾਂ ਦੀ ਜਾਂਚ ਕਰੋ।"</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"ਇਨਪੁੱਟ ਵਿਧੀਆਂ ਦੀ ਰੂਪ-ਰੇਖਾ ਬਦਲੋ"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"ਭਾਸ਼ਾਵਾਂ"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"ਮਦਦ &amp; ਫੀਡਬੈਕ"</string>
     <string name="select_language" msgid="3379792010205373078">"ਭਾਸ਼ਾਵਾਂ"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"ਰੱਖਿਅਤ ਕਰਨ ਲਈ ਦੁਬਾਰਾ ਟੈਪ ਕਰੋ"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"ਰੱਖਿਅਤ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"ਕੀ-ਬੋਰਡ ਥੀਮ"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"ਖਾਤੇ ਸਵਿੱਚ ਕਰੋ"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"ਕੋਈ ਖਾਤੇ ਨਹੀਂ ਚੁਣੇ"</string>
-    <string name="account_selected" msgid="2929764293361296224">"ਇਸ ਵੇਲੇ <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> ਵਰਤ ਰਿਹਾ ਹੈ"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"ਠੀਕ"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"ਰੱਦ ਕਰੋ"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"ਸਾਈਨ-ਆਊਟ ਕਰੋ"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"ਵਰਤਣ ਲਈ ਇੱਕ ਖਾਤਾ ਚੁਣੋ"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"ਅੰਗ੍ਰੇਜ਼ੀ (ਯੂਕੇ)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"ਅੰਗ੍ਰੇਜੀ (ਅਮਰੀਕਾ)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"ਸਪੇਨੀ (ਅਮਰੀਕਾ)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"ਵਰਨਮਾਲਾ (ਕੋਲਮੈਕ)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"ਵਰਨਮਾਲਾ (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"ਇਮੋਜੀ"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"ਕੀ-ਬੋਰਡ ਥੀਮ"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"ਵਿਉਂਤੀ ਇਨਪੁੱਟ ਸ਼ੈਲੀ"</string>
-    <string name="add_style" msgid="8304208538938230889">"ਸਟਾਈਲ ਸ਼ਾਮਲ ਕਰੋ"</string>
-    <string name="add" msgid="6822705504410731743">"ਸ਼ਾਮਲ ਕਰੋ"</string>
-    <string name="remove" msgid="4473717811376496460">"ਹਟਾਓ"</string>
-    <string name="save" msgid="1396012053841537145">"ਰੱਖਿਅਤ ਕਰੋ"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"ਭਾਸ਼ਾ"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"ਲੇਆਉਟ"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"ਤੁਹਾਡੀ ਵਿਉਂਂਤੀ ਇਨਪੁੱਟ ਸ਼ੈਲੀ ਵਰਤਣਾ ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਤੁਹਾਨੂੰ ਇਸਨੂੰ ਸਮਰੱਥ ਬਣਾਉਣ ਪਵੇਗਾ। ਕੀ ਤੁਸੀਂ ਹੁਣ ਇਸਨੂੰ ਸਮਰੱਥ ਬਣਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?"</string>
-    <string name="enable" msgid="3465950915897490353">"ਚਾਲੂ ਕਰੋ"</string>
-    <string name="not_now" msgid="6385104011963838405">"ਅਜੇ ਨਹੀਂ"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"ਸਮਾਨ ਇਨਪੁਟ ਸਟਾਈਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"ਕੀਪ੍ਰੈਸ ਵਾਈਬ੍ਰੇਸ਼ਨ ਮਿਆਦ"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"ਕੀਪ੍ਰੈਸ ਅਵਾਜ਼ ਵੌਲਿਊਮ"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"ਕੁੰਜੀ ਦਬਾਈ ਰੱਖਣ ਦੀ ਮਿਆਦ"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"ਭੌਤਿਕ ਕੀ-ਬੋਰਡ ਲਈ ਇਮੋਜੀ"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"ਭੌਤਿਕ Alt ਕੁੰਜੀ ਇਮੋਜੀ ਪੈਲੇਟ ਦਿਖਾਉਂਦੀ ਹੈ"</string>
-    <string name="button_default" msgid="4824983794085575316">"ਪੂਰਵ-ਨਿਰਧਾਰਤ"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਤੇ ਸੁਆਗਤ ਹੈ"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"ਸੰਕੇਤ ਟਾਈਪਿੰਗ ਨਾਲ"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"ਸ਼ੁਰੂਆਤ ਕਰੋ"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"ਅਗਲਾ ਸਟੈਪ"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਸੈਟ ਅਪ ਕਰ ਰਿਹਾ ਹੈ"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੀਆਂ ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ ਸੈਟਿੰਗਾਂ ਵਿੱਚ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" \'ਤੇ ਸਹੀ ਦਾ ਨਿਸ਼ਾਨ ਲਗਾਓ। ਇਹ ਉਸ ਨੂੰ ਤੁਹਾਡੇ ਡੀਵਾਈਸ \'ਤੇ ਚੱਲਣ ਲਈ ਅਧਿਕਾਰਿਤ ਕਰੇਗਾ।"</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ਨੂੰ ਪਹਿਲਾਂ ਹੀ ਤੁਹਾਡੀਆਂ ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਚਾਲੂ ਕੀਤਾ ਗਿਆ ਹੈ, ਇਸ ਲਈ ਇਹ ਪੜਾਅ ਪੂਰਾ ਹੋ ਗਿਆ ਹੈ। ਅਗਲੇ ਪੜਾਅ \'ਤੇ ਜਾਓ!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਚਾਲੂ ਕਰੋ"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> \'ਤੇ ਸਵਿੱਚ ਕਰੋ"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"ਫਿਰ, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ਨੂੰ ਆਪਣੀ ਕਿਰਿਆਸ਼ੀਲ ਲਿਖਤ-ਇਨਪੁੱਟ ਵਿਧੀ ਦੇ ਤੌਰ ਤੇ ਚੁਣੋ।"</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"ਇਨਪੁੱਟ ਵਿਧੀਆਂ ਸਵਿੱਚ ਕਰੋ"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"ਵਧਾਈ ਹੋਵੇ, ਤੁਸੀਂ ਸਾਰਾ ਸੈਟ ਕਰ ਲਿਆ ਹੈ!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"ਹੁਣ ਤੁਸੀਂ <xliff:g id="APPLICATION_NAME">%s</xliff:g> ਨਾਲ ਆਪਣੇ ਸਾਰੇ ਮਨਪਸੰਦ ਐਪਸ ਨੂੰ ਟਾਈਪ ਕਰ ਸਕਦੇ ਹੋ।"</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"ਵਾਧੂ ਭਾਸ਼ਾਵਾਂ ਦੀ ਰੂਪ-ਰੇਖਾ ਬਦਲੋ"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"ਪੂਰਾ ਹੋਇਆ"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"ਐਪ ਪ੍ਰਤੀਕ ਦਿਖਾਓ"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"ਲਾਂਚਰ ਵਿੱਚ ਐਪਲੀਕੇਸ਼ਨ ਪ੍ਰਤੀਕ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ"</string>
-    <string name="app_name" msgid="1388609705083271907">"ਸ਼ਬਦਕੋਸ਼ ਪ੍ਰਦਾਤਾ"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"ਸ਼ਬਦਕੋਸ਼ ਪ੍ਰਦਾਤਾ"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"ਸ਼ਬਦਕੋਸ਼ ਸੇਵਾ"</string>
-    <string name="download_description" msgid="7667377256582305064">"ਸ਼ਬਦਕੋਸ਼ ਅੱਪਡੇਟ ਜਾਣਕਾਰੀ"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"ਐਡ-ਆਨ ਸ਼ਬਦਕੋਸ਼"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"ਸ਼ਬਦਕੋਸ਼ਾਂ ਦੀਆਂ ਸੈਟਿੰਗਾਂ"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"ਉਪਭੋਗਤਾ ਸ਼ਬਦਕੋਸ਼"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"ਉਪਭੋਗਤਾ ਸ਼ਬਦਕੋਸ਼"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"ਇਸ ਵੇਲੇ ਡਾਊਨਲੋਡ ਕਰ ਰਿਹਾ ਹੈ"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"ਇੰਸਟੌਲ ਕੀਤਾ"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"ਇੰਸਟੌਲ ਕੀਤਾ, ਅਸਮਰਥਿਤ"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"ਸ਼ਬਦਕੋਸ਼ ਸੇਵਾ ਕਨੈਕਟ ਕਰਨ ਵਿੱਚ ਸਮੱਸਿਆ"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"ਕੋਈ ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ ਨਹੀਂ"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"ਤਾਜ਼ਾ"</string>
-    <string name="last_update" msgid="2377094521844654156">"ਆਖਰੀ ਵਾਰ ਅੱਪਡੇਟ ਕੀਤਾ"</string>
-    <string name="message_updating" msgid="7158989361989504143">"ਅਪਡੇਟਸ ਦੀ ਜਾਂਚ ਕਰ ਰਿਹਾ ਹੈ"</string>
-    <string name="message_loading" msgid="9151934303930222809">"ਲੋਡ ਕਰ ਰਿਹਾ ਹੈ…"</string>
-    <string name="main_dict_description" msgid="695289288722079926">"ਮੁੱਖ ਸ਼ਬਦਕੋਸ਼"</string>
     <string name="cancel" msgid="5611033781118852820">"ਰੱਦ ਕਰੋ"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"ਸੈਟਿੰਗਾਂ"</string>
     <string name="install_dict" msgid="8963966683066463555">"ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"ਰੱਦ ਕਰੋ"</string>
-    <string name="delete_dict" msgid="293286833341025636">"ਮਿਟਾਓ"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"ਤੁਹਾਡੇ ਮੋਬਾਈਲ ਡੀਵਾਈਸ \'ਤੇ ਚੁਣੀ ਗਈ ਭਾਸ਼ਾ ਵਿੱਚ ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ ਹੈ।&lt;br/&gt; ਅਸੀਂ ਤੁਹਾਡੇ ਟਾਈਪਿੰਗ ਅਨੁਭਵ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਸ਼ਬਦਕੋਸ਼ ਨੂੰ &lt;b&gt;ਡਾਊਨਲੋਡ ਕਰਨ&lt;/b&gt; ਦੀ ਸਿਫ਼ਾਰਸ਼ ਕਰਦੇ ਹਾਂ।&lt;br/&gt; &lt;br/&gt; 3G \'ਤੇ ਡਾਊਨਲੋਡ ਕਰਨ ਵਿੱਚ ਇੱਕ ਜਾਂ ਦੋ ਮਿੰਟਾਂ ਦਾ ਸਮਾਂ ਲੱਗ ਸਕਦਾ ਹੈ। ਜੇਕਰ ਤੁਹਾਡੇ ਕੋਲ &lt;b&gt;ਅਸੀਮਤ ਡਾਟਾ ਪਲਾਨ&lt;/b&gt; ਨਹੀਂ ਹੈ ਤਾਂ ਖਰਚਾ ਲਿਆ ਜਾ ਸਕਦਾ ਹੈ।&lt;br/&gt; ਜੇਕਰ ਤੁਸੀਂ ਯਕੀਨੀ ਨਹੀਂ ਹੋ ਕਿ ਤੁਹਾਡੇ ਕੋਲ ਕਿਹੜਾ ਡਾਟਾ ਪਲਾਨ ਹੈ, ਤਾਂ ਅਸੀਂ ਡਾਊਨਲੋਡ ਨੂੰ ਆਪਣੇ ਆਪ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਕਿਸੇ ਵਾਈ-ਫਾਈ ਕਨੈਕਸ਼ਨ ਨੂੰ ਲੱਭਣ ਦੀ ਸਿਫ਼ਾਰਸ਼ ਕਰਦੇ ਹਾਂ।&lt;br/&gt; &lt;br/&gt; ਨੁਕਤਾ: ਤੁਸੀਂ ਆਪਣੇ ਮੋਬਾਈਲ ਡੀਵਾਈਸ \'ਤੇ &lt;b&gt;ਸੈਟਿੰਗਾਂ&lt;/b&gt; ਮੀਨੂ ਵਿੱਚ &lt;b&gt;ਭਾਸ਼ਾਵਾਂ ਅਤੇ ਇਨਪੁੱਟ&lt;/b&gt; ਵਿੱਚ ਜਾ ਕੇ ਸ਼ਬਦਕੋਸ਼ਾਂ ਨੂੰ ਡਾਊਨਲੋਡ ਕਰ ਅਤੇ ਹਟਾ ਸਕਦੇ ਹੋ।"</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"(<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB) ਹੁਣ ਡਾਊਨਲੋਡ ਕਰੋ"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"ਵਾਈ-ਫਾਈ ਤੇ ਡਾਊਨਲੋਡ ਕਰੋ"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਲਈ ਇੱਕ ਸ਼ਬਦਕੋਸ਼ ਉਪਲਬਧ ਹੈ"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"ਸਮੀਖਿਆ ਕਰਨ ਅਤੇ ਡਾਊਨਲੋਡ ਕਰਨ ਲਈ ਦਬਾਓ"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"ਡਾਊਨਲੋਡਿੰਗ: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ਲਈ ਸੁਝਾਅ ਜਲਦੀ ਹੀ ਤਿਆਰ ਹੋਣਗੇ।"</string>
     <string name="version_text" msgid="3213200439763585436">"ਰੂਪ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"ਸ਼ਬਦਕੋਸ਼ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ"</string>

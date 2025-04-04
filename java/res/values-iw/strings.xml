@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"אפשרויות קלט"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"חיפוש שמות של אנשי קשר"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"בודק האיות משתמש בערכים מרשימת אנשי הקשר שלך"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"רטט בלחיצה על מקשים"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"צלילים בעת לחיצה על מקשים"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"חלון קופץ בלחיצה על מקש"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"העדפות"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"חשבונות ופרטיות"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"מראה ופריסות"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"הקלדה רציפה"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"תיקון טקסט"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"אפשרויות מתקדמות"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"עיצוב"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"הפעל מקלדת מפוצלת"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"‏סנכרון מקלדת Google"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"הסנכרון פועל"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"סנכרן את המילון האישי בין מכשירים"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"סנכרן עכשיו"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"מחק נתונים בענן"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"‏מוחק את הנתונים המסונכרנים שלך מ-Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"הנתונים המסונכרנים שלך יימחקו מהענן. להמשיך?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"מחק"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"ביטול"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"‏המילון האישי שלך יסונכרן ויגובה בשרתי Google. ייתכן שהמידע הסטטיסטי לגבי תדירות מילים ייאסף כדי לעזור בשיפור המוצרים שלנו. איסוף המידע והשימוש בו ייעשו בהתאם ל"<a href="https://www.google.com/policies/privacy">"מדיניות הפרטיות של Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"‏הוסף חשבון Google במכשיר הזה כדי להפעיל את התכונה הזו"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"‏סנכרון אינו זמין במכשירים עם חשבונות Google Apps for Business"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"עבור לשיטות קלט אחרות"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"מתג החלפת השפה מכסה גם שיטות קלט אחרות"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"מתג החלפת שפה"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"הצג כאשר ניתן להשתמש בשפות קלט מרובות"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"עיכוב בסגירת חלון קופץ של מקש"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"ללא עיכוב"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"ברירת מחדל"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> אלפ\' שניה"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"ברירת מחדל של המערכת"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"הצע שמות של אנשי קשר"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"השתמש בשמות מרשימת אנשי הקשר עבור הצעות ותיקונים"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"הצעות מותאמות אישית"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"שפר את <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"רווח כפול לנקודה"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"הקשה פעמיים על מקש הרווח מזינה נקודה ואחריה רווח"</string>
     <string name="auto_cap" msgid="525628419128036324">"אותיות רישיות באופן אוטומטי"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"השתמש באות גדולה במילה הראשונה של כל משפט"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"מילון אישי"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"תוספי מילונים"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"מילון ראשי"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"הצג הצעות לתיקונים"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"הצג הצעות למילים בעת הקלדה"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"חסימת מילים פוגעניות"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"אל תציע מילים שעלולות להיות פוגעניות"</string>
     <string name="auto_correction" msgid="4585482324756913868">"תיקון אוטומטי"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"מקש הרווח ופיסוק מתקנים אוטומטית שגיאות הקלדה"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"כבוי"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"מצומצם"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"מחמיר"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"מחמיר מאוד"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"הצעות למילה הבאה"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"השתמש במילה הקודמת ביצירת הצעות"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"אפשר הקלדה רציפה"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"הזן מילה על ידי החלקת האצבע מאות לאות"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"הצגת שובל תנועות"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"תצוגה צפה דינמית"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"ראה את המילה המוצעת תוך כדי הזזת האצבע"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"הקלדה רציפה של משפט"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"הזן רווחים במהלך התנועה על ידי החלקה אל מקש הרווח"</string>
-    <string name="voice_input" msgid="7725046107052037926">"מקש קלט קולי"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"לא הופעלו שיטות של קלט קולי. בדוק את הגדרות השפה והקלט."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"הגדרת שיטות קלט"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"שפות"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"עזרה ומשוב"</string>
     <string name="select_language" msgid="3379792010205373078">"שפות"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"הקש שוב כדי לשמור"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"הקש כאן כדי לשמור"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"מילון זמין"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"עיצוב מקלדת"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"החלף חשבונות"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"לא נבחרו חשבונות"</string>
-    <string name="account_selected" msgid="2929764293361296224">"משתמש כרגע ב-<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"אישור"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"ביטול"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"צא"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"בחר באיזה חשבון להשתמש"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"אנגלית (בריטניה)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"אנגלית (ארה\"ב)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"ספרדית (ארצות הברית)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"‏אלף-בית (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"‏אלף-בית (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"אמוג\'י"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"עיצוב מקלדת"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"סגנונות קלט מותאמים אישית"</string>
-    <string name="add_style" msgid="8304208538938230889">"הוסף סגנון"</string>
-    <string name="add" msgid="6822705504410731743">"הוסף"</string>
-    <string name="remove" msgid="4473717811376496460">"הסר"</string>
-    <string name="save" msgid="1396012053841537145">"שמור"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"שפה"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"פריסה"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"יש להפעיל את סגנון הקלט המותאם אישית לפני שתוכל להשתמש בו. האם ברצונך להפעיל אותו עכשיו?"</string>
-    <string name="enable" msgid="3465950915897490353">"הפעל"</string>
-    <string name="not_now" msgid="6385104011963838405">"לא עכשיו"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"סגנון קלט זהה כבר קיים: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"משך רטט של לחיצת מקש"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"עוצמת קול של לחיצת מקש"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"השהיית לחיצה ארוכה על מקש"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"אמוג\'י בשביל מקלדת פיזית"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"‏מקש Alt הפיזי מציג את לוח סמלי האמוג\'י"</string>
-    <string name="button_default" msgid="4824983794085575316">"ברירת מחדל"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"ברוכים הבאים אל <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"עם הקלדה רציפה"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"תחילת העבודה"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"השלב הבא"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"הגדרת <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"הפעל את <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"סמן את \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" בהגדרות השפה והקלט שלך. פעולה זו תאפשר לה לפעול במכשיר."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"האפליקציה <xliff:g id="APPLICATION_NAME">%s</xliff:g> כבר פועלת בהגדרות השפה והקלט שלך, אז השלב הזה הסתיים. ממשיכים הלאה לשלב הבא!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"הפעל בהגדרות"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"עבור אל <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"בשלב הבא, בחר ב-\'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' כאמצעי הקלט הפעיל להזנת טקסט."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"החלף שיטות קלט"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"ברכותינו, הכל מוכן!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"כעת תוכל להקליד בכל האפליקציות המועדפות עליך באמצעות <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"הגדר שפות נוספות"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"סיום"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"הצג את סמל האפליקציה"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"הצג את סמל האפליקציה במפעיל"</string>
-    <string name="app_name" msgid="1388609705083271907">"ספק המילון"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"ספק המילון"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"שירות מילון"</string>
-    <string name="download_description" msgid="7667377256582305064">"פרטי עדכון מילון"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"תוספי מילונים"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"מילון זמין"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"הגדרות עבור מילונים"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"מילוני משתמש"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"מילון משתמש"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"מילון זמין"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"מוריד כעת"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"מותקן"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"מותקן, מושבת"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"בעיה בהתחברות לשירות המילון"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"אין מילונים זמינים"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"רענן"</string>
-    <string name="last_update" msgid="2377094521844654156">"עודכן לאחרונה"</string>
-    <string name="message_updating" msgid="7158989361989504143">"מחפש עדכונים"</string>
-    <string name="message_loading" msgid="9151934303930222809">"טוען…"</string>
-    <string name="main_dict_description" msgid="695289288722079926">"מילון ראשי"</string>
     <string name="cancel" msgid="5611033781118852820">"ביטול"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"הגדרות"</string>
     <string name="install_dict" msgid="8963966683066463555">"התקן"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"ביטול"</string>
-    <string name="delete_dict" msgid="293286833341025636">"מחק"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"‏לשפה הנבחרת בנייד שלך יש מילון זמין.&lt;br/&gt; אנחנו ממליצים &lt;br/&gt;להוריד&lt;br/&gt; את המילון בשפה ה<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> כדי לשפר את חוויית ההקלדה.&lt;br/&gt; &lt;br/&gt; תהליך ההורדה עשוי לקחת כדקה או שתיים ברשת 3G. ייתכן שתחויב בתשלום אם אין לך &lt;b&gt;תוכנית נתונים ללא הגבלה&lt;b&gt;&lt;b&gt; אם אינך בטוח איזו תוכנית נתונים יש לך, אנחנו ממליצים למצוא חיבור Wi-Fi כדי להתחיל בהורדה באופן אוטומטי.&lt;br/&gt;&lt;br/&gt; טיפ: ניתן להוריד מילונים ולהסיר אותם על ידי מעבר אל &lt;b&gt;שפות וקלט&lt;b&gt; בתפריט &lt;b&gt;הגדרות&lt;b&gt; בנייד."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"‏הורד עכשיו (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"‏הורד באמצעות Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"יש מילון זמין עבור <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"לחץ כדי לעיין ולהוריד"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"מוריד: הצעות עבור <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> יהיו מוכנות בקרוב."</string>
     <string name="version_text" msgid="3213200439763585436">"גרסה <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"הוסף"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"הוסף למילון"</string>

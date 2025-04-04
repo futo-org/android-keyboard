@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"Opțiuni de introducere text"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"Verificare nume în agendă"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"Verificatorul ortografic utilizează intrări din lista de contacte"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"Vibrare la apăsarea tastei"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"Sunet la apăsarea tastei"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"Pop-up la apăsarea tastei"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"Preferințe"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"Conturi și confidențialitate"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"Aspect"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"Tastare gestuală"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"Corectarea textului"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"Avansate"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"Temă"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"Activați tastatura divizată"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Sincronizare Tastatură Google"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"Sincronizarea este activată"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"Sincronizați dicționarul personal pe dispozitive"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"Sincronizați acum"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"Ștergeți datele din cloud"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Șterge datele sincronizate de pe Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"Datele sincronizate vor fi șterse din cloud. Sunteți sigur(ă)?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"Ștergeți"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"Anulați"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Dicționarul personal va fi sincronizat și i se va face backup pe serverele Google. Informațiile statistice privind frecvența cuvintelor pot fi culese pentru a îmbunătăți produsele noastre. Culegerea și folosirea informațiilor vor respecta "<a href="https://www.google.com/policies/privacy">"Politica de confidențialitate Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Pentru a activa funcția, adăugați un cont Google pe dispozitiv"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Fără sincronizare pe dispozitivele cu conturi Google Apps for Business"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Comut. alte metode de introd."</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Tasta de comutare între limbi include și alte metode de introd."</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"Tastă comutare limbi"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"Afișați când sunt activate mai multe limbi de intrare"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"Închidere pop-up taste"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"Fără întârziere"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"Prestabilit"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> msec."</string>
-    <string name="settings_system_default" msgid="677003402757146199">"Valoare prestabilită"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"Sugerați nume din Agendă"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"Utilizați numele din Agendă pentru sugestii și corecții"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"Sugestii personalizate"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"Îmbunătățiți <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"Inserează punct spațiu"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"Dubla atingere a barei de spațiu inserează punct urmat de spațiu"</string>
     <string name="auto_cap" msgid="525628419128036324">"Scriere automată cu majuscule"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"Scrie cu majusculă primul cuvânt din fiecare propoziție"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"Dicționar personal"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"Dicționare suplimentare"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"Dicționar principal"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"Afișați sugestii de corectare"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"Afișează sugestii de cuvinte în timpul introducerii textului"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"Blocați cuvintele jignitoare"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"Nu se sugerează cuvinte potențial jignitoare"</string>
     <string name="auto_correction" msgid="4585482324756913868">"Autocorectare"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"Corectare automată cuvinte prin bară spațiu/semne punctuație"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"Dezactivată"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"Moderată"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"Exigentă"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"Foarte agresivă"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"Sugestii pentru cuvântul următor"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"Utilizează cuvântul anterior pentru sugestii"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"Activați tastarea gestuală"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"Introduceți un cuvânt glisând ușor între litere"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"Se afișează urma gestului"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"Sugestie flotantă dinamică"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"Afișați cuvântul sugerat când utilizați gesturi"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"Gest expresie"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"Introduceți spații în timpul gesturilor, glisând pe tasta spațiu"</string>
-    <string name="voice_input" msgid="7725046107052037926">"Tastă pentru intrarea vocală"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"Nicio metodă de intrare vocală activată. Verificați setările din „Limbi și introducerea textului”."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"Configurați metodele de intrare"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"Limbi"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"Ajutor și feedback"</string>
     <string name="select_language" msgid="3379792010205373078">"Limbi"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"Atingeți din nou pentru a salva"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"Atingeți aici pentru a salva"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"Dicționar disponibil"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"Temă pentru tastatură"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"Comutați între conturi"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"Niciun cont selectat"</string>
-    <string name="account_selected" msgid="2929764293361296224">"Acum utilizați <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"OK"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"Anulați"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"Deconectați-vă"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"Selectați un cont de utilizat"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"engleză (Regatul Unit)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"engleză (S.U.A.)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"spaniolă (S.U.A.)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"Alfabet (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"Alfabet (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"Emoji"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"Temă pentru tastatură"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"Stiluri personalizate"</string>
-    <string name="add_style" msgid="8304208538938230889">"Stil"</string>
-    <string name="add" msgid="6822705504410731743">"Adăugați"</string>
-    <string name="remove" msgid="4473717811376496460">"Eliminați"</string>
-    <string name="save" msgid="1396012053841537145">"Salvați"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"Limbă"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"Aspect"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"Stilul de introducere personalizat trebuie să fie activat pentru a-l utiliza. Îl activați acum?"</string>
-    <string name="enable" msgid="3465950915897490353">"Activați"</string>
-    <string name="not_now" msgid="6385104011963838405">"Nu acum"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"Același stil de introducere există deja: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"Vibrare după apăsarea tastei"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"Sunet la apăsarea tastelor"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"Timpul apăsării lungi a tastei"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"Emoji pentru tastatura fizică"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"Tasta fizică Alt afișează panoul de emoji"</string>
-    <string name="button_default" msgid="4824983794085575316">"Prestabilit"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"Bun venit la <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"cu Tastarea gestuală"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"Începeți"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"Pasul următor"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"Configurarea <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"Activați <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"Bifați „<xliff:g id="APPLICATION_NAME">%s</xliff:g>” în „Limbi și introducerea textului”. Astfel, o veți autoriza să ruleze pe dispozitiv."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> este activată deja în „Limbi și introducerea textului”, deci ați finalizat pasul. Treceți la următorul!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"Activați în Setări"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"Comutați la <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"Apoi, selectați „<xliff:g id="APPLICATION_NAME">%s</xliff:g>” ca metodă de introducere a textului activă."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"Comutați între metodele de introducere a textului"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"Felicitări, sunteți gata!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"Acum, puteți introduce text în toate aplicațiile preferate, utilizând <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"Configurați limbi suplimentare"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"Finalizat"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"Afișați pictograma aplicației"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"Afișați pictograma aplicației în lansator"</string>
-    <string name="app_name" msgid="1388609705083271907">"Furnizor dicționar"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"Furnizor dicționar"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"Serviciu dicționar"</string>
-    <string name="download_description" msgid="7667377256582305064">"Informații privind actualizarea dicționarului"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"Dicționare suplimentare"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"Dicționar disponibil"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"Setări pentru dicționare"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"Dicționarele utilizatorului"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"Dicționarul utilizatorului"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"Dicționar disponibil"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"Se descarcă acum"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"Instalat"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"Instalat, dezactivat"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"Eroare conectare la serviciu dicționar"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"Niciun dicționar"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"Actualizați"</string>
-    <string name="last_update" msgid="2377094521844654156">"Data ultimei modificări"</string>
-    <string name="message_updating" msgid="7158989361989504143">"Se verifică existența actualizărilor"</string>
-    <string name="message_loading" msgid="9151934303930222809">"Se încarcă..."</string>
-    <string name="main_dict_description" msgid="695289288722079926">"Dicționar principal"</string>
     <string name="cancel" msgid="5611033781118852820">"Anulați"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"Setări"</string>
     <string name="install_dict" msgid="8963966683066463555">"Instalați"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"Anulați"</string>
-    <string name="delete_dict" msgid="293286833341025636">"Ștergeți"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"Pentru limba selectată pe dispozitivul dvs. mobil este disponibil un dicționar.&lt;br/&gt; Vă recomandăm să &lt;b&gt;descărcați&lt;/b&gt; dicționarul de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> pentru o mai bună experiență a introducerii de text.&lt;br/&gt; &lt;br/&gt; Descărcarea poate dura un minut sau două prin 3G. Dacă nu aveți un &lt;b&gt;plan de date nelimitat&lt;/b&gt;, se pot aplica taxe.&lt;br/&gt; Dacă nu știți sigur ce plan de date aveți, vă recomandăm să căutați o conexiune Wi-Fi pentru a începe automat descărcarea.&lt;br/&gt; &lt;br/&gt; Sfat: puteți să descărcați și să ștergeți dicționare accesând &lt;b&gt;Limbi și introducerea textului&lt;/b&gt; din meniul &lt;b&gt;Setări&lt;/b&gt; al dispozitivului mobil."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"Descărcați acum (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Descărcați prin Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"Este disponibil un dicționar pentru <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"Apăsați pentru examinare și descărcare"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"Se descarcă: sugestiile pentru <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> vor fi gata în curând."</string>
     <string name="version_text" msgid="3213200439763585436">"Versiunea <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"Adăugați"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"Adăugați în dicționar"</string>

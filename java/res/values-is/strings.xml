@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"Valkostir innsláttar"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"Fletta upp tengiliðum"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"Ritvilluleit notar færslur úr tengiliðalistanum þínum"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"Titringur þegar ýtt er á lykla"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"Hljóð þegar ýtt er á lykil"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"Stækkaðir stafir við innslátt"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"Kjörstillingar"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"Reikningar og persónuvernd"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"Útlit og uppsetning"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"Bendingainnsláttur"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"Textaleiðrétting"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"Ítarlegt"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"Þema"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"Virkja skipt lyklaborð"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Samstilling Google lyklaborðs"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"Kveikt er á samstillingu"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"Samstilltu orðabókina þína á milli tækja"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"Samstilla núna"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"Eyða gögnum í skýi"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Eyðir samstilltum gögnum af Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"Samstilltum gögnum frá þér verður eytt úr skýinu. Ertu viss?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"Eyða"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"Hætta við"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Orðabókin þín verður samstillt og afrituð á netþjóna Google. Hugsanlega verður talnagögnum um tíðni orða safnað til að gera vörur okkar betri. Söfnun og notkun allra upplýsinga fellur undir "<a href="https://www.google.com/policies/privacy">"persónuverndarstefnu Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Bættu Google reikningi við tækið til að virkja þennan eiginleika"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Samstilling er ekki í boði fyrir tæki með Google Apps fyrirtækjareikning"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Skipta um innsláttaraðferð"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Lykill til að skipta um mál inniheldur aðrar innsláttaraðferðir"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"Lykill til að breyta tungumáli"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"Sýna þegar mörg innsláttartungumál eru virk"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"Hunsunartöf lyklaglugga"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"Engin töf"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"Sjálfgefið"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms."</string>
-    <string name="settings_system_default" msgid="677003402757146199">"Sjálfgildi kerfis"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"Stinga upp á tengiliðum"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"Nota nöfn úr tengiliðum fyrir tillögur og leiðréttingar"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"Persónulegar tillögur"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"Bæta <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"Punktur við tvöfalt bil"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"Ef ýtt er tvisvar á bilslána er settur inn punktur og svo bil"</string>
     <string name="auto_cap" msgid="525628419128036324">"Sjálfvirkir hástafir"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"Setja hástaf í upphaf hverrar málsgreinar"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"Sérsniðin orðabók"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"Viðbótarorðabækur"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"Aðalorðabók"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"Sýna leiðréttingartillögur"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"Sýna orðatillögur við innslátt"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"Útiloka dónaleg orð"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"Ekki stinga upp á orðum sem kunna að vera dónaleg"</string>
     <string name="auto_correction" msgid="4585482324756913868">"Sjálfv. leiðrétting"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"Bil og greinarmerki leiðrétta sjálfkrafa innsláttarvillur"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"Slökkt"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"Hófleg"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"Mikil"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"Mjög mikil"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"Tillögur að næsta orði"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"Nota fyrra orð til að útbúa tillögur"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"Kveikja á bendingainnslætti"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"Slá inn orð með því að renna í gegnum stafina"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"Sýna bendingaslóð"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"Fljótandi rauntímaforskoðun"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"Sjá orðatillöguna við bendingu"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"Setningabending"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"Setja inn bil í bendingum með því að renna yfir á bilslána"</string>
-    <string name="voice_input" msgid="7725046107052037926">"Raddinntakslykill"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"Engar innsláttaraðferðir fyrir rödd eru virkar. Kannaðu stillingar tungumáls og innsláttar."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"Stilla innsláttaraðferðir"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"Tungumál"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"Hjálp og ábendingar"</string>
     <string name="select_language" msgid="3379792010205373078">"Tungumál"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"Ýttu aftur til að vista"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"Ýttu hér til að vista"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"Orðabók í boði"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"Þema lyklaborðs"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"Skipta um reikning"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"Engir reikningar valdir"</string>
-    <string name="account_selected" msgid="2929764293361296224">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> í notkun"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"Í lagi"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"Hætta við"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"Skrá út"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"Veldu reikning til að nota"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"Enskt (Bretland)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"Enskt (Bandaríkin)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"Spænskt (US)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"Stafróf (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"Stafróf (tölva)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"Emoji-tákn"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"Lyklaborðsþema"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"Sérsniðnar innsláttaraðferðir"</string>
-    <string name="add_style" msgid="8304208538938230889">"Bæta stíl við"</string>
-    <string name="add" msgid="6822705504410731743">"Bæta við"</string>
-    <string name="remove" msgid="4473717811376496460">"Fjarlægja"</string>
-    <string name="save" msgid="1396012053841537145">"Vista"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"Tungumál"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"Skipan"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"Gera þarf sérsniðnu innsláttaraðferðina virka áður en þú tekur hana í notkun. Viltu virkja hana núna?"</string>
-    <string name="enable" msgid="3465950915897490353">"Kveikja"</string>
-    <string name="not_now" msgid="6385104011963838405">"Ekki núna"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"Sama innsláttaraðferð er þegar fyrir hendi: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"Lengd lyklatitrings"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"Styrkur lyklahljóða"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"Töf áður en lykli er haldið inni"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"Emoji fyrir vélbúnaðarlyklaborð"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"Alt-lykillinn á lyklaborðinu birtir töflu yfir emoji-tákn"</string>
-    <string name="button_default" msgid="4824983794085575316">"Sjálfgefið"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"Velkomin(n) í <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"með bendingainnslætti"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"Hefjast handa"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"Næsta skref"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"Uppsetning <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"Virkjaðu <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"Hakaðu við „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ í stillingum tungumáls og innsláttar. Þetta veitir því heimild til að keyra í tækinu."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> er þegar virkt í stillingum tungumáls og innsláttar og lokið hefur verið við þetta skref. Vindum okkur í næsta!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"Virkja í stillingum"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"Skiptu yfir í <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"Næst skaltu velja „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ sem virka innsláttaraðferð fyrir texta."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"Skipta um innsláttaraðferð"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"Til hamingju, allt er klárt!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"Nú geturðu notað <xliff:g id="APPLICATION_NAME">%s</xliff:g> til að skrifa í öllum uppáhaldsforritunum þínum."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"Stilla önnur tungumál"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"Lokið"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"Sýna forritstákn"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"Sýna forritstákn í ræsiforritinu"</string>
-    <string name="app_name" msgid="1388609705083271907">"Orðabókarveita"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"Orðabókarveita"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"Orðabókarþjónusta"</string>
-    <string name="download_description" msgid="7667377256582305064">"Uppfærsluupplýsingar orðabóka"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"Viðbótarorðabækur"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"Orðabók í boði"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"Stillingar fyrir orðabækur"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"Orðabækur notanda"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"Orðabók notanda"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"Orðabók í boði"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"Niðurhal í gangi"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"Uppsett"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"Uppsett, óvirk"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"Vandamál við að tengjast orðabókarþjónustu"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"Engar orðabækur"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"Endurnýja"</string>
-    <string name="last_update" msgid="2377094521844654156">"Síðast uppfært"</string>
-    <string name="message_updating" msgid="7158989361989504143">"Leitar að uppfærslum"</string>
-    <string name="message_loading" msgid="9151934303930222809">"Hleður…"</string>
-    <string name="main_dict_description" msgid="695289288722079926">"Aðalorðabók"</string>
     <string name="cancel" msgid="5611033781118852820">"Hætta við"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"Stillingar"</string>
     <string name="install_dict" msgid="8963966683066463555">"Setja upp"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"Hætta við"</string>
-    <string name="delete_dict" msgid="293286833341025636">"Eyða"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"Orðabók er í boði fyrir tungumálið sem valið er í fartækinu.&lt;br/&gt; Við mælum með því að þú &lt;b&gt;sækir&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> orðabók til að auðvelda þér innslátt.&lt;br/&gt; &lt;br/&gt; Niðurhalið gæti tekið nokkrar mínútur yfir 3G-kerfi. Kostnaður kann að hljótast af niðurhalinu ef þú ert ekki með &lt;b&gt;ótakmarkaða gagnaáskrift&lt;/b&gt;.&lt;br/&gt; Ef þú ert ekki viss um hvernig gagnaáskrift þú ert með er mælt með að þú tengist Wi-Fi til að hefja niðurhalið sjálfkrafa.&lt;br/&gt; &lt;br/&gt; Ábending: Þú getur sótt og fjarlægt orðabækur undir &lt;b&gt;Tungumál og innsláttur&lt;/b&gt; í valmyndinni &lt;b&gt;Stillingar&lt;/b&gt; í fartækinu."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"Sækja núna (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Sækja í gegnum Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"Orðabók er í boði fyrir <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"Ýttu til að skoða og sækja"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"Sækir tillögur fyrir: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="version_text" msgid="3213200439763585436">"Útgáfa <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"Bæta við"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"Bæta við orðabók"</string>

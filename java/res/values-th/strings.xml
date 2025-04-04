@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"ตัวเลือกการป้อนข้อมูล"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"ค้นหารายชื่อติดต่อ"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"เครื่องตรวจตัวสะกดใช้รายการจากรายชื่อติดต่อของคุณ"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"สั่นเมื่อกดปุ่ม"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"ส่งเสียงเมื่อกดปุ่ม"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"ป๊อปอัปเมื่อกดแป้น"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"ค่ากำหนด"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"บัญชีและความเป็นส่วนตัว"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"ลักษณะที่ปรากฏและการจัดวาง"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"การป้อนข้อมูลด้วยท่าทาง"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"การแก้ไขข้อความ"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"ขั้นสูง"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"ธีม"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"เปิดใช้แป้นพิมพ์แยก"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"การซิงค์แป้นพิมพ์ของ Google"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"การซิงค์เปิดอยู่"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"ซิงค์พจนานุกรมส่วนตัวในอุปกรณ์ต่างๆ"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"ซิงค์เลย"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"ลบข้อมูลระบบคลาวด์"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"ลบข้อมูลที่ซิงค์ออกจาก Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"ข้อมูลที่ซิงค์จะลบออกจากระบบคลา⁠วด์ คุณแน่ใจไหม"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"ลบ"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"ยกเลิก"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"พจนานุกรมส่วนตัวของคุณจะซิงค์และสำรองข้อมูลไปยังเซิร์ฟเวอร์ Google ข้อมูลเชิงสถิติของความถี่ในการใช้คำอาจได้รับการเก็บรวบรวมเพื่อใช้ปรับปรุงผลิตภัณฑ์ของเรา การเก็บรวบรวมและการใช้งานข้อมูลทั้งหมดจะเป็นไปอย่างสอดคล้องกับ"<a href="https://www.google.com/policies/privacy">"นโยบายความเป็นส่วนตัวของ Google"</a></string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"โปรดเพิ่มบัญชี Google ไปยังอุปกรณ์นี้เพื่อเปิดใช้ฟีเจอร์นี้"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"การซิงค์ไม่พร้อมใช้งานสำหรับอุปกรณ์ที่มีบัญชี Google Apps for Business"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"ใช้วิธีการป้อนข้อมูลอื่น"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"แป้นสลับภาษาครอบคลุมวิธีการป้อนข้อมูลอื่นๆ ด้วย"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"แป้นสลับภาษา"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"แสดงเมื่อเปิดใช้งานภาษาสำหรับอินพุตหลายภาษา"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"หน่วงเวลาก่อนปิดป๊อปอัพหลัก"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"ไม่มีการหน่วงเวลา"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"ค่าเริ่มต้น"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> มิลลิวิ"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"ค่าเริ่มต้นของระบบ"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"แนะนำชื่อผู้ติดต่อ"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"ใช้ชื่อจากรายชื่อติดต่อสำหรับคำแนะนำและการแก้ไข"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"คำแนะนำในแบบของคุณ"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"ปรับปรุง <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"เคาะวรรคสองครั้งเพื่อพิมพ์จุด"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"เคาะวรรคสองครั้งจะแทรกจุดตามด้วยช่องว่างหนึ่งช่อง"</string>
     <string name="auto_cap" msgid="525628419128036324">"ปรับเป็นตัวพิมพ์ใหญ่อัตโนมัติ"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"ทำให้คำแรกของทุกประโยคเป็นตัวพิมพ์ใหญ่"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"พจนานุกรมส่วนตัว"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"พจนานุกรม Add-On"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"พจนานุกรมหลัก"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"แสดงคำแนะนำการแก้ไข"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"แสดงคำที่แนะนำขณะพิมพ์"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"บล็อกคำที่ไม่เหมาะสม"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"ไม่แนะนำคำที่อาจไม่เหมาะสม"</string>
     <string name="auto_correction" msgid="4585482324756913868">"การแก้ไขคำผิดอัตโนมัติ"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"กดเว้นวรรคและเครื่องหมายจะแก้คำผิดอัตโนมัติ"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"ปิด"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"ปานกลาง"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"เข้มงวด"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"เข้มงวดมาก"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"คำแนะนำสำหรับคำถัดไป"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"ใช้คำก่อนหน้าในการสร้างข้อเสนอแนะ"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"เปิดการป้อนข้อมูลด้วยท่าทาง"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"ป้อนคำด้วยการเลื่อนผ่านตัวอักษร"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"แสดงรูปแบบของท่าทางสัมผัส"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"ดูตัวอย่างลอยแบบไดนามิก"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"ดูคำแนะนำในขณะที่ใช้ท่าทางสัมผัส"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"ท่าทางสัมผัสสำหรับวลี"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"ใส่ช่องว่างระหว่างท่าทางสัมผัสโดยเลื่อนไปยังแป้นเคาะวรรค"</string>
-    <string name="voice_input" msgid="7725046107052037926">"แป้นการป้อนข้อมูลด้วยเสียง"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"ไม่ได้เปิดใช้วิธีป้อนข้อมูลด้วยเสียง โปรดตรวจสอบการตั้งค่าภาษาและการป้อนข้อมูล"</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"กำหนดค่าวิธีการป้อนข้อมูล"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"ภาษา"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"ความช่วยเหลือและความคิดเห็น"</string>
     <string name="select_language" msgid="3379792010205373078">"ภาษา"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"แตะอีกครั้งเพื่อบันทึก"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"แตะที่นี่เพื่อบันทึก"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"มีพจนานุกรมให้ใช้งาน"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"ชุดรูปแบบแป้นพิมพ์"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"สลับบัญชี"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"ไม่ได้เลือกบัญชี"</string>
-    <string name="account_selected" msgid="2929764293361296224">"ปัจจุบันใช้ <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"ตกลง"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"ยกเลิก"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"ออกจากระบบ"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"เลือกบัญชีที่จะใช้"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"อังกฤษ (สหราชอาณาจักร)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"อังกฤษ (อเมริกัน)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"สเปน (สหรัฐอเมริกา)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"ตัวอักษร (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"ตัวอักษร (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"อีโมจิ"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"ธีมแป้นพิมพ์"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"รูปแบบอินพุตกำหนดเอง"</string>
-    <string name="add_style" msgid="8304208538938230889">"เพิ่มสไตล์"</string>
-    <string name="add" msgid="6822705504410731743">"เพิ่ม"</string>
-    <string name="remove" msgid="4473717811376496460">"ลบ"</string>
-    <string name="save" msgid="1396012053841537145">"บันทึก"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"ภาษา"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"การจัดวาง"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"ต้องเปิดใช้รูปแบบอินพุตที่กำหนดเองก่อน เปิดใช้เลยไหม"</string>
-    <string name="enable" msgid="3465950915897490353">"เปิดใช้งาน"</string>
-    <string name="not_now" msgid="6385104011963838405">"ข้ามไปก่อน"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"รูปแบบการป้อนข้อมูลเดียวกันนี้มีอยู่แล้ว: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"ระยะเวลาการสั่นเมื่อกดแป้นพิมพ์"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"ระดับเสียงเมื่อกดแป้นพิมพ์"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"การหน่วงเวลาของการกดแป้นค้าง"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"อีโมจิสำหรับแป้นพิมพ์บนเครื่อง"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"แป้น Alt บนเครื่องแสดงชุดอีโมจิ"</string>
-    <string name="button_default" msgid="4824983794085575316">"ค่าเริ่มต้น"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"ยินดีต้อนรับสู่ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"พร้อมการป้อนข้อมูลด้วยท่าทาง"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"เริ่มต้นใช้งาน"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"ขั้นตอนถัดไป"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"การตั้งค่า <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"เปิดใช้งาน <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"โปรดตรวจสอบ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ในการตั้งค่าภาษาและการป้อนข้อมูลของคุณ ซึ่งจะอนุญาตให้แอปทำงานบนอุปกรณ์ของคุณ"</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> เปิดใช้ในการตั้งค่าภาษาและการป้อนข้อมูลของคุณอยู่แล้ว ขั้นตอนนี้จึงเสร็จสิ้นแล้ว ไปยังขั้นตอนถัดไปเลย!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"เปิดใช้งานในการตั้งค่า"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"สลับไปใช้ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"ถัดไป เลือก \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" เป็นวิธีการป้อนข้อความที่ใช้งานของคุณ"</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"สลับวิธีการป้อนข้อมูล"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"ยินดีด้วย คุณพร้อมใช้งานแล้ว!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"ตอนนี้คุณสามารถพิมพ์ข้อมูลลงในแอปที่ชื่นชอบทั้งหมดด้วย <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"กำหนดค่าภาษาเพิ่มเติม"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"เสร็จสิ้น"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"แสดงไอคอนแอป"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"แสดงไอคอนแอปพลิเคชันในตัวเรียกใช้งาน"</string>
-    <string name="app_name" msgid="1388609705083271907">"ผู้ให้บริการพจนานุกรม"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"ผู้ให้บริการพจนานุกรม"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"บริการพจนานุกรม"</string>
-    <string name="download_description" msgid="7667377256582305064">"ข้อมูลอัปเดตสำหรับพจนานุกรม"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"พจนานุกรมส่วนเสริม"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"มีพจนานุกรมให้ใช้งาน"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"การตั้งค่าสำหรับพจนานุกรม"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"พจนานุกรมผู้ใช้"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"พจนานุกรมผู้ใช้"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"มีพจนานุกรมให้ใช้งาน"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"กำลังดาวน์โหลดอยู่"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"ติดตั้งแล้ว"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"ติดตั้งแล้วแต่ปิดใช้งาน"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"พบปัญหาขณะเชื่อมต่อ"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"ไม่มีพจนานุกรม"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"รีเฟรช"</string>
-    <string name="last_update" msgid="2377094521844654156">"ปรับปรุงแก้ไขครั้งล่าสุด"</string>
-    <string name="message_updating" msgid="7158989361989504143">"กำลังตรวจสอบการอัปเดต"</string>
-    <string name="message_loading" msgid="9151934303930222809">"กำลังโหลด…"</string>
-    <string name="main_dict_description" msgid="695289288722079926">"พจนานุกรมหลัก"</string>
     <string name="cancel" msgid="5611033781118852820">"ยกเลิก"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"การตั้งค่า"</string>
     <string name="install_dict" msgid="8963966683066463555">"ติดตั้ง"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"ยกเลิก"</string>
-    <string name="delete_dict" msgid="293286833341025636">"ลบ"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"ภาษาที่คุณเลือกในอุปกรณ์เคลื่อนที่มีพจนานุกรมที่สามารถใช้ได้&lt;br/&gt; เราขอแนะนำให้คุณ&lt;b&gt;ดาวน์โหลดพจนานุกรม&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> เพื่อรับประสบการณ์การพิมพ์ที่ดียิ่งขึ้น&lt;br/&gt; &lt;br/&gt; การดาวน์โหลดอาจใช้เวลา 1-2 นาทีผ่านทาง 3G ซึ่งอาจมีการเรียกเก็บเงินหากคุณไม่ได้ใช้&lt;b&gt;แผนบริการข้อมูลแบบไม่จำกัด&lt;/b&gt;.&lt;br/&gt; หากไม่แน่ใจว่าใช้แผนบริการข้อมูลแบบใดอยู่ เราขอแนะนำให้เชื่อมต่อ Wi-Fi เพื่อเริ่มการดาวน์โหลดโดยอัตโนมัติ&lt;br/&gt; &lt;br/&gt; เคล็ดลับ: คุณสามารถดาวน์โหลดและนำพจนานุกรมออกได้โดยไปที่&lt;b&gt;ภาษาและการป้อนข้อมูล&lt;/b&gt;ในเมนู&lt;b&gt;การตั้งค่า&lt;/b&gt;บนอุปกรณ์เคลื่อนที่ของคุณ"</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"ดาวน์โหลดเลย (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"ดาวน์โหลดผ่าน WiFi"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"มีพจนานุกรมให้ใช้งานสำหรับ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"กดเพื่อตรวจสอบและดาวน์โหลด"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"กำลังดาวน์โหลด: คำแนะนำสำหรับ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> จะพร้อมใช้งานเร็วๆ นี้"</string>
     <string name="version_text" msgid="3213200439763585436">"เวอร์ชัน <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"เพิ่ม"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"เพิ่มในพจนานุกรม"</string>

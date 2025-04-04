@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"Giriş seçenekleri"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"Kişi adlarını denetle"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"Yazım denetleyici, kişi listenizdeki girişleri kullanır"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"Tuşa basıldığında titret"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"Tuşa basıldığında ses çıkar"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"Tuşa basıldığında pop-up aç"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"Tercihler"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"Hesaplar ve Gizlilik"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"Görünüm ve Düzenler"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"Hareketle Yazma"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"Metin düzeltme"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"Gelişmiş"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"Tema"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"Bölünmüş klavyeyi etkinleştir"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Google Klavye Senkronizasyonu"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"Senkronizasyon açık"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"Kişisel sözlüğünüzü cihazlar arasında senkronize edin"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"Şimdi senkronize et"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"Bulut verilerini sil"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Senkronize edilmiş verilerinizi Google\'dan siler"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"Senkronize edilmiş verileriniz buluttan silinecek. Emin misiniz?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"Sil"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"İptal"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Kişisel sözlüğünüz senkronize edilecek ve Google sunucularına yedeklenecektir. Ürünlerimizi iyileştirmeye yardımcı olması için kelime sıklığına ilişkin istatistiksel bilgiler toplanabilir. Tüm bilgilerin toplanması ve kullanımı "<a href="https://www.google.com/policies/privacy">"Google\'ın Gizlilik Politikası"</a>"\'na uygun olarak gerçekleştirilir."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Bu özelliği etkinleştirmek için cihaza bir Google Hesabı ekleyin"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Senkronizasyon Google Apps for Business hesabı olan cihazlarda kullanılamaz"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Diğer giriş yöntemine geç"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Dil geçiş tuşu diğer giriş yöntemlerini de kapsar"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"Dil değiştirme tuşu"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"Birden fazla giriş dili etkin olduğunda göster"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"Tuş popup\'ının kapatılmasını geciktirme"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"Gecikme yok"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"Varsayılan"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"Sistem varsayılanı"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"Kişi Adları öner"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"Öneri ve düzeltmeler için Kişiler\'deki adları kullan"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"Kişisel öneriler"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını iyileştir"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"Çift boşlukla nokta ekle"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"Boşluk çubuğuna iki kez dokunmak nokta ve ardından bir boşluk ekler"</string>
     <string name="auto_cap" msgid="525628419128036324">"Otomatik büyük harf yap"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"Her cümlenin ilk harfini büyük harf yapar"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"Kişisel sözlük"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"Ek sözlükler"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"Ana sözlük"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"Düzeltme önerilerini göster"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"Yazarken, önerilen kelimeleri görüntüle"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"Rahatsız edici kelimeleri engelle"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"Rahatsız edici olabilecek kelimeleri önermez"</string>
     <string name="auto_correction" msgid="4585482324756913868">"Otomatik düzelt"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"Boşluk tuşu ve noktalama işaretleri yanlış yazılan kelimeleri otomatikman düzeltir"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"Kapalı"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"Ölçülü"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"Geniş ölçekte"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"Çok geniş ölçekte"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"Sonraki kelime önerileri"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"Öneride bulunurken önceki kelimeyi kullanır"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"Hareketle yazmayı etkinleştir"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"Kelime girmek için parmağınızı harflerin üzerinde kaydırın"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"Hareket izini göster"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"Dinamik kayan önizleme"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"Hareket sırasında önerilen kelimeyi göster"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"Kelime öbeği hareketi"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"Hareketle girişte boşlukları, boşluk tuşuna kaydırarak girin"</string>
-    <string name="voice_input" msgid="7725046107052037926">"Ses girişi tuşu"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"Hiçbir ses girişi yöntemi etkinleştirilmedi. Dil ve giriş ayarlarını kontrol edin."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"Giriş yöntemlerini yapılandır"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"Diller"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"Yardım ve geri bildirim"</string>
     <string name="select_language" msgid="3379792010205373078">"Diller"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"Kaydetmek için tekrar dokunun"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"Kaydetmek için buraya dokunun"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"Sözlük kullanılabilir"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"Klavye teması"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"Hesap değiştir"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"Hiçbir hesap seçilmedi"</string>
-    <string name="account_selected" msgid="2929764293361296224">"Şu anda <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g> kullanılıyor"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"Tamam"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"İptal"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"Oturumu kapat"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"Kullanmak için bir hesap seçin"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"İngilizce (BK)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"İngilizce (ABD)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"İspanyolca (ABD)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"Alfabe (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"Alfabe (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"Emoji"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"Klavye teması"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"Özel giriş stilleri"</string>
-    <string name="add_style" msgid="8304208538938230889">"Stil ekle"</string>
-    <string name="add" msgid="6822705504410731743">"Ekle"</string>
-    <string name="remove" msgid="4473717811376496460">"Kaldır"</string>
-    <string name="save" msgid="1396012053841537145">"Kaydet"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"Dil"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"Düzen"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"Kullanmaya başlamadan önce özel giriş stilinizin etkinleştirilmesi gerekiyor. Şimdi etkinleştirmek ister misiniz?"</string>
-    <string name="enable" msgid="3465950915897490353">"Etkinleştir"</string>
-    <string name="not_now" msgid="6385104011963838405">"Şimdi değil"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"Aynı giriş stili zaten var: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"Tuşa basma titreşim süresi"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"Tuşa basma ses seviyesi"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"Tuşa uzun basma gecikmesi"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"Fiziksel klavye için emoji"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"Fiziksel Alt tuşu, emoji paletini gösterir"</string>
-    <string name="button_default" msgid="4824983794085575316">"Varsayılan"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasına hoş geldiniz"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"Hareketle Yazmayı içerir"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"Başlayın"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"Sonraki adım"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını kurma"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasını etkinleştirin"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"Lütfen \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" uygulamasını Dil ve giriş ayarlarınızda işaretleyin. Bu, uygulamaya cihazınızda çalışma yetkisi verecektir."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>, Dil ve giriş ayarlarınızda önceden etkinleştirildiği için bu adım tamamlandı. Bir sonraki adıma ilerleyin!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"Ayarlarda etkinleştir"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> uygulamasına geçin"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"Sonra, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" uygulamasını etkin metin giriş yönteminiz olarak seçin."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"Giriş yöntemini değiştir"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"Tebrikler, bitirdiniz!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"Artık <xliff:g id="APPLICATION_NAME">%s</xliff:g> ile tüm favori uygulamalarınızda yazabilirsiniz."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"Ek dilleri yapılandırın"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"Tamamlandı"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"Uygulama simgesini göster"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"Uygulama simgesini başlatıcıda gösterir"</string>
-    <string name="app_name" msgid="1388609705083271907">"Sözlük Sağlayıcı"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"Sözlük Sağlayıcı"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"Sözlük Hizmeti"</string>
-    <string name="download_description" msgid="7667377256582305064">"Sözlük güncelleme bilgileri"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"Ek sözlükler"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"Sözlük mevcut"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"Sözlükler için ayarlar"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"Kullanıcı sözlükleri"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"Kullanıcı sözlüğü"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"Sözlük mevcut"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"Şu anda indiriliyor"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"Yüklendi"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"Yüklendi, devre dışı bırakıldı"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"Sözlük hizmetine bağlantı sorunu"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"Kullanılabilir sözlük yok"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"Yenile"</string>
-    <string name="last_update" msgid="2377094521844654156">"Son güncelleme tarihi"</string>
-    <string name="message_updating" msgid="7158989361989504143">"Güncellemeler denetleniyor"</string>
-    <string name="message_loading" msgid="9151934303930222809">"Yükleniyor…"</string>
-    <string name="main_dict_description" msgid="695289288722079926">"Ana sözlük"</string>
     <string name="cancel" msgid="5611033781118852820">"İptal"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"Ayarlar"</string>
     <string name="install_dict" msgid="8963966683066463555">"Yükle"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"İptal"</string>
-    <string name="delete_dict" msgid="293286833341025636">"Sil"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"Mobil cihazınızda seçili dile ait kullanılabilir bir sözlük var.&lt;br/&gt; Yazma deneyiminizi iyileştirmek için <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> sözlüğünü &lt;b&gt;indirmenizi&lt;/b&gt; öneririz.&lt;br/&gt; &lt;br/&gt; İndirme işlemi 3G üzerinden bir veya iki dakika sürebilir. &lt;b&gt;Sınırsız veri tarifeniz&lt;/b&gt; yoksa ücret alınabilir.&lt;br/&gt; Ne tür bir veri tarifesine sahip olduğunuzdan emin değilseniz otomatik olarak indirmeye başlamak için bir kablosuz bağlantı bulmanızı öneririz.&lt;br/&gt; &lt;br/&gt; İpucu: Sözlükleri, mobil cihazınızın &lt;b&gt;Ayarlar&lt;/b&gt; menüsünde &lt;b&gt;Dil ve giriş&lt;/b&gt; seçeneğine giderek indirebilir ve kaldırabilirsiniz."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"Hemen indir (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Kablosuz üzerinden indir"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> için kullanılabilir bir sözlük var"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"İncelemek ve indirmek için basın"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> için önerilerin indirilmesine kısa süre içinde başlanacak."</string>
     <string name="version_text" msgid="3213200439763585436">"Sürüm <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"Ekle"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"Sözlüğe ekle"</string>

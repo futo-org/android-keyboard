@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"Опции за въвеждане"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"Търсене на имена"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"За проверка на правописа се ползват записи от списъка с контакти"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"Да вибрира при натискане на клавиш"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"Звук при натиск. на клавиш"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"Изск. прозорец при натискане на клавиш"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"Предпочитания"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"Профили и поверителност"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"Облик и оформления"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"Въвеждане чрез жест"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"Коригиране на текст"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"Разширени"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"Тема"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"Активиране на разделената клавиатура"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Клавиатура на Google: Синхрон."</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"Синхронизирането е включено"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"Синхронизиране на личния ви речник на устройствата"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"Синхронизиране сега"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"Изтриване на данните в облака"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Изтрива синхронизираните ви данни от Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"Синхрон. ви данни ще бъдат изтрити от облака. Сигурни ли сте?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"Изтриване"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"Отказ"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Личният ви речник ще бъде синхронизиран и за него ще бъде създадено резервно копие на сървърите на Google. Статистическата информация за честотата на използване на думите може да се събира с цел подобряване на продуктите ни. Събирането и ползването на всички данни ще бъде съгласно "<a href="https://www.google.com/policies/privacy">"Декларацията ни за поверителност"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"За да активирате функцията, добавете профил в Google към у-вото"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Синхронизирането не е налице за у-ва с профили в Google Apps for Business"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Други методи за въвеждане"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Клавишът за превкл. на езика обхваща и други методи за въвеждане"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"Клавиш за превкл. на езика"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"Показване при няколко активирани езика за въвеждане"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"Отхвърляне на подсказката"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"Без забавяне"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"По подразбиране"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> милисек"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"Станд. за системата"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"Предложения за контакти"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"Използване на имена от „Контакти“ за предложения и поправки"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"Персонализ. предложения"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"Подобряване на <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"Точка чрез двоен интервал"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"Двукр. докосване на клав. за интервал вмъква точка, следвана от интервал"</string>
     <string name="auto_cap" msgid="525628419128036324">"Авт. поставяне на главни букви"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"Главна буква за първата дума от всяко изречение"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"Личен речник"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"Добавени речници"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"Основен речник"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"Показване на предложения"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"Показване на предложения, докато пишете"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"Блокиране на обидни думи"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"Без потенциално обидни думи"</string>
     <string name="auto_correction" msgid="4585482324756913868">"Автоматична поправка"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"Клавишът за интервал и пунктуация авт. поправя сгрешени думи"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"Изкл."</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"Умерено"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"Агресивно"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"Много агресивно"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"Предл. за следваща дума"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"Използване на предишната дума при даване на предложения"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"Актив. на въвеждане чрез жест"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"Въвеждане на дума чрез плъзгане на пръст през буквите"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"Следа от жестовете"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"Динам. плаваща визуализ."</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"Преглед на предложената дума при използване на жестове"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"Жест за фрази"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"При жестове въвеждaйте интервали чрез плъзгане през съотв. клавиш"</string>
-    <string name="voice_input" msgid="7725046107052037926">"Клавиш за глас. въвеждане"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"Няма активирани методи на гласово въвеждане. Проверете настройките за език и въвеждане."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"Конфигуриране на въвеждането"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"Езици"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"Помощ и отзиви"</string>
     <string name="select_language" msgid="3379792010205373078">"Езици"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"Докоснете отново, за да запазите"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"Докоснете тук, за да запазите"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"Има достъп до речник"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"Тема на клавиатурата"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"Превключване между профилите"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"Няма избрани профили"</string>
-    <string name="account_selected" msgid="2929764293361296224">"Понастоящем използвате <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"ОK"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"Отказ"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"Изход"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"Изберете профил, който да използвате"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"английски (Великобритания)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"английски (САЩ)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"испански (САЩ)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"латиница (Коулмак)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"латиница (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"Емотикони"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"Тема на клавиатурата"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"Персон. стилове за въвежд."</string>
-    <string name="add_style" msgid="8304208538938230889">"+ стил"</string>
-    <string name="add" msgid="6822705504410731743">"Добавяне"</string>
-    <string name="remove" msgid="4473717811376496460">"Премахване"</string>
-    <string name="save" msgid="1396012053841537145">"Запазване"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"Език"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"Подредба"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"Персонализираният ви стил за въвеждане трябва да се активира, преди да започнете да го използвате. Искате ли да го направите сега?"</string>
-    <string name="enable" msgid="3465950915897490353">"Активиране"</string>
-    <string name="not_now" msgid="6385104011963838405">"Не сега"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"Същият стил на въвеждане вече съществува: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"Продълж. на вибриране при натискане"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"Сила на звука при натиск. на клавиш"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"Забавяне при продълж. натискане"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"Емотикони за физическа клавиатура"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"При натискане на клавиша „Alt“ се показва панелът за емотикони"</string>
-    <string name="button_default" msgid="4824983794085575316">"Стандартно"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"Добре дошли в/ъв <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"с въвеждане чрез жест"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"Първи стъпки"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"Следваща стъпка"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"Настройване на <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"Активирайте <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"Моля, поставете отметка за <xliff:g id="APPLICATION_NAME">%s</xliff:g> от „Език и въвеждане“. Така ще упълномощите приложението да се изпълнява на устройството."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"Приложението <xliff:g id="APPLICATION_NAME">%s</xliff:g> вече е активирано от „Език и въвеждане“, така че тази стъпка е изпълнена. Преминете към следващата!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"Активиране в настройките"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"Превключете към <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"След това изберете <xliff:g id="APPLICATION_NAME">%s</xliff:g> като активен метод на въвеждане на текст."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"Превключване на методите на въвеждане"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"Поздравления! Вече сте готови!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"Вече можете да пишете във всичките си любими приложения посредством <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"Конфигуриране на допълнителни езици"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"Край"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"Показв. на иконата на прилож."</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"Показване на иконата на приложението в стартовия панел"</string>
-    <string name="app_name" msgid="1388609705083271907">"Доставчик на речника"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"Доставчик на речника"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"Услуга за речник"</string>
-    <string name="download_description" msgid="7667377256582305064">"Информация за актуализацията на речниците"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"Добавени речници"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"Речникът е налице"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"Настройки за речници"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"Потребителски речници"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"Потребителски речник"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"Речникът е налице"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"Понастоящем се изтегля"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"Инсталиран"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"Инсталиран, деактивиран"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"Няма връзка с речниците"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"Няма налични речници"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"Опресняване"</string>
-    <string name="last_update" msgid="2377094521844654156">"Последна актуализация:"</string>
-    <string name="message_updating" msgid="7158989361989504143">"Проверява се за актуализации"</string>
-    <string name="message_loading" msgid="9151934303930222809">"Зарежда се…"</string>
-    <string name="main_dict_description" msgid="695289288722079926">"Основен речник"</string>
     <string name="cancel" msgid="5611033781118852820">"Отказ"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"Настройки"</string>
     <string name="install_dict" msgid="8963966683066463555">"Инсталиране"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"Отказ"</string>
-    <string name="delete_dict" msgid="293286833341025636">"Изтриване"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"Налице е речник за избрания език на мобилното ви устройство.&lt;br/&gt;Препоръчваме ви &lt;b&gt;да изтеглите&lt;/b&gt; речника за <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>, за да подобрите работата си при писане.&lt;br/&gt; &lt;br/&gt;Изтеглянето през 3G може да отнеме една или две минути. Възможно е да бъдете таксувани, ако нямате &lt;b&gt;неограничен план за данни&lt;/b&gt;.&lt;br/&gt;В случай че не сте сигурни какъв е вашият план, ви препоръчваме да намерите Wi-Fi връзка, за да започнете изтеглянето автоматично.&lt;br/&gt; &lt;br/&gt;Съвет: Можете да изтегляте и премахвате речници, като отворите &lt;b&gt;Език и въвеждане&lt;/b&gt; от менюто &lt;b&gt;Настройки&lt;/b&gt; на мобилното си устройство."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"Изтегляне сега (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> МБ)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Изтегляне през Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"За <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> е налице речник"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"Натиснете, за да прегледате и изтеглите"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"Изтегля се: Предложенията за <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ще бъдат готови скоро."</string>
     <string name="version_text" msgid="3213200439763585436">"Версия <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"Добавяне"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"Добавяне в речника"</string>

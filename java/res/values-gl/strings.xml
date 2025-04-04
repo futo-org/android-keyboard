@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"Opcións de entrada"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"Verificar nomes de contactos"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"O corrector ortográfico utiliza entradas da lista de contactos"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"Vibrar ao premer as teclas"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"Son ao premer as teclas"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"Ventás emerxentes ao premer as teclas"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"Preferencias"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"Contas e privacidade"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"Aparencia e deseños"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"Escritura por xestos"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"Corrección ortográfica"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"Configuración avanzada"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"Tema"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"Activar teclado dividido"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Sincronización do teclado Google"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"A sincronización está activada"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"Sincroniza o teu dicionario persoal nos dispositivos"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"Sincronizar agora"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"Eliminar datos da nube"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Elimina os teus datos sincronizados de Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"Os teus datos sincronizados eliminaranse da nube. Estás seguro?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"Eliminar"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"Cancelar"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Sincronizarase o teu dicionario persoal e realizarase unha copia de seguranza nos servidores de Google. Quizais se recompile información estatística da frecuencia das palabras para axudar a mellorar os nosos produtos. A recompilación e o uso de toda a información cumprirán coa "<a href="https://www.google.com/policies/privacy">"Política de privacidade de Google"</a>"."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Engade unha conta de Google ao dispositivo para activar a función"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Sincronización non dispoñible para dispositivo con Google Apps for Business"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Outros métodos de entrada"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"A tecla de cambio de idioma inclúe outros métodos de entrada"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"Tecla de cambio de idioma"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"Mostra cando hai varios idiomas de entrada activados"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"Retardo ao ampliar tecla"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"Sen retardo"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"Predeterminado"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"Predeterminado do sistema"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"Suxerir nomes contactos"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"Utiliza nomes de contactos para as suxestións e correccións"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"Suxestións personalizadas"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"Mellorar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"Dobre espazo insire punto"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"Ao tocar dúas veces a barra de espazo insire un punto e un espazo"</string>
     <string name="auto_cap" msgid="525628419128036324">"Maiúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"Pon en maiúscula a primeira palabra de cada frase"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"Dicionario persoal"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"Dicionarios complementarios"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"Dicionario principal"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"Mostrar suxestións de corrección"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"Mostra palabras suxeridas mentres escribes"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"Bloquear palabras ofensivas"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"Evita suxerir palabras potencialmente ofensivas"</string>
     <string name="auto_correction" msgid="4585482324756913868">"Autocorrección"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"Premer a barra espazo e teclas de puntuación para corrixir erros"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"Desactivada"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"Modesta"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"Agresiva"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"Moi agresiva"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"Suxerir palabra seguinte"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"Utiliza a palabra anterior para facer suxestións"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"Activar escritura por xestos"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"Pasa o dedo entre as letras para introducir unha palabra"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"Mostrar percorrido dos xestos"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"Vista previa flotante dinámica"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"Mostra a palabra suxerida mentres se fan xestos"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"Xesto de frase"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"Para introducir espazos nos xestos, pasa o dedo cara a tecla de espazo"</string>
-    <string name="voice_input" msgid="7725046107052037926">"Tecla de entrada de voz"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"Non hai métodos de entrada de voz activado. Comproba a configuración Idioma e introdución de texto."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"Idiomas"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"Axuda e suxerencias"</string>
     <string name="select_language" msgid="3379792010205373078">"Idiomas"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"Toca de novo para gardar"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"Toca aquí para gardar"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"Dicionario dispoñible"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"Tema do teclado"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"Cambiar de conta"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"Non se seleccionou ningunha conta"</string>
-    <string name="account_selected" msgid="2929764293361296224">"Actualmente utilizando <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"Aceptar"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"Cancelar"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"Pechar sesión"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"Selecciona unha conta para usar"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"Inglés (Reino Unido)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"Inglés (EUA)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"Español (EUA)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"Alfabeto (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"Alfabeto (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"Emoji"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"Tema do teclado"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"Estilos de entrada personalizados"</string>
-    <string name="add_style" msgid="8304208538938230889">"Engadir estilo"</string>
-    <string name="add" msgid="6822705504410731743">"Engadir"</string>
-    <string name="remove" msgid="4473717811376496460">"Eliminar"</string>
-    <string name="save" msgid="1396012053841537145">"Gardar"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"Idioma"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"Deseño"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"É necesario activar o estilo de entrada personalizado para poder comezar a utilizalo. Queres activalo agora?"</string>
-    <string name="enable" msgid="3465950915897490353">"Activar"</string>
-    <string name="not_now" msgid="6385104011963838405">"Agora non"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"Xa existe o mesmo estilo de entrada: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"Duración vibración ao premer teclas"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"Volume do son ao premer teclas"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"Retardo de pulsación prolongada"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"Emojis para o teclado físico"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"A tecla Alt física mostra a paleta de emoji"</string>
-    <string name="button_default" msgid="4824983794085575316">"Predeterminado"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"Dámosche a benvida a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"con escritura por xestos"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"Comezar"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"Seguinte paso"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"Configurando <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"Activar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"Comproba a aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> na configuración Idioma e introdución de texto para que se poida executar no teu dispositivo."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"A aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> xa está activada na configuración Idioma e introdución de texto. Podes pasar ao seguinte paso."</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"Activar en Configuración"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"Cambiar a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"A continuación, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de introdución de texto activo."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"Cambiar métodos de entrada"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"Parabéns, está todo listo!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"Agora podes escribir en todas as túas aplicacións favoritas con <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"Configurar idiomas adicionais"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"Finalizado"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"Mostrar icona da aplicación"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"Mostra a icona da aplicación no Launcher"</string>
-    <string name="app_name" msgid="1388609705083271907">"Fornecedor do dicionario"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"Fornecedor do dicionario"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"Servizo de dicionario"</string>
-    <string name="download_description" msgid="7667377256582305064">"Información de actualización do dicionario"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"Dicionarios complementarios"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"Dicionario dispoñible"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"Configuración dos dicionarios"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"Dicionarios de usuario"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"Dicionario do usuario"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"Dicionario dispoñible"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"Descarga en curso"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"Instalado"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"Instalado (desactivado)"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"Erro ao conectar"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"Non hai dicionarios"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"Actualizar"</string>
-    <string name="last_update" msgid="2377094521844654156">"Última actualización"</string>
-    <string name="message_updating" msgid="7158989361989504143">"Buscando actualizacións"</string>
-    <string name="message_loading" msgid="9151934303930222809">"Cargando..."</string>
-    <string name="main_dict_description" msgid="695289288722079926">"Dicionario principal"</string>
     <string name="cancel" msgid="5611033781118852820">"Cancelar"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"Configuración"</string>
     <string name="install_dict" msgid="8963966683066463555">"Instalar"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"Cancelar"</string>
-    <string name="delete_dict" msgid="293286833341025636">"Eliminar"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"O idioma seleccionado no teu dispositivo móbil ten un dicionario dispoñible.&lt;br/&gt; É recomendable &lt;b&gt;descargar&lt;/b&gt; o dicionario de <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> para mellorar a experiencia de escritura.&lt;br/&gt; &lt;br/&gt; A descarga pode tardar un ou dous minutos en redes 3G. É posible que se apliquen tarifas se non tes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;.&lt;br/&gt; Se non estás seguro de que plan de datos tes, é recomendable buscar unha conexión wifi para iniciar a descarga automaticamente.&lt;br/&gt; &lt;br/&gt; Consello: podes descargar e eliminar dicionarios en &lt;b&gt;Idiomas e introdución de texto&lt;/b&gt; no menú &lt;b&gt;Configuración&lt;/b&gt; do dispositivo móbil."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"Descargar agora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Descargar a través da wifi"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"Hai un dicionario dispoñible para <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"Preme aquí para revisar e descargar"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"Descargando: as suxestións para <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> estarán listas proximamente."</string>
     <string name="version_text" msgid="3213200439763585436">"Versión <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"Engadir"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"Engadir ao dicionario"</string>

@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"ជម្រើស​​បញ្ចូល"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"រក​មើល​ឈ្មោះ​ទំនាក់ទំនង"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"កម្មវិធី​ពិនិត្យ​អក្ខរាវិរុទ្ធ​ប្រើ​ធាតុ​ពី​​ក្នុង​បញ្ជី​ទំនាក់ទំនង​របស់​អ្នក"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"ញ័រ​នៅ​ពេល​ចុច​គ្រាប់ចុច"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"សំឡេង​នៅ​ពេល​ចុច​គ្រាប់ចុច"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"លេច​ឡើង​នៅ​​ពេល​ចុច​គ្រាប់​ចុច"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"ចំណូលចិត្ត"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"គណនី &amp;amp ភាពឯកជន"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"រូបរាង &amp;amp ប្លង់"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"កាយវិការ​បញ្ចូល"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"ការ​កែ​​អត្ថបទ"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"កម្រិត​ខ្ពស់"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"រូបរាង"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"បើក​ការ​បំបែក​ក្ដារចុច"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"សមកាលកម្មលើក្តារចុច Google"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"សមកាលម្មត្រូវបានបើក"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"ធ្វើសមកាលកម្មបញ្ជីឯកសារផ្ទាល់ខ្លួនឆ្លងឧបករណ៍"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"ធ្វើសម្មកាលកម្មឥឡូវនេះ"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"លុបទិន្នន័យក្លោត"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"លុបទិន្នន័យដែលបានធ្វើសមកាលកម្មរបស់អ្នកចេញពី Google"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"ទិន្នន័យធ្វើសមកាលកម្មរបស់អ្នកនឹងត្រូវបានលុបពីពពក។ តើអ្នកប្រាកដទេ?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"លុប"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"បោះបង់"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"បញ្ជីឯកសារផ្ទាល់ខ្លួនរបស់អ្នកនឹងត្រូវបានធ្វើសមកាលកម្ម និងបម្រុងទុកនៅក្នុងម៉ាស៊ីនមេ Google។ ព័ត៌មានស្ថិតិនៃចំនួនពាក្យដែលឧស្សាហ៍ប្រើអាចត្រូវបានប្រមូលដើម្បីធ្វើឲ្យផលិតផលរបស់ពួកយើងប្រសើរជាងមុន។ ការប្រមូល និងការប្រើប្រាស់ព័ត៌មាន នឹងត្រូវអនុលោមតាម "<a href="https://www.google.com/policies/privacy">"គោលការណ៍ភាពឯកជនរបស់ Google"</a>"។"</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"សូមបន្ថែមគណនី Google ទៅឧបករណ៍នេះដើម្បីបើកដំណើរការលក្ខណៈពិសេសនេះ"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"ការធ្វើសមកាលកម្មមិនមាននោះទេសម្រាប់ឧបករណ៍ដែលមានគណនីកម្មវិធី Google សម្រាប់ធុរកិច្ច។"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"ប្ដូរ​ទៅ​​​វិធីសាស្ត្រ​បញ្ចូល​​​ផ្សេង​ទៀត"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"គ្រាប់ចុច​ប្ដូរ​ភាសា​តាម​វិធីសាស្ត្រ​បញ្ចូល​ផ្សេងទៀត"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"គ្រាប់​ចុច​ប្ដូរ​​ភាសា"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"បង្ហាញ​នៅ​ពេល​ដែល​បើក​ភាសា​បញ្ចូល​ច្រើន"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"​សោ​លេចឡើង​បោះបង់​ការ​​ពន្យារពេល​"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"គ្មាន​ការ​ពន្យារពេល"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"លំនាំដើម"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> មិល្លី​វិនាទី"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"លំនាំ​ដើម​​​ប្រព័ន្ធ"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"ស្នើ​ឈ្មោះ​ទំនាក់ទំនង"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"ប្រើ​ឈ្មោះ​ពី​ទំនាក់ទំនង​សម្រាប់​ការ​​ស្នើ និង​​​កែ"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"ការ​ស្នើ​ផ្ទាល់​ខ្លួន"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"ធ្វើឲ្យ <xliff:g id="APPLICATION_NAME">%s</xliff:g> ប្រសើរ​ឡើង"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"រយៈ​ពេល​ចុច​ដកឃ្លា​ពីរដង"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"ប៉ះ​ដកឃ្លា​ពីរ​​ដង​បញ្ចូល​​​រយៈ​ពេល​ដែល​អនុវត្ត​តាម​ដកឃ្លា"</string>
     <string name="auto_cap" msgid="525628419128036324">"ការ​សរសេរ​ជា​អក្សរ​ធំ​​ស្វ័យប្រវត្តិ​"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"សរសេរ​ពាក្យ​ដំបូង​​​ជា​អក្សរ​ធំ​​នៃ​ប្រយោគ​នីមួយ​ៗ"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"វចនានុក្រម​ផ្ទាល់ខ្លួន"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"ផ្នែក​បន្ថែម​វចនានុក្រម"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"វចនានុក្រម​ចម្បង"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"បង្ហាញ​ការ​ស្នើ​​កែ"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"បង្ហាញ​ពាក្យ​​បាន​​ផ្ដល់​​ស្នើ​​ខណៈ​ពេល​​​វាយ​បញ្ចូល"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"ទប់ស្កាត់​​ពាក្យ​​បំពាន"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"កុំ​ស្នើ​ឲ្យ​ពាក្យ​បំពាន​មាន​សក្ដានុពល​"</string>
     <string name="auto_correction" msgid="4585482324756913868">"ការ​កែ​​​ស្វ័យប្រវត្តិ"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"ចន្លោះ​មិន​ឃើញ ​និង​សញ្ញា​​វណ្ណយុត្ត​កែ​ពាក្យ​ដែល​បាន​វាយ​ខុស​ស្វ័យប្រវត្តិ"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"បិទ"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"ល្មម"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"បំពាន"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"បំពាន​ខ្លាំង"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"ការ​ស្នើ​ពាក្យ​បន្ទាប់"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"ប្រើ​ពាក្យ​មុន​​នៅ​ពេល​ធ្វើ​ការ​​​ស្នើ"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"បើក​ការ​​បញ្ចូល​​កាយវិការ"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"បញ្ចូល​ពាក្យ​ដោយ​រំកិល​​​តាម​​អក្សរ"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"បង្ហាញ​ដាន​កាយវិការ"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"មើល​ការ​​អណ្ដែត​ដែល​មាន​ចលនា​ជា​មុន"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"​មើល​ពាក្យ​​​ដែល​បាន​ស្នើ​​​ខណៈ​ពេល​កំពុង​ធ្វើ​កាយ​វិការ"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"កាយវិការ​​ឃ្លា"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"បញ្ចូល​​ដកឃ្លា​​​អំឡុង​​​កាយវិការ​ ដោយ​រំកិល​ទៅ​គ្រាប់​ចុច​ដកឃ្លា"</string>
-    <string name="voice_input" msgid="7725046107052037926">"គ្រាប់​ចុច​បញ្ចូល​​សំឡេង"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"គ្មានការបើកវិធីសាស្ត្របញ្ចូលសំឡេងទេ។ សូមពិនិត្យការកំណត់ភាសា និងបញ្ចូល។"</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"កំណត់​រចនាសម្ព័ន្ធ​វិធីសាស្ត្រ​បញ្ចូល"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"ភាសា"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"ជំនួយ &amp; មតិ​ត្រឡប់"</string>
     <string name="select_language" msgid="3379792010205373078">"ភាសា"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"ប៉ះម្តងទៀតដើម្បីរក្សាទុក"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"ប៉ះទីនេះដើម្បីរក្សាទុក"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"មាន​វចនានុក្រម"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"រូបរាង​ក្ដារចុច"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"ប្ដូរ​គណនី"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"មិន​បាន​ជ្រើស​គណនី"</string>
-    <string name="account_selected" msgid="2929764293361296224">"កំពុង​ប្រើ <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"យល់ព្រម"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"បោះបង់"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"ចេញ"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"ជ្រើស​គណនី​ដើម្បី​ប្រើ"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"អង់គ្លេស (​អង់គ្លេស)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"អង់គ្លេស (សហរដ្ឋ​អាមេរិក)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"អេស្ប៉ាញ (សហរដ្ឋ​អាមេរិក​)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"តាម​លំដាប់​អក្សរក្រម (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"តាម​លំដាប់​អក្សរក្រម (កុំព្យូទ័រ)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"សញ្ញា​អារម្មណ៍"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"រូបរាង​ក្ដារចុច"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"រចនាប័ទ្ម​បញ្ចូល​ផ្ទាល់ខ្លួន"</string>
-    <string name="add_style" msgid="8304208538938230889">"បន្ថែម​រចនាប័ទ្ម"</string>
-    <string name="add" msgid="6822705504410731743">"បន្ថែម"</string>
-    <string name="remove" msgid="4473717811376496460">"លុប​ចេញ"</string>
-    <string name="save" msgid="1396012053841537145">"រក្សាទុក"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"ភាសា"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"ប្លង់"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"ចាំបាច់​ត្រូវ​បើក​រចនាប័ទ្ម​បញ្ចូល​ផ្ទាល់​ខ្លួន​របស់​អ្នក មុន​ពេល​អ្នក​ចាប់ផ្ដើម​ប្រើ​វា។ តើ​អ្នក​ចង់​បើក​វា​ឥឡូវ​នេះ​ឬ?"</string>
-    <string name="enable" msgid="3465950915897490353">"បើក"</string>
-    <string name="not_now" msgid="6385104011963838405">"មិនមែន​ឥឡូវ"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"មាន​រចនាប័ទ្ម​បញ្ចូល​ដូច​គ្នា​ដូច​ហើយ៖ <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"ថិរវេលា​​ញ័រ​​ពេល​ចុច​គ្រាប់ចុច"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"កម្រិត​សំឡេង​ពេល​ចុច​គ្រាប់​ចុច"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"ពន្យារពេល​​​ចុច​គ្រាប់​ចុច​ឲ្យ​​យូរ"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"សញ្ញាអារម្មណ៍សម្រាប់ក្តារចុចពិតប្រាកដ"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"គ្រាប់ចុច Alt បង្ហាញផ្ទាំងសញ្ញាអារម្មណ៍"</string>
-    <string name="button_default" msgid="4824983794085575316">"លំនាំដើម"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"សូម​ស្វាគមន៍​មក​កាន់ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"ជាមួយ​​​ការ​វាយ​បញ្ចូល​ដោយ​ប្រើ​​​កាយវិការ"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"បាន​ចាប់ផ្ដើម"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"ជំហាន​បន្ទាប់"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"រៀបចំ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"បើក <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"សូមពិនិត្យ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ក្នុងការកំណត់ភាសា និងបញ្ចូលរបស់អ្នក។ វានឹងផ្តល់សិទ្ធិឲ្យកម្មវិធីនេះដំណើរការនៅលើឧបករណ៍របស់អ្នក។"</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ត្រូវបានបើកដំណើរការនៅក្នុងការកំណត់ភាសា និងបញ្ចូលរបស់អ្នករួចហើយ ដូច្នេះជំហ៊ាននេះបានបញ្ចប់ហើយ។ ចូលទៅជំហ៊ានបន្ទាប់!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"បើក​នៅ​ក្នុង​ការ​កំណត់"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"ប្ដូរ​ទៅ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"បន្ទាប់ ជ្រើស \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ជា​វិធី​សាស្ត្រ​បញ្ចូល​អត្ថបទ​សកម្ម​របស់​អ្នក។"</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"ប្ដូរ​វិធីសាស្ត្រ​បញ្ចូល"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"សូម​អបអរ​សាទរ,​ អ្នក​​បាន​កំណត់​​រួចរាល់​ហើយ!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"ឥឡូវ​​អ្នក​អាច​​វាយ​បញ្ចូល​នៅ​ក្នុង​​កម្មវិធី​​ពេញ​ចិត្ត​របស់​អ្នក​ទាំងអស់​ជាមួយ <xliff:g id="APPLICATION_NAME">%s</xliff:g> ។"</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"កំណត់​រចនា​សម្ព័ន្ធ​ភាសា​បន្ថែម"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"បាន​បញ្ចប់"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"បង្ហាញ​រូប​កម្មវិធី"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"បង្ហាញ​រូប​កម្មវិធី​នៅ​ក្នុង​កម្ម​​វិធី​ចាប់ផ្ដើម"</string>
-    <string name="app_name" msgid="1388609705083271907">"កម្មវិធី​ផ្ដល់​វចនានុក្រម"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"កម្មវិធី​ផ្ដល់​វចនានុក្រម"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"សេវាកម្ម​​វចនានុក្រម"</string>
-    <string name="download_description" msgid="7667377256582305064">"ព័ត៌មាន​បច្ចុប្បន្នភាព​វចនានុក្រម"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"ផ្នែក​បន្ថែម​វចនានុក្រម​​"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"វចនានុក្រម​​​​​អាច​ប្រើ​បាន"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"ការ​កំណត់​សម្រាប់​វចនានុក្រម"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"វចនានុក្រម​​​អ្នក​ប្រើ"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"វចនានុក្រម​អ្នកប្រើ"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"វចនានុក្រម​​​អាច​ប្រើ​បាន"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"បច្ចុប្បន្ន​កំពុង​ទាញ​យក"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"បាន​ដំឡើង"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"បាន​ដំឡើង បាន​បិទ"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"មាន​បញ្ហា​ក្នុង​ការ​​ភ្ជាប់​ទៅ​​សេវា​កម្ម​វចនានុក្រម"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"គ្មាន​វចនានុក្រម"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"ផ្ទុក​ឡើងវិញ"</string>
-    <string name="last_update" msgid="2377094521844654156">"បាន​ធ្វើ​បច្ចុប្បន្នភាព​ចុងក្រោយ"</string>
-    <string name="message_updating" msgid="7158989361989504143">"ពិនិត្យមើល​បច្ចុប្បន្នភាព"</string>
-    <string name="message_loading" msgid="9151934303930222809">"កំពុង​ផ្ទុក..."</string>
-    <string name="main_dict_description" msgid="695289288722079926">"វចនានុក្រម​ចម្បង"</string>
     <string name="cancel" msgid="5611033781118852820">"បោះ​បង់​"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"ការ​កំណត់"</string>
     <string name="install_dict" msgid="8963966683066463555">"ដំឡើង"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"បោះ​បង់​"</string>
-    <string name="delete_dict" msgid="293286833341025636">"លុប"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"ភាសាដែលបានជ្រើសនៅលើឧបករណ៍ចល័តរបស់អ្នកមានវចនានុក្រមដែលអាចប្រើបាន&lt;br/&gt; យើងសូមណែនាំឲ្យអ្នក&lt;b&gt;ដោនឡូត&lt;/b&gt;វចនានុក្រម<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ដើម្បីធ្វើឲ្យការវាយបញ្ចូលរបស់អ្នកប្រសើរឡើង។&lt;br/&gt; &lt;br/&gt; ការដោនឡូតអាចចំណាយពេលមួយ ឬពីរនាទីតាមរយៈប្រព័ន្ធ 3G។ ការគិតប្រាក់អាចនឹងត្រូវបានអនុវត្ត ប្រសិនបើអ្នកមិនប្រើ&lt;b&gt;គម្រោងទិន្នន័យគ្មានដែនកំណត់&lt;/b&gt;ទេនោះ។&lt;br/&gt; ប្រសិនបើអ្នកមិនច្បាស់ថាតើគម្រោងទិន្នន័យប្រភេទណាដែលអ្នកប្រើទេនោះ យើងសូមណែនាំឲ្យអ្នករកមើលការតភ្ជាប់ Wi-Fi ដើម្បីចាប់ផ្តើមដោនឡូតដោយស្វ័យប្រវត្តិ។&lt;br/&gt; &lt;br/&gt; គន្លឹះ៖ អ្នកអាចដោនឡូត និងយកវចនានុក្រមចេញដោយចូលទៅកាន់&lt;b&gt;ភាសា និងបញ្ចូល&lt;/b&gt; នៅក្នុងម៉ឺនុយ&lt;b&gt;ការកំណត់&lt;/b&gt;នៃឧបករណ៍ចល័តរបស់អ្នក។"</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"ទាញ​យក​ឥឡូវ​នេះ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> មេកាបៃ)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"ទាញ​យក​តាម​វ៉ាយហ្វាយ"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"វចនានុក្រម​អាច​ប្រើ​បាន​សម្រាប់ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"ចុច​ ដើម្បី​ពិនិត្យ​មើល​ឡើង​​វិញ​ និង​ទាញ​យក"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"ទាញ​យក៖ ការ​ស្នើ​សម្រាប់ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> នឹង​រួចរាល់​ក្នុង​ពេល​ឆាប់ៗ​នេះ។"</string>
     <string name="version_text" msgid="3213200439763585436">"កំណែ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"បន្ថែម"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"បន្ថែម​ទៅ​វចនានុក្រម"</string>

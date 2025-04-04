@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"ထည့်သွင်းရန် နည်းလမ်းများ"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"အဆက်အသွယ်အမည်များကို ရှာ"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"စာလုံးပေါင်းစစ်စနစ်က သင့်အဆက်အသွယ်စာရင်းမှ ရယူအသုံးပြုသည်"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"ခလုတ်နှိပ်သည်နှင့် တုံခါစေပါ"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"ခလုတ်နှိပ်လျှင် အသံမြည်"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"ခလုတ်နှိပ်လိုက်သည်နှင့် ပေါ်လာရန်"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"ရွေးချယ်စရာများ"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"အကောင့်များ &amp; ကိုယ်ပိုင်ကိစ္စ"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"ပုံပန်းသွင်ပြင် &amp; အပြင်အဆင်များ"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"လှုပ်ရှားမှုဖြင့်စာရိုက်ခြင်း"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"စာအမှားပြပြင်ခြင်း"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"အဆင့်မြင့်"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"အပြင်အဆင်"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"ကီးဘုတ် ခွဲခြမ်းမှု ဖွင့်ထားရန်"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Google Keyboard စင့်လုပ်ရန်"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"စင့် ဖွင့်ထားသည်"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"သင့် ကိုယ်ပိုင်သုံး အဘိဓာန်အား စက်များအားလုံးတွင် စင့်လုပ်ရန်"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"ထပ်တူညီအောင် ယခုပြုလုပ်နေပါပြီ…"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"Cloud ဒေတာ ဖျက်ရန်"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"သင်၏ စင့်က် လုပ်ပြီးသား ဒေတာ Google ထဲမှ ဖျက်ခံရမည်။"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"သင့် စင့်လုပ်ထားသော ဒေတာများအား cloud မှ ဖျက်လိမ့်မည်။ သေချာသလား?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"ဖျက်ရန်"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"မလုပ်တော့"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"သင့်ရဲ့ကိုယ်ပိုင်အဘိဓါန်ကို Google server များမှာ ထပ်တူညီအောင်လုပ် ပြီး မူလပုံစံ ပြန်သွားမည်။ အိုင်တီထုတ်ကုန်များ တိုးတက်မှုရှိအောင် စာလုံးရေ ကောက်ယူမှု အချက်အလက်ကို စုစည်းပါသည်။ အဆိုပါအချက်အလက်စုယူ သုံးစွဲမှုကို "<a href="https://www.google.com/policies/privacy">" Google၏မိမိအတွင်းရေးသီးသန့် မူဝါဒ "</a>" ဖြင့် စောဒကတက် နိုင်သည်။"</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"ဒီအင်္ဂါရပ်တွေကို ရဖို့ဒီစက်မှာ Google account တစ်ခုကို ဖွင့်ပါ"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"စီးပွားရေးအကောင့်များအတွက် Google အပ်ဖ်များဖြင့် စက်ပစ္စည်းများတွင် ထပ်တူပြုခြင်း မရနိုင်ပါ"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"အခြားထည့်သွင်းမည့် နည်းလမ်းများသို့ ပြောင်းရန်"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"ဘာသာပြောင်းသည့် ကီးသည် အခြားထည့်သွင်းရန် နည်းလမ်းများလည်း ပါဝင်သည်"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"ဘာသာစကား ပြောင်းခလုတ်"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"များပြားသည့် ထည့်သွင်းရန်နည်းလမ်းများဖွင့်ထားလျှင် ပြပါ"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"ကီးပေါ်လာ၍ ပယ်ရန်နှုန်း"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"နောက်မကျ"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"မူရင်းအတိုင်း"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g>ms"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"စနစ်ပုံသေ"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"အဆယ်ကသွယ်အမည်များ အကြံပြုမည်"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"အကြံပြုချက်များနှင့် အမှားပြင်ခြင်းများအတွက် အဆက်သွယ်မှ အမည်များ အသုံးပြုမည်"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"ကိုယ်ရေးကိုယ်တာ အကြံပြုချက်များ"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"မြှင့်တင်ပါ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"နှစ်နေရာခြား အဆုံးသတ်"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"အချိန်ကာလ"</string>
     <string name="auto_cap" msgid="525628419128036324">"အော်တိုစာလုံးကြီးပြောင်း"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"စာကြောင်းတိုင်း ပထမစာလုံးကို အကြီးလုပ်ရန်"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"ကိုယ်ပိုင် အဘိဓာန်"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"ပေါင်းထည့်ထားသည့် အဘိဓါန်များ"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"အဓိကအဘိဓါန်"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"အမှားပြင်ခြင်း အကြံပေးချက်များပြရန်"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"ရိုက်နေစဉ် အကြံပြုထားသည့် စကားလုံးများ ပြပါ"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"ရိုင်းစိုင်းစကားများပိတ်ရန်"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"ရိုင်းစိုင်းသည့် စကားလုံးများအား အကြံမပြုပါနှင့်"</string>
     <string name="auto_correction" msgid="4585482324756913868">"အလိုလျောက် အမှားပြင်ခြင်း"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"မှားယွင်းစွာ ရိုက်ခဲ့သည့် စာလုံးများကို နေရာခြားခလုတ်နှင့် သတ်ပုံမှန်ကန်ခြင်းသည် အလိုအလျောက် ပြုပြင်ပေးသည်"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"မရှိ"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"သာမှန်"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"ထိထိရောက်ရောက်"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"အလွန်ထိရောက်"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"နောက်စကားလုံး အကြံပြုချက်များ"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"အကြံပြုချက်များပြုလုပ်ရာ၌ ပြီးခဲ့သည့် စကားလုံးကို အသုံးပြုရန်"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"အမူယာစာရိုက်ခြင်း ဖွင့်ရန်"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"စာလုံးအား ဆွဲရွှေ့ကာ စာလုံးတစ်လုံး ရိုက်ထည့်ပါ"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"အမူအယာ အမြီးတန်းပြရန်"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"ဝဲပျံနေသည့် အစမ်းကြည့်အကွက်"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"အမူယာပြုလုပ်နေစဉ် အကြံပြုထားသည့် စကားလုံးကို ကြည့်ရန်"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"စကားစု အမူယာ"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"နေရာခြားသည့်ကီးကိုနှိပ်ခြင်းဖြင့် အမူအယာပြုလုပ်စဉ်တွင် နေရာခြား ထည့်သွင်းရန်"</string>
-    <string name="voice_input" msgid="7725046107052037926">"အသံထည့်သွင်းရန် ခလုတ်"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"အသံဖြင့် စရိုက်စနစ် ဖွင့်မထားပါ။ ဘာသာစကားနှင့် စာရိုက်စနစ်ဆက်တင်များကို ပြန်စစ်ပါ။"</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"ထည့်သွင်းရန် နည်းလမ်းကို ပြုပြင်မည်"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"ဘာသာစကားများ"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"အကူအညီနှင့် အကြံပြုချက်"</string>
     <string name="select_language" msgid="3379792010205373078">"ဘာသာစကားများ"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"သိမ်းရန် နောက်တစ်ကြိမ် တို့ပါ"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"သိမ်းရန် ဤနေရာတွင် တို့ပါ"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"အဘိဓါန်ရနိုင်"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"ကီးဘုတ်အရောင်"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"အကောင့်များကို ပြောင်းရန်"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"အကောင့်များ မရွေးရသေးပါ"</string>
-    <string name="account_selected" msgid="2929764293361296224">"<xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>အား လတ်တလော သုံးန​ေ၏"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"OK"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"မလုပ်တော့"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"ထွက်ရန်"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"သုံးမည့်အကောင့်ကို ရွေးရန်"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"အင်္ဂလိပ်(ယူကေ)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"အင်္ဂလိပ် (ယူအက်စ်)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"စပိန် (ယူအက်စ်)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"ဗျည်းအက္ခရာ (ကိုလ်မာ့ခ်)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"ဗျည်း (PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"အီမိုဂျီ"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"ကီးဘုတ်အဆင်အပြင်"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"စိတ်ကြိုက် ထည့်သွင်းမှုစတိုင်လ်"</string>
-    <string name="add_style" msgid="8304208538938230889">"စတိုင်လ်ထည့်ရန်"</string>
-    <string name="add" msgid="6822705504410731743">"ထည့်ရန်"</string>
-    <string name="remove" msgid="4473717811376496460">"ဖယ်ရှားပါ"</string>
-    <string name="save" msgid="1396012053841537145">"သိမ်းရန်"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"ဘာသာစကား"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"အဆင်အပြင်"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"သင့်စိတ်ကြိုက် ထည့်သွင်းမှုစတိုင်လ်အား စတင် အသုံးမပြုမှီ ဖွင့်ရပါမည်။ ၎င်းအားယခု ဖွင့်လိုပါသလား?"</string>
-    <string name="enable" msgid="3465950915897490353">"ဖွင့်ရန်"</string>
-    <string name="not_now" msgid="6385104011963838405">"ယခုမလုပ်ပါ"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"တူညီသည့် ထည့်သွင်းရန် စတိုင်လ် ရှိပြီးဖြစ်: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"ခလုတ်နှိပ်တုန်ခါမှု ကြာမြင့်ချိန်"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"ခလုတ်နှိပ်သည့် အသံအတိုးကျယ်"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"ကီးကြာမြင့်စွာ ဖိနှိပ်မှုနှုန်း"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"ခလုတ်ရှိ ကီးဘုတ်အတွက် အီမိုဂျိ"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"အီမိုဂျီ ဘုတ်ပြားပြသော Alt ခလုတ်"</string>
-    <string name="button_default" msgid="4824983794085575316">"ပုံသေ"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> မှကြိုဆိုပါသည်"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"အမူယာ ရိုက်ခြင်းဖြင့်"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"စတင်ပါတော့"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"နောက်တစ်ဆင့်"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> တပ်ဆင်ရန်"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ဖွင့်ရန်"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ကို ဘာသာစကားနှင့် စာရိုက်စနစ်တွင် စစ်ပါ။ ဤသို့ဖြင့် သင့်စက်ပစ္စည်းပေါ်တွင် ၎င်းကိုဖွင့်ရန်အတည်ပြုပေးပါလိမ့်မည်။"</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ကို သင့်ဘာသာစကားနှင့် စာရိုက်စနစ်ဆက်တင်များတွင် ဖွင့်ထားပြီးဖြစ်၍ ဤအဆင့်ပြီးပါပြီ။ နောက်တစ်ခုသို့ သွားပါ။"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"ဆက်တင်များတွင် ဖွင့်ရန်"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> သို့ပြောင်းမည်"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"ရှေ့၊ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" အားသင်၏ ပွင့်နေသည့်ထည့်သွင်းမှု နည်းလမ်းအဖြစ်ရွေးပါ။"</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"စာရိုက်သွင်းမှုနည်းလမ်း ပြောင်းရန်"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"ဝမ်းသာပါသည်၊ သင်အားလုံးသတ်မှတ်ပြီးပါပြီ!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ဖြင့်သင့် ကြိုက်နှစ်သက်ရာ အပလီကေးရှင်းများအားလုံးအား ရိုက်ထည့်နိုင်ပါပြီ။"</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"ထပ်ပေါင်းဘာသာစကားများ ပြုပြင်မည်"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"ပြီးဆုံးသွားပြီ"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"အက်ပ်သင်္ကေတပြခြင်း"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"launcher တွင် အပလီကေးရှင်း သင်္ကေတကိုပြရန်"</string>
-    <string name="app_name" msgid="1388609705083271907">"အဘိဓါန် ထောက်ပံ့သူ"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"အဘိဓါန် ထောက်ပံ့သူ"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"အဘိဓါန် ဝန်ဆောင်မှု"</string>
-    <string name="download_description" msgid="7667377256582305064">"အဘိဓာန် အသစ်အပ်ဒိတ်လုပ်ရန် အချက်အလက်"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"ပေါင်းထည့်ထားသည့် အဘိဓါန်များ"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"အဘိဓါန်ရနိုင်"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"အဘိဓါန်များအတွက် ဆက်တင်များ"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"အသုံးပြုသူ အဘိဓါန်များ"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"သုံးစွဲသူ၏ အဘိဓာန်"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"အဘိဓါန်ရရှိနိုင်"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"လက်ရှိ ဒေါင်းလုပ်လုပ်နေသည်"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"ထည့်သွင်းပြီး"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"ထည့်သွင်းထားပြီး၊ ပိတ်ထားသည်"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"အဘိဓါန်ဝန်ဆောင်မှုသို့ ချိတ်ဆက်ရန် ပြဿနာရှိနေသည်"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"အဘိဓါန်မရှိ"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"ပြန်လည်ဆန်းသစ်ရန်"</string>
-    <string name="last_update" msgid="2377094521844654156">"နောက်ဆုံး အသစ်မွမ်းမံမှု"</string>
-    <string name="message_updating" msgid="7158989361989504143">"အသစ်မွမ်းမံမှုကို ရှာဖွေနေ"</string>
-    <string name="message_loading" msgid="9151934303930222809">"တင်နေ…"</string>
-    <string name="main_dict_description" msgid="695289288722079926">"အဓိက အဘိဓါန်"</string>
     <string name="cancel" msgid="5611033781118852820">"မလုပ်တော့"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"ဆက်တင်များ"</string>
     <string name="install_dict" msgid="8963966683066463555">"တပ်ဆင်ပါ"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"မလုပ်တော့"</string>
-    <string name="delete_dict" msgid="293286833341025636">"ဖျက်ရန်"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"သင့်မိုဘိုင်းစက်ပစ္စည်းပေါ်တွင် ရွေးချယ်ထားသည့် ဘာသာစကားအတွက် ရရှိနိုင်သည့် အဘိဓာန်တစ်ခု ရှိပါသည်။&lt;br/&gt; သင့်စာရိုက်ခြင်း အတွေ့အကြုံ တိုးတက်မှုရှိလာစေရန် <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> အဘိဓာန်ကို &lt;b&gt;ဒေါင်းလုဒ်&lt;/b&gt; လုပ်ရန် အကြံပြုပါသည်။&lt;br/&gt; &lt;br/&gt; 3G ဖြင့်ဒေါင်းလုဒ်လုပ်လျှင် တစ်မိနစ်၊ နှစ်မိနစ်ခန့် ကြာနိုင်ပါသည်။ သင့်ထံတွင် &lt;b&gt;အကန့်အသတ်မရှိ ဒေတာအစီအစဉ်&lt;/b&gt; မရှိလျှင် ငွေကုန်ကျနိုင်ပါသည်။&lt;br/&gt; သင့်ထံတွင် မည်သည့် ဒေတာအစီအစဉ်ရှိသည်ကို မသေချာလျှင်၊ Wi-Fi နှင့် ချိတ်ဆက်ကာ အလိုအလျောက် ဒေါင်းလုဒ်လုပ်ရန် အကြံပြုပါသည်။&lt;br/&gt; &lt;br/&gt; အကြံပြုချက် − သင့်မိုဘိုင်းစက်ပစ္စည်း၏ &lt;b&gt;Settings&lt;/b&gt; မီနူးရှိ &lt;b&gt;ဘာသာစကားများ &amp; ထည့်သွင်းမှု&lt;/b&gt; သို့သွားရောက်ကာ အဘိဓာန်များကို ဒေါင်းလုဒ်လုပ်ခြင်း၊ ဖယ်ရှားခြင်းများ ပြုလုပ်နိုင်သည်။"</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"ယခုဒေါင်းလုပ်လုပ်မည် (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Wi-Fi အသုံးပြု၍ ဒေါင်းလုပ်လုပ်ရန်"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> အတွက် အဘိဓါန် ရနိုင်ပါသည်"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"ပြန်လည်ဆန်းစစ်ကာ ဒေါင်းလုပ်လုပ်ရန် နှိပ်ပါ"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"ဒေါင်းလုပ်လုပ်နေသည်: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> အတွက်အကြံပြုချက် မကြာမှီတွင် အဆင်သင့်ဖြစ်ပါမည်။"</string>
     <string name="version_text" msgid="3213200439763585436">"ဗားရှင်း <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"ထည့်ရန်"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"အဘိဓာန်ထဲ ထည့်ပါ"</string>

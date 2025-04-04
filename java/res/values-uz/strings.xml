@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"Sozlamalar"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"Kontaktlar ichidan qidirish"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"Imloni tekshirishda kontaktlar ro‘yxatiga murojaat qilish"</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"Tugma bosilganda tebranish"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"Tugmalar tovushi"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"Tugma bosilganda qalqib chiqish"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"Sozlamalar"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"Hisoblar va maxfiylik"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"Ko‘rinish va sxema"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"Qo‘l uzmasdan yozish"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"Matnni tuzatish"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"Kengaytirilgan sozlamalar"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"Mavzu"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"Ikkiga ajratiladigan klaviaturani yoqish"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Klaviaturani sinxronlash"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"Sinxronlash yoqildi"</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"Shaxsiy lug‘atingizni qurilmalar bo‘ylab sinxronlang"</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"Hozir sinxronlash"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"Bulutdagi ma’lumotlarni o‘chirish"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Sinxronlangan ma’lumotlarni Google serveridan o‘chirib tashlash"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"Sinxronlangan ma’lumotlaringiz o‘chib ketadi. Davom etsinmi?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"O‘chirish"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"Bekor qilish"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"Sizning shaxsiy lug\'atingiz Google serverlarida sinxronlashadi va zahiraga nusxalanadi. So‘zning qayta uchrash ko‘rsatkichi statistik ma’lumotlari, bizga mahsulotlarimiz sifatini oshirishda ko‘maklashish uchun to‘planishi mumkin. Barcha ma’lumotlar yig‘ilishi va foydalanishi "<a href="https://www.google.com/policies/privacy">" Google maxfiylik siyosati "</a>" shartlari bo‘yicha amalga oshadi."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"Ushbu imkoniyatni yoqish uchun, iltimos, Google hisobingizni qo‘shing"</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"“Biznes uchun Google Apps” hisobi mavjud qurilmalarda sinxronlab bo‘lmaydi"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"Boshqa usullarga o‘tish"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"Tilni almashtirish tugmasi matn kiritish usulini ham o‘zgartiradi"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"Tilni almashtirish tugmasi"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"Bir nechta matn kiritish tili mavjud bo‘lganda ko‘rsatilsin"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"Yopilish vaqti"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"Kechikishsiz"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"Standart"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"Tizim standarti"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"Ismlarni taklif qilish"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"Kontaktlar ro‘yxatidagi ismlar asosida tuzatmalarni taklif qilish"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"Takliflarni moslashtirish"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ni yaxshilash"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"Nuqtani avtomatik qo‘yish"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"Bo‘sh joy tugmasi ikki marta bosilsa, nuqta qo‘yiladi va bo‘sh joy tashlanadi"</string>
     <string name="auto_cap" msgid="525628419128036324">"Avtomatik bosh harf"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"Har bir gapning birinchi so‘zini bosh harf bilan boshlash"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"Shaxsiy lug‘at"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"Qo‘shimcha lug‘atlar"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"Asosiy lug‘at"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"Tuzatma variantlari"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"Matn kiritishda so‘z variantlarini taklif qilish"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"Senzuraga moyil iboralarni taqiqlash"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"Haqoratomuz so‘zlar taklif qilinmasin"</string>
     <string name="auto_correction" msgid="4585482324756913868">"Avtomatik tuzatish"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"Tinish belgisi kiritilganda yoki bo‘sh joy qoldirilganda, xato so‘zni avtomatik tuzatish"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"O‘ch."</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"O‘rtacha"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"Juda faol"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"Juda faol"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"Keyingi so‘zni taklif qilish"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"Avvalgi so‘zlar asosida keyingi so‘zni taklif qilish"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"Qo‘l uzmasdan yozish"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"So‘zlarni barmog‘ingizni klaviaturadan uzmasdan yozing"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"Barmoq yo‘lini chizish"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"Takliflarni ko‘rsatish"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"Matn kiritishda so‘zlar taklif qilinsin"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"Qo‘l uzmasdan yozish"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"Barmoqni har bir so‘zdan so‘ng bo‘sh joy qoldirish tugmasiga olib borish"</string>
-    <string name="voice_input" msgid="7725046107052037926">"Ovoz bilan yozish tugmasi"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"Ovoz bilan yozish usuli yoqilmagan. “Tillar va matn kiritish” sozlamalarini tekshiring."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"Matn kiritish usullarini sozlash"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"Tillar"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"Yordam va fikr-mulohaza"</string>
     <string name="select_language" msgid="3379792010205373078">"Tillar"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"Saqlash uchun yana bosing"</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"Saqlash uchun bu yerga tegining"</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"Lug‘at mavjud"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"Klaviatura mavzusi"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"Hisobni almashtirish"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"Hech qanday hisob tanlanmadi"</string>
-    <string name="account_selected" msgid="2929764293361296224">"Hozir foydalanilmoqda: <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>"</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"OK"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"Bekor qilish"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"Chiqish"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"Foydalanish uchun hisobni tanlang"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"Ingliz (Buyuk Britaniya)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"Ingliz (AQSH)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"Ispan (AQSH)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"Lotin (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"Lotin (shaxsiy kompyuter)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"Kulgichlar"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"Klaviatura mavzusi"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"Maxsus usullar"</string>
-    <string name="add_style" msgid="8304208538938230889">"Usul qo‘shish"</string>
-    <string name="add" msgid="6822705504410731743">"Qo‘shish"</string>
-    <string name="remove" msgid="4473717811376496460">"Olib tashlash"</string>
-    <string name="save" msgid="1396012053841537145">"Saqlash"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"Til"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"Terilma"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"Moslashtirilgan matn kiritish usulini yoqish lozim. Uni hozir yoqmoqchimisiz?"</string>
-    <string name="enable" msgid="3465950915897490353">"Yoqish"</string>
-    <string name="not_now" msgid="6385104011963838405">"Hozir emas"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"Xuddi shunday matn kiritish usuli allaqachon mavjud: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"Tugma bosilganda tebranish vaqti"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"Tugma bosilgandagi ovoz"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"Tugmani bosib turish"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"Tashqi klaviatura uchun kulgichlar"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"Jismoniy klaviaturadagi Alt tugmasi emojilarni ochadi"</string>
-    <string name="button_default" msgid="4824983794085575316">"Standart"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ilovasiga xush kelibsiz!"</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"qo‘l uzmasdan yozish"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"Boshladik"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"Keyingi qadam"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> sozlanmoqda"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"Yoqish: <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"Matn kiritishda foydalanish uchun “Tillar va matn kiritish” sozlamalarida “<xliff:g id="APPLICATION_NAME">%s</xliff:g>” bandiga belgi qo‘ying."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ilovasi allaqachon “Tillar va matn kiritish” sozlamalarida yoqilgan, shuning uchun keyingi qadamga o‘tish mumkin!"</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"Sozlamalardan yoqish"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>: faollashtirish"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"Keyin, joriy matn kiritish usuli sifatida “<xliff:g id="APPLICATION_NAME">%s</xliff:g>” ilovasini tanlang."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"Matn kiritish usulini o‘zgartirish"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"Tabriklaymiz, hammasi tayyor!"</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"Endi, matn kiritish uchun “<xliff:g id="APPLICATION_NAME">%s</xliff:g>” ilovasidan foydalanishingiz mumkin."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"Qo‘shimcha tillarni sozlash"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"Tugallandi"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"Ilova ikonkasini chiqarish"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"Launcherga ilova ikonkasini chiqarish"</string>
-    <string name="app_name" msgid="1388609705083271907">"Lug‘atlar ta’minotchisi"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"Lug‘atlar ta’minotchisi"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"Lug‘atlar xizmati"</string>
-    <string name="download_description" msgid="7667377256582305064">"Lug‘atlarni yangilash ma’lumoti"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"Qo‘shimcha lug‘atlar"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"Lug‘at mavjud"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"Lug‘atlar uchun sozlamalar"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"Foydalanuvchi lug‘atlari"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"Foydalanuvchi lug‘ati"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"Lug‘at mavjud"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"Hozirda yuklab olinmoqda"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"O‘rnatilgan"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"O‘rnatilgan, o‘chirib qo‘yilgan"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"Ulanib bo‘lmadi"</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"Lug‘at mavjud emas"</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"Yangilash"</string>
-    <string name="last_update" msgid="2377094521844654156">"So‘nggi marta yangilandi"</string>
-    <string name="message_updating" msgid="7158989361989504143">"Yangilanish mavjudligi tekshirilmoqda"</string>
-    <string name="message_loading" msgid="9151934303930222809">"Yuklanmoqda…"</string>
-    <string name="main_dict_description" msgid="695289288722079926">"Asosiy lug‘at"</string>
     <string name="cancel" msgid="5611033781118852820">"Bekor qilish"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"Sozlamalar"</string>
     <string name="install_dict" msgid="8963966683066463555">"O‘rnatish"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"Bekor qilish"</string>
-    <string name="delete_dict" msgid="293286833341025636">"O‘chirish"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"Mobil qurilmangizda tanlangan til uchun lug‘at mavjud.&lt;br/&gt; Matnlarni tezkor va bexato kiritish uchun <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> tili lug‘atini &lt;b&gt;yuklab olish&lt;/b&gt; tavsiya etiladi.&lt;br/&gt; &lt;br/&gt; Agar sizda mobil internet uchun &lt;b&gt;cheksiz internet tarifi&lt;/b&gt; o‘rnatilgan bo‘lsa, lug‘atni 3G orqali yuklab olishingiz mumkin (bir-ikki daqiqa vaqt oladi).&lt;br/&gt; Agar tarif rejangiz tafsilotlarini bilmasangiz, u holda Wi-Fi orqali yuklab olgan ma’qul (yuklab olish avtomatik ravishda boshlanadi).&lt;br/&gt; &lt;br/&gt; Maslahat: Lug‘at qo‘shish, o‘chirish yoki sozlash uchun mobil qurilmangizning <b>Sozlamalar</b> menyusidan &lt;b&gt;Tillar va matn kiritish&lt;/b&gt; bo‘limiga o‘ting."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"Yuklab olish (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Wi-Fi orqali yuklab olish"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"Lug‘at mavjud: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"Ko‘rib chiqish va yuklab olish uchun bosing"</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"Yuklab olinmoqda: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> tili uchun so‘zlarni taklif qilish xususiyati tez orada tayyor bo‘ladi."</string>
     <string name="version_text" msgid="3213200439763585436">"<xliff:g id="VERSION_NUMBER">%1$s</xliff:g> versiya"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"Qo‘shish"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"Lug‘atga kiritish"</string>

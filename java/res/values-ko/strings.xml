@@ -20,87 +20,27 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="4262655277902459172">"입력 옵션"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5006788115094214047">"연락처 이름 조회"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="3637428873952490597">"맞춤법 검사기가 연락처 목록의 항목을 사용합니다."</string>
     <string name="vibrate_on_keypress" msgid="4198642474308147572">"키를 누를 때 진동 발생"</string>
     <string name="sound_on_keypress" msgid="961585885443836044">"키를 누를 때 소리 발생"</string>
     <string name="popup_on_keypress" msgid="8957173605079893697">"키를 누를 때 팝업"</string>
-    <string name="settings_screen_preferences" msgid="2651344303433215540">"환경설정"</string>
-    <string name="settings_screen_accounts" msgid="6532292577269658674">"계정 및 개인정보 보호"</string>
-    <string name="settings_screen_appearance" msgid="5433429477750100471">"모양 및 레이아웃"</string>
-    <string name="settings_screen_gesture" msgid="6549199069124022556">"제스처 타이핑"</string>
-    <string name="settings_screen_correction" msgid="5457740749558200546">"텍스트 수정"</string>
-    <string name="settings_screen_advanced" msgid="2905347720063899478">"고급"</string>
-    <string name="settings_screen_theme" msgid="6744206826660778092">"테마"</string>
-    <string name="enable_split_keyboard" msgid="7299522384075400050">"분할 키보드 사용"</string>
-    <string name="cloud_sync_title" msgid="2648120016215337960">"Google 키보드 동기화"</string>
-    <string name="cloud_sync_summary" msgid="457868413134165923">"동기화가 사용 설정됩니다."</string>
-    <string name="cloud_sync_summary_disabled" msgid="3437796499578155725">"개인 사전을 기기 간에 동기화합니다."</string>
-    <string name="sync_now_title" msgid="8083126086065968727">"지금 동기화"</string>
-    <string name="clear_sync_data_title" msgid="2871211805506563252">"클라우드 데이터 삭제"</string>
-    <string name="clear_sync_data_summary" msgid="2737229599235212381">"Google에서 동기화된 데이터 삭제"</string>
-    <string name="clear_sync_data_confirmation" msgid="6815059501949766995">"동기화된 데이터가 클라우드에서 삭제됩니다. 계속하시겠습니까?"</string>
-    <string name="clear_sync_data_ok" msgid="1809712111627111859">"삭제"</string>
-    <string name="cloud_sync_cancel" msgid="3437544314029636750">"취소"</string>
-    <string name="cloud_sync_opt_in_text" msgid="5443081647469720267">"개인 사전이 Google 서버에 동기화되며 백업됩니다. Google의 제품 개선을 위해 단어 빈도에 관한 통계 정보가 수집될 수 있습니다. 모든 정보는 "<a href="https://www.google.com/policies/privacy">"Google 개인정보처리방침"</a>"에 따라 수집되고 사용됩니다."</string>
-    <string name="add_account_to_enable_sync" msgid="1657487000451860348">"이 기능을 사용하려면 기기에 Google 계정을 추가하세요."</string>
-    <string name="cloud_sync_summary_disabled_work_profile" msgid="4209488085168720952">"Google Apps for Work 계정을 사용하는 기기에서는 동기화할 수 없습니다."</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="2523063290372613355">"다른 입력 방법으로 전환"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="478140358131075690">"언어 전환 키가 제공하는 기타 입력 방법"</string>
     <string name="show_language_switch_key" msgid="8756330695904259459">"언어 전환 키"</string>
-    <string name="show_language_switch_key_summary" msgid="8384511980090372506">"여러 입력 언어를 사용하도록 설정할 때 표시"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="8614997927810442853">"키 팝업 해제 지연"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="432663218827821108">"지연 없음"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="5550664463804963104">"기본값"</string>
     <string name="abbreviation_unit_milliseconds" msgid="3255301845626146979">"<xliff:g id="MILLISECONDS">%s</xliff:g>ms"</string>
-    <string name="settings_system_default" msgid="677003402757146199">"시스템 기본값"</string>
-    <string name="use_contacts_dict" msgid="1625971825786907643">"주소록 이름 활용"</string>
-    <string name="use_contacts_dict_summary" msgid="3820744038619192013">"추천 및 수정에 주소록의 이름 사용"</string>
     <string name="use_personalized_dicts" msgid="7400413665774169711">"맞춤 추천 검색어"</string>
-    <string name="enable_metrics_logging" msgid="5113593293708535701">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> 개선"</string>
     <string name="use_double_space_period" msgid="7172135098923900609">"더블스페이스 마침표"</string>
     <string name="use_double_space_period_summary" msgid="7812112507596640969">"스페이스바를 두 번 탭하여 마침표와 공백 한 개 삽입"</string>
     <string name="auto_cap" msgid="525628419128036324">"자동 대문자화"</string>
     <string name="auto_cap_summary" msgid="1688974089712873396">"문장의 첫 단어를 대문자로 표시"</string>
     <string name="edit_personal_dictionary" msgid="7587143150525708396">"개인 사전"</string>
-    <string name="configure_dictionaries_title" msgid="7811017701961083395">"사전 추가"</string>
-    <string name="main_dictionary" msgid="3935990491324466154">"기본 사전"</string>
     <string name="prefs_show_suggestions" msgid="1283142612397683159">"수정 제안 표시"</string>
     <string name="prefs_show_suggestions_summary" msgid="9066941288258400606">"글자를 입력하는 동안 추천 단어 표시"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="4773164613955867072">"불쾌감을 주는 단어 차단"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="4742951880365181110">"불쾌감을 줄 수 있는 단어는 추천하지 않음"</string>
     <string name="auto_correction" msgid="4585482324756913868">"자동 수정"</string>
     <string name="auto_correction_summary" msgid="2460455056470633907">"스페이스바와 문장부호 키를 사용하면 오타가 자동으로 교정됩니다."</string>
-    <string name="auto_correction_threshold_mode_off" msgid="3439365513347374953">"사용 안함"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="2760377181788020652">"약"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="1318808016356749967">"강력"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1002799845510475500">"매우 강력"</string>
     <string name="bigram_prediction" msgid="3973898748907276589">"다음 단어 추천"</string>
     <string name="bigram_prediction_summary" msgid="9119170359306430265">"추천할 때 이전 단어를 사용"</string>
-    <string name="gesture_input" msgid="3172130834412003008">"제스처 타이핑 사용"</string>
-    <string name="gesture_input_summary" msgid="2654809358251269108">"문자를 슬라이드하여 단어 입력"</string>
-    <string name="gesture_preview_trail" msgid="1614914802819472106">"제스처 흔적 표시"</string>
-    <string name="gesture_floating_preview_text" msgid="7266505770073074352">"동적 플로팅 미리보기"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="8088162455458685442">"제스처에 따라 추천 단어 보기"</string>
-    <string name="gesture_space_aware" msgid="7169910298165673388">"구문 제스처"</string>
-    <string name="gesture_space_aware_summary" msgid="3761626092188724512">"동작 중에 스페이스바 쪽으로 움직여 공백 입력"</string>
-    <string name="voice_input" msgid="7725046107052037926">"음성 입력 키"</string>
-    <string name="voice_input_disabled_summary" msgid="6419192385407621291">"사용 설정된 음성 입력 방법이 없습니다. 언어 및 입력 설정을 확인하세요."</string>
-    <string name="configure_input_method" msgid="4444925520298518217">"입력 방법 설정"</string>
     <string name="language_selection_title" msgid="6121948605923246957">"언어"</string>
-    <string name="help_and_feedback" msgid="5021534846181310255">"고객센터"</string>
     <string name="select_language" msgid="3379792010205373078">"언어"</string>
-    <string name="hint_add_to_dictionary" msgid="7401455990016135640">"저장하려면 다시 탭합니다."</string>
-    <string name="hint_add_to_dictionary_without_word" msgid="899422279733408687">"저장하려면 여기를 탭합니다."</string>
-    <string name="has_dictionary" msgid="1325233223608273869">"사전 사용 가능"</string>
-    <string name="keyboard_layout" msgid="1709024226955326813">"키보드 테마"</string>
-    <string name="switch_accounts" msgid="1213242182459397913">"계정 전환"</string>
-    <string name="no_accounts_selected" msgid="5770301395973322552">"선택한 계정이 없습니다."</string>
-    <string name="account_selected" msgid="2929764293361296224">"현재 <xliff:g id="EMAIL_ADDRESS">%1$s</xliff:g>을(를) 사용 중입니다."</string>
-    <string name="account_select_ok" msgid="2319402914890345072">"확인"</string>
-    <string name="account_select_cancel" msgid="8877103220502603643">"취소"</string>
-    <string name="account_select_sign_out" msgid="9208156165797411519">"로그아웃"</string>
-    <string name="account_select_title" msgid="5355659391942386459">"사용할 계정 선택"</string>
     <string name="subtype_en_GB" msgid="7923165641611861624">"영어(영국)"</string>
     <string name="subtype_en_US" msgid="5477258985573018813">"영어(미국)"</string>
     <string name="subtype_es_US" msgid="3224986579031001684">"스페인어(미국)"</string>
@@ -121,73 +61,10 @@
     <string name="subtype_no_language_colemak" msgid="4216315736099391894">"알파벳(콜맥)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="6021681322207866486">"알파벳(PC)"</string>
     <string name="subtype_emoji" msgid="3021958791567267290">"이모티콘"</string>
-    <string name="keyboard_theme" msgid="6760202984936877690">"키보드 테마"</string>
-    <string name="custom_input_styles_title" msgid="4825941816075899639">"맞춤 입력 스타일"</string>
-    <string name="add_style" msgid="8304208538938230889">"스타일 추가"</string>
-    <string name="add" msgid="6822705504410731743">"추가"</string>
-    <string name="remove" msgid="4473717811376496460">"삭제"</string>
-    <string name="save" msgid="1396012053841537145">"저장"</string>
-    <string name="subtype_locale" msgid="705244739623031884">"언어"</string>
-    <string name="keyboard_layout_set" msgid="1637617996906076019">"레이아웃"</string>
-    <string name="custom_input_style_note_message" msgid="7172574301336711360">"맞춤 입력 스타일을 사용하려면 사용 설정해야 합니다. 지금 사용 설정하시겠습니까?"</string>
-    <string name="enable" msgid="3465950915897490353">"사용"</string>
-    <string name="not_now" msgid="6385104011963838405">"나중에"</string>
-    <string name="custom_input_style_already_exists" msgid="691995042134481799">"같은 입력 스타일이 다음과 같이 이미 존재합니다. <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1191846765985854173">"키를 누를 때 진동 시간"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="871310008809673416">"키를 누를 때 소리 볼륨"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="5901254294943018798">"키 길게 누르기 지연"</string>
-    <string name="prefs_enable_emoji_alt_physical_key" msgid="2935264131313540056">"물리적 키보드용 그림 이모티콘"</string>
-    <string name="prefs_enable_emoji_alt_physical_key_summary" msgid="1002326516601127090">"물리적 Alt 키로 그림 이모티콘 팔레트 표시"</string>
-    <string name="button_default" msgid="4824983794085575316">"기본값"</string>
-    <string name="setup_welcome_title" msgid="6678758294706106216">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>에 오신 것을 환영합니다."</string>
-    <string name="setup_welcome_additional_description" msgid="5109278388931620095">"제스처 타이핑 사용"</string>
-    <string name="setup_start_action" msgid="4261815646635054773">"시작하기"</string>
-    <string name="setup_next_action" msgid="7388109452671117767">"다음 단계"</string>
-    <string name="setup_steps_title" msgid="750835620571733090">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> 설정"</string>
-    <string name="setup_step1_title" msgid="7160930459489282227">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> 사용 설정"</string>
-    <string name="setup_step1_instruction" msgid="7576103876848322594">"언어 및 입력 설정에서 \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\'을(를) 확인하세요. 앱을 기기에서 실행할 수 있도록 승인합니다."</string>
-    <string name="setup_step1_finished_instruction" msgid="9170737556500224736">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>은(는) 언어 및 입력 설정에서 이미 사용하도록 설정되어 있으므로 이 단계는 완료되었습니다. 다음 단계로 이동하세요."</string>
-    <string name="setup_step1_action" msgid="6741430464134100280">"\'설정\'에서 사용 설정"</string>
-    <string name="setup_step2_title" msgid="6087917340371885886">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>(으)로 전환"</string>
-    <string name="setup_step2_instruction" msgid="1656822854161841686">"그런 다음, 텍스트 입력 방법으로 \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\'을(를) 선택합니다."</string>
-    <string name="setup_step2_action" msgid="7850810726169586795">"입력 방법 전환"</string>
-    <string name="setup_step3_title" msgid="8037349177063816231">"모든 설정이 완료되었습니다."</string>
-    <string name="setup_step3_instruction" msgid="6738330437227290519">"이제 즐겨찾는 앱을 <xliff:g id="APPLICATION_NAME">%s</xliff:g>에 입력할 수 있습니다."</string>
-    <string name="setup_step3_action" msgid="1049832326490515701">"추가 언어 설정"</string>
-    <string name="setup_finish_action" msgid="4208185697271120108">"완료됨"</string>
-    <string name="show_setup_wizard_icon" msgid="2985876024078390815">"앱 아이콘 표시"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="714961006007836349">"런처에 애플리케이션 아이콘 표시"</string>
-    <string name="app_name" msgid="1388609705083271907">"사전 제공업체"</string>
-    <string name="dictionary_provider_name" msgid="6344594004933902577">"사전 제공업체"</string>
-    <string name="dictionary_service_name" msgid="5820737302858072775">"사전 서비스"</string>
-    <string name="download_description" msgid="7667377256582305064">"사전 업데이트 정보"</string>
-    <string name="dictionary_settings_title" msgid="2110439717145834445">"사전 추가"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="4714309383986503474">"사전 사용 가능"</string>
-    <string name="dictionary_settings_summary" msgid="4592894717259325402">"사전 설정"</string>
-    <string name="user_dictionaries" msgid="4261154182736972314">"사용자 사전"</string>
-    <string name="default_user_dict_pref_name" msgid="6983281585422145165">"사용자 사전"</string>
-    <string name="dictionary_available" msgid="1808541860747006757">"사전 사용 가능"</string>
-    <string name="dictionary_downloading" msgid="196314208594985478">"현재 다운로드 중"</string>
-    <string name="dictionary_installed" msgid="7840532191933912708">"설치됨"</string>
-    <string name="dictionary_disabled" msgid="3991458948275777795">"설치 완료되었으나 사용 중지됨"</string>
-    <string name="cannot_connect_to_dict_service" msgid="2343267566673179104">"사전 서비스에 연결하는 중에 문제가 발생했습니다."</string>
-    <string name="no_dictionaries_available" msgid="4187305901152592110">"사용할 수 있는 사전이 없습니다."</string>
-    <string name="check_for_updates_now" msgid="5375846376242975290">"새로고침"</string>
-    <string name="last_update" msgid="2377094521844654156">"최종 업데이트"</string>
-    <string name="message_updating" msgid="7158989361989504143">"업데이트를 확인하는 중"</string>
-    <string name="message_loading" msgid="9151934303930222809">"로드 중..."</string>
-    <string name="main_dict_description" msgid="695289288722079926">"기본 사전"</string>
     <string name="cancel" msgid="5611033781118852820">"취소"</string>
     <string name="go_to_settings" msgid="3019191145506686424">"설정"</string>
     <string name="install_dict" msgid="8963966683066463555">"설치"</string>
     <string name="cancel_download_dict" msgid="8877923127773611502">"취소"</string>
-    <string name="delete_dict" msgid="293286833341025636">"삭제"</string>
-    <string name="should_download_over_metered_prompt" msgid="2055970799464394373">"기기에서 선택한 언어로 사용할 수 있는 사전이 있습니다.&lt;br/&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> 사전을 <b>다운로드</b>하여 입력 환경을 개선해 보세요.&lt;br/&gt; &lt;br/&gt; 3G로 다운로드하는 경우 1~2분 정도 걸립니다. &lt;b&gt;무제한 데이터 요금제&lt;/b&gt;가 아닌 경우 요금이 청구됩니다.&lt;br/&gt; 사용 중인 데이터 요금제를 잘 모르는 경우 Wi-Fi에 연결할 수 있는 곳을 찾아 자동 다운로드를 시작하는 것이 좋습니다.&lt;br/&gt; &lt;br/&gt; 도움말: 사전을 다운로드하거나 삭제하려면 &lt;b&gt;언어 및 입력&lt;/b&gt;으로 이동하면 되며 이는 휴대기기의 &lt;b&gt;설정&lt;/b&gt; 메뉴에 있습니다."</string>
-    <string name="download_over_metered" msgid="4261625913263960556">"지금 다운로드(<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="3581560726170361477">"Wi-Fi를 통해 다운로드"</string>
-    <string name="dict_available_notification_title" msgid="4601321236641174590">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> 사전을 사용할 수 있습니다."</string>
-    <string name="dict_available_notification_description" msgid="5360056805680595057">"검토하고 다운로드하려면 누르세요."</string>
-    <string name="toast_downloading_suggestions" msgid="8611681981781082223">"다운로드 중: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>에 대한 추천항목이 곧 준비됩니다."</string>
     <string name="version_text" msgid="3213200439763585436">"버전 <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="2094235623352820667">"추가"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="2721075588858235712">"사전에 추가"</string>
