@@ -304,7 +304,7 @@ fun Emojis(
     var activePopup: PopupInfo? by rememberSaveable { mutableStateOf(null) }
     var popupIsActive by rememberSaveable { mutableStateOf(false) }
 
-    val color = LocalContentColor.current
+    val color = LocalKeyboardScheme.current.onKeyboardContainer
 
     val emojiAdapter = remember {
         EmojiGridAdapter(
