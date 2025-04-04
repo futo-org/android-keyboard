@@ -256,7 +256,7 @@ fun ActionEditor() {
             .fillMaxWidth()
             .fillMaxHeight(0.75f),
         color = LocalKeyboardScheme.current.keyboardSurface,
-        contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
+        contentColor = LocalKeyboardScheme.current.onSurface,
         shape = RoundedCornerShape(32.dp, 32.dp, 0.dp, 0.dp)
     ) {
         ActionsEditor {
@@ -286,7 +286,7 @@ val MoreActionsAction = Action(
                 super.WindowTitleBar(rowScope)
 
                 OutlinedButton(onClick = { manager.showActionEditor() }, modifier = Modifier.padding(8.dp, 0.dp)) {
-                    Text(stringResource(R.string.action_editor_edit_actions), color = LocalKeyboardScheme.current.onKeyboardContainer)
+                    Text(stringResource(R.string.action_editor_edit_actions), color = LocalKeyboardScheme.current.onSurface)
                 }
             }
 

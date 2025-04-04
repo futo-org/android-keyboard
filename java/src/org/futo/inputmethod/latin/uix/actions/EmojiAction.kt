@@ -606,7 +606,7 @@ private fun LettersKey(onExit: () -> Unit) {
             this.text = AnnotatedString("Letters")
         }
         .size(48.dp)) {
-        Text("ABC", fontSize = 14.sp)
+        Text("ABC", fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground)
     }
 }
 

@@ -42,6 +42,9 @@ interface DynamicThemeProvider {
 
     val displayDpi: Int
 
+    val hintColor: Int?
+    val hintHiVis: Boolean
+
     @ColorInt
     fun getColor(i: Int): Int?
 

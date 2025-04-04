@@ -26,6 +26,11 @@ data class ExtraColors(
     val keyboardBackgroundGradient: Brush?,
     val primaryTransparent: Color,
     val onSurfaceTransparent: Color,
+    val keyboardContainerPressed: Color,
+    val onKeyboardContainerPressed: Color,
+
+    val hintColor: Color?,
+    val hintHiVis: Boolean,
 
     val navigationBarColor: Color? = null
 )
@@ -131,6 +136,15 @@ data class KeyboardColorScheme(
 
     val navigationBarColor: Color?
         get() = extended.navigationBarColor
+
+    val keyboardContainerPressed: Color
+        get() = extended.keyboardContainerPressed
+    val onKeyboardContainerPressed: Color
+        get() = extended.onKeyboardContainerPressed
+    val hintColor: Color?
+        get() = extended.hintColor
+    val hintHiVis: Boolean
+        get() = extended.hintHiVis
 }
 
 fun extendedDarkColorScheme(
@@ -169,6 +183,10 @@ fun extendedDarkColorScheme(
     primaryTransparent: Color,
     onSurfaceTransparent: Color,
     navigationBarColor: Color? = null,
+    keyboardContainerPressed: Color = outline.copy(alpha = 0.33f),
+    onKeyboardContainerPressed: Color = Color.Transparent,
+    hintColor: Color? = null,
+    hintHiVis: Boolean = false,
 ): KeyboardColorScheme =
     KeyboardColorScheme(
         darkColorScheme(
@@ -200,7 +218,7 @@ fun extendedDarkColorScheme(
 
         ExtraColors(
             keyboardSurface            = keyboardSurface,
-            keyboardSurfaceDim     = keyboardSurfaceDim,
+            keyboardSurfaceDim         = keyboardSurfaceDim,
             keyboardContainer          = keyboardContainer,
             keyboardContainerVariant   = keyboardContainerVariant,
             onKeyboardContainer        = onKeyboardContainer,
@@ -209,6 +227,10 @@ fun extendedDarkColorScheme(
             primaryTransparent         = primaryTransparent,
             onSurfaceTransparent       = onSurfaceTransparent,
             navigationBarColor         = navigationBarColor,
+            keyboardContainerPressed   = keyboardContainerPressed,
+            onKeyboardContainerPressed = onKeyboardContainerPressed,
+            hintColor = hintColor,
+            hintHiVis = hintHiVis
         )
     )
 
@@ -249,6 +271,10 @@ fun extendedLightColorScheme(
     primaryTransparent: Color,
     onSurfaceTransparent: Color,
     navigationBarColor: Color? = null,
+    keyboardContainerPressed: Color = outline.copy(alpha = 0.33f),
+    onKeyboardContainerPressed: Color = Color.Transparent,
+    hintColor: Color? = null,
+    hintHiVis: Boolean = false,
 ): KeyboardColorScheme =
     KeyboardColorScheme(
         lightColorScheme(
@@ -289,6 +315,10 @@ fun extendedLightColorScheme(
             primaryTransparent         = primaryTransparent,
             onSurfaceTransparent       = onSurfaceTransparent,
             navigationBarColor         = navigationBarColor,
+            keyboardContainerPressed   = keyboardContainerPressed,
+            onKeyboardContainerPressed = onKeyboardContainerPressed,
+            hintColor = hintColor,
+            hintHiVis = hintHiVis
         )
     )
 
@@ -366,7 +396,11 @@ fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
             keyboardPress = scheme.inversePrimary,
             keyboardBackgroundGradient = null,
             primaryTransparent = scheme.primary.copy(alpha = 0.3f),
-            onSurfaceTransparent = scheme.onSurface.copy(alpha = 0.1f)
+            onSurfaceTransparent = scheme.onSurface.copy(alpha = 0.1f),
+            keyboardContainerPressed = scheme.outline.copy(alpha = 0.33f),
+            onKeyboardContainerPressed = Color.Transparent,
+            hintColor = null,
+            hintHiVis = false
         )
     )
 }
@@ -383,7 +417,11 @@ fun wrapLightColorScheme(scheme: ColorScheme): KeyboardColorScheme {
             keyboardPress = scheme.inversePrimary,
             keyboardBackgroundGradient = null,
             primaryTransparent = scheme.primary.copy(alpha = 0.3f),
-            onSurfaceTransparent = scheme.onSurface.copy(alpha = 0.1f)
+            onSurfaceTransparent = scheme.onSurface.copy(alpha = 0.1f),
+            keyboardContainerPressed = scheme.outline.copy(alpha = 0.33f),
+            onKeyboardContainerPressed = Color.Transparent,
+            hintColor = null,
+            hintHiVis = false
         )
     )
 }

@@ -32,6 +32,7 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.StringUtils
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 
@@ -342,17 +343,30 @@ data class Key(
     }
 
     fun selectHintTextSize(provider: DynamicThemeProvider, params: KeyDrawParams): Int {
-        if (hasHintLabel) {
-            return params.mHintLabelSize
+        var value = if (hasHintLabel) {
+            params.mHintLabelSize
+        }else if (hasShiftedLetterHint) {
+            params.mShiftedLetterHintSize
+        }else {
+            params.mHintLetterSize
         }
-        if (hasShiftedLetterHint) {
-            return params.mShiftedLetterHintSize
+
+        if(provider.hintHiVis) {
+            value = (value * 1.3).roundToInt()
         }
-        return params.mHintLetterSize
+
+        return value
+    }
+
+    fun selectHintTypeface(provider: DynamicThemeProvider, params: KeyDrawParams): Typeface {
+        return when {
+            hasHintLabel || provider.hintHiVis -> Typeface.DEFAULT_BOLD
+            else -> Typeface.DEFAULT
+        }
     }
 
     fun selectHintTextColor(provider: DynamicThemeProvider, params: KeyDrawParams): Int {
-        return provider.getKeyStyleDescriptor(visualStyle).let { style ->
+        return provider.hintColor ?: provider.getKeyStyleDescriptor(visualStyle).let { style ->
             when {
                 mPressed -> style.foregroundColorPressed
                 else -> style.foregroundColor

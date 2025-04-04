@@ -460,11 +460,7 @@ public class KeyboardView extends View {
             paint.setColor(key.selectHintTextColor(mDrawableProvider, params));
 
             // Bold explicit hints
-            if(key.getHintLabel() != null) {
-                paint.setTypeface(Typeface.DEFAULT_BOLD);
-            } else {
-                paint.setTypeface(Typeface.DEFAULT);
-            }
+            paint.setTypeface(key.selectHintTypeface(mDrawableProvider, params));
 
             blendAlpha(paint, params.mAnimAlpha);
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);

@@ -10,6 +10,7 @@ import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -47,6 +48,9 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     override val moreKeysKeyboardBackground: Drawable
 
     override val displayDpi: Int
+
+    override val hintColor: Int?
+    override val hintHiVis: Boolean
 
     private val colors: HashMap<Int, Int> = HashMap()
     override fun getColor(i: Int): Int? {
@@ -117,14 +121,16 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         addState(stateSet, drawable)
     }
 
-    private fun makeVisualStyle(background: Int, foreground: Int, highlight: Int, roundedness: Dp): VisualStyleDescriptor {
+    private fun makeVisualStyle(background: Int, foreground: Int, highlight: Int, foregroundPressed: Int, roundedness: Dp): VisualStyleDescriptor {
         val bg = coloredRoundedRectangle(background, dp(roundedness))
-        val bgHighlight = coloredRoundedRectangle(highlight, dp(roundedness))
+        val bgPressed = coloredRoundedRectangle(Color(highlight).compositeOver(Color(background)).toArgb(), dp(roundedness))
+        val fgPressed = Color(foregroundPressed).compositeOver(Color(foreground)).toArgb()
         return VisualStyleDescriptor(
             backgroundDrawable = bg,
             foregroundColor    = foreground,
 
-            backgroundDrawablePressed = LayerDrawable(arrayOf(bg, bgHighlight))
+            backgroundDrawablePressed = bgPressed,
+            foregroundColorPressed = fgPressed
         )
     }
 
@@ -158,9 +164,13 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         keyBorders = context.getSettingBlocking(KeyBordersSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
 
+        hintColor = colorScheme.hintColor?.toArgb()
+        hintHiVis = colorScheme.hintHiVis
+
         val primary = colorScheme.primary.toArgb()
         val secondary = colorScheme.secondary.toArgb()
-        val highlight = colorScheme.outline.copy(alpha = 0.33f).toArgb()
+        val highlight = colorScheme.keyboardContainerPressed.toArgb()
+        val highlightForeground = colorScheme.onKeyboardContainerPressed.toArgb()
 
         val background = colorScheme.surface.toArgb()
         val surface = colorScheme.background.toArgb()
@@ -304,14 +314,14 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                 makeVisualStyle(
                     keyColor,
                     if(expertMode) transparent else onKeyColor,
-                    highlight,
-                    keyCornerRadius
+                    highlight, highlightForeground,
+                    keyCornerRadius,
                 )
             } else {
                 makeVisualStyle(
                     transparent,
                     if(expertMode) transparent else onKeyColor,
-                    highlight,
+                    highlight, highlightForeground,
                     keyCornerRadius
                 )
             },
@@ -328,14 +338,14 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                 makeVisualStyle(
                     functionalKeyColor,
                     if(expertMode) Color(onKeyColor).copy(alpha = 0.2f).toArgb() else onKeyColor,
-                    highlight,
+                    highlight, highlightForeground,
                     keyCornerRadius
                 )
             } else {
                 makeVisualStyle(
                     transparent,
                     if(expertMode) Color(onKeyColor).copy(alpha = 0.2f).toArgb() else onKeyColor,
-                    highlight,
+                    highlight, highlightForeground,
                     keyCornerRadius
                 )
             },
@@ -344,39 +354,39 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                 makeVisualStyle(
                     keyColor,
                     if(expertMode) Color(onKeyColor).copy(alpha = 0.2f).toArgb() else onKeyColor,
-                    highlight,
+                    highlight, highlightForeground,
                     keyCornerRadius
                 )
             } else {
                 makeVisualStyle(
                     transparent,
                     if(expertMode) Color(onKeyColor).copy(alpha = 0.2f).toArgb() else onKeyColor,
-                    highlight,
+                    highlight, highlightForeground,
                     keyCornerRadius
                 )
             },
 
-            KeyVisualStyle.NoBackground to makeVisualStyle(transparent, onBackground, highlight, keyCornerRadius),
+            KeyVisualStyle.NoBackground to makeVisualStyle(transparent, onBackground, highlight, highlightForeground, keyCornerRadius),
 
             KeyVisualStyle.StickyOn to makeVisualStyle(
                 colorScheme.secondary.toArgb(),
                 colorScheme.onSecondary.toArgb(),
-                highlight,
+                highlight, highlightForeground,
                 keyCornerRadius
             ),
 
             KeyVisualStyle.Spacebar to when {
-                keyBorders -> makeVisualStyle(keyColor, onKeyColor, highlight, spaceCornerRadius)
+                keyBorders -> makeVisualStyle(keyColor, onKeyColor, highlight, highlightForeground, spaceCornerRadius)
                 expertMode -> makeVisualStyle(
                     colorScheme.outline.copy(alpha = 0.1f).toArgb(),
                     onKeyColor,
-                    highlight,
+                    highlight, highlightForeground,
                     spaceCornerRadius
                 )
                 else -> makeVisualStyle(
                     highlight,
                     onKeyColor,
-                    highlight,
+                    highlight, highlightForeground,
                     spaceCornerRadius
                 )
             }
