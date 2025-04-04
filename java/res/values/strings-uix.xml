@@ -351,13 +351,33 @@
 
     <!-- misc titles -->
     <string name="settings_keyboard_typing_title">Keyboard &amp; Typing</string>
-    <string name="voice_input_settings_title">Voice Input</string>
-    <string name="voice_input_settings_builtin_disabled_notice">Built-in voice input is disabled!</string>
     <!-- Theme, as in visual style -->
     <string name="theme_settings_title">Theme</string>
     <string name="theme_settings_key_borders">Key borders</string>
     <string name="dev_settings_title">Developer Settings</string>
     <string name="credits_title">Credits</string>
+
+    <!-- Voice input settings menu -->
+    <string name="voice_input_settings_title">Voice Input</string>
+    <string name="voice_input_settings_builtin_disabled_notice">Built-in voice input is disabled!</string>
+    <string name="voice_input_settings_disable_builtin_voice_input">Disable built-in voice input</string>
+    <string name="voice_input_settings_disable_builtin_voice_input_subtitle">Use voice input provided by external app</string>
+    <string name="voice_input_settings_indication_sounds">Indication sounds</string>
+    <string name="voice_input_settings_indication_sounds_subtitle">Play a short sound on start and cancel</string>
+    <string name="voice_input_settings_verbose_progress">Verbose progress</string>
+    <string name="voice_input_settings_verbose_progress_subtitle">Display additional information, such as mic being used</string>
+    <string name="voice_input_settings_use_bluetooth_mic">Prefer Bluetooth Mic</string>
+    <string name="voice_input_settings_use_bluetooth_mic_subtitle">There may be extra delay to recording starting as Bluetooth SCO connection must be negotiated</string>
+    <string name="voice_input_settings_audio_focus">Audio Focus</string>
+    <string name="voice_input_settings_audio_focus_subtitle">Pause videos/music when voice input is activated</string>
+    <string name="voice_input_settings_suppress_symbols">Suppress symbols</string>
+    <string name="voice_input_settings_suppress_symbols_subtitle">Prevent voice input from outputting symbols</string>
+    <string name="voice_input_settings_long_form">Long-form voice input</string>
+    <string name="voice_input_settings_long_form_subtitle">If disabled, voice input will auto-stop after 30 seconds.</string>
+    <string name="voice_input_settings_autostop_vad">Auto-stop on silence</string>
+    <string name="voice_input_settings_autostop_vad_subtitle">Automatically stop when silence is detected. You may need to manually stop regardless if there\'s too much background noise.</string>
+    <string name="voice_input_settings_change_models">Models</string>
+    <string name="voice_input_settings_change_models_subtitle">To change the models, visit Languages &amp; Models menu</string>
 
     <!-- Prediction menu -->
     <string name="prediction_settings_title">Text Prediction</string>

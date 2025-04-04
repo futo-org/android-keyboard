@@ -30,11 +30,11 @@ fun VoiceInputScreen(navController: NavHostController = rememberNavController())
     val context = LocalContext.current
     val systemVoiceInput = useDataStore(key = USE_SYSTEM_VOICE_INPUT.key, default = USE_SYSTEM_VOICE_INPUT.default)
     ScrollableList {
-        ScreenTitle("Voice Input", showBack = true, navController)
+        ScreenTitle(stringResource(R.string.voice_input_settings_title), showBack = true, navController)
 
         SettingToggleDataStore(
-            title = "Disable built-in voice input",
-            subtitle = "Use voice input provided by external app",
+            title = stringResource(R.string.voice_input_settings_disable_builtin_voice_input),
+            subtitle = stringResource(R.string.voice_input_settings_disable_builtin_voice_input_subtitle),
             setting = USE_SYSTEM_VOICE_INPUT
         )
 
@@ -51,49 +51,49 @@ fun VoiceInputScreen(navController: NavHostController = rememberNavController())
             )
 
             SettingToggleDataStore(
-                title = "Indication sounds",
-                subtitle = "Play sounds on start and cancel",
+                title = stringResource(R.string.voice_input_settings_indication_sounds),
+                subtitle = stringResource(R.string.voice_input_settings_indication_sounds_subtitle),
                 setting = ENABLE_SOUND
             )
 
             SettingToggleDataStore(
-                title = "Verbose progress",
-                subtitle = "Display verbose information such as mic being used",
+                title = stringResource(R.string.voice_input_settings_verbose_progress),
+                subtitle = stringResource(R.string.voice_input_settings_verbose_progress_subtitle),
                 setting = VERBOSE_PROGRESS
             )
 
             SettingToggleDataStore(
-                title = "Prefer Bluetooth Mic",
-                subtitle = "There may be extra delay to recording starting as Bluetooth SCO connection must be negotiated",
+                title = stringResource(R.string.voice_input_settings_use_bluetooth_mic),
+                subtitle = stringResource(R.string.voice_input_settings_use_bluetooth_mic_subtitle),
                 setting = PREFER_BLUETOOTH
             )
 
             SettingToggleDataStore(
-                title = "Audio Focus",
-                subtitle = "Pause videos/music when voice input is activated",
+                title = stringResource(R.string.voice_input_settings_audio_focus),
+                subtitle = stringResource(R.string.voice_input_settings_audio_focus_subtitle),
                 setting = AUDIO_FOCUS
             )
 
             SettingToggleDataStore(
-                title = "Suppress symbols",
+                title = stringResource(R.string.voice_input_settings_suppress_symbols),
                 setting = DISALLOW_SYMBOLS
             )
 
             SettingToggleDataStore(
-                title = "Long-form voice input",
-                subtitle = "If disabled, voice input will auto-stop after 30 seconds.",
+                title = stringResource(R.string.voice_input_settings_long_form),
+                subtitle = stringResource(R.string.voice_input_settings_long_form_subtitle),
                 setting = CAN_EXPAND_SPACE
             )
 
             SettingToggleDataStore(
-                title = "Auto-stop on silence",
-                subtitle = "Automatically stop when silence is detected. You may need to manually stop regardless if there's too much background noise. Please also enable long-form voice input to prevent stopping after 30s.",
+                title = stringResource(R.string.voice_input_settings_autostop_vad),
+                subtitle = stringResource(R.string.voice_input_settings_autostop_vad_subtitle),
                 setting = USE_VAD_AUTOSTOP
             )
 
             NavigationItem(
-                title = "Models",
-                subtitle = "To change the models, visit Languages & Models menu",
+                title = stringResource(R.string.voice_input_settings_change_models),
+                subtitle = stringResource(R.string.voice_input_settings_change_models_subtitle),
                 style = NavigationItemStyle.Misc,
                 navigate = { navController.navigate("languages") }
             )
