@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Machine translated strings, need further verification -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Действия клавиатуры -->
+    <string name="action_theme_switcher_title">Переключатель тем</string>
+    <string name="action_select_all_title">Выбрать все</string>
+    <string name="action_cut_title">Вырезать в буфер обмена</string>
+    <string name="action_copy_title">Копировать в буфер обмена</string>
+    <string name="action_paste_title">Вставить из буфера обмена</string>
+    <string name="action_undo_title">Отменить</string>
+    <string name="action_redo_title">Повторить</string>
+    <string name="action_text_editor_title">Текстовый редактор</string>
+    <string name="action_debug_title">Информация для отладки</string>
+    <string name="action_more_actions_title">Все действия</string>
+    <string name="action_bug_viewer_title">Просмотр ошибок</string>
+    <!-- Эти действия перемещают текстовый курсор вверх, вниз, влево, вправо -->
+    <string name="action_cursor_up_title">Стрелка вверх</string>
+    <string name="action_cursor_down_title">Стрелка вниз</string>
+    <string name="action_cursor_left_title">Стрелка влево</string>
+    <string name="action_cursor_right_title">Стрелка вправо</string>
+
+    <!-- Для действия меню эмодзи -->
+    <string name="action_emoji_title">Эмодзи</string>
+    <!-- Относится к недавно использованным эмодзи -->
+    <string name="action_emoji_category_most_recently_used">Недавние</string>
+    <string name="action_emoji_category_smileys_emotion">Смайлы и эмоции</string>
+    <string name="action_emoji_category_people_body">Люди и тело</string>
+    <string name="action_emoji_category_animals_nature">Животные и природа</string>
+    <string name="action_emoji_category_food_drink">Еда и напитки</string>
+    <string name="action_emoji_category_travel_places">Путешествия и места</string>
+    <string name="action_emoji_category_activities">Активности</string>
+    <string name="action_emoji_category_objects">Объекты</string>
+    <string name="action_emoji_category_symbols">Символы</string>
+    <string name="action_emoji_category_flags">Флаги</string>
+    <string name="action_emoji_category_ascii">ASCII</string>
+    <string name="action_emoji_search_no_results_found">Результаты не найдены</string>
+    <string name="action_emoji_jump_to_category">Перейти к <xliff:g name="category" example="Flags">%s</xliff:g></string>
+    <!-- Относится к очистке списка недавно использованных эмодзи -->
+    <string name="action_emoji_clear_recent_emojis_question">Очистить недавние эмодзи?</string>
+    <!-- Должно быть довольно коротким -->
+    <string name="action_emoji_clear_recent_emojis_cancel">Отмена</string>
+    <!-- Должно быть довольно коротким -->
+    <string name="action_emoji_clear_recent_emojis_clear">Очистить</string>
+    <string name="action_emoji_clear_recent_emojis_content_description">Очистить недавние эмодзи</string>
+    <!-- Должно быть довольно коротким -->
+    <string name="action_emoji_search_for_emojis">Поиск</string>
+
+    <!-- Для действия голосового ввода -->
+    <string name="action_voice_input_title">Голосовой ввод</string>
+    <!-- То же, что и выше, но использует системный голосовой ввод устройства вместо встроенного -->
+    <string name="action_system_voice_input_title">Голосовой ввод (Система)</string>
+    <string name="action_voice_input_no_model_for_language_x_installed">Модель голосового ввода для <xliff:g name="language" example="español">%s</xliff:g> не установлена. Нажмите, чтобы проверить варианты?</string>
+
+    <!-- Для действия менеджера буфера обмена -->
+    <string name="action_clipboard_manager_title">Менеджер буфера обмена</string>
+    <string name="action_clipboard_manager_unpin_item">Открепить элемент</string>
+    <string name="action_clipboard_manager_pin_item">Закрепить элемент</string>
+    <string name="action_clipboard_manager_remove_item">Удалить элемент</string>
+    <!-- Должно быть довольно коротким -->
+    <string name="action_clipboard_manager_cancel_action_button">Отмена</string>
+    <string name="action_clipboard_manager_disable_text">Нет элементов для очистки. Отключить историю буфера обмена?</string>
+    <!-- Должно быть довольно коротким, относится к отключению истории буфера обмена -->
+    <string name="action_clipboard_manager_disable_button">Отключить</string>
+    <string name="action_clipboard_manager_unpin_all_items_text">Нет открепленных элементов для очистки. Открепить все элементы?</string>
+    <!-- Должно быть довольно коротким -->
+    <string name="action_clipboard_manager_unpin_all_items_button">Открепить</string>
+    <string name="action_clipboard_manager_clear_unpinned_items_text">Очистить все открепленные элементы?</string>
+    <!-- Должно быть довольно коротким -->
+    <string name="action_clipboard_manager_clear_unpinned_items_button">Очистить</string>
+    <string name="action_clipboard_manager_clear_clipboard">Очистить буфер обмена</string>
+    <string name="action_clipboard_manager_error_device_locked_title">Устройство заблокировано</string>
+    <string name="action_clipboard_manager_error_device_locked_text">Пожалуйста, разблокируйте устройство, чтобы получить доступ к истории буфера обмена</string>
+    <string name="action_clipboard_manager_error_general_title">Ошибка буфера обмена</string>
+    <string name="action_clipboard_manager_error_general_text">История буфера обмена не может быть сохранена или загружена. Возможно, она повреждена. Вы можете попробовать удалить её или перезапустить клавиатуру. Пожалуйста, сообщите об этом как об ошибке. Причина: %1$s</string>
+    <string name="action_clipboard_manager_delete_corrupted_clipboard_text">Удалить буфер обмена? ВСЕ элементы будут потеряны.</string>
+    <!-- Должно быть довольно коротким -->
+    <string name="action_clipboard_manager_delete_corrupted_clipboard_button">Удалить</string>
+    <string name="action_clipboard_manager_error_clipboard_history_disabled_title">История буфера обмена неактивна</string>
+    <string name="action_clipboard_manager_error_clipboard_history_disabled_text">История буфера обмена не включена. Чтобы сохранить элементы буфера обмена, вы можете включить историю. Это сохранит до 25 элементов на 3 дня, если они не закреплены. Пароли и другие элементы, помеченные как конфиденциальные, исключаются из истории.</string>
+    <string name="action_clipboard_manager_enable_clipboard_history_button">Включить историю буфера обмена</string>
+    <string name="action_clipboard_manager_error_app_image_insertion_unsupported">Приложение не поддерживает вставку изображений</string>
+
+    <!-- Для действий режимов клавиатуры -->
+    <string name="action_keyboard_modes_title">Режимы клавиатуры</string>
+    <string name="action_keyboard_modes_go_back">Назад</string>
+    <string name="action_keyboard_modes_resize_keyboard">Изменить размер клавиатуры</string>
+    <!-- Эта строка должна быть очень короткой (менее 10 символов, если возможно). Стандартная клавиатура QWERTYUIOP, заполняющая всю ширину экрана. -->
+    <string name="action_keyboard_modes_standard">Стандарт</string>
+    <!-- Эта строка должна быть очень короткой (менее 10 символов, если возможно). Одноручная клавиатура QWERTYUIOP, заполняющая 2/3 ширины экрана с одной стороны. -->
+    <string name="action_keyboard_modes_one_handed">Одна рука</string>
+    <!-- Эта строка должна быть очень короткой (менее 10 символов, если возможно). Разделенная клавиатура QWERT-YUIOP с пробелом посередине. -->
+    <string name="action_keyboard_modes_split">Разделить</string>
+    <!-- Эта строка должна быть очень короткой (менее 10 символов, если возможно). Плавающая клавиатура QWERTYUIOP, которую можно перетаскивать и изменять размер. -->
+    <string name="action_keyboard_modes_floating">Плавающая</string>
+    <!-- Эта строка должна быть очень короткой (менее 10 символов, если возможно) -->
+    <string name="action_keyboard_modes_resizing_reset_size">Сброс</string>
+    <!-- Эта строка должна быть очень короткой (менее 10 символов, если возможно) -->
+    <string name="action_keyboard_modes_resizing_apply_new_size">Применить</string>
+
+    <!-- Виды действий клавиатуры -->
+    <string name="action_kind_action_key">Кнопка действия</string>
+    <string name="action_kind_pinned_key">Закрепленные действия</string>
+    <string name="action_kind_favorites">Избранные действия</string>
+    <string name="action_kind_more">Больше действий</string>
+    <string name="action_kind_disabled">Скрытые действия</string>
+
+    <!-- Темы клавиатуры -->
+    <string name="theme_default_dark">Темный режим</string>
+    <string name="theme_default_light">Светлый режим</string>
+    <string name="theme_amoled_dark">AMOLED Темный Фиолетовый</string>
+    <string name="theme_classic_dark">AOSP Material Темный</string>
+    <string name="theme_classic_light">AOSP Material Светлый</string>
+    <string name="theme_vi">Тема FUTO VI</string>
+    <string name="theme_deepsea_dark">Темный Глубокий Океан</string>
+    <string name="theme_deepsea_light">Светлый Глубокий Океан</string>
+    <string name="theme_emerald">Изумрудный</string>
+    <string name="theme_gradient1">Градиент 1</string>
+    <string name="theme_gradient2">Градиент 2</string>
+    <string name="theme_rainbow">Радуга</string>
+    <string name="theme_snowfall">Снегопад</string>
+    <string name="theme_steel_gray">Стальной Серый</string>
+    <string name="theme_sunflower">Подсолнух</string>
+    <string name="theme_cotton_candy">Сахарная вата</string>
+    <string name="theme_hotdog">Хот-дог</string>
+    <string name="theme_high_contrast_yellow">Высококонтрастный Желтый</string>
+    <string name="theme_dev">Тема Строительства</string>
+    <string name="theme_dynamic_system">Динамический Авто</string>
+    <string name="theme_dynamic_dark">Динамический Темный</string>
+    <string name="theme_dynamic_light">Динамический Светлый</string>
+
+    <!-- Строки автообновления (примечание: автообновление в настоящее время не активно) -->
+    <string name="autoupdater_service_title">Служба проверки обновлений</string>
+    <string name="autoupdater_update_available_title">Доступно обновление</string>
+    <string name="autoupdater_update_available_body">Доступно обновление (<xliff:g name="versionDiff" example="v1 -> v2">%s</xliff:g>). Нажмите, чтобы скачать</string>
+    <string name="autoupdater_dismiss_update">Отклонить</string>
+    <string name="autoupdater_perform_update">Обновить</string>
+
+    <!-- Эти строки могут появляться на самой клавиатуре -->
+    <string name="keyboard_suggest_blacklist_title">Черный список</string>
+    <string name="keyboard_suggest_blacklist_body">Добавить \"%1$s\" в черный список предложений?</string>
+    <string name="keyboard_suggest_disable_emojis">Отключить предложения эмодзи</string>
+    <string name="keyboard_version_status">Альфа</string>
+    <string name="keyboard_switch_keyboard">Переключить клавиатуру</string>
+    <string name="keyboard_language_settings">Настройки</string>
+
+    <!-- Экран оплаты -->
+    <string name="payment_screen_short_title">Оплата</string>
+    <string name="payment_screen_title">Оплатить FUTO Keyboard</string>
+    <string name="payment_screen_sales_paragraph_1">Вы используете FUTO Keyboard уже <xliff:g name="days" example="30">%d</xliff:g> дней. Если вы находите это приложение полезным, пожалуйста, подумайте о том, чтобы поддержать дальнейшую разработку программного обеспечения FUTO.</string>
+    <string name="payment_screen_sales_paragraph_1_alt">Спасибо, что попробовали FUTO Keyboard! Если вы находите это приложение полезным, пожалуйста, подумайте о том, чтобы поддержать дальнейшую разработку программного обеспечения FUTO.</string>
+    <string name="payment_screen_sales_paragraph_2">FUTO стремится создавать хорошее программное обеспечение, которое не злоупотребляет вами. Это приложение никогда не будет показывать вам рекламу или собирать ваши личные данные.</string>
+    <string name="payment_screen_sales_point_development_title">Устойчивое развитие</string>
+    <string name="payment_screen_sales_point_development_body">Миссия FUTO заключается в том, чтобы программное обеспечение с открытым исходным кодом и добросовестные бизнес-практики стали устойчивым источником дохода для проектов и их разработчиков. По этой причине мы поддерживаем пользователей, которые действительно платят за программное обеспечение.</string>
+    <string name="payment_screen_sales_point_privacy_title">Обязательство по защите конфиденциальности</string>
+    <string name="payment_screen_sales_point_privacy_body">Это приложение никогда не будет показывать вам рекламу или продавать ваши данные. Мы не занимаемся этим бизнесом.</string>
+    <string name="payment_screen_error_build_unsupported_payment">Оплата не поддерживается в этой сборке</string>
+    <string name="payment_screen_already_paid_title">Уже оплатили?</string>
+    <string name="payment_screen_already_paid_body">Если вы уже оплатили FUTO Keyboard или FUTO Voice Input, нажмите ниже.</string>
+    <string name="payment_screen_already_paid_button">Я уже оплатил</string>
+    <string name="payment_screen_already_paid_confirmation">Подтвердите свой выбор</string>
+    <string name="payment_screen_already_paid_confirmation_body">Вы уверены, что хотите подтвердить, что уже оплатили? После подтверждения вас больше не будут спрашивать о повторной оплате.</string>
+    <string name="payment_screen_already_paid_confirmation_confirm">Я уже оплатил</string>
+    <string name="payment_screen_already_paid_confirmation_cancel">Отмена</string>
+    <string name="payment_screen_set_reminder_title">Еще не готовы платить?</string>
+    <string name="payment_screen_set_reminder_body">Это скроет напоминание в экране настроек на указанный вами период.</string>
+    <string name="payment_screen_set_reminder_setter">Когда вы хотите, чтобы вам напомнили?</string>
+    <string name="payment_screen_set_reminder_setter_7_days">через 7 дней</string>
+    <string name="payment_screen_set_reminder_setter_1_month">через 1 месяц</string>
+    <string name="payment_screen_set_reminder_setter_6_months">через 6 месяцев</string>
+    <string name="payment_screen_set_reminder_setter_next_century">в следующем веке</string>
+    <string name="payment_screen_set_reminder_setter_confirm">Подтвердить напоминание</string>
+    <string name="payment_screen_other_options">Другие варианты</string>
+    <string name="payment_screen_need_help_title">Помощь</string>
+    <string name="payment_screen_need_help_subtitle">Нужна помощь? Посетите наш сайт</string>
+
+    <string name="payment_screen_pay_via_google">Оплатить через Google Play (<xliff:g name="price" example="~$2.99">%s</xliff:g> + налог)</string>
+    <string name="payment_screen_pay_via_futopay">Оплатить (<xliff:g name="price" example="~$2.99">%s</xliff:g> + налог)</string>
+    <string name="payment_screen_more_options">Больше вариантов</string>
+
+    <string name="payment_screen_payment_complete_title">Оплата завершена</string>
+    <string name="payment_screen_aftersales_title">Спасибо</string>
+    <string name="payment_screen_aftersales_title_pending">Оплата в ожидании</string>
+    <string name="payment_screen_aftersales_paragraph_1">Спасибо за покупку FUTO Keyboard!</string>
+    <string name="payment_screen_aftersales_paragraph_2">Ваша покупка поможет в дальнейшем развитии FUTO Keyboard и других проектов FUTO.</string>
+    <string name="payment_screen_aftersales_paragraph_2_pending">Ваша оплата все еще в ожидании, но она должна пройти скоро.</string>
+    <string name="payment_screen_aftersales_paragraph_3">Если вы только что оплатили, ваша оплата может все еще обрабатываться. Вы должны получить электронное письмо с дополнительной информацией.</string>
+    <string name="payment_screen_payment_failed_title">Ошибка оплаты</string>
+    <string name="payment_screen_payment_failed_body">К сожалению, ваша оплата не прошла по одной или другой причине. Пожалуйста, свяжитесь с нами, если вам нужна помощь. Вы можете написать нам на keyboard@futo.org, воспользоваться кнопкой ниже или выбрать «Отправить отзыв» в разделе помощи.</string>
+    <string name="payment_screen_payment_failed_body_unconfident">Могла возникнуть проблема с вашей оплатой. Если оплата прошла, вы должны получить электронное письмо с лицензионным ключом. Пожалуйста, свяжитесь с нами, если вам нужна помощь. Вы можете написать нам на keyboard@futo.org, воспользоваться кнопкой ниже или выбрать «Поделиться отзывом» на главном экране.</string>
+    <string name="payment_screen_license_integrity_error">Не удалось проверить лицензию. Если вы считаете, что это ошибка, пожалуйста, свяжитесь с нами.</string>
+    <string name="payment_screen_continue_button">Продолжить</string>
+
+    <string name="payment_unpaid_version_title">Неоплаченная версия FUTO Keyboard</string>
+    <string name="payment_unpaid_version_indicator">Неоплачено</string>
+    <string name="payment_paid_version_indicator">Спасибо за использование оплаченной версии FUTO Keyboard!</string>
+
+    <!-- Уведомление о нехватке автоматических обновлений -->
+    <string name="manual_update_notice_title">Уведомление об обновлениях</string>
+    <string name="manual_update_notice_paragraph_1">Это приложение не подключается к интернету и не сможет проверять автоматические обновления. Однако вы можете проверять обновления вручную.</string>
+    <string name="manual_update_notice_paragraph_2">Пожалуйста, используйте F-Droid или Obtainium для автоматических обновлений. Посетите keyboard.futo.org для получения вариантов загрузки.</string>
+    <string name="manual_update_notice_dev_paragraph">Вы находитесь на сборке для разработчиков FUTO Keyboard. Посетите keyboard.futo.org, если хотите скачать стабильную версию.</string>
+    <string name="manual_update_notice_visit_site_button">Посетить</string>
+    <!-- может быть переведено как "понятно" и т.д. -->
+    <string name="manual_update_notice_dismiss_notice_button">Понял</string>
+
+    <!-- Общие строки настроек -->
+    <string name="settings_tip">Совет</string>
+    <string name="settings_unknown_error_title">Неизвестная ошибка</string>
+    <string name="settings_unknown_error_subtitle">Произошла неизвестная ошибка.</string>
+    <string name="settings_try_typing_here">Попробуйте ввести текст здесь…</string>
+    <string name="settings_external_model_name">Импортированная модель</string>
+    <string name="settings_check_for_updates_manually">Проверить обновления вручную</string>
+    <string name="settings_update_available">Доступно обновление</string>
+
+    <!-- При добавлении нового языка -->
+    <string name="language_settings_title">Языки и модели</string>
+    <string name="language_settings_add_language_button">Добавить язык</string>
+    <string name="language_settings_select_language">Выберите язык для добавления</string>
+    <string name="language_settings_search">Поиск</string>
+    <string name="language_settings_select_layout">Выберите раскладку для добавления</string>
+    <string name="language_settings_warning_language_has_no_dict">У этого языка нет встроенного словаря. Мы рекомендуем скачать и импортировать один, чтобы получить автокоррекцию и предложения слов.</string>
+    <string name="language_settings_resource_none">(Нет)</string>
+    <string name="language_settings_layouts_of_this_language">Раскладки клавиатуры</string>
+    <string name="language_settings_add_layout_for_this_language">Добавить раскладку клавиатуры</string>
+    <string name="language_settings_enable_multilingual_typing_for_this_language">Многоязычный ввод</string>
+    <string name="language_settings_remove_this_language">Удалить язык</string>
+
+    <string name="language_settings_resource_imported_indicator">(Импортировано)</string>
+    <string name="language_settings_resource_unsupported_indicator">(Не поддерживается)</string>
+    <string name="language_settings_resource_builtin_dictionary_name">Встроенный словарь</string>
+    <string name="language_settings_resource_voice_input_selected">Хотите вернуть модель голосового ввода к стандартной или заменить её на другой файл?</string>
+    <string name="language_settings_resource_voice_input_selected_no_default_warning">Для этого языка не существует встроенной модели голосового ввода, поэтому если вы её удалите, голосовой ввод перестанет работать для этого языка, пока вы не импортируете другую модель!</string>
+    <string name="language_settings_resource_voice_input_selected_unset">Вы не настроили пользовательскую модель голосового ввода для этого языка. Вы можете найти загрузки в интернете или импортировать одну из файла.</string>
+    <string name="language_settings_resource_transformer_selected">Хотите вернуть модель трансформера к стандартной или заменить её на другой файл?</string>
+    <string name="language_settings_resource_transformer_selected_no_default_warning">Для этого языка не существует встроенной модели трансформера, поэтому если вы её удалите, предсказания на основе трансформера перестанут работать для этого языка, пока вы не импортируете другую модель!</string>
+    <string name="language_settings_resource_transformer_selected_unset">Вы не настроили пользовательскую модель трансформера для этого языка. Вы можете найти загрузки в интернете или импортировать одну из файла.</string>
+    <string name="language_settings_resource_dictionary_selected">Хотите вернуть словарь к стандартному или заменить его на другой файл?</string>
+    <string name="language_settings_resource_dictionary_selected_no_default_warning">Для этого языка не существует встроенного словаря, поэтому если вы его удалите, автокоррекция и предсказания перестанут работать для этого языка, пока вы не импортируете другой словарь!</string>
+    <string name="language_settings_resource_dictionary_selected_unset">Вы не настроили пользовательский словарь для этого языка. Вы можете найти загрузки в интернете или импортировать один из файла.</string>
+    <string name="language_settings_resource_replace_button">Заменить</string>
+    <string name="language_settings_resource_import_file_button">Импортировать</string>
+    <string name="language_settings_resource_revert_to_default_button">Вернуть к стандартному</string>
+    <string name="language_settings_resource_remove_button">Удалить</string>
+    <string name="language_settings_resource_explore_online_button">Исследовать</string>
+
+    <string name="language_settings_remove_language_title">Удалить %1$s?</string>
+    <string name="language_settings_remove_language_body">Удалить %1$s и все связанные с ним раскладки и пользовательские ресурсы?</string>
+    <string name="language_settings_remove_language_remove_button">Удалить</string>
+    <string name="language_settings_remove_language_cancel_button">Отмена</string>
+
+    <string name="language_settings_other_options">Другие варианты</string>
+    <string name="language_settings_import_resource_from_file">Импортировать файл ресурса</string>
+    <string name="language_settings_explore_voice_input_models_online">Исследовать модели голосового ввода</string>
+    <string name="language_settings_explore_dictionaries_online">Исследовать словари</string>
+    <string name="language_settings_explore_transformers_online">Исследовать модели трансформеров</string>
+
+    <!-- Импорт ресурсов -->
+    <string name="file_kind_voice_input_model">Модель голосового ввода</string>
+    <string name="file_kind_transformer_model">Модель трансформера</string>
+    <string name="file_kind_dictionary">Словарь</string>
+    <string name="file_kind_invalid_file">Неверный файл</string>
+    <string name="resource_importer_import_title">Импорт - %1$s</string>
+    <string name="resource_importer_error_wordlist_1">Ошибка: Этот файл, похоже, является исходным списком слов (_wordlist.combined), а не скомпилированным словарем (.dict).</string>
+    <string name="resource_importer_error_wordlist_2">Пожалуйста, скачайте скомпилированный файл словаря, а не список слов. Если вы создали этот список слов сами, скомпилируйте его с помощью dicttool.</string>
+    <string name="resource_importer_error_invalid_fiile">Ошибка: Этот файл не может быть распознан. Он может быть недействительным или поврежденным. Попробуйте скачать его заново или используйте другой файл.</string>
+    <string name="resource_importer_cancel_button">Отмена</string>
+    <string name="resource_importer_file_info">Информация о файле: %1$s</string>
+    <string name="resource_importer_importing">Импорт для языка: %1$s</string>
+    <string name="resource_importer_select_language">Выберите язык для импорта:</string>
+    <string name="resource_importer_warning_language_missing">Этот файл, похоже, предназначен для языка (%1$s), который не включен в настройках</string>
+
+    <!-- Действия клавиатуры -->
+    <string name="action_editor_title">Редактирование действий</string>
+    <string name="action_editor_subtitle">Редактируйте избранные действия, закрепленные действия и кнопку действия рядом с пробелом</string>
+    <string name="action_editor_edit_actions">Редактировать действия</string>
+    <string name="action_editor_warning_no_actions">Нет активных действий</string>
+    <string name="action_editor_error_more_than_one_action_key">Пожалуйста, назначьте только одну кнопку действия. Нельзя назначить более одной функции на кнопку действия.</string>
+    <string name="action_editor_warning_too_many_pinned">Пожалуйста, подумайте о том, чтобы закрепить меньше действий. Панель предложений придется уменьшить, чтобы вместить столько действий.</string>
+    <string name="action_editor_add_next_action">Добавить следующее</string>
+
+    <!-- Настройки размера клавиатуры -->
+    <string name="size_settings_title">Изменение размера клавиатуры</string>
+    <string name="size_settings_subtitle">Измените высоту и смещение клавиатуры</string>
+    <string name="size_settings_resize_tip">Нажмите кнопку «Изменить размер клавиатуры», чтобы изменить размер.</string>
+    <string name="size_settings_keyboard_modes_tip">Вы можете получить доступ к этому в любом месте с помощью действия Режимы клавиатуры:</string>
+    <string name="size_settings_reset">Сбросить настройки размера</string>
+    <string name="size_settings_reset_subtitle">Нажмите, чтобы сбросить все размеры и режимы для портретной и альбомной ориентации на стандартные</string>
+
+    <!-- Кнопки длительного нажатия, или вторичные кнопки, дополнительные кнопки -->
+    <string name="morekey_settings_title">Кнопки длительного нажатия и пробел</string>
+    <string name="morekey_settings_subtitle">Настройте длительность нажатия, порядок букв/символов и поведение пробела и клавиши удаления.</string>
+    <string name="morekey_settings_layout">Раскладка кнопок длительного нажатия</string>
+    <string name="morekey_settings_reset">Сбросить на стандартные</string>
+    <string name="morekey_settings_active">Активно</string>
+    <string name="morekey_settings_inactive">Неактивно</string>
+    <string name="morekey_settings_enable">Активировать</string>
+    <string name="morekey_settings_disable">Деактивировать</string>
+    <string name="morekey_settings_keys">Кнопки длительного нажатия</string>
+    <string name="morekey_settings_show_hints">Показать подсказки</string>
+    <string name="morekey_settings_show_hints_subtitle">Отображать небольшую подсказку на каждой клавише, показывающую основную клавишу длительного нажатия</string>
+    <string name="morekey_settings_duration">Длительность длительного нажатия</string>
+    <string name="morekey_settings_duration_subtitle">Как долго клавиша должна быть нажата, чтобы считаться длительным нажатием</string>
+    <string name="morekey_settings_backspace_behavior">Поведение клавиши Backspace при удерживании или проведении</string>
+    <string name="morekey_settings_backspace_behavior_delete_chars">Удалить символы</string>
+    <string name="morekey_settings_backspace_behavior_delete_words">Удалить целые слова</string>
+    <string name="morekey_settings_space_behavior">Поведение пробела</string>
+    <string name="morekey_settings_space_behavior_swipe_cursor">Проведение перемещает курсор, длительное нажатие переключает язык</string>
+    <string name="morekey_settings_space_behavior_swipe_lang">Проведение меняет язык, длительное нажатие перемещает курсор</string>
+    <string name="morekey_settings_space_behavior_only_cursor">Проведение и длительное нажатие только перемещают курсор</string>
+
+    <!-- Типы дополнительных клавиш, которые можно настроить, и примеры их использования -->
+    <string name="morekey_settings_kind_numbers">Цифры</string>
+    <string name="morekey_settings_kind_numbers_example">например, [1] на [q]</string>
+    <string name="morekey_settings_kind_language_keys">Языковые клавиши</string>
+    <!-- Этот пример можно адаптировать под язык для лучшего понимания -->
+    <string name="morekey_settings_kind_language_keys_example">например, [ñ] на [n] в испанском</string>
+    <string name="morekey_settings_kind_symbols">Символы</string>
+    <string name="morekey_settings_kind_symbols_example">например, [@] на [a]</string>
+    <string name="morekey_settings_kind_actions">Быстрые действия</string>
+    <string name="morekey_settings_kind_actions_example">например, [Копировать] на [c]</string>
+    <string name="morekey_settings_kind_misc_common">Разные буквы из распространенных языков</string>
+    <string name="morekey_settings_kind_misc_common_example">например, [ß] на [s] во всех языках с латинским алфавитом</string>
+
+    <!-- Настройки ввода -->
+    <string name="typing_settings_title">Предпочтения ввода</string>
+    <!-- При переводе переименуйте в "ввод жестами", если это имеет больше смысла для данного языка -->
+    <string name="typing_settings_swipe">Ввод жестами (альфа)</string>
+    <string name="typing_settings_swipe_subtitle">Позволяет проводить от клавиши к клавише для ввода слов.</string>
+    <string name="typing_settings_suggest_emojis">Предложения эмодзи</string>
+    <string name="typing_settings_suggest_emojis_subtitle">Предлагать эмодзи во время ввода</string>
+    <string name="typing_settings_vibration_strength">Вибрация</string>
+    <string name="typing_settings_vibration_strength_default">По умолчанию</string>
+    <string name="typing_settings_enable_clipboard_history">История буфера обмена</string>
+
+    <!-- Автоматическая вставка пробелов -->
+    <string name="typing_settings_auto_space_mode">Режим автоматической вставки пробелов</string>
+    <string name="typing_settings_auto_space_mode_auto">Автоматически вставлять пробелы после знаков препинания или после вставки предложений</string>
+    <string name="typing_settings_auto_space_mode_suggestions">Автоматически вставлять пробелы только после вставки предложений</string>
+    <string name="typing_settings_auto_space_mode_legacy">Не вставлять пробелы автоматически (наследственный режим)</string>
+
+    <!-- Разные настройки клавиатуры -->
+    <string name="keyboard_settings_title">Клавиатура</string>
+    <string name="keyboard_settings_show_number_row">Показать строку цифр</string>
+    <string name="keyboard_settings_show_number_row_subtitle">При активном состоянии строка цифр отображается в верхней части клавиатуры на поддерживаемых раскладках</string>
+    <string name="keyboard_settings_show_arrow_row">Показать стрелочные клавиши</string>
+    <string name="keyboard_settings_show_arrow_row_subtitle">При активном состоянии строка стрелочных клавиш отображается в нижней части клавиатуры</string>
+    <string name="keyboard_settings_extra_layouts">Дополнительные раскладки</string>
+    <string name="keyboard_settings_extra_layouts_subtitle">Настройте дополнительные раскладки на экране языков</string>
+    <string name="keyboard_settings_show_suggestion_row">Показать панель действий/предложений</string>
+    <string name="keyboard_settings_show_suggestion_row_subtitle">Показать панель с предложениями. Рекомендуется оставить включенной</string>
+    <string name="keyboard_settings_inline_autofill">Встраиваемая автозаполнение</string>
+    <string name="keyboard_settings_inline_autofill_subtitle">Отображать автозаполнение менеджера паролей в панели предложений</string>
+
+    <!-- Разные заголовки -->
+    <string name="settings_keyboard_typing_title">Клавиатура и ввод</string>
+    <!-- Тема, как визуальный стиль -->
+    <string name="theme_settings_title">Тема</string>
+    <string name="theme_settings_key_borders">Границы клавиш</string>
+    <string name="dev_settings_title">Настройки разработчика</string>
+    <string name="credits_title">Авторы</string>
+
+    <!-- Меню настроек голосового ввода -->
+    <string name="voice_input_settings_title">Голосовой ввод</string>
+    <string name="voice_input_settings_builtin_disabled_notice">Встроенный голосовой ввод отключен!</string>
+    <string name="voice_input_settings_disable_builtin_voice_input">Отключить встроенный голосовой ввод</string>
+    <string name="voice_input_settings_disable_builtin_voice_input_subtitle">Использовать голосовой ввод от внешнего приложения</string>
+    <string name="voice_input_settings_indication_sounds">Звуки индикации</string>
+    <string name="voice_input_settings_indication_sounds_subtitle">Проигрывать короткий звук при запуске и отмене</string>
+    <string name="voice_input_settings_verbose_progress">Подробный прогресс</string>
+    <string name="voice_input_settings_verbose_progress_subtitle">Отображать дополнительную информацию, такую как использование микрофона</string>
+    <string name="voice_input_settings_use_bluetooth_mic">Предпочитать Bluetooth-микрофон</string>
+    <string name="voice_input_settings_use_bluetooth_mic_subtitle">Может быть дополнительная задержка при запуске записи, так как необходимо установить соединение Bluetooth SCO</string>
+    <string name="voice_input_settings_audio_focus">Аудио-фокус</string>
+    <string name="voice_input_settings_audio_focus_subtitle">Приостанавливать видео/музыку при активации голосового ввода</string>
+    <string name="voice_input_settings_suppress_symbols">Подавить символы</string>
+    <string name="voice_input_settings_suppress_symbols_subtitle">Предотвратить вывод символов при голосовом вводе</string>
+    <string name="voice_input_settings_long_form">Длительный голосовой ввод</string>
+    <string name="voice_input_settings_long_form_subtitle">Если отключено, голосовой ввод автоматически остановится через 30 секунд.</string>
+    <string name="voice_input_settings_autostop_vad">Автоостановка при тишине</string>
+    <string name="voice_input_settings_autostop_vad_subtitle">Автоматически остановиться при обнаружении тишины. Вам может понадобиться остановить вручную, если слишком много фонового шума.</string>
+    <string name="voice_input_settings_change_models">Модели</string>
+    <string name="voice_input_settings_change_models_subtitle">Чтобы изменить модели, посетите меню Языки и модели</string>
+
+    <!-- Меню предсказаний -->
+    <string name="prediction_settings_title">Предсказание текста</string>
+    <string name="prediction_settings_transformer">Трансформер LM</string>
+    <string name="prediction_settings_transformer_finetuning">Тонкая настройка трансформера</string>
+    <string name="prediction_settings_transformer_finetuning_subtitle">Может разрядить вашу батарею, если включено! Эта функция требует доработки</string>
+    <string name="prediction_settings_transformer_models">Модели трансформера</string>
+    <string name="prediction_settings_transformer_advanced_params">Расширенные параметры</string>
+    <string name="prediction_settings_transformer_alpha_notice">Примечание: Трансформер LM находится в альфа-версии</string>
+    <string name="prediction_settings_smart_keyhit_detection">Умное определение нажатий клавиш</string>
+    <string name="prediction_settings_smart_keyhit_detection_subtitle">Использует словарь для определения релевантных следующих клавиш и увеличивает их область нажатия. Увеличение избегается после нажатия клавиши Backspace</string>
+    <string name="prediction_settings_word_blacklist">Черный список слов</string>
+    <string name="prediction_settings_word_blacklist_add">Добавить в черный список</string>
+    <string name="prediction_settings_word_blacklist_none">Нет слов в черном списке.</string>
+
+    <!-- Меню помощи и обратной связи -->
+    <string name="help_menu_title">Помощь и обратная связь</string>
+    <string name="help_menu_version_name">Название версии: %1$s</string>
+    <string name="help_menu_version_code">Код версии: %1$s</string>
+    <string name="help_menu_version_tip">Мы хотим услышать ваше мнение! Если вы сообщаете о проблеме, ваша версия может быть важна: v%1$s</string>
+    <string name="help_menu_documentation">Документация</string>
+    <string name="help_menu_documentation_subtitle">Узнайте больше о функциях и возможностях клавиатуры</string>
+    <string name="help_menu_discord">Сервер Discord</string>
+    <string name="help_menu_discord_subtitle">Хотите пообщаться, но не любите Zulip? Общайтесь здесь</string>
+    <string name="help_menu_futo_chat">Чат FUTO</string>
+    <string name="help_menu_futo_chat_subtitle">Хотите пообщаться, но не любите Discord? Общайтесь здесь</string>
+    <string name="help_menu_github">Публичный трекер проблем</string>
+    <string name="help_menu_github_subtitle">Конкретная ошибка или запрос функции? Напишите здесь</string>
+    <string name="help_menu_email">Напишите на keyboard@futo.org</string>
+    <string name="help_menu_email_subtitle">Личная обратная связь, помощь или не используете GitHub? Напишите нам</string>
+
+    <!-- Настройка конфигурации -->
+    <string name="setup_step_1">Настройка - Шаг 1</string>
+    <string name="setup_step_2">Настройка - Шаг 2</string>
+    <string name="setup_step_3">Настройка - Шаг 3</string>
+    <string name="setup_welcome_text">Добро пожаловать в FUTO Keyboard (альфа)! Этот продукт все еще находится в разработке и не завершен, мы ценим ваше терпение и понимание.\n\nЧтобы начать, включите FUTO Keyboard в качестве метода ввода.</string>
+    <string name="setup_open_input_settings">Открыть настройки метода ввода</string>
+    <string name="setup_warning_multiple_versions">Предупреждение: У вас, похоже, установлены как версия из Play Store, так и отдельная версия. Мы рекомендуем устанавливать только одну из них.</string>
+    <string name="setup_active_input_method">Пожалуйста, выберите FUTO Keyboard в качестве вашего активного метода ввода.</string>
+    <string name="setup_switch_input_methods">Переключить методы ввода</string>
+
+</resources>

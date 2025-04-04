@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Machine translated strings, need further verification -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Может быть переведено как "Остановить голосовой ввод", "Остановить ввод" и т.д. -->
+    <string name="stop_recording">Остановить запись</string>
+    <string name="try_saying_something">Попробуйте что-нибудь сказать</string>
+    <string name="no_audio_detected_is_your_microphone_blocked">Аудио не обнаружено, не заблокирован ли ваш микрофон?</string>
+    <string name="listening">Слушаю…</string>
+    <string name="grant_microphone_permission_to_use_voice_input">Предоставьте разрешение на использование микрофона для голосового ввода</string>
+    <string name="open_voice_input_settings">Открыть настройки голосового ввода</string>
+
+    <string name="extracting_features">Извлечение признаков…</string>
+    <string name="loading_model">Загрузка модели…</string>
+    <string name="decoding">Начато декодирование…</string>
+    <string name="switching_model">Смена языка…</string>
+    <string name="processing">Обработка…</string>
+    <string name="initializing">Инициализация…</string>
+
+    <string name="tiny_en_name">Английский-39 (по умолчанию)</string>
+    <string name="base_en_name">Английский-74 (медленнее, но точнее)</string>
+    <string name="small_en_name">Английский-244 (медленно)</string>
+
+    <string name="tiny_name">Многоязычный-39 (менее точно)</string>
+    <string name="base_name">Многоязычный-74 (по умолчанию)</string>
+    <string name="small_name">Многоязычный-244 (медленно)</string>
+
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Machine translated strings, need further verification -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Kan vertaald worden als "Stop spraakinput", "Stop invoer", etc. -->
+    <string name="stop_recording">Stop opname</string>
+    <string name="try_saying_something">Probeer iets te zeggen</string>
+    <string name="no_audio_detected_is_your_microphone_blocked">Geen audio gedetecteerd, is je microfoon geblokkeerd?</string>
+    <string name="listening">Aan het luisteren…</string>
+    <string name="grant_microphone_permission_to_use_voice_input">Geef toestemming voor de microfoon om spraakinput te gebruiken</string>
+    <string name="open_voice_input_settings">Open instellingen voor spraakinput</string>
+
+    <string name="extracting_features">Kenmerken aan het extraheren…</string>
+    <string name="loading_model">Model aan het laden…</string>
+    <string name="decoding">Decoderen gestart…</string>
+    <string name="switching_model">Taal aan het wisselen…</string>
+    <string name="processing">Bezig met verwerken…</string>
+    <string name="initializing">Aan het initialiseren…</string>
+
+    <string name="tiny_en_name">Engels-39 (standaard)</string>
+    <string name="base_en_name">Engels-74 (langzamer, nauwkeuriger)</string>
+    <string name="small_en_name">Engels-244 (langzaam)</string>
+
+    <string name="tiny_name">Meertalig-39 (minder nauwkeurig)</string>
+    <string name="base_name">Meertalig-74 (standaard)</string>
+    <string name="small_name">Meertalig-244 (langzaam)</string>
+
+</resources>

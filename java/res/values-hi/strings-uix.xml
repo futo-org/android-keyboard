@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Machine translated strings, need further verification -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- कीबोर्ड क्रियाएँ -->
+    <string name="action_theme_switcher_title">थीम स्विचर</string>
+    <string name="action_select_all_title">सभी चुनें</string>
+    <string name="action_cut_title">क्लिपबोर्ड में काटें</string>
+    <string name="action_copy_title">क्लिपबोर्ड में कॉपी करें</string>
+    <string name="action_paste_title">क्लिपबोर्ड से चिपकाएँ</string>
+    <string name="action_undo_title">पूर्ववत करें</string>
+    <string name="action_redo_title">फिर से करें</string>
+    <string name="action_text_editor_title">टेक्स्ट संपादक</string>
+    <string name="action_debug_title">डिबग जानकारी</string>
+    <string name="action_more_actions_title">सभी क्रियाएँ</string>
+    <string name="action_bug_viewer_title">बग व्यूअर</string>
+    <!-- ये टेक्स्ट कर्सर को ऊपर, नीचे, बाएँ, दाएँ ले जाते हैं -->
+    <string name="action_cursor_up_title">ऊपर का तीर</string>
+    <string name="action_cursor_down_title">नीचे का तीर</string>
+    <string name="action_cursor_left_title">बाएँ का तीर</string>
+    <string name="action_cursor_right_title">दाएँ का तीर</string>
+
+    <!-- इमोजी मेनू क्रिया के लिए -->
+    <string name="action_emoji_title">इमोजी</string>
+    <!-- हाल ही में उपयोग किए गए इमोजी को संदर्भित करता है -->
+    <string name="action_emoji_category_most_recently_used">हाल ही में</string>
+    <string name="action_emoji_category_smileys_emotion">स्माइली और भावनाएँ</string>
+    <string name="action_emoji_category_people_body">लोग और शरीर</string>
+    <string name="action_emoji_category_animals_nature">जानवर और प्रकृति</string>
+    <string name="action_emoji_category_food_drink">खाना और पेय</string>
+    <string name="action_emoji_category_travel_places">यात्रा और स्थान</string>
+    <string name="action_emoji_category_activities">गतिविधियाँ</string>
+    <string name="action_emoji_category_objects">वस्तुएँ</string>
+    <string name="action_emoji_category_symbols">चिन्ह</string>
+    <string name="action_emoji_category_flags">झंडे</string>
+    <string name="action_emoji_category_ascii">ASCII</string>
+    <string name="action_emoji_search_no_results_found">कोई परिणाम नहीं मिला</string>
+    <string name="action_emoji_jump_to_category">श्रेणी पर जाएँ <xliff:g name="category" example="Flags">%s</xliff:g></string>
+    <!-- हाल ही में उपयोग किए गए इमोजी सूची को साफ करने का संदर्भ -->
+    <string name="action_emoji_clear_recent_emojis_question">हाल ही के इमोजी साफ करें?</string>
+    <!-- अपेक्षाकृत छोटा होना चाहिए -->
+    <string name="action_emoji_clear_recent_emojis_cancel">रद्द करें</string>
+    <!-- अपेक्षाकृत छोटा होना चाहिए -->
+    <string name="action_emoji_clear_recent_emojis_clear">साफ करें</string>
+    <string name="action_emoji_clear_recent_emojis_content_description">हाल ही के इमोजी साफ करें</string>
+    <!-- अपेक्षाकृत छोटा होना चाहिए -->
+    <string name="action_emoji_search_for_emojis">खोजें</string>
+
+    <!-- वॉयस इनपुट क्रिया के लिए -->
+    <string name="action_voice_input_title">वॉयस इनपुट</string>
+    <!-- ऊपर वाले जैसा ही, लेकिन यह डिवाइस के डिफ़ॉल्ट सिस्टम वॉयस इनपुट का उपयोग करता है -->
+    <string name="action_system_voice_input_title">वॉयस इनपुट (सिस्टम)</string>
+    <string name="action_voice_input_no_model_for_language_x_installed"><xliff:g name="language" example="español">%s</xliff:g> के लिए कोई वॉयस इनपुट मॉडल स्थापित नहीं है, विकल्प देखने के लिए टैप करें?</string>
+
+    <!-- क्लिपबोर्ड प्रबंधक क्रिया के लिए -->
+    <string name="action_clipboard_manager_title">क्लिपबोर्ड प्रबंधक</string>
+    <string name="action_clipboard_manager_unpin_item">आइटम अनपिन करें</string>
+    <string name="action_clipboard_manager_pin_item">आइटम पिन करें</string>
+    <string name="action_clipboard_manager_remove_item">आइटम हटाएँ</string>
+    <!-- अपेक्षाकृत छोटा होना चाहिए -->
+    <string name="action_clipboard_manager_cancel_action_button">रद्द करें</string>
+    <string name="action_clipboard_manager_disable_text">साफ करने के लिए कोई आइटम नहीं हैं। क्या आप क्लिपबोर्ड इतिहास को निष्क्रिय करना चाहते हैं?</string>
+    <!-- अपेक्षाकृत छोटा होना चाहिए, क्लिपबोर्ड इतिहास को निष्क्रिय करने का संदर्भ -->
+    <string name="action_clipboard_manager_disable_button">निष्क्रिय करें</string>
+    <string name="action_clipboard_manager_unpin_all_items_text">साफ करने के लिए कोई अनपिन किए गए आइटम नहीं हैं। क्या आप सभी आइटम अनपिन करना चाहते हैं?</string>
+    <!-- अपेक्षाकृत छोटा होना चाहिए -->
+    <string name="action_clipboard_manager_unpin_all_items_button">अनपिन करें</string>
+    <string name="action_clipboard_manager_clear_unpinned_items_text">सभी अनपिन किए गए आइटम साफ करें?</string>
+    <!-- अपेक्षाकृत छोटा होना चाहिए -->
+    <string name="action_clipboard_manager_clear_unpinned_items_button">साफ करें</string>
+    <string name="action_clipboard_manager_clear_clipboard">क्लिपबोर्ड साफ करें</string>
+    <string name="action_clipboard_manager_error_device_locked_title">डिवाइस लॉक किया गया</string>
+    <string name="action_clipboard_manager_error_device_locked_text">क्लिपबोर्ड इतिहास तक पहुँचने के लिए कृपया अपने डिवाइस को अनलॉक करें</string>
+    <string name="action_clipboard_manager_error_general_title">क्लिपबोर्ड त्रुटि</string>
+    <string name="action_clipboard_manager_error_general_text">क्लिपबोर्ड इतिहास को सहेजा या लोड नहीं किया जा सका। यह भ्रष्ट हो सकता है। आप इसे हटाने या कीबोर्ड को पुनः आरंभ करने का प्रयास कर सकते हैं। कृपया इसे बग के रूप में रिपोर्ट करें। कारण: %1$s</string>
+    <string name="action_clipboard_manager_delete_corrupted_clipboard_text">क्या आप क्लिपबोर्ड हटाना चाहते हैं? सभी आइटम खो जाएंगे।</string>
+    <!-- अपेक्षाकृत छोटा होना चाहिए -->
+    <string name="action_clipboard_manager_delete_corrupted_clipboard_button">हटाएँ</string>
+    <string name="action_clipboard_manager_error_clipboard_history_disabled_title">क्लिपबोर्ड इतिहास निष्क्रिय</string>
+    <string name="action_clipboard_manager_error_clipboard_history_disabled_text">क्लिपबोर्ड इतिहास सक्षम नहीं है। क्लिपबोर्ड आइटम सहेजने के लिए, आप क्लिपबोर्ड इतिहास सक्षम कर सकते हैं। यह 3 दिनों के लिए 25 आइटम तक रखेगा जब तक कि पिन न किया जाए। पासवर्ड और अन्य संवेदनशील आइटम इतिहास से बाहर रखे जाते हैं।</string>
+    <string name="action_clipboard_manager_enable_clipboard_history_button">क्लिपबोर्ड इतिहास सक्षम करें</string>
+    <string name="action_clipboard_manager_error_app_image_insertion_unsupported">ऐप छवि सम्मिलन का समर्थन नहीं करता</string>
+
+    <!-- कीबोर्ड मोड क्रिया के लिए -->
+    <string name="action_keyboard_modes_title">कीबोर्ड मोड</string>
+    <string name="action_keyboard_modes_go_back">वापस जाएँ</string>
+    <string name="action_keyboard_modes_resize_keyboard">कीबोर्ड का आकार बदलें</string>
+    <!-- यह स्ट्रिंग बहुत छोटी होनी चाहिए (संभवतः 10 अक्षरों से कम)। मानक QWERTYUIOP कीबोर्ड, पूरी स्क्रीन चौड़ाई भरता है। -->
+    <string name="action_keyboard_modes_standard">मानक</string>
+    <!-- यह स्ट्रिंग बहुत छोटी होनी चाहिए (संभवतः 10 अक्षरों से कम)। एक हाथ से उपयोग के लिए QWERTYUIOP कीबोर्ड, एक तरफ 2/3 स्क्रीन चौड़ाई भरता है। -->
+    <string name="action_keyboard_modes_one_handed">एक हाथ</string>
+    <!-- यह स्ट्रिंग बहुत छोटी होनी चाहिए (संभवतः 10 अक्षरों से कम)। विभाजित QWERT - - YUIOP कीबोर्ड, बीच में गैप के साथ। -->
+    <string name="action_keyboard_modes_split">विभाजित</string>
+    <!-- यह स्ट्रिंग बहुत छोटी होनी चाहिए (संभवतः 10 अक्षरों से कम)। फ्री-फॉर्म ड्रैग करने योग्य और आकार बदलने योग्य QWERTYUIOP कीबोर्ड। -->
+    <string name="action_keyboard_modes_floating">फ्लोटिंग</string>
+    <!-- यह स्ट्रिंग बहुत छोटी होनी चाहिए (संभवतः 10 अक्षरों से कम) -->
+    <string name="action_keyboard_modes_resizing_reset_size">रीसेट</string>
+    <!-- यह स्ट्रिंग बहुत छोटी होनी चाहिए (संभवतः 10 अक्षरों से कम) -->
+    <string name="action_keyboard_modes_resizing_apply_new_size">लागू करें</string>
+
+    <!-- कीबोर्ड क्रिया प्रकार -->
+    <string name="action_kind_action_key">क्रिया कुंजी</string>
+    <string name="action_kind_pinned_key">पिन की गई क्रिया(एँ)</string>
+    <string name="action_kind_favorites">पसंदीदा क्रियाएँ</string>
+    <string name="action_kind_more">अधिक क्रियाएँ</string>
+    <string name="action_kind_disabled">छिपी हुई क्रियाएँ</string>
+
+    <!-- कीबोर्ड थीम -->
+    <string name="theme_default_dark">डार्क मोड</string>
+    <string name="theme_default_light">लाइट मोड</string>
+    <string name="theme_amoled_dark">AMOLED डार्क पर्पल</string>
+    <string name="theme_classic_dark">AOSP मैटेरियल डार्क</string>
+    <string name="theme_classic_light">AOSP मैटेरियल लाइट</string>
+    <string name="theme_vi">FUTO VI थीम</string>
+    <string name="theme_deepsea_dark">डीप सी डार्क</string>
+    <string name="theme_deepsea_light">डीप सी लाइट</string>
+    <string name="theme_emerald">एमराल्ड</string>
+    <string name="theme_gradient1">ग्रेडिएंट 1</string>
+    <string name="theme_gradient2">ग्रेडिएंट 2</string>
+    <string name="theme_rainbow">इंद्रधनुष</string>
+    <string name="theme_snowfall">बर्फबारी</string>
+    <string name="theme_steel_gray">स्टील ग्रे</string>
+    <string name="theme_sunflower">सूरजमुखी</string>
+    <string name="theme_cotton_candy">कॉटन कैंडी</string>
+    <string name="theme_hotdog">हॉट डॉग</string>
+    <string name="theme_high_contrast_yellow">उच्च विपरीत पीला</string>
+    <string name="theme_dev">निर्माण थीम</string>
+    <string name="theme_dynamic_system">डायनामिक ऑटो</string>
+    <string name="theme_dynamic_dark">डायनामिक डार्क</string>
+    <string name="theme_dynamic_light">डायनामिक लाइट</string>
+
+    <!-- ऑटो अपडेट स्ट्रिंग्स (नोट: ऑटो अपडेटर वर्तमान में निष्क्रिय है) -->
+    <string name="autoupdater_service_title">अपडेट जांचने की सेवा</string>
+    <string name="autoupdater_update_available_title">अपडेट उपलब्ध है</string>
+    <string name="autoupdater_update_available_body">एक अपडेट उपलब्ध है (<xliff:g name="versionDiff" example="v1 -> v2">%s</xliff:g>)। डाउनलोड करने के लिए टैप करें</string>
+    <string name="autoupdater_dismiss_update">अस्वीकृत करें</string>
+    <string name="autoupdater_perform_update">अपडेट करें</string>
+
+    <!-- ये स्ट्रिंग्स कीबोर्ड में स्वयं प्रकट हो सकती हैं -->
+    <string name="keyboard_suggest_blacklist_title">ब्लैकलिस्ट</string>
+    <string name="keyboard_suggest_blacklist_body">क्या \"%1$s\" को सुझाव देने से ब्लैकलिस्ट करना है?</string>
+    <string name="keyboard_suggest_disable_emojis">इमोजी सुझाव बंद करें</string>
+    <string name="keyboard_version_status">अल्फा</string>
+    <string name="keyboard_switch_keyboard">कीबोर्ड बदलें</string>
+    <string name="keyboard_language_settings">सेटिंग्स</string>
+
+    <!-- भुगतान स्क्रीन -->
+    <string name="payment_screen_short_title">भुगतान</string>
+    <string name="payment_screen_title">FUTO कीबोर्ड के लिए भुगतान करें</string>
+    <string name="payment_screen_sales_paragraph_1">आपने FUTO कीबोर्ड का उपयोग <xliff:g name="days" example="30">%d</xliff:g> दिनों से किया है। यदि आपको यह ऐप उपयोगी लगता है, तो कृपया FUTO सॉफ़्टवेयर के भविष्य के विकास का समर्थन करने के लिए भुगतान करने पर विचार करें।</string>
+    <string name="payment_screen_sales_paragraph_1_alt">FUTO कीबोर्ड आजमाने के लिए धन्यवाद! यदि आपको यह ऐप उपयोगी लगता है, तो कृपया FUTO सॉफ़्टवेयर के भविष्य के विकास का समर्थन करने के लिए भुगतान करने पर विचार करें।</string>
+    <string name="payment_screen_sales_paragraph_2">FUTO अच्छे सॉफ़्टवेयर बनाने के लिए समर्पित है जो आपको नुकसान नहीं पहुँचाता। यह ऐप कभी भी आपको विज्ञापन नहीं दिखाएगा या आपका व्यक्तिगत डेटा एकत्र नहीं करेगा।</string>
+    <string name="payment_screen_sales_point_development_title">सतत विकास</string>
+    <string name="payment_screen_sales_point_development_body">FUTO का मिशन ओपन-सोर्स सॉफ़्टवेयर और गैर-दुष्ट सॉफ़्टवेयर व्यावसायिक प्रथाओं को परियोजनाओं और उनके डेवलपर्स के लिए एक स्थायी आय स्रोत बनाना है। इस कारण से, हम उपयोगकर्ताओं द्वारा सॉफ़्टवेयर के लिए भुगतान करने के पक्ष में हैं।</string>
+    <string name="payment_screen_sales_point_privacy_title">गोपनीयता के प्रति प्रतिबद्धता</string>
+    <string name="payment_screen_sales_point_privacy_body">यह ऐप कभी भी आपको विज्ञापन नहीं दिखाएगा या आपका डेटा नहीं बेचेगा। हम इस व्यवसाय में नहीं हैं।</string>
+    <string name="payment_screen_error_build_unsupported_payment">इस निर्माण पर भुगतान समर्थित नहीं है</string>
+    <string name="payment_screen_already_paid_title">क्या पहले ही भुगतान कर चुके हैं?</string>
+    <string name="payment_screen_already_paid_body">यदि आपने पहले ही FUTO कीबोर्ड या FUTO वॉयस इनपुट के लिए भुगतान किया है, तो नीचे टैप करें।</string>
+    <string name="payment_screen_already_paid_button">मैंने पहले ही भुगतान किया</string>
+    <string name="payment_screen_already_paid_confirmation">अपने विकल्प की पुष्टि करें</string>
+    <string name="payment_screen_already_paid_confirmation_body">क्या आप सुनिश्चित हैं कि आप पुष्टि करना चाहते हैं कि आपने पहले ही भुगतान किया है? एक बार पुष्टि करने के बाद, आपसे फिर से भुगतान के बारे में नहीं पूछा जाएगा।</string>
+    <string name="payment_screen_already_paid_confirmation_confirm">मैंने पहले ही भुगतान किया</string>
+    <string name="payment_screen_already_paid_confirmation_cancel">रद्द करें</string>
+    <string name="payment_screen_set_reminder_title">अभी भुगतान करने के लिए तैयार नहीं?</string>
+    <string name="payment_screen_set_reminder_body">यह सेटिंग स्क्रीन में दिनों की अवधि के लिए अनुस्मारक को छिपा देगा।</string>
+    <string name="payment_screen_set_reminder_setter">आपको कब याद दिलाया जाए?</string>
+    <string name="payment_screen_set_reminder_setter_7_days">7 दिनों में</string>
+    <string name="payment_screen_set_reminder_setter_1_month">1 महीने में</string>
+    <string name="payment_screen_set_reminder_setter_6_months">6 महीनों में</string>
+    <string name="payment_screen_set_reminder_setter_next_century">अगले सदी में</string>
+    <string name="payment_screen_set_reminder_setter_confirm">अनुस्मारक की पुष्टि करें</string>
+    <string name="payment_screen_other_options">अन्य विकल्प</string>
+    <string name="payment_screen_need_help_title">मदद</string>
+    <string name="payment_screen_need_help_subtitle">मदद चाहिए? हमारी वेबसाइट पर जाएँ</string>
+
+    <string name="payment_screen_pay_via_google">गूगल प्ले के माध्यम से भुगतान करें (<xliff:g name="price" example="~$2.99">%s</xliff:g> + कर)</string>
+    <string name="payment_screen_pay_via_futopay">भुगतान करें (<xliff:g name="price" example="~$2.99">%s</xliff:g> + कर)</string>
+    <string name="payment_screen_more_options">अधिक विकल्प</string>
+
+    <string name="payment_screen_payment_complete_title">भुगतान पूरा</string>
+    <string name="payment_screen_aftersales_title">धन्यवाद</string>
+    <string name="payment_screen_aftersales_title_pending">भुगतान लंबित</string>
+    <string name="payment_screen_aftersales_paragraph_1">FUTO कीबोर्ड खरीदने के लिए धन्यवाद!</string>
+    <string name="payment_screen_aftersales_paragraph_2">आपकी खरीद FUTO कीबोर्ड और अन्य FUTO परियोजनाओं के निरंतर विकास में मदद करेगी।</string>
+    <string name="payment_screen_aftersales_paragraph_2_pending">आपका भुगतान अभी भी लंबित है, लेकिन यह जल्द ही साफ हो जाएगा।</string>
+    <string name="payment_screen_aftersales_paragraph_3">यदि आपने अभी भुगतान किया है, तो आपका भुगतान अभी भी प्रक्रिया में हो सकता है, आपको अधिक जानकारी के साथ एक ईमेल प्राप्त होगा।</string>
+    <string name="payment_screen_payment_failed_title">भुगतान त्रुटि</string>
+    <string name="payment_screen_payment_failed_body">दुर्भाग्यवश, आपका भुगतान किसी न किसी कारण से विफल हो गया है। यदि आपको मदद की आवश्यकता है, तो कृपया हमसे संपर्क करें। आप हमें keyboard@futo.org पर, नीचे दिए गए बटन से, या मदद में "फीडबैक भेजें" के माध्यम से संपर्क कर सकते हैं।</string>
+    <string name="payment_screen_payment_failed_body_unconfident">आपके भुगतान में कोई समस्या हो सकती है। यदि यह सफल रहा, तो आपको एक लाइसेंस कुंजी के साथ एक ईमेल प्राप्त होना चाहिए। यदि आपको मदद की आवश्यकता है, तो कृपया हमसे संपर्क करें। आप हमें keyboard@futo.org पर, नीचे दिए गए बटन से, या मुख्य स्क्रीन पर "फीडबैक साझा करें" के माध्यम से संपर्क कर सकते हैं।</string>
+    <string name="payment_screen_license_integrity_error">लाइसेंस सत्यापित करने में विफल। यदि आपको लगता है कि यह एक त्रुटि है, तो कृपया हमसे संपर्क करें।</string>
+    <string name="payment_screen_continue_button">जारी रखें</string>
+
+    <string name="payment_unpaid_version_title">अवैतनिक FUTO कीबोर्ड</string>
+    <string name="payment_unpaid_version_indicator">अवैतनिक</string>
+    <string name="payment_paid_version_indicator">FUTO कीबोर्ड के भुगतान किए गए संस्करण का उपयोग करने के लिए धन्यवाद!</string>
+
+    <!-- स्वचालित अपडेट की कमी का नोटिस -->
+    <string name="manual_update_notice_title">अपडेट नोटिस</string>
+    <string name="manual_update_notice_paragraph_1">यह ऐप इंटरनेट से कनेक्ट नहीं होता है और यह स्वचालित अपडेट की जांच नहीं कर सकेगा। हालांकि, आप मैन्युअल रूप से अपडेट की जांच कर सकते हैं।</string>
+    <string name="manual_update_notice_paragraph_2">कृपया स्वचालित अपडेट के लिए F-Droid या Obtainium का उपयोग करें। डाउनलोड विकल्पों के लिए keyboard.futo.org पर जाएँ।</string>
+    <string name="manual_update_notice_dev_paragraph">आप FUTO कीबोर्ड के विकास निर्माण पर हैं। यदि आप स्थिर निर्माण डाउनलोड करना चाहते हैं, तो keyboard.futo.org पर जाएँ।</string>
+    <string name="manual_update_notice_visit_site_button">जाएँ</string>
+    <!-- इसे "समझा" आदि के रूप में अनुवादित किया जा सकता है -->
+    <string name="manual_update_notice_dismiss_notice_button">अस्वीकृत करें</string>
+
+    <!-- सामान्य सेटिंग्स स्ट्रिंग्स -->
+    <string name="settings_tip">टिप</string>
+    <string name="settings_unknown_error_title">अज्ञात त्रुटि</string>
+    <string name="settings_unknown_error_subtitle">एक अज्ञात त्रुटि हुई है।</string>
+    <string name="settings_try_typing_here">यहाँ टाइप करने का प्रयास करें…</string>
+    <string name="settings_external_model_name">बाहरी आयातित मॉडल</string>
+    <string name="settings_check_for_updates_manually">मैन्युअल रूप से अपडेट की जांच करें</string>
+    <string name="settings_update_available">अपडेट उपलब्ध है</string>
+
+    <!-- जब एक नई भाषा जोड़ते हैं -->
+    <string name="language_settings_title">भाषाएँ और मॉडल</string>
+    <string name="language_settings_add_language_button">भाषा जोड़ें</string>
+    <string name="language_settings_select_language">जोड़ने के लिए भाषा चुनें</string>
+    <string name="language_settings_search">खोजें</string>
+    <string name="language_settings_select_layout">जोड़ने के लिए लेआउट चुनें</string>
+    <string name="language_settings_warning_language_has_no_dict">इस भाषा में कोई अंतर्निहित शब्दकोश नहीं है। हम ऑटोकरेक्ट और शब्द सुझाव प्राप्त करने के लिए एक डाउनलोड और आयात करने की सिफारिश करते हैं।</string>
+    <string name="language_settings_resource_none">(कोई नहीं)</string>
+    <string name="language_settings_layouts_of_this_language">कीबोर्ड लेआउट</string>
+    <string name="language_settings_add_layout_for_this_language">कीबोर्ड लेआउट जोड़ें</string>
+    <string name="language_settings_enable_multilingual_typing_for_this_language">बहुभाषी टाइपिंग</string>
+    <string name="language_settings_remove_this_language">भाषा हटाएँ</string>
+
+    <string name="language_settings_resource_imported_indicator">(आयातित)</string>
+    <string name="language_settings_resource_unsupported_indicator">(समर्थित नहीं)</string>
+    <string name="language_settings_resource_builtin_dictionary_name">निर्मित शब्दकोश</string>
+    <string name="language_settings_resource_voice_input_selected">क्या आप वॉयस इनपुट मॉडल को डिफ़ॉल्ट पर वापस लाना चाहेंगे, या इसे किसी अन्य फ़ाइल से बदलना चाहेंगे?</string>
+    <string name="language_settings_resource_voice_input_selected_no_default_warning">इस भाषा के लिए कोई अंतर्निहित वॉयस इनपुट मॉडल मौजूद नहीं है, इसलिए यदि आप इसे हटाते हैं, तो इस भाषा के लिए वॉयस इनपुट काम करना बंद कर देगा जब तक आप एक अलग मॉडल आयात नहीं करते!</string>
+    <string name="language_settings_resource_voice_input_selected_unset">आपने इस भाषा के लिए कोई कस्टम वॉयस इनपुट मॉडल कॉन्फ़िगर नहीं किया है। आप ऑनलाइन डाउनलोड की खोज कर सकते हैं, या किसी फ़ाइल से एक आयात कर सकते हैं।</string>
+    <string name="language_settings_resource_transformer_selected">क्या आप ट्रांसफार्मर मॉडल को डिफ़ॉल्ट पर वापस लाना चाहेंगे, या इसे किसी अन्य फ़ाइल से बदलना चाहेंगे?</string>
+    <string name="language_settings_resource_transformer_selected_no_default_warning">इस भाषा के लिए कोई अंतर्निहित ट्रांसफार्मर मॉडल मौजूद नहीं है, इसलिए यदि आप इसे हटाते हैं, तो ट्रांसफार्मर-आधारित भविष्यवाणियाँ इस भाषा के लिए काम करना बंद कर देंगी जब तक आप एक अलग मॉडल आयात नहीं करते!</string>
+    <string name="language_settings_resource_transformer_selected_unset">आपने इस भाषा के लिए कोई कस्टम ट्रांसफार्मर मॉडल कॉन्फ़िगर नहीं किया है। आप ऑनलाइन डाउनलोड की खोज कर सकते हैं, या किसी फ़ाइल से एक आयात कर सकते हैं।</string>
+    <string name="language_settings_resource_dictionary_selected">क्या आप शब्दकोश को डिफ़ॉल्ट पर वापस लाना चाहेंगे, या इसे किसी अन्य फ़ाइल से बदलना चाहेंगे?</string>
+    <string name="language_settings_resource_dictionary_selected_no_default_warning">इस भाषा के लिए कोई अंतर्निहित शब्दकोश मौजूद नहीं है, इसलिए यदि आप इसे हटाते हैं, तो ऑटोकरेक्ट और भविष्यवाणियाँ इस भाषा के लिए काम करना बंद कर देंगी जब तक आप एक अलग शब्दकोश आयात नहीं करते!</string>
+    <string name="language_settings_resource_dictionary_selected_unset">आपने इस भाषा के लिए कोई कस्टम शब्दकोश कॉन्फ़िगर नहीं किया है। आप ऑनलाइन डाउनलोड की खोज कर सकते हैं, या किसी फ़ाइल से एक आयात कर सकते हैं।</string>
+    <string name="language_settings_resource_replace_button">बदलें</string>
+    <string name="language_settings_resource_import_file_button">आयात करें</string>
+    <string name="language_settings_resource_revert_to_default_button">डिफ़ॉल्ट पर वापस लौटें</string>
+    <string name="language_settings_resource_remove_button">हटाएँ</string>
+    <string name="language_settings_resource_explore_online_button">खोजें</string>
+
+    <string name="language_settings_remove_language_title">क्या %1$s हटाएँ?</string>
+    <string name="language_settings_remove_language_body">%1$s को हटाएँ, इसके सभी संबंधित लेआउट और कस्टम संसाधन?</string>
+    <string name="language_settings_remove_language_remove_button">हटाएँ</string>
+    <string name="language_settings_remove_language_cancel_button">रद्द करें</string>
+
+    <string name="language_settings_other_options">अन्य विकल्प</string>
+    <string name="language_settings_import_resource_from_file">संसाधन फ़ाइल आयात करें</string>
+    <string name="language_settings_explore_voice_input_models_online">वॉयस इनपुट मॉडल खोजें</string>
+    <string name="language_settings_explore_dictionaries_online">शब्दकोश खोजें</string>
+    <string name="language_settings_explore_transformers_online">ट्रांसफार्मर मॉडल खोजें</string>
+
+    <!-- संसाधन आयातक -->
+    <string name="file_kind_voice_input_model">वॉयस इनपुट मॉडल</string>
+    <string name="file_kind_transformer_model">ट्रांसफार्मर मॉडल</string>
+    <string name="file_kind_dictionary">शब्दकोश</string>
+    <string name="file_kind_invalid_file">अमान्य फ़ाइल</string>
+    <string name="resource_importer_import_title">आयात करें - %1$s</string>
+    <string name="resource_importer_error_wordlist_1">त्रुटि: यह फ़ाइल एक स्रोत शब्द सूची (_wordlist.combined) प्रतीत होती है, न कि एक संकलित शब्दकोश (.dict) फ़ाइल।</string>
+    <string name="resource_importer_error_wordlist_2">कृपया संकलित शब्दकोश फ़ाइल डाउनलोड करें, न कि शब्द सूची। यदि आपने यह शब्द सूची स्वयं बनाई है, तो इसे dicttool का उपयोग करके बाहरी रूप से संकलित करें।</string>
+    <string name="resource_importer_error_invalid_fiile">त्रुटि: इस फ़ाइल को पहचाना नहीं जा सका। यह अमान्य हो सकती है या यह भ्रष्ट हो सकती है। इसे फिर से डाउनलोड करने का प्रयास करें, या किसी अन्य फ़ाइल का प्रयास करें।</string>
+    <string name="resource_importer_cancel_button">रद्द करें</string>
+    <string name="resource_importer_file_info">फ़ाइल जानकारी: %1$s</string>
+    <string name="resource_importer_importing">भाषा के लिए आयात कर रहे हैं: %1$s</string>
+    <string name="resource_importer_select_language">आयात करने के लिए भाषा चुनें:</string>
+    <string name="resource_importer_warning_language_missing">यह फ़ाइल एक भाषा (%1$s) के लिए अभिप्रेत प्रतीत होती है जो सेटिंग्स में सक्षम नहीं है</string>
+
+    <!-- कीबोर्ड क्रियाएँ -->
+    <string name="action_editor_title">क्रियाएँ संपादित करें</string>
+    <string name="action_editor_subtitle">पसंदीदा क्रियाएँ, पिन की गई क्रियाएँ, और स्पेसबार के बगल में क्रिया कुंजी संपादित करें</string>
+    <string name="action_editor_edit_actions">क्रियाएँ संपादित करें</string>
+    <string name="action_editor_warning_no_actions">कोई क्रियाएँ सक्षम नहीं हैं</string>
+    <string name="action_editor_error_more_than_one_action_key">कृपया केवल एक क्रिया कुंजी निर्धारित करें। आप क्रिया कुंजी को एक से अधिक क्रियाएँ नहीं सौंप सकते।</string>
+    <string name="action_editor_warning_too_many_pinned">कृपया कम क्रियाएँ पिन करने पर विचार करें। इस संख्या की क्रियाओं को समायोजित करने के लिए सुझाव बार को छोटा करना होगा।</string>
+    <string name="action_editor_add_next_action">अगली जोड़ें</string>
+
+    <!-- कीबोर्ड के आकार की सेटिंग्स -->
+    <string name="size_settings_title">कीबोर्ड का आकार बदलें</string>
+    <string name="size_settings_subtitle">कीबोर्ड की ऊँचाई और ऑफसेट बदलें</string>
+    <string name="size_settings_resize_tip">आकार बदलने के लिए \"कीबोर्ड का आकार बदलें\" बटन पर टैप करें।</string>
+    <string name="size_settings_keyboard_modes_tip">आप इस क्रिया को कहीं भी कीबोर्ड मोड्स क्रिया के साथ एक्सेस कर सकते हैं:</string>
+    <string name="size_settings_reset">आकार सेटिंग्स रीसेट करें</string>
+    <string name="size_settings_reset_subtitle">डिफ़ॉल्ट पर पोर्ट्रेट और लैंडस्केप के लिए सभी आकार और मोड रीसेट करने के लिए टैप करें</string>
+
+    <!-- लंबे प्रेस कुंजी, या अन्यथा द्वितीयक कुंजी, अधिक कुंजी, अतिरिक्त कुंजी -->
+    <string name="morekey_settings_title">लंबे प्रेस कुंजी और स्पेसबार</string>
+    <string name="morekey_settings_subtitle">लंबे प्रेस की अवधि, अक्षरों/चिन्हों का क्रम, और स्पेसबार और डिलीट कुंजी का व्यवहार कॉन्फ़िगर करें।</string>
+    <string name="morekey_settings_layout">लंबे प्रेस कुंजी का लेआउट</string>
+    <string name="morekey_settings_reset">डिफ़ॉल्ट पर रीसेट करें</string>
+    <string name="morekey_settings_active">सक्रिय</string>
+    <string name="morekey_settings_inactive">निष्क्रिय</string>
+    <string name="morekey_settings_enable">सक्रिय करें</string>
+    <string name="morekey_settings_disable">निष्क्रिय करें</string>
+    <string name="morekey_settings_keys">लंबे प्रेस कुंजी</string>
+    <string name="morekey_settings_show_hints">संकेत दिखाएँ</string>
+    <string name="morekey_settings_show_hints_subtitle">प्रत्येक कुंजी पर एक छोटा संकेत प्रदर्शित करें, जो प्राथमिक लंबे प्रेस कुंजी को दिखाता है</string>
+    <string name="morekey_settings_duration">लंबे प्रेस की अवधि</string>
+    <string name="morekey_settings_duration_subtitle">किसी कुंजी को लंबे प्रेस के रूप में माना जाने के लिए कितनी देर तक दबाना आवश्यक है</string>
+    <string name="morekey_settings_backspace_behavior">होल्ड या स्वाइप करते समय बैकस्पेस का व्यवहार</string>
+    <string name="morekey_settings_backspace_behavior_delete_chars">अक्षर हटाएँ</string>
+    <string name="morekey_settings_backspace_behavior_delete_words">पूरे शब्द हटाएँ</string>
+    <string name="morekey_settings_space_behavior">स्पेसबार का व्यवहार</string>
+    <string name="morekey_settings_space_behavior_swipe_cursor">स्वाइप करने से कर्सर चलता है, लंबे प्रेस करने से भाषा बदलती है</string>
+    <string name="morekey_settings_space_behavior_swipe_lang">स्वाइप करने से भाषा बदलती है, लंबे प्रेस करने से कर्सर चलता है</string>
+    <string name="morekey_settings_space_behavior_only_cursor">स्वाइप और लंबे प्रेस केवल कर्सर को चलाते हैं</string>
+
+    <!-- अधिक कुंजी के प्रकार जिन्हें कॉन्फ़िगर किया जा सकता है, और उनके उदाहरण -->
+    <string name="morekey_settings_kind_numbers">संख्याएँ</string>
+    <string name="morekey_settings_kind_numbers_example">जैसे [1] पर [q]</string>
+    <string name="morekey_settings_kind_language_keys">भाषा कुंजी</string>
+    <!-- इस उदाहरण को बेहतर समझ के लिए भाषा के अनुसार समायोजित किया जा सकता है -->
+    <string name="morekey_settings_kind_language_keys_example">जैसे [ñ] पर [n] स्पेनिश में</string>
+    <string name="morekey_settings_kind_symbols">चिन्ह</string>
+    <string name="morekey_settings_kind_symbols_example">जैसे [@] पर [a]</string>
+    <string name="morekey_settings_kind_actions">त्वरित क्रियाएँ</string>
+    <string name="morekey_settings_kind_actions_example">जैसे [कॉपी] पर [c]</string>
+    <string name="morekey_settings_kind_misc_common">सामान्य भाषाओं के विविध अक्षर</string>
+    <string name="morekey_settings_kind_misc_common_example">जैसे [ß] पर [s] सभी लैटिन लिपि भाषाओं में</string>
+
+    <!-- टाइपिंग सेटिंग्स -->
+    <string name="typing_settings_title">टाइपिंग प्राथमिकताएँ</string>
+    <!-- अनुवाद करते समय, यदि उस भाषा के लिए अधिक समझ में आता है तो इसे इशारा टाइपिंग के रूप में नामित करें -->
+    <string name="typing_settings_swipe">स्वाइप टाइपिंग (अल्फा)</string>
+    <string name="typing_settings_swipe_subtitle">शब्द लिखने के लिए कुंजी से कुंजी पर स्वाइप करने की अनुमति दें।</string>
+    <string name="typing_settings_suggest_emojis">इमोजी सुझाव</string>
+    <string name="typing_settings_suggest_emojis_subtitle">टाइप करते समय इमोजी का सुझाव दें</string>
+    <string name="typing_settings_vibration_strength">कंपन</string>
+    <string name="typing_settings_vibration_strength_default">डिफ़ॉल्ट</string>
+    <string name="typing_settings_enable_clipboard_history">क्लिपबोर्ड इतिहास</string>
+
+    <!-- स्वचालित स्पेस सम्मिलन -->
+    <string name="typing_settings_auto_space_mode">स्वचालित स्पेस मोड</string>
+    <string name="typing_settings_auto_space_mode_auto">विराम चिह्न के बाद या सुझाव सम्मिलित करने के बाद स्वचालित रूप से स्पेस सम्मिलित करें</string>
+    <string name="typing_settings_auto_space_mode_suggestions">सिर्फ सुझाव सम्मिलित करने के बाद स्वचालित रूप से स्पेस सम्मिलित करें</string>
+    <string name="typing_settings_auto_space_mode_legacy">कोई स्पेस स्वचालित रूप से सम्मिलित न करें (विरासत मोड)</string>
+
+    <!-- विविध कीबोर्ड सेटिंग्स -->
+    <string name="keyboard_settings_title">कीबोर्ड</string>
+    <string name="keyboard_settings_show_number_row">संख्या पंक्ति दिखाएँ</string>
+    <string name="keyboard_settings_show_number_row_subtitle">जब सक्रिय हो, तो समर्थित लेआउट पर कीबोर्ड के शीर्ष पर संख्या पंक्ति दिखाई जाएगी</string>
+    <string name="keyboard_settings_show_arrow_row">तीर कुंजी दिखाएँ</string>
+    <string name="keyboard_settings_show_arrow_row_subtitle">जब सक्रिय हो, तो कीबोर्ड के नीचे तीर कुंजी पंक्ति दिखाई जाएगी</string>
+    <string name="keyboard_settings_extra_layouts">अतिरिक्त लेआउट</string>
+    <string name="keyboard_settings_extra_layouts_subtitle">भाषाओं की स्क्रीन में अतिरिक्त लेआउट कॉन्फ़िगर करें</string>
+    <string name="keyboard_settings_show_suggestion_row">क्रिया/सुझाव बार दिखाएँ</string>
+    <string name="keyboard_settings_show_suggestion_row_subtitle">सुझावों वाली बार दिखाएँ। सक्षम रखना अनुशंसित है</string>
+    <string name="keyboard_settings_inline_autofill">इनलाइन ऑटोफिल</string>
+    <string name="keyboard_settings_inline_autofill_subtitle">सुझाव बार में पासवर्ड प्रबंधक ऑटोफिल प्रदर्शित करें</string>
+
+    <!-- विविध शीर्षक -->
+    <string name="settings_keyboard_typing_title">कीबोर्ड और टाइपिंग</string>
+    <!-- थीम, जैसे दृश्य शैली -->
+    <string name="theme_settings_title">थीम</string>
+    <string name="theme_settings_key_borders">कुंजी सीमाएँ</string>
+    <string name="dev_settings_title">डेवलपर सेटिंग्स</string>
+    <string name="credits_title">श्रेय</string>
+
+    <!-- वॉयस इनपुट सेटिंग्स मेनू -->
+    <string name="voice_input_settings_title">वॉयस इनपुट</string>
+    <string name="voice_input_settings_builtin_disabled_notice">निर्मित वॉयस इनपुट निष्क्रिय है!</string>
+    <string name="voice_input_settings_disable_builtin_voice_input">निर्मित वॉयस इनपुट निष्क्रिय करें</string>
+    <string name="voice_input_settings_disable_builtin_voice_input_subtitle">बाहरी ऐप द्वारा प्रदान किए गए वॉयस इनपुट का उपयोग करें</string>
+    <string name="voice_input_settings_indication_sounds">संकेत ध्वनियाँ</string>
+    <string name="voice_input_settings_indication_sounds_subtitle">शुरू और रद्द करने पर एक छोटी ध्वनि चलाएँ</string>
+    <string name="voice_input_settings_verbose_progress">विस्तृत प्रगति</string>
+    <string name="voice_input_settings_verbose_progress_subtitle">अतिरिक्त जानकारी प्रदर्शित करें, जैसे कि माइक्रोफोन का उपयोग किया जा रहा है</string>
+    <string name="voice_input_settings_use_bluetooth_mic">ब्लूटूथ माइक्रोफोन प्राथमिकता</string>
+    <string name="voice_input_settings_use_bluetooth_mic_subtitle">रिकॉर्डिंग शुरू करने में अतिरिक्त देरी हो सकती है क्योंकि ब्लूटूथ SCO कनेक्शन को बातचीत करनी होगी</string>
+    <string name="voice_input_settings_audio_focus">ऑडियो फोकस</string>
+    <string name="voice_input_settings_audio_focus_subtitle">जब वॉयस इनपुट सक्रिय हो, तो वीडियो/संगीत को रोकें</string>
+    <string name="voice_input_settings_suppress_symbols">चिन्हों को दबाएँ</string>
+    <string name="voice_input_settings_suppress_symbols_subtitle">वॉयस इनपुट से चिन्हों को आउटपुट करने से रोकें</string>
+    <string name="voice_input_settings_long_form">लंबी अवधि का वॉयस इनपुट</string>
+    <string name="voice_input_settings_long_form_subtitle">यदि निष्क्रिय है, तो वॉयस इनपुट 30 सेकंड के बाद स्वचालित रूप से रुक जाएगा।</string>
+    <string name="voice_input_settings_autostop_vad">शांत होने पर स्वचालित रूप से रुकें</string>
+    <string name="voice_input_settings_autostop_vad_subtitle">जब चुप्पी का पता चले तो स्वचालित रूप से रुकें। यदि बहुत अधिक पृष्ठभूमि शोर है तो आपको मैन्युअल रूप से रुकना पड़ सकता है।</string>
+    <string name="voice_input_settings_change_models">मॉडल</string>
+    <string name="voice_input_settings_change_models_subtitle">मॉडल बदलने के लिए, भाषाएँ और मॉडल मेनू पर जाएँ</string>
+
+    <!-- भविष्यवाणी मेनू -->
+    <string name="prediction_settings_title">पाठ भविष्यवाणी</string>
+    <string name="prediction_settings_transformer">ट्रांसफार्मर LM</string>
+    <string name="prediction_settings_transformer_finetuning">ट्रांसफार्मर फाइन-ट्यूनिंग</string>
+    <string name="prediction_settings_transformer_finetuning_subtitle">यदि सक्षम किया गया तो आपकी बैटरी खत्म कर सकता है! इस फीचर पर और काम किया जाना बाकी है</string>
+    <string name="prediction_settings_transformer_models">ट्रांसफार्मर मॉडल</string>
+    <string name="prediction_settings_transformer_advanced_params">उन्नत पैरामीटर</string>
+    <string name="prediction_settings_transformer_alpha_notice">नोट: ट्रांसफार्मर LM अल्फा स्थिति में है</string>
+    <string name="prediction_settings_smart_keyhit_detection">स्मार्ट की-हिट पहचान</string>
+    <string name="prediction_settings_smart_keyhit_detection_subtitle">संबंधित अगली कुंजियों का निर्धारण करने के लिए शब्दकोश का उपयोग करता है, और उनके हिट क्षेत्र को बढ़ाता है। बैकस्पेस के बाद बढ़ाने से बचा जाता है</string>
+    <string name="prediction_settings_word_blacklist">शब्द ब्लैकलिस्ट</string>
+    <string name="prediction_settings_word_blacklist_add">ब्लैकलिस्ट में जोड़ें</string>
+    <string name="prediction_settings_word_blacklist_none">कोई ब्लैकलिस्टेड शब्द नहीं हैं।</string>
+
+    <!-- सहायता और फीडबैक मेनू -->
+    <string name="help_menu_title">सहायता और फीडबैक</string>
+    <string name="help_menu_version_name">संस्करण नाम: %1$s</string>
+    <string name="help_menu_version_code">संस्करण कोड: %1$s</string>
+    <string name="help_menu_version_tip">हम आपकी राय सुनना चाहते हैं! यदि आप कोई समस्या रिपोर्ट कर रहे हैं, तो आपका संस्करण प्रासंगिक हो सकता है: v%1$s</string>
+    <string name="help_menu_documentation">दस्तावेज़ीकरण</string>
+    <string name="help_menu_documentation_subtitle">कीबोर्ड की विशेषताओं और क्षमताओं के बारे में अधिक जानें</string>
+    <string name="help_menu_discord">डिस्कॉर्ड सर्वर</string>
+    <string name="help_menu_discord_subtitle">बात करना चाहते हैं लेकिन ज़ुलिप पसंद नहीं है? यहाँ चैट करें</string>
+    <string name="help_menu_futo_chat">FUTO चैट</string>
+    <string name="help_menu_futo_chat_subtitle">बात करना चाहते हैं लेकिन डिस्कॉर्ड पसंद नहीं है? यहाँ चैट करें</string>
+    <string name="help_menu_github">सार्वजनिक समस्या ट्रैकर</string>
+    <string name="help_menu_github_subtitle">विशिष्ट बग या फीचर अनुरोध? यहाँ पोस्ट करें</string>
+    <string name="help_menu_email">ईमेल करें keyboard@futo.org</string>
+    <string name="help_menu_email_subtitle">निजी फीडबैक, सहायता, या GitHub का उपयोग नहीं करते? हमें ईमेल करें</string>
+
+    <!-- सेटअप कॉन्फ़िगरेशन -->
+    <string name="setup_step_1">सेटअप - चरण 1</string>
+    <string name="setup_step_2">सेटअप - चरण 2</string>
+    <string name="setup_step_3">सेटअप - चरण 3</string>
+    <string name="setup_welcome_text">FUTO कीबोर्ड (अल्फा) में आपका स्वागत है! यह उत्पाद अभी भी विकासाधीन है और अभी पूरा नहीं हुआ है, हम आपकी धैर्य और समझ की सराहना करते हैं।\n\nशुरू करने के लिए, FUTO कीबोर्ड को एक इनपुट विधि के रूप में सक्षम करें।</string>
+    <string name="setup_open_input_settings">इनपुट विधि सेटिंग्स खोलें</string>
+    <string name="setup_warning_multiple_versions">चेतावनी: ऐसा लगता है कि आपके पास Play Store और स्टैंडअलोन दोनों संस्करण स्थापित हैं, हम केवल एक को स्थापित करने की सिफारिश करते हैं</string>
+    <string name="setup_active_input_method">कृपया FUTO कीबोर्ड को अपनी सक्रिय इनपुट विधि के रूप में चुनें।</string>
+    <string name="setup_switch_input_methods">इनपुट विधियाँ बदलें</string>
+
+</resources>

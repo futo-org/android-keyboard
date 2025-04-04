@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Machine translated strings, need further verification -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Pode ser traduzido como "Parar entrada de voz", "Parar gravação", etc -->
+    <string name="stop_recording">Parar Gravação</string>
+    <string name="try_saying_something">Tente dizer algo</string>
+    <string name="no_audio_detected_is_your_microphone_blocked">Nenhum áudio detectado, o seu microfone está bloqueado?</string>
+    <string name="listening">A ouvir…</string>
+    <string name="grant_microphone_permission_to_use_voice_input">Conceder permissão para o microfone usar a Entrada de Voz</string>
+    <string name="open_voice_input_settings">Abrir Definições de Entrada de Voz</string>
+
+    <string name="extracting_features">A extrair características…</string>
+    <string name="loading_model">A carregar modelo…</string>
+    <string name="decoding">Decodificação iniciada…</string>
+    <string name="switching_model">A mudar de língua…</string>
+    <string name="processing">A processar…</string>
+    <string name="initializing">A inicializar…</string>
+
+    <string name="tiny_en_name">Inglês-39 (padrão)</string>
+    <string name="base_en_name">Inglês-74 (mais lento, mais preciso)</string>
+    <string name="small_en_name">Inglês-244 (lento)</string>
+
+    <string name="tiny_name">Multilingue-39 (menos preciso)</string>
+    <string name="base_name">Multilingue-74 (padrão)</string>
+    <string name="small_name">Multilingue-244 (lento)</string>
+
+</resources>

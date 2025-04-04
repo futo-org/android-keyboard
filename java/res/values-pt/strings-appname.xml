@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Machine translated strings, need further verification -->
+<resources>
+    <!-- Nome da aplicação para o teclado. "FUTO" não deve ser traduzido. -->
+    <string name="english_ime_name">Teclado FUTO</string>
+
+    <!-- Nome do serviço de verificação ortográfica do Android. "FUTO" não deve ser traduzido. -->
+    <string name="spell_checker_service_name">Verificador Ortográfico FUTO</string>
+
+    <!-- Título para a tela de definições do teclado Android. "FUTO" não deve ser traduzido. -->
+    <string name="english_ime_settings">Definições do Teclado FUTO</string>
+
+    <!-- Título para a tela de definições do serviço de verificação ortográfica. "FUTO" não deve ser traduzido. -->
+    <string name="android_spell_checker_settings">Definições do Verificador Ortográfico FUTO</string>
+
+</resources>

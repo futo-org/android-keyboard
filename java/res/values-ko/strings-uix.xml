@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Machine translated strings, need further verification -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Keyboard actions -->
+    <string name="action_theme_switcher_title">테마 전환기</string>
+    <string name="action_select_all_title">모두 선택</string>
+    <string name="action_cut_title">클립보드에 잘라내기</string>
+    <string name="action_copy_title">클립보드에 복사</string>
+    <string name="action_paste_title">클립보드에서 붙여넣기</string>
+    <string name="action_undo_title">실행 취소</string>
+    <string name="action_redo_title">다시 실행</string>
+    <string name="action_text_editor_title">텍스트 편집기</string>
+    <string name="action_debug_title">디버그 정보</string>
+    <string name="action_more_actions_title">모든 작업</string>
+    <string name="action_bug_viewer_title">버그 뷰어</string>
+    <!-- These move the text cursor up, down, left, right -->
+    <string name="action_cursor_up_title">위쪽 화살표</string>
+    <string name="action_cursor_down_title">아래쪽 화살표</string>
+    <string name="action_cursor_left_title">왼쪽 화살표</string>
+    <string name="action_cursor_right_title">오른쪽 화살표</string>
+
+    <!-- For emoji menu action -->
+    <string name="action_emoji_title">이모지</string>
+    <!-- Refers to the most recently used emojis -->
+    <string name="action_emoji_category_most_recently_used">최근 사용한 이모지</string>
+    <string name="action_emoji_category_smileys_emotion">스마일 &amp; 감정</string>
+    <string name="action_emoji_category_people_body">사람 &amp; 신체</string>
+    <string name="action_emoji_category_animals_nature">동물 &amp; 자연</string>
+    <string name="action_emoji_category_food_drink">음식 &amp; 음료</string>
+    <string name="action_emoji_category_travel_places">여행 &amp; 장소</string>
+    <string name="action_emoji_category_activities">활동</string>
+    <string name="action_emoji_category_objects">물체</string>
+    <string name="action_emoji_category_symbols">기호</string>
+    <string name="action_emoji_category_flags">국기</string>
+    <string name="action_emoji_category_ascii">ASCII</string>
+    <string name="action_emoji_search_no_results_found">결과가 없습니다</string>
+    <string name="action_emoji_jump_to_category"><xliff:g name="category" example="Flags">%s</xliff:g> 카테고리로 이동</string>
+    <!-- Refers to clearing the most recently used emoji list -->
+    <string name="action_emoji_clear_recent_emojis_question">최근 이모지를 지우시겠습니까?</string>
+    <!-- Must be fairly short -->
+    <string name="action_emoji_clear_recent_emojis_cancel">취소</string>
+    <!-- Must be fairly short -->
+    <string name="action_emoji_clear_recent_emojis_clear">지우기</string>
+    <string name="action_emoji_clear_recent_emojis_content_description">최근 이모지 지우기</string>
+    <!-- Must be fairly short -->
+    <string name="action_emoji_search_for_emojis">검색</string>
+
+    <!-- For voice input action -->
+    <string name="action_voice_input_title">음성 입력</string>
+    <!-- Same as the one above but it uses the device's default system voice input instead of the built-in -->
+    <string name="action_system_voice_input_title">음성 입력 (시스템)</string>
+    <string name="action_voice_input_no_model_for_language_x_installed">설치된 <xliff:g name="language" example="español">%s</xliff:g> 음성 입력 모델이 없습니다. 옵션을 확인하시겠습니까?</string>
+
+    <!-- For clipboard manager action -->
+    <string name="action_clipboard_manager_title">클립보드 관리자</string>
+    <string name="action_clipboard_manager_unpin_item">항목 고정 해제</string>
+    <string name="action_clipboard_manager_pin_item">항목 고정</string>
+    <string name="action_clipboard_manager_remove_item">항목 제거</string>
+    <!-- Must be fairly short -->
+    <string name="action_clipboard_manager_cancel_action_button">취소</string>
+    <string name="action_clipboard_manager_disable_text">지울 항목이 없습니다. 클립보드 기록을 비활성화하시겠습니까?</string>
+    <!-- Must be fairly short, refers to disabling clipboard history -->
+    <string name="action_clipboard_manager_disable_button">비활성화</string>
+    <string name="action_clipboard_manager_unpin_all_items_text">고정 해제된 항목이 없습니다. 모든 항목의 고정을 해제하시겠습니까?</string>
+    <!-- Must be fairly short -->
+    <string name="action_clipboard_manager_unpin_all_items_button">모두 고정 해제</string>
+    <string name="action_clipboard_manager_clear_unpinned_items_text">모든 고정 해제된 항목을 지우시겠습니까?</string>
+    <!-- Must be fairly short -->
+    <string name="action_clipboard_manager_clear_unpinned_items_button">지우기</string>
+    <string name="action_clipboard_manager_clear_clipboard">클립보드 지우기</string>
+    <string name="action_clipboard_manager_error_device_locked_title">장치 잠금</string>
+    <string name="action_clipboard_manager_error_device_locked_text">클립보드 기록에 접근하려면 장치의 잠금을 해제하세요</string>
+    <string name="action_clipboard_manager_error_general_title">클립보드 오류</string>
+    <string name="action_clipboard_manager_error_general_text">클립보드 기록을 저장하거나 불러올 수 없습니다. 손상되었을 수 있습니다. 삭제하거나 키보드를 재시작해 보세요. 이 문제를 버그로 신고해 주세요. 이유: %1$s</string>
+    <string name="action_clipboard_manager_delete_corrupted_clipboard_text">클립보드를 삭제하시겠습니까? 모든 항목이 손실됩니다.</string>
+    <!-- Must be fairly short -->
+    <string name="action_clipboard_manager_delete_corrupted_clipboard_button">삭제</string>
+    <string name="action_clipboard_manager_error_clipboard_history_disabled_title">클립보드 기록 비활성화</string>
+    <string name="action_clipboard_manager_error_clipboard_history_disabled_text">클립보드 기록이 활성화되어 있지 않습니다. 클립보드 항목을 저장하려면 클립보드 기록을 활성화하세요. 고정되지 않은 항목은 최대 25개까지 3일 동안 유지됩니다. 비밀번호 및 민감한 항목은 기록에서 제외됩니다.</string>
+    <string name="action_clipboard_manager_enable_clipboard_history_button">클립보드 기록 활성화</string>
+    <string name="action_clipboard_manager_error_app_image_insertion_unsupported">앱에서 이미지 삽입을 지원하지 않습니다</string>
+
+    <!-- For keyboard modes action -->
+    <string name="action_keyboard_modes_title">키보드 모드</string>
+    <string name="action_keyboard_modes_go_back">뒤로 가기</string>
+    <string name="action_keyboard_modes_resize_keyboard">키보드 크기 조정</string>
+    <!-- This string must be super short (below 10 chars if possible). Standard QWERTYUIOP keyboard, filling full screen width. -->
+    <string name="action_keyboard_modes_standard">표준</string>
+    <!-- This string must be super short (below 10 chars if possible). One-handed QWERTYUIOP keyboard, filling 2/3 screen width on one side -->
+    <string name="action_keyboard_modes_one_handed">한 손</string>
+    <!-- This string must be super short (below 10 chars if possible). Split QWERT - - YUIOP keyboard, with gap in middle -->
+    <string name="action_keyboard_modes_split">분할</string>
+    <!-- This string must be super short (below 10 chars if possible). Free-form draggable and resizable QWERTYUIOP keyboard. -->
+    <string name="action_keyboard_modes_floating">떠다니기</string>
+    <!-- This string must be super short (below 10 chars if possible) -->
+    <string name="action_keyboard_modes_resizing_reset_size">초기화</string>
+    <!-- This string must be super short (below 10 chars if possible) -->
+    <string name="action_keyboard_modes_resizing_apply_new_size">적용</string>
+
+    <!-- Keyboard action kinds -->
+    <string name="action_kind_action_key">작업 키</string>
+    <string name="action_kind_pinned_key">고정된 작업</string>
+    <string name="action_kind_favorites">즐겨찾기 작업</string>
+    <string name="action_kind_more">더 많은 작업</string>
+    <string name="action_kind_disabled">숨겨진 작업</string>
+
+    <!-- Keyboard themes -->
+    <string name="theme_default_dark">어두운 모드</string>
+    <string name="theme_default_light">밝은 모드</string>
+    <string name="theme_amoled_dark">AMOLED 다크 퍼플</string>
+    <string name="theme_classic_dark">AOSP 머티리얼 다크</string>
+    <string name="theme_classic_light">AOSP 머티리얼 라이트</string>
+    <string name="theme_vi">FUTO VI 테마</string>
+    <string name="theme_deepsea_dark">깊은 바다 다크</string>
+    <string name="theme_deepsea_light">깊은 바다 라이트</string>
+    <string name="theme_emerald">에메랄드</string>
+    <string name="theme_gradient1">그라데이션 1</string>
+    <string name="theme_gradient2">그라데이션 2</string>
+    <string name="theme_rainbow">무지개</string>
+    <string name="theme_snowfall">눈 내림</string>
+    <string name="theme_steel_gray">강철 회색</string>
+    <string name="theme_sunflower">해바라기</string>
+    <string name="theme_cotton_candy">솜사탕</string>
+    <string name="theme_hotdog">핫도그</string>
+    <string name="theme_high_contrast_yellow">고대비 노란색</string>
+    <string name="theme_dev">개발 테마</string>
+    <string name="theme_dynamic_system">동적 자동</string>
+    <string name="theme_dynamic_dark">동적 다크</string>
+    <string name="theme_dynamic_light">동적 라이트</string>
+
+    <!-- Auto update strings (note: the auto updater is currently inactive) -->
+    <string name="autoupdater_service_title">업데이트 확인 서비스</string>
+    <string name="autoupdater_update_available_title">업데이트 가능</string>
+    <string name="autoupdater_update_available_body">업데이트가 가능합니다 (<xliff:g name="versionDiff" example="v1 -> v2">%s</xliff:g>). 다운로드하려면 탭하세요</string>
+    <string name="autoupdater_dismiss_update">무시</string>
+    <string name="autoupdater_perform_update">업데이트</string>
+
+    <!-- These strings can appear in the keyboard itself -->
+    <string name="keyboard_suggest_blacklist_title">블랙리스트</string>
+    <string name="keyboard_suggest_blacklist_body">\"%1$s\"를 제안 목록에서 제외하시겠습니까?</string>
+    <string name="keyboard_suggest_disable_emojis">이모지 제안 비활성화</string>
+    <string name="keyboard_version_status">알파</string>
+    <string name="keyboard_switch_keyboard">키보드 전환</string>
+    <string name="keyboard_language_settings">설정</string>
+
+    <!-- Payment screen -->
+    <string name="payment_screen_short_title">결제</string>
+    <string name="payment_screen_title">FUTO 키보드 결제</string>
+    <string name="payment_screen_sales_paragraph_1">FUTO 키보드를 <xliff:g name="days" example="30">%d</xliff:g>일 동안 사용하셨습니다. 이 앱이 유용하다면, FUTO 소프트웨어의 향후 개발을 지원하기 위해 결제를 고려해 주세요.</string>
+    <string name="payment_screen_sales_paragraph_1_alt">FUTO 키보드를 사용해 주셔서 감사합니다! 이 앱이 유용하다면, FUTO 소프트웨어의 향후 개발을 지원하기 위해 결제를 고려해 주세요.</string>
+    <string name="payment_screen_sales_paragraph_2">FUTO는 사용자에게 피해를 주지 않는 좋은 소프트웨어를 만드는 데 전념하고 있습니다. 이 앱은 광고를 제공하거나 개인 데이터를 수집하지 않습니다.</string>
+    <string name="payment_screen_sales_point_development_title">지속 가능한 개발</string>
+    <string name="payment_screen_sales_point_development_body">FUTO의 사명은 오픈 소스 소프트웨어와 비악의적인 소프트웨어 비즈니스 관행이 프로젝트와 개발자에게 지속 가능한 수입원이 되는 것입니다. 이러한 이유로, 우리는 사용자가 실제로 소프트웨어에 대해 지불하는 것을 지지합니다.</string>
+    <string name="payment_screen_sales_point_privacy_title">개인정보 보호 약속</string>
+    <string name="payment_screen_sales_point_privacy_body">이 앱은 광고를 제공하거나 데이터를 판매하지 않습니다. 우리는 그런 사업을 하지 않습니다.</string>
+    <string name="payment_screen_error_build_unsupported_payment">이 빌드에서는 결제가 지원되지 않습니다</string>
+    <string name="payment_screen_already_paid_title">이미 결제하셨나요?</string>
+    <string name="payment_screen_already_paid_body">FUTO 키보드 또는 FUTO 음성 입력에 대해 이미 결제하셨다면 아래를 탭하세요.</string>
+    <string name="payment_screen_already_paid_button">이미 결제했습니다</string>
+    <string name="payment_screen_already_paid_confirmation">선택을 확인하세요</string>
+    <string name="payment_screen_already_paid_confirmation_body">이미 결제하신 것을 확인하시겠습니까? 확인하면 다시 결제에 대해 묻지 않습니다.</string>
+    <string name="payment_screen_already_paid_confirmation_confirm">이미 결제했습니다</string>
+    <string name="payment_screen_already_paid_confirmation_cancel">취소</string>
+    <string name="payment_screen_set_reminder_title">아직 결제할 준비가 되지 않았나요?</string>
+    <string name="payment_screen_set_reminder_body">이 설정은 입력한 기간 동안 알림을 숨깁니다.</string>
+    <string name="payment_screen_set_reminder_setter">언제 알림을 받고 싶으신가요?</string>
+    <string name="payment_screen_set_reminder_setter_7_days">7일 후</string>
+    <string name="payment_screen_set_reminder_setter_1_month">1개월 후</string>
+    <string name="payment_screen_set_reminder_setter_6_months">6개월 후</string>
+    <string name="payment_screen_set_reminder_setter_next_century">다음 세기</string>
+    <string name="payment_screen_set_reminder_setter_confirm">알림 확인</string>
+    <string name="payment_screen_other_options">기타 옵션</string>
+    <string name="payment_screen_need_help_title">도움이 필요하신가요?</string>
+    <string name="payment_screen_need_help_subtitle">도움이 필요하신가요? 웹사이트를 방문하세요</string>
+
+    <string name="payment_screen_pay_via_google">구글 플레이를 통한 결제 (<xliff:g name="price" example="~$2.99">%s</xliff:g> + 세금)</string>
+    <string name="payment_screen_pay_via_futopay">결제하기 (<xliff:g name="price" example="~$2.99">%s</xliff:g> + 세금)</string>
+    <string name="payment_screen_more_options">더 많은 옵션</string>
+
+    <string name="payment_screen_payment_complete_title">결제 완료</string>
+    <string name="payment_screen_aftersales_title">감사합니다</string>
+    <string name="payment_screen_aftersales_title_pending">결제 대기 중</string>
+    <string name="payment_screen_aftersales_paragraph_1">FUTO 키보드를 구매해 주셔서 감사합니다!</string>
+    <string name="payment_screen_aftersales_paragraph_2">귀하의 구매는 FUTO 키보드 및 기타 FUTO 프로젝트의 지속적인 개발에 도움이 됩니다.</string>
+    <string name="payment_screen_aftersales_paragraph_2_pending">귀하의 결제가 아직 대기 중이지만 곧 처리될 것입니다.</string>
+    <string name="payment_screen_aftersales_paragraph_3">방금 결제하셨다면, 결제가 아직 처리 중일 수 있습니다. 추가 정보가 담긴 이메일을 받게 될 것입니다.</string>
+    <string name="payment_screen_payment_failed_title">결제 오류</string>
+    <string name="payment_screen_payment_failed_body">"안타깝게도, 결제가 여러 가지 이유로 실패했습니다. 도움이 필요하시면 저희에게 연락해 주세요. 아래 버튼이나 도움말의 '피드백 보내기'를 통해 keyboard@futo.org로 연락하실 수 있습니다."</string>
+    <string name="payment_screen_payment_failed_body_unconfident">"결제에 문제가 있었을 수 있습니다. 결제가 완료되었다면, 라이센스 키가 포함된 이메일을 받게 될 것입니다. 도움이 필요하시면 저희에게 연락해 주세요. 아래 버튼이나 메인 화면의 '피드백 공유'를 통해 keyboard@futo.org로 연락하실 수 있습니다."</string>
+    <string name="payment_screen_license_integrity_error">라이센스를 확인하는 데 실패했습니다. 이 문제가 오류라고 생각되시면 저희에게 연락해 주세요.</string>
+    <string name="payment_screen_continue_button">계속</string>
+
+    <string name="payment_unpaid_version_title">미결제 FUTO 키보드</string>
+    <string name="payment_unpaid_version_indicator">미결제</string>
+    <string name="payment_paid_version_indicator">유료 버전의 FUTO 키보드를 사용해 주셔서 감사합니다!</string>
+
+    <!-- Lack of automatic updates notice -->
+    <string name="manual_update_notice_title">업데이트 알림</string>
+    <string name="manual_update_notice_paragraph_1">이 앱은 인터넷에 연결되지 않으며 자동 업데이트를 확인할 수 없습니다. 하지만 수동으로 업데이트를 확인할 수 있습니다.</string>
+    <string name="manual_update_notice_paragraph_2">자동 업데이트를 위해 F-Droid 또는 Obtainium을 사용해 주세요. 다운로드 옵션은 keyboard.futo.org를 방문하세요.</string>
+    <string name="manual_update_notice_dev_paragraph">현재 FUTO 키보드의 개발 빌드를 사용 중입니다. 안정적인 빌드를 다운로드하려면 keyboard.futo.org를 방문하세요.</string>
+    <string name="manual_update_notice_visit_site_button">방문하기</string>
+    <!-- can be translated as "understood", etc -->
+    <string name="manual_update_notice_dismiss_notice_button">확인</string>
+
+    <!-- General settings strings -->
+    <string name="settings_tip">팁</string>
+    <string name="settings_unknown_error_title">알 수 없는 오류</string>
+    <string name="settings_unknown_error_subtitle">알 수 없는 오류가 발생했습니다.</string>
+    <string name="settings_try_typing_here">여기에 입력해 보세요…</string>
+    <string name="settings_external_model_name">외부 가져온 모델</string>
+    <string name="settings_check_for_updates_manually">수동으로 업데이트 확인</string>
+    <string name="settings_update_available">업데이트 가능</string>
+
+    <!-- When adding a new language -->
+    <string name="language_settings_title">언어 및 모델</string>
+    <string name="language_settings_add_language_button">언어 추가</string>
+    <string name="language_settings_select_language">추가할 언어 선택</string>
+    <string name="language_settings_search">검색</string>
+    <string name="language_settings_select_layout">추가할 레이아웃 선택</string>
+    <string name="language_settings_warning_language_has_no_dict">이 언어에는 내장 사전이 없습니다. 자동 수정 및 단어 제안을 받으려면 사전을 다운로드하고 가져오는 것을 권장합니다.</string>
+    <string name="language_settings_resource_none">(없음)</string>
+    <string name="language_settings_layouts_of_this_language">키보드 레이아웃</string>
+    <string name="language_settings_add_layout_for_this_language">키보드 레이아웃 추가</string>
+    <string name="language_settings_enable_multilingual_typing_for_this_language">다국어 입력</string>
+    <string name="language_settings_remove_this_language">언어 제거</string>
+
+    <string name="language_settings_resource_imported_indicator">(가져온)</string>
+    <string name="language_settings_resource_unsupported_indicator">(지원되지 않음)</string>
+    <string name="language_settings_resource_builtin_dictionary_name">내장 사전</string>
+    <string name="language_settings_resource_voice_input_selected">음성 입력 모델을 기본값으로 되돌리시겠습니까, 아니면 다른 파일로 교체하시겠습니까?</string>
+    <string name="language_settings_resource_voice_input_selected_no_default_warning">이 언어에는 내장 음성 입력 모델이 없으므로, 이를 제거하면 다른 모델을 가져올 때까지 이 언어의 음성 입력이 작동하지 않습니다!</string>
+    <string name="language_settings_resource_voice_input_selected_unset">이 언어에 대해 사용자 정의 음성 입력 모델을 설정하지 않았습니다. 온라인에서 다운로드를 탐색하거나 파일에서 가져올 수 있습니다.</string>
+    <string name="language_settings_resource_transformer_selected">변환기 모델을 기본값으로 되돌리시겠습니까, 아니면 다른 파일로 교체하시겠습니까?</string>
+    <string name="language_settings_resource_transformer_selected_no_default_warning">이 언어에는 내장 변환기 모델이 없으므로, 이를 제거하면 다른 모델을 가져올 때까지 이 언어의 변환기 기반 예측이 작동하지 않습니다!</string>
+    <string name="language_settings_resource_transformer_selected_unset">이 언어에 대해 사용자 정의 변환기 모델을 설정하지 않았습니다. 온라인에서 다운로드를 탐색하거나 파일에서 가져올 수 있습니다.</string>
+    <string name="language_settings_resource_dictionary_selected">사전을 기본값으로 되돌리시겠습니까, 아니면 다른 파일로 교체하시겠습니까?</string>
+    <string name="language_settings_resource_dictionary_selected_no_default_warning">이 언어에는 내장 사전이 없으므로, 이를 제거하면 다른 사전을 가져올 때까지 이 언어의 자동 수정 및 예측이 작동하지 않습니다!</string>
+    <string name="language_settings_resource_dictionary_selected_unset">이 언어에 대해 사용자 정의 사전을 설정하지 않았습니다. 온라인에서 다운로드를 탐색하거나 파일에서 가져올 수 있습니다.</string>
+    <string name="language_settings_resource_replace_button">교체</string>
+    <string name="language_settings_resource_import_file_button">가져오기</string>
+    <string name="language_settings_resource_revert_to_default_button">기본값으로 되돌리기</string>
+    <string name="language_settings_resource_remove_button">제거</string>
+    <string name="language_settings_resource_explore_online_button">탐색하기</string>
+
+    <string name="language_settings_remove_language_title">%1$s 삭제하시겠습니까?</string>
+    <string name="language_settings_remove_language_body">%1$s 및 관련된 모든 레이아웃과 사용자 정의 리소스를 제거하시겠습니까?</string>
+    <string name="language_settings_remove_language_remove_button">제거</string>
+    <string name="language_settings_remove_language_cancel_button">취소</string>
+
+    <string name="language_settings_other_options">기타 옵션</string>
+    <string name="language_settings_import_resource_from_file">리소스 파일 가져오기</string>
+    <string name="language_settings_explore_voice_input_models_online">음성 입력 모델 탐색</string>
+    <string name="language_settings_explore_dictionaries_online">사전 탐색</string>
+    <string name="language_settings_explore_transformers_online">변환기 모델 탐색</string>
+
+    <!-- Resource importer -->
+    <string name="file_kind_voice_input_model">음성 입력 모델</string>
+    <string name="file_kind_transformer_model">변환기 모델</string>
+    <string name="file_kind_dictionary">사전</string>
+    <string name="file_kind_invalid_file">유효하지 않은 파일</string>
+    <string name="resource_importer_import_title">가져오기 - %1$s</string>
+    <string name="resource_importer_error_wordlist_1">오류: 이 파일은 컴파일된 사전(.dict) 파일이 아닌 소스 단어 목록(_wordlist.combined)으로 보입니다.</string>
+    <string name="resource_importer_error_wordlist_2">단어 목록이 아닌 컴파일된 사전 파일을 다운로드해 주세요. 이 단어 목록을 직접 만들었다면, dicttool을 사용하여 외부에서 컴파일하세요.</string>
+    <string name="resource_importer_error_invalid_file">오류: 이 파일을 인식할 수 없습니다. 유효하지 않거나 손상되었을 수 있습니다. 다시 다운로드해 보거나 다른 파일을 시도해 보세요.</string>
+    <string name="resource_importer_cancel_button">취소</string>
+    <string name="resource_importer_file_info">파일 정보: %1$s</string>
+    <string name="resource_importer_importing">%1$s 언어로 가져오는 중</string>
+    <string name="resource_importer_select_language">가져올 언어를 선택하세요:</string>
+    <string name="resource_importer_warning_language_missing">이 파일은 설정에서 활성화되지 않은 언어(%1$s)를 위한 것으로 보입니다.</string>
+
+    <!-- Keyboard actions -->
+    <string name="action_editor_title">작업 편집</string>
+    <string name="action_editor_subtitle">즐겨찾기 작업, 고정된 작업 및 스페이스바 옆의 작업 키를 편집합니다</string>
+    <string name="action_editor_edit_actions">작업 편집</string>
+    <string name="action_editor_warning_no_actions">활성화된 작업이 없습니다</string>
+    <string name="action_editor_error_more_than_one_action_key">작업 키에는 하나의 작업만 할당할 수 있습니다. 작업 키에 두 개 이상의 작업을 할당할 수 없습니다.</string>
+    <string name="action_editor_warning_too_many_pinned">작업을 덜 고정하는 것을 고려해 주세요. 이 많은 작업을 수용하기 위해 제안 바를 줄여야 합니다.</string>
+    <string name="action_editor_add_next_action">다음 추가</string>
+
+    <!-- Keyboard's size settings -->
+    <string name="size_settings_title">키보드 크기 조정</string>
+    <string name="size_settings_subtitle">키보드의 높이와 오프셋을 변경합니다</string>
+    <string name="size_settings_resize_tip">\"키보드 크기 조정\" 버튼을 탭하여 크기를 조정하세요.</string>
+    <string name="size_settings_keyboard_modes_tip">키보드 모드 작업을 통해 어디서나 접근할 수 있습니다:</string>
+    <string name="size_settings_reset">크기 설정 초기화</string>
+    <string name="size_settings_reset_subtitle">탭하여 세로 및 가로 모드의 모든 크기와 모드를 기본값으로 초기화합니다</string>
+
+    <!-- Long-press keys, or otherwise called secondary keys, more keys, additional keys -->
+    <string name="morekey_settings_title">롱프레스 키 및 스페이스바</string>
+    <string name="morekey_settings_subtitle">롱프레스 지속 시간, 문자/기호의 정렬 방법, 스페이스바 및 삭제 키의 동작을 설정합니다.</string>
+    <string name="morekey_settings_layout">롱프레스 키 레이아웃</string>
+    <string name="morekey_settings_reset">기본값으로 초기화</string>
+    <string name="morekey_settings_active">활성화</string>
+    <string name="morekey_settings_inactive">비활성화</string>
+    <string name="morekey_settings_enable">활성화</string>
+    <string name="morekey_settings_disable">비활성화</string>
+    <string name="morekey_settings_keys">롱프레스 키</string>
+    <string name="morekey_settings_show_hints">힌트 표시</string>
+    <string name="morekey_settings_show_hints_subtitle">각 키에 기본 롱프레스 키를 보여주는 작은 힌트를 표시합니다</string>
+    <string name="morekey_settings_duration">롱프레스 지속 시간</string>
+    <string name="morekey_settings_duration_subtitle">롱프레스로 간주되기 위해 키를 얼마나 눌러야 하는지</string>
+    <string name="morekey_settings_backspace_behavior">지우기 또는 스와이프 시 백스페이스 동작</string>
+    <string name="morekey_settings_backspace_behavior_delete_chars">문자 삭제</string>
+    <string name="morekey_settings_backspace_behavior_delete_words">전체 단어 삭제</string>
+    <string name="morekey_settings_space_behavior">스페이스바 동작</string>
+    <string name="morekey_settings_space_behavior_swipe_cursor">스와이프는 커서를 이동하고, 롱프레스는 언어를 전환합니다</string>
+    <string name="morekey_settings_space_behavior_swipe_lang">스와이프는 언어를 변경하고, 롱프레스는 커서를 이동합니다</string>
+    <string name="morekey_settings_space_behavior_only_cursor">스와이프와 롱프레스는 커서만 이동합니다</string>
+
+    <!-- Types of morekeys that can be configured, and examples of them -->
+    <string name="morekey_settings_kind_numbers">숫자</string>
+    <string name="morekey_settings_kind_numbers_example">예: [1]은 [q]에서</string>
+    <string name="morekey_settings_kind_language_keys">언어 키</string>
+    <!-- This example can be adjusted per language for better understanding -->
+    <string name="morekey_settings_kind_language_keys_example">예: 스페인어에서 [n]은 [ñ]에서</string>
+    <string name="morekey_settings_kind_symbols">기호</string>
+    <string name="morekey_settings_kind_symbols_example">예: [@]는 [a]에서</string>
+    <string name="morekey_settings_kind_actions">빠른 작업</string>
+    <string name="morekey_settings_kind_actions_example">예: [c]에서 [복사]</string>
+    <string name="morekey_settings_kind_misc_common">일반 언어의 기타 문자</string>
+    <string name="morekey_settings_kind_misc_common_example">예: 모든 라틴 문자 언어에서 [s]는 [ß]에서</string>
+
+    <!-- typing settings -->
+    <string name="typing_settings_title">입력 설정</string>
+    <!-- When translating, rename it to gesture typing if it makes more sense for that language -->
+    <string name="typing_settings_swipe">스와이프 입력 (알파)</string>
+    <string name="typing_settings_swipe_subtitle">키에서 키로 스와이프하여 단어를 입력할 수 있습니다.</string>
+    <string name="typing_settings_suggest_emojis">이모지 제안</string>
+    <string name="typing_settings_suggest_emojis_subtitle">입력 중 이모지를 제안합니다</string>
+    <string name="typing_settings_vibration_strength">진동</string>
+    <string name="typing_settings_vibration_strength_default">기본값</string>
+    <string name="typing_settings_enable_clipboard_history">클립보드 기록</string>
+
+    <!-- Automatic space insertion -->
+    <string name="typing_settings_auto_space_mode">자동 공백 모드</string>
+    <string name="typing_settings_auto_space_mode_auto">구두점 뒤나 제안 삽입 후 자동으로 공백을 삽입합니다</string>
+    <string name="typing_settings_auto_space_mode_suggestions">제안 삽입 후에만 자동으로 공백을 삽입합니다</string>
+    <string name="typing_settings_auto_space_mode_legacy">자동으로 공백을 삽입하지 않습니다 (레거시 모드)</string>
+
+    <!-- Misc keyboard settings -->
+    <string name="keyboard_settings_title">키보드</string>
+    <string name="keyboard_settings_show_number_row">숫자 행 표시</string>
+    <string name="keyboard_settings_show_number_row_subtitle">활성화되면 지원되는 레이아웃의 키보드 상단에 숫자 행이 표시됩니다</string>
+    <string name="keyboard_settings_show_arrow_row">화살표 키 표시</string>
+    <string name="keyboard_settings_show_arrow_row_subtitle">활성화되면 키보드 하단에 화살표 키 행이 표시됩니다</string>
+    <string name="keyboard_settings_extra_layouts">추가 레이아웃</string>
+    <string name="keyboard_settings_extra_layouts_subtitle">언어 화면에서 추가 레이아웃을 설정합니다</string>
+    <string name="keyboard_settings_show_suggestion_row">작업/제안 바 표시</string>
+    <string name="keyboard_settings_show_suggestion_row_subtitle">제안이 포함된 바를 표시합니다. 활성화 상태를 유지하는 것이 좋습니다</string>
+    <string name="keyboard_settings_inline_autofill">인라인 자동 완성</string>
+    <string name="keyboard_settings_inline_autofill_subtitle">제안 바에 비밀번호 관리자 자동 완성을 표시합니다</string>
+
+    <!-- misc titles -->
+    <string name="settings_keyboard_typing_title">키보드 및 입력</string>
+    <!-- Theme, as in visual style -->
+    <string name="theme_settings_title">테마</string>
+    <string name="theme_settings_key_borders">키 테두리</string>
+    <string name="dev_settings_title">개발자 설정</string>
+    <string name="credits_title">크레딧</string>
+
+    <!-- Voice input settings menu -->
+    <string name="voice_input_settings_title">음성 입력</string>
+    <string name="voice_input_settings_builtin_disabled_notice">내장 음성 입력이 비활성화되었습니다!</string>
+    <string name="voice_input_settings_disable_builtin_voice_input">내장 음성 입력 비활성화</string>
+    <string name="voice_input_settings_disable_builtin_voice_input_subtitle">외부 앱에서 제공하는 음성 입력 사용</string>
+    <string name="voice_input_settings_indication_sounds">알림 소리</string>
+    <string name="voice_input_settings_indication_sounds_subtitle">시작 및 취소 시 짧은 소리를 재생합니다</string>
+    <string name="voice_input_settings_verbose_progress">상세 진행 상황</string>
+    <string name="voice_input_settings_verbose_progress_subtitle">사용 중인 마이크와 같은 추가 정보를 표시합니다</string>
+    <string name="voice_input_settings_use_bluetooth_mic">블루투스 마이크 선호</string>
+    <string name="voice_input_settings_use_bluetooth_mic_subtitle">블루투스 SCO 연결 협상이 필요하므로 녹음 시작에 추가 지연이 있을 수 있습니다</string>
+    <string name="voice_input_settings_audio_focus">오디오 포커스</string>
+    <string name="voice_input_settings_audio_focus_subtitle">음성 입력이 활성화될 때 비디오/음악 일시 정지</string>
+    <string name="voice_input_settings_suppress_symbols">기호 억제</string>
+    <string name="voice_input_settings_suppress_symbols_subtitle">음성 입력에서 기호 출력 방지</string>
+    <string name="voice_input_settings_long_form">장문 음성 입력</string>
+    <string name="voice_input_settings_long_form_subtitle">비활성화하면 음성 입력이 30초 후 자동으로 중지됩니다.</string>
+    <string name="voice_input_settings_autostop_vad">침묵 시 자동 중지</string>
+    <string name="voice_input_settings_autostop_vad_subtitle">침묵이 감지되면 자동으로 중지합니다. 배경 소음이 너무 많으면 수동으로 중지해야 할 수 있습니다.</string>
+    <string name="voice_input_settings_change_models">모델</string>
+    <string name="voice_input_settings_change_models_subtitle">모델을 변경하려면 언어 및 모델 메뉴를 방문하세요</string>
+
+    <!-- Prediction menu -->
+    <string name="prediction_settings_title">텍스트 예측</string>
+    <string name="prediction_settings_transformer">변환기 LM</string>
+    <string name="prediction_settings_transformer_finetuning">변환기 미세 조정</string>
+    <string name="prediction_settings_transformer_finetuning_subtitle">활성화하면 배터리가 소모될 수 있습니다! 이 기능은 추가 작업이 필요합니다</string>
+    <string name="prediction_settings_transformer_models">변환기 모델</string>
+    <string name="prediction_settings_transformer_advanced_params">고급 매개변수</string>
+    <string name="prediction_settings_transformer_alpha_notice">참고: 변환기 LM은 알파 상태입니다</string>
+    <string name="prediction_settings_smart_keyhit_detection">스마트 키 입력 감지</string>
+    <string name="prediction_settings_smart_keyhit_detection_subtitle">사전을 사용하여 관련된 다음 키를 결정하고, 해당 키의 입력 영역을 확대합니다. 백스페이스 후에는 확대를 피합니다</string>
+    <string name="prediction_settings_word_blacklist">단어 블랙리스트</string>
+    <string name="prediction_settings_word_blacklist_add">블랙리스트에 추가</string>
+    <string name="prediction_settings_word_blacklist_none">블랙리스트에 등록된 단어가 없습니다.</string>
+
+    <!-- Help & feedback menu -->
+    <string name="help_menu_title">도움말 및 피드백</string>
+    <string name="help_menu_version_name">버전 이름: %1$s</string>
+    <string name="help_menu_version_code">버전 코드: %1$s</string>
+    <string name="help_menu_version_tip">의견을 듣고 싶습니다! 문제를 보고하는 경우, 귀하의 버전이 관련이 있을 수 있습니다: v%1$s</string>
+    <string name="help_menu_documentation">문서</string>
+    <string name="help_menu_documentation_subtitle">키보드의 기능과 능력에 대해 더 알아보세요</string>
+    <string name="help_menu_discord">디스코드 서버</string>
+    <string name="help_menu_discord_subtitle">대화하고 싶지만 Zulip이 마음에 들지 않나요? 여기서 채팅하세요</string>
+    <string name="help_menu_futo_chat">FUTO 채팅</string>
+    <string name="help_menu_futo_chat_subtitle">대화하고 싶지만 디스코드가 마음에 들지 않나요? 여기서 채팅하세요</string>
+    <string name="help_menu_github">공식 이슈 트래커</string>
+    <string name="help_menu_github_subtitle">특정 버그나 기능 요청이 있나요? 여기서 게시하세요</string>
+    <string name="help_menu_email">keyboard@futo.org로 이메일 보내기</string>
+    <string name="help_menu_email_subtitle">개인적인 피드백, 도움 요청, 또는 GitHub를 사용하지 않으신다면 이메일로 연락해 주세요</string>
+
+    <!-- Setup configuration -->
+    <string name="setup_step_1">설정 - 1단계</string>
+    <string name="setup_step_2">설정 - 2단계</string>
+    <string name="setup_step_3">설정 - 3단계</string>
+    <string name="setup_welcome_text">FUTO 키보드(알파)에 오신 것을 환영합니다! 이 제품은 아직 개발 중이며 완성되지 않았습니다. 여러분의 인내와 이해에 감사드립니다.\n\n시작하려면 FUTO 키보드를 입력 방법으로 활성화하세요.</string>
+    <string name="setup_open_input_settings">입력 방법 설정 열기</string>
+    <string name="setup_warning_multiple_versions">경고: Play 스토어와 독립 실행형 버전이 모두 설치된 것 같습니다. 하나만 설치하는 것을 권장합니다.</string>
+    <string name="setup_active_input_method">FUTO 키보드를 활성 입력 방법으로 선택해 주세요.</string>
+    <string name="setup_switch_input_methods">입력 방법 전환</string>
+
+</resources>

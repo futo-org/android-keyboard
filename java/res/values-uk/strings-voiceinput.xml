@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Machine translated strings, need further verification -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Може бути перекладено як "Зупинити голосовий ввід", "Зупинити ввід" тощо -->
+    <string name="stop_recording">Зупинити запис</string>
+    <string name="try_saying_something">Спробуйте щось сказати</string>
+    <string name="no_audio_detected_is_your_microphone_blocked">Аудіо не виявлено, чи заблокований ваш мікрофон?</string>
+    <string name="listening">Слухаю…</string>
+    <string name="grant_microphone_permission_to_use_voice_input">Надайте дозвіл на використання мікрофона для голосового вводу</string>
+    <string name="open_voice_input_settings">Відкрити налаштування голосового вводу</string>
+
+    <string name="extracting_features">Витягую характеристики…</string>
+    <string name="loading_model">Завантажую модель…</string>
+    <string name="decoding">Розшифровка розпочата…</string>
+    <string name="switching_model">Змінюю мову…</string>
+    <string name="processing">Обробка…</string>
+    <string name="initializing">Ініціалізація…</string>
+
+    <string name="tiny_en_name">Англійська-39 (за замовчуванням)</string>
+    <string name="base_en_name">Англійська-74 (повільніше, але точніше)</string>
+    <string name="small_en_name">Англійська-244 (повільно)</string>
+
+    <string name="tiny_name">Багатомовна-39 (менш точно)</string>
+    <string name="base_name">Багатомовна-74 (за замовчуванням)</string>
+    <string name="small_name">Багатомовна-244 (повільно)</string>
+
+</resources>
