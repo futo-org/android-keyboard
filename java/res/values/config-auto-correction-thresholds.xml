@@ -53,11 +53,4 @@
       <item>@string/auto_correction_threshold_mode_index_aggressive</item>
       <item>@string/auto_correction_threshold_mode_index_very_aggressive</item>
     </string-array>
-    <!-- The array of the human readable auto correction threshold settings entries. -->
-    <string-array name="auto_correction_threshold_modes" translatable="false">
-      <item>@string/auto_correction_threshold_mode_off</item>
-      <item>@string/auto_correction_threshold_mode_modest</item>
-      <item>@string/auto_correction_threshold_mode_aggressive</item>
-      <item>@string/auto_correction_threshold_mode_very_aggressive</item>
-    </string-array>
 </resources>
