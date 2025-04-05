@@ -67,6 +67,7 @@ interface KeyboardManagerForAction {
     fun announce(s: String)
     fun getActiveLocales(): List<Locale>
 
+    fun getInputConnection(): InputConnection?
     fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo)
     fun unsetInputConnection()
 

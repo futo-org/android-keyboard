@@ -13,6 +13,7 @@ import org.futo.voiceinput.shared.types.ModelInferenceCallback
 import org.futo.voiceinput.shared.types.ModelLoader
 import org.futo.voiceinput.shared.types.getLanguageFromWhisperString
 import org.futo.voiceinput.shared.types.toWhisperString
+import java.util.Locale
 
 
 data class MultiModelRunConfiguration(
@@ -20,15 +21,90 @@ data class MultiModelRunConfiguration(
     val languageSpecificModels: Map<Language, ModelLoader>
 )
 
+data class TextContext(
+    val beforeCursor: CharSequence?,
+    val afterCursor: CharSequence?
+)
+
 data class DecodingConfiguration(
     val glossary: List<String>,
     val languages: Set<Language>,
-    val suppressSymbols: Boolean
+    val suppressSymbols: Boolean,
+    val textContext: TextContext?
 )
 
 class MultiModelRunner(
     private val modelManager: ModelManager
 ) {
+    private fun Char.isPunctuation(): Boolean {
+        return this in setOf('.', ',', '!', '?', ':', ';')
+    }
+
+    private fun Char.isClosingBracket(): Boolean {
+        return this in setOf(')', ']', '}', '>')
+    }
+
+    private fun Char.isOpeningBracket(): Boolean {
+        return this in setOf('(', '[', '{', '<')
+    }
+
+    private fun String.endsWithWhitespaceOrNewline(): Boolean {
+        return this.isNotEmpty() && this.last().isWhitespace()
+    }
+
+    private fun String.startsWithWhitespaceOrNewline(): Boolean {
+        return this.isNotEmpty() && this.first().isWhitespace()
+    }
+
+    internal fun sanitizeResult(result: String, textContext: TextContext?): String {
+        if (textContext == null) {
+            return result
+        }
+
+        var trimmed = result.trim()
+        if (trimmed.isEmpty()) {
+            return ""
+        }
+
+        val before = textContext.beforeCursor?.toString() ?: ""
+        val after = textContext.afterCursor?.toString() ?: ""
+
+        // Whisper tends to generate ellipsis at the end of phrases/sentences more often than appropriate. Which isn't so bad if it's at the very end but frustrating when inserting something inside of a sentence.
+        if (trimmed.endsWith("...") && !after.isEmpty()) {
+            trimmed = trimmed.dropLast(3)
+        }
+
+        // Punctuation
+        if (trimmed.last().isPunctuation() && !after.isEmpty()) {
+            trimmed = trimmed.dropLast(1)
+        }
+
+        // Capitalization
+        val beforeTrimmed = before.trimEnd()
+        val needsCapitalization = beforeTrimmed.isEmpty() || beforeTrimmed.matches(Regex(".*[.:?!]$"))
+        val isAcronym = trimmed.length >= 2 &&
+            trimmed[0].isUpperCase() &&
+            trimmed[1].isUpperCase()
+        if (needsCapitalization && trimmed.first().isLowerCase()) {
+            trimmed = trimmed.replaceFirstChar { it.titlecase(Locale.getDefault()) }
+        } else if (!beforeTrimmed.isEmpty() && trimmed.first().isUpperCase() && !isAcronym) {
+            trimmed = trimmed.replaceFirstChar { it.lowercase(Locale.getDefault()) }
+        }
+
+        // Leading and trailing spaces
+        val needsLeadingSpace = before.isNotEmpty() && !before.endsWithWhitespaceOrNewline() &&
+            !before.last().isOpeningBracket()
+        val needsTrailingSpace = after.isNotEmpty() &&
+            !after.startsWithWhitespaceOrNewline() &&
+            !after.first().isPunctuation() &&
+            !after.first().isClosingBracket()
+
+        val prefix = if (needsLeadingSpace) " " else ""
+        val suffix = if (needsTrailingSpace) " " else ""
+
+        return prefix + trimmed + suffix
+    }
+
     suspend fun preload(runConfiguration: MultiModelRunConfiguration) = coroutineScope {
         val jobs = mutableListOf<Job>()
 
@@ -99,7 +175,7 @@ class MultiModelRunner(
             )
         }
 
-        return@coroutineScope result
+        return@coroutineScope sanitizeResult(result, decodingConfiguration.textContext)
     }
 
     fun cancelAll() {
