@@ -52,6 +52,7 @@ class MultiModelRunnerTest {
             TestCase("xt ", "Hello world", "", "hello world"),
             TestCase("t  ", "hello", " world", "hello"),
             TestCase("Some (text)", "Hello world", "", " hello world"),
+            TestCase("First line\n", "hello world", "", "Hello world"),
         ))
     }
 
@@ -90,7 +91,9 @@ class MultiModelRunnerTest {
     fun `sanitizeResult handles brackets`() {
         runCases(listOf(
             TestCase("Some (", " text", "", "text"),
-            TestCase("Some )", "text", "", " text"),
+            TestCase("Some (", "text ", "", "text"),
+            TestCase("(Some)", "text", "", " text"),
+            TestCase("(Some)", " text", "", " text"),
             TestCase("Some", " text ", ")", " text"),
             TestCase("Some", "text", "(", " text "),
             TestCase("Some", "More text ", "]", " more text")
