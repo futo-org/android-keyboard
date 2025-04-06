@@ -66,8 +66,12 @@ class MultiModelRunner(
             return ""
         }
 
-        val before = textContext.beforeCursor?.toString() ?: ""
-        val after = textContext.afterCursor?.toString() ?: ""
+        val before = (textContext.beforeCursor?.toString() ?: "")
+            .split("\n")
+            .lastOrNull() ?: ""
+        val after = (textContext.afterCursor?.toString() ?: "")
+            .split("\n")
+            .firstOrNull() ?: ""
 
         // Whisper tends to generate ellipsis at the end of phrases/sentences more often than appropriate. Which isn't so bad if it's at the very end but frustrating when inserting something inside of a sentence.
         if (trimmed.endsWith("...") && !after.isEmpty()) {
