@@ -117,6 +117,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
 import org.futo.inputmethod.latin.uix.settings.pages.InlineAutofillSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.theme.KeyboardSurfaceShaderBackground
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
@@ -759,12 +760,11 @@ class UixManager(private val latinIME: LatinIME) {
         padding: Rect = Rect(),
         content: @Composable BoxScope.() -> Unit
     ) = with(LocalDensity.current) {
-
         val backgroundBrush = LocalKeyboardScheme.current.keyboardBackgroundGradient ?: SolidColor(backgroundColor)
 
         Box(modifier
             .onSizeChanged { measuredTouchableHeight = it.height }
-            .background(backgroundBrush, shape)
+            .background(backgroundBrush, shape, alpha = if(LocalKeyboardScheme.current.keyboardBackgroundShader != null) { 0.0f } else { 1.0f })
             .requiredWidth(requiredWidthPx.toDp())
             .absolutePadding(
                 //top = padding.top.toDp().coerceAtLeast(0.dp),
@@ -772,10 +772,14 @@ class UixManager(private val latinIME: LatinIME) {
             )
             .clipToBounds()
         ) {
+            LocalKeyboardScheme.current.keyboardBackgroundShader?.let { source ->
+                KeyboardSurfaceShaderBackground(source, modifier = Modifier.matchParentSize())
+            }
             CompositionLocalProvider(LocalKeyboardPadding provides KeyboardPadding(
-                left = padding.left.toDp().coerceAtLeast(0.dp),
-                right = padding.right.toDp().coerceAtLeast(0.dp),
-            )) {
+                    left = padding.left.toDp().coerceAtLeast(0.dp),
+                    right = padding.right.toDp().coerceAtLeast(0.dp),
+                )
+            ) {
                 CompositionLocalProvider(LocalContentColor provides LocalKeyboardScheme.current.onBackground) {
                     content()
                 }
@@ -798,14 +802,14 @@ class UixManager(private val latinIME: LatinIME) {
         // Bottom drag bar
         Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(20.dp)
-            .pointerInput(pointerInputKey) {
-                detectDragGestures(
-                    onDrag = { _, dragAmount -> onDragged(dragAmount)},
-                    onDragEnd = { onDragEnd() })
-            }) {
-
+                .fillMaxWidth()
+                .height(20.dp)
+                .pointerInput(pointerInputKey) {
+                    detectDragGestures(
+                        onDrag = { _, dragAmount -> onDragged(dragAmount)},
+                        onDragEnd = { onDragEnd() })
+                }
+        ) {
             IconButton(onClick = {
                 onActionActivated(KeyboardModeAction)
             }, Modifier.align(Alignment.CenterEnd)) {
