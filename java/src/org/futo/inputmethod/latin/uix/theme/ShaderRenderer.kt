@@ -103,7 +103,7 @@ class ShaderRenderer(private val context: Context, private val source: String) :
     }
 }
 
-class ShaderSurfaceView(val context: Context, val shaderSource: String) : GLSurfaceView(context) {
+class ShaderSurfaceView(context: Context, shaderSource: String) : GLSurfaceView(context) {
     init {
         setEGLContextClientVersion(2)
         setRenderer(ShaderRenderer(context, shaderSource))
