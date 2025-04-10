@@ -279,6 +279,13 @@ public final class SubtypeLocaleUtils {
     }
 
     @Nonnull
+    public static String getSubtypeDisplayName(
+            @Nonnull final InputMethodSubtype subtype,
+            @Nonnull final Locale displayLocale) {
+        return getSubtypeDisplayNameInternal(subtype, displayLocale);
+    }
+
+    @Nonnull
     public static String getSubtypeNameForLogging(@Nullable final InputMethodSubtype subtype) {
         if (subtype == null) {
             return "<null subtype>";

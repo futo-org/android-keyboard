@@ -202,7 +202,7 @@ object Subtypes {
     }
 
     fun getName(inputMethodSubtype: InputMethodSubtype): String {
-        return SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(inputMethodSubtype)
+        return SubtypeLocaleUtils.getSubtypeDisplayName(inputMethodSubtype, getLocale(inputMethodSubtype))
     }
 
     fun getNameForLocale(locale: String): String {
