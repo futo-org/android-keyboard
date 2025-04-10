@@ -136,7 +136,7 @@
     <string name="autoupdater_perform_update">Atnaujinti</string>
 
     <!-- Šie tekstai gali pasirodyti pačioje klaviatūroje -->
-    <string name="keyboard_suggest_blacklist_title">Juodasis sąrašas</string>
+    <string name="keyboard_suggest_add_word_to_blacklist">Juodasis sąrašas</string>
     <string name="keyboard_suggest_blacklist_body">Ar norite atmesti pasiūlymus dėl \"%1$s\"?</string>
     <string name="keyboard_suggest_disable_emojis">Išjungti emodžių pasiūlymus</string>
     <string name="keyboard_version_status">Alpha</string>

@@ -132,7 +132,6 @@ public class LanguageModelFacilitator(
     val suggestionBlacklist: SuggestionBlacklist
 ) {
     private val userDictionary = UserDictionaryObserver(context)
-    private val emojiData = PersistentEmojiState()
 
     private var shouldSuggestEmojis = SHOW_EMOJI_SUGGESTIONS.default
     private var languageModel: LanguageModel? = null
@@ -184,24 +183,6 @@ public class LanguageModelFacilitator(
             }
         }
         return true
-    }
-
-    private fun getEmojiCandidate(word: String): SuggestedWordInfo? {
-        val emoji = emojiData.emojiAliases[word.lowercase()]
-
-        if(emoji != null) {
-            return SuggestedWordInfo(
-                emoji.emoji,
-                "",
-                100,
-                SuggestedWordInfo.KIND_EMOJI_SUGGESTION,
-                null,
-                SuggestedWordInfo.NOT_AN_INDEX,
-                SuggestedWordInfo.NOT_A_CONFIDENCE
-            )
-        } else {
-            return null
-        }
     }
 
     private var skipLanguage: String? = null
@@ -468,25 +449,6 @@ public class LanguageModelFacilitator(
                 }
             }
 
-            if(values.composedData.mTypedWord.isNotEmpty() && shouldSuggestEmojis) {
-                (getEmojiCandidate(values.composedData.mTypedWord)
-                    ?: autocorrectWord?.let {
-                        if(areWordsRoughlyEqual(autocorrectWord.mWord, values.composedData.mTypedWord, 2))
-                            getEmojiCandidate(it.mWord)
-                        else null
-                    })?.let {
-                    suggestionResults.add(it)
-                }
-            }else if(shouldSuggestEmojis) {
-                val prevWord =
-                    values.ngramContext.fullContext.split(" ").lastOrNull { it.isNotBlank() }
-                if(prevWord != null) {
-                    getEmojiCandidate(prevWord.trim())?.let {
-                        suggestionResults.add(it)
-                    }
-                }
-            }
-
             val settingsValues = settings.current ?: return
             val locale = dictionaryFacilitator.primaryLocale ?: return
             val wordComposer = inputLogic.mWordComposer ?: return
@@ -584,10 +546,6 @@ public class LanguageModelFacilitator(
                     trainingEnabled = it
                 }
             }
-        }
-
-        launch {
-            emojiData.loadEmojis(context)
         }
 
         launch {

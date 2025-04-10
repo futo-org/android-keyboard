@@ -110,7 +110,7 @@ class EmojiView @JvmOverloads constructor(
                             value.emoji,
                             drawVariantIndicator = willDrawVariantIndicator && value.skinTones
                         )
-                        contentDescription = value.description
+                        contentDescription = value.emoji
                     }
                     invalidate()
                 } else {

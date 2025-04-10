@@ -135,9 +135,12 @@
     <string name="autoupdater_perform_update">Update</string>
 
     <!-- These strings can appear in the keyboard itself -->
-    <string name="keyboard_suggest_blacklist_title">Blacklist</string>
-    <string name="keyboard_suggest_blacklist_body">Blacklist \"%1$s\" from being suggested?</string>
+    <string name="keyboard_suggest_blacklist_body">Blacklist the word \"<xliff:g name="wordToBlacklist" example="crane">%s</xliff:g>\" from being suggested?</string>
+    <!-- Must be fairly short -->
+    <string name="keyboard_suggest_add_word_to_blacklist">Blacklist</string>
+    <!-- Must be fairly short -->
     <string name="keyboard_suggest_disable_emojis">Disable emoji suggestions</string>
+    <!-- Must be fairly short -->
     <string name="keyboard_version_status">Alpha</string>
     <string name="keyboard_switch_keyboard">Switch Keyboard</string>
     <string name="keyboard_language_settings">Settings</string>

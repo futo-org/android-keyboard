@@ -136,7 +136,7 @@
     <string name="autoupdater_perform_update">Mettre à jour</string>
 
     <!-- Ces chaînes peuvent apparaître dans le clavier lui-même -->
-    <string name="keyboard_suggest_blacklist_title">Liste noire</string>
+    <string name="keyboard_suggest_add_word_to_blacklist">Liste noire</string>
     <string name="keyboard_suggest_blacklist_body">Mettre \"%1$s\" sur liste noire pour ne pas le suggérer ?</string>
     <string name="keyboard_suggest_disable_emojis">"Désactiver les suggestions d'émojis"</string>
     <string name="keyboard_version_status">Alpha</string>

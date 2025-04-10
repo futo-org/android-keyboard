@@ -136,7 +136,7 @@
     <string name="autoupdater_perform_update">Обновить</string>
 
     <!-- Эти строки могут появляться на самой клавиатуре -->
-    <string name="keyboard_suggest_blacklist_title">Черный список</string>
+    <string name="keyboard_suggest_add_word_to_blacklist">Черный список</string>
     <string name="keyboard_suggest_blacklist_body">Добавить \"%1$s\" в черный список предложений?</string>
     <string name="keyboard_suggest_disable_emojis">Отключить предложения эмодзи</string>
     <string name="keyboard_version_status">Альфа</string>

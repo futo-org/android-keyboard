@@ -136,7 +136,7 @@
     <string name="autoupdater_perform_update">Aktualisieren</string>
 
     <!-- These strings can appear in the keyboard itself -->
-    <string name="keyboard_suggest_blacklist_title">Blacklist</string>
+    <string name="keyboard_suggest_add_word_to_blacklist">Blacklist</string>
     <string name="keyboard_suggest_blacklist_body">„%1$s“ von den Vorschlägen ausschließen?</string>
     <string name="keyboard_suggest_disable_emojis">Emoji-Vorschläge deaktivieren</string>
     <string name="keyboard_version_status">Alpha</string>

@@ -136,7 +136,7 @@
     <string name="autoupdater_perform_update">अपडेट करें</string>
 
     <!-- ये स्ट्रिंग्स कीबोर्ड में स्वयं प्रकट हो सकती हैं -->
-    <string name="keyboard_suggest_blacklist_title">ब्लैकलिस्ट</string>
+    <string name="keyboard_suggest_add_word_to_blacklist">ब्लैकलिस्ट</string>
     <string name="keyboard_suggest_blacklist_body">क्या \"%1$s\" को सुझाव देने से ब्लैकलिस्ट करना है?</string>
     <string name="keyboard_suggest_disable_emojis">इमोजी सुझाव बंद करें</string>
     <string name="keyboard_version_status">अल्फा</string>

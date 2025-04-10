@@ -111,6 +111,7 @@ import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.KeyboardModeAction
+import org.futo.inputmethod.latin.uix.actions.PersistentEmojiState
 import org.futo.inputmethod.latin.uix.resizing.KeyboardResizers
 import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
@@ -545,6 +546,7 @@ class UixManager(private val latinIME: LatinIME) {
             latinIME.window.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
 
+        // TODO: I18nize
         keyboardManagerForAction.announce("${latinIME.resources.getString(action.name)} mode")
     }
 
@@ -564,6 +566,7 @@ class UixManager(private val latinIME: LatinIME) {
 
         latinIME.window.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        // TODO: I18nize
         keyboardManagerForAction.announce("$name closed")
     }
 
@@ -1183,7 +1186,7 @@ class UixManager(private val latinIME: LatinIME) {
             latinIME.getString(R.string.keyboard_suggest_blacklist_body, suggestedWordInfo.mWord),
             listOf(
                 DialogRequestItem(latinIME.getString(R.string.cancel)) { },
-                DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_blacklist_title)) {
+                DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_add_word_to_blacklist)) {
                     latinIME.forceForgetWord(suggestedWordInfo)
                 },
             ) + if(suggestedWordInfo.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
@@ -1293,5 +1296,7 @@ class UixManager(private val latinIME: LatinIME) {
             }
             setContent()
         }
+
+        PersistentEmojiState.loadTranslationsForLanguage(latinIME, locale)
     }
 }

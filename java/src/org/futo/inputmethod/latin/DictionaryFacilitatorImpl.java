@@ -152,6 +152,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         @Nullable public final String mAccount;
 
         @Nullable private Dictionary mMainDict;
+        private Dictionary mEmojiDict;
         // Confidence that the most probable language is actually the language the user is
         // typing in. For now, this is simply the number of times a word from this language
         // has been committed in a row.
@@ -178,6 +179,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             for (final Map.Entry<String, ExpandableBinaryDictionary> entry : subDicts.entrySet()) {
                 setSubDict(entry.getKey(), entry.getValue());
             }
+
+            mEmojiDict = new EmojiDictionary(locale);
         }
 
         private void setSubDict(final String dictType, final ExpandableBinaryDictionary dict) {
@@ -198,8 +201,11 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         public Dictionary getDict(final String dictType) {
             if (Dictionary.TYPE_MAIN.equals(dictType)) {
                 return mMainDict;
+            }else if (Dictionary.TYPE_EMOJI.equals(dictType)) {
+                return mEmojiDict;
+            }else {
+                return getSubDict(dictType);
             }
-            return getSubDict(dictType);
         }
 
         public ExpandableBinaryDictionary getSubDict(final String dictType) {
@@ -209,6 +215,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         public boolean hasDict(final String dictType, @Nullable final String account) {
             if (Dictionary.TYPE_MAIN.equals(dictType)) {
                 return mMainDict != null;
+            } else if (Dictionary.TYPE_EMOJI.equals(dictType)) {
+                return mEmojiDict != null;
             }
             if (Dictionary.TYPE_USER_HISTORY.equals(dictType) &&
                     !TextUtils.equals(account, mAccount)) {
@@ -224,6 +232,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             final Dictionary dict;
             if (Dictionary.TYPE_MAIN.equals(dictType)) {
                 dict = mMainDict;
+            } else if (Dictionary.TYPE_EMOJI.equals(dictType)) {
+                dict = mEmojiDict;
             } else {
                 dict = mSubDictMap.remove(dictType);
             }

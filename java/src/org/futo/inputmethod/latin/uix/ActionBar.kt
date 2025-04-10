@@ -414,7 +414,8 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
 
     when {
         layout.isGestureBatch ||
-        layout.presentableSuggestions.size <= 1 -> suggestionItem(layout.presentableSuggestions.firstOrNull())
+                (layout.emojiMatches.isEmpty() && layout.presentableSuggestions.size <= 1) ->
+            suggestionItem(layout.presentableSuggestions.firstOrNull())
 
         layout.autocorrectMatch != null -> {
             var supplementalSuggestionIndex = 0

@@ -136,7 +136,7 @@
     <string name="autoupdater_perform_update">업데이트</string>
 
     <!-- These strings can appear in the keyboard itself -->
-    <string name="keyboard_suggest_blacklist_title">블랙리스트</string>
+    <string name="keyboard_suggest_add_word_to_blacklist">블랙리스트</string>
     <string name="keyboard_suggest_blacklist_body">\"%1$s\"를 제안 목록에서 제외하시겠습니까?</string>
     <string name="keyboard_suggest_disable_emojis">이모지 제안 비활성화</string>
     <string name="keyboard_version_status">알파</string>

@@ -136,7 +136,7 @@
     <string name="autoupdater_perform_update">Bijwerken</string>
 
     <!-- These strings can appear in the keyboard itself -->
-    <string name="keyboard_suggest_blacklist_title">Zwarte Lijst</string>
+    <string name="keyboard_suggest_add_word_to_blacklist">Zwarte Lijst</string>
     <string name="keyboard_suggest_blacklist_body">\"%1$s\" van suggesties uitsluiten?</string>
     <string name="keyboard_suggest_disable_emojis">Emoji-suggesties uitschakelen</string>
     <string name="keyboard_version_status">Alpha</string>

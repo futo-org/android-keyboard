@@ -136,7 +136,7 @@
     <string name="autoupdater_perform_update">Оновити</string>
 
     <!-- Ці рядки можуть з'являтися на самій клавіатурі -->
-    <string name="keyboard_suggest_blacklist_title">Чорний список</string>
+    <string name="keyboard_suggest_add_word_to_blacklist">Чорний список</string>
     <string name="keyboard_suggest_blacklist_body">Відхилити пропозицію \"%1$s\"?</string>
     <string name="keyboard_suggest_disable_emojis">Вимкнути пропозиції емодзі</string>
     <string name="keyboard_version_status">Альфа</string>

@@ -79,10 +79,12 @@ import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -106,6 +108,11 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.streams.toList
 import org.futo.inputmethod.latin.uix.theme.Typography
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
+import java.util.Locale
+import java.util.zip.GZIPInputStream
 
 private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
     val lhsLen = lhs.length
@@ -446,9 +453,7 @@ fun Emojis(
                                                 emoji = emoji,
                                                 description = popupInfo.emoji.description,
                                                 category = popupInfo.emoji.category,
-                                                skinTones = false,
-                                                aliases = listOf(),
-                                                tags = listOf()
+                                                skinTones = false
                                             )
                                         )
                                         popupIsActive = false
@@ -649,7 +654,7 @@ fun EmojiGrid(
     val context = LocalContext.current
     val recentEmojis = remember {
         runBlocking { context.getRecentEmojis() }.map {
-            EmojiItem(it, description = "", category = "", skinTones = false, tags = listOf(), aliases = listOf())
+            EmojiItem(it, description = "", category = "", skinTones = false)
         }
     }
 
@@ -677,12 +682,22 @@ fun EmojiGrid(
     var emojiList = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis
 
     if(isSearching) {
-        emojiList = emojiList.filterIsInstance<EmojiItemItem>().searchMultiple(searchFilter) { item ->
-            listOf(item.emoji.description) +
-                    item.emoji.aliases.map { it.replace("_", " ") } +
-                    item.emoji.tags +
-                    item.emoji.aliases.filter { it.contains("_") }.flatMap { it.split("_") }
-        }.take(30)
+        val locale = context.resources.configuration.locale
+        val context = LocalContext.current
+        LaunchedEffect(locale.language) {
+            PersistentEmojiState.loadTranslationsForLanguage(context, locale)
+        }
+
+        val translations = remember(locale.language) {
+            PersistentEmojiState.getTranslationForLocale(locale)
+        }
+
+        emojiList =
+            emojiList.filterIsInstance<EmojiItemItem>().searchMultiple(searchFilter) { item ->
+                translations?.let {
+                    it.emojiToNames[item.emoji.emoji]?.names?.flatMap { it.split(" ") }
+                } ?: listOf(item.emoji.description)
+            }.take(30)
 
         if(emojiList.isEmpty()) {
             emojiList = emojiList + listOf(CategoryItem("No results found"))
@@ -723,65 +738,154 @@ fun EmojiGrid(
     }
 }
 
+data class EmojiNames(val names: List<String>)
+data class EmojiTranslations(val emojiToNames: Map<String, EmojiNames>)
+
 class PersistentEmojiState : PersistentActionState {
-    var emojis: MutableState<List<EmojiItem>?> = mutableStateOf(null)
-    var emojiMap: HashMap<String, EmojiItem> = HashMap()
-    var emojiAliases: HashMap<String, EmojiItem> = HashMap()
+    companion object {
+        var emojis: MutableState<List<EmojiItem>?> = mutableStateOf(null)
+        var emojiMap: HashMap<String, EmojiItem> = HashMap()
 
-    suspend fun loadEmojis(context: Context) = withContext(Dispatchers.IO) {
-        val stream = context.resources.openRawResource(R.raw.gemoji)
-        val text = stream.bufferedReader().readText()
+        // Language name to translations
+        private val loadedTranslations: HashMap<String, EmojiTranslations> = hashMapOf()
+        private val loadedTranslatedShortcuts: HashMap<String, Map<String, String>> = hashMapOf()
 
-        withContext(Dispatchers.Default) {
-            val emojiData = Json.parseToJsonElement(text)
+        @JvmStatic
+        fun getTranslationForLocale(locale: Locale): EmojiTranslations? {
+            return loadedTranslations[locale.language]
+        }
 
-            emojis.value = emojiData.jsonArray.mapNotNull {
-                val emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content
-                val supported = emoji.codePoints().toList().all { c -> Character.getName(c) != null }
+        @JvmStatic
+        fun getShortcut(locale: Locale, text: String): String? {
+            return loadedTranslatedShortcuts[locale.language]?.get(text)
+        }
 
-                if(!supported) {
-                    //Log.d("Emoji", "Emoji $emoji is unsupported")
-                    null
-                } else {
-                    EmojiItem(
-                        emoji = emoji,
-                        description = it.jsonObject["description"]!!.jsonPrimitive.content,
-                        category = it.jsonObject["category"]!!.jsonPrimitive.content,
-                        skinTones = it.jsonObject["skin_tones"]?.jsonPrimitive?.booleanOrNull
-                            ?: false,
-                        tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
-                            ?.toList() ?: listOf(),
-                        aliases = it.jsonObject["aliases"]?.jsonArray?.map { it.jsonPrimitive.content }
-                            ?.toList() ?: listOf(),
-                    )
+        @JvmStatic
+        fun loadTranslationsForLanguage(context: Context, locale: Locale) {
+            val language = locale.language
+            if (loadedTranslations.contains(language)) return
+            loadedTranslations.put(language, EmojiTranslations(hashMapOf()))
+
+            GlobalScope.launch(Dispatchers.IO) {
+                // For English, use gemoji aliases and tags to maintain consistent behavior
+                if(language == "en") {
+                    loadEmojis(context)
+                    return@launch
                 }
-            }
 
-            emojiMap = HashMap<String, EmojiItem>().apply {
-                emojis.value!!.forEach {
-                    put(it.emoji, it)
-                }
-            }
+                val inputStream = GZIPInputStream(context.resources.openRawResource(R.raw.emoji_i18n))
 
-            emojiAliases = HashMap<String, EmojiItem>().apply {
-                // Add absolute alias matches first (e.g. "joy") and only later put first-word tag/alias matches (e.g. "joy_cat")
-                emojis.value!!.forEach { emoji ->
-                    emoji.aliases.forEach {
-                        val x = it
-                        if (!containsKey(x)) {
-                            put(x, emoji)
+                var data: JsonObject? = null
+                BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8)).use { reader ->
+                    while (true) {
+                        val line = reader.readLine()
+                        if (line == null) break
+                        if (line.startsWith("#")) {
+                            val lineLanguage = line.substring(1).trim()
+                            if (lineLanguage == language) {
+                                val jsonLine = reader.readLine()
+                                data = Json.parseToJsonElement(jsonLine).jsonObject
+                                break
+                            }
                         }
                     }
                 }
 
-                emojis.value!!.forEach { emoji ->
-                    (emoji.tags + emoji.aliases).forEach {
-                        val x = it.split("_").first()
-                        if (!containsKey(x)) {
-                            put(x, emoji)
+                if (data != null) {
+                    val translations = data.map { entry ->
+                        val names = entry.value.jsonArray.map { it.jsonPrimitive.content }
+                        entry.key to EmojiNames(names)
+                    }.toMap()
+                    loadedTranslations.put(language, EmojiTranslations(translations))
+
+                    // Shortcuts are unique words
+                    val wordCounts = hashMapOf<String, Int>()
+                    val words = translations.values.flatMap { it.names.flatMap { it.split(" ") }.toSet() }
+                    words.forEach {
+                        wordCounts[it] = (wordCounts[it] ?: 0) + 1
+                    }
+
+                    val aliases = translations.flatMap { entry ->
+                        val ttsName = entry.value.names.last()
+
+                        val names = entry.value.names.flatMap { it.split(" ") }
+                        names.filter { wordCounts[it] == 1 }.map { it.lowercase() to entry.key } +
+                                if(!ttsName.contains(' ')) {
+                                    listOf(ttsName.lowercase() to entry.key)
+                                } else {
+                                    emptyList()
+                                }
+                    }.reversed().toMap()
+
+                    loadedTranslatedShortcuts.put(language, aliases)
+                }
+            }
+
+        }
+
+        @JvmStatic
+        suspend fun loadEmojis(context: Context) = withContext(Dispatchers.IO) {
+            val stream = GZIPInputStream(context.resources.openRawResource(R.raw.gemoji))
+            val text = stream.bufferedReader().readText()
+
+            withContext(Dispatchers.Default) {
+                val emojiData = Json.parseToJsonElement(text)
+
+                val englishShortcuts = hashMapOf<String, String>()
+                val englishTranslations = hashMapOf<String, EmojiNames>()
+
+                emojis.value = emojiData.jsonArray.mapNotNull {
+                    val emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content
+                    val supported =
+                        emoji.codePoints().toList().all { c -> Character.getName(c) != null }
+
+                    val tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
+                        ?.toList() ?: listOf()
+                    val aliases = it.jsonObject["aliases"]?.jsonArray?.map { it.jsonPrimitive.content }
+                        ?.toList() ?: listOf()
+
+                    if(!supported) {
+                        null
+                    } else {
+                        englishTranslations.put(emoji, EmojiNames((tags + aliases)
+                            .flatMap { listOf(it) + it.split("_") }
+                            .toSet().toList()))
+
+                        // Add absolute alias matches first (e.g. "joy") and only later put first-word
+                        // tag/alias matches (e.g. "joy_cat")
+                        aliases.forEach { x ->
+                            if(!englishShortcuts.containsKey(x)) {
+                                englishShortcuts.put(x, emoji)
+                            }
                         }
+
+                        (tags + aliases).forEach { x ->
+                            val v = x.split("_").first()
+                            if(!englishShortcuts.containsKey(v)) {
+                                englishShortcuts.put(v, emoji)
+                            }
+                        }
+
+                        EmojiItem(
+                            emoji = emoji,
+                            description = it.jsonObject["description"]!!.jsonPrimitive.content,
+                            category = it.jsonObject["category"]!!.jsonPrimitive.content,
+                            skinTones = it.jsonObject["skin_tones"]?.jsonPrimitive?.booleanOrNull == true,
+                            //tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
+                            //    ?.toList() ?: listOf(),
+                            //aliases =
+                        )
                     }
                 }
+
+                emojiMap = HashMap<String, EmojiItem>().apply {
+                    emojis.value!!.forEach {
+                        put(it.emoji, it)
+                    }
+                }
+
+                loadedTranslations["en"] = EmojiTranslations(englishTranslations)
+                loadedTranslatedShortcuts["en"] = englishShortcuts
             }
         }
     }
@@ -800,7 +904,7 @@ val EmojiAction = Action(
     persistentState = { manager ->
         val state = PersistentEmojiState()
         manager.getLifecycleScope().launch {
-            state.loadEmojis(manager.getContext())
+            PersistentEmojiState.loadEmojis(manager.getContext())
         }
 
         state
@@ -819,7 +923,7 @@ val EmojiAction = Action(
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
                 val view = LocalView.current
-                state.emojis.value?.let { emojis ->
+                PersistentEmojiState.emojis.value?.let { emojis ->
                     EmojiGrid(onClick = {
                         manager.typeText(it.emoji)
                         manager.getLifecycleScope().launch {
@@ -837,7 +941,7 @@ val EmojiAction = Action(
                         if(!isRepeated) {
                             manager.performHapticAndAudioFeedback(Constants.CODE_DELETE, view)
                         }
-                    }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = state.emojiMap,
+                    }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = PersistentEmojiState.emojiMap,
                         isSearching = searching.value, searchFilter = searchText.value)
                 }
             }
@@ -930,7 +1034,8 @@ fun EmojiGridPreview() {
         onExit = {},
         onSpace = {},
         emojis = listOf("😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇").map {
-            EmojiItem(emoji = it, description = "", category = "Smileys & Emotion", skinTones = false, aliases = listOf(), tags = listOf())
+            EmojiItem(emoji = it, description = "", category = "Smileys & Emotion",
+                skinTones = false)
         },
         keyboardShown = false,
         emojiMap = hashMapOf(),
