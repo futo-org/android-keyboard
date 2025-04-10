@@ -205,7 +205,7 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
                 }
             )
 
-            AndroidTextInput(allowPredictions = false, customOptions = setOf("org.futo.inputmethod.latin.ResizeMode"))
+            AndroidTextInput(allowPredictions = false, customOptions = setOf("org.futo.inputmethod.latin.ResizeMode"), autoshow = false)
         }
     }
 }
