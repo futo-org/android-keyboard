@@ -5,8 +5,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -236,26 +238,22 @@ fun ColumnScope.PartialDecodingResult(text: String = "I am speaking [...]") {
 
 @Composable
 fun ColumnScope.RecognizeMicError(openSettings: () -> Unit) {
-    Text(
-        stringResource(R.string.grant_microphone_permission_to_use_voice_input),
-        modifier = Modifier
-            .padding(8.dp, 2.dp)
-            .align(Alignment.CenterHorizontally),
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onSurface
-    )
-    IconButton(
-        onClick = { openSettings() },
-        modifier = Modifier
-            .padding(4.dp)
-            .align(Alignment.CenterHorizontally)
-            .size(64.dp)
-    ) {
-        Icon(
-            Icons.Default.Settings,
-            contentDescription = stringResource(R.string.open_voice_input_settings),
-            modifier = Modifier.size(32.dp),
-            tint = MaterialTheme.colorScheme.onSurface
-        )
+    Box(Modifier.fillMaxSize().clickable { openSettings() }) {
+        Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                stringResource(R.string.grant_microphone_permission_to_use_voice_input),
+                modifier = Modifier
+                    .padding(8.dp, 2.dp)
+                    .align(Alignment.CenterHorizontally),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Icon(
+                Icons.Default.Settings,
+                contentDescription = stringResource(R.string.grant_microphone_permission_to_use_voice_input),
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }

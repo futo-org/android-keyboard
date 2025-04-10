@@ -77,7 +77,7 @@
         </activity>
 
         <activity android:name=".uix.ImportResourceActivity"
-            android:label="Import dictionary or model"
+            android:label="@string/language_settings_import_dictionary_or_model"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
@@ -144,7 +144,8 @@
             android:exported="true"
             android:label="@string/payment_screen_payment_complete_title"
             android:clearTaskOnLaunch="false"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -159,13 +160,23 @@
             android:exported="false"
             android:label="@string/payment_screen_short_title"
             android:clearTaskOnLaunch="false"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+
+        <activity
+            android:name=".MicPermissionActivity"
+            android:clearTaskOnLaunch="false"
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
+            android:theme="@style/Theme.TextEditPopup">
+        </activity>
 
 
         <activity
             android:name=".uix.TextEditPopupActivity"
             android:exported="true"
-            android:label="Testing Popup"
+            android:label="@string/settings_try_typing_here"
             android:clearTaskOnLaunch="false"
             android:launchMode="standard"
             android:noHistory="true"

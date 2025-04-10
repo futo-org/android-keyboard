@@ -241,14 +241,12 @@ class AudioRecognizer(
 
     fun openPermissionSettings() {
         val packageName = context.packageName
-        val myAppSettings = Intent(
-            Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse(
-                "package:$packageName"
-            )
+        val micPermissionRequester = Intent()
+        micPermissionRequester.setClassName(context, "org.futo.inputmethod.latin.MicPermissionActivity")
+        micPermissionRequester.setFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         )
-        myAppSettings.addCategory(Intent.CATEGORY_DEFAULT)
-        myAppSettings.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(myAppSettings)
+        context.startActivity(micPermissionRequester)
 
         cancel()
     }

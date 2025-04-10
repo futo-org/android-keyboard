@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -617,7 +618,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
                     NavigationItemStyle.Misc -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
                 }
 
-                Canvas(modifier = Modifier.fillMaxSize()) {
+                Canvas(modifier = Modifier.size(48.dp)) {
                     drawCircle(circleColor, this.size.maxDimension / 2.4f)
                     translate(
                         left = this.size.width / 2.0f - icon.intrinsicSize.width / 2.0f,
