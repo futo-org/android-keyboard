@@ -20,6 +20,7 @@ import javax.microedition.khronos.opengles.GL10
 
 class ShaderRenderer(private val context: Context, private val source: String) : GLSurfaceView.Renderer {
     private var program = 0
+    private var fullscreenProgram = 0
     private var startTime = SystemClock.elapsedRealtime()
     private var uTime = 0
     private var uResolution = 0
@@ -32,6 +33,10 @@ class ShaderRenderer(private val context: Context, private val source: String) :
         1f, -1f
     )
 
+    val renderRes = 256 to 256
+    private lateinit var fboTexture: IntArray
+    private lateinit var fbo: IntArray
+
     override fun onSurfaceCreated(gl: GL10, config: javax.microedition.khronos.egl.EGLConfig) {
         GLES20.glClearColor(0f, 0f, 0f, 1f)
 
@@ -39,10 +44,17 @@ class ShaderRenderer(private val context: Context, private val source: String) :
 
         val vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, DEFAULT_VERTEX_SHADER)
         val fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragShaderCode)
+        val fullscreenFragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, COPY_FRAGMENT_SHADER)
 
         program = GLES20.glCreateProgram().also {
             GLES20.glAttachShader(it, vertexShader)
             GLES20.glAttachShader(it, fragmentShader)
+            GLES20.glLinkProgram(it)
+        }
+
+        fullscreenProgram = GLES20.glCreateProgram().also {
+            GLES20.glAttachShader(it, vertexShader)
+            GLES20.glAttachShader(it, fullscreenFragmentShader)
             GLES20.glLinkProgram(it)
         }
 
@@ -54,36 +66,89 @@ class ShaderRenderer(private val context: Context, private val source: String) :
         squareCoords.forEach { bb.putFloat(it) }
         bb.position(0)
         vertexBuffer = bb.asFloatBuffer()
+
+
+        // Create a texture for the FBO
+        fboTexture = IntArray(1)
+        GLES20.glGenTextures(1, fboTexture, 0)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, fboTexture[0])
+        GLES20.glTexImage2D(
+            GLES20.GL_TEXTURE_2D,
+            0, GLES20.GL_RGBA,
+            renderRes.first, renderRes.second,
+            0, GLES20.GL_RGBA,
+            GLES20.GL_UNSIGNED_BYTE,
+            null
+        )
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
+
+        fbo = IntArray(1)
+        GLES20.glGenFramebuffers(1, fbo, 0)
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fbo[0])
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, fboTexture[0], 0)
+        if (GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER) != GLES20.GL_FRAMEBUFFER_COMPLETE) {
+            throw RuntimeException("Framebuffer not complete!")
+        }
     }
 
+    var surfaceSize = 0 to 0
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        GLES20.glViewport(0, 0, width, height)
+        surfaceSize = width to height
     }
 
     override fun onDrawFrame(gl: GL10?) {
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        run {
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fbo[0])
+            GLES20.glViewport(0, 0, renderRes.first, renderRes.second)
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
-        GLES20.glUseProgram(program)
+            GLES20.glUseProgram(program)
+            val time = ((SystemClock.elapsedRealtime() - startTime) % (120 * 1000)) / 1000f
+            GLES20.glUniform1f(uTime, time)
+            GLES20.glUniform2f(uResolution, renderRes.first.toFloat(), renderRes.second.toFloat())
 
-        val time = (SystemClock.elapsedRealtime() - startTime) / 1000f
-        GLES20.glUniform1f(uTime, time)
-        GLES20.glUniform2f(uResolution, 512f, 512f) // TODO: Use view size
+            val positionHandle = GLES20.glGetAttribLocation(program, "vPosition")
+            GLES20.glEnableVertexAttribArray(positionHandle)
 
-        val positionHandle = GLES20.glGetAttribLocation(program, "vPosition")
-        GLES20.glEnableVertexAttribArray(positionHandle)
+            GLES20.glVertexAttribPointer(
+                positionHandle,
+                2,
+                GLES20.GL_FLOAT,
+                false,
+                0,
+                vertexBuffer
+            )
 
-        GLES20.glVertexAttribPointer(
-            positionHandle,
-            2,
-            GLES20.GL_FLOAT,
-            false,
-            0,
-            vertexBuffer
-        )
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+            GLES20.glDisableVertexAttribArray(positionHandle)
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
+        }
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+        run {
+            GLES20.glViewport(0, 0, surfaceSize.first, surfaceSize.second)
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+            GLES20.glUseProgram(fullscreenProgram)
+            val positionHandle_2 = GLES20.glGetAttribLocation(fullscreenProgram, "vPosition")
+            val textureHandle_2 = GLES20.glGetUniformLocation(fullscreenProgram, "uTexture")
 
-        GLES20.glDisableVertexAttribArray(positionHandle)
+            GLES20.glEnableVertexAttribArray(positionHandle_2)
+            GLES20.glVertexAttribPointer(
+                positionHandle_2,
+                2,
+                GLES20.GL_FLOAT,
+                false,
+                0,
+                vertexBuffer
+            )
+
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, fboTexture[0])
+            GLES20.glUniform1i(textureHandle_2, 0)
+
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+            GLES20.glDisableVertexAttribArray(positionHandle_2)
+        }
     }
 
     private fun loadShader(type: Int, shaderCode: String): Int {
@@ -96,8 +161,19 @@ class ShaderRenderer(private val context: Context, private val source: String) :
     companion object {
         private const val DEFAULT_VERTEX_SHADER = """
             attribute vec4 vPosition;
+            varying vec2 vTexCoord;
             void main() {
                 gl_Position = vPosition;
+                vTexCoord = vec2((vPosition.xy + 1.0) * 0.5);
+            }
+        """
+
+        private const val COPY_FRAGMENT_SHADER = """
+            precision mediump float;
+            uniform sampler2D uTexture;
+            varying vec2 vTexCoord;
+            void main() {
+                gl_FragColor = texture2D(uTexture, vTexCoord);
             }
         """
     }
@@ -106,6 +182,7 @@ class ShaderRenderer(private val context: Context, private val source: String) :
 class ShaderSurfaceView(context: Context, shaderSource: String) : GLSurfaceView(context) {
     init {
         setEGLContextClientVersion(2)
+        //debugFlags = DEBUG_LOG_GL_CALLS or DEBUG_CHECK_GL_ERROR
         setRenderer(ShaderRenderer(context, shaderSource))
         renderMode = RENDERMODE_WHEN_DIRTY
     }

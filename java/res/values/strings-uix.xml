@@ -49,7 +49,7 @@
     <!-- Same as the one above but it uses the device's default system voice input instead of the built-in -->
     <string name="action_system_voice_input_title">Voice Input (System)</string>
     <string name="action_voice_input_no_model_for_language_x_installed">No voice input model installed for <xliff:g name="language" example="español">%s</xliff:g>, tap to check options?</string>
-    <string name="action_voice_input_open_settings_button_to_grant_microphone_permission">Please go to "Permissions", and enable microphone to use voice input</string>
+    <string name="action_voice_input_open_settings_button_to_grant_microphone_permission">Please go to Permissions, and enable Microphone permission to use voice input</string>
 
     <!-- For clipboard manager action -->
     <string name="action_clipboard_manager_title">Clipboard Manager</string>
