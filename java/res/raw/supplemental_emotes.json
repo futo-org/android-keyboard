@@ -1,0 +1,192 @@
+[
+  {
+    "emoji": ":)",
+    "description": "smiley face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ":(",
+    "description": "sad face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ":D",
+    "description": "big smile",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ";)",
+    "description": "winking face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ":P",
+    "description": "sticking out tongue",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ":O",
+    "description": "surprised face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "XD",
+    "description": "laughing face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ":3",
+    "description": "cat face",
+    "category": "ASCII",
+    "aliases": ["catface", "meow"],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ":-/",
+    "description": "skeptical face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ":'(",
+    "description": "crying face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ">:(",
+    "description": "angry face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "<3",
+    "description": "heart",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "O_O",
+    "description": "wide eyes",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "-_-",
+    "description": "disappointed face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ">.<",
+    "description": "frustrated face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "^_^",
+    "description": "happy face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "T_T",
+    "description": "crying face",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ">:D",
+    "description": "evil smile",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "B)",
+    "description": "cool face with sunglasses",
+    "category": "ASCII",
+    "aliases": [],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+
+  {
+    "emoji": "(╯°□°）╯︵ ┻━┻",
+    "description": "tableflip",
+    "category": "ASCII",
+    "aliases": ["tableflip"],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "¯\\_(ツ)_/¯",
+    "description": "shruggie",
+    "category": "ASCII",
+    "aliases": ["shruggie", "idk"],
+    "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  }
+]

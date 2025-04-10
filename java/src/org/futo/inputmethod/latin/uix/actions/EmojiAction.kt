@@ -828,16 +828,23 @@ class PersistentEmojiState : PersistentActionState {
             val stream = GZIPInputStream(context.resources.openRawResource(R.raw.gemoji))
             val text = stream.bufferedReader().readText()
 
+            val supplementalEmoteText = context.resources.openRawResource(R.raw.supplemental_emotes)
+                .bufferedReader().readText()
+
             withContext(Dispatchers.Default) {
-                val emojiData = Json.parseToJsonElement(text)
+                val emojiData = Json.parseToJsonElement(text).jsonArray.toList()
+                val supplementalEmoteData = Json.parseToJsonElement(supplementalEmoteText).jsonArray
+                    .toList()
 
                 val englishShortcuts = hashMapOf<String, String>()
                 val englishTranslations = hashMapOf<String, EmojiNames>()
 
-                emojis.value = emojiData.jsonArray.mapNotNull {
+                emojis.value = (emojiData + supplementalEmoteData).mapNotNull {
                     val emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content
+                    val category = it.jsonObject["category"]!!.jsonPrimitive.content
                     val supported =
                         emoji.codePoints().toList().all { c -> Character.getName(c) != null }
+                                || category == "ASCII"
 
                     val tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
                         ?.toList() ?: listOf()
@@ -869,7 +876,7 @@ class PersistentEmojiState : PersistentActionState {
                         EmojiItem(
                             emoji = emoji,
                             description = it.jsonObject["description"]!!.jsonPrimitive.content,
-                            category = it.jsonObject["category"]!!.jsonPrimitive.content,
+                            category = category,
                             skinTones = it.jsonObject["skin_tones"]?.jsonPrimitive?.booleanOrNull == true,
                             //tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
                             //    ?.toList() ?: listOf(),
