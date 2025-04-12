@@ -21,16 +21,16 @@ data class TextContext(
 )
 
 object ModelOutputSanitizer {
-    private fun Char.isPunctuation(): Boolean {
-        return this in setOf('.', ',', '!', '?', ':', ';')
-    }
-
     private fun Char.isClosingBracket(): Boolean {
         return this in setOf(')', ']', '}', '>')
     }
 
     private fun Char.isOpeningBracket(): Boolean {
         return this in setOf('(', '[', '{', '<')
+    }
+
+    private fun Char.isPunctuation(): Boolean {
+        return this in setOf('.', ',', '!', '?', ':', ';')
     }
 
     private fun String.endsWithWhitespaceOrNewline(): Boolean {
@@ -83,11 +83,13 @@ object ModelOutputSanitizer {
 
         // Leading and trailing spaces
         val needsLeadingSpace = before.isNotEmpty() && !before.endsWithWhitespaceOrNewline() &&
-            !before.last().isOpeningBracket()
+            !before.last().isOpeningBracket() &&
+            before.last() != '—'
         val needsTrailingSpace = after.isNotEmpty() &&
             !after.startsWithWhitespaceOrNewline() &&
             !after.first().isPunctuation() &&
-            !after.first().isClosingBracket()
+            !after.first().isClosingBracket() &&
+            after.first() != '—'
 
         val prefix = if (needsLeadingSpace) " " else ""
         val suffix = if (needsTrailingSpace) " " else ""

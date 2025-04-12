@@ -97,7 +97,9 @@ public class ModelOutputSanitizerTest {
             new TestCase("Some", " text.", "? Yes", " text"),
             new TestCase("Some", " text.", " here", " text"),
             new TestCase("", "Text.", "", "Text."),
-            new TestCase("Some", " text here.", "", " text here.")
+            new TestCase("Some", " text here.", "", " text here."),
+            new TestCase("Some -", "text", "- here", " text "),
+            new TestCase("Some—", "text", "—here", "text")
         ));
     }
 
