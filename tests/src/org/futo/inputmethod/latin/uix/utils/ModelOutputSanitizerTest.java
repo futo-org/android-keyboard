@@ -1,11 +1,23 @@
 package org.futo.inputmethod.latin.uix.utils;
 
+import android.view.inputmethod.InputMethodSubtype;
+
+import androidx.test.InstrumentationRegistry;
+
+import org.futo.inputmethod.latin.RichInputMethodManager;
+import org.futo.inputmethod.latin.Subtypes;
+
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class ModelOutputSanitizerTest {
+    private final InputMethodSubtype mockSubtypeEn = Subtypes.INSTANCE.makeSubtype("en_US", "qwerty");
+    private final InputMethodSubtype mockSubtypeDe = Subtypes.INSTANCE.makeSubtype("de_DE", "qwertz");
+
     private static String sanitize(String input, TextContext context) {
         return ModelOutputSanitizer.sanitize(input, context);
     }
@@ -42,6 +54,12 @@ public class ModelOutputSanitizerTest {
         }
     }
 
+    @Before
+    public void setUp() throws Exception {
+        RichInputMethodManager.init(InstrumentationRegistry.getTargetContext());
+        RichInputMethodManager.forceSubtype(mockSubtypeEn);
+    }
+
     @Test
     public void testHandlesNullContext() {
         Assert.assertEquals("test", sanitize("test", null));
@@ -66,8 +84,17 @@ public class ModelOutputSanitizerTest {
             new TestCase("xt ", "Hello world", "", "hello world"),
             new TestCase("t  ", "hello", " world", "hello"),
             new TestCase("Some (text)", "Hello world", "", " hello world"),
-            new TestCase("First line\n", "hello world", "", "Hello world")
+            new TestCase("First line\n", "hello world", "", "Hello world"),
+            new TestCase("Hello world,", "You", "say", " you "),
+            new TestCase("Hello world,", "I", "say", " I "),
+            new TestCase("Hello world", "Inside", "another world", " inside ")
         ));
+
+        RichInputMethodManager.forceSubtype(mockSubtypeDe);
+        runCases(Arrays.asList(
+            new TestCase("Hallo,", "I", "bin...", " i ")
+        ));
+        RichInputMethodManager.forceSubtype(mockSubtypeEn);
     }
 
     @Test

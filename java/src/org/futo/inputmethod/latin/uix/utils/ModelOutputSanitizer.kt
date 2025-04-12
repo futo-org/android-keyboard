@@ -13,7 +13,7 @@ import org.futo.voiceinput.shared.types.ModelInferenceCallback
 import org.futo.voiceinput.shared.types.ModelLoader
 import org.futo.voiceinput.shared.types.getLanguageFromWhisperString
 import org.futo.voiceinput.shared.types.toWhisperString
-import java.util.Locale
+import org.futo.inputmethod.latin.RichInputMethodManager;
 
 data class TextContext(
     val beforeCursor: CharSequence?,
@@ -47,6 +47,8 @@ object ModelOutputSanitizer {
             return result
         }
 
+        val locale = RichInputMethodManager.getInstance().getCurrentSubtypeLocale()
+
         var trimmed = result.trim()
         if (trimmed.isEmpty()) {
             return ""
@@ -75,10 +77,11 @@ object ModelOutputSanitizer {
         val isAcronym = trimmed.length >= 2 &&
             trimmed[0].isUpperCase() &&
             trimmed[1].isUpperCase()
+        val isEnglishI = locale.language == "en" && ((trimmed.length == 1 && trimmed.first() == 'I') || trimmed.matches(Regex("^I\\s")))
         if (needsCapitalization && trimmed.first().isLowerCase()) {
-            trimmed = trimmed.replaceFirstChar { it.titlecase(Locale.getDefault()) }
-        } else if (!beforeTrimmed.isEmpty() && trimmed.first().isUpperCase() && !isAcronym) {
-            trimmed = trimmed.replaceFirstChar { it.lowercase(Locale.getDefault()) }
+            trimmed = trimmed.replaceFirstChar { it.titlecase(locale) }
+        } else if (!beforeTrimmed.isEmpty() && trimmed.first().isUpperCase() && !isAcronym && !isEnglishI) {
+            trimmed = trimmed.replaceFirstChar { it.lowercase(locale) }
         }
 
         // Leading and trailing spaces

@@ -204,7 +204,6 @@ private class LatinIMEActionInputTransaction(
 
     private var partialText = ""
     override fun updatePartial(text: String) {
-        Log.d("LatinIMEActionInputTransaction", "updatePartial: $text")
         if(isFinished) return
         partialText = ModelOutputSanitizer.sanitize(text, textContext)
         inputLogic.mConnection.setComposingText(
@@ -214,7 +213,6 @@ private class LatinIMEActionInputTransaction(
     }
 
     override fun commit(text: String) {
-        Log.d("LatinIMEActionInputTransaction", "commit: $text")
         if(isFinished) return
         isFinished = true
         inputLogic.mConnection.commitText(
