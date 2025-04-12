@@ -14,6 +14,7 @@ import org.futo.voiceinput.shared.types.ModelLoader
 import org.futo.voiceinput.shared.types.getLanguageFromWhisperString
 import org.futo.voiceinput.shared.types.toWhisperString
 
+
 data class MultiModelRunConfiguration(
     val primaryModel: ModelLoader,
     val languageSpecificModels: Map<Language, ModelLoader>
