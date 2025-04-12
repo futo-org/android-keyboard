@@ -137,6 +137,8 @@ import org.futo.inputmethod.v2keyboard.OneHandedKeyboardSize
 import org.futo.inputmethod.v2keyboard.RegularKeyboardSize
 import org.futo.inputmethod.v2keyboard.SplitKeyboardSize
 import org.futo.inputmethod.v2keyboard.opposite
+import org.futo.inputmethod.latin.uix.utils.ModelOutputSanitizer
+import org.futo.inputmethod.latin.uix.utils.TextContext
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -188,44 +190,42 @@ fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(
 
 private class LatinIMEActionInputTransaction(
     private val inputLogic: InputLogic,
-    shouldApplySpace: Boolean
 ): ActionInputTransaction {
-    private val isSpaceNecessary: Boolean
     private var isFinished = false
+    private var textContext: TextContext? = null
 
     init {
-        val priorText = inputLogic.mConnection.getTextBeforeCursor(1, 0)
-        isSpaceNecessary = shouldApplySpace && !priorText.isNullOrEmpty() && !priorText.last().isWhitespace()
-
         inputLogic.startSuppressingLogic()
+        textContext = TextContext(
+            beforeCursor = inputLogic.mConnection.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),
+            afterCursor = inputLogic.mConnection.getTextAfterCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0)
+        )
     }
 
-    private fun transformText(text: String): String {
-        return if(isSpaceNecessary) { " $text" } else { text }
-    }
-
-    private var previousText = ""
+    private var partialText = ""
     override fun updatePartial(text: String) {
+        Log.d("LatinIMEActionInputTransaction", "updatePartial: $text")
         if(isFinished) return
-        previousText = text
+        partialText = ModelOutputSanitizer.sanitize(text, textContext)
         inputLogic.mConnection.setComposingText(
-            transformText(text),
+            partialText,
             1
         )
     }
 
     override fun commit(text: String) {
+        Log.d("LatinIMEActionInputTransaction", "commit: $text")
         if(isFinished) return
         isFinished = true
         inputLogic.mConnection.commitText(
-            transformText(text),
+            ModelOutputSanitizer.sanitize(text, textContext),
             1
         )
         inputLogic.endSuppressingLogic()
     }
 
     override fun cancel() {
-        commit(previousText)
+        commit(partialText)
     }
 }
 
@@ -238,8 +238,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         return latinIME.lifecycleScope
     }
 
-    override fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction {
-        return LatinIMEActionInputTransaction(latinIME.inputLogic, applySpaceIfNeeded)
+    override fun createInputTransaction(): ActionInputTransaction {
+        return LatinIMEActionInputTransaction(latinIME.inputLogic)
     }
 
     override fun typeText(v: String) {
@@ -324,10 +324,6 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun getActiveLocales(): List<Locale> {
         return RichInputMethodManager.getInstance().currentSubtypeLocales
-    }
-
-    override fun getInputConnection(): InputConnection? {
-        return latinIME.getCurrentInputConnection()
     }
 
     override fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo) {

@@ -42,7 +42,7 @@ interface KeyboardManagerForAction {
     fun getContext(): Context
     fun getLifecycleScope(): LifecycleCoroutineScope
 
-    fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction
+    fun createInputTransaction(): ActionInputTransaction
 
     fun typeText(v: String)
     fun typeUri(uri: Uri, mimeTypes: List<String>): Boolean
@@ -67,7 +67,6 @@ interface KeyboardManagerForAction {
     fun announce(s: String)
     fun getActiveLocales(): List<Locale>
 
-    fun getInputConnection(): InputConnection?
     fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo)
     fun unsetInputConnection()
 

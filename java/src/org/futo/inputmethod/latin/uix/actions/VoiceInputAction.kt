@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
-import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
 import org.futo.inputmethod.latin.uix.Action
@@ -51,7 +50,6 @@ import org.futo.voiceinput.shared.ui.MicrophoneDeviceState
 import org.futo.voiceinput.shared.whisper.DecodingConfiguration
 import org.futo.voiceinput.shared.whisper.ModelManager
 import org.futo.voiceinput.shared.whisper.MultiModelRunConfiguration
-import org.futo.voiceinput.shared.whisper.TextContext
 import java.util.Locale
 
 val SystemVoiceInputAction = Action(
@@ -108,15 +106,6 @@ private class VoiceInputActionWindow(
 
     private var shouldPlaySounds: Boolean = false
 
-    private fun getTextContext(): TextContext? {
-        val ic = manager.getInputConnection() ?: return null
-
-        return TextContext(
-            beforeCursor = ic.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),
-            afterCursor = ic.getTextAfterCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0)
-        )
-    }
-
     private fun loadSettings(): RecognizerViewSettings {
         val enableSound = context.getSetting(ENABLE_SOUND)
         val verboseFeedback = context.getSetting(VERBOSE_PROGRESS)
@@ -143,8 +132,7 @@ private class VoiceInputActionWindow(
             decodingConfiguration = DecodingConfiguration(
                 glossary = state.userDictionaryObserver.getWords().map { it.word },
                 languages = allowedLanguages,
-                suppressSymbols = disallowSymbols,
-                textContext = getTextContext()
+                suppressSymbols = disallowSymbols
             ),
             recordingConfiguration = RecordingSettings(
                 preferBluetoothMic = useBluetoothAudio,
@@ -185,7 +173,7 @@ private class VoiceInputActionWindow(
         recognizerView.start()
     }
 
-    private var inputTransaction = manager.createInputTransaction(true)
+    private var inputTransaction = manager.createInputTransaction()
 
     @Composable
     private fun ModelDownloader(modelException: ModelDoesNotExistException) {
