@@ -71,16 +71,14 @@ object ModelOutputSanitizer {
             trimmed = trimmed.dropLast(1)
         }
 
-        // Capitalization
+        // Capitalization - whisper always capitalizes first character
         val beforeTrimmed = before.trimEnd()
-        val needsCapitalization = beforeTrimmed.isEmpty() || beforeTrimmed.matches(Regex(".*[.:?!]$"))
         val isAcronym = trimmed.length >= 2 &&
             trimmed[0].isUpperCase() &&
             trimmed[1].isUpperCase()
-        val isEnglishI = locale.language == "en" && ((trimmed.length == 1 && trimmed.first() == 'I') || trimmed.matches(Regex("^I\\s")))
-        if (needsCapitalization && trimmed.first().isLowerCase()) {
-            trimmed = trimmed.replaceFirstChar { it.titlecase(locale) }
-        } else if (!beforeTrimmed.isEmpty() && trimmed.first().isUpperCase() && !isAcronym && !isEnglishI) {
+        val isEnglishI = locale.language == "en" && ((trimmed.length == 1 && trimmed.first() == 'I') || trimmed.matches(Regex("^I\\s.*")))
+        val needsLowercase = !beforeTrimmed.isEmpty() && !beforeTrimmed.matches(Regex(".*[.:?!]$")) && !isAcronym && !isEnglishI
+        if (needsLowercase) {
             trimmed = trimmed.replaceFirstChar { it.lowercase(locale) }
         }
 

@@ -77,17 +77,17 @@ public class ModelOutputSanitizerTest {
     @Test
     public void testHandlesCapitalization() {
         runCases(Arrays.asList(
-            new TestCase("", "hello world", "", "Hello world"),
-            new TestCase(" ", "hello world", "", "Hello world"),
+            new TestCase("", "Hello world", "", "Hello world"),
             new TestCase(" ", "Hello world", "", "Hello world"),
-            new TestCase("First sentence.", "hello world", "", " Hello world"),
+            new TestCase("First sentence.", "Hello world", "", " Hello world"),
             new TestCase("xt ", "Hello world", "", "hello world"),
-            new TestCase("t  ", "hello", " world", "hello"),
+            new TestCase("t  ", "Hello", " world", "hello"),
             new TestCase("Some (text)", "Hello world", "", " hello world"),
-            new TestCase("First line\n", "hello world", "", "Hello world"),
+            new TestCase("First line\n", "Hello world", "", "Hello world"),
             new TestCase("Hello world,", "You", "say", " you "),
-            new TestCase("Hello world,", "I", "say", " I "),
-            new TestCase("Hello world", "Inside", "another world", " inside ")
+            new TestCase("Hello world,", "I am ", "Andy.", " I am "),
+            new TestCase("Hello world", "Inside", "another world", " inside "),
+            new TestCase("Some—", "Text", "—here", "text")
         ));
 
         RichInputMethodManager.forceSubtype(mockSubtypeDe);
@@ -107,38 +107,38 @@ public class ModelOutputSanitizerTest {
     @Test
     public void testHandlesSpacingWithSurroundingText() {
         runCases(Arrays.asList(
-            new TestCase("Some", "text", "here", " text "),
-            new TestCase("Some ", "text", "here", "text "),
-            new TestCase("Some", "text", " here", " text"),
-            new TestCase("Some ", "text", " here", "text"),
-            new TestCase("", "text", "here", "Text "),
-            new TestCase("Some", "text", "", " text")
+            new TestCase("0Some", "Text", "here", " text "),
+            new TestCase("1Some ", "Text", "here", "text "),
+            new TestCase("2Some", "Text", " here", " text"),
+            new TestCase("3Some ", "Text", " here", "text"),
+            new TestCase("", "Text", "here", "Text "),
+            new TestCase("5Some", "Text", "", " text")
         ));
     }
 
     @Test
     public void testHandlesPunctuation() {
         runCases(Arrays.asList(
-            new TestCase("Some", "text", ", and", " text"),
-            new TestCase("Some", "text ", ". And", " text"),
-            new TestCase("Some", " text.", "? Yes", " text"),
-            new TestCase("Some", " text.", " here", " text"),
+            new TestCase("Some", "Text", ", and", " text"),
+            new TestCase("Some", "Text ", ". And", " text"),
+            new TestCase("Some", " Text.", "? Yes", " text"),
+            new TestCase("Some", " Text.", " here", " text"),
             new TestCase("", "Text.", "", "Text."),
-            new TestCase("Some", " text here.", "", " text here."),
-            new TestCase("Some -", "text", "- here", " text "),
-            new TestCase("Some—", "text", "—here", "text")
+            new TestCase("Some", " Text here.", "", " text here."),
+            new TestCase("Some -", "Text", "- here", " text "),
+            new TestCase("Some—", "Text", "—here", "text")
         ));
     }
 
     @Test
     public void testHandlesBrackets() {
         runCases(Arrays.asList(
-            new TestCase("Some (", " text", "", "text"),
-            new TestCase("Some (", "text ", "", "text"),
-            new TestCase("(Some)", "text", "", " text"),
-            new TestCase("(Some)", " text", "", " text"),
-            new TestCase("Some", " text ", ")", " text"),
-            new TestCase("Some", "text", "(", " text "),
+            new TestCase("Some (", " Text", "", "text"),
+            new TestCase("Some (", "Text ", "", "text"),
+            new TestCase("(Some)", "Text", "", " text"),
+            new TestCase("(Some)", " Text", "", " text"),
+            new TestCase("Some", " Text ", ")", " text"),
+            new TestCase("Some", "Text", "(", " text "),
             new TestCase("Some", "More text ", "]", " more text")
         ));
     }
