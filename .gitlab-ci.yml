@@ -24,6 +24,7 @@ buildUnstable:
   tags:
     - docker
   stage: build
+  dependencies: []
   before_script:
     - git fetch origin master:master
     - export VERSION_NAME=`git describe --tags --dirty`
@@ -50,6 +51,7 @@ buildStable:
   tags:
     - docker
   stage: build
+  dependencies: []
   before_script:
     - git fetch origin master:master
     - export VERSION_NAME=`git describe --tags`
