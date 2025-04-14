@@ -17,7 +17,7 @@
     <string name="action_cursor_down_title">Arrow Down</string>
     <string name="action_cursor_left_title">Arrow Left</string>
     <string name="action_cursor_right_title">Arrow Right</string>
-    
+
     <!-- For emoji menu action -->
     <string name="action_emoji_title">Emojis</string>
     <!-- Refers to the most recently used emojis -->

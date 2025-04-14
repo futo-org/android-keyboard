@@ -7,3 +7,6 @@
 [submodule "java/assets/layouts"]
 	path = java/assets/layouts
 	url = https://github.com/futo-org/futo-keyboard-layouts.git
+[submodule "translations"]
+	path = translations
+	url = https://gitlab.futo.org/keyboard/keyboard-translations.git

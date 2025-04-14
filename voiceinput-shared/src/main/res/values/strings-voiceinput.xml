@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- May be translated as "Stop voice input", "Stop input", etc -->
+    <string name="stop_recording">Stop Recording</string>
+
+    <!-- Appears when voice input is recording and no speech has been detected yet, we prompt the user to try talking. Must be fairly short. -->
+    <string name="try_saying_something">Try saying something</string>
+
+    <!-- Appears when voice input is recording and no sound has been detected in a while, this is typically caused by disabling the microphone in Android quick settings -->
+    <string name="no_audio_detected_is_your_microphone_blocked">No audio detected, is your microphone blocked?</string>
+
+    <!-- Appears when voice input is recording and speech is being actively detected. Must be fairly short. -->
+    <string name="listening">Listening…</string>
+
+    <!-- When the user is trying to use voice input but has not granted our app the Android microphone permission, we ask the user to please grant it to use voice input -->
+    <string name="grant_microphone_permission_to_use_voice_input">Grant microphone permission to use Voice Input</string>
+    <string name="open_voice_input_settings">Open Voice Input Settings</string>
+
+    <!-- Verbose mode string to indicate we are extracting mel spectrogram audio features from the recorded audio. Must be fairly short. -->
+    <string name="extracting_features">Extracting features…</string>
+
+    <!-- Verbose mode string to indicate we are loading the voice recognition model file into memory. Must be fairly short. -->
+    <string name="loading_model">Loading model…</string>
+
+    <!-- Verbose mode string to indicate the voice recognition model has switched to decoding mode and is outputting text. Must be fairly short. -->
+    <string name="decoding">Decoding started…</string>
+
+    <!-- String to indicate that a language has been detected for which we have a better voice recognition model, so we are switching models for the detected language. Must be fairly short. -->
+    <string name="switching_model">Switching language…</string>
+
+    <!-- Generic string to indicate the voice recognition model is processing the recorded audio. Must be fairly short. -->
+    <string name="processing">Processing…</string>
+
+    <!-- Generic string to indicate the voice recognition model is initializing. Must be fairly short. -->
+    <string name="initializing">Initializing…</string>
+
+    <!-- Model name for the tiny english model -->
+    <string name="tiny_en_name">English-39 (default)</string>
+    <!-- Model name for the base english model -->
+    <string name="base_en_name">English-74 (slower, more accurate)</string>
+    <!-- Model name for the small english model -->
+    <string name="small_en_name">English-244 (slow)</string>
+
+    <!-- Model name for the tiny model -->
+    <string name="tiny_name">Multilingual-39 (less accurate)</string>
+    <!-- Model name for the base model -->
+    <string name="base_name">Multilingual-74 (default)</string>
+    <!-- Model name for the small model -->
+    <string name="small_name">Multilingual-244 (slow)</string>
+</resources>

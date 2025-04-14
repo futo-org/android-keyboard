@@ -1,3 +1,4 @@
+//file:noinspection HardCodedStringLiteral
 plugins {
     id 'com.android.application' version '8.2.2'
     id 'org.jetbrains.kotlin.android' version '2.0.0'
@@ -32,6 +33,26 @@ def getVersionName = { ->
         project.logger.lifecycle("Failed to get version name tag from git!")
         return "0.0.0";
     }
+}
+
+final def translationsWithoutEngValues = { final String path ->
+    final def sourceDir = file(path)
+    final def taskNameSuffix = sourceDir.name.capitalize()
+
+    final def destDir = file("$buildDir/generated/res-translations-filtered/${taskNameSuffix}")
+
+    tasks.register("prepareResFilter${taskNameSuffix}", Copy) {
+        from(sourceDir) {
+            include 'values-*/**'
+        }
+        into(destDir)
+        includeEmptyDirs = false
+    }
+
+    // Ensure it runs before build
+    preBuild.dependsOn("prepareResFilter${taskNameSuffix}")
+
+    destDir
 }
 
 // TODO: Remove
@@ -85,7 +106,7 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     } else {
-    	project.logger.lifecycle('keystore.properties not found, APK may not be signed')
+        project.logger.lifecycle('keystore.properties not found, APK may not be signed')
     }
 
 
@@ -175,7 +196,7 @@ android {
 
     sourceSets {
         main {
-            res.srcDirs = ['java/res']
+            res.srcDirs = ['java/res', translationsWithoutEngValues('translations/core')]
             java.srcDirs = ['common/src', 'java/src']
             manifest.srcFile 'java/AndroidManifest.xml'
             assets.srcDirs = ['java/assets']
@@ -194,13 +215,13 @@ android {
         unstable {
             java.srcDirs = ['common/src', 'java/src', 'java/stable/java']
             manifest.srcFile 'java/stable/AndroidManifest.xml'
-            res.srcDirs = ['java/unstable/res']
+            res.srcDirs = ['java/unstable/res', translationsWithoutEngValues('translations/devbuild')]
         }
 
         androidTest {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src']
-            manifest.srcFile "tests/AndroidManifest.xml"
+            manifest.srcFile 'tests/AndroidManifest.xml'
         }
     }
 
