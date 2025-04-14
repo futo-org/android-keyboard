@@ -12,6 +12,8 @@ stages: # List of stages for jobs, and their order of execution
   - build
 
 sync_strings_xml:
+  tags:
+    - docker
   stage: sync_translations
   only:
     - branches
