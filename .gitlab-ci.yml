@@ -7,8 +7,16 @@ variables:
   GIT_STRATEGY: clone
   GIT_DEPTH: 0
 
-stages:          # List of stages for jobs, and their order of execution
+stages: # List of stages for jobs, and their order of execution
+  - sync_translations
   - build
+
+sync_strings_xml:
+  stage: sync_translations
+  only:
+    - branches
+  script:
+    - sh syncTranslations.sh
 
 buildUnstable:
   tags:
