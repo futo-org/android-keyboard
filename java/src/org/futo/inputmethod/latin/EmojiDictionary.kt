@@ -29,7 +29,7 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
         var emoji: String? = null
         if(!typedWord.isEmpty()) {
             emoji = PersistentEmojiState.getShortcut(mLocale, typedWord.lowercase(mLocale))
-        } else if((ngramContext?.prevWordCount ?: 0) > 0) {
+        } else if((ngramContext?.prevWordCount ?: 0) > 0 && composedData?.mIsBatchMode == false) {
             val prevWord = ngramContext?.getNthPrevWord(1)?.toString() ?: ""
             if(!prevWord.isEmpty()) {
                 emoji = PersistentEmojiState.getShortcut(mLocale, prevWord.lowercase(mLocale))
@@ -37,11 +37,16 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
         }
 
         return if(emoji != null) {
+            val score = if(composedData?.mIsBatchMode == true) {
+                Int.MIN_VALUE + 1
+            } else {
+                SuggestedWords.SuggestedWordInfo.MAX_SCORE - 1
+            }
             arrayListOf(
                 SuggestedWords.SuggestedWordInfo(
                     emoji,
                     "",
-                    SuggestedWords.SuggestedWordInfo.MAX_SCORE - 1,
+                    score,
                     SuggestedWords.SuggestedWordInfo.KIND_EMOJI_SUGGESTION,
                     null,
                     SuggestedWords.SuggestedWordInfo.NOT_AN_INDEX,
