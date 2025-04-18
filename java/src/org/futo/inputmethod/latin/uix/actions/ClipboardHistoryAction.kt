@@ -589,7 +589,7 @@ val ClipboardHistoryAction = Action(
                 } else {
                     LazyVerticalStaggeredGrid(
                         modifier = Modifier.fillMaxWidth(),
-                        columns = StaggeredGridCells.Adaptive(180.dp),
+                        columns = StaggeredGridCells.Adaptive(140.dp),
                         verticalItemSpacing = 4.dp,
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
