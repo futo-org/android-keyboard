@@ -35,6 +35,7 @@ import org.futo.inputmethod.latin.uix.USE_VAD_AUTOSTOP
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.utils.ModelOutputSanitizer
 import org.futo.inputmethod.latin.xlm.UserDictionaryObserver
 import org.futo.inputmethod.updates.openURI
 import org.futo.voiceinput.shared.ModelDoesNotExistException
@@ -172,7 +173,7 @@ private class VoiceInputActionWindow(
         recognizerView.start()
     }
 
-    private var inputTransaction = manager.createInputTransaction(true)
+    private var inputTransaction = manager.createInputTransaction()
 
     @Composable
     private fun ModelDownloader(modelException: ModelDoesNotExistException) {
@@ -241,13 +242,15 @@ private class VoiceInputActionWindow(
     override fun finished(result: String) {
         wasFinished = true
 
-        inputTransaction.commit(result)
+        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
+        inputTransaction.commit(sanitized)
         manager.announce(result)
         manager.closeActionWindow()
     }
 
     override fun partialResult(result: String) {
-        inputTransaction.updatePartial(result)
+        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
+        inputTransaction.updatePartial(sanitized)
     }
 
     override fun requestPermission(onGranted: () -> Unit, onRejected: () -> Unit): Boolean {

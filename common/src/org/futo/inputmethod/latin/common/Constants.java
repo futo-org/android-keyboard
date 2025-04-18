@@ -339,6 +339,9 @@ public final class Constants {
     public static final int EVENT_REJECTION = 2;
     public static final int EVENT_REVERT = 3;
 
+    /** Number of characters before/after cursor or selected text. */
+    public static final int VOICE_INPUT_CONTEXT_SIZE = 3;
+
     private Constants() {
         // This utility class is not publicly instantiable.
     }

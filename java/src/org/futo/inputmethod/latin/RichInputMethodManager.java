@@ -187,7 +187,7 @@ public class RichInputMethodManager {
     private static RichInputMethodSubtype sForcedSubtypeForTesting = null;
 
     @UsedForTesting
-    static void forceSubtype(@Nonnull final InputMethodSubtype subtype) {
+    public static void forceSubtype(@Nonnull final InputMethodSubtype subtype) {
         sForcedSubtypeForTesting = RichInputMethodSubtype.getRichInputMethodSubtype(subtype);
     }
 

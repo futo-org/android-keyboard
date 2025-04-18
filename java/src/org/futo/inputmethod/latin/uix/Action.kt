@@ -19,10 +19,12 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
+import org.futo.inputmethod.latin.uix.utils.TextContext
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import java.util.Locale
 
 interface ActionInputTransaction {
+    val textContext: TextContext
     fun updatePartial(text: String)
     fun commit(text: String)
     fun cancel()
@@ -42,7 +44,7 @@ interface KeyboardManagerForAction {
     fun getContext(): Context
     fun getLifecycleScope(): LifecycleCoroutineScope
 
-    fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction
+    fun createInputTransaction(): ActionInputTransaction
 
     fun typeText(v: String)
     fun typeUri(uri: Uri, mimeTypes: List<String>): Boolean

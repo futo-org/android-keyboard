@@ -123,6 +123,7 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.utils.TextContext
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 import org.futo.inputmethod.updates.autoDeferManualUpdateIfNeeded
 import org.futo.inputmethod.updates.deferManualUpdate
@@ -187,29 +188,25 @@ fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(
 
 
 private class LatinIMEActionInputTransaction(
-    private val inputLogic: InputLogic,
-    shouldApplySpace: Boolean
+    private val inputLogic: InputLogic
 ): ActionInputTransaction {
-    private val isSpaceNecessary: Boolean
     private var isFinished = false
+    override val textContext: TextContext
 
     init {
-        val priorText = inputLogic.mConnection.getTextBeforeCursor(1, 0)
-        isSpaceNecessary = shouldApplySpace && !priorText.isNullOrEmpty() && !priorText.last().isWhitespace()
-
         inputLogic.startSuppressingLogic()
+        textContext = TextContext(
+            beforeCursor = inputLogic.mConnection.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),
+            afterCursor = inputLogic.mConnection.getTextAfterCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0)
+        )
     }
 
-    private fun transformText(text: String): String {
-        return if(isSpaceNecessary) { " $text" } else { text }
-    }
-
-    private var previousText = ""
+    private var partialText = ""
     override fun updatePartial(text: String) {
         if(isFinished) return
-        previousText = text
+        partialText = text
         inputLogic.mConnection.setComposingText(
-            transformText(text),
+            partialText,
             1
         )
     }
@@ -218,14 +215,14 @@ private class LatinIMEActionInputTransaction(
         if(isFinished) return
         isFinished = true
         inputLogic.mConnection.commitText(
-            transformText(text),
+            text,
             1
         )
         inputLogic.endSuppressingLogic()
     }
 
     override fun cancel() {
-        commit(previousText)
+        commit(partialText)
     }
 }
 
@@ -238,8 +235,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         return latinIME.lifecycleScope
     }
 
-    override fun createInputTransaction(applySpaceIfNeeded: Boolean): ActionInputTransaction {
-        return LatinIMEActionInputTransaction(latinIME.inputLogic, applySpaceIfNeeded)
+    override fun createInputTransaction(): ActionInputTransaction {
+        return LatinIMEActionInputTransaction(latinIME.inputLogic)
     }
 
     override fun typeText(v: String) {
