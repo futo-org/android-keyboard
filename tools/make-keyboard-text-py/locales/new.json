@@ -1,0 +1,104 @@
+{
+  "locale": "new",
+  "morekeys": {
+    "period": [
+      "!autoColumnOrder!8",
+      "\\,",
+      ".",
+      "?",
+      "!",
+      "𑑍",
+      "𑑚",
+      "𑑌",
+      "#",
+      ")",
+      "(",
+      "/",
+      "'",
+      "@",
+      ":",
+      ";",
+      "-",
+      "\"",
+      "+"
+    ],
+    "tablet_period": [
+      "!autoColumnOrder!8",
+      ".",
+      "\\,",
+      "?",
+      "!",
+      "𑑍",
+      "𑑚",
+      "𑑌",
+      "#",
+      ")",
+      "(",
+      "'",
+      "/",
+      "@",
+      ":",
+      ";",
+      "-",
+      "\"",
+      "+"
+    ]
+  },
+  "keyspec": {
+    "symbols_1": "𑑑",
+    "symbols_2": "𑑒",
+    "symbols_3": "𑑓",
+    "symbols_4": "𑑔",
+    "symbols_5": "𑑕",
+    "symbols_6": "𑑖",
+    "symbols_7": "𑑗",
+    "symbols_8": "𑑘",
+    "symbols_9": "𑑙",
+    "symbols_0": "𑑐",
+    "currency": "𑐬𑐸",
+    "period": "𑑋",
+    "tablet_period": "𑑋",
+    "comma": "𑑍",
+    "tablet_comma": "𑑍"
+  },
+  "label": {},
+  "keylabel": {
+    "to_alpha": "𑐎𑐏𑐐",
+    "to_symbol": "?𑑑𑑒𑑓"
+  },
+  "keyhintlabel": {},
+  "additional_morekeys": {
+    "symbols_1": [
+      "1",
+      "𑑊"
+    ],
+    "symbols_2": [
+      "2"
+    ],
+    "symbols_3": [
+      "3"
+    ],
+    "symbols_4": [
+      "4"
+    ],
+    "symbols_5": [
+      "5"
+    ],
+    "symbols_6": [
+      "6"
+    ],
+    "symbols_7": [
+      "7"
+    ],
+    "symbols_8": [
+      "8"
+    ],
+    "symbols_9": [
+      "9"
+    ],
+    "symbols_0": [
+      "0"
+    ]
+  },
+  "other": {}
+}
