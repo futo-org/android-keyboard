@@ -7,8 +7,9 @@
         "east_slavic_row2_2": [
             "ї"
         ],
-        "cyrillic_soft_sign": [
-            "ъ"
+        "misc_code_u044c": [
+            "ъ",
+            "ы"
         ]
     },
     "keyspec": {
