@@ -109,17 +109,26 @@ data class MoreKeysBuilder(
             LongPressKey.Symbols -> (mode.autoSymFromCoord && (coordinate.regularRow > 0 || isNumberRowActive))
 
             // Language keys require a-z code
-            LongPressKey.LanguageKeys, LongPressKey.MiscLetters -> (mode.autoFromLanguageKey && row.isLetterRow && code >= 'a'.code && code <= 'z'.code)
+            LongPressKey.LanguageKeys, LongPressKey.MiscLetters -> mode.autoFromLanguageKey && row.isLetterRow
         }
 
-    private fun moreKey(key: LongPressKey): String =
-        when(key) {
-            LongPressKey.Numbers      -> getNumForCoordinate(coordinate)
-            LongPressKey.Symbols      -> symsForCoord(coordinate)
-            LongPressKey.QuickActions -> actionForCoord(coordinate)
-            LongPressKey.LanguageKeys -> "!text/morekeys_${code.toChar()}"
-            LongPressKey.MiscLetters  -> "!text/morekeys_misc_${code.toChar()}"
+    private fun moreKey(key: LongPressKey): String {
+        val codeCharOrUnicode = when {
+            // Standard alphabet - use the letter itself
+            code >= 'a'.code && code <= 'z'.code -> code.toChar()
+
+            // Anything else - unicode
+            else -> "code_u" + code.toString(16).padStart(4, '0')
         }
+
+        return when (key) {
+            LongPressKey.Numbers -> getNumForCoordinate(coordinate)
+            LongPressKey.Symbols -> symsForCoord(coordinate)
+            LongPressKey.QuickActions -> actionForCoord(coordinate)
+            LongPressKey.LanguageKeys -> "!text/morekeys_$codeCharOrUnicode"
+            LongPressKey.MiscLetters -> "!text/morekeys_misc_$codeCharOrUnicode"
+        }
+    }
 
     fun insertMoreKeys(key: LongPressKey): MoreKeysBuilder {
         if(!canAddMoreKey(key)) return this
