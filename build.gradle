@@ -47,6 +47,13 @@ final def translationsWithoutEngValues = { final String path ->
         }
         into(destDir)
         includeEmptyDirs = false
+
+        doFirst {
+            if (destDir.exists()) {
+                println "Cleaning old contents of $destDir"
+                destDir.deleteDir()
+            }
+        }
     }
 
     // Ensure it runs before build
@@ -196,7 +203,11 @@ android {
 
     sourceSets {
         main {
-            res.srcDirs = ['java/res', translationsWithoutEngValues('translations/core')]
+            res.srcDirs = [
+                    'java/res',
+                    translationsWithoutEngValues('translations/core'),
+                    translationsWithoutEngValues('translations/core-ign')
+            ]
             java.srcDirs = ['common/src', 'java/src']
             manifest.srcFile 'java/AndroidManifest.xml'
             assets.srcDirs = ['java/assets']
