@@ -1,10 +1,10 @@
 # FUTO Keyboard
 
-The goal is to make a good keyboard that doesn't spy on users. This repository is a fork of [LatinIME (the Android Open-Source Keyboard)](https://android.googlesource.com/platform/packages/inputmethods/LatinIME).
+The goal is to make a good modern keyboard that stays offline and doesn't spy on you. This keyboard is a fork of [LatinIME, The Android Open-Source Keyboard](https://android.googlesource.com/platform/packages/inputmethods/LatinIME), with significant changes made to it.
+
+Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads and more information.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
-
-Check out the [FUTO Keyboard Wiki](https://gitlab.futo.org/alex/keyboard-wiki/-/wikis/FUTO-Keyboard)
 
 ## Layouts
 
@@ -17,9 +17,13 @@ When cloning the repository, you must perform a recursive clone to fetch all dep
 git clone --recursive https://gitlab.futo.org/keyboard/latinime.git
 ```
 
-You can also initialize this way if you forgot to specify the recursive clone:
+If you forgot to specify recursive clone, use this to fetch submodules:
 ```
 git submodule update --init --recursive
 ```
 
-You can then open the project in Android Studio and build it that way.
+You can then open the project in Android Studio and build it that way, or use gradle commands:
+```
+./gradlew assembleUnstableDebug
+./gradlew assembleStableRelease
+```
