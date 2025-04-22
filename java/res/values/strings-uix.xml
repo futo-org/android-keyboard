@@ -431,9 +431,9 @@
     <string name="credits_menu_title">Credits</string>
     <string name="credits_menu_header_text">Thanks to these people for helping make FUTO Keyboard a great app!</string>
     <string name="credits_menu_team_translators_title">Translators</string>
-    <string name="credits_menu_team_keyboard_layouts_title">Layouts</string>
-    <string name="credits_menu_team_code_title">Code</string>
-    <string name="credits_menu_team_third_party_libraries_title">Third-party</string>
+    <string name="credits_menu_team_keyboard_layouts_title">Layout contributors</string>
+    <string name="credits_menu_team_code_title">Code contributors</string>
+    <string name="credits_menu_team_third_party_libraries_title">Third-party code</string>
     <string name="credits_menu_nonaffiliation_notice">The authors listed above are not affiliated with us, and may not necessarily endorse or promote us. Listing does not imply affiliation or endorsement.</string>
     <string name="credits_menu_contribute_translations_button">Help translate the app</string>
     <string name="credits_menu_contribute_keyboard_layouts_button">Contribute layouts</string>
