@@ -184,8 +184,8 @@ fun WarningTip(text: String = "This is an example tip") {
 }
 
 @Composable
-fun SpacedColumn(gap: Dp, modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(gap)) {
+fun SpacedColumn(gap: Dp, modifier: Modifier = Modifier, horizontalAlignment: Alignment.Horizontal = Alignment.Start, content: @Composable ColumnScope.() -> Unit) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(gap), horizontalAlignment = horizontalAlignment) {
         content()
     }
 }
