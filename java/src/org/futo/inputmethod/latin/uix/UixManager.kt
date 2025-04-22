@@ -543,8 +543,11 @@ class UixManager(private val latinIME: LatinIME) {
             latinIME.window.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
 
-        // TODO: I18nize
-        keyboardManagerForAction.announce("${latinIME.resources.getString(action.name)} mode")
+        keyboardManagerForAction.announce(
+            latinIME.getString(
+                R.string.action_menu_opened,
+                latinIME.resources.getString(action.name)
+            ))
     }
 
     fun returnBackToMainKeyboardViewFromAction() {
@@ -563,8 +566,7 @@ class UixManager(private val latinIME: LatinIME) {
 
         latinIME.window.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        // TODO: I18nize
-        keyboardManagerForAction.announce("$name closed")
+        keyboardManagerForAction.announce(latinIME.getString(R.string.action_menu_closed, name))
     }
 
     fun toggleExpandAction(to: Boolean? = null) {
@@ -703,7 +705,9 @@ class UixManager(private val latinIME: LatinIME) {
 
     @Composable
     fun ActionEditorHost() {
-        Box(modifier = Modifier.fillMaxSize().padding(bottom = navBarHeight()), contentAlignment = Alignment.BottomCenter) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = navBarHeight()), contentAlignment = Alignment.BottomCenter) {
             AnimatedVisibility(
                 visible = isShowingActionEditor.value,
                 enter = slideInVertically { it },
@@ -744,7 +748,9 @@ class UixManager(private val latinIME: LatinIME) {
 
     @Composable
     private fun OffsetPositioner(offset: Offset, content: @Composable () -> Unit) {
-        Column(modifier = Modifier.fillMaxHeight().absoluteOffset { IntOffset(offset.x.toInt(), 0) }) {
+        Column(modifier = Modifier
+            .fillMaxHeight()
+            .absoluteOffset { IntOffset(offset.x.toInt(), 0) }) {
             Spacer(Modifier.weight(1.0f))
             content()
             Spacer(Modifier.height(with(LocalDensity.current) { offset.y.toDp() }))
@@ -764,7 +770,15 @@ class UixManager(private val latinIME: LatinIME) {
 
         Box(modifier
             .onSizeChanged { measuredTouchableHeight = it.height }
-            .background(backgroundBrush, shape, alpha = if(LocalKeyboardScheme.current.keyboardBackgroundShader != null) { 0.0f } else { 1.0f })
+            .background(
+                backgroundBrush,
+                shape,
+                alpha = if (LocalKeyboardScheme.current.keyboardBackgroundShader != null) {
+                    0.0f
+                } else {
+                    1.0f
+                }
+            )
             .requiredWidth(requiredWidthPx.toDp())
             .absolutePadding(
                 //top = padding.top.toDp().coerceAtLeast(0.dp),
@@ -802,13 +816,13 @@ class UixManager(private val latinIME: LatinIME) {
         // Bottom drag bar
         Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(20.dp)
-                .pointerInput(pointerInputKey) {
-                    detectDragGestures(
-                        onDrag = { _, dragAmount -> onDragged(dragAmount)},
-                        onDragEnd = { onDragEnd() })
-                }
+            .fillMaxWidth()
+            .height(20.dp)
+            .pointerInput(pointerInputKey) {
+                detectDragGestures(
+                    onDrag = { _, dragAmount -> onDragged(dragAmount) },
+                    onDragEnd = { onDragEnd() })
+            }
         ) {
             IconButton(onClick = {
                 onActionActivated(KeyboardModeAction)
@@ -821,8 +835,11 @@ class UixManager(private val latinIME: LatinIME) {
             }
 
             Box(
-                modifier = Modifier.fillMaxWidth(0.6f).height(4.dp)
-                    .align(Alignment.Center).background(
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .height(4.dp)
+                    .align(Alignment.Center)
+                    .background(
                         LocalKeyboardScheme.current.onSurfaceVariant,
                         RoundedCornerShape(100)
                     )
@@ -896,9 +913,11 @@ class UixManager(private val latinIME: LatinIME) {
     @Composable
     private fun BoxScope.OneHandedOptions(size: OneHandedKeyboardSize) = with(LocalDensity.current) {
         Box(Modifier.matchParentSize()) {
-            Column(modifier = Modifier.matchParentSize().absolutePadding(
-                top = if(isActionsExpanded.value) ActionBarHeight else 0.dp
-            ), horizontalAlignment = when(size.direction) {
+            Column(modifier = Modifier
+                .matchParentSize()
+                .absolutePadding(
+                    top = if (isActionsExpanded.value) ActionBarHeight else 0.dp
+                ), horizontalAlignment = when(size.direction) {
                 // Aligned opposite of the keyboard
                 OneHandedDirection.Left -> Alignment.End
                 OneHandedDirection.Right -> Alignment.Start
@@ -986,14 +1005,16 @@ class UixManager(private val latinIME: LatinIME) {
                     CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                             CompositionLocalProvider(LocalFoldingState provides foldingOptions.value) {
-                                Box(Modifier.fillMaxSize().onSizeChanged {
-                                    // If the size changes, call the service to check if the size needs
-                                    // to be recalculated and keyboard recreated
-                                    if(it != prevSize) {
-                                        prevSize = it
-                                        latinIME.onSizeUpdated()
-                                    }
-                                }) {
+                                Box(Modifier
+                                    .fillMaxSize()
+                                    .onSizeChanged {
+                                        // If the size changes, call the service to check if the size needs
+                                        // to be recalculated and keyboard recreated
+                                        if (it != prevSize) {
+                                            prevSize = it
+                                            latinIME.onSizeUpdated()
+                                        }
+                                    }) {
                                     content()
                                 }
                             }
@@ -1260,12 +1281,14 @@ class UixManager(private val latinIME: LatinIME) {
                     painterResource(R.drawable.pointy_arrow),
                     contentDescription = null,
                     tint = LocalKeyboardScheme.current.primary,
-                    modifier = Modifier.size(128.dp).offset {
-                        IntOffset(
-                            pos.x.roundToInt(),
-                            (pos.y - 128.dp.toPx()).roundToInt()
-                        )
-                    }
+                    modifier = Modifier
+                        .size(128.dp)
+                        .offset {
+                            IntOffset(
+                                pos.x.roundToInt(),
+                                (pos.y - 128.dp.toPx()).roundToInt()
+                            )
+                        }
                 )
             }
         }

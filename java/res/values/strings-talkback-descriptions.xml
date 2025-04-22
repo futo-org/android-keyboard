@@ -184,4 +184,9 @@
     <string name="spoken_open_more_suggestions">Alternative suggestions are available</string>
     <!-- Spoken descriptions when closing a more suggestions panel that has alternative suggested words. -->
     <string name="spoken_close_more_suggestions">Alternative suggestions are dismissed</string>
+
+    <!-- Spoken description when opening an action menu, such as emoji, text editor, theme picker -->
+    <string name="action_menu_opened">%1$s mode</string>
+    <!-- Spoken description when closing an action menu, returning back to main keyboard -->
+    <string name="action_menu_closed">%1$s closed</string>
 </resources>
