@@ -211,9 +211,6 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Action to cancel the ongoing download of a dictionary file [CHAR_LIMIT=25] -->
     <string name="cancel_download_dict">Cancel</string>
 
-    <!-- User dictionary settings -->
-    <!-- User dictionary settings.  The summary of the listem item to go into the User dictionary settings screen. -->
-    <string name="user_dict_settings_summary" translatable="false">""</string>
     <!-- User dictionary settings. The title of the menu item to add a new word to the user dictionary. -->
     <!-- This resource is corresponding to  msgid="4056762757149923551" -->
     <string name="user_dict_settings_add_menu_title">Add</string>
