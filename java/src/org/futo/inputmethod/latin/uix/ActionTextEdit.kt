@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 
@@ -52,15 +53,23 @@ class ActionEditText(context: Context) :
 
 
 @Composable
-fun ActionTextEditor(text: MutableState<String>) {
+fun ActionTextEditor(text: MutableState<String>, multiline: Boolean = false) {
     val context = LocalContext.current
-    val manager = LocalManager.current
+    val manager = if(LocalInspectionMode.current) {
+        null
+    } else {
+        LocalManager.current
+    }
 
     val height = with(LocalDensity.current) {
         48.dp.toPx()
     }
 
-    val inputType = EditorInfo.TYPE_CLASS_TEXT
+    val inputType = if(multiline) {
+        EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
+    } else {
+        EditorInfo.TYPE_CLASS_TEXT
+    }
 
     val color = LocalContentColor.current
 
@@ -89,7 +98,7 @@ fun ActionTextEditor(text: MutableState<String>) {
                 }
                 onCreateInputConnection(editorInfo)
 
-                manager.overrideInputConnection(inputConnection!!, editorInfo)
+                manager?.overrideInputConnection(inputConnection!!, editorInfo)
 
                 requestFocus()
             }
@@ -98,7 +107,7 @@ fun ActionTextEditor(text: MutableState<String>) {
             .fillMaxWidth()
             .fillMaxHeight(),
         onRelease = {
-            manager.unsetInputConnection()
+            manager?.unsetInputConnection()
         }
     )
 }
