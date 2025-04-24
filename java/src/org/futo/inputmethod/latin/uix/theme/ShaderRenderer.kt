@@ -1,9 +1,14 @@
 package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.opengl.EGL14
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
+import android.opengl.GLUtils
 import android.os.SystemClock
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -15,10 +20,24 @@ import kotlinx.coroutines.delay
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
+import javax.microedition.khronos.egl.EGL10
+import javax.microedition.khronos.egl.EGLConfig
+import javax.microedition.khronos.egl.EGLContext
 import javax.microedition.khronos.opengles.GL10
 
+fun loadBitmapFromAssets(context: Context, fileName: String): Bitmap {
+    context.assets.open(fileName).use { inputStream ->
+        return BitmapFactory.decodeStream(inputStream)
+    }
+}
 
-class ShaderRenderer(private val context: Context, private val source: String) : GLSurfaceView.Renderer {
+class ShaderRenderer(
+    private val context: Context,
+    private val source: String,
+    private val iChannels: List<Bitmap>,
+    private val renderRes: Pair<Int, Int> = 256 to 256,
+    private val useRescaling: Boolean = true
+) : GLSurfaceView.Renderer {
     private var program = 0
     private var fullscreenProgram = 0
     private var startTime = SystemClock.elapsedRealtime()
@@ -33,14 +52,62 @@ class ShaderRenderer(private val context: Context, private val source: String) :
         1f, -1f
     )
 
-    val renderRes = 256 to 256
     private lateinit var fboTexture: IntArray
     private lateinit var fbo: IntArray
 
-    override fun onSurfaceCreated(gl: GL10, config: javax.microedition.khronos.egl.EGLConfig) {
+    private var iTextures = listOf<Int>()
+    private fun createTextureFromBitmap(bitmap: Bitmap): Int {
+        val textureIds = IntArray(1)
+        GLES20.glGenTextures(1, textureIds, 0)
+        val textureId = textureIds[0]
+
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId)
+
+        // Texture settings
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT)
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT)
+
+        // Load bitmap into texture
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
+
+        return textureId
+    }
+
+    override fun onSurfaceCreated(gl: GL10?, config: EGLConfig) {
         GLES20.glClearColor(0f, 0f, 0f, 1f)
 
-        val fragShaderCode = source
+        val fragShaderCode = StringBuilder().let { builder ->
+            builder.append("""#version 320 es
+                precision highp float;
+                uniform float iTime;
+                uniform vec2 iResolution;
+                out vec4 fragColor;
+            """.trimIndent())
+
+            builder.append('\n')
+
+            iChannels.forEachIndexed { i, _ ->
+                builder.append("uniform sampler2D iChannel$i;\n")
+            }
+
+            builder.append('\n')
+
+            builder.append(source)
+            builder.append('\n')
+
+            builder.append("""
+                void main(void) {
+                    vec2 fragCoord = gl_FragCoord.xy;
+                    fragCoord.y = iResolution.y - fragCoord.y - 1.;
+                    mainImage(fragColor, fragCoord);
+                }
+            """.trimIndent())
+
+            builder.toString()
+        }
 
         val vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, DEFAULT_VERTEX_SHADER)
         val fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragShaderCode)
@@ -58,8 +125,8 @@ class ShaderRenderer(private val context: Context, private val source: String) :
             GLES20.glLinkProgram(it)
         }
 
-        uTime = GLES20.glGetUniformLocation(program, "u_time")
-        uResolution = GLES20.glGetUniformLocation(program, "u_resolution")
+        uTime = GLES20.glGetUniformLocation(program, "iTime")
+        uResolution = GLES20.glGetUniformLocation(program, "iResolution")
 
         val bb = ByteBuffer.allocateDirect(squareCoords.size * 4)
         bb.order(ByteOrder.nativeOrder())
@@ -90,6 +157,8 @@ class ShaderRenderer(private val context: Context, private val source: String) :
         if (GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER) != GLES20.GL_FRAMEBUFFER_COMPLETE) {
             throw RuntimeException("Framebuffer not complete!")
         }
+
+        iTextures = iChannels.map { createTextureFromBitmap(it) }
     }
 
     var surfaceSize = 0 to 0
@@ -99,14 +168,42 @@ class ShaderRenderer(private val context: Context, private val source: String) :
 
     override fun onDrawFrame(gl: GL10?) {
         run {
-            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fbo[0])
-            GLES20.glViewport(0, 0, renderRes.first, renderRes.second)
+            val viewportSize: Pair<Int, Int>
+            if(useRescaling) {
+                GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fbo[0])
+                viewportSize = renderRes
+            } else {
+                GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
+                viewportSize = surfaceSize
+            }
+
+            GLES20.glViewport(0, 0, viewportSize.first, viewportSize.second)
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
             GLES20.glUseProgram(program)
             val time = ((SystemClock.elapsedRealtime() - startTime) % (120 * 1000)) / 1000f
             GLES20.glUniform1f(uTime, time)
-            GLES20.glUniform2f(uResolution, renderRes.first.toFloat(), renderRes.second.toFloat())
+            GLES20.glUniform2f(uResolution, viewportSize.first.toFloat(), viewportSize.second.toFloat())
+
+            val textureUnits = listOf(
+                GLES20.GL_TEXTURE0,
+                GLES20.GL_TEXTURE1,
+                GLES20.GL_TEXTURE2,
+                GLES20.GL_TEXTURE3,
+                GLES20.GL_TEXTURE4,
+                GLES20.GL_TEXTURE5,
+                GLES20.GL_TEXTURE6
+            )
+
+            iTextures.forEachIndexed { i, v ->
+                // Bind texture to texture unit i
+                GLES20.glActiveTexture(textureUnits[i])
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, v)
+
+                // Set sampler2D uniform to use texture unit i
+                val textureUniform = GLES20.glGetUniformLocation(program, "iChannel$i")
+                GLES20.glUniform1i(textureUniform, i)
+            }
 
             val positionHandle = GLES20.glGetAttribLocation(program, "vPosition")
             GLES20.glEnableVertexAttribArray(positionHandle)
@@ -125,7 +222,7 @@ class ShaderRenderer(private val context: Context, private val source: String) :
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
         }
 
-        run {
+        if(useRescaling) {
             GLES20.glViewport(0, 0, surfaceSize.first, surfaceSize.second)
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
             GLES20.glUseProgram(fullscreenProgram)
@@ -152,44 +249,62 @@ class ShaderRenderer(private val context: Context, private val source: String) :
     }
 
     private fun loadShader(type: Int, shaderCode: String): Int {
-        return GLES20.glCreateShader(type).also {
-            GLES20.glShaderSource(it, shaderCode)
-            GLES20.glCompileShader(it)
+        val shader = GLES20.glCreateShader(type)
+        GLES20.glShaderSource(shader, shaderCode)
+        GLES20.glCompileShader(shader)
+
+        val compileStatus = IntArray(1)
+        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compileStatus, 0)
+
+        if (compileStatus[0] == 0) {
+            val errorLog = GLES20.glGetShaderInfoLog(shader)
+            Log.e("ShaderCompile", "Shader compilation failed:\n$errorLog\nSource:\n$shaderCode")
+            GLES20.glDeleteShader(shader)
+            throw RuntimeException("Shader compilation failed.")
         }
+
+        val infoLog = GLES20.glGetShaderInfoLog(shader)
+        if (infoLog.isNotBlank()) {
+            Log.d("ShaderCompile", "Shader compile log:\n$infoLog")
+        }
+
+        return shader
     }
 
     companion object {
-        private const val DEFAULT_VERTEX_SHADER = """
-            attribute vec4 vPosition;
-            varying vec2 vTexCoord;
+        private const val DEFAULT_VERTEX_SHADER = """#version 320 es
+            precision highp float;
+            in vec4 vPosition;
+            out vec2 vTexCoord;
             void main() {
                 gl_Position = vPosition;
                 vTexCoord = vec2((vPosition.xy + 1.0) * 0.5);
             }
         """
 
-        private const val COPY_FRAGMENT_SHADER = """
-            precision mediump float;
+        private const val COPY_FRAGMENT_SHADER = """#version 320 es
+            precision highp float;
             uniform sampler2D uTexture;
-            varying vec2 vTexCoord;
+            in vec2 vTexCoord;
+            out vec4 fragColor;
             void main() {
-                gl_FragColor = texture2D(uTexture, vTexCoord);
+                fragColor = texture(uTexture, vTexCoord);
             }
         """
     }
 }
 
-class ShaderSurfaceView(context: Context, shaderSource: String) : GLSurfaceView(context) {
+class ShaderSurfaceView(context: Context, shaderSource: String, iChannels: List<Bitmap>) : GLSurfaceView(context) {
     init {
         setEGLContextClientVersion(2)
         //debugFlags = DEBUG_LOG_GL_CALLS or DEBUG_CHECK_GL_ERROR
-        setRenderer(ShaderRenderer(context, shaderSource))
+        setRenderer(ShaderRenderer(context, shaderSource, iChannels))
         renderMode = RENDERMODE_WHEN_DIRTY
     }
 }
 
 @Composable
-fun KeyboardSurfaceShaderBackground(shaderSource: String, modifier: Modifier = Modifier) {
+fun KeyboardSurfaceShaderBackground(shaderSource: String, iChannels: List<Bitmap> = listOf(), modifier: Modifier = Modifier) {
     val view: MutableState<GLSurfaceView?> = remember { mutableStateOf<GLSurfaceView?>(null) }
     LaunchedEffect(view.value) {
         while (true) {
@@ -199,7 +314,58 @@ fun KeyboardSurfaceShaderBackground(shaderSource: String, modifier: Modifier = M
     }
 
     AndroidView(
-        factory = { context -> ShaderSurfaceView(context, shaderSource).also { view.value = it } },
+        factory = { context -> ShaderSurfaceView(context, shaderSource, iChannels).also { view.value = it } },
         modifier = modifier
     )
+}
+
+
+fun renderShaderToBitmap(context: Context, shaderSource: String, width: Int, height: Int, iChannels: List<Bitmap>): Bitmap {
+    val egl = (EGLContext.getEGL() as EGL10)
+    val display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY)
+    egl.eglInitialize(display, null)
+
+    val attribList = intArrayOf(
+        EGL10.EGL_RED_SIZE, 8,
+        EGL10.EGL_GREEN_SIZE, 8,
+        EGL10.EGL_BLUE_SIZE, 8,
+        EGL10.EGL_RENDERABLE_TYPE, 4,  // EGL_OPENGL_ES2_BIT
+        EGL10.EGL_NONE
+    )
+
+    val configs = arrayOfNulls<EGLConfig>(1)
+    val numConfigs = IntArray(1)
+    egl.eglChooseConfig(display, attribList, configs, 1, numConfigs)
+
+    val config = configs[0]
+
+    val attrib_list = intArrayOf(
+        EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
+        EGL10.EGL_NONE
+    )
+    val eglContext = egl.eglCreateContext(display, config, EGL10.EGL_NO_CONTEXT, attrib_list)
+
+    val surfaceAttribs = intArrayOf(EGL10.EGL_WIDTH, width, EGL10.EGL_HEIGHT, height, EGL10.EGL_NONE)
+    val eglSurface = egl.eglCreatePbufferSurface(display, config, surfaceAttribs)
+
+    egl.eglMakeCurrent(display, eglSurface, eglSurface, eglContext)
+
+    val renderer = ShaderRenderer(context, shaderSource, iChannels, width to height, false)
+    renderer.onSurfaceCreated(null, config!!)
+    renderer.onSurfaceChanged(null, width, height)
+    renderer.onDrawFrame(null)
+
+    val buffer = ByteBuffer.allocateDirect(width * height * 4)
+    GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buffer)
+
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    buffer.rewind()
+    bitmap.copyPixelsFromBuffer(buffer)
+
+    egl.eglMakeCurrent(display, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT)
+    egl.eglDestroySurface(display, eglSurface)
+    egl.eglDestroyContext(display, eglContext)
+    egl.eglTerminate(display)
+
+    return bitmap
 }
