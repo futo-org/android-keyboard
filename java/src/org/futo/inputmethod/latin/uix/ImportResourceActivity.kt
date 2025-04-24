@@ -86,11 +86,13 @@ fun getActiveLanguages(context: Context): List<InputLanguage> {
 
 fun FileKind.preferenceKeyFor(locale: String): Preferences.Key<String> {
     assert(this != FileKind.Invalid)
+    val locale = locale.replace("#", "H")
     return stringPreferencesKey("resource_${name}_${locale}")
 }
 
 fun FileKind.namePreferenceKeyFor(locale: String): Preferences.Key<String> {
     assert(this != FileKind.Invalid)
+    val locale = locale.replace("#", "H")
     return stringPreferencesKey("resourcename_${name}_${locale}")
 }
 
@@ -333,6 +335,7 @@ object ResourceHelper {
 
     suspend fun findKeyForLocaleAndKind(context: Context, locale: Locale, kind: FileKind): String? {
         val keysToTry = listOf(
+            locale.toString(),
             locale.language,
             "${locale.language}_${locale.country.ifEmpty { locale.language }}",
             "${locale.language.lowercase()}_${locale.country.ifEmpty { locale.language }.uppercase()}",
@@ -401,7 +404,8 @@ class ImportResourceActivity : ComponentActivity() {
     private var uri: Uri? = null
 
     private fun applySetting(fileKind: FileKindAndInfo, inputMethodSubtype: InputMethodSubtype) {
-        val outputFileName = "${fileKind.kind.name.lowercase()}_${inputMethodSubtype.locale}${fileKind.kind.extension()}"
+        val sanitizedLocaleForFilename = inputMethodSubtype.locale.replace("#", "H")
+        val outputFileName = "${fileKind.kind.name.lowercase()}_$sanitizedLocaleForFilename${fileKind.kind.extension()}"
 
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
@@ -411,7 +415,9 @@ class ImportResourceActivity : ComponentActivity() {
                     val contentResolver = applicationContext.contentResolver
                     val outDirectory = ModelPaths.getModelDirectory(applicationContext)
                     val outputFile = File(outDirectory, outputFileName)
-                    if(outputFile.exists()) { outputFile.delete() }
+                    if (outputFile.exists()) {
+                        outputFile.delete()
+                    }
 
                     contentResolver.openInputStream(uri!!)!!.use { inputStream ->
                         outputFile.outputStream().use { outputStream ->
