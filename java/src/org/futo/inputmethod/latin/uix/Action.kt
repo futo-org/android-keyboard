@@ -47,7 +47,7 @@ interface KeyboardManagerForAction {
     fun createInputTransaction(): ActionInputTransaction
 
     fun typeText(v: String)
-    fun typeUri(uri: Uri, mimeTypes: List<String>): Boolean
+    fun typeUri(uri: Uri, mimeTypes: List<String>, ignoreConnectionOverride: Boolean = false): Boolean
     fun backspace(amount: Int)
 
     fun closeActionWindow()

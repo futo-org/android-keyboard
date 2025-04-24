@@ -613,27 +613,20 @@ val ClipboardHistoryAction = Action(
                             ClipboardEntryView(
                                 modifier = Modifier.animateItemPlacement(),
                                 clipboardEntry = entry, onPaste = {
-                                if (it.uri != null) {
-                                    if (!manager.typeUri(it.uri, it.mimeTypes)) {
-                                        val toast = Toast.makeText(
-                                            manager.getContext(),
-                                            context.getString(R.string.action_clipboard_manager_error_app_image_insertion_unsupported),
-                                            Toast.LENGTH_SHORT
-                                        )
-                                        toast.show()
+                                    if (it.uri != null) {
+                                        manager.typeUri(it.uri, it.mimeTypes)
+                                    } else if (it.text != null) {
+                                        manager.typeText(it.text)
                                     }
-                                } else if (it.text != null) {
-                                    manager.typeText(it.text)
-                                }
-                                clipboardHistoryManager.onPaste(it)
-                                manager.performHapticAndAudioFeedback(Constants.CODE_OUTPUT_TEXT, view)
-                            }, onRemove = {
-                                clipboardHistoryManager.onRemove(it)
-                                manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
-                            }, onPin = {
-                                clipboardHistoryManager.onPin(it)
-                                manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
-                            })
+                                    clipboardHistoryManager.onPaste(it)
+                                    manager.performHapticAndAudioFeedback(Constants.CODE_OUTPUT_TEXT, view)
+                                }, onRemove = {
+                                    clipboardHistoryManager.onRemove(it)
+                                    manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                                }, onPin = {
+                                    clipboardHistoryManager.onPin(it)
+                                    manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                                })
                         }
                     }
                 }

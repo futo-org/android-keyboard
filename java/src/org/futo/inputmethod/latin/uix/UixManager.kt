@@ -16,7 +16,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputConnection
-import android.view.inputmethod.InputContentInfo
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -85,6 +85,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
+import androidx.core.view.inputmethod.InputConnectionCompat
+import androidx.core.view.inputmethod.InputContentInfoCompat
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.FoldingFeature
@@ -247,23 +249,55 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         }
     }
 
-    override fun typeUri(uri: Uri, mimeTypes: List<String>): Boolean {
+    override fun typeUri(
+        uri: Uri,
+        mimeTypes: List<String>,
+        ignoreConnectionOverride: Boolean
+    ): Boolean {
         if(mimeTypes.isEmpty()) {
             Log.w("UixManager", "mimeTypes is empty")
             return false
         }
 
-        val description = ClipDescription("Pasted image", mimeTypes.toTypedArray())
-
-        val info = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            InputContentInfo(uri, description, null)
+        val inputConnection = if(ignoreConnectionOverride) {
+            latinIME.getBaseInputConnection()
         } else {
-            return false
+            latinIME.currentInputConnection
         }
 
-        return latinIME.currentInputConnection?.commitContent(info, InputConnection.INPUT_CONTENT_GRANT_READ_URI_PERMISSION, null) ?: run {
-            Log.w("UixManager", "Current input connection is null")
-            return false
+        val editorInfo = if(ignoreConnectionOverride) {
+            latinIME.getBaseInputEditorInfo()
+        } else {
+            latinIME.currentInputEditorInfo
+        }
+
+        if(inputConnection == null || editorInfo == null) return false
+
+        latinIME.grantUriPermission(
+            editorInfo.packageName,
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
+
+        val description = ClipDescription("", mimeTypes.toTypedArray())
+
+        return InputConnectionCompat.commitContent(
+            inputConnection,
+            editorInfo,
+            InputContentInfoCompat(uri, description, null),
+            InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION,
+            null
+        ).let { result ->
+            if(!result) {
+                val toast = Toast.makeText(
+                    latinIME,
+                    latinIME.getString(R.string.action_clipboard_manager_error_app_image_insertion_unsupported),
+                    Toast.LENGTH_SHORT
+                )
+                toast.show()
+            }
+
+            result
         }
     }
 

@@ -872,6 +872,10 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         return super.getCurrentInputConnection()
     }
 
+    fun getBaseInputEditorInfo(): EditorInfo? {
+        return super.getCurrentInputEditorInfo()
+    }
+
     private fun onDeviceUnlocked() {
         forceUnlockDatastore(this)
 
