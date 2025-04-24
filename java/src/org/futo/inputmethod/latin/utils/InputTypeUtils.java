@@ -19,6 +19,8 @@ package org.futo.inputmethod.latin.utils;
 import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
 
+import java.util.Objects;
+
 public final class InputTypeUtils implements InputType {
     private static final int WEB_TEXT_PASSWORD_INPUT_TYPE =
             TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_WEB_PASSWORD;
@@ -115,7 +117,12 @@ public final class InputTypeUtils implements InputType {
     }
 
     public static int getImeOptionsActionIdFromEditorInfo(final EditorInfo editorInfo) {
-        if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+        if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0
+                // Workaround for Pixel launcher: it sets this flag, which is meant to be set only
+                // when they don't want the enter key to perform the action, but in Pixel launcher
+                // they actually do want the enter key to perform search.
+                && !Objects.equals(editorInfo.packageName, "com.google.android.apps.nexuslauncher")
+        ) {
             return EditorInfo.IME_ACTION_NONE;
         } else if (editorInfo.actionLabel != null) {
             return IME_ACTION_CUSTOM_LABEL;
