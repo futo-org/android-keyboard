@@ -8,52 +8,46 @@ import java.util.List;
 import java.util.Locale;
 
 public final class KeyboardTextsMultiSet extends KeyboardTextsSet {
-    private KeyboardTextsSet base = new KeyboardTextsSet();
-    private List<KeyboardTextsSet> extra = new ArrayList<>();
+    private final List<KeyboardTextsSet> extra = new ArrayList<>();
 
-    private Locale baseLocale;
+    private final Locale baseLocale;
 
-    public KeyboardTextsMultiSet(Context context, Locale base, List<Locale> extra) {
-        this.base = new KeyboardTextsSet();
-        this.base.setLocale(base, context);
-        this.baseLocale = base;
+    public KeyboardTextsMultiSet(final Context context, final Locale base, final List<Locale> extra) {
+        baseLocale = base;
+        setLocale(base, context);
 
-        for(Locale locale : extra) {
-            KeyboardTextsSet extraSet = new KeyboardTextsSet();
+        for(final Locale locale : extra) {
+            final KeyboardTextsSet extraSet = new KeyboardTextsSet();
             extraSet.setLocale(locale, context);
             this.extra.add(extraSet);
         }
     }
 
     @Override
-    public void setLocale(Locale locale, Context context) {
+    public void setLocale(final Locale locale, final Context context) {
         if(locale != baseLocale) throw new IllegalStateException();
+        super.setLocale(locale, context);
     }
 
     @Override
-    public void setLocale(Locale locale, Resources res, String resourcePackageName) {
+    public void setLocale(final Locale locale, final Resources res, final String resourcePackageName) {
         if(locale != baseLocale) throw new IllegalStateException();
+        super.setLocale(locale, res, resourcePackageName);
     }
 
     @Override
-    public String getText(String name) {
-        // TODO: Blacklist certain ones like period key, comma key, since they break it. Should disable duplication too
+    public String getText(final String name) {
         if(name.startsWith("morekeys_")) {
-            ArrayList<String> texts = new ArrayList<>();
-            texts.add(base.getText(name));
-            for(KeyboardTextsSet extra : this.extra) {
-                String extraText = extra.getText(name);
+            final ArrayList<String> texts = new ArrayList<>();
+            texts.add(super.getText(name));
+            for(KeyboardTextsSet extra : extra) {
+                final String extraText = extra.getText(name);
                 if(!texts.contains(extraText)) texts.add(extraText);
             }
 
             return String.join(",", texts);
         } else {
-            return base.getText(name);
+            return super.getText(name);
         }
-    }
-
-    @Override
-    public String resolveTextReference(final String rawText) {
-        return base.resolveTextReference(rawText);
     }
 }
