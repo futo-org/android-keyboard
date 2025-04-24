@@ -51,4 +51,9 @@ public final class KeyboardTextsMultiSet extends KeyboardTextsSet {
             return base.getText(name);
         }
     }
+
+    @Override
+    public String resolveTextReference(final String rawText) {
+        return base.resolveTextReference(rawText);
+    }
 }
