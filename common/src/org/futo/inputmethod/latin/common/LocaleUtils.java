@@ -16,6 +16,8 @@
 
 package org.futo.inputmethod.latin.common;
 
+import org.futo.inputmethod.latin.Subtypes;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -170,6 +172,9 @@ public final class LocaleUtils {
      */
     @Nonnull
     public static Locale constructLocaleFromString(@Nonnull final String localeString) {
+        // Use new logic for locales with custom script
+        if(localeString.contains("__#")) return Subtypes.INSTANCE.getLocale(localeString);
+
         synchronized (sLocaleCache) {
             if (sLocaleCache.containsKey(localeString)) {
                 return sLocaleCache.get(localeString);

@@ -1,0 +1,43 @@
+{
+    "locale": "sr__#Latn",
+    "morekeys": {
+        "e": [
+            "è"
+        ],
+        "i": [
+            "ì"
+        ],
+        "s": [
+            "š",
+            "%"
+        ],
+        "c": [
+            "č",
+            "ć",
+            "%"
+        ],
+        "d": [
+            "đ",
+            "%"
+        ],
+        "z": [
+            "ž",
+            "%"
+        ]
+    },
+    "keyspec": {},
+    "label": {
+        "go_key": "Idi",
+        "send_key": "Šalji",
+        "next_key": "Sled",
+        "done_key": "Gotov",
+        "search_key": "Traži",
+        "previous_key": "Preth",
+        "pause_key": "Pauza",
+        "wait_key": "Čekaj"
+    },
+    "keylabel": {},
+    "keyhintlabel": {},
+    "additional_morekeys": {},
+    "other": {}
+}

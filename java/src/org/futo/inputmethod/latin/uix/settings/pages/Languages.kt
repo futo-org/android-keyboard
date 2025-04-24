@@ -549,14 +549,14 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             } ?: if(BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false).isNotEmpty()) {
                 context.getString(R.string.language_settings_resource_builtin_dictionary_name)
             } else {
-                    null
+                null
             }
 
             val transformerName = runBlocking { ModelPaths.getModelOptions(context) }.get(locale.language)?.let {
-                it.loadDetails()?.let {
-                    it.name + if(it.isUnsupported()) (" " + context.getString(R.string.language_settings_resource_unsupported_indicator)) else ""
+                    it.loadDetails()?.let {
+                        it.name + if(it.isUnsupported()) (" " + context.getString(R.string.language_settings_resource_unsupported_indicator)) else ""
+                    }
                 }
-            }
 
             val options = LanguageOptions(
                 voiceInputModel = voiceInputModelName,

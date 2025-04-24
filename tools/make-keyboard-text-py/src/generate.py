@@ -56,10 +56,14 @@ def dump_names(names):
 
     return out[:-2]
 
+def locale_texts_varname(v):
+    cleaned = v.replace("#", "_")
+    return f"TEXTS_{cleaned}"
+
 def dump_texts(texts_by_locale):
     out = ""
     for locale, texts in texts_by_locale.items():
-        out += "    private static final String[] TEXTS_" + locale + " = {\n"
+        out += "    private static final String[] " + locale_texts_varname(locale) + " = {\n"
         for item in texts:
             if item == "":
                 out += "        EMPTY,\n"
@@ -72,7 +76,7 @@ def dump_texts(texts_by_locale):
 def dump_locales_and_texts(texts_by_locale):
     out = ""
     for locale in texts_by_locale.keys():
-        out += "        " + json.dumps(locale) + ", " + "TEXTS_" + locale + ",\n"
+        out += "        " + json.dumps(locale) + ", " + locale_texts_varname(locale) + ",\n"
 
     return out[:-2]
 

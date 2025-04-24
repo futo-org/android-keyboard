@@ -210,7 +210,7 @@ object Subtypes {
     }
 
     fun getLocale(locale: String): Locale {
-        return Locale.forLanguageTag(locale.replace("_", "-")).stripExtensionsIfNeeded()
+        return Locale.forLanguageTag(locale.replace("__#", "-").replace("_", "-")).stripExtensionsIfNeeded()
     }
 
     fun getLocale(inputMethodSubtype: InputMethodSubtype): Locale {
