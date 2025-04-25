@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -51,6 +52,9 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
     override val hintColor: Int?
     override val hintHiVis: Boolean
+
+    override var typefaceOverride: Typeface? = null
+    override val themeTypeface: Typeface? = null
 
     private val colors: HashMap<Int, Int> = HashMap()
     override fun getColor(i: Int): Int? {

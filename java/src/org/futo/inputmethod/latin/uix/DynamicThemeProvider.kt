@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
@@ -53,6 +54,11 @@ interface DynamicThemeProvider {
     fun getIcon(iconName: String): Drawable?
 
     fun getKeyStyleDescriptor(visualStyle: KeyVisualStyle): VisualStyleDescriptor
+
+    var typefaceOverride: Typeface?
+    val themeTypeface: Typeface?
+    fun selectKeyTypeface(defaultTypeface: Typeface): Typeface =
+        typefaceOverride ?: themeTypeface ?: defaultTypeface
 
     companion object {
         @ColorInt

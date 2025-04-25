@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.latin.R;
+import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -43,6 +44,8 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
     private final Rect mBackgroundPadding = new Rect();
     private static final HashSet<String> sNoScaleXTextSet = new HashSet<>();
 
+    private final DynamicThemeProvider mDrawableProvider;
+
     public KeyPreviewView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -50,6 +53,8 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
     public KeyPreviewView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+
+        mDrawableProvider = DynamicThemeProvider.obtainFromContext(context);
     }
 
     public void setPreviewVisual(final Key key, final KeyboardIconsSet iconsSet,
@@ -65,7 +70,7 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         setCompoundDrawables(null, null, null, null);
         setTextColor(drawParams.mPreviewTextColor);
         setTextSize(TypedValue.COMPLEX_UNIT_PX, key.selectTextSize(drawParams));
-        setTypeface(key.selectPreviewTypeface(drawParams));
+        setTypeface(mDrawableProvider.selectKeyTypeface(key.selectPreviewTypeface(drawParams)));
         // TODO Should take care of temporaryShiftLabel here.
         setTextAndScaleX(key.getWidth(), key.getPreviewLabel());
     }

@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.graphics.Typeface
 import android.net.Uri
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -87,6 +88,8 @@ interface KeyboardManagerForAction {
     fun getTutorialMode(): TutorialMode
     fun setTutorialArrowPosition(coordinates: LayoutCoordinates)
     fun markTutorialCompleted()
+
+    fun overrideKeyboardTypeface(typeface: Typeface?)
 }
 
 interface ActionWindow {

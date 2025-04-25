@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
@@ -309,7 +310,7 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun closeActionWindow() {
-        uixManager.returnBackToMainKeyboardViewFromAction()
+        uixManager.closeActionWindow()
     }
 
     override fun triggerSystemVoiceInput() {
@@ -414,6 +415,11 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun isDeviceLocked(): Boolean {
         return getContext().isDeviceLocked
+    }
+
+    override fun overrideKeyboardTypeface(typeface: Typeface?) {
+        latinIME.getDrawableProvider().typefaceOverride = typeface
+        latinIME.invalidateKeyboard()
     }
 
     override fun getSizingCalculator(): KeyboardSizingCalculator =
@@ -584,7 +590,7 @@ class UixManager(private val latinIME: LatinIME) {
             ))
     }
 
-    fun returnBackToMainKeyboardViewFromAction() {
+    private fun returnBackToMainKeyboardViewFromAction() {
         if(currWindowActionWindow.value == null) return
 
         val name = latinIME.resources.getString(currWindowAction.value!!.name)
@@ -620,7 +626,7 @@ class UixManager(private val latinIME: LatinIME) {
         Column {
             if(mainKeyboardHidden.value || latinIME.isInputConnectionOverridden) {
                 ActionWindowBar(
-                    onBack = { returnBackToMainKeyboardViewFromAction() },
+                    onBack = { closeActionWindow() },
                     canExpand = currWindowAction.value!!.canShowKeyboard,
                     onExpand = { toggleExpandAction() },
                     windowTitleBar = { windowImpl.WindowTitleBar(this) }
@@ -649,7 +655,7 @@ class UixManager(private val latinIME: LatinIME) {
 
                 CollapsibleSuggestionsBar(
                     onCollapse = { toggleExpandAction() },
-                    onClose = { returnBackToMainKeyboardViewFromAction() },
+                    onClose = { closeActionWindow() },
                     words = suggestedWordsOrNull,
                     showClose = currWindowActionWindow.value?.showCloseButton == true,
                     showCollapse = currWindowActionWindow.value?.onlyShowAboveKeyboard == false,
@@ -1187,6 +1193,10 @@ class UixManager(private val latinIME: LatinIME) {
 
     fun closeActionWindow() {
         returnBackToMainKeyboardViewFromAction()
+
+        // Reset any typeface override as they're not supposed to persist outside of an active
+        // action window
+        keyboardManagerForAction.overrideKeyboardTypeface(null)
     }
 
 

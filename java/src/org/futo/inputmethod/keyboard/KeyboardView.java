@@ -405,7 +405,7 @@ public class KeyboardView extends View {
         float labelBaseline = centerY;
         final String label = key.getLabel();
         if (label != null && icon == null) {
-            paint.setTypeface(key.selectTypeface(params));
+            paint.setTypeface(mDrawableProvider.selectKeyTypeface(key.selectTypeface(params)));
             paint.setTextSize(key.selectTextSize(params));
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
@@ -576,7 +576,7 @@ public class KeyboardView extends View {
             paint.setTextSize(mKeyDrawParams.mLabelSize);
         } else {
             paint.setColor(key.selectTextColor(mDrawableProvider, mKeyDrawParams));
-            paint.setTypeface(key.selectTypeface(mKeyDrawParams));
+            paint.setTypeface(mDrawableProvider.selectKeyTypeface(key.selectTypeface(mKeyDrawParams)));
             paint.setTextSize(key.selectTextSize(mKeyDrawParams));
         }
         return paint;
