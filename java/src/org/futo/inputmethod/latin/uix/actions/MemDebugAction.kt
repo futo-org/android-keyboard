@@ -160,6 +160,9 @@ private fun getImeOptionsString(imeOptions: Int): String {
     if (imeOptions and EditorInfo.IME_FLAG_FORCE_ASCII != 0) {
         options.add("IME_FLAG_FORCE_ASCII")
     }
+    if (imeOptions and EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING != 0) {
+        options.add("IME_FLAG_NO_PERSONALIZED_LEARNING")
+    }
 
     return options.joinToString(" | ")
 }
