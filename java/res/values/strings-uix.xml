@@ -78,19 +78,20 @@
     <string name="action_clipboard_manager_error_clipboard_history_disabled_title">Clipboard History Inactive</string>
     <string name="action_clipboard_manager_error_clipboard_history_disabled_text">Clipboard history is not enabled. To save clipboard items, you can enable clipboard history. This will keep up to 25 items for 3 days unless pinned. Passwords and other items marked sensitive are excluded from history.</string>
     <string name="action_clipboard_manager_enable_clipboard_history_button">Enable Clipboard History</string>
+    <!-- This message is shown when we're typing in a text field does not support image insertion ("app" refers to the external app that is providing the text field) -->
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
 
     <!-- For keyboard modes action -->
     <string name="action_keyboard_modes_title">Keyboard Modes</string>
     <string name="action_keyboard_modes_go_back">Go back</string>
     <string name="action_keyboard_modes_resize_keyboard">Resize Keyboard</string>
-    <!-- This string must be super short (below 10 chars if possible). Standard QWERTYUIOP keyboard, filling full screen width. -->
+    <!-- This string must be super short (below 10 chars if possible). The title for standard QWERTYUIOP keyboard mode, filling full screen width. -->
     <string name="action_keyboard_modes_standard">Standard</string>
-    <!-- This string must be super short (below 10 chars if possible). One-handed QWERTYUIOP keyboard, filling 2/3 screen width on one side -->
+    <!-- This string must be super short (below 10 chars if possible). The title for one-handed QWERTYUIOP keyboard mode, filling 2/3 screen width on one side -->
     <string name="action_keyboard_modes_one_handed">One Hand</string>
-    <!-- This string must be super short (below 10 chars if possible). Split QWERT - - YUIOP keyboard, with gap in middle -->
+    <!-- This string must be super short (below 10 chars if possible). The title for split QWERT - - YUIOP keyboard mode, with gap in middle -->
     <string name="action_keyboard_modes_split">Split</string>
-    <!-- This string must be super short (below 10 chars if possible). Free-form draggable and resizable QWERTYUIOP keyboard. -->
+    <!-- This string must be super short (below 10 chars if possible). The title for free-form draggable and resizable QWERTYUIOP keyboard mode. -->
     <string name="action_keyboard_modes_floating">Float</string>
     <!-- This string must be super short (below 10 chars if possible) -->
     <string name="action_keyboard_modes_resizing_reset_size">Reset</string>
