@@ -131,7 +131,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             }
 
             NavigationItem(
-                title = stringResource(R.string.credits_title),
+                title = stringResource(R.string.credits_menu_title),
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = { navController.navigate("credits") },
             )

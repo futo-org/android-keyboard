@@ -438,4 +438,6 @@
     <string name="credits_menu_contribute_translations_button">Help translate the app</string>
     <string name="credits_menu_contribute_keyboard_layouts_button">Contribute layouts</string>
     <string name="credits_menu_contribute_code_button">Contribute code</string>
+    <string name="credits_menu_project_information_title">%s information</string>
+    <string name="credits_menu_project_url_link">Project URL</string>
 </resources>

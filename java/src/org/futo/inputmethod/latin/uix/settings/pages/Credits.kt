@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -34,6 +36,9 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SpacedColumn
+import org.futo.inputmethod.latin.uix.settings.pages.credits.ThirdPartyItem
+import org.futo.inputmethod.latin.uix.settings.pages.credits.ThirdPartyList
+import org.futo.inputmethod.latin.uix.settings.pages.credits.text
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.openURI
 
@@ -71,35 +76,47 @@ private val codeContribs: List<String> = listOf(
     "ravarage"
 )
 
-@Suppress("HardCodedStringLiteral")
-private val thirdPartyList: List<String> = listOf(
-    // https://android.googlesource.com/platform/packages/inputmethods/LatinIME/
-    "Keyboard based on AOSP LatinIME\nCopyright (c) 2011 The Android Open Source Project",
 
-    // https://github.com/openai/whisper
-    "Voice Input powered by OpenAI Whisper\nCopyright (c) 2022 OpenAI",
+@Composable
+@Preview(showBackground = true)
+fun ProjectInfoView(
+    projectIndex: Int = 1,
+    navController: NavHostController = rememberNavController()
+) {
+    val context = LocalContext.current
+    val info = ThirdPartyList[projectIndex]
+    ScrollableList {
+        ScreenTitle(stringResource(R.string.credits_menu_project_information_title, info.name),
+            showBack = true, navController)
 
-    // https://ggml.ai
-    "whisper.cpp, llama.cpp, ggml\nCopyright (c) 2023 Georgi Gerganov",
+        Text(
+            info.description,
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            style = Typography.Body.Regular,
+            textAlign = TextAlign.Center
+        )
 
-    // https://feathericons.com
-    "Feather Icons\nCopyright (c) 2013-2017 Cole Bemis",
+        NavigationItem(
+            title = stringResource(R.string.credits_menu_project_url_link),
+            subtitle = info.projectUrl,
+            style = NavigationItemStyle.ExternalLink,
+            navigate = {
+                context.openURI(info.projectUrl)
+            }
+        )
 
-    // https://webrtc.org
-    "WebRTC VAD\nCopyright (c) 2011 The WebRTC project authors",
+        Spacer(Modifier.height(16.dp))
 
-    // https://github.com/gkonovalov/android-vad
-    "android-vad\nCopyright (c) 2023 Georgiy Konovalov",
-
-    // https://github.com/LineageOS/android_packages_inputmethods_LatinIME
-    "LineageOS\nCopyright (c) 2015 The CyanogenMod Project",
-
-    // https://fonts.google.com/noto/specimen/Noto+Emoji
-    "Noto Emoji\nCopyright (c) Google Fonts",
-
-    // https://github.com/Calvin-LL/Reorderable
-    "Reorderable\nCopyright (c) 2023 Calvin Liang"
-)
+        Text(
+            info.copyright,
+            modifier = Modifier.padding(8.dp),
+            style = Typography.Small)
+        Text(
+            info.license.text(context),
+            modifier = Modifier.padding(8.dp),
+            style = Typography.Small)
+    }
+}
 
 @Composable
 fun <T> VerticalGrid(
@@ -137,8 +154,10 @@ fun <T> VerticalGrid(
 
 @Composable
 fun CreditCategorySection(
-    icon: Int, title: String, names: List<String>, color: Color, columns: Int = 2
+    icon: Int, title: String, names: List<String>, color: Color, columns: Int = 2,
+    thirdPartyInformation: List<ThirdPartyItem>? = null, navController: NavHostController? = null
 ) {
+    val context = LocalContext.current
     val compositingColor = MaterialTheme.colorScheme.background
     val bgGradient1 = compositingColor.copy(alpha = 0.6f).compositeOver(color)
     val bgGradient2 = compositingColor.copy(alpha = 0.77f).compositeOver(color)
@@ -169,7 +188,7 @@ fun CreditCategorySection(
                 }
             }
             VerticalGrid(
-                items = names,
+                items = names.indices.toList(),
                 columns = columns,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
@@ -178,9 +197,24 @@ fun CreditCategorySection(
                     )
                     .padding(16.dp)
             ) {
-                Text(
-                    it, color = foregroundColor, style = Typography.Body.Regular
-                )
+                val name = names[it]
+                val thirdPartyInfo = thirdPartyInformation?.get(it)
+                if(thirdPartyInfo != null){
+                    Column(
+                        Modifier.fillMaxWidth()
+                            .clickable {
+                                navController!!.navigate("credits/thirdparty/" + it)
+                            }
+                    ) {
+                        Text(thirdPartyInfo.description,
+                            color = foregroundColor, style = Typography.Body.Regular)
+                        Text(thirdPartyInfo.copyright,
+                            color = foregroundColor.copy(alpha = 0.7f),
+                            style = Typography.Small)
+                    }
+                } else {
+                    Text(name, color = foregroundColor, style = Typography.Body.Regular)
+                }
             }
         }
     }
@@ -230,7 +264,9 @@ fun CreditsScreen(navController: NavHostController = rememberNavController()) {
                 icon = R.drawable.cpu,
                 title = stringResource(R.string.credits_menu_team_third_party_libraries_title),
                 columns = 1,
-                names = thirdPartyList,
+                names = ThirdPartyList.map { it.description },
+                thirdPartyInformation = ThirdPartyList,
+                navController = navController,
                 color = Color(0xffb231c6)
             )
 
