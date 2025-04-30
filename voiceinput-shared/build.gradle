@@ -13,6 +13,18 @@ final def translationsWithoutEngValues = { final String path ->
     tasks.register("prepareResFilter${taskNameSuffix}", Copy) {
         from(sourceDir) {
             include 'values-*/**'
+
+            filter { String line ->
+                line
+                // Fix duplicate <string> tags
+                        .replaceAll(/(<string [^>]+>)&lt;string [^&]+&gt;(.+)&lt;\/string&gt;<\/string>/, '$1$2</string>')
+                // Fix malformed xliff:g tags
+                        .replaceAll(/&lt;xliff:g ([^&]+)&gt;([^&]+)&lt;\/xliff:g&gt;/, '<xliff:g $1>$2</xliff:g>')
+                // Fix malformed quotes
+                        .replaceAll(/&amp;quot;/, '&quot;')
+                // Insert xliff binding
+                        .replaceAll(/<resources>/, '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">')
+            }
         }
         into(destDir)
         includeEmptyDirs = false
