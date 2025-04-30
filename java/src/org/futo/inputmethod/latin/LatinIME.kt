@@ -323,10 +323,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         settingsRefreshRequired = settingsRefreshRequired || refreshSettings
 
         if(!uixManager.isMainKeyboardHidden.value) {
-            println("Recreating keyboard")
             recreateKeyboard()
         } else {
-            println("Pend recreate keyboard")
             pendingRecreateKeyboard = true
         }
     }
@@ -859,6 +857,11 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     val isInputConnectionOverridden
         get() = overrideInputConnection != null
+
+    val inputConnectionOverridenWithSuggestions
+        get() = isInputConnectionOverridden && overrideEditorInfo?.let {
+            !it.privateImeOptions.contains("org.futo.inputmethod.latin.NoSuggestions=1")
+        } ?: false
 
     override fun getCurrentInputConnection(): InputConnection? {
         return overrideInputConnection ?: super.getCurrentInputConnection()

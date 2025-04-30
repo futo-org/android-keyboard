@@ -49,9 +49,11 @@ interface KeyboardManagerForAction {
 
     fun typeText(v: String)
     fun typeUri(uri: Uri, mimeTypes: List<String>, ignoreConnectionOverride: Boolean = false): Boolean
+    fun appSupportsImageInsertion(schema: String, ignoreConnectionOverride: Boolean): Boolean
     fun backspace(amount: Int)
 
     fun closeActionWindow()
+    fun forceActionWindowAboveKeyboard(to: Boolean)
 
     fun triggerSystemVoiceInput()
 
@@ -92,31 +94,44 @@ interface KeyboardManagerForAction {
     fun overrideKeyboardTypeface(typeface: Typeface?)
 }
 
-interface ActionWindow {
-    val onlyShowAboveKeyboard: Boolean
+enum class CloseResult {
+    Default,
+
+    /** Return this to prevent closing. This is not guaranteed, it may be closed anyway,
+     * e.g. if the keyboard is being closed */
+    PreventClosing
+}
+
+abstract class ActionWindow {
+    open val onlyShowAboveKeyboard: Boolean
         get() = false
 
-    val showCloseButton: Boolean
+    open val positionIsUserManagable: Boolean
+        get() = onlyShowAboveKeyboard == false
+
+    open val showCloseButton: Boolean
         get() = true
 
-    val fixedWindowHeight: Dp?
+    open val fixedWindowHeight: Dp?
         get() = null
 
     @Composable
-    fun windowName(): String
+    abstract fun windowName(): String
 
     @Composable
-    fun WindowContents(keyboardShown: Boolean)
+    abstract fun WindowContents(keyboardShown: Boolean)
 
     @Composable
-    fun WindowTitleBar(rowScope: RowScope) {
+    open fun WindowTitleBar(rowScope: RowScope) {
         with(rowScope) {
             Text(windowName(), modifier = Modifier.align(Alignment.CenterVertically))
             Spacer(modifier = Modifier.weight(1.0f))
         }
     }
 
-    fun close()
+    open fun close(): CloseResult {
+        return CloseResult.Default
+    }
 }
 
 interface PersistentActionState {

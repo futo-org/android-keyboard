@@ -272,7 +272,7 @@ val MoreActionsAction = Action(
     simplePressImpl = null,
     shownInEditor = false,
     windowImpl = { manager, _ ->
-        object : ActionWindow {
+        object : ActionWindow() {
             @Composable
             override fun windowName(): String = stringResource(id = R.string.action_more_actions_title)
 
@@ -288,10 +288,6 @@ val MoreActionsAction = Action(
                 OutlinedButton(onClick = { manager.showActionEditor() }, modifier = Modifier.padding(8.dp, 0.dp)) {
                     Text(stringResource(R.string.action_editor_edit_actions), color = LocalKeyboardScheme.current.onSurface)
                 }
-            }
-
-            override fun close() {
-
             }
         }
     },

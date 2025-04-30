@@ -362,7 +362,7 @@ val TextEditAction = Action(
     persistentState = null,
     canShowKeyboard = true,
     windowImpl = { manager, persistentState ->
-        object : ActionWindow {
+        object : ActionWindow() {
             @Composable
             override fun windowName(): String {
                 return stringResource(R.string.action_text_editor_title)
@@ -396,9 +396,6 @@ val TextEditAction = Action(
                     },
                     keyboardShown = keyboardShown
                 )
-            }
-
-            override fun close() {
             }
         }
     }

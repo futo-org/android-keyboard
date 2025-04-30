@@ -918,7 +918,7 @@ val EmojiAction = Action(
     },
     windowImpl = { manager, persistentState ->
         val state = persistentState as PersistentEmojiState
-        object : ActionWindow {
+        object : ActionWindow() {
             private val searchText = mutableStateOf("")
             private val searching = mutableStateOf(false)
 
@@ -1020,10 +1020,6 @@ val EmojiAction = Action(
                     }
 
                 }
-            }
-
-            override fun close() {
-
             }
         }
     }

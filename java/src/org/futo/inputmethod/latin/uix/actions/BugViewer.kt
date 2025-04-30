@@ -39,7 +39,7 @@ val BugViewerAction = Action(
     canShowKeyboard = true,
     windowImpl = { manager, _ ->
         val latinIme = manager.getLatinIMEForDebug()
-        object : ActionWindow {
+        object : ActionWindow() {
             @Composable
             override fun windowName(): String {
                 return stringResource(R.string.action_bug_viewer_title)
@@ -76,10 +76,6 @@ val BugViewerAction = Action(
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
-            }
-
-            override fun close() {
-
             }
         }
     },

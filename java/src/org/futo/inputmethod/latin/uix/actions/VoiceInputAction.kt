@@ -25,6 +25,7 @@ import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.CAN_EXPAND_SPACE
+import org.futo.inputmethod.latin.uix.CloseResult
 import org.futo.inputmethod.latin.uix.DISALLOW_SYMBOLS
 import org.futo.inputmethod.latin.uix.ENABLE_SOUND
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
@@ -102,7 +103,7 @@ class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : Persist
 private class VoiceInputActionWindow(
     val manager: KeyboardManagerForAction, val state: VoiceInputPersistentState,
     val model: ModelLoader, val locales: List<Locale>
-) : ActionWindow, RecognizerViewListener {
+) : ActionWindow(), RecognizerViewListener {
     val context = manager.getContext()
 
     private var shouldPlaySounds: Boolean = false
@@ -208,9 +209,10 @@ private class VoiceInputActionWindow(
         }
     }
 
-    override fun close() {
+    override fun close(): CloseResult {
         initJob.cancel()
         recognizerView.value?.cancel()
+        return CloseResult.Default
     }
 
     private var wasFinished = false
@@ -258,7 +260,7 @@ private class VoiceInputActionWindow(
     }
 }
 
-private class VoiceInputNoModelWindow(val locale: Locale) : ActionWindow {
+private class VoiceInputNoModelWindow(val locale: Locale) : ActionWindow() {
     @Composable
     override fun windowName(): String {
         return stringResource(R.string.action_voice_input_title)
@@ -268,11 +270,6 @@ private class VoiceInputNoModelWindow(val locale: Locale) : ActionWindow {
     override fun WindowContents(keyboardShown: Boolean) {
         NoModelInstalled(locale)
     }
-
-    override fun close() {
-
-    }
-
 }
 
 val VoiceInputAction = Action(icon = R.drawable.mic_fill,

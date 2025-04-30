@@ -27,6 +27,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionBarHeight
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.CloseResult
 import org.futo.inputmethod.latin.uix.TutorialMode
 import org.futo.inputmethod.v2keyboard.KeyboardMode
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
@@ -75,7 +76,7 @@ val KeyboardModeAction = Action(
     simplePressImpl = null,
     windowImpl = { manager, _ ->
         val sizeCalculator = manager.getSizingCalculator()
-        object : ActionWindow {
+        object : ActionWindow() {
             override val showCloseButton: Boolean
                 get() = false
 
@@ -148,10 +149,11 @@ val KeyboardModeAction = Action(
                 }
             }
 
-            override fun close() {
+            override fun close(): CloseResult {
                 if(manager.getTutorialMode() == TutorialMode.ResizerTutorial) {
                     manager.markTutorialCompleted()
                 }
+                return CloseResult.Default
             }
         }
     },

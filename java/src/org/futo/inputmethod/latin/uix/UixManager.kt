@@ -302,6 +302,32 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         }
     }
 
+    private fun mimeTypeMatches(mimeTypePattern: String, schema: String): Boolean {
+        if (mimeTypePattern == schema) return true
+        val patternParts = mimeTypePattern.split('/')
+        val schemaParts = schema.split('/')
+        if (patternParts.size != 2 || schemaParts.size != 2) return false
+        return (patternParts[0] == schemaParts[0] &&
+                (patternParts[1] == "*" || patternParts[1] == schemaParts[1]))
+    }
+
+    override fun appSupportsImageInsertion(
+        schema: String,
+        ignoreConnectionOverride: Boolean
+    ): Boolean {
+        val editorInfo = if(ignoreConnectionOverride) {
+            latinIME.getBaseInputEditorInfo()
+        } else {
+            latinIME.currentInputEditorInfo
+        }
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            editorInfo?.contentMimeTypes?.any { mimeTypeMatches(it, schema) } == true
+        } else {
+            false
+        }
+    }
+
     override fun backspace(amount: Int) {
         latinIME.latinIMELegacy.onCodeInput(
             Constants.CODE_DELETE,
@@ -311,6 +337,10 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun closeActionWindow() {
         uixManager.closeActionWindow()
+    }
+
+    override fun forceActionWindowAboveKeyboard(to: Boolean) {
+        uixManager.toggleExpandAction(to)
     }
 
     override fun triggerSystemVoiceInput() {
@@ -590,12 +620,16 @@ class UixManager(private val latinIME: LatinIME) {
             ))
     }
 
-    private fun returnBackToMainKeyboardViewFromAction() {
-        if(currWindowActionWindow.value == null) return
+    private fun returnBackToMainKeyboardViewFromAction(allowSkipClosing: Boolean): Boolean {
+        if(currWindowActionWindow.value == null) return true
 
         val name = latinIME.resources.getString(currWindowAction.value!!.name)
 
-        currWindowActionWindow.value!!.close()
+        if(currWindowActionWindow.value!!.close() == CloseResult.PreventClosing
+            && allowSkipClosing
+        ) {
+            return false
+        }
 
         currWindowAction.value = null
         currWindowActionWindow.value = null
@@ -607,6 +641,7 @@ class UixManager(private val latinIME: LatinIME) {
         latinIME.window.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         keyboardManagerForAction.announce(latinIME.getString(R.string.action_menu_closed, name))
+        return true
     }
 
     fun toggleExpandAction(to: Boolean? = null) {
@@ -623,30 +658,45 @@ class UixManager(private val latinIME: LatinIME) {
         } else {
             1.5
         }
+
+        val showingAboveKeyboard = !mainKeyboardHidden.value
         Column {
-            if(mainKeyboardHidden.value || latinIME.isInputConnectionOverridden) {
-                ActionWindowBar(
-                    onBack = { closeActionWindow() },
-                    canExpand = currWindowAction.value!!.canShowKeyboard,
-                    onExpand = { toggleExpandAction() },
-                    windowTitleBar = { windowImpl.WindowTitleBar(this) }
+            Column(
+                Modifier.background(
+                    if (showingAboveKeyboard) {
+                        LocalKeyboardScheme.current.keyboardSurfaceDim
+                    } else {
+                        Color.Transparent
+                    }
                 )
-            }
-
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(with(LocalDensity.current) {
-                    currWindowActionWindow.value?.fixedWindowHeight ?: ((latinIME
-                        .getInputViewHeight()
-                        .toFloat() / heightDiv.toFloat()).toDp() +
-                            if (actionsExpanded) ActionBarHeight else 0.dp)
-                })
-                .safeKeyboardPadding()
             ) {
-                windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden.value)
+                if (mainKeyboardHidden.value || latinIME.isInputConnectionOverridden) {
+                    ActionWindowBar(
+                        onBack = { closeActionWindow(true) },
+                        canExpand = currWindowAction.value!!.canShowKeyboard,
+                        onExpand = { toggleExpandAction() },
+                        windowTitleBar = { windowImpl.WindowTitleBar(this) }
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(with(LocalDensity.current) {
+                            currWindowActionWindow.value?.fixedWindowHeight ?: ((latinIME
+                                .getInputViewHeight()
+                                .toFloat() / heightDiv.toFloat()).toDp() +
+                                    if (actionsExpanded) ActionBarHeight else 0.dp)
+                        })
+                        .safeKeyboardPadding()
+                ) {
+                    windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden.value)
+                }
+                Spacer(Modifier.height(5.dp))
             }
 
-            if(!mainKeyboardHidden.value && !latinIME.isInputConnectionOverridden) {
+            if((!mainKeyboardHidden.value && !latinIME.isInputConnectionOverridden)
+                || (latinIME.inputConnectionOverridenWithSuggestions)) {
                 val suggestedWordsOrNull = if (shouldShowSuggestionStrip.value) {
                     suggestedWords.value
                 } else {
@@ -658,9 +708,12 @@ class UixManager(private val latinIME: LatinIME) {
                     onClose = { closeActionWindow() },
                     words = suggestedWordsOrNull,
                     showClose = currWindowActionWindow.value?.showCloseButton == true,
-                    showCollapse = currWindowActionWindow.value?.onlyShowAboveKeyboard == false,
+                    showCollapse = currWindowActionWindow.value?.positionIsUserManagable == true,
                     suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
                 )
+            } else if(showingAboveKeyboard) {
+                ActionSep()
+                Spacer(Modifier.height(1.dp))
             }
         }
     }
@@ -825,6 +878,8 @@ class UixManager(private val latinIME: LatinIME) {
                 //bottom = padding.bottom.toDp().coerceAtLeast(0.dp),
             )
             .clipToBounds()
+            // Blocks any input to inputDarkener within the keyboard
+            .pointerInput(Unit) {}
         ) {
             LocalKeyboardScheme.current.keyboardBackgroundShader?.let { source ->
                 KeyboardSurfaceShaderBackground(source, modifier = Modifier.matchParentSize())
@@ -1183,7 +1238,6 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     fun cleanUpPersistentStates() {
-        println("Cleaning up persistent states")
         for((key, value) in persistentStates.entries) {
             if(currWindowAction != key) {
                 latinIME.lifecycleScope.launch { value?.cleanUp() }
@@ -1191,8 +1245,8 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
-    fun closeActionWindow() {
-        returnBackToMainKeyboardViewFromAction()
+    fun closeActionWindow(allowSkipClosing: Boolean = false) {
+        if(returnBackToMainKeyboardViewFromAction(allowSkipClosing) == false) return
 
         // Reset any typeface override as they're not supposed to persist outside of an active
         // action window

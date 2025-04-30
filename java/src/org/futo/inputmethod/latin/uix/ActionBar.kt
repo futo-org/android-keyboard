@@ -642,6 +642,7 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.chevron_right),
+            // TODO: I18nize
             contentDescription = "Open Actions",
             Modifier.size(20.dp)
         )
@@ -681,6 +682,7 @@ fun ImportantNoticeView(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.close),
+                // TODO: I18nize
                 contentDescription = "Close"
             )
         }
@@ -837,13 +839,14 @@ fun ActionWindowBar(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.0f), color = actionBarColor()
+                .weight(1.0f), color = Color.Transparent
         )
         {
             Row(Modifier.safeKeyboardPadding()) {
                 IconButton(onClick = onBack) {
                     Icon(
                         painter = painterResource(id = R.drawable.arrow_left_26),
+                        // TODO: I18nize
                         contentDescription = "Back"
                     )
                 }
@@ -856,6 +859,7 @@ fun ActionWindowBar(
                     IconButton(onClick = onExpand) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_up),
+                            // TODO: I18nize
                             contentDescription = "Show Keyboard"
                         )
                     }
@@ -899,6 +903,7 @@ fun CollapsibleSuggestionsBar(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.close),
+                            // TODO: I18nize
                             contentDescription = "Close"
                         )
                     }
@@ -929,6 +934,7 @@ fun CollapsibleSuggestionsBar(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_down),
+                            // TODO: I18nize
                             contentDescription = "Collapse"
                         )
                     }
@@ -1023,6 +1029,7 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
             importantNotice = object : ImportantNotice {
                 @Composable
                 override fun getText(): String {
+                    // TODO: I18nize
                     return "Update available: v1.2.3"
                 }
 

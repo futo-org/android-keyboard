@@ -461,7 +461,7 @@ val ClipboardHistoryAction = Action(
         val clipboardHistoryManager = persistent as ClipboardHistoryManager
 
         manager.getLifecycleScope().launch { clipboardHistoryManager.pruneOldItems() }
-        object : ActionWindow {
+        object : ActionWindow() {
             @Composable
             override fun windowName(): String {
                 return stringResource(R.string.action_clipboard_manager_title)
@@ -630,10 +630,6 @@ val ClipboardHistoryAction = Action(
                         }
                     }
                 }
-            }
-
-            override fun close() {
-
             }
         }
     }
