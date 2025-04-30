@@ -74,9 +74,12 @@ final def translationsWithoutEngValues = { final String path ->
     destDir
 }
 
-// TODO: Remove
 tasks.register('updateLocales', Exec) {
-    commandLine 'bash', '-c', 'cd tools/make-keyboard-text-py && python3 src/generate.py'
+    workingDir = file('tools/make-keyboard-text-py')
+    commandLine = [
+            System.getProperty("os.name").toLowerCase().contains("windows") ? "python" : "python3",
+            "src/generate.py"
+    ]
 }
 
 preBuild.dependsOn updateLocales
