@@ -24,6 +24,7 @@ import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.egl.EGLContext
 import javax.microedition.khronos.opengles.GL10
+import androidx.core.graphics.createBitmap
 
 fun loadBitmapFromAssets(context: Context, fileName: String): Bitmap {
     context.assets.open(fileName).use { inputStream ->
@@ -83,7 +84,7 @@ class ShaderRenderer(
             builder.append("""#version 320 es
                 precision highp float;
                 uniform float iTime;
-                uniform vec2 iResolution;
+                uniform vec3 iResolution;
                 out vec4 fragColor;
             """.trimIndent())
 
@@ -183,7 +184,10 @@ class ShaderRenderer(
             GLES20.glUseProgram(program)
             val time = ((SystemClock.elapsedRealtime() - startTime) % (120 * 1000)) / 1000f
             GLES20.glUniform1f(uTime, time)
-            GLES20.glUniform2f(uResolution, viewportSize.first.toFloat(), viewportSize.second.toFloat())
+
+            // The third component is meant to be pixel aspect ratio
+            // Just passing 1.0 for now
+            GLES20.glUniform3f(uResolution, viewportSize.first.toFloat(), viewportSize.second.toFloat(), 1.0f)
 
             val textureUnits = listOf(
                 GLES20.GL_TEXTURE0,
@@ -358,7 +362,7 @@ fun renderShaderToBitmap(context: Context, shaderSource: String, width: Int, hei
     val buffer = ByteBuffer.allocateDirect(width * height * 4)
     GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buffer)
 
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val bitmap = createBitmap(width, height)
     buffer.rewind()
     bitmap.copyPixelsFromBuffer(buffer)
 
