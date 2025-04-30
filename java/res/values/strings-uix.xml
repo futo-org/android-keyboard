@@ -98,6 +98,25 @@
     <!-- This string must be super short (below 10 chars if possible) -->
     <string name="action_keyboard_modes_resizing_apply_new_size">Apply</string>
 
+    <!-- For Font Typer action -->
+    <string name="action_fonttyper_title">WordStyles</string>
+    <!-- This message is shown when we're typing in a text field does not support image insertion ("app" refers to the external app that is providing the text field) -->
+    <string name="action_fonttyper_app_unsupported_warning">App may not support image insertion, this feature may not work.</string>
+    <string name="action_fonttyper_select_a_preset">Select preset</string>
+    <!-- Abstract, fragmented orange characters on a black background, resembling an alien script -->
+    <string name="action_fonttyper_preset_title_scratch">Scratch</string>
+    <!-- Comic book style text: bold, italicized yellow-orange letters with a thick shadow, looking 3d -->
+    <string name="action_fonttyper_preset_title_superhero">Superhero</string>
+    <!-- Large, bold 3d white letters in a powerful cinematic perspective -->
+    <string name="action_fonttyper_preset_title_dramatictext">Dramatic Text</string>
+    <!-- Pink candy-like cursive text -->
+    <string name="action_fonttyper_preset_title_candy">Candy</string>
+    <!-- Rainbow colored text with a skewed shadow -->
+    <string name="action_fonttyper_preset_title_rainbow">Rainbow</string>
+    <!-- Sky and ground colored serif text with a dark grey shadow, the text color looks like a horizon -->
+    <string name="action_fonttyper_preset_title_horizon">Horizon</string>
+    <string name="action_fonttyper_finish">Finish</string>
+
     <!-- Keyboard action kinds -->
     <string name="action_kind_action_key">Action Key</string>
     <string name="action_kind_pinned_key">Pinned Action(s)</string>
@@ -364,7 +383,6 @@
     <string name="theme_settings_title">Theme</string>
     <string name="theme_settings_key_borders">Key borders</string>
     <string name="dev_settings_title">Developer Settings</string>
-    <string name="credits_title">Credits</string>
 
     <!-- Voice input settings menu -->
     <string name="voice_input_settings_title">Voice Input</string>
