@@ -115,6 +115,8 @@
     <string name="action_fonttyper_preset_title_rainbow">Rainbow</string>
     <!-- Sky and ground colored serif text with a dark grey shadow, the text color looks like a horizon -->
     <string name="action_fonttyper_preset_title_horizon">Horizon</string>
+    <!-- Orange text on a black background, tilted in a 3d style effect, like a TV show opening crawl -->
+    <string name="action_fonttyper_preset_title_opening_crawl">Opening Crawl</string>
     <string name="action_fonttyper_finish">Finish</string>
 
     <!-- Keyboard action kinds -->

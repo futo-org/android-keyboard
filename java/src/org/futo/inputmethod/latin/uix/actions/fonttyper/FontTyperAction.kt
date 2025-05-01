@@ -142,6 +142,7 @@ private val renderers = listOf(
     HorizonRenderer,
     RainbowRenderer,
     ScratchRenderer,
+    OpeningCrawlRenderer,
     DramaticTextRenderer
 )
 
