@@ -59,7 +59,9 @@ private val layoutContribs: List<String> = listOf(
 
 @Suppress("HardCodedStringLiteral")
 private val languageContribs: List<String> = listOf(
-    "abb128", "lucasmz"
+    "abb128 (lt, ru)",
+    "Witek (pl)",
+    "Lucas (pt-BR)",
 )
 
 @Suppress("HardCodedStringLiteral")
