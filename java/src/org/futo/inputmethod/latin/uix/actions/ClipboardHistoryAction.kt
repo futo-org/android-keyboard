@@ -272,9 +272,13 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
             (!it.pinned) && (it.timestamp < minimumTimestamp)
         }
 
-        // Remove copies of default clipboard entry (TODO: this can be removed eventually)
-        if(clipboardHistory.count { it == DefaultClipboardEntry } > 1)
-            clipboardHistory.removeAll { it == DefaultClipboardEntry }
+        // Remove duplicates of entries, if any appeared
+        // Duplicates will have same timestamp, same text, etc
+        val set = clipboardHistory.toSet()
+        if(set.size < clipboardHistory.size) {
+            clipboardHistory.clear()
+            clipboardHistory.addAll(set)
+        }
 
         val maxItems = 25
         val numUnpinnedItems = clipboardHistory.filter { !it.pinned }.size
@@ -347,6 +351,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
             return
         }
 
+        var inputString = ""
         try {
             val file = File(context.filesDir, "clipboard.json")
 
@@ -354,7 +359,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                 file.delete()
             } else if (file.exists()) {
                 val reader = file.bufferedReader()
-                val inputString = reader.use { it.readText() }
+                inputString = reader.use { it.readText() }
 
                 val data = Json.decodeFromString<List<ClipboardEntry>>(inputString)
 
@@ -379,13 +384,17 @@ Clipboard history could not be loaded
 Cause: ${e.message}
 
 Stack trace: ${e.stackTrace.map { it.toString() }}
+
+--- data --- snip ---
+$inputString
+--- data --- snip ---
 """))
         }
     }
 
     fun onPaste(item: ClipboardEntry) {
         val itemPos = clipboardHistory.indexOf(item)
-        clipboardHistory.remove(item)
+        clipboardHistory.removeAll { it == item }
 
         clipboardHistory.add(itemPos,
             ClipboardEntry(
@@ -401,7 +410,7 @@ Stack trace: ${e.stackTrace.map { it.toString() }}
     }
 
     fun onPin(item: ClipboardEntry) {
-        clipboardHistory.remove(item)
+        clipboardHistory.removeAll { it == item }
 
         clipboardHistory.add(
             ClipboardEntry(
@@ -424,7 +433,7 @@ Stack trace: ${e.stackTrace.map { it.toString() }}
                 clipboardManager.clearPrimaryClip()
             }
         }
-        clipboardHistory.remove(item)
+        clipboardHistory.removeAll { it == item }
         saveClipboard()
     }
 
@@ -570,6 +579,12 @@ val ClipboardHistoryAction = Action(
                             }, modifier = Modifier
                                 .fillMaxWidth()) {
                                 Text(context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button))
+                            }
+
+                            Button(onClick = {
+                                manager.activateAction(BugViewerAction)
+                            }, modifier = Modifier.fillMaxWidth()) {
+                                Text(stringResource(R.string.action_clipboard_manager_inspect_error_via_bugs_action))
                             }
                         }
                     }

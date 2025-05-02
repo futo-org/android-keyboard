@@ -73,6 +73,7 @@
     <string name="action_clipboard_manager_error_general_title">Clipboard Error</string>
     <string name="action_clipboard_manager_error_general_text">The clipboard history could not be saved or loaded. It may be corrupted. You can try deleting it, or restarting the keyboard. Please report this as a bug. Reason: %1$s</string>
     <string name="action_clipboard_manager_delete_corrupted_clipboard_text">Delete the clipboard? ALL items will be lost.</string>
+    <string name="action_clipboard_manager_inspect_error_via_bugs_action">Inspect error in Bug Viewer</string>
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_delete_corrupted_clipboard_button">Delete</string>
     <string name="action_clipboard_manager_error_clipboard_history_disabled_title">Clipboard History Inactive</string>
