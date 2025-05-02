@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -205,6 +204,15 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
     val clipboardHistory = mutableStateListOf<ClipboardEntry>()
 
+    // Primary file
+    val clipboardFile = File(context.filesDir, "clipboard.json")
+
+    // Backup in case primary gets corrupted somehow
+    val clipboardFileBak = File(context.filesDir, "clipboard.json.bak")
+
+    // Temporary file used during saving, after writing we delete previous backup, move primary to backup, move swap to primary
+    val clipboardFileSwap = File(context.filesDir, "clipboard.json.swap")
+
     var clipboardLoaded = false
     
     override suspend fun onDeviceUnlocked() {
@@ -293,9 +301,9 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         }
     }
 
-    val clipboardSaveFailure = mutableStateOf(false)
+    val clipboardIOFailure = mutableStateOf(false)
     var saveClipboardLoadJob: Job? = null
-    private fun saveClipboard() {
+    internal fun saveClipboard() {
         if(!context.isDirectBootUnlocked) return
         if(!clipboardLoaded) {
             if(saveClipboardLoadJob?.isActive == true) return
@@ -310,7 +318,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                     clipboardHistory.addAll(currentEntries)
                     saveClipboard()
                 } else {
-                    clipboardSaveFailure.value = true
+                    clipboardIOFailure.value = true
                 }
             }
 
@@ -319,49 +327,111 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
-                pruneOldItems()
+                try {
+                    pruneOldItems()
 
-                val json = Json.encodeToString(clipboardHistory.toList())
+                    val list = clipboardHistory.toList()
+                    val json = Json.encodeToString(list)
 
-                val file = File(context.filesDir, "clipboard.json")
-                file.writeText(json)
+                    clipboardFileSwap.writeText(json)
 
-                clipboardSaveFailure.value = false
+                    // Validate it can be read
+                    if (decodeFile(clipboardFileSwap) != list) {
+                        throw Exception("Saved file data does not match expected data")
+                    }
+
+                    // Move current to bak
+                    if (clipboardFile.exists()) {
+                        if (!clipboardFile.renameTo(clipboardFileBak)) {
+                            throw Exception("Failed to move clipboard file backup")
+                        }
+                    }
+
+                    // Move swap to current
+                    if (!clipboardFileSwap.renameTo(clipboardFile)) {
+                        throw Exception("Failed to swap new clipboard file")
+                    }
+
+                    // Finally validate it can be read
+                    if (decodeFile(clipboardFile) != list) {
+                        throw Exception("Saved file data does not match expected data")
+                    }
+
+                    clipboardIOFailure.value = false
+                } catch (e: Exception) {
+                    clipboardIOFailure.value = true
+                    clipboardIOFailureReason = e.toString()
+                    reportError("saveClipboard", e)
+                }
             }
         }
     }
 
     fun deleteClipboard() {
-        val file = File(context.filesDir, "clipboard.json")
-        file.delete()
+        listOf(clipboardFile, clipboardFileSwap, clipboardFileBak).forEach {
+            if(it.exists()) it.delete()
+        }
     }
 
-    var clipboardLoadFailureReason = ""
+    private fun decodeFile(file: File): List<ClipboardEntry> {
+        val inputString = file.readText()
+        val data = Json.decodeFromString<List<ClipboardEntry>>(inputString)
+
+        return data
+    }
+
+    private fun reportError(during: String, e: Exception) {
+        BugViewerState.pushBug(BugInfo("ClipboardHistoryManager", """
+Clipboard IO error during $during
+
+Cause: ${e.message}
+
+Stack trace: ${e.stackTrace.map { it.toString() }}
+
+--- main data start --- snip ---
+${if(clipboardFile.exists()) { clipboardFile.readText() } else { "File does not exist" }}
+--- main data end --- snip ---
+
+
+--- bak data start --- snip ---
+${if(clipboardFileBak.exists()) { clipboardFileBak.readText() } else { "File does not exist" }}
+--- bak data end --- snip ---
+
+--- swap data start --- snip ---
+${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File does not exist" }}
+--- swap data end --- snip ---
+"""))
+    }
+
+    var clipboardIOFailureReason = ""
     private suspend fun loadClipboard() {
         if(!context.isDirectBootUnlocked) {
-            clipboardLoadFailureReason = "Direct Boot not unlocked"
-            clipboardSaveFailure.value = true
+            clipboardIOFailureReason = "Direct Boot not unlocked"
+            clipboardIOFailure.value = true
             return
         }
 
         val clipboardSetting = context.getUnlockedSetting(ClipboardHistoryEnabled)
         if(clipboardSetting == null) {
-            clipboardLoadFailureReason = "Settings not unlocked"
-            clipboardSaveFailure.value = true
+            clipboardIOFailureReason = "Settings not unlocked"
+            clipboardIOFailure.value = true
             return
         }
 
-        var inputString = ""
         try {
-            val file = File(context.filesDir, "clipboard.json")
-
             if(clipboardSetting == false) {
-                file.delete()
-            } else if (file.exists()) {
-                val reader = file.bufferedReader()
-                inputString = reader.use { it.readText() }
-
-                val data = Json.decodeFromString<List<ClipboardEntry>>(inputString)
+                deleteClipboard()
+            } else if (clipboardFile.exists()) {
+                val data = try {
+                    decodeFile(clipboardFile)
+                } catch(e: Exception) {
+                    reportError("loadClipboard main, trying bak", e)
+                    if(clipboardFileBak.exists()) {
+                        decodeFile(clipboardFileBak)
+                    } else {
+                        throw e
+                    }
+                }
 
                 clipboardHistory.clear()
                 clipboardHistory.addAll(data)
@@ -371,24 +441,14 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
             }
 
             clipboardLoaded = true
-            clipboardLoadFailureReason = ""
-            clipboardSaveFailure.value = false
+            clipboardIOFailureReason = ""
+            clipboardIOFailure.value = false
         } catch (e: Exception) {
             e.printStackTrace()
-            clipboardLoadFailureReason = "Exception: ${e.message}"
-            clipboardSaveFailure.value = true
+            clipboardIOFailureReason = "Exception: ${e.message}"
+            clipboardIOFailure.value = true
 
-            BugViewerState.pushBug(BugInfo("ClipboardHistoryManager", """
-Clipboard history could not be loaded
-
-Cause: ${e.message}
-
-Stack trace: ${e.stackTrace.map { it.toString() }}
-
---- data --- snip ---
-$inputString
---- data --- snip ---
-"""))
+            reportError("loadClipboard", e)
         }
     }
 
@@ -485,11 +545,11 @@ val ClipboardHistoryAction = Action(
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!clipboardHistory.value) return
 
-                if(unlocked && !clipboardHistoryManager.clipboardSaveFailure.value) {
+                if(unlocked && !clipboardHistoryManager.clipboardIOFailure.value) {
                     IconButton(onClick = {
                         val numUnpinnedItems =
                             clipboardHistoryManager.clipboardHistory.count { !it.pinned }
-                        if (clipboardHistoryManager.clipboardHistory.size == 0) {
+                        if (clipboardHistoryManager.clipboardHistory.isEmpty()) {
                             manager.requestDialog(
                                 context.getString(R.string.action_clipboard_manager_disable_text),
                                 listOf(
@@ -553,38 +613,43 @@ val ClipboardHistoryAction = Action(
                             ParagraphText(stringResource(R.string.action_clipboard_manager_error_device_locked_text))
                         }
                     }
-                } else if(clipboardHistoryManager.clipboardSaveFailure.value) {
+                } else if(clipboardHistoryManager.clipboardIOFailure.value) {
                     ScrollableList {
                         PaymentSurface(isPrimary = true) {
                             PaymentSurfaceHeading(title = stringResource(R.string.action_clipboard_manager_error_general_title))
                             ParagraphText(
                                 stringResource(
                                     R.string.action_clipboard_manager_error_general_text,
-                                    clipboardHistoryManager.clipboardLoadFailureReason
+                                    clipboardHistoryManager.clipboardIOFailureReason
                                 ))
-                            Button(onClick = {
-                                manager.requestDialog(
-                                    context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_text),
-                                    listOf(
-                                        DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
-                                        DialogRequestItem(context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button)) {
-                                            clipboardHistoryManager.clipboardSaveFailure.value = false
-                                            clipboardHistory.setValue(false)
-                                            clipboardHistoryManager.deleteClipboard()
-                                        },
-                                    ),
-                                    {}
-                                )
-
-                            }, modifier = Modifier
-                                .fillMaxWidth()) {
-                                Text(context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button))
-                            }
-
                             Button(onClick = {
                                 manager.activateAction(BugViewerAction)
                             }, modifier = Modifier.fillMaxWidth()) {
                                 Text(stringResource(R.string.action_clipboard_manager_inspect_error_via_bugs_action))
+                            }
+                            Button(onClick = {
+                                clipboardHistoryManager.saveClipboard()
+                            }, modifier = Modifier.fillMaxWidth()) {
+                                Text(stringResource(R.string.action_clipboard_manager_retry_saving_loading))
+                            }
+                            Button(onClick = {
+                                    manager.requestDialog(
+                                        context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_text),
+                                        listOf(
+                                            DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
+                                            DialogRequestItem(context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button)) {
+                                                clipboardHistoryManager.clipboardIOFailure.value = false
+                                                clipboardHistory.setValue(false)
+                                                clipboardHistoryManager.deleteClipboard()
+                                            },
+                                        ),
+                                        {}
+                                    )
+
+                                }, modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Text(context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button))
                             }
                         }
                     }
@@ -594,9 +659,10 @@ val ClipboardHistoryAction = Action(
                             PaymentSurfaceHeading(title = stringResource(R.string.action_clipboard_manager_error_clipboard_history_disabled_title))
                             ParagraphText(stringResource(R.string.action_clipboard_manager_error_clipboard_history_disabled_text))
                             Button(onClick = {
-                                clipboardHistory.setValue(true)
-                            }, modifier = Modifier
-                                .fillMaxWidth()) {
+                                    clipboardHistory.setValue(true)
+                                }, modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
                                 Text(stringResource(R.string.action_clipboard_manager_enable_clipboard_history_button))
                             }
                         }
