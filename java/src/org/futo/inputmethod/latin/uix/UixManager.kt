@@ -80,6 +80,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -1201,7 +1202,7 @@ class UixManager(private val latinIME: LatinIME) {
                 currentNotice.value = object : ImportantNotice {
                     @Composable
                     override fun getText(): String {
-                        return "Please tap to check for updates, or check in settings"
+                        return stringResource(R.string.keyboard_actionbar_manual_update_check_notice)
                     }
 
                     override fun onDismiss(context: Context) {

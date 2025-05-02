@@ -146,6 +146,25 @@
     <string name="keyboard_version_status">Alpha</string>
     <string name="keyboard_switch_keyboard">Switch Keyboard</string>
     <string name="keyboard_language_settings">Settings</string>
+    <string name="keyboard_actionbar_manual_update_check_notice">Please tap to check for updates, or check in settings</string>
+
+    <!-- Talkback descriptions (screen readers) -->
+    <!-- Expands the action bar above the keyboard -->
+    <string name="keyboard_actionbar_expand_actions_talkback">Open Actions</string>
+    <!-- Dismisses/closes an important notice (usually the update check notice) -->
+    <string name="keyboard_actionbar_dismiss_important_notice_talkback">Close</string>
+    <!-- When an action window is opened, but it's not docked above keyboard, a back button is shown
+         to close the window and return to the keyboard, this is the talkback description for it -->
+    <string name="keyboard_actionbar_return_from_action_window_talkback">Back</string>
+    <!-- When an action window is opened, but it's not docked above keyboard, this button allows the
+         user to dock it above the keyboard, showing the keyboard below the action window -->
+    <string name="keyboard_actionbar_dock_action_window_above_keyboard_talkback">Show Keyboard</string>
+    <!-- When an action window is opened and docked, an X button is shown to close the action window
+         This is the talkback description for it -->
+    <string name="keyboard_actionbar_close_docked_action_window_talkback">Close</string>
+    <!-- When an action window is opened and docked, a down arrow allows the user to collapse it back
+         into the keyboard, undocking it from above the keyboard. -->
+    <string name="keyboard_actionbar_undock_action_window_collapse_into_keyboard_talkback">Collapse</string>
 
     <!-- Payment screen -->
     <string name="payment_screen_short_title">Payment</string>

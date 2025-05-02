@@ -287,7 +287,10 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
     ) {
         CompositionLocalProvider(LocalContentColor provides color) {
             if (word != null) {
-                val modifier = Modifier.align(Center).padding(2.dp).testTag("SuggestionItemText")
+                val modifier = Modifier
+                    .align(Center)
+                    .padding(2.dp)
+                    .testTag("SuggestionItemText")
                 if(isVerbatim) {
                     AutoFitText('"' + word + '"', style = textStyle.copy(fontStyle = FontStyle.Italic), modifier = modifier)
                 } else {
@@ -463,7 +466,8 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
 
     Box(modifier = modifier
         .clip(CircleShape)
-        .combinedClickable(onLongClick = action.altPressImpl?.let { { onLongSelect(action) } },
+        .combinedClickable(
+            onLongClick = action.altPressImpl?.let { { onLongSelect(action) } },
             onClick = { onSelect(action) }), contentAlignment = Center) {
         Icon(
             painter = painterResource(id = action.icon),
@@ -642,8 +646,7 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.chevron_right),
-            // TODO: I18nize
-            contentDescription = "Open Actions",
+            contentDescription = stringResource(R.string.keyboard_actionbar_expand_actions_talkback),
             Modifier.size(20.dp)
         )
     }
@@ -682,8 +685,7 @@ fun ImportantNoticeView(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.close),
-                // TODO: I18nize
-                contentDescription = "Close"
+                contentDescription = stringResource(R.string.keyboard_actionbar_dismiss_important_notice_talkback)
             )
         }
     }
@@ -738,12 +740,14 @@ fun ActionBar(
 
     val useDoubleHeight = isActionsExpanded && oldActionBar.value == false
 
-    Column(Modifier.height(
-        ActionBarHeight * if(useDoubleHeight) 2 else 1
-    ).semantics {
-        testTag = "ActionBar"
-        testTagsAsResourceId = true
-    }) {
+    Column(Modifier
+        .height(
+            ActionBarHeight * if (useDoubleHeight) 2 else 1
+        )
+        .semantics {
+            testTag = "ActionBar"
+            testTagsAsResourceId = true
+        }) {
         if(isActionsExpanded && !oldActionBar.value) {
             ActionSep()
 
@@ -846,8 +850,7 @@ fun ActionWindowBar(
                 IconButton(onClick = onBack) {
                     Icon(
                         painter = painterResource(id = R.drawable.arrow_left_26),
-                        // TODO: I18nize
-                        contentDescription = "Back"
+                        contentDescription = stringResource(R.string.keyboard_actionbar_return_from_action_window_talkback)
                     )
                 }
 
@@ -859,8 +862,7 @@ fun ActionWindowBar(
                     IconButton(onClick = onExpand) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_up),
-                            // TODO: I18nize
-                            contentDescription = "Show Keyboard"
+                            contentDescription = stringResource(R.string.keyboard_actionbar_dock_action_window_above_keyboard_talkback)
                         )
                     }
                 }
@@ -903,8 +905,7 @@ fun CollapsibleSuggestionsBar(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.close),
-                            // TODO: I18nize
-                            contentDescription = "Close"
+                            contentDescription = stringResource(R.string.keyboard_actionbar_close_docked_action_window_talkback)
                         )
                     }
                 } else {
@@ -934,8 +935,7 @@ fun CollapsibleSuggestionsBar(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_down),
-                            // TODO: I18nize
-                            contentDescription = "Collapse"
+                            contentDescription = stringResource(R.string.keyboard_actionbar_undock_action_window_collapse_into_keyboard_talkback)
                         )
                     }
                 } else {
@@ -1029,7 +1029,6 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
             importantNotice = object : ImportantNotice {
                 @Composable
                 override fun getText(): String {
-                    // TODO: I18nize
                     return "Update available: v1.2.3"
                 }
 
