@@ -24,6 +24,7 @@ import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavHostController
@@ -45,16 +46,26 @@ val LAST_UPDATE_CHECK_FAILED = booleanPreferencesKey("last_update_check_failed")
 val DISABLE_UPDATE_REMINDER = SettingsKey(booleanPreferencesKey("disable_update_reminder"), false)
 
 val DEFER_MANUAL_UPDATE_UNTIL = longPreferencesKey("defer_manual_update_until")
-const val MANUAL_UPDATE_PERIOD_MS = 1000L * 60L * 60L * 24L * 7L * 8L // Every eight weeks (~2 months)
+val DEFERMENT_VERSION = intPreferencesKey("defer_manual_update_version")
+const val MANUAL_UPDATE_PERIOD_MS = 1000L * 60L * 60L * 24L * 7L * 10L // Every ten weeks (~2.5 months)
 
 suspend fun deferManualUpdate(context: Context) {
     context.setSetting(
         DEFER_MANUAL_UPDATE_UNTIL,
         System.currentTimeMillis() + MANUAL_UPDATE_PERIOD_MS
     )
+    context.setSetting(
+        DEFERMENT_VERSION,
+        BuildConfig.VERSION_CODE
+    )
 }
 
 suspend fun isManualUpdateTimeExpired(context: Context): Boolean {
+    if(context.getSetting(DEFERMENT_VERSION, 0) < BuildConfig.VERSION_CODE) {
+        deferManualUpdate(context)
+        return false
+    }
+
     if(context.getSetting(DISABLE_UPDATE_REMINDER)) {
         return false
     }
