@@ -80,10 +80,15 @@
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_delete_corrupted_clipboard_button">Delete</string>
     <string name="action_clipboard_manager_error_clipboard_history_disabled_title">Clipboard History Inactive</string>
-    <string name="action_clipboard_manager_error_clipboard_history_disabled_text">Clipboard history is not enabled. To save clipboard items, you can enable clipboard history. This will keep up to 25 items for 3 days unless pinned. Passwords and other items marked sensitive are excluded from history.</string>
+    <string name="action_clipboard_manager_error_clipboard_history_disabled_text_v2">To save clipboard items, you can enable clipboard history. This will keep up to <xliff:g id="numItems" example="25">%1$s</xliff:g> items for <xliff:g id="numDays" example="3">%2$s</xliff:g> days (pinned items are exempt). You can configure this in settings.</string>
     <string name="action_clipboard_manager_enable_clipboard_history_button">Enable Clipboard History</string>
     <!-- This message is shown when we're typing in a text field does not support image insertion ("app" refers to the external app that is providing the text field) -->
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
+    <string name="action_clipboard_manager_settings_title">Clipboard Manager Settings</string>
+    <string name="action_clipboard_manager_settings_hours_to_keep_clips">Number of hours to keep unpinned clips</string>
+    <string name="action_clipboard_manager_settings_maximum_clips">Maximum number of unpinned clips to keep</string>
+    <string name="action_clipboard_manager_settings_save_sensitive_clips">Save sensitive clips (from password managers, from incognito windows)</string>
+    <string name="action_clipboard_manager_settings_list_layout">Use vertical list layout instead of grid</string>
 
     <!-- For keyboard modes action -->
     <string name="action_keyboard_modes_title">Keyboard Modes</string>
@@ -328,6 +333,13 @@
     <string name="action_editor_error_more_than_one_action_key">Please assign only one action key. You cannot assign more than one action to the action key.</string>
     <string name="action_editor_warning_too_many_pinned">Please consider pinning less actions. The suggestion bar will need to be shrunk to accommodate this many actions.</string>
     <string name="action_editor_add_next_action">Add next</string>
+
+    <!-- Action settings -->
+    <string name="action_settings_title">Actions</string>
+    <string name="action_settings_quick_options_title">Quick Options</string>
+    <string name="action_settings_quick_option_language_switch_key">Language switch key</string>
+    <string name="action_settings_quick_option_language_switch_key_subtitle">Replace the emoji key with a language switch key. Go to “Edit Actions” to put something else or to remove the action key entirely.</string>
+    <string name="action_settings_action_settings">Action Settings</string>
 
     <!-- Keyboard's size settings -->
     <string name="size_settings_title">Resize Keyboard</string>

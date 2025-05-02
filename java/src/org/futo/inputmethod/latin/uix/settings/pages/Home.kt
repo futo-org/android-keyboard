@@ -99,6 +99,13 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             )
 
             NavigationItem(
+                title = stringResource(R.string.action_settings_title),
+                style = NavigationItemStyle.HomeSecondary,
+                navigate = { navController.navigate("actions") },
+                icon = painterResource(id = R.drawable.smile)
+            )
+
+            NavigationItem(
                 title = stringResource(R.string.theme_settings_title),
                 style = NavigationItemStyle.HomeTertiary,
                 navigate = { navController.navigate("themes") },

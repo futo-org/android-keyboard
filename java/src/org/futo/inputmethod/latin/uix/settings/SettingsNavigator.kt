@@ -32,6 +32,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.SelectLanguageScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLayoutsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputScreen
+import org.futo.inputmethod.latin.uix.settings.pages.addActionsNavigation
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
 import org.futo.inputmethod.latin.uix.settings.pages.addTypingNavigation
 import org.futo.inputmethod.latin.uix.urlDecode
@@ -103,5 +104,6 @@ fun SettingsNavigator(
             AlreadyPaidDialog(navController = navController)
         }
         addModelManagerNavigation(navController)
+        addActionsNavigation(navController)
     }
 }

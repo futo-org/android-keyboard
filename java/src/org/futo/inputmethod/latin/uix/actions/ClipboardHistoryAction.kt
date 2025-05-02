@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -61,19 +63,40 @@ import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.PersistentStateInitialization
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.UserSetting
+import org.futo.inputmethod.latin.uix.UserSettingsMenu
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.getUnlockedSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.SettingSlider
+import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.pages.ParagraphText
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurface
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurfaceHeading
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.Typography
 import java.io.File
+import kotlin.math.roundToInt
 
 val ClipboardHistoryEnabled = SettingsKey(
     booleanPreferencesKey("enableClipboardHistory"),
+    false
+)
+
+val ClipboardHistoryItemsToKeep = SettingsKey(
+    intPreferencesKey("clipboard_history_items_to_keep"),
+    25
+)
+
+val ClipboardHistoryTimeToKeep = SettingsKey(
+    intPreferencesKey("clipboard_history_time_to_keep"),
+    3 * 24
+)
+
+val ClipboardHistorySaveSensitive = SettingsKey(
+    booleanPreferencesKey("clipboard_history_save_sensitive"),
     false
 )
 
@@ -112,7 +135,7 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
             .padding(2.dp)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = androidx.compose.material.ripple.rememberRipple(),
+                indication = rememberRipple(),
                 enabled = true,
                 onClick = { onPaste(clipboardEntry) },
                 onLongClick = { onPin(clipboardEntry) }
@@ -244,11 +267,12 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                         clip?.description?.getMimeType(it)
                     }.filterNotNull()
 
+                    val canSaveSensitive = context.getSetting(ClipboardHistorySaveSensitive)
                     val isSensitive = clip?.description?.extras?.getBoolean(
-                        ClipDescription.EXTRA_IS_SENSITIVE, false) ?: false
+                        ClipDescription.EXTRA_IS_SENSITIVE, false) == true
 
                     // TODO: Support images and other non-text media
-                    if (text != null && uri == null && !isSensitive) {
+                    if (text != null && uri == null && (!isSensitive || canSaveSensitive)) {
                         val isAlreadyPinned = clipboardHistory.firstOrNull {
                             ((it.text != null && it.text == text) || (it.uri != null && it.uri == uri)) && it.pinned
                         }?.pinned ?: false
@@ -274,8 +298,9 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
     }
 
     suspend fun pruneOldItems() = withContext(Dispatchers.Main) {
-        val maxDays = 3L
-        val minimumTimestamp = System.currentTimeMillis() - (maxDays * 24L * 60L * 60L * 1000L)
+        val numHoursToKeep = context.getSetting(ClipboardHistoryTimeToKeep)
+        val numItemsToKeep = context.getSetting(ClipboardHistoryItemsToKeep)
+        val minimumTimestamp = System.currentTimeMillis() - (numHoursToKeep * 60L * 60L * 1000L)
         clipboardHistory.removeAll {
             (!it.pinned) && (it.timestamp < minimumTimestamp)
         }
@@ -288,7 +313,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
             clipboardHistory.addAll(set)
         }
 
-        val maxItems = 25
+        val maxItems = numItemsToKeep
         val numUnpinnedItems = clipboardHistory.filter { !it.pinned }.size
 
         val numItemsToRemove = numUnpinnedItems - maxItems
@@ -657,7 +682,11 @@ val ClipboardHistoryAction = Action(
                     ScrollableList {
                         PaymentSurface(isPrimary = true) {
                             PaymentSurfaceHeading(title = stringResource(R.string.action_clipboard_manager_error_clipboard_history_disabled_title))
-                            ParagraphText(stringResource(R.string.action_clipboard_manager_error_clipboard_history_disabled_text))
+                            ParagraphText(stringResource(R.string.action_clipboard_manager_error_clipboard_history_disabled_text_v2,
+                                    context.getSetting(ClipboardHistoryItemsToKeep),
+                                    (context.getSetting(ClipboardHistoryTimeToKeep) / 24.0f).roundToInt()
+                                )
+                            )
                             Button(onClick = {
                                     clipboardHistory.setValue(true)
                                 }, modifier = Modifier
@@ -713,5 +742,46 @@ val ClipboardHistoryAction = Action(
                 }
             }
         }
-    }
+    },
+
+    settingsMenu = UserSettingsMenu(
+        title = R.string.action_clipboard_manager_settings_title,
+        settings = listOf(
+            UserSetting(
+                name = R.string.action_clipboard_manager_settings_maximum_clips,
+                component = {
+                    SettingSlider(
+                        stringResource(R.string.action_clipboard_manager_settings_maximum_clips),
+                        ClipboardHistoryItemsToKeep,
+                        range = 0.0f..100.0f,
+                        hardRange = 0.0f..Float.POSITIVE_INFINITY,
+                        transform = { it.toInt() },
+                    )
+                }
+            ),
+
+            UserSetting(
+                name = R.string.action_clipboard_manager_settings_hours_to_keep_clips,
+                component = {
+                    SettingSlider(
+                        stringResource(R.string.action_clipboard_manager_settings_hours_to_keep_clips),
+                        ClipboardHistoryTimeToKeep,
+                        range = 1.0f..336.0f,
+                        hardRange = 0.0f..Float.POSITIVE_INFINITY,
+                        transform = { it.toInt() },
+                    )
+                }
+            ),
+
+            UserSetting(
+                name = R.string.action_clipboard_manager_settings_save_sensitive_clips,
+                component = {
+                    SettingToggleDataStore(
+                        stringResource(R.string.action_clipboard_manager_settings_save_sensitive_clips),
+                        ClipboardHistorySaveSensitive
+                    )
+                }
+            ),
+        )
+    )
 )

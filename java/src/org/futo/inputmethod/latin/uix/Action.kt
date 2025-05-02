@@ -152,6 +152,18 @@ enum class PersistentStateInitialization {
     OnKeyboardLoad
 }
 
+// TODO: The big goal is to move all settings to use this, and have a programmatic way to iterate over all settings and all menus for search. Need to build this in a way to support existing settings menus
+data class UserSetting(
+    @StringRes val name: Int,
+    @StringRes val subtitle: Int? = null,
+    val component: @Composable () -> Unit
+)
+
+data class UserSettingsMenu(
+    @StringRes val title: Int,
+    val settings: List<UserSetting>
+)
+
 data class Action(
     @DrawableRes val icon: Int,
     @StringRes val name: Int,
@@ -164,5 +176,7 @@ data class Action(
     val persistentStateInitialization: PersistentStateInitialization = PersistentStateInitialization.OnActionTrigger,
     val altPressImpl: ((KeyboardManagerForAction, PersistentActionState?) -> Unit)? = null,
 
-    val shownInEditor: Boolean = true
+    val shownInEditor: Boolean = true,
+
+    val settingsMenu: UserSettingsMenu? = null
 )
