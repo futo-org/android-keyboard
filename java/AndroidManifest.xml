@@ -148,8 +148,10 @@
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="futo-voice-input" />
                 <data android:scheme="futo-keyboard" />
             </intent-filter>
@@ -161,7 +163,7 @@
             android:label="@string/payment_screen_short_title"
             android:clearTaskOnLaunch="false"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
 
         <activity
             android:name=".MicPermissionActivity"
@@ -169,9 +171,7 @@
             android:launchMode="standard"
             android:noHistory="true"
             android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
-            android:theme="@style/Theme.TextEditPopup">
-        </activity>
-
+            android:theme="@style/Theme.TextEditPopup" />
 
         <activity
             android:name=".uix.TextEditPopupActivity"
@@ -182,14 +182,18 @@
             android:noHistory="true"
             android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
             android:process=":texteditpopup"
-            android:theme="@style/Theme.TextEditPopup">
-        </activity>
+            android:theme="@style/Theme.TextEditPopup" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove">
-        </provider>
+            tools:node="remove" />
+
+        <provider
+            android:authorities="${applicationId}.font"
+            android:name=".content.KbContentProvider"
+            android:exported="false"
+            android:grantUriPermissions="true" />
     </application>
 
     <!-- To query enabled input methods for voice IME detection -->
