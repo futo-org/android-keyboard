@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.UserManager
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.PreferencesSerializer
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.preferencesOf
@@ -30,10 +33,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
+import okio.buffer
+import okio.sink
+import okio.source
 import org.futo.inputmethod.latin.ActiveSubtype
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
+import java.io.File
 
 // Used before first unlock (direct boot)
 private object DefaultDataStore : DataStore<Preferences> {
@@ -86,6 +93,52 @@ private var unlockedDataStore: DataStore<Preferences>? = null
 // To prevent two threads trying to create a datastore at once
 private val dataStoreCreationMutex = Mutex()
 
+fun Context.getPreferencesDataStoreFile(): File =
+    applicationContext.preferencesDataStoreFile("settings")
+
+fun Context.getBackupPreferencesDataStoreFile(): File =
+    applicationContext.preferencesDataStoreFile("settings_backup")
+
+fun Context.getBackupPreferencesDataStoreFileSwap(): File =
+    applicationContext.preferencesDataStoreFile("settings_backup_swap")
+
+fun writeDatastoreBackup(context: Context, unlockedStore: DataStore<Preferences>) {
+    val outFile = context.getBackupPreferencesDataStoreFileSwap()
+    GlobalScope.launch {
+        val prefs = unlockedStore.data.take(1).first()
+        outFile.sink().buffer().use { out ->
+            PreferencesSerializer.writeTo(prefs, out)
+        }
+
+        val result = try {
+            retrieveDatastoreBackup(context, outFile)
+        } catch(_: Exception) {
+            null
+        }
+
+        if(result == null || result.asMap().keys.size != prefs.asMap().keys.size) {
+            Log.e("SettingsBackup", "Could not back up settings!")
+            return@launch
+        }
+
+        val primaryFile = context.getBackupPreferencesDataStoreFile()
+        if(primaryFile.exists()) primaryFile.delete()
+        outFile.renameTo(primaryFile)
+    }
+}
+
+suspend fun retrieveDatastoreBackup(context: Context, file: File = context.getBackupPreferencesDataStoreFile()): Preferences? {
+    if(!file.exists()) return null
+
+    val prefs = file.source().buffer().use { f ->
+        PreferencesSerializer.readFrom(f)
+    }
+
+    if(!file.name.contains("_swap")) Log.e("SettingsBackup", "Preferences restored: ${prefs.asMap().keys.size} items")
+
+    return prefs
+}
+
 @OptIn(DelicateCoroutinesApi::class)
 fun forceUnlockDatastore(context: Context): DataStore<Preferences>? {
     val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
@@ -93,13 +146,22 @@ fun forceUnlockDatastore(context: Context): DataStore<Preferences>? {
         try {
             // The device has been unlocked
             val newDataStore = PreferenceDataStoreFactory.create(
-                corruptionHandler = null,
+                corruptionHandler = ReplaceFileCorruptionHandler {
+                    Log.e("SettingsBackup", "The settings file is corrupted! Attempting to restore...")
+                    runBlocking {
+                        retrieveDatastoreBackup(context)
+                    } ?: run {
+                        Log.e("SettingsBackup", "File is corrupted, and could not restore backup. Resetting to default")
+                        preferencesOf()
+                    }
+                },
                 migrations = listOf(),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
             ) {
-                context.applicationContext.preferencesDataStoreFile("settings")
+                context.getPreferencesDataStoreFile()
             }
 
+            writeDatastoreBackup(context, newDataStore)
             unlockedDataStore = newDataStore
 
             // Send new values to the DefaultDataStore for any listeners

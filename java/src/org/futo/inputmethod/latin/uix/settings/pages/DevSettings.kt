@@ -23,6 +23,7 @@ import org.futo.inputmethod.latin.uix.HiddenKeysSetting
 import org.futo.inputmethod.latin.uix.OldStyleActionsBar
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.UixManagerInstanceForDebug
+import org.futo.inputmethod.latin.uix.getPreferencesDataStoreFile
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -33,7 +34,8 @@ import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 import org.futo.inputmethod.updates.dismissedMigrateUpdateNotice
-
+import java.io.File
+import kotlin.system.exitProcess
 
 
 val IS_DEVELOPER = SettingsKey(booleanPreferencesKey("isDeveloperMode"), false)
@@ -153,6 +155,29 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             },
             icon = painterResource(id = R.drawable.close)
         )
+
+        if(BuildConfig.DEBUG) {
+            NavigationItem(
+                title = "Corrupt the settings, the clipboard, and exit the app",
+                style = NavigationItemStyle.MiscNoArrow,
+                navigate = {
+                    scope.lifecycleScope.launch {
+                        withContext(Dispatchers.Default) {
+                            delay(300L)
+
+                            context.getPreferencesDataStoreFile().outputStream().use {
+                                it.write(0)
+                            }
+                            File(context.filesDir, "clipboard.json").outputStream().use {
+                                it.write(0)
+                            }
+
+                            exitProcess(1)
+                        }
+                    }
+                }
+            )
+        }
 
         NavigationItem(
             title = "Inline Keyboard",
