@@ -113,7 +113,7 @@ fun MoreActionsView() {
     }
 
     val map = remember(actionList) {
-        actionList.toActionEditorItems().toActionMap()
+        actionList.toActionEditorItems().ensureWellFormed().toActionMap()
     }
 
     val actions = remember(actionList) {

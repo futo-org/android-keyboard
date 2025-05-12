@@ -539,7 +539,7 @@ fun ActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
     }
 
     val actionItems = remember(actions) {
-        actions.toActionList()
+        actions.toActionList().toSet().toList()
     }
 
     val lazyListState = rememberLazyListState(scrollItemIndex, scrollItemOffset)

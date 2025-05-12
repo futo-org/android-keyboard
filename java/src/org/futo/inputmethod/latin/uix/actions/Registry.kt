@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
+import androidx.collection.mutableIntSetOf
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import org.futo.inputmethod.keyboard.internal.KeyboardCodesSet
@@ -43,10 +44,19 @@ val AllActionsMap = mapOf(
 
 val ActionToId = AllActionsMap.entries.associate { it.value to it.key }
 
-val AllActions = AllActionsMap.values.toList()
+val AllActions = AllActionsMap.values.toList().verifyNamesAreUnique()
 val AllActionKeys = AllActionsMap.keys.toList()
 
 val ActionIdToInt = AllActionsMap.entries.associate { it.key to AllActions.indexOf(it.value) }
+
+// Name integers of actions must be unique
+private fun List<Action>.verifyNamesAreUnique(): List<Action> {
+    val names = mutableIntSetOf()
+    forEach {
+        assert(!names.contains(it.name)) { "The action $it contains a duplicate name!" }
+    }
+    return this
+}
 
 object ActionRegistry {
     suspend fun getActionOverride(context: Context, action: Action): Action {
@@ -179,6 +189,17 @@ fun Map<ActionCategory, List<Action>>.ensureAllCategoriesPresent(): Map<ActionCa
     return map
 }
 
+// Removes any duplicate actions
+fun Map<ActionCategory, List<Action>>.removeDuplicateActions(): Map<ActionCategory, List<Action>> {
+    val actions = mutableSetOf<Action>()
+
+    return ActionCategory.entries.associate { category ->
+        category to this[category]!!.filter { action ->
+            (!actions.contains(action)).apply { actions.add(action) }
+        }
+    }
+}
+
 // Adds any missing actions to the "More" section
 fun Map<ActionCategory, List<Action>>.ensureAllActionsPresent(): Map<ActionCategory, List<Action>> {
     val map = toMutableMap()
@@ -219,14 +240,9 @@ fun Map<ActionCategory, List<Action>>.flattenToActionEditorItems(): List<ActionE
 
 fun List<ActionEditorItem>.ensureWellFormed(): List<ActionEditorItem> {
     var map = toActionMap()
-
-    // Ensure all categories are present
     map = map.ensureAllCategoriesPresent()
-
-    // Ensure all actions are present
+    map = map.removeDuplicateActions()
     map = map.ensureAllActionsPresent()
-
-    // Return the flattened list
     return map.flattenToActionEditorItems()
 }
 
@@ -265,7 +281,7 @@ val FavoriteActions = SettingsKey(
 
 
 fun Context.updateSettingsWithNewActions(newActions: Map<ActionCategory, List<Action>>) {
-    val map = newActions.ensureAllCategoriesPresent().ensureAllActionsPresent()
+    val map = newActions.flattenToActionEditorItems().ensureWellFormed().toActionMap()
 
     val actionKey = map[ActionCategory.ActionKey]?.firstOrNull()
 

@@ -41,46 +41,97 @@ fun ActionsScreen(navController: NavHostController = rememberNavController()) {
         .ensureWellFormed()
         .toActionMap()
 
-    val isLanguageKeyEnabled = actionMap[ActionCategory.ActionKey]?.firstOrNull() == SwitchLanguageAction
-
+    val currActionKey = actionMap[ActionCategory.ActionKey]?.firstOrNull()
+    val isLanguageKeyEnabled = currActionKey == SwitchLanguageAction
 
     ScrollableList {
         ScreenTitle(stringResource(R.string.action_settings_title), showBack = true, navController)
 
         ScreenTitle(stringResource(R.string.action_settings_quick_options_title))
+
         SettingToggleRaw(
-            title = stringResource(R.string.action_settings_quick_option_language_switch_key),
-            subtitle = stringResource(R.string.action_settings_quick_option_language_switch_key_subtitle),
-            enabled = isLanguageKeyEnabled,
+            title = stringResource(R.string.action_settings_quick_option_enable_action_key),
+            subtitle = when(currActionKey) {
+                null -> stringResource(R.string.action_settings_quick_option_enable_action_key_subtitle_no_assignment)
+                else -> stringResource(
+                    R.string.action_settings_quick_option_enable_action_key_subtitle_with_assignment,
+                    stringResource(currActionKey.name)
+                )
+            },
+            enabled = currActionKey != null,
             setValue = { to ->
                 var actionMap = context.getSetting(ActionsSettings)
                     .toActionEditorItems()
                     .ensureWellFormed()
                     .toActionMap()
-                    .ensureAllCategoriesPresent()
                     .toMutableMap()
 
                 if(to) {
-                    // Add old action key to the favorites instead, if there is any.
+                    // Put an emoji key as the default.
+                    actionMap[ActionCategory.ActionKey] = listOf(EmojiAction)
+
+                    // In case it was assigned anywhere else, it will be removed automatically
+                    // when we're removing duplicates. The ActionKey has the highest precedence
+                } else {
+                    // Move any previous action key to the favorites
                     val prevActionKey = actionMap[ActionCategory.ActionKey]!!
                     actionMap[ActionCategory.Favorites] =
                         prevActionKey + actionMap[ActionCategory.Favorites]!!
 
-                    // Replace it with switch language action
-                    actionMap[ActionCategory.ActionKey] = listOf(SwitchLanguageAction)
-                } else {
-                    // Remove language switch key and emoji key completely
-                    actionMap = actionMap.mapValues { it.value.filter { it != EmojiAction && it != SwitchLanguageAction } }.toMutableMap()
-
-                    // Reinsert switch language to beginning of favorites
-                    actionMap[ActionCategory.Favorites] = listOf(SwitchLanguageAction) + actionMap[ActionCategory.Favorites]!!
-
-                    // Reinsert emoji to action key
-                    actionMap[ActionCategory.ActionKey] = listOf(EmojiAction)
+                    // Then clear action key
+                    actionMap[ActionCategory.ActionKey] = listOf()
                 }
 
                 context.updateSettingsWithNewActions(actionMap)
             }
+        )
+
+        // Do not show the language key setting if action key is disabled entirely.
+        if(true || currActionKey != null) {
+            SettingToggleRaw(
+                title = stringResource(R.string.action_settings_quick_option_language_switch_key),
+                subtitle = stringResource(R.string.action_settings_quick_option_language_switch_key_subtitle),
+                enabled = isLanguageKeyEnabled,
+                disabled = currActionKey == null,
+                setValue = { to ->
+                    var actionMap = context.getSetting(ActionsSettings)
+                        .toActionEditorItems()
+                        .ensureWellFormed()
+                        .toActionMap()
+                        .toMutableMap()
+
+                    if (to) {
+                        // Add old action key to the favorites instead, if there is any.
+                        val prevActionKey = actionMap[ActionCategory.ActionKey]!!
+                        actionMap[ActionCategory.Favorites] =
+                            prevActionKey + actionMap[ActionCategory.Favorites]!!.filter { it != SwitchLanguageAction }
+
+                        // Replace it with switch language action
+                        actionMap[ActionCategory.ActionKey] = listOf(SwitchLanguageAction)
+                    } else {
+                        // Remove language switch key and emoji key completely
+                        actionMap =
+                            actionMap.mapValues { it.value.filter { it != EmojiAction && it != SwitchLanguageAction } }
+                                .toMutableMap()
+
+                        // Reinsert switch language to beginning of favorites
+                        actionMap[ActionCategory.Favorites] =
+                            listOf(SwitchLanguageAction) + actionMap[ActionCategory.Favorites]!!
+
+                        // Reinsert emoji to action key
+                        actionMap[ActionCategory.ActionKey] = listOf(EmojiAction)
+                    }
+
+                    context.updateSettingsWithNewActions(actionMap)
+                }
+            )
+        }
+
+        NavigationItem(
+            title = stringResource(R.string.action_editor_title),
+            subtitle = stringResource(R.string.action_editor_subtitle),
+            style = NavigationItemStyle.Misc,
+            navigate = { navController.navigate("actionEdit") }
         )
 
         ScreenTitle(stringResource(R.string.action_settings_action_settings))

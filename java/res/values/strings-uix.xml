@@ -337,8 +337,11 @@
     <!-- Action settings -->
     <string name="action_settings_title">Actions</string>
     <string name="action_settings_quick_options_title">Quick Options</string>
+    <string name="action_settings_quick_option_enable_action_key">Enable action key</string>
+    <string name="action_settings_quick_option_enable_action_key_subtitle_no_assignment">Show a key to the left of spacebar to quickly access an action. Enabling this will place an emoji key, but it can be customized in “Edit Actions“</string>
+    <string name="action_settings_quick_option_enable_action_key_subtitle_with_assignment">Show a key to the left of spacebar to quickly access an action. Disabling this will move the currently assigned action: %s</string>
     <string name="action_settings_quick_option_language_switch_key">Language switch key</string>
-    <string name="action_settings_quick_option_language_switch_key_subtitle">Replace the emoji key with a language switch key. Go to “Edit Actions” to put something else or to remove the action key entirely.</string>
+    <string name="action_settings_quick_option_language_switch_key_subtitle">Replace the emoji key with a language switch key. Go to “Edit Actions” to put something else.</string>
     <string name="action_settings_action_settings">Action Settings</string>
 
     <!-- Keyboard's size settings -->
