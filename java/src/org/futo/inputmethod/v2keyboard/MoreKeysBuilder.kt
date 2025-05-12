@@ -109,13 +109,15 @@ data class MoreKeysBuilder(
             LongPressKey.Symbols -> (mode.autoSymFromCoord && (coordinate.regularRow > 0 || isNumberRowActive))
 
             // Language keys require a-z code
-            LongPressKey.LanguageKeys, LongPressKey.MiscLetters -> mode.autoFromLanguageKey && row.isLetterRow
+            LongPressKey.LanguageKeys, LongPressKey.MiscLetters -> mode.autoFromLanguageKey && row.isLetterRow && code > 0
         }
 
     private fun moreKey(key: LongPressKey): String {
         val codeCharOrUnicode = when {
             // Standard alphabet - use the letter itself
             code >= 'a'.code && code <= 'z'.code -> code.toChar()
+
+            code <= 0 -> ""
 
             // Anything else - unicode
             else -> "code_u" + code.toString(16).padStart(4, '0')
