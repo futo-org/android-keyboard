@@ -330,7 +330,7 @@
     <string name="resource_importer_warning_cfg_backup_is_destructive">Are you sure you want to import this configuration backup? This will replace all of your settings, learned dictionary words, any imported resources, and more.</string>
     <string name="resource_importer_warning_cfg_backup_newer_version">This configuration backup was created by a newer version of FUTO Keyboard, and it might not import properly. Try updating FUTO Keyboard first.</string>
 
-    <string name="settings_export_configuration_title">Settings Export</string>
+    <string name="settings_export_configuration_title">Settings Backup</string>
     <string name="settings_export_configuration">Export configuration</string>
     <string name="settings_export_configuration_subtitle">Export all of your settings, learned words, resources, and more.</string>
     <string name="settings_export_configuration_exporting">Exporting configuration…</string>

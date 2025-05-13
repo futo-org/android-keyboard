@@ -211,7 +211,7 @@ object SettingsExporter {
         // Collect transformer models
         val modelDirectory = ModelPaths.getModelDirectory(context)
         modelDirectory.listFiles()?.forEach { resourceFile ->
-            if (includeHeavyResources) {
+            if (includeHeavyResources && ModelPaths.shouldFileBeIncludedInExport(resourceFile)) {
                 zipOut.putNextEntry(ZipEntry("transformers/${resourceFile.name}"))
                 resourceFile.inputStream().use { it.copyTo(zipOut) }
                 zipOut.closeEntry()

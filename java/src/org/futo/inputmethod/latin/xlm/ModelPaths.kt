@@ -235,6 +235,17 @@ object ModelPaths {
         }
     }
 
+    fun shouldFileBeIncludedInExport(file: File): Boolean {
+        if(file.name == "$BASE_MODEL_NAME.gguf") {
+            val loader = ModelInfoLoader(file, file.nameWithoutExtension)
+            val info = loader.loadDetails()
+            if(info == null) return false
+            return info.finetune_count > 0
+        } else {
+            return true
+        }
+    }
+
     fun getModels(context: Context): List<ModelInfoLoader> {
         ensureDefaultModelExists(context)
 

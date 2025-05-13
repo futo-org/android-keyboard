@@ -217,7 +217,7 @@ class TrainingWorker(val context: Context, val parameters: WorkerParameters) : C
         val powerManager = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         val wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "FUTOLatinIME::modelTrainer")
         withContext(Dispatchers.Default) {
-            println("Staring to train")
+            println("Starting to train")
             wakeLock.acquire(120*60*1000L /*1 hour*/)
             try {
                 trainer.train()
