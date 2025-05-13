@@ -6,7 +6,25 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.PreferencesSerializer
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import okio.ByteString.Companion.encodeUtf8
 import okio.ByteString.Companion.toByteString
 import okio.buffer
@@ -15,9 +33,12 @@ import okio.source
 import org.futo.inputmethod.latin.uix.PreferenceUtils.getDefaultSharedPreferences
 import org.futo.inputmethod.latin.uix.actions.ClipboardFileName
 import org.futo.inputmethod.latin.uix.actions.clipboardFile
+import org.futo.inputmethod.latin.uix.settings.ScreenTitle
+import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.findSettingsActivity
 import org.futo.inputmethod.latin.xlm.ModelPaths
+import org.futo.inputmethod.latin.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
@@ -144,7 +165,7 @@ object SettingsExporter {
 
         // Write version and date
         zipOut.putNextEntry(ZipEntry(versionFileName))
-        zipOut.write(ByteBuffer.allocate(8).also {
+        zipOut.write(ByteBuffer.allocate(9).also {
             it.order(ByteOrder.LITTLE_ENDIAN)
             it.put(currentVersion)
             it.putLong(Date().time)
@@ -363,6 +384,45 @@ object SettingsExporter {
             null
         } catch (_: Exception) {
             null
+        }
+    }
+
+
+    @Composable
+    fun ExportingMenu(navController: NavHostController = rememberNavController()) {
+        val context = LocalContext.current
+        val activity = remember { findSettingsActivity(context) }
+        val triggered = remember { mutableStateOf(false) }
+
+        LaunchedEffect(Unit) {
+            activity.exportInProgress.value = 1
+            triggerExportSettings(context)
+            triggered.value = true
+        }
+
+        LaunchedEffect(activity.exportInProgress.value, triggered.value) {
+            if(activity.exportInProgress.value==0 && triggered.value) {
+                navController.navigateUp()
+            }
+        }
+        BackHandler(activity.exportInProgress.value == 2) { }
+        ScrollableList {
+            ScreenTitle(stringResource(R.string.settings_export_configuration_exporting))
+
+            if(activity.exportInProgress.value == 2) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp)
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                Text(
+                    stringResource(R.string.settings_export_configuration_exporting_text),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp)
+                )
+            }
         }
     }
 }

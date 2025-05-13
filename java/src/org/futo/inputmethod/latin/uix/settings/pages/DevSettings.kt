@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -96,6 +97,24 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             navigate = { navController.navigate("devlayouteditor") }
         )
 
+        ScreenTitle(stringResource(R.string.settings_export_configuration_title))
+
+        NavigationItem(
+            title = stringResource(R.string.settings_export_configuration),
+            subtitle = stringResource(R.string.settings_export_configuration_subtitle),
+            style = NavigationItemStyle.Misc,
+            navigate = {
+                navController.navigate("exportingcfg")
+            }
+        )
+        NavigationItem(
+            title = stringResource(R.string.settings_import_configuration),
+            subtitle = stringResource(R.string.settings_import_configuration_subtitle),
+            style = NavigationItemStyle.Misc,
+            navigate = {
+                SettingsExporter.triggerImportSettings(context)
+            }
+        )
 
         ScreenTitle(title = "Payment stuff")
 
@@ -180,21 +199,6 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
                 }
             )
         }
-
-        NavigationItem(
-            title = "Export backup",
-            style = NavigationItemStyle.Misc,
-            navigate = {
-                SettingsExporter.triggerExportSettings(context)
-            }
-        )
-        NavigationItem(
-            title = "Import backup",
-            style = NavigationItemStyle.Misc,
-            navigate = {
-                SettingsExporter.triggerImportSettings(context)
-            }
-        )
 
         NavigationItem(
             title = "Inline Keyboard",

@@ -27,11 +27,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.DialogNavigator
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
@@ -255,11 +256,17 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
         updateSystemState()
     }
 
+    val exportInProgress = mutableStateOf(0)
     @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(resultCode != Activity.RESULT_OK) return
+        if(resultCode != Activity.RESULT_OK){
+            if(requestCode == EXPORT_SETTINGS_REQUEST) {
+                exportInProgress.value = 0
+            }
+            return
+        }
 
         if(requestCode == IMPORT_GGUF_MODEL_REQUEST || requestCode == IMPORT_SETTINGS_REQUEST) {
             data?.data?.also { uri ->
@@ -280,12 +287,16 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
                 )
             }
         } else if(requestCode == EXPORT_SETTINGS_REQUEST) {
-            runBlocking {
-                data?.data?.let { uri ->
-                    contentResolver.openOutputStream(uri)!!
-                }?.use {
-                    SettingsExporter.exportSettings(this@SettingsActivity, it, true)
+            lifecycleScope.launch {
+                exportInProgress.value = 2
+                withContext(Dispatchers.IO) {
+                    data?.data?.let { uri ->
+                        contentResolver.openOutputStream(uri)!!
+                    }?.use {
+                        SettingsExporter.exportSettings(this@SettingsActivity, it, true)
+                    }
                 }
+                exportInProgress.value = 0
             }
         }
     }

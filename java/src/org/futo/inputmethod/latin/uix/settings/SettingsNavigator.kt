@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
+import org.futo.inputmethod.latin.uix.SettingsExporter.ExportingMenu
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
 import org.futo.inputmethod.latin.uix.settings.pages.AlreadyPaidDialog
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
@@ -77,6 +78,7 @@ fun SettingsNavigator(
         composable("payment") { PaymentScreen(navController) { navController.navigateUp() } }
         composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }
         composable("credits") { CreditsScreen(navController) }
+        composable("exportingcfg") { ExportingMenu(navController) }
         composable("credits/thirdparty/{idx}") {
             ProjectInfoView(
                 it.arguments?.getString("idx")?.toIntOrNull() ?: 0,

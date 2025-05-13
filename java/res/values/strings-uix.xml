@@ -330,6 +330,14 @@
     <string name="resource_importer_warning_cfg_backup_is_destructive">Are you sure you want to import this configuration backup? This will replace all of your settings, learned dictionary words, any imported resources, and more.</string>
     <string name="resource_importer_warning_cfg_backup_newer_version">This configuration backup was created by a newer version of FUTO Keyboard, and it might not import properly. Try updating FUTO Keyboard first.</string>
 
+    <string name="settings_export_configuration_title">Settings Export</string>
+    <string name="settings_export_configuration">Export configuration</string>
+    <string name="settings_export_configuration_subtitle">Export all of your settings, learned words, resources, and more.</string>
+    <string name="settings_export_configuration_exporting">Exporting configuration…</string>
+    <string name="settings_export_configuration_exporting_text">Please do not close this menu until the process is completed (5 to 10 seconds)</string>
+    <string name="settings_import_configuration">Import configuration</string>
+    <string name="settings_import_configuration_subtitle">If you previously exported your config, you can re-import it here.</string>
+
     <!-- Keyboard actions -->
     <string name="action_editor_title">Edit Actions</string>
     <string name="action_editor_subtitle">Edit favorite actions, pinned actions, and the action key next to the spacebar</string>
