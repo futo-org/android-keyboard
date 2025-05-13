@@ -106,6 +106,7 @@ fun writeDatastoreBackup(context: Context, unlockedStore: DataStore<Preferences>
     val outFile = context.getBackupPreferencesDataStoreFileSwap()
     GlobalScope.launch {
         val prefs = unlockedStore.data.take(1).first()
+        outFile.parentFile?.mkdirs()
         outFile.sink().buffer().use { out ->
             PreferencesSerializer.writeTo(prefs, out)
         }
@@ -306,6 +307,10 @@ suspend fun <T> Context.getUnlockedSetting(key: SettingsKey<T>): T? {
 
         valueFlow.first()
     }
+}
+
+suspend fun Context.getUnlockedPreferences(): Preferences? {
+    return unlockedDataStore?.data?.take(1)?.first()
 }
 
 fun <T> LifecycleOwner.deferSetSetting(context: Context, key: Preferences.Key<T>, value: T): Job {

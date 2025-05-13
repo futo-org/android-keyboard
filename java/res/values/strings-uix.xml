@@ -315,15 +315,20 @@
     <string name="file_kind_transformer_model">Transformer Model</string>
     <string name="file_kind_dictionary">Dictionary</string>
     <string name="file_kind_invalid_file">Invalid file</string>
+    <string name="file_kind_cfg_backup">Configuration Backup</string>
     <string name="resource_importer_import_title">Import - %1$s</string>
     <string name="resource_importer_error_wordlist_1">Error: This file appears to be a source wordlist (_wordlist.combined) instead of a compiled dictionary (.dict) file.</string>
     <string name="resource_importer_error_wordlist_2">Please download the compiled dictionary file, not the wordlist. If you made this wordlist yourself, compile it externally using dicttool.</string>
     <string name="resource_importer_error_invalid_fiile">Error: This file could not be recognized. It may be invalid or it may have been corrupted. Try re-downloading it, or try a different file.</string>
     <string name="resource_importer_cancel_button">Cancel</string>
+    <string name="resource_importer_import_button">Import</string>
     <string name="resource_importer_file_info">File information: %1$s</string>
     <string name="resource_importer_importing">Importing for language: %1$s</string>
+    <string name="resource_importer_importing_cfg">Importing configuration… Please do not close this menu until the process is completed (5 to 10 seconds)</string>
     <string name="resource_importer_select_language">Select the language to import for:</string>
     <string name="resource_importer_warning_language_missing">This file appears to be intended for a language (%1$s) which is not enabled in settings</string>
+    <string name="resource_importer_warning_cfg_backup_is_destructive">Are you sure you want to import this configuration backup? This will replace all of your settings, learned dictionary words, any imported resources, and more.</string>
+    <string name="resource_importer_warning_cfg_backup_newer_version">This configuration backup was created by a newer version of FUTO Keyboard, and it might not import properly. Try updating FUTO Keyboard first.</string>
 
     <!-- Keyboard actions -->
     <string name="action_editor_title">Edit Actions</string>

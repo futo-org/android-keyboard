@@ -47,7 +47,7 @@ fun humanReadableByteCountSI(bytes: Long): String {
     return String.format("%.1f %cB", bytes / 1000.0, ci.current())
 }
 
-private fun findSettingsActivity(context: Context): SettingsActivity {
+fun findSettingsActivity(context: Context): SettingsActivity {
     if(context is SettingsActivity) {
         return context
     }else if(context is ContextThemeWrapper){

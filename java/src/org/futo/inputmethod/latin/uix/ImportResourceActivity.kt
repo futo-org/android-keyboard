@@ -44,6 +44,7 @@ import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitleWithIcon
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
@@ -94,6 +95,52 @@ fun FileKind.namePreferenceKeyFor(locale: String): Preferences.Key<String> {
     assert(this != FileKind.Invalid)
     val locale = locale.replace("#", "H")
     return stringPreferencesKey("resourcename_${name}_${locale}")
+}
+
+@Composable
+fun SettingsImportScreen(
+    metadata: SettingsExporter.CfgFileMetadata,
+    onApply: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    val importing = remember { mutableStateOf(false) }
+    ScrollableList {
+        ScreenTitle(title = stringResource(R.string.resource_importer_import_title, stringResource(R.string.file_kind_cfg_backup)))
+
+        if(importing.value) {
+            Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp)
+            ) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            Text(stringResource(R.string.resource_importer_importing_cfg), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp))
+        } else {
+            if(metadata.isNewer) {
+                Tip("⚠\uFE0F " + stringResource(R.string.resource_importer_warning_cfg_backup_newer_version))
+            }
+            Text(stringResource(R.string.resource_importer_file_info, metadata.dateExported.toString()),
+                modifier = Modifier.padding(16.dp, 8.dp))
+            Text(stringResource(R.string.resource_importer_warning_cfg_backup_is_destructive),
+                modifier = Modifier.padding(16.dp, 8.dp))
+            Spacer(modifier = Modifier.height(32.dp))
+            NavigationItem(
+                title = stringResource(R.string.resource_importer_import_button),
+                style = NavigationItemStyle.MiscNoArrow,
+                navigate = {
+                    onApply()
+                    importing.value = true
+                }
+            )
+            NavigationItem(
+                title = stringResource(R.string.resource_importer_cancel_button),
+                style = NavigationItemStyle.MiscNoArrow,
+                navigate = {
+                    onCancel()
+                }
+            )
+        }
+    }
 }
 
 @Composable
@@ -401,6 +448,7 @@ class ImportResourceActivity : ComponentActivity() {
     private val themeOption: MutableState<ThemeOption?> = mutableStateOf(null)
     private val fileBeingImported: MutableState<String?> = mutableStateOf(null)
     private val fileKind: MutableState<FileKindAndInfo> = mutableStateOf(FileKindAndInfo(FileKind.Invalid, null, null))
+    private val settingsCfgImportMetadata: MutableState<SettingsExporter.CfgFileMetadata?> = mutableStateOf(null)
     private var uri: Uri? = null
 
     private fun applySetting(fileKind: FileKindAndInfo, inputMethodSubtype: InputMethodSubtype) {
@@ -470,12 +518,43 @@ class ImportResourceActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        ImportScreen(
-                            fileKind = fileKind.value,
-                            file = fileBeingImported.value,
-                            onApply = { fileKind, inputMethodSubtype -> applySetting(fileKind, inputMethodSubtype) },
-                            onCancel = { finish() }
-                        )
+                        settingsCfgImportMetadata.value?.let {
+                            SettingsImportScreen(
+                                metadata = it,
+                                onApply = {
+                                    lifecycleScope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            contentResolver.openInputStream(uri!!)!!.use {
+                                                SettingsExporter.loadSettings(
+                                                    this@ImportResourceActivity,
+                                                    it,
+                                                    true
+                                                )
+                                            }
+                                        }
+                                        withContext(Dispatchers.Main) {
+                                            finish()
+                                        }
+                                    }
+                                },
+                                onCancel = {
+                                    finish()
+                                }
+                            )
+                            it
+                        } ?: run {
+                            ImportScreen(
+                                fileKind = fileKind.value,
+                                file = fileBeingImported.value,
+                                onApply = { fileKind, inputMethodSubtype ->
+                                    applySetting(
+                                        fileKind,
+                                        inputMethodSubtype
+                                    )
+                                },
+                                onCancel = { finish() }
+                            )
+                        }
                     }
                 }
             }
@@ -490,6 +569,11 @@ class ImportResourceActivity : ComponentActivity() {
         val filePath = intent?.data?.path
         fileBeingImported.value = filePath
         fileKind.value = determineFileKind(applicationContext, uri!!)
+        settingsCfgImportMetadata.value = if(fileKind.value.kind == FileKind.Invalid) {
+            SettingsExporter.getCfgFileMetadata(contentResolver.openInputStream(uri!!)!!)
+        } else {
+            null
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

@@ -1,11 +1,9 @@
 package org.futo.inputmethod.latin.uix.settings
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.Settings
@@ -37,10 +35,11 @@ import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
+import org.futo.inputmethod.latin.uix.EXPORT_SETTINGS_REQUEST
+import org.futo.inputmethod.latin.uix.IMPORT_SETTINGS_REQUEST
 import org.futo.inputmethod.latin.uix.ImportResourceActivity
+import org.futo.inputmethod.latin.uix.SettingsExporter
 import org.futo.inputmethod.latin.uix.THEME_KEY
-import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
-import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -260,7 +259,9 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == IMPORT_GGUF_MODEL_REQUEST && resultCode == Activity.RESULT_OK) {
+        if(resultCode != Activity.RESULT_OK) return
+
+        if(requestCode == IMPORT_GGUF_MODEL_REQUEST || requestCode == IMPORT_SETTINGS_REQUEST) {
             data?.data?.also { uri ->
                 val intent = Intent()
                 intent.setClass(this, ImportResourceActivity::class.java)
@@ -270,13 +271,21 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
                 intent.setData(uri)
                 startActivity(intent)
             }
-        } else if(requestCode == EXPORT_GGUF_MODEL_REQUEST && resultCode == Activity.RESULT_OK && fileBeingSaved != null) {
+        } else if(requestCode == EXPORT_GGUF_MODEL_REQUEST && fileBeingSaved != null) {
             data?.data?.also { uri ->
                 ModelPaths.exportModel(this, uri, fileBeingSaved!!)
                 navController.navigateToInfo(
                     "Model Exported",
                     "Model saved to file"
                 )
+            }
+        } else if(requestCode == EXPORT_SETTINGS_REQUEST) {
+            runBlocking {
+                data?.data?.let { uri ->
+                    contentResolver.openOutputStream(uri)!!
+                }?.use {
+                    SettingsExporter.exportSettings(this@SettingsActivity, it, true)
+                }
             }
         }
     }

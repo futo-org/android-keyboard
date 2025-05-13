@@ -222,22 +222,25 @@ val DefaultClipboardEntry = ClipboardEntry(
     mimeTypes = listOf()
 )
 
+const val ClipboardFileName = "clipboard.json"
+val Context.clipboardFile get() = File(filesDir, ClipboardFileName)
+
 class ClipboardHistoryManager(val context: Context, val coroutineScope: LifecycleCoroutineScope) : PersistentActionState {
     private val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     val clipboardHistory = mutableStateListOf<ClipboardEntry>()
 
     // Primary file
-    val clipboardFile = File(context.filesDir, "clipboard.json")
+    val clipboardFile = context.clipboardFile
 
     // Backup in case primary gets corrupted somehow
-    val clipboardFileBak = File(context.filesDir, "clipboard.json.bak")
+    val clipboardFileBak = File(context.filesDir, "$ClipboardFileName.bak")
 
     // Temporary file used during saving, after writing we delete previous backup, move primary to backup, move swap to primary
-    val clipboardFileSwap = File(context.filesDir, "clipboard.json.swap")
+    val clipboardFileSwap = File(context.filesDir, "$ClipboardFileName.swap")
 
     var clipboardLoaded = false
-    
+
     override suspend fun onDeviceUnlocked() {
         loadClipboard()
     }

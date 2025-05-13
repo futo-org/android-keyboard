@@ -21,8 +21,10 @@ import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.DebugOnly
 import org.futo.inputmethod.latin.uix.HiddenKeysSetting
 import org.futo.inputmethod.latin.uix.OldStyleActionsBar
+import org.futo.inputmethod.latin.uix.SettingsExporter
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.UixManagerInstanceForDebug
+import org.futo.inputmethod.latin.uix.actions.clipboardFile
 import org.futo.inputmethod.latin.uix.getPreferencesDataStoreFile
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -168,7 +170,7 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
                             context.getPreferencesDataStoreFile().outputStream().use {
                                 it.write(0)
                             }
-                            File(context.filesDir, "clipboard.json").outputStream().use {
+                            context.clipboardFile.outputStream().use {
                                 it.write(0)
                             }
 
@@ -178,6 +180,21 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
                 }
             )
         }
+
+        NavigationItem(
+            title = "Export backup",
+            style = NavigationItemStyle.Misc,
+            navigate = {
+                SettingsExporter.triggerExportSettings(context)
+            }
+        )
+        NavigationItem(
+            title = "Import backup",
+            style = NavigationItemStyle.Misc,
+            navigate = {
+                SettingsExporter.triggerImportSettings(context)
+            }
+        )
 
         NavigationItem(
             title = "Inline Keyboard",
