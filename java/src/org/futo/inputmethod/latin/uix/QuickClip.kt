@@ -7,7 +7,34 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.theme.Typography
 
 enum class QuickClipKind {
     FullString,
@@ -18,12 +45,21 @@ enum class QuickClipKind {
 
 @get:DrawableRes
 val QuickClipKind.icon: Int get() =
-        when(this) {
-            QuickClipKind.FullString -> R.drawable.clipboard
-            QuickClipKind.NumericCode -> R.drawable.hash
-            QuickClipKind.EmailAddress -> R.drawable.at_sign
-            QuickClipKind.Link -> R.drawable.link
-        }
+    when(this) {
+        QuickClipKind.FullString -> R.drawable.clipboard
+        QuickClipKind.NumericCode -> R.drawable.hash
+        QuickClipKind.EmailAddress -> R.drawable.at_sign
+        QuickClipKind.Link -> R.drawable.link
+    }
+
+@get:StringRes
+val QuickClipKind.accessibilityDescription: Int get() =
+    when(this) {
+        QuickClipKind.FullString -> R.string.quick_clip_full_string
+        QuickClipKind.NumericCode -> R.string.quick_clip_numeric_code
+        QuickClipKind.EmailAddress -> R.string.quick_clip_email_address
+        QuickClipKind.Link -> R.string.quick_clip_url
+    }
 
 // The order here defines which ones to favor when theres a duplicate
 // (e.g. if the text is only an email, EmailAddress will be favored over FullString)
@@ -40,6 +76,81 @@ data class QuickClipState(
     val imageMimeTypes: List<String>,
     val validUntil: Long
 )
+
+@Composable
+private fun QuickClipPill(icon: Painter, contentDescription: String, text: String?, uri: Uri?, onActivate: () -> Unit) {
+    Box(Modifier.fillMaxHeight().padding(4.dp).clickable {
+        onActivate()
+    }.clearAndSetSemantics {
+        this.role = Role.Button
+        this.contentDescription = contentDescription
+        this.onClick(action = { onActivate(); true })
+    }) {
+        Surface(
+            color = LocalKeyboardScheme.current.keyboardContainer,
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = CenterVertically,
+                modifier = Modifier.padding(6.dp).fillMaxHeight()
+            ) {
+                Icon(icon, contentDescription = null)
+
+                if(text != null) {
+                    val cutText = if (text.length > 10) {
+                        text.substring(0, 8) + "..."
+                    } else {
+                        text
+                    }.replace("\n", " ")
+                    Text(cutText, style = Typography.Small)
+                }else if(uri != null) {
+                    Icon(painterResource(R.drawable.image), contentDescription = null)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
+    val manager = if(!LocalInspectionMode.current) {
+        LocalManager.current
+    } else {
+        null
+    }
+
+    LazyRow(Modifier.weight(1.0f)) {
+        state.image?.let { uri ->
+            item {
+                QuickClipPill(
+                    icon = painterResource(R.drawable.clipboard),
+                    contentDescription = stringResource(R.string.quick_clip_image),
+                    text = null,
+                    uri = uri
+                ) {
+                    manager!!.typeUri(uri, state.imageMimeTypes)
+                    QuickClip.markQuickClipDismissed()
+                    dismiss()
+                }
+            }
+        }
+
+        state.texts.forEach {
+            item {
+                QuickClipPill(
+                    icon = painterResource(it.first.icon),
+                    contentDescription = stringResource(it.first.accessibilityDescription, it.second),
+                    text = it.second,
+                    uri = null
+                ) {
+                    manager!!.typeText(it.second)
+                    QuickClip.markQuickClipDismissed()
+                    dismiss()
+                }
+            }
+        }
+    }
+}
 
 object QuickClip {
     private var timeOfDismissal = 0L
