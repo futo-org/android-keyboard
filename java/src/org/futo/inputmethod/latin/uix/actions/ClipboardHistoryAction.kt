@@ -780,8 +780,9 @@ val ClipboardHistoryAction = Action(
                 name = R.string.action_clipboard_manager_settings_save_sensitive_clips,
                 component = {
                     SettingToggleDataStore(
-                        stringResource(R.string.action_clipboard_manager_settings_save_sensitive_clips),
-                        ClipboardHistorySaveSensitive
+                        title = stringResource(R.string.action_clipboard_manager_settings_save_sensitive_clips),
+                        subtitle = stringResource(R.string.action_clipboard_manager_settings_save_sensitive_clips_subtitle),
+                        setting = ClipboardHistorySaveSensitive
                     )
                 }
             ),

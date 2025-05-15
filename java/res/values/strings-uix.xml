@@ -85,9 +85,10 @@
     <!-- This message is shown when we're typing in a text field does not support image insertion ("app" refers to the external app that is providing the text field) -->
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
     <string name="action_clipboard_manager_settings_title">Clipboard Manager Settings</string>
-    <string name="action_clipboard_manager_settings_hours_to_keep_clips">Number of hours to keep unpinned clips</string>
-    <string name="action_clipboard_manager_settings_maximum_clips">Maximum number of unpinned clips to keep</string>
-    <string name="action_clipboard_manager_settings_save_sensitive_clips">Save sensitive clips (from password managers, from incognito windows)</string>
+    <string name="action_clipboard_manager_settings_hours_to_keep_clips">Hours to keep unpinned clips</string>
+    <string name="action_clipboard_manager_settings_maximum_clips">Number of unpinned clips to keep</string>
+    <string name="action_clipboard_manager_settings_save_sensitive_clips">Save sensitive clips</string>
+    <string name="action_clipboard_manager_settings_save_sensitive_clips_subtitle">If enabled, it will save items from password managers, incognito windows, etc</string>
     <string name="action_clipboard_manager_settings_list_layout">Use vertical list layout instead of grid</string>
 
     <!-- For keyboard modes action -->
