@@ -100,7 +100,7 @@ public final class KeyboardSwitcher implements SwitchActions {
         final boolean themeUpdated = updateKeyboardThemeAndContextThemeWrapper(
                 displayContext, KeyboardTheme.getKeyboardTheme(displayContext /* context */));
         if (themeUpdated && mKeyboardView != null) {
-            ((LatinIME)mLatinIMELegacy.getInputMethodService()).updateLegacyView(onCreateInputView(
+            mLatinIMELegacy.getLatinIME().updateLegacyView(onCreateInputView(
                     displayContext, mIsHardwareAcceleratedDrawingEnabled));
             mLatinIMELegacy.updateMainKeyboardViewSettings();
         }
@@ -140,7 +140,7 @@ public final class KeyboardSwitcher implements SwitchActions {
         }
 
 
-        final KeyboardSizingCalculator sizingCalculator = ((LatinIME)mLatinIMELegacy.getInputMethodService()).getSizingCalculator();
+        final KeyboardSizingCalculator sizingCalculator = mLatinIMELegacy.getLatinIME().getSizingCalculator();
         final ComputedKeyboardSize computedSize = sizingCalculator.calculate(layoutSetName, settingsValues);
 
         final KeyboardLayoutSetV2Params params = new KeyboardLayoutSetV2Params(

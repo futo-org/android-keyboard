@@ -812,6 +812,7 @@ public final class InputLogic {
             final InputTransaction inputTransaction,
             final LatinIMELegacy.UIHandler handler) {
         inputTransaction.setDidAffectContents();
+        mLatinIMELegacy.getLatinIME().getUixManager().onNonFunctionalEvent();
         switch (event.mCodePoint) {
             case Constants.CODE_ENTER:
                 final EditorInfo editorInfo = getCurrentInputEditorInfo();

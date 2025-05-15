@@ -174,12 +174,12 @@ fun InlineSuggestionView(inlineSuggestion: MutableState<View?>) {
 @Composable
 fun RowScope.InlineSuggestions(suggestions: List<MutableState<View?>>) {
     val scrollState = rememberScrollState()
-    Row(modifier = Modifier
-        .weight(1.0f)
-        .padding(0.dp, 4.dp)
-        .horizontalScroll(scrollState)
-        .clipScrollableContainer(Orientation.Horizontal)
-        .clipToBounds()) {
-        suggestions.forEach { InlineSuggestionView(it) }
+    LazyRow(modifier = Modifier
+            .weight(1.0f)
+            .padding(0.dp, 4.dp)
+            .horizontalScroll(scrollState)
+            .clipScrollableContainer(Orientation.Horizontal)
+            .clipToBounds()) {
+        suggestions.forEach { item { InlineSuggestionView(it) } }
     }
 }

@@ -296,9 +296,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
             final LatinIMELegacy latinImeLegacy = getOwnerInstance();
             assert latinImeLegacy != null;
 
-            final LatinIME latinIme = (LatinIME)latinImeLegacy.getInputMethodService();
-
-            if(!latinIme.postUpdateSuggestionStrip(inputStyle)) {
+            if(!latinImeLegacy.getLatinIME().postUpdateSuggestionStrip(inputStyle)) {
                 updateSuggestionStripLegacy(inputStyle);
             }
         }
@@ -536,14 +534,14 @@ public class LatinIMELegacy implements KeyboardActionListener,
         public void triggerAction(int actionId) {
             final LatinIMELegacy latinImeLegacy = getOwnerInstance();
             if (latinImeLegacy != null) {
-                ((LatinIME) (latinImeLegacy.getInputMethodService())).getUixManager().triggerAction(actionId, false);
+                latinImeLegacy.getLatinIME().getUixManager().triggerAction(actionId, false);
             }
         }
 
         public void triggerActionAlt(int actionId) {
             final LatinIMELegacy latinImeLegacy = getOwnerInstance();
             if (latinImeLegacy != null) {
-                ((LatinIME) (latinImeLegacy.getInputMethodService())).getUixManager().triggerAction(actionId, true);
+                latinImeLegacy.getLatinIME().getUixManager().triggerAction(actionId, true);
             }
         }
     }
@@ -1287,7 +1285,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER:
-            ((LatinIME)mInputMethodService).getUixManager().showLanguageSwitcher();
+            getLatinIME().getUixManager().showLanguageSwitcher();
             return true;
         }
         return false;
@@ -1352,7 +1350,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
                         false,
                         0,
                         0));
-                ((LatinIME)mInputMethodService).languageModelFacilitator.ignoreNextUpdate();
+                getLatinIME().languageModelFacilitator.ignoreNextUpdate();
             }
             onCodeInput(
                     Constants.CODE_DELETE,
@@ -1574,7 +1572,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public void getSuggestedWords(final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         SettingsValues settings = mSettings.getCurrent();
-        if(((LatinIME)getInputMethodService()).postUpdateSuggestionStrip(inputStyle)) {
+        if(getLatinIME().postUpdateSuggestionStrip(inputStyle)) {
             return;
         }
 
@@ -1589,7 +1587,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     @Override
     public void showSuggestionStrip(SuggestedWords suggestedWords) {
-        suggestedWords = ((LatinIME) mInputMethodService).getSuggestionBlacklist().filterBlacklistedSuggestions(suggestedWords);
+        suggestedWords = getLatinIME().getSuggestionBlacklist().filterBlacklistedSuggestions(suggestedWords);
 
         if (suggestedWords.isEmpty()) {
             setNeutralSuggestionStrip();
@@ -1613,13 +1611,13 @@ public class LatinIMELegacy implements KeyboardActionListener,
         updateStateAfterInputTransaction(completeInputTransaction);
 
         if(suggestionInfo.isKindOf(SuggestedWordInfo.KIND_EMOJI_SUGGESTION)) {
-            ((LatinIME)mInputMethodService).rememberEmojiSuggestion(suggestionInfo);
+            getLatinIME().rememberEmojiSuggestion(suggestionInfo);
         }
     }
 
     @Override
     public void requestForgetWord(SuggestedWordInfo word) {
-        ((LatinIME)mInputMethodService).requestForgetWord(word);
+        getLatinIME().requestForgetWord(word);
     }
 
     // This will show either an empty suggestion strip (if prediction is enabled) or
@@ -1954,15 +1952,19 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     private void setNavigationBarVisibility(final boolean visible) {
-        ((LatinIME)mInputMethodService).updateNavigationBarVisibility(visible);
+        getLatinIME().updateNavigationBarVisibility(visible);
     }
 
     public InputMethodService getInputMethodService() {
         return mInputMethodService;
     }
 
+    public LatinIME getLatinIME() {
+        return (LatinIME)(mInputMethodService);
+    }
+
     public LanguageModelFacilitator getLanguageModelFacilitator() {
-        return ((LatinIME)(mInputMethodService)).getLanguageModelFacilitator();
+        return getLatinIME().getLanguageModelFacilitator();
     }
 
     public Locale getLocale() {
@@ -1970,7 +1972,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     public void onCodePointDeleted(String textBeforeCursor) {
-        ((LatinIME)(mInputMethodService)).onEmojiDeleted(textBeforeCursor);
+        getLatinIME().onEmojiDeleted(textBeforeCursor);
     }
 
     public void setCombiners(@NotNull List<@NotNull CombinerKind> combiners) {

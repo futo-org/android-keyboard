@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -10,7 +11,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +30,7 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +39,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -58,6 +63,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -83,6 +89,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import org.futo.inputmethod.latin.R
@@ -732,6 +739,8 @@ fun ActionBar(
     toggleActionsExpanded: () -> Unit,
     importantNotice: ImportantNotice? = null,
     keyboardManagerForAction: KeyboardManagerForAction? = null,
+    quickClipState: QuickClipState? = null,
+    onQuickClipDismiss: () -> Unit = {}
 ) {
     val view = LocalView.current
     val context = LocalContext.current
@@ -798,7 +807,9 @@ fun ActionBar(
                             }
                         }
 
-                        if (words != null && inlineSuggestions.isEmpty()) {
+                        if(quickClipState != null) {
+                            QuickClipView(quickClipState, onQuickClipDismiss)
+                        } else if (words != null && inlineSuggestions.isEmpty()) {
                             SuggestionItems(
                                 words,
                                 onClick = {
@@ -828,6 +839,68 @@ fun ActionBar(
         }
 
         ActionSep(true)
+    }
+}
+
+
+@Composable
+private fun QuickClipPill(icon: Painter, text: String?, uri: Uri?, onActivate: () -> Unit) {
+    Box(Modifier.fillMaxHeight().padding(4.dp).clickable {
+        onActivate()
+    }) {
+        Surface(
+            color = LocalKeyboardScheme.current.keyboardContainer,
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = CenterVertically,
+                modifier = Modifier.padding(6.dp).fillMaxHeight()
+            ) {
+                Icon(icon, contentDescription = null)
+
+                if(text != null) {
+                    val cutText = if (text.length > 10) {
+                        text.substring(0, 8) + "..."
+                    } else {
+                        text
+                    }.replace("\n", " ")
+                    Text(cutText, style = Typography.Small)
+                }else if(uri != null) {
+                    Icon(painterResource(R.drawable.image), contentDescription = null)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
+    val manager = if(!LocalInspectionMode.current) {
+        LocalManager.current
+    } else {
+        null
+    }
+
+    LazyRow(Modifier.weight(1.0f)) {
+        state.image?.let { uri ->
+            item {
+                QuickClipPill(painterResource(R.drawable.clipboard), null, uri) {
+                    manager!!.typeUri(uri, state.imageMimeTypes)
+                    QuickClip.markQuickClipDismissed()
+                    dismiss()
+                }
+            }
+        }
+
+        state.texts.forEach {
+            item {
+                QuickClipPill(painterResource(it.first.icon), it.second, null) {
+                    manager!!.typeText(it.second)
+                    QuickClip.markQuickClipDismissed()
+                    dismiss()
+                }
+            }
+        }
     }
 }
 
@@ -1016,6 +1089,32 @@ fun PreviewActionBarWithSuggestions(colorScheme: ThemeOption = DefaultDarkScheme
 
 @Composable
 @Preview
+fun PreviewActionBarWithQuickClip(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
+        ActionBar(
+            words = exampleSuggestedWords,
+            suggestionStripListener = ExampleListener(),
+            onActionActivated = { },
+            inlineSuggestions = listOf(),
+            isActionsExpanded = false,
+            toggleActionsExpanded = { },
+            onActionAltActivated = { },
+            quickClipState = QuickClipState(
+                texts = listOf(
+                    QuickClipKind.EmailAddress to "keyboard@futo.org",
+                    QuickClipKind.NumericCode to "123456",
+                    QuickClipKind.FullString to "Hello world, this is a full string.",
+                ),
+                image = "content://example".toUri(),
+                validUntil = Long.MAX_VALUE,
+                imageMimeTypes = listOf()
+            )
+        )
+    }
+}
+
+@Composable
+@Preview
 fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
     UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
         ActionBar(
@@ -1032,14 +1131,8 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
                     return "Update available: v1.2.3"
                 }
 
-                override fun onDismiss(context: Context) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onOpen(context: Context) {
-                    TODO("Not yet implemented")
-                }
-
+                override fun onDismiss(context: Context) { }
+                override fun onOpen(context: Context) { }
             }
         )
     }
