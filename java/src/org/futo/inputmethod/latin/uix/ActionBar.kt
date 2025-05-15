@@ -1033,9 +1033,9 @@ fun PreviewActionBarWithQuickClip(colorScheme: ThemeOption = DefaultDarkScheme) 
             onActionAltActivated = { },
             quickClipState = QuickClipState(
                 texts = listOf(
-                    QuickClipKind.EmailAddress to "keyboard@futo.org",
-                    QuickClipKind.NumericCode to "123456",
-                    QuickClipKind.FullString to "Hello world, this is a full string.",
+                    QuickClipItem(QuickClipKind.EmailAddress, "keyboard@futo.org", 0),
+                    QuickClipItem(QuickClipKind.NumericCode, "123456", 0),
+                    QuickClipItem(QuickClipKind.FullString, "Hello world, this is a full string.", 0),
                 ),
                 image = "content://example".toUri(),
                 validUntil = Long.MAX_VALUE,

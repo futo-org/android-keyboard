@@ -70,8 +70,14 @@ private val regexes = mapOf(
     QuickClipKind.FullString to """.+""".toRegex(setOf(RegexOption.DOT_MATCHES_ALL)),
 )
 
+data class QuickClipItem(
+    val kind: QuickClipKind,
+    val text: String,
+    val occurrenceIndex: Int
+)
+
 data class QuickClipState(
-    val texts: List<Pair<QuickClipKind, String>>,
+    val texts: List<QuickClipItem>,
     val image: Uri?,
     val imageMimeTypes: List<String>,
     val validUntil: Long
@@ -79,9 +85,9 @@ data class QuickClipState(
 
 @Composable
 private fun QuickClipPill(icon: Painter, contentDescription: String, text: String?, uri: Uri?, onActivate: () -> Unit) {
-    Box(Modifier.fillMaxHeight().padding(4.dp).clickable {
+    Box(Modifier.fillMaxHeight().clickable {
         onActivate()
-    }.clearAndSetSemantics {
+    }.padding(4.dp).clearAndSetSemantics {
         this.role = Role.Button
         this.contentDescription = contentDescription
         this.onClick(action = { onActivate(); true })
@@ -97,12 +103,7 @@ private fun QuickClipPill(icon: Painter, contentDescription: String, text: Strin
                 Icon(icon, contentDescription = null)
 
                 if(text != null) {
-                    val cutText = if (text.length > 10) {
-                        text.substring(0, 8) + "..."
-                    } else {
-                        text
-                    }.replace("\n", " ")
-                    Text(cutText, style = Typography.Small)
+                    Text(text.replace("\n", " "), style = Typography.Small)
                 }else if(uri != null) {
                     Icon(painterResource(R.drawable.image), contentDescription = null)
                 }
@@ -138,12 +139,28 @@ fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
         state.texts.forEach {
             item {
                 QuickClipPill(
-                    icon = painterResource(it.first.icon),
-                    contentDescription = stringResource(it.first.accessibilityDescription, it.second),
-                    text = it.second,
+                    icon = painterResource(it.kind.icon),
+                    contentDescription = stringResource(it.kind.accessibilityDescription, it.text),
+                    text = it.text.let { txt ->
+                        when(it.kind) {
+                            QuickClipKind.FullString -> if (txt.length > 12) txt.take(10) + "..." else txt
+                            QuickClipKind.NumericCode -> txt
+                            QuickClipKind.EmailAddress -> txt
+                            QuickClipKind.Link -> txt
+                                .replace("http://", "")
+                                .replace("https://", "")
+                                .split("/", limit = 2)
+                                .let {
+                                    if(it.size == 2)
+                                        it[0] + "/" + if(it[1].length > 6) it[1].take(6) + "..." else it[1]
+                                    else
+                                        it[0]
+                                }
+                        }
+                    },
                     uri = null
                 ) {
-                    manager!!.typeText(it.second)
+                    manager!!.typeText(it.text)
                     QuickClip.markQuickClipDismissed()
                     dismiss()
                 }
@@ -162,14 +179,20 @@ object QuickClip {
     }
 
     private fun getStateForItem(validUntil: Long, mimeTypes: List<String>, item: ClipData.Item): QuickClipState? {
-        val texts = mutableListOf<Pair<QuickClipKind, String>>()
+        val texts = mutableListOf<QuickClipItem>()
         val currTexts = mutableSetOf<String>()
 
         item.text?.toString()?.let { text ->
             regexes.forEach { entry ->
                 entry.value.findAll(text).forEach {
                     if(!currTexts.contains(it.value)) {
-                        texts.add(entry.key to it.value)
+                        texts.add(
+                            QuickClipItem(
+                                kind = entry.key,
+                                text = it.value,
+                                occurrenceIndex = it.range.first
+                            )
+                        )
                         currTexts.add(it.value)
                     }
                 }
@@ -177,7 +200,9 @@ object QuickClip {
         }
 
         return QuickClipState(
-            texts = texts,
+            texts = texts.sortedBy {
+                it.occurrenceIndex
+            },
             image = item.uri,
             imageMimeTypes = mimeTypes,
             validUntil = validUntil
