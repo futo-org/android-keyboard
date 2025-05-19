@@ -7,7 +7,6 @@
     android:supportsInlineSuggestions="true">
     <subtype android:icon="@drawable/ic_launcher_foreground"
         android:label="@string/english_ime_name"
-        android:imeSubtypeLocale="xx_YY"
         android:imeSubtypeMode="keyboard"
         android:overridesImplicitlyEnabledSubtype="true" />
 </input-method>
