@@ -43,6 +43,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -225,6 +226,9 @@ val DefaultClipboardEntry = ClipboardEntry(
 const val ClipboardFileName = "clipboard.json"
 val Context.clipboardFile get() = File(filesDir, ClipboardFileName)
 
+@OptIn(ExperimentalCoroutinesApi::class)
+private val ClipboardIOContext = Dispatchers.IO.limitedParallelism(1)
+
 class ClipboardHistoryManager(val context: Context, val coroutineScope: LifecycleCoroutineScope) : PersistentActionState {
     private val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
@@ -247,9 +251,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
     init {
         coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                loadClipboard()
-            }
+            loadClipboard()
 
             withContext(Dispatchers.Main) {
                 clipboardManager.addPrimaryClipChangedListener {
@@ -338,9 +340,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
             val currentEntries = clipboardHistory.toList()
             saveClipboardLoadJob = coroutineScope.launch {
-                withContext(Dispatchers.IO) {
-                    loadClipboard()
-                }
+                loadClipboard()
 
                 if(clipboardLoaded) {
                     clipboardHistory.addAll(currentEntries)
@@ -354,7 +354,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         }
 
         coroutineScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(ClipboardIOContext) {
                 try {
                     pruneOldItems()
 
@@ -432,18 +432,18 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
     }
 
     var clipboardIOFailureReason = ""
-    private suspend fun loadClipboard() {
+    private suspend fun loadClipboard() = withContext(ClipboardIOContext) {
         if(!context.isDirectBootUnlocked) {
             clipboardIOFailureReason = "Direct Boot not unlocked"
             clipboardIOFailure.value = true
-            return
+            return@withContext
         }
 
         val clipboardSetting = context.getUnlockedSetting(ClipboardHistoryEnabled)
         if(clipboardSetting == null) {
             clipboardIOFailureReason = "Settings not unlocked"
             clipboardIOFailure.value = true
-            return
+            return@withContext
         }
 
         try {
