@@ -22,14 +22,14 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.toArgb
@@ -174,12 +174,15 @@ fun InlineSuggestionView(inlineSuggestion: MutableState<View?>) {
 @Composable
 fun RowScope.InlineSuggestions(suggestions: List<MutableState<View?>>) {
     val scrollState = rememberScrollState()
-    Row(modifier = Modifier
+    Row(
+        modifier = Modifier
             .weight(1.0f)
-            .padding(0.dp, 4.dp)
+            .fillMaxHeight()
+            .clipToBounds()
             .horizontalScroll(scrollState)
-            .clipScrollableContainer(Orientation.Horizontal)
-            .clipToBounds()) {
+            .clipScrollableContainer(Orientation.Horizontal),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         suggestions.forEach { InlineSuggestionView(it) }
     }
 }

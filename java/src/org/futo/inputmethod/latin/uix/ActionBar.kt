@@ -4,9 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -791,19 +788,13 @@ fun ActionBar(
                     if (importantNotice != null) {
                         ImportantNoticeView(importantNotice)
                     } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            AnimatedVisibility(
-                                inlineSuggestions.isNotEmpty(),
-                                enter = fadeIn(),
-                                exit = fadeOut()
-                            ) {
-                                InlineSuggestions(inlineSuggestions)
-                            }
-                        }
-
-                        if(quickClipState != null) {
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                            && inlineSuggestions.isNotEmpty()
+                        ) {
+                            InlineSuggestions(inlineSuggestions)
+                        } else if(quickClipState != null) {
                             QuickClipView(quickClipState, onQuickClipDismiss)
-                        } else if (words != null && inlineSuggestions.isEmpty()) {
+                        } else if (words != null) {
                             SuggestionItems(
                                 words,
                                 onClick = {
