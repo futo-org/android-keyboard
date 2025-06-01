@@ -64,6 +64,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -880,6 +881,7 @@ class UixManager(private val latinIME: LatinIME) {
                 //top = padding.top.toDp().coerceAtLeast(0.dp),
                 //bottom = padding.bottom.toDp().coerceAtLeast(0.dp),
             )
+            .clip(shape)
             .clipToBounds()
             // Blocks any input to inputDarkener within the keyboard
             .pointerInput(Unit) {}
@@ -952,12 +954,13 @@ class UixManager(private val latinIME: LatinIME) {
         content: @Composable BoxScope.(actionBarGap: Dp) -> Unit
     ) = with(LocalDensity.current) {
         val offset = remember(size) { mutableStateOf(Offset(size.bottomOrigin.first.toFloat(), size.bottomOrigin.second.toFloat())) }
+        val shape = RoundedCornerShape(16.dp)
 
         OffsetPositioner(offset.value + Offset(0.0f, navBarHeight().toPx())) {
             KeyboardSurface(
                 requiredWidthPx = size.width,
                 backgroundColor = latinIME.keyboardColor,
-                shape = RoundedCornerShape(16.dp),
+                shape = shape,
                 padding = size.padding,
                 modifier = Modifier.onGloballyPositioned {
                     floatingPosition = it.positionInWindow()
@@ -1002,7 +1005,7 @@ class UixManager(private val latinIME: LatinIME) {
                     )
                 }
 
-                resizers.Resizer(this, size)
+                resizers.Resizer(this, size, shape)
             }
         }
     }

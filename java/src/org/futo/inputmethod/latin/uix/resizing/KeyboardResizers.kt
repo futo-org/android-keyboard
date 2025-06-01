@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin.uix.resizing
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -308,7 +309,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
     private val resizing = mutableStateOf(false)
 
     @Composable
-    private fun BoxScope.FloatingKeyboardResizer(size: FloatingKeyboardSize) = with(LocalDensity.current) {
+    private fun BoxScope.FloatingKeyboardResizer(size: FloatingKeyboardSize, shape: RoundedCornerShape) = with(LocalDensity.current) {
         ResizerRect({ delta ->
             var result = true
 
@@ -334,11 +335,11 @@ class KeyboardResizers(val latinIME: LatinIME) {
             resizing.value = false
         }, {
             latinIME.sizingCalculator.resetCurrentMode()
-        })
+        }, shape)
     }
 
     @Composable
-    private fun BoxScope.RegularKeyboardResizer(size: RegularKeyboardSize) = with(LocalDensity.current) {
+    private fun BoxScope.RegularKeyboardResizer(size: RegularKeyboardSize, shape: RoundedCornerShape) = with(LocalDensity.current) {
         ResizerRect({ delta ->
             var result = true
 
@@ -361,11 +362,11 @@ class KeyboardResizers(val latinIME: LatinIME) {
             resizing.value = false
         }, {
             latinIME.sizingCalculator.resetCurrentMode()
-        })
+        }, shape)
     }
 
     @Composable
-    private fun BoxScope.OneHandedResizer(size: OneHandedKeyboardSize) = with(LocalDensity.current) {
+    private fun BoxScope.OneHandedResizer(size: OneHandedKeyboardSize, shape: RoundedCornerShape) = with(LocalDensity.current) {
         ResizerRect({ delta ->
             var result = true
 
@@ -390,11 +391,11 @@ class KeyboardResizers(val latinIME: LatinIME) {
             resizing.value = false
         }, {
             latinIME.sizingCalculator.resetCurrentMode()
-        })
+        }, shape)
     }
 
     @Composable
-    private fun BoxScope.SplitKeyboardResizer(size: SplitKeyboardSize) = with(LocalDensity.current) {
+    private fun BoxScope.SplitKeyboardResizer(size: SplitKeyboardSize, shape: RoundedCornerShape) = with(LocalDensity.current) {
         println("Active size: ${size.width} ${size.splitLayoutWidth} ${size.padding}")
         Box(
             modifier = Modifier.matchParentSize()
@@ -424,14 +425,14 @@ class KeyboardResizers(val latinIME: LatinIME) {
                 resizing.value = false
             }, {
                 latinIME.sizingCalculator.resetCurrentMode()
-            })
+            }, shape)
         }
     }
 
 
 
     @Composable
-    fun Resizer(boxScope: BoxScope, size: ComputedKeyboardSize) = with(boxScope) {
+    fun Resizer(boxScope: BoxScope, size: ComputedKeyboardSize, shape: RoundedCornerShape = RoundedCornerShape(4.dp)) = with(boxScope) {
         if (!resizing.value) return
 
         val modifier = Modifier.matchParentSize().let { mod ->
@@ -444,10 +445,10 @@ class KeyboardResizers(val latinIME: LatinIME) {
 
         Box(modifier) {
             when (size) {
-                is OneHandedKeyboardSize -> OneHandedResizer(size)
-                is RegularKeyboardSize -> RegularKeyboardResizer(size)
-                is SplitKeyboardSize -> SplitKeyboardResizer(size)
-                is FloatingKeyboardSize -> FloatingKeyboardResizer(size)
+                is OneHandedKeyboardSize -> OneHandedResizer(size, shape)
+                is RegularKeyboardSize -> RegularKeyboardResizer(size, shape)
+                is SplitKeyboardSize -> SplitKeyboardResizer(size, shape)
+                is FloatingKeyboardSize -> FloatingKeyboardResizer(size, shape)
             }
         }
     }
