@@ -912,10 +912,9 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         // Bottom drag bar
-        Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier
             .fillMaxWidth()
-            .height(20.dp)
+            .height(32.dp)
             .pointerInput(pointerInputKey) {
                 detectDragGestures(
                     onDrag = { _, dragAmount -> onDragged(dragAmount) },
