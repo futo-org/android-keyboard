@@ -432,15 +432,17 @@ class KeyboardResizers(val latinIME: LatinIME) {
 
     @Composable
     fun Resizer(boxScope: BoxScope, size: ComputedKeyboardSize) = with(boxScope) {
-        if(!resizing.value) return
+        if (!resizing.value) return
 
-        Box(Modifier.matchParentSize().safeKeyboardPadding().keyboardBottomPadding(size).let {
-            if(size !is FloatingKeyboardSize) {
-                it.absolutePadding(bottom = navBarHeight())
-            } else {
-                it
-            }
-        }) {
+        val modifier = Modifier.matchParentSize().let { mod ->
+            if (size is FloatingKeyboardSize) mod
+            else mod
+                .safeKeyboardPadding()
+                .keyboardBottomPadding(size)
+                .absolutePadding(bottom = navBarHeight())
+        }
+
+        Box(modifier) {
             when (size) {
                 is OneHandedKeyboardSize -> OneHandedResizer(size)
                 is RegularKeyboardSize -> RegularKeyboardResizer(size)
