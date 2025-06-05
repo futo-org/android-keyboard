@@ -652,6 +652,7 @@ data class LayoutEngine(
         params.mVerticalGap = 0
         params.mBaseHeight = totalKeyboardHeight
         params.mDefaultRowHeight = rowHeightPx.roundToInt()
+        params.mAutoShift = keyboard.autoShift
 
         try {
             val provider = DynamicThemeProvider.obtainFromContext(context)

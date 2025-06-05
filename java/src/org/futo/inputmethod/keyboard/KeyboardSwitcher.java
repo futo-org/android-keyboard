@@ -39,6 +39,7 @@ import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
 import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.WordComposer;
+import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.settings.LongPressKeySettings;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SettingsValues;
@@ -162,12 +163,23 @@ public final class KeyboardSwitcher implements SwitchActions {
                     params
             );
 
-            mState.onLoadKeyboard(editorInfo, currentAutoCapsState, currentRecapitalizeState);
+            mState.onLoadKeyboard(editorInfo, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
             mLatinIMELegacy.setCombiners(mKeyboardLayoutSet.getMainLayout().getCombiners());
             mKeyboardTextsSet.setLocale(mRichImm.getCurrentSubtypeLocale(), mThemeContext);
         } catch (Exception e) {
             Log.e(TAG, "loading keyboard failed: ", e);
         }
+    }
+
+    private int transformAutoCapsState(int state) {
+        if(mKeyboardLayoutSet == null) return state;
+        final org.futo.inputmethod.v2keyboard.Keyboard keyboard = mKeyboardLayoutSet.getMainLayout();
+        if(keyboard == null) return state;
+
+        if(!keyboard.getAutoShift())
+            return Constants.TextUtils.CAP_MODE_OFF;
+        else
+            return state;
     }
 
     public void saveKeyboardState() {
@@ -227,22 +239,22 @@ public final class KeyboardSwitcher implements SwitchActions {
     // when a keyboard layout set doesn't get reloaded in LatinIME.onStartInputViewInternal().
     public void resetKeyboardStateToAlphabet(final int currentAutoCapsState,
             final int currentRecapitalizeState) {
-        mState.onResetKeyboardStateToAlphabet(currentAutoCapsState, currentRecapitalizeState);
+        mState.onResetKeyboardStateToAlphabet(transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer,
             final int currentAutoCapsState, final int currentRecapitalizeState) {
-        mState.onPressKey(code, isSinglePointer, currentAutoCapsState, currentRecapitalizeState);
+        mState.onPressKey(code, isSinglePointer, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
     }
 
     public void onReleaseKey(final int code, final boolean withSliding,
             final int currentAutoCapsState, final int currentRecapitalizeState) {
-        mState.onReleaseKey(code, withSliding, currentAutoCapsState, currentRecapitalizeState);
+        mState.onReleaseKey(code, withSliding, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
     }
 
     public void onFinishSlidingInput(final int currentAutoCapsState,
             final int currentRecapitalizeState) {
-        mState.onFinishSlidingInput(currentAutoCapsState, currentRecapitalizeState);
+        mState.onFinishSlidingInput(transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
     }
 
     public boolean isImeSuppressedByHardwareKeyboard(
@@ -271,7 +283,7 @@ public final class KeyboardSwitcher implements SwitchActions {
 
     @Override
     public void requestUpdatingShiftState(int autoCapsFlags, int recapitalizeMode) {
-        mState.onUpdateShiftState(autoCapsFlags, recapitalizeMode);
+        mState.onUpdateShiftState(transformAutoCapsState(autoCapsFlags), recapitalizeMode);
     }
 
     public enum KeyboardSwitchState {
@@ -312,7 +324,7 @@ public final class KeyboardSwitcher implements SwitchActions {
      */
     public void onEvent(final Event event, final int currentAutoCapsState,
             final int currentRecapitalizeState) {
-        mState.onEvent(event, currentAutoCapsState, currentRecapitalizeState);
+        mState.onEvent(event, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
     }
 
     public boolean isShowingKeyboardId(@Nonnull int... keyboardIds) {

@@ -262,8 +262,15 @@ data class Keyboard(
     /**
      * (optional) Which combiners to use for this layout
      */
-    val combiners: List<CombinerKind> = listOf(CombinerKind.DeadKey)
-    // TODO: Custom long-press key settings configuration
+    val combiners: List<CombinerKind> = listOf(CombinerKind.DeadKey),
+
+    /**
+     * Whether or not automatic shifting should apply for this keyboard, when input starts or a
+     * sentence is finished.
+     */
+    val autoShift: Boolean = true
+
+
     //val element: KeyboardElement = KeyboardElement.Alphabet,
     //val rowWidthMode: RowWidthMode = RowWidthMode.PadSides,
     //val script: Script = Script.Latin,

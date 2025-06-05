@@ -99,6 +99,8 @@ public class Keyboard {
     @Nonnull
     private final KeyboardLayout mKeyboardLayout;
 
+    public final boolean mAutoShift;
+
     private final boolean mProximityCharsCorrectionEnabled;
 
     public Keyboard(@Nonnull final KeyboardParams params) {
@@ -115,6 +117,7 @@ public class Keyboard {
         mKeyVisualAttributes = params.mKeyVisualAttributes;
         mPadding = new Rect(params.mLeftPadding, params.mTopPadding, params.mRightPadding, params.mBottomPadding);
         mVerticalGap = params.mVerticalGap;
+        mAutoShift = params.mAutoShift;
 
         mSortedKeys = Collections.unmodifiableList(new ArrayList<>(params.mSortedKeys));
         mShiftKeys = Collections.unmodifiableList(params.mShiftKeys);
@@ -152,6 +155,7 @@ public class Keyboard {
         mProximityInfo = keyboard.mProximityInfo;
         mProximityCharsCorrectionEnabled = keyboard.mProximityCharsCorrectionEnabled;
         mKeyboardLayout = keyboard.mKeyboardLayout;
+        mAutoShift = keyboard.mAutoShift;
     }
 
     public boolean hasProximityCharsCorrection(final int code) {

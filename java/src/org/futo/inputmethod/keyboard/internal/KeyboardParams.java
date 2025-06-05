@@ -85,6 +85,7 @@ public class KeyboardParams {
     public int mMostCommonKeyWidth = 0;
 
     public boolean mProximityCharsCorrectionEnabled;
+    public boolean mAutoShift;
 
     @Nonnull
     public final TouchPositionCorrection mTouchPositionCorrection =
