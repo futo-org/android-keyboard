@@ -582,11 +582,22 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 }
             }
 
+            // Only change confidences if any dictionary contains this word. If none contain it,
+            // keep the confidences the way they were before.
+            boolean anyContain = false;
             for (DictionaryGroup dictionaryGroup : mDictionaryGroups) {
                 if (dictionariesValidForWord.contains(dictionaryGroup)) {
-                    dictionaryGroup.mConfidence += 1;
-                } else {
-                    dictionaryGroup.mConfidence = 0;
+                    anyContain = true;
+                    break;
+                }
+            }
+            if(anyContain) {
+                for (DictionaryGroup dictionaryGroup : mDictionaryGroups) {
+                    if (dictionariesValidForWord.contains(dictionaryGroup)) {
+                        dictionaryGroup.mConfidence += 1;
+                    } else {
+                        dictionaryGroup.mConfidence = 0;
+                    }
                 }
             }
         }
