@@ -97,6 +97,8 @@ public class SettingsValues {
     public final boolean mUseDictionaryKeyBoosting;
     public final int mScreenMetrics;
 
+    public final boolean mBackspaceDeletesInsertedText;
+    public final boolean mBackspaceUndoesAutocorrect;
     public final int mSpacebarMode;
     public final int mBackspaceMode;
 
@@ -179,6 +181,9 @@ public class SettingsValues {
         mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.getConfiguration());
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
         mScreenMetrics = Settings.readScreenMetrics(res);
+
+        mBackspaceDeletesInsertedText = prefs.getBoolean(Settings.PREF_BACKSPACE_DELETE_INSERTED_TEXT, true);
+        mBackspaceUndoesAutocorrect = prefs.getBoolean(Settings.PREF_BACKSPACE_UNDO_AUTOCORRECT, true);
 
         mSpacebarMode = prefs.getInt(Settings.PREF_SPACEBAR_MODE, Settings.SPACEBAR_MODE_SWIPE_CURSOR);
         mBackspaceMode = prefs.getInt(Settings.PREF_BACKSPACE_MODE, Settings.BACKSPACE_MODE_CHARACTERS);

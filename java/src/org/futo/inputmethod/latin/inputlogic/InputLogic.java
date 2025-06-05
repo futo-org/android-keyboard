@@ -1236,7 +1236,8 @@ public final class InputLogic {
             }
             inputTransaction.setRequiresUpdateSuggestions();
         } else {
-            if (mLastComposedWord.canRevertCommit()) {
+            if (mLastComposedWord.canRevertCommit()
+                    && inputTransaction.mSettingsValues.mBackspaceUndoesAutocorrect) {
                 final String lastComposedWord = mLastComposedWord.mTypedWord;
                 revertCommit(inputTransaction, inputTransaction.mSettingsValues);
                 StatsUtils.onRevertAutoCorrect();
@@ -1259,7 +1260,8 @@ public final class InputLogic {
                 }
                 return;
             }
-            if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
+            if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)
+                    && inputTransaction.mSettingsValues.mBackspaceDeletesInsertedText) {
                 // Cancel multi-character input: remove the text we just entered.
                 // This is triggered on backspace after a key that inputs multiple characters,
                 // like the smiley key or the .com key.

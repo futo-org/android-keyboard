@@ -593,6 +593,20 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
         )
 
         SettingToggleSharedPrefs(
+            title = stringResource(R.string.typing_settings_delete_pasted_text_on_backspace),
+            subtitle = stringResource(R.string.typing_settings_delete_pasted_text_on_backspace_subtitle),
+            key = Settings.PREF_BACKSPACE_DELETE_INSERTED_TEXT,
+            default = true
+        )
+
+        SettingToggleSharedPrefs(
+            title = stringResource(R.string.typing_settings_revert_correction_on_backspace),
+            subtitle = stringResource(R.string.typing_settings_revert_correction_on_backspace_subtitle),
+            key = Settings.PREF_BACKSPACE_UNDO_AUTOCORRECT,
+            default = true
+        )
+
+        SettingToggleSharedPrefs(
             title = stringResource(R.string.sound_on_keypress),
             key = Settings.PREF_SOUND_ON,
             default = booleanResource(R.bool.config_default_sound_enabled)

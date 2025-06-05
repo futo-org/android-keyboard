@@ -117,6 +117,11 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     private static final String PREF_CORPUS_HANDLES_FOR_PERSONALIZATION =
             "pref_corpus_handles_for_personalization";
 
+    public static final String PREF_BACKSPACE_DELETE_INSERTED_TEXT =
+            "pref_backspace_delete_inserted_text";
+    public static final String PREF_BACKSPACE_UNDO_AUTOCORRECT =
+            "pref_backspace_undo_autocorrect";
+
     public static final String PREF_SPACEBAR_MODE = "pref_spacebar_mode";
     public static final int SPACEBAR_MODE_SWIPE_CURSOR = 0; // Long-Press switches language, swipe moves cursor
     public static final int SPACEBAR_MODE_SWIPE_LANGUAGE = 1; // Swipe switches language, long-press+drag moves cursor
