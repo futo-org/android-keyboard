@@ -751,6 +751,16 @@ val ClipboardHistoryAction = Action(
         title = R.string.action_clipboard_manager_settings_title,
         settings = listOf(
             UserSetting(
+                name = R.string.typing_settings_enable_clipboard_history,
+                component = {
+                    SettingToggleDataStore(
+                        title = stringResource(R.string.typing_settings_enable_clipboard_history),
+                        setting = ClipboardHistoryEnabled
+                    )
+                }
+            ),
+
+            UserSetting(
                 name = R.string.action_clipboard_manager_settings_maximum_clips,
                 component = {
                     SettingSlider(

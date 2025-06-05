@@ -637,11 +637,6 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
                 }
             }
         )
-
-        SettingToggleDataStore(
-            title = stringResource(R.string.typing_settings_enable_clipboard_history),
-            setting = ClipboardHistoryEnabled
-        )
     }
 }
 
