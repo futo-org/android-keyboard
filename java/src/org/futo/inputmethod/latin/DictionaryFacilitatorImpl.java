@@ -914,6 +914,16 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     @Override
+    public void flushUserHistoryDictionaries() {
+        for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
+            final ExpandableBinaryDictionary dictionary =
+                    dictionaryGroup.getSubDict(Dictionary.TYPE_USER_HISTORY);
+            if(dictionary == null) continue;
+            dictionary.asyncFlushBinaryDictionary();
+        }
+    }
+
+    @Override
     public String dump(final Context context) {
         return "";
     }

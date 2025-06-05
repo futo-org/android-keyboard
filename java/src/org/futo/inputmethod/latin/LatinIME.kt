@@ -593,6 +593,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.onStartInput(attribute, restarting)
         languageModelFacilitator.onStartInput()
         uixManager.inputStarted(attribute)
+        cancelDictSync()
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
@@ -625,6 +626,24 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.onWindowShown()
 
         updateColorsIfDynamicChanged()
+        cancelDictSync()
+    }
+
+    var dictSyncJob: Job? = null
+    private fun delayedSyncDicts() {
+        dictSyncJob?.cancel()
+        dictSyncJob = lifecycleScope.launch {
+            withContext(Dispatchers.Default) {
+                delay(5000L)
+                withContext(Dispatchers.Main) {
+                    latinIMELegacy.mDictionaryFacilitator.flushUserHistoryDictionaries()
+                }
+            }
+        }
+    }
+
+    private fun cancelDictSync() {
+        dictSyncJob?.cancel()
     }
 
     override fun onWindowHidden() {
@@ -632,6 +651,10 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.onWindowHidden()
 
         uixManager.onInputFinishing()
+
+        if(isDirectBootUnlocked) {
+            delayedSyncDicts()
+        }
     }
 
     override fun onUpdateSelection(

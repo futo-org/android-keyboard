@@ -178,6 +178,8 @@ public interface DictionaryFacilitator {
 
     boolean clearUserHistoryDictionary(final Context context);
 
+    void flushUserHistoryDictionaries();
+
     String dump(final Context context);
 
     void dumpDictionaryForDebug(final String dictName);
