@@ -20,6 +20,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.BinaryDictionary
+import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.DictionaryFacilitator
 import org.futo.inputmethod.latin.NgramContext
 import org.futo.inputmethod.latin.Suggest
@@ -74,7 +75,7 @@ private fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
 }
 
 
-private fun SuggestedWordInfo.scoreAtLeast(other: SuggestedWordInfo): SuggestedWordInfo {
+internal fun SuggestedWordInfo.scoreAtLeast(other: SuggestedWordInfo): SuggestedWordInfo {
     val result = SuggestedWordInfo(
         mWord,
         mPrevWordsContext,
@@ -433,6 +434,14 @@ public class LanguageModelFacilitator(
                 }
 
                 suggestionResults.add(word)
+            }
+
+            if(maxWordDict?.mSourceDict?.mDictType == Dictionary.TYPE_USER_HISTORY
+                && maxWordDict.mScore > 100
+                && maxWord != null
+            ) {
+                val clone = maxWordDict.scoreAtLeast(maxWord)
+                suggestionResults.add(clone)
             }
 
             if(suggestionResults.mRawSuggestions != null) {
