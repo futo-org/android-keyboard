@@ -52,6 +52,12 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             Spacer(modifier = Modifier.height(24.dp))
             ScreenTitle(stringResource(R.string.english_ime_settings))
 
+            NavigationItem(
+                title = "Search",
+                style = NavigationItemStyle.HomePrimary,
+                navigate = { navController.navigate("search") }
+            )
+
             ConditionalMigrateUpdateNotice()
             ConditionalUpdate(navController)
             ConditionalUnpaidNoticeWithNav(navController)

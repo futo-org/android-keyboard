@@ -15,10 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.inputmethod.latin.LatinIME
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestionBlacklist
+import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.utils.TextContext
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
@@ -156,13 +159,25 @@ enum class PersistentStateInitialization {
 data class UserSetting(
     @StringRes val name: Int,
     @StringRes val subtitle: Int? = null,
+    @StringRes val searchTags: Int? = null,
     val component: @Composable () -> Unit
 )
 
 data class UserSettingsMenu(
     @StringRes val title: Int,
+    @StringRes val searchTags: Int? = null,
     val settings: List<UserSetting>
 )
+
+
+@Composable
+fun UserSettingsMenu.render(showBack: Boolean = true) {
+    val navController = LocalNavController.current
+    ScreenTitle(stringResource(title), showBack = showBack, navController)
+    settings.forEach {
+        it.component()
+    }
+}
 
 data class Action(
     @DrawableRes val icon: Int,

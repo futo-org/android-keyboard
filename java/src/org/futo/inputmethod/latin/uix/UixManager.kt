@@ -91,6 +91,7 @@ import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.core.view.inputmethod.InputContentInfoCompat
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHostController
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import kotlinx.coroutines.Dispatchers
@@ -155,6 +156,10 @@ val LocalThemeProvider = compositionLocalOf<DynamicThemeProvider> {
 
 val LocalFoldingState = compositionLocalOf<FoldingOptions> {
     FoldingOptions(null)
+}
+
+val LocalNavController = compositionLocalOf<NavHostController> {
+    error("No nav controller provided")
 }
 
 private val UixLocaleFollowsSubtypeLocale = true

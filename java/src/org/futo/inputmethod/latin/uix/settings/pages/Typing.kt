@@ -1,6 +1,8 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import android.content.Context
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -34,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -73,12 +76,16 @@ import org.futo.inputmethod.latin.settings.toEncodedString
 import org.futo.inputmethod.latin.settings.toLongPressKeyLayoutItems
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
+import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.UserSetting
+import org.futo.inputmethod.latin.uix.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.actions.ActionsEditor
 import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.render
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
@@ -451,6 +458,246 @@ private fun AutoSpacesSetting() {
     )
 }
 
+val KeyboardSettingsMenu = UserSettingsMenu(
+    title = R.string.keyboard_settings_title,
+    settings = listOf(
+        userSettingNavigationItem(
+            title = R.string.size_settings_title,
+            subtitle = R.string.size_settings_subtitle,
+            style = NavigationItemStyle.Misc,
+            navigateTo = "resize",
+            icon = R.drawable.maximize
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.keyboard_settings_show_number_row,
+            subtitle = R.string.keyboard_settings_show_number_row_subtitle,
+            key = Settings.PREF_ENABLE_NUMBER_ROW,
+            default = {false},
+            icon = { Text("123", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) }
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.keyboard_settings_show_arrow_row,
+            subtitle = R.string.keyboard_settings_show_arrow_row_subtitle,
+            key = Settings.PREF_ENABLE_ARROW_ROW,
+            default = {false},
+            icon = {
+                Icon(painterResource(id = R.drawable.direction_arrows), contentDescription = null)
+            }
+        ),
+        userSettingNavigationItem(
+            title = R.string.morekey_settings_title,
+            subtitle = R.string.morekey_settings_subtitle,
+            style = NavigationItemStyle.Misc,
+            navigateTo = "longPress",
+            icon = R.drawable.arrow_up
+        ),
+        userSettingNavigationItem(
+            title = R.string.keyboard_settings_extra_layouts,
+            subtitle = R.string.keyboard_settings_extra_layouts_subtitle,
+            style = NavigationItemStyle.Misc,
+            navigateTo = "languages",
+            icon = R.drawable.keyboard
+        ),
+        userSettingNavigationItem(
+            title = R.string.action_editor_title,
+            subtitle = R.string.action_editor_subtitle,
+            style = NavigationItemStyle.Misc,
+            navigateTo = "actionEdit",
+            icon = R.drawable.smile
+        ),
+        userSettingToggleDataStore(
+            title = R.string.keyboard_settings_show_suggestion_row,
+            subtitle = R.string.keyboard_settings_show_suggestion_row_subtitle,
+            setting = ActionBarDisplayedSetting,
+            icon = {
+                Icon(painterResource(id = R.drawable.more_horizontal), contentDescription = null)
+            }
+        ),
+        userSettingToggleDataStore(
+            title = R.string.keyboard_settings_inline_autofill,
+            subtitle = R.string.keyboard_settings_inline_autofill_subtitle,
+            setting = InlineAutofillSetting
+        ),
+    )
+)
+
+val TypingSettingsMenu = UserSettingsMenu(
+    title = R.string.typing_settings_title,
+    settings = listOf(
+        UserSetting(
+            name = R.string.typing_settings_auto_space_mode,
+            component = {
+                AutoSpacesSetting()
+            }
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.typing_settings_swipe,
+            subtitle = R.string.typing_settings_swipe_subtitle,
+            key = Settings.PREF_GESTURE_INPUT,
+            default = {true},
+            icon = {
+                Icon(painterResource(id = R.drawable.swipe_icon), contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+            }
+        ),
+        userSettingToggleDataStore(
+            title = R.string.typing_settings_suggest_emojis,
+            subtitle = R.string.typing_settings_suggest_emojis_subtitle,
+            setting = SHOW_EMOJI_SUGGESTIONS,
+            icon = {
+                Icon(painterResource(id = R.drawable.smile), contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+            }
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.auto_correction,
+            subtitle = R.string.auto_correction_summary,
+            key = Settings.PREF_AUTO_CORRECTION,
+            default = {true},
+            icon = {
+                Icon(painterResource(id = R.drawable.icon_spellcheck), contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+            }
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.auto_cap,
+            subtitle = R.string.auto_cap_summary,
+            key = Settings.PREF_AUTO_CAP,
+            default = {true},
+            icon = {
+                Text("Aa", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+            }
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.use_double_space_period,
+            subtitle = R.string.use_double_space_period_summary,
+            key = Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD,
+            default = {true},
+            icon = {
+                Text(".", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+            }
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.typing_settings_delete_pasted_text_on_backspace,
+            subtitle = R.string.typing_settings_delete_pasted_text_on_backspace_subtitle,
+            key = Settings.PREF_BACKSPACE_DELETE_INSERTED_TEXT,
+            default = {true}
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.typing_settings_revert_correction_on_backspace,
+            subtitle = R.string.typing_settings_revert_correction_on_backspace_subtitle,
+            key = Settings.PREF_BACKSPACE_UNDO_AUTOCORRECT,
+            default = {true}
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.sound_on_keypress,
+            key = Settings.PREF_SOUND_ON,
+            default = {booleanResource(R.bool.config_default_sound_enabled)}
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.popup_on_keypress,
+            key = Settings.PREF_POPUP_ON,
+            default = {booleanResource(R.bool.config_default_key_preview_popup)}
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.vibrate_on_keypress,
+            key = Settings.PREF_VIBRATE_ON,
+            default = {booleanResource(R.bool.config_default_vibration_enabled)}
+        ),
+        UserSetting(
+            name = R.string.typing_settings_vibration_strength,
+            component = {
+                val context = LocalContext.current
+                SettingSlider(
+                    title = stringResource(R.string.typing_settings_vibration_strength),
+                    setting = vibrationDurationSetting,
+                    range = -1.0f .. 100.0f,
+                    hardRange = -1.0f .. 2000.0f,
+                    transform = { it.roundToInt() },
+                    indicator = {
+                        if(it == -1) {
+                            context.getString(R.string.typing_settings_vibration_strength_default)
+                        } else {
+                            context.getString(R.string.abbreviation_unit_milliseconds, "$it")
+                        }
+                    }
+                )
+            }
+        )
+    )
+)
+
+fun userSettingNavigationItem(
+    @StringRes title: Int,
+    style: NavigationItemStyle,
+    navigateTo: String? = null,
+    navigate: ((NavHostController) -> Unit)? = null,
+    @DrawableRes icon: Int? = null,
+    @StringRes subtitle: Int? = null
+): UserSetting = UserSetting(
+    name = title,
+    subtitle = subtitle,
+    component = {
+        val navController = LocalNavController.current
+        NavigationItem(
+            title = stringResource(title),
+            style = style,
+            icon = icon?.let { painterResource(it) },
+            subtitle = subtitle?.let { stringResource(it) },
+            navigate = {
+                if(navigateTo != null) navController.navigate(navigateTo)
+                navigate?.invoke(navController)
+            }
+        )
+    }
+)
+
+fun userSettingToggleSharedPrefs(
+    @StringRes title: Int,
+    key: String,
+    default: @Composable () -> Boolean,
+    @StringRes subtitle: Int? = null,
+    @StringRes disabledSubtitle: Int? = null,
+    disabled: @Composable () -> Boolean = {false},
+    icon: (@Composable () -> Unit)? = null
+): UserSetting = UserSetting(
+    name = title,
+    subtitle = subtitle,
+    component = {
+        SettingToggleSharedPrefs(
+            title = stringResource(title),
+            key = key,
+            default = default(),
+            subtitle = subtitle?.let { stringResource(it) },
+            disabledSubtitle = disabledSubtitle?.let { stringResource(it) },
+            disabled = disabled(),
+            icon = icon
+        )
+    }
+)
+
+fun userSettingToggleDataStore(
+    @StringRes title: Int,
+    setting: SettingsKey<Boolean>,
+    @StringRes subtitle: Int? = null,
+    @StringRes disabledSubtitle: Int? = null,
+    disabled: @Composable () -> Boolean = {false},
+    icon: (@Composable () -> Unit)? = null
+): UserSetting = UserSetting(
+    name = title,
+    subtitle = subtitle,
+    component = {
+        SettingToggleDataStore(
+            title = stringResource(title),
+            setting = setting,
+            subtitle = subtitle?.let { stringResource(it) },
+            disabledSubtitle = disabledSubtitle?.let { stringResource(it) },
+            disabled = disabled(),
+            icon = icon
+        )
+    }
+)
+
 @Preview(showBackground = true)
 @Composable
 fun TypingScreen(navController: NavHostController = rememberNavController()) {
@@ -467,176 +714,8 @@ fun TypingScreen(navController: NavHostController = rememberNavController()) {
     }
 
     ScrollableList {
-        ScreenTitle(stringResource(R.string.keyboard_settings_title), showBack = true, navController)
-
-        NavigationItem(
-            title = stringResource(R.string.size_settings_title),
-            subtitle = stringResource(R.string.size_settings_subtitle),
-            style = NavigationItemStyle.Misc,
-            navigate = { navController.navigate("resize") },
-            icon = painterResource(id = R.drawable.maximize)
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.keyboard_settings_show_number_row),
-            subtitle = stringResource(R.string.keyboard_settings_show_number_row_subtitle),
-            key = Settings.PREF_ENABLE_NUMBER_ROW,
-            default = false,
-            icon = { Text("123", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) }
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.keyboard_settings_show_arrow_row),
-            subtitle = stringResource(R.string.keyboard_settings_show_arrow_row_subtitle),
-            key = Settings.PREF_ENABLE_ARROW_ROW,
-            default = false,
-            icon = {
-                Icon(painterResource(id = R.drawable.direction_arrows), contentDescription = null)
-            }
-        )
-
-        NavigationItem(
-            title = stringResource(R.string.morekey_settings_title),
-            subtitle = stringResource(R.string.morekey_settings_subtitle),
-            style = NavigationItemStyle.Misc,
-            navigate = { navController.navigate("longPress") },
-            icon = painterResource(id = R.drawable.arrow_up)
-        )
-
-        NavigationItem(
-            title = stringResource(R.string.keyboard_settings_extra_layouts),
-            subtitle = stringResource(R.string.keyboard_settings_extra_layouts_subtitle),
-            style = NavigationItemStyle.Misc,
-            navigate = { navController.navigate("languages") },
-            icon = painterResource(id = R.drawable.keyboard)
-        )
-
-        NavigationItem(
-            title = stringResource(R.string.action_editor_title),
-            subtitle = stringResource(R.string.action_editor_subtitle),
-            style = NavigationItemStyle.Misc,
-            navigate = { navController.navigate("actionEdit") },
-            icon = painterResource(id = R.drawable.smile)
-        )
-
-        SettingToggleDataStore(
-            title = stringResource(R.string.keyboard_settings_show_suggestion_row),
-            subtitle = stringResource(R.string.keyboard_settings_show_suggestion_row_subtitle),
-            setting = ActionBarDisplayedSetting,
-            icon = {
-                Icon(painterResource(id = R.drawable.more_horizontal), contentDescription = null)
-            }
-        )
-
-        if(useDataStore(ActionBarDisplayedSetting).value) {
-            SettingToggleDataStore(
-                title = stringResource(R.string.keyboard_settings_inline_autofill),
-                subtitle = stringResource(R.string.keyboard_settings_inline_autofill_subtitle),
-                setting = InlineAutofillSetting
-            )
-        }
-
-        ScreenTitle(title = stringResource(R.string.typing_settings_title))
-
-        AutoSpacesSetting()
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.typing_settings_swipe),
-            subtitle = stringResource(R.string.typing_settings_swipe_subtitle),
-            key = Settings.PREF_GESTURE_INPUT,
-            default = true,
-            icon = {
-                Icon(painterResource(id = R.drawable.swipe_icon), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
-            }
-        )
-
-        SettingToggleDataStore(
-            title = stringResource(R.string.typing_settings_suggest_emojis),
-            subtitle = stringResource(R.string.typing_settings_suggest_emojis_subtitle),
-            setting = SHOW_EMOJI_SUGGESTIONS,
-            icon = {
-                Icon(painterResource(id = R.drawable.smile), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
-            }
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.auto_correction),
-            subtitle = stringResource(R.string.auto_correction_summary),
-            key = Settings.PREF_AUTO_CORRECTION,
-            default = true,
-            icon = {
-                Icon(painterResource(id = R.drawable.icon_spellcheck), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
-            }
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.auto_cap),
-            subtitle = stringResource(R.string.auto_cap_summary),
-            key = Settings.PREF_AUTO_CAP,
-            default = true,
-            icon = {
-                Text("Aa", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
-            }
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.use_double_space_period),
-            subtitle = stringResource(R.string.use_double_space_period_summary),
-            key = Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD,
-            default = true,
-            icon = {
-                Text(".", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
-            }
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.typing_settings_delete_pasted_text_on_backspace),
-            subtitle = stringResource(R.string.typing_settings_delete_pasted_text_on_backspace_subtitle),
-            key = Settings.PREF_BACKSPACE_DELETE_INSERTED_TEXT,
-            default = true
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.typing_settings_revert_correction_on_backspace),
-            subtitle = stringResource(R.string.typing_settings_revert_correction_on_backspace_subtitle),
-            key = Settings.PREF_BACKSPACE_UNDO_AUTOCORRECT,
-            default = true
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.sound_on_keypress),
-            key = Settings.PREF_SOUND_ON,
-            default = booleanResource(R.bool.config_default_sound_enabled)
-        )
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.popup_on_keypress),
-            key = Settings.PREF_POPUP_ON,
-            default = booleanResource(R.bool.config_default_key_preview_popup)
-        )
-
-        SettingToggleSharedPrefs(
-            title = stringResource(R.string.vibrate_on_keypress),
-            key = Settings.PREF_VIBRATE_ON,
-            default = booleanResource(R.bool.config_default_vibration_enabled)
-        )
-
-        SettingSlider(
-            title = stringResource(R.string.typing_settings_vibration_strength),
-            setting = vibrationDurationSetting,
-            range = -1.0f .. 100.0f,
-            hardRange = -1.0f .. 2000.0f,
-            transform = { it.roundToInt() },
-            indicator = {
-                if(it == -1) {
-                    context.getString(R.string.typing_settings_vibration_strength_default)
-                } else {
-                    context.getString(R.string.abbreviation_unit_milliseconds, "$it")
-                }
-            }
-        )
+        KeyboardSettingsMenu.render(showBack = true)
+        TypingSettingsMenu.render(showBack = false)
     }
 }
 

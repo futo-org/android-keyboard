@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.settings
 
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
+import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.uix.SettingsExporter.ExportingMenu
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
 import org.futo.inputmethod.latin.uix.settings.pages.AlreadyPaidDialog
@@ -29,6 +31,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.PaymentScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentThankYouScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ProjectInfoView
+import org.futo.inputmethod.latin.uix.settings.pages.SearchScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLanguageScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLayoutsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
@@ -52,60 +55,75 @@ fun NavHostController.navigateToInfo(title: String, body: String) {
 fun SettingsNavigator(
     navController: NavHostController = rememberNavController()
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = "home",
-        exitTransition = { ExitTransition.None },
-        popExitTransition = { ExitTransition.None }
-    ) {
-        composable("home") { HomeScreen(navController) }
-        composable("languages") { LanguagesScreen(navController) }
-        composable("addLanguage") { SelectLanguageScreen(navController) }
-        composable("addLayout/{lang}") { SelectLayoutsScreen(navController, it.arguments?.getString("lang")?.urlDecode() ?: "") }
-        composable("predictiveText") { PredictiveTextScreen(navController) }
-        composable("advancedparams") { AdvancedParametersScreen(navController) }
-        addTypingNavigation(navController)
-        composable("voiceInput") { VoiceInputScreen(navController) }
-        composable("themes") { ThemeScreen(navController) }
-        composable("help") { HelpScreen(navController) }
-        composable("developer") { DeveloperScreen(navController) }
-        composable("devtextedit") { DevEditTextVariationsScreen(navController) }
-        composable("devlayouts") { DevLayoutList(navController) }
-        composable("devlayouteditor") { DevLayoutEditor(navController) }
-        composable("devkeyboard") { DevKeyboardScreen(navController) }
-        composable("devlayoutedit/{i}") { DevLayoutEdit(navController, it.arguments!!.getString("i")!!.toInt()) }
-        composable("blacklist") { BlacklistScreen(navController) }
-        composable("payment") { PaymentScreen(navController) { navController.navigateUp() } }
-        composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }
-        composable("credits") { CreditsScreen(navController) }
-        composable("exportingcfg") { ExportingMenu(navController) }
-        composable("credits/thirdparty/{idx}") {
-            ProjectInfoView(
-                it.arguments?.getString("idx")?.toIntOrNull() ?: 0,
-                navController
-            )
+    CompositionLocalProvider(LocalNavController provides navController) {
+        NavHost(
+            navController = navController,
+            startDestination = "home",
+            exitTransition = { ExitTransition.None },
+            popExitTransition = { ExitTransition.None }
+        ) {
+            composable("home") { HomeScreen(navController) }
+            composable("search") { SearchScreen(navController) }
+            composable("languages") { LanguagesScreen(navController) }
+            composable("addLanguage") { SelectLanguageScreen(navController) }
+            composable("addLayout/{lang}") {
+                SelectLayoutsScreen(
+                    navController,
+                    it.arguments?.getString("lang")?.urlDecode() ?: ""
+                )
+            }
+            composable("predictiveText") { PredictiveTextScreen(navController) }
+            composable("advancedparams") { AdvancedParametersScreen(navController) }
+            addTypingNavigation(navController)
+            composable("voiceInput") { VoiceInputScreen(navController) }
+            composable("themes") { ThemeScreen(navController) }
+            composable("help") { HelpScreen(navController) }
+            composable("developer") { DeveloperScreen(navController) }
+            composable("devtextedit") { DevEditTextVariationsScreen(navController) }
+            composable("devlayouts") { DevLayoutList(navController) }
+            composable("devlayouteditor") { DevLayoutEditor(navController) }
+            composable("devkeyboard") { DevKeyboardScreen(navController) }
+            composable("devlayoutedit/{i}") {
+                DevLayoutEdit(
+                    navController,
+                    it.arguments!!.getString("i")!!.toInt()
+                )
+            }
+            composable("blacklist") { BlacklistScreen(navController) }
+            composable("payment") { PaymentScreen(navController) { navController.navigateUp() } }
+            composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }
+            composable("credits") { CreditsScreen(navController) }
+            composable("exportingcfg") { ExportingMenu(navController) }
+            composable("credits/thirdparty/{idx}") {
+                ProjectInfoView(
+                    it.arguments?.getString("idx")?.toIntOrNull() ?: 0,
+                    navController
+                )
+            }
+            dialog("error/{title}/{body}") {
+                ErrorDialog(
+                    it.arguments?.getString("title")?.urlDecode()
+                        ?: stringResource(R.string.settings_unknown_error_title),
+                    it.arguments?.getString("body")?.urlDecode()
+                        ?: stringResource(R.string.settings_unknown_error_subtitle),
+                    navController
+                )
+            }
+            dialog("info/{title}/{body}") {
+                InfoDialog(
+                    it.arguments?.getString("title")?.urlDecode() ?: "",
+                    it.arguments?.getString("body")?.urlDecode() ?: "",
+                    navController
+                )
+            }
+            dialog("update") {
+                UpdateDialog(navController = navController)
+            }
+            dialog("alreadyPaid") {
+                AlreadyPaidDialog(navController = navController)
+            }
+            addModelManagerNavigation(navController)
+            addActionsNavigation(navController)
         }
-        dialog("error/{title}/{body}") {
-            ErrorDialog(
-                it.arguments?.getString("title")?.urlDecode() ?: stringResource(R.string.settings_unknown_error_title),
-                it.arguments?.getString("body")?.urlDecode() ?: stringResource(R.string.settings_unknown_error_subtitle),
-                navController
-            )
-        }
-        dialog("info/{title}/{body}") {
-            InfoDialog(
-                it.arguments?.getString("title")?.urlDecode() ?: "",
-                it.arguments?.getString("body")?.urlDecode() ?: "",
-                navController
-            )
-        }
-        dialog("update") {
-            UpdateDialog(navController = navController)
-        }
-        dialog("alreadyPaid") {
-            AlreadyPaidDialog(navController = navController)
-        }
-        addModelManagerNavigation(navController)
-        addActionsNavigation(navController)
     }
 }
