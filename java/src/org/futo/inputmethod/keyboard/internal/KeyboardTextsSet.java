@@ -18,13 +18,17 @@ package org.futo.inputmethod.keyboard.internal;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.icu.util.ULocale;
 import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
 
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.utils.RunInLocale;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 
+import java.util.Currency;
 import java.util.Locale;
 
 // TODO: Make this an immutable class.
@@ -32,6 +36,26 @@ public class KeyboardTextsSet {
     public static final String PREFIX_TEXT = "!text/";
     private static final String PREFIX_RESOURCE = "!string/";
     public static final String SWITCH_TO_ALPHA_KEY_LABEL = "keylabel_to_alpha";
+
+    @Nullable
+    public String resolveSpecialText(final String text) {
+        if(mResourceLocale == null) return null;
+
+        if("keyspec_currency".equals(text)) {
+            try {
+                Locale locale = mResourceLocale;
+                if(locale.getCountry().isEmpty()) {
+                    locale = ULocale.addLikelySubtags(ULocale.forLocale(locale)).toLocale();
+                }
+
+                return Currency.getInstance(locale).getSymbol();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        return null;
+    }
 
     private static final char BACKSLASH = Constants.CODE_BACKSLASH;
     private static final int MAX_REFERENCE_INDIRECTION = 10;
@@ -60,7 +84,18 @@ public class KeyboardTextsSet {
     }
 
     public String getText(final String name) {
-        return KeyboardTextsTable.getText(name, mTextsTable);
+        // Try locale-specific text first
+        String result = KeyboardTextsTable.getText(name, mTextsTable, false);
+        if(result == null) {
+            // Try special text
+            result = resolveSpecialText(name);
+        }
+        if(result == null) {
+            // Try default text
+            result = KeyboardTextsTable.getText(name, mTextsTable, true);
+        }
+
+        return result;
     }
 
     private static int searchTextNameEnd(final String text, final int start) {

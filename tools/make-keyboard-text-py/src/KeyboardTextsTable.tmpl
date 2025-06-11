@@ -38,7 +38,7 @@ public final class KeyboardTextsTable {
     // Texts table to locale maps.
     private static final HashMap<String[], String> sTextsTableToLocaleMap = new HashMap<>();
 
-    public static String getText(final String name, final String[] textsTable) {
+    public static String getText(final String name, final String[] textsTable, final boolean allowFallbackToDefault) {
         final Integer indexObj = sNameToIndexesMap.get(name);
         if (indexObj == null) {
             if(name.startsWith("actions_") || name.startsWith("qwertysyms_")
@@ -59,7 +59,11 @@ public final class KeyboardTextsTable {
         }
         // Validity check.
         if (index >= 0 && index < TEXTS_DEFAULT.length) {
-            return TEXTS_DEFAULT[index];
+            if (allowFallbackToDefault) {
+                return TEXTS_DEFAULT[index];
+            } else {
+                return null;
+            }
         }
         // Throw exception for debugging purpose.
         throw new RuntimeException("Illegal index=" + index + " for name=" + name
