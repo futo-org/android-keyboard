@@ -48,7 +48,7 @@ public class KeyboardTextsSet {
                     locale = ULocale.addLikelySubtags(ULocale.forLocale(locale)).toLocale();
                 }
 
-                return Currency.getInstance(locale).getSymbol();
+                return Currency.getInstance(locale).getSymbol(locale);
             } catch (Exception e) {
                 return null;
             }
