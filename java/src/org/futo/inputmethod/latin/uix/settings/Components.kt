@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.settings
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
@@ -57,6 +58,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -770,11 +772,7 @@ fun<T> DropDownPicker(
                 Spacer(Modifier.weight(1.0f))
             }
 
-            Icon(
-                painterResource(R.drawable.chevron_down),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            RotatingChevronIcon(expanded, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
         AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
@@ -843,4 +841,18 @@ fun<T> DropDownPickerSettingItem(
     ) {
 
     }
+}
+
+@Composable
+fun RotatingChevronIcon(isExpanded: Boolean, modifier: Modifier = Modifier, tint: Color = LocalContentColor.current) {
+    val rotation by animateFloatAsState(
+        targetValue = if (isExpanded) -180f else 0f
+    )
+
+    Icon(
+        painter = painterResource(R.drawable.chevron_down),
+        contentDescription = null,
+        modifier = modifier.rotate(rotation),
+        tint = tint
+    )
 }
