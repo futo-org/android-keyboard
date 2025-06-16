@@ -387,6 +387,9 @@
     <string name="morekey_settings_reset">Reset to default</string>
     <string name="morekey_settings_move_kind_up">Move up</string>
     <string name="morekey_settings_move_kind_down">Move down</string>
+    <string name="morekey_settings_move_kind_up_to_top">Move to top</string>
+    <string name="morekey_settings_move_kind_down_to_bottom">Move to bottom</string>
+    <string name="morekey_settings_kind_position">Position %1$s of %2$s</string>
     <string name="morekey_settings_active">Active</string>
     <string name="morekey_settings_inactive">Inactive</string>
     <string name="morekey_settings_enable">Activate</string>

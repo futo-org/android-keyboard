@@ -47,6 +47,15 @@ import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.buildAnnotatedString
@@ -217,7 +226,72 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPressKey, Int) -> Unit, disable: (LongPressKey) -> Unit, dragIcon: @Composable () -> Unit, limits: IntRange) {
+    val talkBackOn = AccessibilityUtils.getInstance().isAccessibilityEnabled
     val context = LocalContext.current
+
+    val customActions = remember(idx, limits, item) {
+        buildList {
+            if (idx > limits.first) {
+                add(
+                    CustomAccessibilityAction(
+                        context.getString(R.string.morekey_settings_move_kind_up)
+                    ) {
+                        moveItem(item, -1)
+                        true
+                    }
+                )
+
+                add(
+                    CustomAccessibilityAction(
+                        context.getString(R.string.morekey_settings_move_kind_up_to_top)
+                    ) {
+                        moveItem(item, -100)
+                        true
+                    }
+                )
+            }
+            if (idx < limits.last) {
+                add(
+                    CustomAccessibilityAction(
+                        context.getString(R.string.morekey_settings_move_kind_down)
+                    ) {
+                        moveItem(item, 1)
+                        true
+                    }
+                )
+                add(
+                    CustomAccessibilityAction(
+                        context.getString(R.string.morekey_settings_move_kind_down_to_bottom)
+                    ) {
+                        moveItem(item, 100)
+                        true
+                    }
+                )
+            }
+            add(
+                CustomAccessibilityAction(
+                    context.getString(R.string.morekey_settings_disable)
+                ) {
+                    disable(item)
+                    true
+                }
+            )
+        }
+    }
+
+    val semantics = Modifier.clearAndSetSemantics {
+        contentDescription = item.name(context)
+        stateDescription = context.getString(
+            R.string.morekey_settings_kind_position,
+            (idx + 1).toString(),
+            (limits.last + 1).toString()
+        )
+
+        if (talkBackOn) {
+            this.customActions = customActions
+        }
+    }
+
     val dragging = remember { mutableStateOf(false) }
     val offset = remember { mutableFloatStateOf(0.0f) }
     val height = remember { mutableIntStateOf(1) }
@@ -286,7 +360,7 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
                 }
             }
         },
-        modifier = Modifier
+        modifier = semantics
             .onSizeChanged { size -> height.intValue = size.height }
             .let { modifier ->
                 if (!dragging.value) {
@@ -299,7 +373,7 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
                             clip = false
                             translationX = 0.0f
                             translationY = offset.floatValue.let {
-                                if(shouldClampLower && it < 0.0f) 0.0f
+                                if (shouldClampLower && it < 0.0f) 0.0f
                                 else if (shouldClampUpper && it > 0.0f) 0.0f
                                 else it
                             }
@@ -322,8 +396,8 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
 private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<String>) {
     Row(Modifier.padding(16.dp)) {
         Text(stringResource(R.string.morekey_settings_layout), style = Typography.Heading.Medium, modifier = Modifier
-                .align(CenterVertically)
-                .weight(1.0f))
+            .align(CenterVertically)
+            .weight(1.0f))
 
         Spacer(Modifier.width(4.dp))
 
@@ -339,9 +413,7 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
         Icon(Icons.Default.Menu, contentDescription = null, tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
     }
 
-
     val items = setting.value.toLongPressKeyLayoutItems()
-
 
     val moveItem: (item: LongPressKey, direction: Int) -> Unit = { item, direction ->
         val oldItems = context.getSettingBlocking(LongPressKeyLayoutSetting).toLongPressKeyLayoutItems()
@@ -381,12 +453,23 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
-        items.forEachIndexed { i, v ->
-            key(v.ordinal) {
-                DraggableSettingItem(
-                    idx = i, item = v, moveItem = moveItem, disable = disable, dragIcon = dragIcon,
-                    limits = items.indices
-                )
+        Column(Modifier.semantics {
+            collectionInfo = CollectionInfo(
+                rowCount = items.size,
+                columnCount = 1
+            )
+        }) {
+            items.forEachIndexed { i, v ->
+                key(v.ordinal) {
+                    DraggableSettingItem(
+                        idx = i,
+                        item = v,
+                        moveItem = moveItem,
+                        disable = disable,
+                        dragIcon = dragIcon,
+                        limits = items.indices
+                    )
+                }
             }
         }
     }
@@ -398,17 +481,32 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
-        inactiveEntries.forEach {
-            SettingItem(
-                title = it.name(context),
-                subtitle = it.description(context),
-                modifier = Modifier//.animateItemPlacement()
-            ) {
-                IconButton(onClick = { enable(it) }) {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = stringResource(R.string.morekey_settings_enable)
-                    )
+        Column(Modifier.semantics {
+            collectionInfo = CollectionInfo(
+                rowCount = inactiveEntries.size,
+                columnCount = 1
+            )
+        }) {
+            inactiveEntries.forEach {
+                SettingItem(
+                    title = it.name(context),
+                    subtitle = it.description(context),
+                    modifier = Modifier.clearAndSetSemantics {
+                        contentDescription = it.name(context)
+                        stateDescription = context.getString(R.string.morekey_settings_inactive)
+
+                        onClick(label = context.getString(R.string.morekey_settings_enable)) {
+                            enable(it)
+                            true
+                        }
+                    }
+                ) {
+                    IconButton(onClick = { enable(it) }) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = stringResource(R.string.morekey_settings_enable)
+                        )
+                    }
                 }
             }
         }
