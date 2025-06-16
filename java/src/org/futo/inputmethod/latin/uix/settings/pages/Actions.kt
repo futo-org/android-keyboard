@@ -1,93 +1,108 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.ActionCategory
 import org.futo.inputmethod.latin.uix.actions.ActionsSettings
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
 import org.futo.inputmethod.latin.uix.actions.SwitchLanguageAction
-import org.futo.inputmethod.latin.uix.actions.ensureAllCategoriesPresent
 import org.futo.inputmethod.latin.uix.actions.ensureWellFormed
 import org.futo.inputmethod.latin.uix.actions.toActionEditorItems
 import org.futo.inputmethod.latin.uix.actions.toActionMap
 import org.futo.inputmethod.latin.uix.actions.updateSettingsWithNewActions
 import org.futo.inputmethod.latin.uix.getSetting
-import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
-import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
+import org.futo.inputmethod.latin.uix.settings.UserSetting
+import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
-import org.futo.inputmethod.latin.uix.urlDecode
+import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
+import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.urlEncode
 
-@Preview(showBackground = true)
-@Composable
-fun ActionsScreen(navController: NavHostController = rememberNavController()) {
-    val context = LocalContext.current
+val ActionsScreen = UserSettingsMenu(
+    title = R.string.action_settings_title,
+    navPath = "actions", registerNavPath = true,
+    settings = listOf(
+        userSettingDecorationOnly { ScreenTitle(stringResource(R.string.action_settings_quick_options_title)) },
 
-    val actionMap = useDataStoreValue(ActionsSettings)
-        .toActionEditorItems()
-        .ensureWellFormed()
-        .toActionMap()
+        UserSetting(
+            name = R.string.action_settings_quick_option_enable_action_key,
+            subtitle = R.string.action_settings_quick_option_enable_action_key_subtitle_no_assignment
+        ) {
+            val context = LocalContext.current
+            val actionMap = useDataStoreValue(ActionsSettings)
+                .toActionEditorItems()
+                .ensureWellFormed()
+                .toActionMap()
 
-    val currActionKey = actionMap[ActionCategory.ActionKey]?.firstOrNull()
-    val isLanguageKeyEnabled = currActionKey == SwitchLanguageAction
+            val currActionKey = actionMap[ActionCategory.ActionKey]?.firstOrNull()
 
-    ScrollableList {
-        ScreenTitle(stringResource(R.string.action_settings_title), showBack = true, navController)
+            SettingToggleRaw(
+                title = stringResource(R.string.action_settings_quick_option_enable_action_key),
+                subtitle = when(currActionKey) {
+                    null -> stringResource(R.string.action_settings_quick_option_enable_action_key_subtitle_no_assignment)
+                    else -> stringResource(
+                        R.string.action_settings_quick_option_enable_action_key_subtitle_with_assignment,
+                        stringResource(currActionKey.name)
+                    )
+                },
+                enabled = currActionKey != null,
+                setValue = { to ->
+                    var actionMap = context.getSetting(ActionsSettings)
+                        .toActionEditorItems()
+                        .ensureWellFormed()
+                        .toActionMap()
+                        .toMutableMap()
 
-        ScreenTitle(stringResource(R.string.action_settings_quick_options_title))
+                    if(to) {
+                        // Put an emoji key as the default.
+                        actionMap[ActionCategory.ActionKey] = listOf(EmojiAction)
 
-        SettingToggleRaw(
-            title = stringResource(R.string.action_settings_quick_option_enable_action_key),
-            subtitle = when(currActionKey) {
-                null -> stringResource(R.string.action_settings_quick_option_enable_action_key_subtitle_no_assignment)
-                else -> stringResource(
-                    R.string.action_settings_quick_option_enable_action_key_subtitle_with_assignment,
-                    stringResource(currActionKey.name)
-                )
-            },
-            enabled = currActionKey != null,
-            setValue = { to ->
-                var actionMap = context.getSetting(ActionsSettings)
+                        // In case it was assigned anywhere else, it will be removed automatically
+                        // when we're removing duplicates. The ActionKey has the highest precedence
+                    } else {
+                        // Move any previous action key to the favorites
+                        val prevActionKey = actionMap[ActionCategory.ActionKey]!!
+                        actionMap[ActionCategory.Favorites] =
+                            prevActionKey + actionMap[ActionCategory.Favorites]!!
+
+                        // Then clear action key
+                        actionMap[ActionCategory.ActionKey] = listOf()
+                    }
+
+                    context.updateSettingsWithNewActions(actionMap)
+                }
+            )
+        },
+
+        UserSetting(
+            name = R.string.action_settings_quick_option_language_switch_key,
+            subtitle = R.string.action_settings_quick_option_language_switch_key_subtitle,
+            visibilityCheck = {
+                // Do not show the language key setting if action key is disabled entirely.
+                val actionMap = useDataStoreValue(ActionsSettings)
                     .toActionEditorItems()
                     .ensureWellFormed()
                     .toActionMap()
-                    .toMutableMap()
 
-                if(to) {
-                    // Put an emoji key as the default.
-                    actionMap[ActionCategory.ActionKey] = listOf(EmojiAction)
+                val currActionKey = actionMap[ActionCategory.ActionKey]?.firstOrNull()
 
-                    // In case it was assigned anywhere else, it will be removed automatically
-                    // when we're removing duplicates. The ActionKey has the highest precedence
-                } else {
-                    // Move any previous action key to the favorites
-                    val prevActionKey = actionMap[ActionCategory.ActionKey]!!
-                    actionMap[ActionCategory.Favorites] =
-                        prevActionKey + actionMap[ActionCategory.Favorites]!!
-
-                    // Then clear action key
-                    actionMap[ActionCategory.ActionKey] = listOf()
-                }
-
-                context.updateSettingsWithNewActions(actionMap)
+                currActionKey != null
             }
-        )
+        ) {
+            val context = LocalContext.current
+            val actionMap = useDataStoreValue(ActionsSettings)
+                .toActionEditorItems()
+                .ensureWellFormed()
+                .toActionMap()
 
-        // Do not show the language key setting if action key is disabled entirely.
-        if(true || currActionKey != null) {
+            val currActionKey = actionMap[ActionCategory.ActionKey]?.firstOrNull()
+            val isLanguageKeyEnabled = currActionKey == SwitchLanguageAction
+
             SettingToggleRaw(
                 title = stringResource(R.string.action_settings_quick_option_language_switch_key),
                 subtitle = stringResource(R.string.action_settings_quick_option_language_switch_key_subtitle),
@@ -125,55 +140,26 @@ fun ActionsScreen(navController: NavHostController = rememberNavController()) {
                     context.updateSettingsWithNewActions(actionMap)
                 }
             )
-        }
+        },
 
-        NavigationItem(
-            title = stringResource(R.string.action_editor_title),
-            subtitle = stringResource(R.string.action_editor_subtitle),
+        userSettingNavigationItem(
+            title = R.string.action_editor_title,
+            subtitle = R.string.action_editor_subtitle,
             style = NavigationItemStyle.Misc,
-            navigate = { navController.navigate("actionEdit") }
-        )
+            navigateTo = "actionEdit"
+        ),
 
-        ScreenTitle(stringResource(R.string.action_settings_action_settings))
-        AllActionsMap.forEach {
-            val action = it.value
-            if(action.settingsMenu != null) {
-                NavigationItem(
-                    title = stringResource(action.name),
-                    style = NavigationItemStyle.HomeTertiary,
-                    navigate = {
-                        navController.navigate("actions/" + it.key.urlEncode())
-                    },
-                    icon = painterResource(action.icon)
-                )
-            }
+        userSettingDecorationOnly {
+            ScreenTitle(stringResource(R.string.action_settings_action_settings))
+        }
+    ) + AllActionsMap.mapNotNull { v ->
+        v.value.settingsMenu?.let {
+            userSettingNavigationItem(
+                title = v.value.name,
+                style = NavigationItemStyle.HomeTertiary,
+                navigateTo = "actions/" + v.key.urlEncode(),
+                icon = v.value.icon
+            )
         }
     }
-}
-
-@Composable
-@Preview
-fun ActionsScreenForAction(actionName: String = "clipboard_history", navController: NavHostController = rememberNavController()) {
-    val action = remember(actionName) {
-        AllActionsMap[actionName]
-    } ?: return
-
-    val actionSettings = action.settingsMenu ?: return
-
-    ScrollableList {
-        ScreenTitle(stringResource(actionSettings.title), showBack = true, navController)
-
-        actionSettings.settings.forEach {
-            it.component()
-        }
-    }
-}
-
-fun NavGraphBuilder.addActionsNavigation(
-    navController: NavHostController
-) {
-    composable("actions") { ActionsScreen(navController) }
-    composable("actions/{action}") {
-        ActionsScreenForAction(it.arguments?.getString("action")?.urlDecode() ?: return@composable, navController)
-    }
-}
+)

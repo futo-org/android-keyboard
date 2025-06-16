@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,14 +23,121 @@ import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.TextEditPopupActivity
-import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
+import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.ConditionalMigrateUpdateNotice
-import org.futo.inputmethod.updates.ConditionalUpdate
+import org.futo.inputmethod.updates.openManualUpdateCheck
+
+val HomeScreenLite = UserSettingsMenu(
+    title = R.string.settings_home_title,
+    navPath = "home", registerNavPath = false,
+    settings = listOf(
+        userSettingNavigationItem(
+            title = R.string.settings_check_for_updates_manually,
+            style = NavigationItemStyle.Misc,
+            navigate = { nav -> nav.context.openManualUpdateCheck() }
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.language_settings_title,
+            style = NavigationItemStyle.HomePrimary,
+            navigateTo = "languages",
+            icon = R.drawable.globe
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.settings_keyboard_typing_title,
+            style = NavigationItemStyle.HomeSecondary,
+            navigateTo = "keyboardAndTyping",
+            icon = R.drawable.keyboard
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.prediction_settings_title,
+            style = NavigationItemStyle.HomeTertiary,
+            navigateTo = PredictiveTextMenu.navPath,
+            icon = R.drawable.text_prediction
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.voice_input_settings_title,
+            style = NavigationItemStyle.HomePrimary,
+            /*
+            subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) {
+                stringResource(R.string.voice_input_settings_builtin_disabled_notice)
+            } else { null },
+            */
+            navigateTo = VoiceInputMenu.navPath,
+            icon = R.drawable.mic_fill
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.edit_personal_dictionary,
+            style = NavigationItemStyle.HomeSecondary,
+            icon = R.drawable.book,
+            navigate = { nav ->
+                val intent = Intent("android.settings.USER_DICTIONARY_SETTINGS")
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                nav.context.startActivity(intent)
+            }
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.action_settings_title,
+            style = NavigationItemStyle.HomeSecondary,
+            navigateTo = "actions",
+            icon = R.drawable.smile
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.theme_settings_title,
+            style = NavigationItemStyle.HomeTertiary,
+            navigateTo = "themes",
+            icon = R.drawable.themes
+        ),
+
+        //if(!isPaid) {
+        userSettingNavigationItem(
+            title = R.string.payment_screen_short_title,
+            style = NavigationItemStyle.HomePrimary,
+            navigateTo = "payment",
+            icon = R.drawable.dollar_sign,
+        ).copy(visibilityCheck = {
+            useDataStoreValue(IS_ALREADY_PAID) == false
+        }, appearsInSearch = false),
+        //}
+
+        userSettingNavigationItem(
+            title = R.string.help_menu_title,
+            style = NavigationItemStyle.HomeSecondary,
+            navigateTo = "help",
+            icon = R.drawable.help_circle
+        ),
+
+        //if(isDeveloper || LocalInspectionMode.current) {
+        userSettingNavigationItem(
+            title = R.string.dev_settings_title,
+            style = NavigationItemStyle.HomeTertiary,
+            navigateTo = "developer",
+            icon = R.drawable.code
+        ).copy(visibilityCheck = {
+            useDataStoreValue(IS_DEVELOPER) == true || LocalInspectionMode.current
+        }),
+        //}
+
+        userSettingNavigationItem(
+            title = R.string.credits_menu_title,
+            style = NavigationItemStyle.MiscNoArrow,
+            navigateTo = "credits",
+        ),
+    )
+)
 
 @Preview(showBackground = true)
 @Composable
@@ -40,7 +146,6 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
     val scrollState = rememberScrollState()
     val isDeveloper = useDataStoreValue(IS_DEVELOPER)
     val isPaid = useDataStoreValue(IS_ALREADY_PAID)
-    
 
     Column {
         Column(
@@ -59,95 +164,9 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             )
 
             ConditionalMigrateUpdateNotice()
-            ConditionalUpdate(navController)
             ConditionalUnpaidNoticeWithNav(navController)
 
-            NavigationItem(
-                title = stringResource(R.string.language_settings_title),
-                style = NavigationItemStyle.HomePrimary,
-                navigate = { navController.navigate("languages") },
-                icon = painterResource(id = R.drawable.globe)
-            )
-
-            NavigationItem(
-                title = stringResource(R.string.settings_keyboard_typing_title),
-                style = NavigationItemStyle.HomeSecondary,
-                navigate = { navController.navigate("typing") },
-                icon = painterResource(id = R.drawable.keyboard)
-            )
-
-            NavigationItem(
-                title = stringResource(R.string.prediction_settings_title),
-                style = NavigationItemStyle.HomeTertiary,
-                navigate = { navController.navigate("predictiveText") },
-                icon = painterResource(id = R.drawable.text_prediction)
-            )
-
-            NavigationItem(
-                title = stringResource(R.string.voice_input_settings_title),
-                style = NavigationItemStyle.HomePrimary,
-                subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) {
-                    stringResource(R.string.voice_input_settings_builtin_disabled_notice)
-                } else { null },
-                navigate = { navController.navigate("voiceInput") },
-                icon = painterResource(id = R.drawable.mic_fill)
-            )
-
-            NavigationItem(
-                title = stringResource(R.string.edit_personal_dictionary),
-                style = NavigationItemStyle.HomeSecondary,
-                icon = painterResource(id = R.drawable.book),
-                navigate = {
-                    val intent = Intent("android.settings.USER_DICTIONARY_SETTINGS")
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intent)
-                }
-            )
-
-            NavigationItem(
-                title = stringResource(R.string.action_settings_title),
-                style = NavigationItemStyle.HomeSecondary,
-                navigate = { navController.navigate("actions") },
-                icon = painterResource(id = R.drawable.smile)
-            )
-
-            NavigationItem(
-                title = stringResource(R.string.theme_settings_title),
-                style = NavigationItemStyle.HomeTertiary,
-                navigate = { navController.navigate("themes") },
-                icon = painterResource(id = R.drawable.themes)
-            )
-
-            if(!isPaid) {
-                NavigationItem(
-                    title = stringResource(R.string.payment_screen_short_title),
-                    style = NavigationItemStyle.HomePrimary,
-                    navigate = { navController.navigate("payment") },
-                    icon = painterResource(R.drawable.dollar_sign)
-                )
-            }
-
-            NavigationItem(
-                title = stringResource(R.string.help_menu_title),
-                style = NavigationItemStyle.HomeSecondary,
-                navigate = { navController.navigate("help") },
-                icon = painterResource(id = R.drawable.help_circle)
-            )
-
-            if(isDeveloper || LocalInspectionMode.current) {
-                NavigationItem(
-                    title = stringResource(R.string.dev_settings_title),
-                    style = NavigationItemStyle.HomeTertiary,
-                    navigate = { navController.navigate("developer") },
-                    icon = painterResource(id = R.drawable.code)
-                )
-            }
-
-            NavigationItem(
-                title = stringResource(R.string.credits_menu_title),
-                style = NavigationItemStyle.MiscNoArrow,
-                navigate = { navController.navigate("credits") },
-            )
+            HomeScreenLite.render(showTitle = false)
 
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -1,13 +1,14 @@
 package org.futo.inputmethod.latin.uix.settings
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
@@ -29,7 +30,16 @@ class DataStoreCache(
     val currPreferences: Preferences
 )
 
+class SharedPrefsCache(
+    val currSharedPrefs: SharedPreferences,
+    val generation: Int
+)
+
 val LocalDataStoreCache = compositionLocalOf<DataStoreCache?> {
+    null
+}
+
+val LocalSharedPrefsCache = compositionLocalOf<SharedPrefsCache?> {
     null
 }
 
@@ -48,6 +58,35 @@ fun DataStoreCacheProvider(content: @Composable () -> Unit) {
     }
 
     CompositionLocalProvider(LocalDataStoreCache provides cache) {
+        content()
+    }
+}
+
+@Composable
+fun SharedPrefsCacheProvider(content: @Composable () -> Unit) {
+    val context = LocalContext.current
+    val sharedPrefs = remember { PreferenceUtils.getDefaultSharedPreferences(context) }
+    val generation = remember { mutableIntStateOf(0) }
+
+    DisposableEffect(Unit) {
+        val listener =
+            SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+                //sharedPrefs.value = sharedPreferences
+                generation.intValue += 1
+            }
+
+        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+
+        onDispose {
+            sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
+    }
+
+    val cache = remember(sharedPrefs, generation.intValue) {
+        SharedPrefsCache(sharedPrefs, generation.intValue)
+    }
+
+    CompositionLocalProvider(LocalSharedPrefsCache provides cache) {
         content()
     }
 }
@@ -96,36 +135,27 @@ fun<T> useSharedPrefsGeneric(key: String, default: T, get: (SharedPreferences, S
         ) { coroutineScope.launch {} }
     }
 
-    val context = LocalContext.current
-    val sharedPrefs = remember { PreferenceUtils.getDefaultSharedPreferences(context) }
+    val sharedPrefs = LocalSharedPrefsCache.current
+    val value = remember(key, sharedPrefs) {
+        sharedPrefs?.currSharedPrefs?.let {
+            get(it, key, default)
+        } ?: default.also {
+            Log.e("useSharedPrefsGeneric", "Shared prefs cache was not provided!")
+            throw IllegalStateException("Shared prefs cache was not provided!")
+        }
+    }
 
-    val value = remember { mutableStateOf(get(sharedPrefs, key, default)) }
-
-    // This is not the most efficient way to do this... but it works for a settings menu
-    DisposableEffect(Unit) {
-        val listener =
-            SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
-                if (key == changedKey) {
-                    value.value = get(sharedPreferences, key, value.value)
+    val setValue = remember(key, sharedPrefs) {
+        { newValue: T ->
+            coroutineScope.launch {
+                withContext(Dispatchers.Main) {
+                    put(sharedPrefs!!.currSharedPrefs, key, newValue)
                 }
             }
-
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
-
-        onDispose {
-            sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
         }
     }
 
-    val setValue = { newValue: T ->
-        coroutineScope.launch {
-            withContext(Dispatchers.Main) {
-                put(sharedPrefs, key, newValue)
-            }
-        }
-    }
-
-    return DataStoreItem(value.value, setValue)
+    return DataStoreItem(value, setValue)
 }
 
 

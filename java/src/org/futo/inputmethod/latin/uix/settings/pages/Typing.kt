@@ -1,25 +1,25 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import android.content.Context
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -30,13 +30,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -59,12 +61,11 @@ import androidx.compose.ui.zIndex
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.LongPressKey
 import org.futo.inputmethod.latin.settings.LongPressKeyLayoutSetting
@@ -76,32 +77,30 @@ import org.futo.inputmethod.latin.settings.toEncodedString
 import org.futo.inputmethod.latin.settings.toLongPressKeyLayoutItems
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
-import org.futo.inputmethod.latin.uix.LocalNavController
+import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
-import org.futo.inputmethod.latin.uix.UserSetting
-import org.futo.inputmethod.latin.uix.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.actions.ActionsEditor
-import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryEnabled
 import org.futo.inputmethod.latin.uix.getSettingBlocking
-import org.futo.inputmethod.latin.uix.render
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
-import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingItem
-import org.futo.inputmethod.latin.uix.settings.SettingListLazy
 import org.futo.inputmethod.latin.uix.settings.SettingRadio
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
-import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
-import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
+import org.futo.inputmethod.latin.uix.settings.UserSetting
+import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsInt
+import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
+import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
+import org.futo.inputmethod.latin.uix.settings.userSettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.v2keyboard.KeyboardSettings
 import kotlin.math.absoluteValue
@@ -123,15 +122,6 @@ val InlineAutofillSetting = SettingsKey(
     true
 )
 
-fun NavGraphBuilder.addTypingNavigation(
-    navController: NavHostController
-) {
-    composable("typing") { TypingScreen(navController) }
-    composable("resize") { ResizeScreen(navController) }
-    composable("longPress") { LongPressScreen(navController) }
-    composable("actionEdit") { ActionEditorScreen(navController) }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun ActionEditorScreen(navController: NavHostController = rememberNavController()) {
@@ -141,11 +131,28 @@ fun ActionEditorScreen(navController: NavHostController = rememberNavController(
     }
 }
 
+val ResizeMenuLite = UserSettingsMenu(
+    title = R.string.size_settings_title,
+    navPath = "resize", registerNavPath = false,
+    settings = listOf(
+        userSettingNavigationItem(
+            title = R.string.size_settings_reset,
+            subtitle = R.string.size_settings_reset_subtitle,
+            style = NavigationItemStyle.Misc,
+            icon = R.drawable.close,
+            navigate = { nav ->
+                KeyboardSettings.values.forEach {
+                    nav.context.setSettingBlocking(it.key, it.default)
+                }
+            }
+        )
+    )
+)
+
 @OptIn(ExperimentalLayoutApi::class)
 @Preview(showBackground = true)
 @Composable
 fun ResizeScreen(navController: NavHostController = rememberNavController()) {
-    val context = LocalContext.current
     val textInputService = LocalTextInputService.current
     val session = remember { mutableStateOf<TextInputSession?>(null) }
 
@@ -200,17 +207,7 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
             }
 
             Spacer(Modifier.height(8.dp))
-            NavigationItem(
-                stringResource(R.string.size_settings_reset),
-                subtitle = stringResource(R.string.size_settings_reset_subtitle),
-                style = NavigationItemStyle.Misc,
-                icon = painterResource(R.drawable.close),
-                navigate = {
-                    KeyboardSettings.values.forEach {
-                        context.setSettingBlocking(it.key, it.default)
-                    }
-                }
-            )
+            ResizeMenuLite.render(showTitle = false)
 
             AndroidTextInput(allowPredictions = false, customOptions = setOf("org.futo.inputmethod.latin.ResizeMode"), autoshow = false)
         }
@@ -219,57 +216,98 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun LazyItemScope.DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPressKey, Int) -> Unit, disable: (LongPressKey) -> Unit, dragIcon: @Composable () -> Unit) {
+private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPressKey, Int) -> Unit, disable: (LongPressKey) -> Unit, dragIcon: @Composable () -> Unit, limits: IntRange) {
     val context = LocalContext.current
     val dragging = remember { mutableStateOf(false) }
     val offset = remember { mutableFloatStateOf(0.0f) }
     val height = remember { mutableIntStateOf(1) }
 
+    val pendingOffsetDiff = remember { mutableFloatStateOf(0.0f) }
+    LaunchedEffect(idx, pendingOffsetDiff.floatValue) {
+        if(pendingOffsetDiff.floatValue != 0.0f) {
+            offset.floatValue += pendingOffsetDiff.floatValue
+            pendingOffsetDiff.floatValue = 0.0f
+        }
+    }
+
+    val shouldClampLower = (idx - 1) < limits.first
+    val shouldClampUpper = (idx + 1) > limits.last
+
     SettingItem(
         title = "${idx+1}. " + item.name(context),
         subtitle = item.description(context),
-        icon = dragIcon,
+        icon = {
+            if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
+                Column {
+                    IconButton(onClick = { moveItem(item, -1) }) {
+                        Icon(
+                            Icons.Default.KeyboardArrowUp,
+                            contentDescription = stringResource(R.string.morekey_settings_move_kind_up)
+                        )
+                    }
+                    IconButton(onClick = { moveItem(item, 1) }) {
+                        Icon(
+                            Icons.Default.KeyboardArrowDown,
+                            contentDescription = stringResource(R.string.morekey_settings_move_kind_down)
+                        )
+                    }
+                }
+            } else {
+                Box(Modifier.pointerInput(Unit) {
+                    detectDragGestures(
+                        onDragStart = {
+                            dragging.value = true
+                            offset.floatValue = 0.0f
+                        },
+                        onDragEnd = {
+                            dragging.value = false
+                            offset.floatValue = 0.0f
+                        },
+                        onDragCancel = {
+                            dragging.value = false
+                            offset.floatValue = 0.0f
+                        },
+                        onDrag = { change, dragAmount ->
+                            offset.floatValue += dragAmount.y
+
+                            if ((offset.floatValue + pendingOffsetDiff.floatValue).absoluteValue > height.intValue) {
+                                val direction = offset.floatValue.sign.toInt()
+                                moveItem(
+                                    item,
+                                    direction
+                                )
+                                pendingOffsetDiff.floatValue -= height.intValue * direction
+                            }
+
+                        }
+                    )
+                }) {
+                    dragIcon()
+                }
+            }
+        },
         modifier = Modifier
             .onSizeChanged { size -> height.intValue = size.height }
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = {
-                        dragging.value = true
-                        offset.floatValue = 0.0f
-                    },
-                    onDragEnd = {
-                        dragging.value = false
-                        offset.floatValue = 0.0f
-                    },
-                    onDragCancel = {
-                        dragging.value = false
-                        offset.floatValue = 0.0f
-                    },
-                    onDrag = { change, dragAmount ->
-                        offset.floatValue += dragAmount.y
-                        if (offset.floatValue.absoluteValue > height.intValue) {
-                            val direction = offset.floatValue.sign.toInt()
-                            moveItem(
-                                item,
-                                direction
-                            )
-                            offset.floatValue -= height.intValue * direction
-                        }
-
-                    }
-                )
-            }
             .let { modifier ->
                 if (!dragging.value) {
-                    modifier.animateItemPlacement()
+                    modifier
+                        .background(LocalKeyboardScheme.current.surfaceTint.copy(alpha = if(idx % 2 == 0) 0.02f else 0.06f))
                 } else {
                     modifier
                         .zIndex(10.0f)
                         .graphicsLayer {
                             clip = false
                             translationX = 0.0f
-                            translationY = offset.floatValue
+                            translationY = offset.floatValue.let {
+                                if(shouldClampLower && it < 0.0f) 0.0f
+                                else if (shouldClampUpper && it > 0.0f) 0.0f
+                                else it
+                            }
                         }
+                        .background(
+                            LocalKeyboardScheme.current.surfaceTint.copy(alpha = 0.2f)
+                                .compositeOver(LocalKeyboardScheme.current.background)
+                        )
                 }
             }
     ) {
@@ -280,12 +318,15 @@ private fun LazyItemScope.DraggableSettingItem(idx: Int, item: LongPressKey, mov
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-fun LazyListScope.longPressKeyLayoutEditor(context: Context, setting: DataStoreItem<String>) {
-    item {
-        ScreenTitle(title = stringResource(R.string.morekey_settings_layout))
-    }
+@Composable
+private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<String>) {
+    Row(Modifier.padding(16.dp)) {
+        Text(stringResource(R.string.morekey_settings_layout), style = Typography.Heading.Medium, modifier = Modifier
+                .align(CenterVertically)
+                .weight(1.0f))
 
-    item {
+        Spacer(Modifier.width(4.dp))
+
         Button(onClick = {
             setting.setValue(LongPressKeyLayoutSetting.default)
         }) {
@@ -334,53 +375,71 @@ fun LazyListScope.longPressKeyLayoutEditor(context: Context, setting: DataStoreI
         setting.setValue(newItems)
     }
 
-    item {
-        Text(stringResource(R.string.morekey_settings_active), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-    }
-    itemsIndexed(items, key = { i, v -> v.ordinal }) { i, v ->
-        DraggableSettingItem(idx = i, item = v, moveItem = moveItem, disable = disable, dragIcon = dragIcon)
+    if(items.isNotEmpty()) {
+        Text(
+            stringResource(R.string.morekey_settings_active),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        items.forEachIndexed { i, v ->
+            key(v.ordinal) {
+                DraggableSettingItem(
+                    idx = i, item = v, moveItem = moveItem, disable = disable, dragIcon = dragIcon,
+                    limits = items.indices
+                )
+            }
+        }
     }
 
-    item {
-        Text(stringResource(R.string.morekey_settings_inactive), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-    }
-    items(LongPressKey.entries.filter { !items.contains(it) }, key = { it.ordinal }) {
-        SettingItem(
-            title = it.name(context),
-            subtitle = it.description(context),
-            modifier = Modifier.animateItemPlacement()
-        ) {
-            IconButton(onClick = { enable(it) }) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.morekey_settings_enable))
+    val inactiveEntries = LongPressKey.entries.filter { !items.contains(it) }
+    if(inactiveEntries.isNotEmpty()) {
+        Text(
+            stringResource(R.string.morekey_settings_inactive),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        inactiveEntries.forEach {
+            SettingItem(
+                title = it.name(context),
+                subtitle = it.description(context),
+                modifier = Modifier//.animateItemPlacement()
+            ) {
+                IconButton(onClick = { enable(it) }) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = stringResource(R.string.morekey_settings_enable)
+                    )
+                }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun LongPressScreen(navController: NavHostController = rememberNavController()) {
-    val context = LocalContext.current
-    val setting = useDataStore(LongPressKeyLayoutSetting, blocking = true)
-    SettingListLazy {
-        item {
-            ScreenTitle(stringResource(R.string.morekey_settings_keys), showBack = true, navController)
-        }
+val LongPressMenu = UserSettingsMenu(
+    title = R.string.morekey_settings_keys,
+    navPath = "longPress", registerNavPath = true,
+    settings = listOf(
+        userSettingToggleDataStore(
+            title = R.string.morekey_settings_show_hints,
+            subtitle = R.string.morekey_settings_show_hints_subtitle,
+            setting = KeyHintsSetting
+        ).copy(searchTags = R.string.morekey_settings_show_hints_tags),
 
-        item {
-            SettingToggleDataStore(
-                title = stringResource(R.string.morekey_settings_show_hints),
-                subtitle = stringResource(R.string.morekey_settings_show_hints_subtitle),
-                setting = KeyHintsSetting
+        // TODO: Might not work well for showing up in search
+        UserSetting(name = R.string.morekey_settings_layout) {
+            val context = LocalContext.current
+            val setting = useDataStore(LongPressKeyLayoutSetting)
+            LongPressKeyLayoutEditor(
+                context = context,
+                setting = setting,
             )
-        }
+        },
 
-        longPressKeyLayoutEditor(
-            context = context,
-            setting = setting,
-        )
-
-        item {
+        UserSetting(
+            name = R.string.morekey_settings_duration,
+            subtitle = R.string.morekey_settings_duration_subtitle,
+        ) {
+            val context = LocalContext.current
             SettingSliderSharedPrefsInt(
                 title = stringResource(R.string.morekey_settings_duration),
                 subtitle = stringResource(R.string.morekey_settings_duration_subtitle),
@@ -392,9 +451,10 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
                 indicator = { context.getString(R.string.abbreviation_unit_milliseconds, "$it") },
                 steps = 23
             )
-        }
-
-        item {
+        },
+        UserSetting(
+            name = R.string.morekey_settings_backspace_behavior
+        ) {
             SettingRadio(
                 title = stringResource(R.string.morekey_settings_backspace_behavior),
                 options = listOf(
@@ -410,9 +470,10 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
                     default = Settings.BACKSPACE_MODE_CHARACTERS
                 )
             )
-        }
-
-        item {
+        },
+        UserSetting(
+            name = R.string.morekey_settings_space_behavior
+        ) {
             SettingRadio(
                 title = stringResource(R.string.morekey_settings_space_behavior),
                 options = listOf(
@@ -431,8 +492,8 @@ fun LongPressScreen(navController: NavHostController = rememberNavController()) 
                 )
             )
         }
-    }
-}
+    )
+)
 
 @Composable
 private fun AutoSpacesSetting() {
@@ -460,6 +521,7 @@ private fun AutoSpacesSetting() {
 
 val KeyboardSettingsMenu = UserSettingsMenu(
     title = R.string.keyboard_settings_title,
+    navPath = "keyboard", registerNavPath = true,
     settings = listOf(
         userSettingNavigationItem(
             title = R.string.size_settings_title,
@@ -523,6 +585,7 @@ val KeyboardSettingsMenu = UserSettingsMenu(
 
 val TypingSettingsMenu = UserSettingsMenu(
     title = R.string.typing_settings_title,
+    navPath = "typing", registerNavPath = true,
     settings = listOf(
         UserSetting(
             name = R.string.typing_settings_auto_space_mode,
@@ -558,7 +621,7 @@ val TypingSettingsMenu = UserSettingsMenu(
                 Icon(painterResource(id = R.drawable.icon_spellcheck), contentDescription = null,
                     tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
-        ),
+        ).copy(searchTags = R.string.auto_correction_tags),
         userSettingToggleSharedPrefs(
             title = R.string.auto_cap,
             subtitle = R.string.auto_cap_summary,
@@ -579,13 +642,11 @@ val TypingSettingsMenu = UserSettingsMenu(
         ),
         userSettingToggleSharedPrefs(
             title = R.string.typing_settings_delete_pasted_text_on_backspace,
-            subtitle = R.string.typing_settings_delete_pasted_text_on_backspace_subtitle,
             key = Settings.PREF_BACKSPACE_DELETE_INSERTED_TEXT,
             default = {true}
         ),
         userSettingToggleSharedPrefs(
             title = R.string.typing_settings_revert_correction_on_backspace,
-            subtitle = R.string.typing_settings_revert_correction_on_backspace_subtitle,
             key = Settings.PREF_BACKSPACE_UNDO_AUTOCORRECT,
             default = {true}
         ),
@@ -627,80 +688,9 @@ val TypingSettingsMenu = UserSettingsMenu(
     )
 )
 
-fun userSettingNavigationItem(
-    @StringRes title: Int,
-    style: NavigationItemStyle,
-    navigateTo: String? = null,
-    navigate: ((NavHostController) -> Unit)? = null,
-    @DrawableRes icon: Int? = null,
-    @StringRes subtitle: Int? = null
-): UserSetting = UserSetting(
-    name = title,
-    subtitle = subtitle,
-    component = {
-        val navController = LocalNavController.current
-        NavigationItem(
-            title = stringResource(title),
-            style = style,
-            icon = icon?.let { painterResource(it) },
-            subtitle = subtitle?.let { stringResource(it) },
-            navigate = {
-                if(navigateTo != null) navController.navigate(navigateTo)
-                navigate?.invoke(navController)
-            }
-        )
-    }
-)
-
-fun userSettingToggleSharedPrefs(
-    @StringRes title: Int,
-    key: String,
-    default: @Composable () -> Boolean,
-    @StringRes subtitle: Int? = null,
-    @StringRes disabledSubtitle: Int? = null,
-    disabled: @Composable () -> Boolean = {false},
-    icon: (@Composable () -> Unit)? = null
-): UserSetting = UserSetting(
-    name = title,
-    subtitle = subtitle,
-    component = {
-        SettingToggleSharedPrefs(
-            title = stringResource(title),
-            key = key,
-            default = default(),
-            subtitle = subtitle?.let { stringResource(it) },
-            disabledSubtitle = disabledSubtitle?.let { stringResource(it) },
-            disabled = disabled(),
-            icon = icon
-        )
-    }
-)
-
-fun userSettingToggleDataStore(
-    @StringRes title: Int,
-    setting: SettingsKey<Boolean>,
-    @StringRes subtitle: Int? = null,
-    @StringRes disabledSubtitle: Int? = null,
-    disabled: @Composable () -> Boolean = {false},
-    icon: (@Composable () -> Unit)? = null
-): UserSetting = UserSetting(
-    name = title,
-    subtitle = subtitle,
-    component = {
-        SettingToggleDataStore(
-            title = stringResource(title),
-            setting = setting,
-            subtitle = subtitle?.let { stringResource(it) },
-            disabledSubtitle = disabledSubtitle?.let { stringResource(it) },
-            disabled = disabled(),
-            icon = icon
-        )
-    }
-)
-
 @Preview(showBackground = true)
 @Composable
-fun TypingScreen(navController: NavHostController = rememberNavController()) {
+fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val (vibration, _) = useDataStore(key = vibrationDurationSetting.key, default = vibrationDurationSetting.default)
 

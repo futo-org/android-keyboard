@@ -267,6 +267,17 @@
     <string name="settings_external_model_name">Externally imported model</string>
     <string name="settings_check_for_updates_manually">Check for updates manually</string>
     <string name="settings_update_available">Update Available</string>
+    <!-- May be translated as "Start", "All", etc. This is the starting menu where all settings live.
+         Usually the string `english_ime_settings` is used instead, but this title is used in search
+         results. -->
+    <string name="settings_home_title">Home</string>
+    <!-- When a setting exists but is hidden due to another option being disabled (or enabled), the search
+         will display the option title with this subtitle. Tapping will visit the menu where the setting
+         lives, and usually the user can figure out what option to toggle to show the option. For example,
+         all voice input options are hidden if the "Use System Voice Input" toggle is on. -->
+    <string name="settings_search_option_exists_but_disabled">Option is disabled as it depends on another option, tap to visit menu: %1$s</string>
+    <string name="settings_search_enter_your_search">Enter a search term…</string>
+    <string name="settings_search_no_options_found">No results found</string>
 
     <!-- When adding a new language -->
     <string name="language_settings_title">Languages &amp; Models</string>
@@ -280,6 +291,9 @@
     <string name="language_settings_add_layout_for_this_language">Add Keyboard Layout</string>
     <string name="language_settings_enable_multilingual_typing_for_this_language">Multilingual Typing</string>
     <string name="language_settings_remove_this_language">Remove Language</string>
+
+    <string name="language_settings_manage_languages_title">Manage languages and layouts</string>
+    <string name="language_settings_manage_languages_subtitle">View languages you’ve enabled, remove languages, change or add additional layouts, or toggle multilingual typing</string>
 
     <string name="language_settings_resource_imported_indicator">(Imported)</string>
     <string name="language_settings_resource_unsupported_indicator">(Unsupported)</string>
@@ -371,6 +385,8 @@
     <string name="morekey_settings_subtitle">Configure long-press duration, how to order letters/symbols, and behavior of spacebar and delete key.</string>
     <string name="morekey_settings_layout">Layout of long-press keys</string>
     <string name="morekey_settings_reset">Reset to default</string>
+    <string name="morekey_settings_move_kind_up">Move up</string>
+    <string name="morekey_settings_move_kind_down">Move down</string>
     <string name="morekey_settings_active">Active</string>
     <string name="morekey_settings_inactive">Inactive</string>
     <string name="morekey_settings_enable">Activate</string>
@@ -378,6 +394,7 @@
     <string name="morekey_settings_keys">Long-Press Keys</string>
     <string name="morekey_settings_show_hints">Show hints</string>
     <string name="morekey_settings_show_hints_subtitle">Display a small hint on each key, showing the primary long-press key</string>
+    <string name="morekey_settings_show_hints_tags">additional characters, alt keys, symbols, popup keys</string>
     <string name="morekey_settings_duration">Long Press Duration</string>
     <string name="morekey_settings_duration_subtitle">How long a key needs to be pressed to be considered a long-press</string>
     <string name="morekey_settings_backspace_behavior">Backspace Behavior when holding or swiping</string>
@@ -412,9 +429,7 @@
     <string name="typing_settings_vibration_strength_default">Default</string>
     <string name="typing_settings_enable_clipboard_history">Clipboard History</string>
     <string name="typing_settings_delete_pasted_text_on_backspace">Delete inserted text on backspace</string>
-    <string name="typing_settings_delete_pasted_text_on_backspace_subtitle" />
     <string name="typing_settings_revert_correction_on_backspace">Undo autocorrect on backspace</string>
-    <string name="typing_settings_revert_correction_on_backspace_subtitle" />
 
     <!-- Automatic space insertion -->
     <string name="typing_settings_auto_space_mode">Automatic spaces mode</string>
@@ -433,7 +448,7 @@
     <string name="keyboard_settings_show_suggestion_row">Show action/suggestions bar</string>
     <string name="keyboard_settings_show_suggestion_row_subtitle">Show the bar containing suggestions. Recommended to keep enabled</string>
     <string name="keyboard_settings_inline_autofill">Inline autofill</string>
-    <string name="keyboard_settings_inline_autofill_subtitle">Display password manager autofill in suggestion bar</string>
+    <string name="keyboard_settings_inline_autofill_subtitle">Display password manager autofill and auto-reply suggestions (provided by app) in suggestion bar</string>
 
     <!-- misc titles -->
     <string name="settings_keyboard_typing_title">Keyboard &amp; Typing</string>
@@ -477,6 +492,8 @@
     <string name="prediction_settings_word_blacklist">Word Blacklist</string>
     <string name="prediction_settings_word_blacklist_add">Add to blacklist</string>
     <string name="prediction_settings_word_blacklist_none">There are no blacklisted words.</string>
+    <string name="prediction_settings_word_blacklist_edit_blacklisted_words_title">View and edit blacklisted words</string>
+    <string name="prediction_settings_word_blacklist_edit_blacklisted_words_subtitle">Click here to view the list of blacklisted suggestions, add or remove entries</string>
 
     <!-- Help & feedback menu -->
     <string name="help_menu_title">Help &amp; Feedback</string>
@@ -487,12 +504,13 @@
     <string name="help_menu_documentation_subtitle">Learn more about the keyboard\'s features and capabilities</string>
     <string name="help_menu_discord">Discord Server</string>
     <string name="help_menu_discord_subtitle">Wanna talk but don\'t like Zulip? Chat here</string>
-    <string name="help_menu_futo_chat">FUTO Chat</string>
+    <string name="help_menu_futo_chat">FUTO Chat (Zulip)</string>
     <string name="help_menu_futo_chat_subtitle">Wanna talk but don\'t like Discord? Chat here</string>
-    <string name="help_menu_github">Public issue tracker</string>
+    <string name="help_menu_github">Public issue tracker (GitHub)</string>
     <string name="help_menu_github_subtitle">Specific bug or feature request? Post here</string>
     <string name="help_menu_email">Email keyboard@futo.org</string>
     <string name="help_menu_email_subtitle">Private feedback, help, or don\'t use GitHub? Email us</string>
+    <string name="help_menu_email_tags">gmail, support, contact, help, broken, bug, error, issue, problem, complaint, ticket, payment, support, glitch, malfunction, fix, customer service, crash, question, inquiry, assistance</string>
 
     <!-- Setup configuration -->
     <string name="setup_step_1">Setup - Step 1</string>

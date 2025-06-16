@@ -64,8 +64,8 @@ import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.PersistentStateInitialization
 import org.futo.inputmethod.latin.uix.SettingsKey
-import org.futo.inputmethod.latin.uix.UserSetting
-import org.futo.inputmethod.latin.uix.UserSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.UserSetting
+import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.getUnlockedSetting
@@ -77,6 +77,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.ParagraphText
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurface
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurfaceHeading
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.Typography
 import java.io.File
 import kotlin.math.roundToInt
@@ -749,6 +750,8 @@ val ClipboardHistoryAction = Action(
 
     settingsMenu = UserSettingsMenu(
         title = R.string.action_clipboard_manager_settings_title,
+        navPath = "actions/clipboard_history",
+        registerNavPath = true,
         settings = listOf(
             UserSetting(
                 name = R.string.typing_settings_enable_clipboard_history,
@@ -770,7 +773,8 @@ val ClipboardHistoryAction = Action(
                         hardRange = 0.0f..Float.POSITIVE_INFINITY,
                         transform = { it.toInt() },
                     )
-                }
+                },
+                visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }
             ),
 
             UserSetting(
@@ -783,18 +787,21 @@ val ClipboardHistoryAction = Action(
                         hardRange = 0.0f..Float.POSITIVE_INFINITY,
                         transform = { it.toInt() },
                     )
-                }
+                },
+                visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }
             ),
 
             UserSetting(
                 name = R.string.action_clipboard_manager_settings_save_sensitive_clips,
+                subtitle = R.string.action_clipboard_manager_settings_save_sensitive_clips_subtitle,
                 component = {
                     SettingToggleDataStore(
                         title = stringResource(R.string.action_clipboard_manager_settings_save_sensitive_clips),
                         subtitle = stringResource(R.string.action_clipboard_manager_settings_save_sensitive_clips_subtitle),
                         setting = ClipboardHistorySaveSensitive
                     )
-                }
+                },
+                visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }
             ),
         )
     )

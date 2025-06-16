@@ -61,12 +61,16 @@
     <string name="prefs_block_potentially_offensive_title">Block offensive words</string>
     <!-- Summary for option to block potentially offensive words to be shown [CHAR_LIMIT=80 (two lines) or 40 (fits on one line, preferable)] -->
     <string name="prefs_block_potentially_offensive_summary">Do not suggest potentially offensive words</string>
+    <!-- Search tags for the setting (these are not displayed to the user, the bad words will allow this option to appear when they search those words) -->
+    <string name="prefs_block_potentially_offensive_tags">bad words, swear words, swears, curse words, blacklist, filtering, fuck, shit</string>
 
     <!-- Option to decide the auto correction threshold score -->
     <!-- Option to enable auto correction [CHAR LIMIT=20]-->
     <string name="auto_correction">Auto-correction</string>
     <!-- Description for auto correction [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
     <string name="auto_correction_summary">Spacebar and punctuation automatically correct mistyped words</string>
+    <!-- Search tags for the setting -->
+    <string name="auto_correction_tags">autocorrect</string>
 
     <!-- Option to enable using next word suggestions. After the user types a space, with this option on, the keyboard will try to predict the next word. -->
     <string name="bigram_prediction">Next-word suggestions</string>

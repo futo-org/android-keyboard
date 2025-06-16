@@ -14,9 +14,13 @@ import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
 import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.uix.SettingsExporter.ExportingMenu
+import org.futo.inputmethod.latin.uix.actions.AllActions
+import org.futo.inputmethod.latin.uix.settings.pages.ActionEditorScreen
+import org.futo.inputmethod.latin.uix.settings.pages.ActionsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.AdvancedParametersScreen
 import org.futo.inputmethod.latin.uix.settings.pages.AlreadyPaidDialog
 import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreen
+import org.futo.inputmethod.latin.uix.settings.pages.BlacklistScreenLite
 import org.futo.inputmethod.latin.uix.settings.pages.CreditsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DevEditTextVariationsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DevKeyboardScreen
@@ -24,21 +28,27 @@ import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutEdit
 import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutEditor
 import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutList
 import org.futo.inputmethod.latin.uix.settings.pages.DeveloperScreen
-import org.futo.inputmethod.latin.uix.settings.pages.HelpScreen
+import org.futo.inputmethod.latin.uix.settings.pages.HelpMenu
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
+import org.futo.inputmethod.latin.uix.settings.pages.HomeScreenLite
+import org.futo.inputmethod.latin.uix.settings.pages.KeyboardAndTypingScreen
+import org.futo.inputmethod.latin.uix.settings.pages.KeyboardSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.pages.LanguageSettingsLite
 import org.futo.inputmethod.latin.uix.settings.pages.LanguagesScreen
+import org.futo.inputmethod.latin.uix.settings.pages.LongPressMenu
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentThankYouScreen
-import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextScreen
+import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextMenu
 import org.futo.inputmethod.latin.uix.settings.pages.ProjectInfoView
+import org.futo.inputmethod.latin.uix.settings.pages.ResizeMenuLite
+import org.futo.inputmethod.latin.uix.settings.pages.ResizeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SearchScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLanguageScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLayoutsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
-import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputScreen
-import org.futo.inputmethod.latin.uix.settings.pages.addActionsNavigation
+import org.futo.inputmethod.latin.uix.settings.pages.TypingSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputMenu
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
-import org.futo.inputmethod.latin.uix.settings.pages.addTypingNavigation
 import org.futo.inputmethod.latin.uix.urlDecode
 import org.futo.inputmethod.latin.uix.urlEncode
 
@@ -50,6 +60,20 @@ fun NavHostController.navigateToError(title: String, body: String) {
 fun NavHostController.navigateToInfo(title: String, body: String) {
     this.navigate("info/${title.urlEncode()}/${body.urlEncode()}")
 }
+
+val SettingsMenus = listOf(
+    HomeScreenLite,
+    LanguageSettingsLite,
+    KeyboardSettingsMenu,
+    TypingSettingsMenu,
+    ResizeMenuLite,
+    LongPressMenu,
+    PredictiveTextMenu,
+    BlacklistScreenLite,
+    VoiceInputMenu,
+    ActionsScreen,
+    HelpMenu
+) + AllActions.mapNotNull { it.settingsMenu }
 
 @Composable
 fun SettingsNavigator(
@@ -72,12 +96,14 @@ fun SettingsNavigator(
                     it.arguments?.getString("lang")?.urlDecode() ?: ""
                 )
             }
-            composable("predictiveText") { PredictiveTextScreen(navController) }
             composable("advancedparams") { AdvancedParametersScreen(navController) }
-            addTypingNavigation(navController)
-            composable("voiceInput") { VoiceInputScreen(navController) }
+            composable("actionEdit") { ActionEditorScreen(navController) }
+            SettingsMenus.forEach { menu ->
+                if(menu.registerNavPath) composable(menu.navPath) { UserSettingsMenuScreen(menu) }
+            }
+            composable("keyboardAndTyping") { KeyboardAndTypingScreen(navController) }
+            composable("resize") { ResizeScreen(navController) }
             composable("themes") { ThemeScreen(navController) }
-            composable("help") { HelpScreen(navController) }
             composable("developer") { DeveloperScreen(navController) }
             composable("devtextedit") { DevEditTextVariationsScreen(navController) }
             composable("devlayouts") { DevLayoutList(navController) }
@@ -123,7 +149,6 @@ fun SettingsNavigator(
                 AlreadyPaidDialog(navController = navController)
             }
             addModelManagerNavigation(navController)
-            addActionsNavigation(navController)
         }
     }
 }

@@ -1,7 +1,7 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +14,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,33 +25,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.UserSetting
-import org.futo.inputmethod.latin.uix.UserSettingsMenu
-import org.futo.inputmethod.latin.uix.actions.searchMultiple
-
-val SettingsMenus = listOf(
-    KeyboardSettingsMenu,
-    TypingSettingsMenu
-)
-
-data class SettingItem(
-    val item: UserSetting,
-    val origin: UserSettingsMenu
-)
-
-val AllSettings = SettingsMenus.flatMap { menu -> menu.settings.map { SettingItem(it, menu) } }
+import org.futo.inputmethod.latin.uix.LocalNavController
+import org.futo.inputmethod.latin.uix.settings.NavigationItem
+import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.SettingsMenus
+import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
+import org.futo.inputmethod.latin.uix.theme.Typography
 
 @OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
@@ -58,17 +54,54 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val textFieldValue = remember { mutableStateOf(TextFieldValue("")) }
 
-    val searchKeys = if(textFieldValue.value.text.isEmpty()) {
-        AllSettings
-    } else {
-        AllSettings.searchMultiple(textFieldValue.value.text.lowercase(), limitLength = false, maxDistance = Int.MAX_VALUE) {
-            listOf(
-                context.getString(it.item.name),
-                it.item.subtitle?.let { context.getString(it) } ?: "",
-            ).map { normalize(it.lowercase()) }/*.flatMap { it.split(" ") }*/.filter { it.isNotBlank() }
-        }
-    }
+    val query = textFieldValue.value.text.lowercase()
+    val results = remember(query) {
+        SettingsMenus.map { menu ->
+            menu to menu.settings.filter { it.name != 0 && it.appearsInSearch }
+                .filter {
+                    it.searchTags?.let {
+                        if (context.getString(it).contains(query)) return@filter true
+                    }
 
+                    if (context.getString(it.name).lowercase()
+                            .contains(query)
+                    ) return@filter true
+
+                    it.subtitle?.let {
+                        if (context.getString(it).lowercase()
+                                .contains(query)
+                        ) return@filter true
+                    }
+
+                    return@filter false
+                }
+
+
+        }
+    }.map { v ->
+        v.first to v.second.map {
+            if(it.visibilityCheck?.invoke() == false) {
+                userSettingDecorationOnly {
+                    val nav = LocalNavController.current
+                    NavigationItem(
+                        title = stringResource(it.name),
+                        style = NavigationItemStyle.MiscNoArrow,
+                        subtitle = stringResource(
+                            R.string.settings_search_option_exists_but_disabled,
+                            stringResource(v.first.title)
+                        ),
+                        navigate = {
+                            nav.navigate(v.first.navPath)
+                        }
+                    )
+                }
+            } else {
+                it
+            }
+        }
+    }.filter {
+        it.second.isNotEmpty()
+    }
 
     LazyColumn {
         item {
@@ -104,10 +137,61 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                 }
             }
         }
-        items(searchKeys) {
-            Box(Modifier.animateItemPlacement()) {
-                Text("From ${stringResource(it.origin.title)}")
-                it.item.component()
+
+
+        if(query.isBlank()) {
+            item {
+                Text(
+                    stringResource(R.string.settings_search_enter_your_search),
+                    style = Typography.Heading.Medium.copy(fontStyle = FontStyle.Italic),
+                    color = MaterialTheme.colorScheme.outline,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                )
+            }
+        } else if(results.isEmpty()) {
+            item {
+                Text(
+                    stringResource(R.string.settings_search_no_options_found),
+                    style = Typography.Heading.Medium.copy(fontStyle = FontStyle.Italic),
+                    color = MaterialTheme.colorScheme.outline,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                )
+            }
+        } else {
+            results.forEach {
+                val menu = it.first
+                val settings = it.second
+                item {
+                    val nav = LocalNavController.current
+                    Row(Modifier
+                        .clickable {
+                            nav.navigate(menu.navPath)
+                        }
+                        .padding(16.dp)) {
+                        Text(
+                            stringResource(menu.title),
+                            style = Typography.Heading.Medium,
+                            modifier = Modifier
+                                .align(CenterVertically)
+                                .weight(1.0f)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(Icons.Default.ArrowForward, contentDescription = null)
+                    }
+                }
+                items(settings) {
+                    it.component()
+                }
+                item {
+                    Spacer(Modifier.height(8.dp))
+                    HorizontalDivider()
+                }
             }
         }
     }
