@@ -56,7 +56,6 @@ val PredictiveTextMenu = UserSettingsMenu(
             .copy(visibilityCheck = visibilityCheckLMEnabled),
         // }
 
-
         userSettingNavigationItem(
             title = R.string.edit_personal_dictionary,
             style = NavigationItemStyle.HomePrimary,

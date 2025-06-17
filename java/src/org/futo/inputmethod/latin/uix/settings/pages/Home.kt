@@ -84,17 +84,6 @@ val HomeScreenLite = UserSettingsMenu(
         ),
 
         userSettingNavigationItem(
-            title = R.string.edit_personal_dictionary,
-            style = NavigationItemStyle.HomeSecondary,
-            icon = R.drawable.book,
-            navigate = { nav ->
-                val intent = Intent("android.settings.USER_DICTIONARY_SETTINGS")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                nav.context.startActivity(intent)
-            }
-        ),
-
-        userSettingNavigationItem(
             title = R.string.action_settings_title,
             style = NavigationItemStyle.HomeSecondary,
             navigateTo = "actions",

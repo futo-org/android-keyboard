@@ -32,17 +32,6 @@ val VoiceInputMenu = UserSettingsMenu(
         ),
 
         //if(!systemVoiceInput.value) {
-        userSettingNavigationItem(
-            title = R.string.edit_personal_dictionary,
-            style = NavigationItemStyle.HomePrimary,
-            icon = R.drawable.book,
-            navigate = { nav ->
-                val intent = Intent("android.settings.USER_DICTIONARY_SETTINGS")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                nav.context.startActivity(intent)
-            }
-        ).copy(visibilityCheck = visibilityCheckNotSystemVoiceInput),
-
         userSettingToggleDataStore(
             title = R.string.voice_input_settings_indication_sounds,
             subtitle = R.string.voice_input_settings_indication_sounds_subtitle,
