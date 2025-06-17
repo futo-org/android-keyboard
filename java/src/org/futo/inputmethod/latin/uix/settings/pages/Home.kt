@@ -2,15 +2,23 @@ package org.futo.inputmethod.latin.uix.settings.pages
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -23,9 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.TextEditPopupActivity
-import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
-import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
@@ -155,13 +161,21 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 .verticalScroll(scrollState)
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-            ScreenTitle(stringResource(R.string.english_ime_settings))
+            Row(Modifier.padding(16.dp)) {
+                Text(stringResource(R.string.english_ime_settings), style = Typography.Heading.Medium, modifier = Modifier
+                    .align(CenterVertically)
+                    .weight(1.0f))
 
-            NavigationItem(
-                title = "Search",
-                style = NavigationItemStyle.HomePrimary,
-                navigate = { navController.navigate("search") }
-            )
+                Spacer(Modifier.width(4.dp))
+
+                IconButton(onClick = {
+                    navController.navigate("search")
+                }) {
+                    Icon(Icons.Default.Search, contentDescription = stringResource(
+                        R.string.settings_search_menu_title
+                    ))
+                }
+            }
 
             ConditionalMigrateUpdateNotice()
             ConditionalUnpaidNoticeWithNav(navController)

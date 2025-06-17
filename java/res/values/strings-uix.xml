@@ -276,6 +276,7 @@
          lives, and usually the user can figure out what option to toggle to show the option. For example,
          all voice input options are hidden if the "Use System Voice Input" toggle is on. -->
     <string name="settings_search_option_exists_but_disabled">Option is disabled as it depends on another option, tap to visit menu: %1$s</string>
+    <string name="settings_search_menu_title">Search</string>
     <string name="settings_search_enter_your_search">Enter a search term…</string>
     <string name="settings_search_no_options_found">No results found</string>
 

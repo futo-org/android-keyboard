@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,11 +30,14 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeOptions
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.TextInputSession
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,6 +57,26 @@ import org.futo.inputmethod.latin.uix.theme.Typography
 fun SearchScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val textFieldValue = remember { mutableStateOf(TextFieldValue("")) }
+
+    val textInputService = LocalTextInputService.current
+    val session = remember { mutableStateOf<TextInputSession?>(null) }
+
+    DisposableEffect(Unit) {
+        session.value = textInputService?.startInput(
+            TextFieldValue(""),
+            imeOptions = ImeOptions.Default.copy(
+                platformImeOptions = PlatformImeOptions(
+                    privateImeOptions = "org.futo.inputmethod.latin.NoSuggestions=1"
+                )
+            ),
+            onEditCommand = { },
+            onImeActionPerformed = { }
+        )
+
+        onDispose {
+            textInputService?.stopInput(session.value ?: return@onDispose)
+        }
+    }
 
     val query = textFieldValue.value.text.lowercase()
     val results = remember(query) {
@@ -119,7 +143,7 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                 ) {
                     Icon(
                         Icons.Default.Search,
-                        contentDescription = stringResource(R.string.language_settings_search)
+                        contentDescription = stringResource(R.string.settings_search_menu_title)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     BasicTextField(
@@ -127,7 +151,7 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                         onValueChange = { textFieldValue.value = it },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             platformImeOptions = PlatformImeOptions(
-                                privateImeOptions = "org.futo.inputmethod.latin.NoSuggestions=1,org.futo.inputmethod.latin.ForceLayout=qwerty,org.futo.inputmethod.latin.ForceLocale=zz"
+                                privateImeOptions = "org.futo.inputmethod.latin.NoSuggestions=1"
                             )
                         ),
                         modifier = Modifier.weight(1.0f),
