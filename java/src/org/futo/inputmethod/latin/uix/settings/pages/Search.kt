@@ -1,5 +1,7 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import android.icu.text.Transliterator
+import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -51,6 +53,22 @@ import org.futo.inputmethod.latin.uix.settings.SettingsMenus
 import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.theme.Typography
 
+private val LATIN_ASCII = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    Transliterator.getInstance("Latin-ASCII")
+} else {
+    null
+}
+
+private fun normalizeString(s: String): String {
+    return (LATIN_ASCII?.let {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            it.transliterate(s)
+        } else {
+            null
+        }
+    } ?: s).lowercase()
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
@@ -60,6 +78,19 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
 
     val textInputService = LocalTextInputService.current
     val session = remember { mutableStateOf<TextInputSession?>(null) }
+
+    val searchTagsByMenu = remember {
+        SettingsMenus
+            .flatMap { it.settings }
+            .filter { it.name != 0 }
+            .associate {
+                it to run {
+                    normalizeString(context.getString(it.name)) + "\n" +
+                            (it.searchTags?.let { normalizeString(context.getString(it)) } ?: "") + "\n" +
+                            (it.subtitle?.let { normalizeString(context.getString(it)) } ?: "")
+                }
+            }
+    }
 
     DisposableEffect(Unit) {
         session.value = textInputService?.startInput(
@@ -78,29 +109,12 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
         }
     }
 
-    val query = textFieldValue.value.text.lowercase()
+    val query = normalizeString(textFieldValue.value.text)
     val results = remember(query) {
         SettingsMenus.map { menu ->
-            menu to menu.settings.filter { it.name != 0 && it.appearsInSearch }
-                .filter {
-                    it.searchTags?.let {
-                        if (context.getString(it).contains(query)) return@filter true
-                    }
-
-                    if (context.getString(it.name).lowercase()
-                            .contains(query)
-                    ) return@filter true
-
-                    it.subtitle?.let {
-                        if (context.getString(it).lowercase()
-                                .contains(query)
-                        ) return@filter true
-                    }
-
-                    return@filter false
-                }
-
-
+            menu to menu.settings
+                .filter { it.name != 0 && it.appearsInSearch }
+                .filter { searchTagsByMenu[it]!!.contains(query) }
         }
     }.map { v ->
         v.first to v.second.map {
