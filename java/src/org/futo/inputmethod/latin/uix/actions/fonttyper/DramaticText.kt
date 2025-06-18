@@ -479,10 +479,21 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
         var source = shaderToyShader
         source = source.replace("//LINEDEFS", lineDefs)
+
+        val bitmap = try {
+            renderShaderToBitmap(
+                context,
+                source,
+                width = 450,
+                height = 450,
+                iChannels = listOf(loadBitmapFromAssets(context, "fonts/noto-mono-alphabet.png"))
+            )
+        }catch(e: Exception) {
+            return null
+        }
+
         return LineRenderResult(
-            bitmap = renderShaderToBitmap(context, source, 450, 450, iChannels = listOf(
-                loadBitmapFromAssets(context, "fonts/noto-mono-alphabet.png")
-            )),
+            bitmap = bitmap,
             lineHeight = 0,
             startXOffset = 0,
             startYOffset = 0
