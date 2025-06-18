@@ -448,6 +448,7 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
                 rowCount = items.size,
                 columnCount = 1
             )
+            contentDescription = context.getString(R.string.morekey_settings_active)
         }) {
             items.forEachIndexed { i, v ->
                 key(v.ordinal) {
@@ -476,6 +477,7 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
                 rowCount = inactiveEntries.size,
                 columnCount = 1
             )
+            contentDescription = context.getString(R.string.morekey_settings_inactive)
         }) {
             inactiveEntries.forEach {
                 SettingItem(
@@ -483,9 +485,8 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
                     subtitle = it.description(context),
                     modifier = Modifier.clearAndSetSemantics {
                         contentDescription = it.name(context)
-                        stateDescription = context.getString(R.string.morekey_settings_inactive)
 
-                        onClick(label = context.getString(R.string.morekey_settings_enable)) {
+                        onClick(label = context.getString(R.string.morekey_settings_reactivate)) {
                             enable(it)
                             true
                         }
@@ -494,7 +495,7 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
                     IconButton(onClick = { enable(it) }) {
                         Icon(
                             Icons.Default.Add,
-                            contentDescription = stringResource(R.string.morekey_settings_enable)
+                            contentDescription = stringResource(R.string.morekey_settings_reactivate)
                         )
                     }
                 }

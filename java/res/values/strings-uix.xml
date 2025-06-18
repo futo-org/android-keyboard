@@ -395,7 +395,7 @@
     <string name="morekey_settings_kind_position">Position %1$s of %2$s</string>
     <string name="morekey_settings_active">Active</string>
     <string name="morekey_settings_inactive">Inactive</string>
-    <string name="morekey_settings_enable">Activate</string>
+    <string name="morekey_settings_reactivate">Reactivate</string>
     <string name="morekey_settings_disable">Deactivate</string>
     <string name="morekey_settings_keys">Long-Press Keys</string>
     <string name="morekey_settings_show_hints">Show hints</string>
