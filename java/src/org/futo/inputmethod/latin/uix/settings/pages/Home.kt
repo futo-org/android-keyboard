@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,8 +31,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.uix.TextEditPopupActivity
+import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
+import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
@@ -71,17 +76,20 @@ val HomeScreenLite = UserSettingsMenu(
             icon = R.drawable.text_prediction
         ),
 
-        userSettingNavigationItem(
-            title = R.string.voice_input_settings_title,
-            style = NavigationItemStyle.HomePrimary,
-            /*
-            subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) {
-                stringResource(R.string.voice_input_settings_builtin_disabled_notice)
-            } else { null },
-            */
-            navigateTo = VoiceInputMenu.navPath,
-            icon = R.drawable.mic_fill
-        ),
+        UserSetting(
+            name = R.string.voice_input_settings_title
+        ) {
+            val navController = LocalNavController.current
+            NavigationItem(
+                title = stringResource(R.string.voice_input_settings_title),
+                style = NavigationItemStyle.HomePrimary,
+                subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) {
+                    stringResource(R.string.voice_input_settings_builtin_disabled_notice)
+                } else { null },
+                navigate = { navController.navigate(VoiceInputMenu.navPath) },
+                icon = painterResource(R.drawable.mic_fill)
+            )
+        },
 
         userSettingNavigationItem(
             title = R.string.action_settings_title,
