@@ -98,22 +98,28 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                 .filter { it.name != 0 && it.appearsInSearch }
                 .filter { searchTagsByMenu[it]!!.contains(query) }
         }
+    }.filter {
+        it.first.visibilityCheck?.invoke() != false
     }.map { v ->
-        v.first to v.second.map {
+        v.first to v.second.mapNotNull {
             if(it.visibilityCheck?.invoke() == false) {
-                userSettingDecorationOnly {
-                    val nav = LocalNavController.current
-                    NavigationItem(
-                        title = stringResource(it.name),
-                        style = NavigationItemStyle.MiscNoArrow,
-                        subtitle = stringResource(
-                            R.string.settings_search_option_exists_but_disabled,
-                            stringResource(v.first.title)
-                        ),
-                        navigate = {
-                            nav.navigate(v.first.navPath)
-                        }
-                    )
+                if(it.appearInSearchIfVisibilityCheckFailed) {
+                    userSettingDecorationOnly {
+                        val nav = LocalNavController.current
+                        NavigationItem(
+                            title = stringResource(it.name),
+                            style = NavigationItemStyle.MiscNoArrow,
+                            subtitle = stringResource(
+                                R.string.settings_search_option_exists_but_disabled,
+                                stringResource(v.first.title)
+                            ),
+                            navigate = {
+                                nav.navigate(v.first.navPath)
+                            }
+                        )
+                    }
+                } else {
+                    null
                 }
             } else {
                 it

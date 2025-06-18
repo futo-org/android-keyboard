@@ -14,6 +14,7 @@ data class UserSetting(
     @StringRes val subtitle: Int? = null,
     @StringRes val searchTags: Int? = null,
     val visibilityCheck: (@Composable () -> Boolean)? = null,
+    val appearInSearchIfVisibilityCheckFailed: Boolean = true,
     val appearsInSearch: Boolean = true,
     val component: @Composable () -> Unit,
 )
@@ -21,6 +22,7 @@ data class UserSetting(
 data class UserSettingsMenu(
     @StringRes val title: Int,
     @StringRes val searchTags: Int? = null,
+    val visibilityCheck: (@Composable () -> Boolean)? = null,
     val navPath: String,
     val registerNavPath: Boolean,
     val settings: List<UserSetting>

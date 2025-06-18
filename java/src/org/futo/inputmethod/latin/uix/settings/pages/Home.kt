@@ -105,7 +105,7 @@ val HomeScreenLite = UserSettingsMenu(
             icon = R.drawable.dollar_sign,
         ).copy(visibilityCheck = {
             useDataStoreValue(IS_ALREADY_PAID) == false
-        }, appearsInSearch = false),
+        }, appearInSearchIfVisibilityCheckFailed = false),
         //}
 
         userSettingNavigationItem(
