@@ -380,6 +380,7 @@
     <string name="size_settings_subtitle2">Change keyboard size, make it one-handed, floating, split</string>
     <string name="size_settings_resize_tip">Tap the \"Resize Keyboard\" button to resize.</string>
     <string name="size_settings_keyboard_modes_tip">You can access this anywhere with the Keyboard Modes action:</string>
+    <string name="size_settings_keyboard_modes_portrait_landscape_tip">Size and mode is stored separately for portrait and landscape.</string>
     <string name="size_settings_reset">Reset size settings</string>
     <string name="size_settings_reset_subtitle">Tap to reset all sizes and modes for both portrait and landscape to default</string>
 

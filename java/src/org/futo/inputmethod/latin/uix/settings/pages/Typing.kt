@@ -187,6 +187,7 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
                         append(" ")
                         appendInlineContent("icon")
                         appendLine()
+                        append(stringResource(R.string.size_settings_keyboard_modes_portrait_landscape_tip))
                         appendLine()
                         append(stringResource(R.string.size_settings_resize_tip))
                     },
