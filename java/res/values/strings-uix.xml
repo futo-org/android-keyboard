@@ -181,7 +181,9 @@
 
     <!-- Talkback descriptions (screen readers) -->
     <!-- Expands the action bar above the keyboard -->
-    <string name="keyboard_actionbar_expand_actions_talkback">Open Actions</string>
+    <string name="keyboard_actionbar_expand_actions_talkback">Open Action Bar</string>
+    <!-- Collapses the action bar (same element as above, but when action bar is open) -->
+    <string name="keyboard_actionbar_collapse_actions_talkback">Close Action Bar</string>
     <!-- Dismisses/closes an important notice (usually the update check notice) -->
     <string name="keyboard_actionbar_dismiss_important_notice_talkback">Close</string>
     <!-- When an action window is opened, but it's not docked above keyboard, a back button is shown

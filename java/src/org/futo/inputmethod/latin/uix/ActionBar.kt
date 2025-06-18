@@ -644,7 +644,10 @@ fun ExpandActionsButton(isActionsOpen: Boolean, onClick: () -> Unit) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.chevron_right),
-            contentDescription = stringResource(R.string.keyboard_actionbar_expand_actions_talkback),
+            contentDescription = stringResource(
+                if (!isActionsOpen) R.string.keyboard_actionbar_expand_actions_talkback
+                else R.string.keyboard_actionbar_collapse_actions_talkback
+            ),
             Modifier.size(20.dp)
         )
     }
