@@ -24,22 +24,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.input.ImeOptions
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.TextInputSession
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,9 +75,6 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val textFieldValue = remember { mutableStateOf(TextFieldValue("")) }
 
-    val textInputService = LocalTextInputService.current
-    val session = remember { mutableStateOf<TextInputSession?>(null) }
-
     val searchTagsByMenu = remember {
         SettingsMenus
             .flatMap { it.settings }
@@ -92,22 +88,8 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
             }
     }
 
-    DisposableEffect(Unit) {
-        session.value = textInputService?.startInput(
-            TextFieldValue(""),
-            imeOptions = ImeOptions.Default.copy(
-                platformImeOptions = PlatformImeOptions(
-                    privateImeOptions = "org.futo.inputmethod.latin.NoSuggestions=1"
-                )
-            ),
-            onEditCommand = { },
-            onImeActionPerformed = { }
-        )
-
-        onDispose {
-            textInputService?.stopInput(session.value ?: return@onDispose)
-        }
-    }
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
     val query = normalizeString(textFieldValue.value.text)
     val results = remember(query) {
@@ -168,9 +150,9 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                                 privateImeOptions = "org.futo.inputmethod.latin.NoSuggestions=1"
                             )
                         ),
-                        modifier = Modifier.weight(1.0f),
+                        modifier = Modifier.weight(1.0f).focusRequester(focusRequester),
                         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-                        textStyle = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface)
+                        textStyle = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface),
                     )
                 }
             }
