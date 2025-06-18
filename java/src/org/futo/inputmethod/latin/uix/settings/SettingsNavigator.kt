@@ -37,6 +37,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.KeyboardSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.LanguageSettingsLite
 import org.futo.inputmethod.latin.uix.settings.pages.LanguagesScreen
 import org.futo.inputmethod.latin.uix.settings.pages.LongPressMenu
+import org.futo.inputmethod.latin.uix.settings.pages.MiscMenu
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentThankYouScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextMenu
@@ -74,6 +75,7 @@ val SettingsMenus = listOf(
     VoiceInputMenu,
     ActionsScreen,
     HelpMenu,
+    MiscMenu,
     CreditsScreenLite
 ) + AllActions.mapNotNull { it.settingsMenu }
 

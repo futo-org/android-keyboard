@@ -127,6 +127,12 @@ val HomeScreenLite = UserSettingsMenu(
         //}
 
         userSettingNavigationItem(
+            title = R.string.misc_settings_title,
+            style = NavigationItemStyle.MiscNoArrow,
+            navigateTo = "misc",
+        ),
+
+        userSettingNavigationItem(
             title = R.string.credits_menu_title,
             style = NavigationItemStyle.MiscNoArrow,
             navigateTo = "credits",
