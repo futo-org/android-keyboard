@@ -87,6 +87,14 @@ val HelpMenu = UserSettingsMenu(
                 ))
         },
 
+        userSettingNavigationItem(
+            title = R.string.help_menu_website,
+            subtitle = R.string.help_menu_website_subtitle,
+            style = NavigationItemStyle.Misc,
+            navigate = { nav ->
+                nav.context.openURI("https://futo.org/")
+            }
+        ).copy(searchTags = R.string.help_menu_website_tags),
 
         userSettingNavigationItem(
             title = R.string.help_menu_documentation,

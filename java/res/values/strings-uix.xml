@@ -507,6 +507,9 @@
     <string name="help_menu_version_name">Version Name: %1$s</string>
     <string name="help_menu_version_code">Version Code: %1$s</string>
     <string name="help_menu_version_tip">We want to hear from you! If you\'re reporting an issue, your version may be relevant: v%1$s</string>
+    <string name="help_menu_website">FUTO Website</string>
+    <string name="help_menu_website_subtitle">Learn more about us and our philosophy</string>
+    <string name="help_menu_website_tags">download, apps, voice input</string>
     <string name="help_menu_documentation">Documentation</string>
     <string name="help_menu_documentation_subtitle">Learn more about the keyboard\'s features and capabilities</string>
     <string name="help_menu_discord">Discord Server</string>
