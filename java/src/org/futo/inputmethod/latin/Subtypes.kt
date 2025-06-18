@@ -51,6 +51,9 @@ import org.futo.inputmethod.v2keyboard.LayoutManager
 import java.util.Locale
 import kotlin.math.sign
 
+public fun localeFromString(s: String): Locale =
+    Locale.forLanguageTag(s.replace("__#", "-").replace("_", "-"))
+
 fun Locale.stripExtensionsIfNeeded(): Locale {
     val newLocale = if(Build.VERSION.SDK_INT >= 26) {
         this.stripExtensions().stripExtensions() // TODO: Sometimes this requires two calls??
@@ -210,7 +213,7 @@ object Subtypes {
     }
 
     fun getLocale(locale: String): Locale {
-        return Locale.forLanguageTag(locale.replace("__#", "-").replace("_", "-")).stripExtensionsIfNeeded()
+        return localeFromString(locale).stripExtensionsIfNeeded()
     }
 
     fun getLocale(inputMethodSubtype: InputMethodSubtype): Locale {

@@ -5,6 +5,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.database.Cursor
+import android.net.Uri
+import android.provider.UserDictionary
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
@@ -25,11 +28,16 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.PreferencesSerializer
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import okio.ByteString.Companion.encodeUtf8
 import okio.ByteString.Companion.toByteString
 import okio.buffer
 import okio.sink
 import okio.source
+import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.PreferenceUtils.getDefaultSharedPreferences
 import org.futo.inputmethod.latin.uix.actions.ClipboardFileName
 import org.futo.inputmethod.latin.uix.actions.clipboardFile
@@ -38,7 +46,6 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.findSettingsActivity
 import org.futo.inputmethod.latin.xlm.ModelPaths
-import org.futo.inputmethod.latin.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
@@ -55,6 +62,71 @@ import java.util.zip.ZipOutputStream
 
 const val IMPORT_SETTINGS_REQUEST = 1801146881
 const val EXPORT_SETTINGS_REQUEST = 69835032
+
+@Serializable
+data class PersonalWord(
+    val word: String,
+    val frequency: Int,
+    val locale: String?,
+    val appId: Int,
+    val shortcut: String?
+)
+
+private class UserDictionaryIO(val context: Context) {
+    private val contentResolver = context.applicationContext.contentResolver
+    private val uri: Uri = UserDictionary.Words.CONTENT_URI
+
+    fun get(): List<PersonalWord> {
+        val result = mutableListOf<PersonalWord>()
+        val projection = arrayOf(UserDictionary.Words.WORD, UserDictionary.Words.FREQUENCY, UserDictionary.Words.LOCALE, UserDictionary.Words.APP_ID, UserDictionary.Words.SHORTCUT)
+        val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
+
+        cursor?.use {
+            val wordColumn = it.getColumnIndex(UserDictionary.Words.WORD)
+            val frequencyColumn = it.getColumnIndex(UserDictionary.Words.FREQUENCY)
+            val localeColumn = it.getColumnIndex(UserDictionary.Words.LOCALE)
+            val appIdColumn = it.getColumnIndex(UserDictionary.Words.APP_ID)
+            val shortcutColumn = it.getColumnIndex(UserDictionary.Words.SHORTCUT)
+
+            while (it.moveToNext()) {
+                val word = it.getString(wordColumn)
+                val frequency = it.getInt(frequencyColumn)
+                val locale = it.getString(localeColumn)
+                val appId = it.getInt(appIdColumn)
+                val shortcut = it.getString(shortcutColumn)
+                result.add(PersonalWord(
+                        word,
+                        frequency,
+                        locale,
+                        appId,
+                        shortcut
+                    ))
+            }
+        }
+
+        return result
+    }
+
+    fun put(from: List<PersonalWord>, clear: Boolean = false) {
+        if(clear) {
+            contentResolver.delete(uri, null, null)
+        }
+
+        val currWords = get().toSet()
+        from.filter {
+            !currWords.contains(it)
+        }.forEach {
+            UserDictionary.Words.addWord(
+                context,
+                it.word,
+                it.frequency,
+                it.shortcut,
+                it.locale?.let { localeFromString(it) }
+            )
+        }
+    }
+}
+
 
 @Suppress("HardCodedStringLiteral")
 object SettingsExporter {
@@ -149,12 +221,32 @@ object SettingsExporter {
         editor.apply()
     }
 
+    private fun writePersonalDict(
+        context: Context,
+        outputStream: OutputStream
+    ) {
+        val words = UserDictionaryIO(context).get()
+        outputStream.write(Json.encodeToString(words).encodeUtf8().toByteArray())
+    }
+
+    private fun readPersonalDict(
+        context: Context,
+        inputStream: InputStream,
+        clear: Boolean
+    ) {
+        val wordsStr = inputStream.readAllBytesCompat().toByteString().utf8()
+        val words = Json.decodeFromString<List<PersonalWord>>(wordsStr)
+        UserDictionaryIO(context).put(words, clear)
+    }
+
+
     private const val versionFileName = "FUTOKeyboardSettings_CfgExportVersion"
     private const val currentVersion: Byte = 1
 
     private const val datastoreFileName = "datastore.preferences_pb"
     private const val sharedPreferencesFileName = "sharedPreferences.json"
     private const val clipboardFileName = ClipboardFileName
+    private const val personalDictFileName = "userdictionary.json"
 
     suspend fun exportSettings(
         context: Context,
@@ -187,6 +279,13 @@ object SettingsExporter {
         getDefaultSharedPreferences(context).let { sharedPrefs ->
             zipOut.putNextEntry(ZipEntry(sharedPreferencesFileName))
             writeSharedPrefs(sharedPrefs, zipOut)
+            zipOut.closeEntry()
+        }
+
+        // Collect personal dictionary
+        run {
+            zipOut.putNextEntry(ZipEntry(personalDictFileName))
+            writePersonalDict(context, zipOut)
             zipOut.closeEntry()
         }
 
@@ -285,6 +384,10 @@ object SettingsExporter {
                     readSharedPrefs(editor, zipIn)
                     @SuppressLint("ApplySharedPref")
                     editor.commit()
+                }
+
+                entry.name == personalDictFileName -> {
+                    readPersonalDict(context, zipIn, destructive)
                 }
 
                 entry.name == clipboardFileName -> {

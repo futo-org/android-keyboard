@@ -346,11 +346,10 @@
     <string name="resource_importer_importing_cfg">Importing configuration… Please do not close this menu until the process is completed (5 to 10 seconds)</string>
     <string name="resource_importer_select_language">Select the language to import for:</string>
     <string name="resource_importer_warning_language_missing">This file appears to be intended for a language (%1$s) which is not enabled in settings</string>
-    <string name="resource_importer_warning_cfg_backup_is_destructive">Are you sure you want to import this configuration backup? This will replace all of your settings, learned dictionary words, any imported resources, and more.</string>
+    <string name="resource_importer_warning_cfg_backup_is_destructive2">Are you sure you want to import this configuration backup? This will replace all of your settings, personal dictionary (system-wide), learned dictionary words, any imported resources, and more. If you’re unsure, make another backup before this.</string>
     <string name="resource_importer_warning_cfg_backup_newer_version">This configuration backup was created by a newer version of FUTO Keyboard, and it might not import properly. Try updating FUTO Keyboard first.</string>
 
     <string name="settings_export_configuration_title">Settings Backup</string>
-    <string name="settings_export_configuration_personal_dictionary_warning">Note: Words manually added to personal dictionary are not exported yet, but automatically learned words are exported.</string>
     <string name="settings_export_configuration">Export configuration</string>
     <string name="settings_export_configuration_subtitle">Export all of your settings, learned words, resources, and more.</string>
     <string name="settings_export_configuration_exporting">Exporting configuration…</string>

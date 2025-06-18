@@ -16,7 +16,6 @@ val MiscMenu = UserSettingsMenu(
     settings = listOf(
         userSettingDecorationOnly {
             ScreenTitle(stringResource(R.string.settings_export_configuration_title))
-            Tip(stringResource(R.string.settings_export_configuration_personal_dictionary_warning ))
         },
 
         userSettingNavigationItem(

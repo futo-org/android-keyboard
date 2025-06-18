@@ -8,6 +8,7 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.EmptySerializersModule
+import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.latin.uix.settings.pages.CustomLayout
@@ -45,7 +46,7 @@ object LayoutManager {
         initialized = true
 
         localeToLayoutsMappings = parseMappings(context, "layouts/mapping.yaml").languages.mapKeys {
-            Locale.forLanguageTag(it.key.replace("_", "-"))
+            localeFromString(it.key)
         }
 
         val assetManager = context.assets
