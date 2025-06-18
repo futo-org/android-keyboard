@@ -614,7 +614,7 @@ val KeyboardSettingsMenu = UserSettingsMenu(
     settings = listOf(
         userSettingNavigationItem(
             title = R.string.size_settings_title,
-            subtitle = R.string.size_settings_subtitle,
+            subtitle = R.string.size_settings_subtitle2,
             style = NavigationItemStyle.Misc,
             navigateTo = "resize",
             icon = R.drawable.maximize

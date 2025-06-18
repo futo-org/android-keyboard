@@ -377,7 +377,7 @@
 
     <!-- Keyboard's size settings -->
     <string name="size_settings_title">Resize Keyboard</string>
-    <string name="size_settings_subtitle">Change the height and offset of the keyboard</string>
+    <string name="size_settings_subtitle2">Change keyboard size, make it one-handed, floating, split</string>
     <string name="size_settings_resize_tip">Tap the \"Resize Keyboard\" button to resize.</string>
     <string name="size_settings_keyboard_modes_tip">You can access this anywhere with the Keyboard Modes action:</string>
     <string name="size_settings_reset">Reset size settings</string>
