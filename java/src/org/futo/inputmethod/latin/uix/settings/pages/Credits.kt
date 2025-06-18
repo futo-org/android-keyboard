@@ -36,9 +36,12 @@ import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SpacedColumn
+import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.credits.ThirdPartyItem
 import org.futo.inputmethod.latin.uix.settings.pages.credits.ThirdPartyList
 import org.futo.inputmethod.latin.uix.settings.pages.credits.text
+import org.futo.inputmethod.latin.uix.settings.render
+import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.openURI
 
@@ -88,8 +91,10 @@ fun ProjectInfoView(
     val context = LocalContext.current
     val info = ThirdPartyList[projectIndex]
     ScrollableList {
-        ScreenTitle(stringResource(R.string.credits_menu_project_information_title, info.name),
-            showBack = true, navController)
+        ScreenTitle(
+            stringResource(R.string.credits_menu_project_information_title, info.name),
+            showBack = true, navController
+        )
 
         Text(
             info.description,
@@ -112,11 +117,13 @@ fun ProjectInfoView(
         Text(
             info.copyright,
             modifier = Modifier.padding(8.dp),
-            style = Typography.Small)
+            style = Typography.Small
+        )
         Text(
             info.license.text(context),
             modifier = Modifier.padding(8.dp),
-            style = Typography.Small)
+            style = Typography.Small
+        )
     }
 }
 
@@ -201,18 +208,22 @@ fun CreditCategorySection(
             ) {
                 val name = names[it]
                 val thirdPartyInfo = thirdPartyInformation?.get(it)
-                if(thirdPartyInfo != null){
+                if (thirdPartyInfo != null) {
                     Column(
                         Modifier.fillMaxWidth()
                             .clickable {
                                 navController!!.navigate("credits/thirdparty/" + it)
                             }
                     ) {
-                        Text(thirdPartyInfo.description,
-                            color = foregroundColor, style = Typography.Body.Regular)
-                        Text(thirdPartyInfo.copyright,
+                        Text(
+                            thirdPartyInfo.description,
+                            color = foregroundColor, style = Typography.Body.Regular
+                        )
+                        Text(
+                            thirdPartyInfo.copyright,
                             color = foregroundColor.copy(alpha = 0.7f),
-                            style = Typography.Small)
+                            style = Typography.Small
+                        )
                     }
                 } else {
                     Text(name, color = foregroundColor, style = Typography.Body.Regular)
@@ -221,6 +232,32 @@ fun CreditCategorySection(
         }
     }
 }
+
+val CreditsScreenLite = UserSettingsMenu(
+    title = R.string.credits_menu_title,
+    navPath = "credits", registerNavPath = false,
+    settings = listOf(
+        userSettingNavigationItem(
+            title = (R.string.credits_menu_contribute_translations_button),
+            style = NavigationItemStyle.Misc,
+            navigate = {
+                it.context.openURI("https://i18n-keyboard.futo.org/")
+            }),
+        userSettingNavigationItem(
+            title = (R.string.credits_menu_contribute_keyboard_layouts_button),
+            style = NavigationItemStyle.Misc,
+            navigate = {
+                it.context.openURI("https://github.com/futo-org/futo-keyboard-layouts")
+            }),
+        userSettingNavigationItem(
+            title = (R.string.credits_menu_contribute_code_button),
+            style = NavigationItemStyle.Misc,
+            navigate = {
+                it.context.openURI("https://github.com/futo-org/android-keyboard/")
+            })
+
+    )
+)
 
 @Preview(showBackground = true, heightDp = 1600)
 @Composable
@@ -275,17 +312,6 @@ fun CreditsScreen(navController: NavHostController = rememberNavController()) {
             ParagraphText(stringResource(R.string.credits_menu_nonaffiliation_notice))
         }
 
-        NavigationItem(
-            title = stringResource(R.string.credits_menu_contribute_translations_button), style = NavigationItemStyle.Misc, navigate = {
-                context.openURI("https://i18n-keyboard.futo.org/")
-            })
-        NavigationItem(
-            title = stringResource(R.string.credits_menu_contribute_keyboard_layouts_button), style = NavigationItemStyle.Misc, navigate = {
-                context.openURI("https://github.com/futo-org/futo-keyboard-layouts")
-            })
-        NavigationItem(
-            title = stringResource(R.string.credits_menu_contribute_code_button), style = NavigationItemStyle.Misc, navigate = {
-                context.openURI("https://github.com/futo-org/android-keyboard/")
-            })
+        CreditsScreenLite.render(showTitle = false)
     }
 }
