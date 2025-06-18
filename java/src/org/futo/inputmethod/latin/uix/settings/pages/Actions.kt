@@ -1,9 +1,15 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.ActionCategory
+import org.futo.inputmethod.latin.uix.actions.ActionsEditor
 import org.futo.inputmethod.latin.uix.actions.ActionsSettings
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
 import org.futo.inputmethod.latin.uix.actions.EmojiAction
@@ -165,3 +171,12 @@ val ActionsScreen = UserSettingsMenu(
         }
     }
 )
+
+@Preview(showBackground = true)
+@Composable
+fun ActionEditorScreen(navController: NavHostController = rememberNavController()) {
+    Column {
+        ScreenTitle(stringResource(R.string.action_editor_title), showBack = true, navController)
+        ActionsEditor { }
+    }
+}

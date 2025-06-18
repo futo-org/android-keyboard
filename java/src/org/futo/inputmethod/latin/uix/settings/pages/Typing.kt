@@ -90,7 +90,6 @@ import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
-import org.futo.inputmethod.latin.uix.actions.ActionsEditor
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
@@ -130,15 +129,6 @@ val InlineAutofillSetting = SettingsKey(
     booleanPreferencesKey("inline_autofill"),
     true
 )
-
-@Preview(showBackground = true)
-@Composable
-fun ActionEditorScreen(navController: NavHostController = rememberNavController()) {
-    Column {
-        ScreenTitle(stringResource(R.string.action_editor_title), showBack = true, navController)
-        ActionsEditor { }
-    }
-}
 
 val ResizeMenuLite = UserSettingsMenu(
     title = R.string.size_settings_title,
@@ -657,13 +647,6 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             style = NavigationItemStyle.Misc,
             navigateTo = "languages",
             icon = R.drawable.keyboard
-        ),
-        userSettingNavigationItem(
-            title = R.string.action_editor_title,
-            subtitle = R.string.action_editor_subtitle,
-            style = NavigationItemStyle.Misc,
-            navigateTo = "actionEdit",
-            icon = R.drawable.smile
         ),
         userSettingToggleDataStore(
             title = R.string.keyboard_settings_show_suggestion_row,
