@@ -48,6 +48,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -350,8 +351,16 @@ fun SettingToggleDataStore(
     disabled: Boolean = false,
     icon: (@Composable () -> Unit)? = null
 ) {
-    SettingToggleDataStoreItem(
-        title, useDataStore(setting.key, setting.default), subtitle, disabledSubtitle, disabled, icon)
+    key(setting) {
+        SettingToggleDataStoreItem(
+            title,
+            useDataStore(setting.key, setting.default),
+            subtitle,
+            disabledSubtitle,
+            disabled,
+            icon
+        )
+    }
 }
 
 @Composable
@@ -364,8 +373,11 @@ fun SettingToggleSharedPrefs(
     disabled: Boolean = false,
     icon: (@Composable () -> Unit)? = null
 ) {
-    SettingToggleDataStoreItem(
-        title, useSharedPrefsBool(key, default), subtitle, disabledSubtitle, disabled, icon)
+    key(key) {
+        SettingToggleDataStoreItem(
+            title, useSharedPrefsBool(key, default), subtitle, disabledSubtitle, disabled, icon
+        )
+    }
 }
 
 @Composable

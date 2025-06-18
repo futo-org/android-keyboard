@@ -15,10 +15,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.navigation.NavHostController
 import org.futo.inputmethod.latin.LatinIME
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestionBlacklist
+import org.futo.inputmethod.latin.uix.settings.NavigationItem
+import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.ScreenTitle
+import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
+import org.futo.inputmethod.latin.uix.settings.SettingToggleSharedPrefs
+import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.utils.TextContext
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
@@ -151,18 +161,6 @@ enum class PersistentStateInitialization {
     OnActionTrigger,
     OnKeyboardLoad
 }
-
-// TODO: The big goal is to move all settings to use this, and have a programmatic way to iterate over all settings and all menus for search. Need to build this in a way to support existing settings menus
-data class UserSetting(
-    @StringRes val name: Int,
-    @StringRes val subtitle: Int? = null,
-    val component: @Composable () -> Unit
-)
-
-data class UserSettingsMenu(
-    @StringRes val title: Int,
-    val settings: List<UserSetting>
-)
 
 data class Action(
     @DrawableRes val icon: Int,

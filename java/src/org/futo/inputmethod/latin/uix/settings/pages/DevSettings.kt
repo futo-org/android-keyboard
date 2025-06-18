@@ -97,25 +97,6 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             navigate = { navController.navigate("devlayouteditor") }
         )
 
-        ScreenTitle(stringResource(R.string.settings_export_configuration_title))
-
-        NavigationItem(
-            title = stringResource(R.string.settings_export_configuration),
-            subtitle = stringResource(R.string.settings_export_configuration_subtitle),
-            style = NavigationItemStyle.Misc,
-            navigate = {
-                navController.navigate("exportingcfg")
-            }
-        )
-        NavigationItem(
-            title = stringResource(R.string.settings_import_configuration),
-            subtitle = stringResource(R.string.settings_import_configuration_subtitle),
-            style = NavigationItemStyle.Misc,
-            navigate = {
-                SettingsExporter.triggerImportSettings(context)
-            }
-        )
-
         ScreenTitle(title = "Payment stuff")
 
         SettingToggleDataStore(title = "Is paid", setting = IS_ALREADY_PAID)

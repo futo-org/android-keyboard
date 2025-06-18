@@ -39,6 +39,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes
+import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.KeyboardLayoutPreview
 import org.futo.inputmethod.latin.uix.actions.searchMultiple
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
@@ -168,7 +169,7 @@ fun LayoutPreview(name: String, locale: Locale, onClick: () -> Unit) {
 fun SelectLayoutsScreen(navController: NavHostController = rememberNavController(), language: String = "en_US") {
     val context = LocalContext.current
 
-    val locale = remember { Locale.forLanguageTag(language.replace("_", "-")) }
+    val locale = remember { localeFromString(language) }
 
     val layoutMapping = remember { LayoutManager.getLayoutMapping(context) }
 

@@ -121,7 +121,7 @@ fun SettingsImportScreen(
             }
             Text(stringResource(R.string.resource_importer_file_info, metadata.dateExported.toString()),
                 modifier = Modifier.padding(16.dp, 8.dp))
-            Text(stringResource(R.string.resource_importer_warning_cfg_backup_is_destructive),
+            Text(stringResource(R.string.resource_importer_warning_cfg_backup_is_destructive2),
                 modifier = Modifier.padding(16.dp, 8.dp))
             Spacer(modifier = Modifier.height(32.dp))
             NavigationItem(

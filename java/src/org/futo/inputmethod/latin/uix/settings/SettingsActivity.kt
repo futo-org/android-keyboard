@@ -154,19 +154,21 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
     private fun updateContent() {
         setContent {
             DataStoreCacheProvider {
-                UixThemeAuto {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        Box(Modifier.safeDrawingPadding()) {
-                            SetupOrMain(
-                                inputMethodEnabled.value,
-                                inputMethodSelected.value,
-                                doublePackage.value
-                            ) {
-                                SettingsNavigator(navController = navController)
+                SharedPrefsCacheProvider {
+                    UixThemeAuto {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            Box(Modifier.safeDrawingPadding()) {
+                                SetupOrMain(
+                                    inputMethodEnabled.value,
+                                    inputMethodSelected.value,
+                                    doublePackage.value
+                                ) {
+                                    SettingsNavigator(navController = navController)
+                                }
                             }
                         }
                     }
