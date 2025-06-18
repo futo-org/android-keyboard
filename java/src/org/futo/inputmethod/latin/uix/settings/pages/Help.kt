@@ -47,7 +47,8 @@ val HelpMenu = UserSettingsMenu(
             )
         },
         UserSetting(
-            name = R.string.help_menu_version_code
+            name = R.string.help_menu_version_code,
+            searchTags = R.string.dev_settings_title
         ) {
             val context = LocalContext.current
             val numPresses = remember { mutableIntStateOf(0) }
