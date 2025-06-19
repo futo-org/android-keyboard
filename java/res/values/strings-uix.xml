@@ -437,7 +437,8 @@
     <string name="typing_settings_vibration_strength">Vibration</string>
     <string name="typing_settings_vibration_strength_default">Default</string>
     <string name="typing_settings_enable_clipboard_history">Clipboard History</string>
-    <string name="typing_settings_delete_pasted_text_on_backspace">Delete inserted text on backspace</string>
+    <string name="typing_settings_enable_clipboard_history_tags">copy, paste</string>
+    <string name="typing_settings_delete_pasted_text_on_backspace">Delete pasted/inserted text on backspace</string>
     <string name="typing_settings_revert_correction_on_backspace">Undo autocorrect on backspace</string>
 
     <!-- Automatic space insertion -->

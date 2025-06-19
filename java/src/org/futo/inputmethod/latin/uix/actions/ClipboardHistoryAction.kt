@@ -797,7 +797,7 @@ val ClipboardHistoryAction = Action(
                         setting = ClipboardHistoryEnabled
                     )
                 }
-            ),
+            ).copy(searchTags = R.string.typing_settings_enable_clipboard_history_tags),
 
             UserSetting(
                 name = R.string.action_clipboard_manager_settings_maximum_clips,
