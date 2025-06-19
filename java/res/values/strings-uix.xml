@@ -351,11 +351,12 @@
 
     <string name="settings_export_configuration_title">Settings Backup</string>
     <string name="settings_export_configuration">Export configuration</string>
-    <string name="settings_export_configuration_subtitle">Export all of your settings, learned words, resources, and more.</string>
+    <string name="settings_export_configuration_subtitle">Back up all of your settings, clipboard, learned words, resources, and more.</string>
     <string name="settings_export_configuration_exporting">Exporting configuration…</string>
     <string name="settings_export_configuration_exporting_text">Please do not close this menu until the process is completed (5 to 10 seconds)</string>
     <string name="settings_import_configuration">Import configuration</string>
     <string name="settings_import_configuration_subtitle">If you previously exported your config, you can re-import it here.</string>
+    <string name="settings_import_export_tags">backup, restore, save, load, export, import, transfer device</string>
 
     <!-- Keyboard actions -->
     <string name="action_editor_title">Edit Actions</string>
