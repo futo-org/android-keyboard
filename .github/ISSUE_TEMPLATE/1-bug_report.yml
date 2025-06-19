@@ -28,10 +28,9 @@ body:
       label: Reproduction steps
       description: Please provide us with the steps to reproduce the issue if possible. This step makes a big difference if we are going to be able to fix it so be as precise as possible.
       placeholder: |
-        1. Open Keyboard settings
-        2. Go to Theme settings
-        3. Change theme to AOSP Material Dark
-        4. Application crashes
+        1. Open KDE Connect application
+        2. Go to its settings and tap on "Device name"
+        3. Keep pressing backspace until text starts duplicating itself
     validations:
       required: true
 
@@ -100,10 +99,3 @@ body:
       value:
     validations:
       required: false
-
-  - type: textarea
-    id: logs
-    attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      render: shell
