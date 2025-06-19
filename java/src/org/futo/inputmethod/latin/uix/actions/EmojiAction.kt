@@ -897,9 +897,8 @@ class PersistentEmojiState : PersistentActionState {
         }
     }
 
-    override suspend fun cleanUp() {
-
-    }
+    override suspend fun cleanUp() { }
+    override fun close() { }
 }
 
 

@@ -1434,4 +1434,12 @@ class UixManager(private val latinIME: LatinIME) {
 
         PersistentEmojiState.loadTranslationsForLanguage(latinIME, locale)
     }
+
+    fun onDestroy() {
+        closeActionWindow()
+        persistentStates.values.filterNotNull().forEach {
+            it.close()
+        }
+        persistentStates.clear()
+    }
 }

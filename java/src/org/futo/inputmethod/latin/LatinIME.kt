@@ -488,6 +488,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         stopJobs()
         viewModelStore.clear()
 
+        uixManager.onDestroy()
+
         languageModelFacilitator.saveHistoryLog()
 
         runBlocking {

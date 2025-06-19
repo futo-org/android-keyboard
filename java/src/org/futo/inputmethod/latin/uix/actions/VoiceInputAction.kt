@@ -18,7 +18,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
@@ -98,6 +100,10 @@ class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : Persist
     override suspend fun cleanUp() {
         modelManager.cleanUp()
     }
+
+    override fun close() {
+        runBlocking { modelManager.cleanUp() }
+    }
 }
 
 private class VoiceInputActionWindow(
@@ -167,10 +173,10 @@ private class VoiceInputActionWindow(
 
         this@VoiceInputActionWindow.recognizerView.value = recognizerView
 
-        yield()
+        //yield()
         recognizerView.reset()
 
-        yield()
+        //yield()
         recognizerView.start()
     }
 
@@ -210,7 +216,7 @@ private class VoiceInputActionWindow(
     }
 
     override fun close(): CloseResult {
-        initJob.cancel()
+        runBlocking { initJob.cancelAndJoin() }
         recognizerView.value?.cancel()
         return CloseResult.Default
     }

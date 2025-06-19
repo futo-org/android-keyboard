@@ -153,6 +153,12 @@ interface PersistentActionState {
      */
     suspend fun cleanUp()
 
+    /**
+     * When called, this action state is being removed. It may be recreated later from scratch. Close
+     * any resources and unregister any listeners.
+     */
+    fun close()
+
 
     suspend fun onDeviceUnlocked() { }
 }

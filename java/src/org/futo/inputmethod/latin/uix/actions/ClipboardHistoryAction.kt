@@ -46,6 +46,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -250,55 +251,60 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         loadClipboard()
     }
 
+    private val primaryClipChangedListener = object : ClipboardManager.OnPrimaryClipChangedListener {
+            override fun onPrimaryClipChanged() {
+                if (!context.getSettingBlocking(ClipboardHistoryEnabled)) return
+
+                val clip = clipboardManager.primaryClip
+
+                val text = clip?.getItemAt(0)?.coerceToText(context)?.toString()
+                val uri = clip?.getItemAt(0)?.uri
+
+                val timestamp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    clip?.description?.timestamp
+                } else {
+                    null
+                } ?: System.currentTimeMillis()
+
+                val mimeTypes = List(clip?.description?.mimeTypeCount ?: 0) {
+                    clip?.description?.getMimeType(it)
+                }.filterNotNull()
+
+                val canSaveSensitive = context.getSetting(ClipboardHistorySaveSensitive)
+                val isSensitive = clip?.description?.extras?.getBoolean(
+                    ClipDescription.EXTRA_IS_SENSITIVE, false
+                ) == true
+
+                // TODO: Support images and other non-text media
+                if (text != null && uri == null && (!isSensitive || canSaveSensitive)) {
+                    val isAlreadyPinned = clipboardHistory.firstOrNull {
+                        ((it.text != null && it.text == text) || (it.uri != null && it.uri == uri)) && it.pinned
+                    }?.pinned ?: false
+
+                    clipboardHistory.removeAll {
+                        (it.text != null && it.text == text) || (it.uri != null && it.uri == uri)
+                    }
+
+                    val newEntry = ClipboardEntry(
+                        timestamp = timestamp,
+                        pinned = isAlreadyPinned,
+                        text = text,
+                        uri = uri,
+                        mimeTypes = mimeTypes
+                    )
+                    clipboardHistory.add(newEntry)
+
+                    saveClipboard()
+                }
+            }
+        }
+
     init {
         coroutineScope.launch {
             loadClipboard()
 
             withContext(Dispatchers.Main) {
-                clipboardManager.addPrimaryClipChangedListener {
-                    if(!context.getSettingBlocking(ClipboardHistoryEnabled)) return@addPrimaryClipChangedListener
-
-                    val clip = clipboardManager.primaryClip
-
-                    val text = clip?.getItemAt(0)?.coerceToText(context)?.toString()
-                    val uri = clip?.getItemAt(0)?.uri
-
-                    val timestamp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        clip?.description?.timestamp
-                    } else {
-                        null
-                    } ?: System.currentTimeMillis()
-
-                    val mimeTypes = List(clip?.description?.mimeTypeCount ?: 0) {
-                        clip?.description?.getMimeType(it)
-                    }.filterNotNull()
-
-                    val canSaveSensitive = context.getSetting(ClipboardHistorySaveSensitive)
-                    val isSensitive = clip?.description?.extras?.getBoolean(
-                        ClipDescription.EXTRA_IS_SENSITIVE, false) == true
-
-                    // TODO: Support images and other non-text media
-                    if (text != null && uri == null && (!isSensitive || canSaveSensitive)) {
-                        val isAlreadyPinned = clipboardHistory.firstOrNull {
-                            ((it.text != null && it.text == text) || (it.uri != null && it.uri == uri)) && it.pinned
-                        }?.pinned ?: false
-
-                        clipboardHistory.removeAll {
-                            (it.text != null && it.text == text) || (it.uri != null && it.uri == uri)
-                        }
-
-                        val newEntry = ClipboardEntry(
-                            timestamp = timestamp,
-                            pinned = isAlreadyPinned,
-                            text = text,
-                            uri = uri,
-                            mimeTypes = mimeTypes
-                        )
-                        clipboardHistory.add(newEntry)
-
-                        saveClipboard()
-                    }
-                }
+                clipboardManager.addPrimaryClipChangedListener(primaryClipChangedListener)
             }
         }
     }
@@ -334,10 +340,10 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
     val clipboardIOFailure = mutableStateOf(false)
     var saveClipboardLoadJob: Job? = null
-    internal fun saveClipboard() {
-        if(!context.isDirectBootUnlocked) return
+    internal fun saveClipboard(exiting: Boolean = false): Job? {
+        if(!context.isDirectBootUnlocked) return null
         if(!clipboardLoaded) {
-            if(saveClipboardLoadJob?.isActive == true) return
+            if(saveClipboardLoadJob?.isActive == true) return null
 
             val currentEntries = clipboardHistory.toList()
             saveClipboardLoadJob = coroutineScope.launch {
@@ -345,53 +351,51 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
                 if(clipboardLoaded) {
                     clipboardHistory.addAll(currentEntries)
-                    saveClipboard()
+                    saveClipboard(exiting)
                 } else {
                     clipboardIOFailure.value = true
                 }
             }
 
-            return
+            return saveClipboardLoadJob
         }
 
-        coroutineScope.launch {
-            withContext(ClipboardIOContext) {
-                try {
-                    pruneOldItems()
+        return coroutineScope.launch(context = ClipboardIOContext) {
+            try {
+                if(!exiting) pruneOldItems()
 
-                    val list = clipboardHistory.toList()
-                    val json = Json.encodeToString(list)
+                val list = clipboardHistory.toList()
+                val json = Json.encodeToString(list)
 
-                    clipboardFileSwap.writeText(json)
+                clipboardFileSwap.writeText(json)
 
-                    // Validate it can be read
-                    if (decodeFile(clipboardFileSwap) != list) {
-                        throw Exception("Saved file data does not match expected data")
-                    }
-
-                    // Move current to bak
-                    if (clipboardFile.exists()) {
-                        if (!clipboardFile.renameTo(clipboardFileBak)) {
-                            throw Exception("Failed to move clipboard file backup")
-                        }
-                    }
-
-                    // Move swap to current
-                    if (!clipboardFileSwap.renameTo(clipboardFile)) {
-                        throw Exception("Failed to swap new clipboard file")
-                    }
-
-                    // Finally validate it can be read
-                    if (decodeFile(clipboardFile) != list) {
-                        throw Exception("Saved file data does not match expected data")
-                    }
-
-                    clipboardIOFailure.value = false
-                } catch (e: Exception) {
-                    clipboardIOFailure.value = true
-                    clipboardIOFailureReason = e.toString()
-                    reportError("saveClipboard", e)
+                // Validate it can be read
+                if (decodeFile(clipboardFileSwap) != list) {
+                    throw Exception("Saved file data does not match expected data")
                 }
+
+                // Move current to bak
+                if (clipboardFile.exists()) {
+                    if (!clipboardFile.renameTo(clipboardFileBak)) {
+                        throw Exception("Failed to move clipboard file backup")
+                    }
+                }
+
+                // Move swap to current
+                if (!clipboardFileSwap.renameTo(clipboardFile)) {
+                    throw Exception("Failed to swap new clipboard file")
+                }
+
+                // Finally validate it can be read
+                if (decodeFile(clipboardFile) != list) {
+                    throw Exception("Saved file data does not match expected data")
+                }
+
+                clipboardIOFailure.value = false
+            } catch (e: Exception) {
+                clipboardIOFailure.value = true
+                clipboardIOFailureReason = e.toString()
+                reportError("saveClipboard", e)
             }
         }
     }
@@ -527,7 +531,12 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
     }
 
     override suspend fun cleanUp() {
-        saveClipboard()
+        saveClipboard()?.join()
+    }
+
+    override fun close() {
+        clipboardManager.removePrimaryClipChangedListener(primaryClipChangedListener)
+        runBlocking { saveClipboard(true)?.join() }
     }
 
 }
