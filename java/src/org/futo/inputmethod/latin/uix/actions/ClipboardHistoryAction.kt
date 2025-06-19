@@ -45,6 +45,9 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -232,6 +235,10 @@ val Context.clipboardFile get() = File(filesDir, ClipboardFileName)
 private val ClipboardIOContext = Dispatchers.IO.limitedParallelism(1)
 
 class ClipboardHistoryManager(val context: Context, val coroutineScope: LifecycleCoroutineScope) : PersistentActionState {
+    companion object {
+        val onClipboardImportedFlow = MutableSharedFlow<File>()
+    }
+
     private val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     val clipboardHistory = mutableStateListOf<ClipboardEntry>()
@@ -306,7 +313,27 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
             withContext(Dispatchers.Main) {
                 clipboardManager.addPrimaryClipChangedListener(primaryClipChangedListener)
             }
+
+            onClipboardImportedFlow.collectLatest {
+                coroutineScope.ensureActive()
+                onClipboardImported(it)
+            }
         }
+    }
+
+    private suspend fun onClipboardImported(file: File) {
+        val data = decodeFile(file).map {
+            // Restore all saved items
+            it.copy(timestamp = System.currentTimeMillis())
+        }
+
+        withContext(Dispatchers.Main) {
+            clipboardHistory.clear()
+            clipboardHistory.addAll(data)
+            clipboardLoaded = true
+        }
+
+        saveClipboard()
     }
 
     suspend fun pruneOldItems() = withContext(Dispatchers.Main) {

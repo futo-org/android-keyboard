@@ -40,6 +40,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.PreferenceUtils.getDefaultSharedPreferences
 import org.futo.inputmethod.latin.uix.actions.ClipboardFileName
+import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryManager.Companion.onClipboardImportedFlow
 import org.futo.inputmethod.latin.uix.actions.clipboardFile
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
@@ -394,6 +395,8 @@ object SettingsExporter {
                     clipboardFile.outputStream().use {
                         zipIn.copyTo(it)
                     }
+
+                    onClipboardImportedFlow.emit(clipboardFile)
                 }
 
                 entry.name.startsWith("ext/") -> {
