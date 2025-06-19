@@ -1,6 +1,6 @@
 name: Keyboard Layout
 description: Request a new keyboard layout, language, or a change to an existing layout
-labels: ["layout", "new"]
+labels: ["Enhancement", "Keyboard Layout"]
 body:
   - type: markdown
     attributes:
@@ -30,10 +30,10 @@ body:
       placeholder: |
         ```
         q w e r t y u i o p
-        a s d f g h j k l 
+        a s d f g h j k l
         z x c v b n m
         ```
-        
+
         long-press q should have letter č
     validations:
       required: true

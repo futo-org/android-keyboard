@@ -1,6 +1,9 @@
 name: Feature Request
 description: Suggest a new feature or other enhancement.
-labels: ["enhancement", "new"]
+labels: ["Enhancement"]
+title: "Feature request: "
+type: feature
+projects: ["futo-org/23"]
 body:
   - type: markdown
     attributes:
@@ -12,7 +15,7 @@ body:
         For discussion related to enhancements, please see the [FUTO Keyboard Zulip Channel](https://chat.futo.org/#narrow/stream/53-Keyboard) or the [FUTO Keyboard Discord](https://keyboard.futo.org/discord)
 
         Please open feature requests one at a time. If you have 3 separate feature requests/bugs, do not combine them into one issue, this makes it really difficult to track and understand them.
-        
+
         Before opening a feature request, please make sure you're using the latest version of the keyboard, it may have already been added.
   - type: textarea
     id: keyboard-use-case
@@ -29,7 +32,7 @@ body:
       label: Proposal
       description: |
         If you have an idea for a way to address the problem, please describe it below.
-        
+
         In this section, it's helpful to include specific examples of how what you are suggesting might look in the application. If this is a standard feature in some other keyboards, you may want to mention it here and attach screenshots if applicable.
     validations:
       required: false
