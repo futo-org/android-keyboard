@@ -1,8 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Want to pay for FUTO Keyboard?
+  - name: Want to request a new keyboard layout?
+    url: https://github.com/futo-org/futo-keyboard-layouts/issues
+    about: Open it on a dedicated keyboard layouts repository.
+  - name: Need a FUTO Keyboard license?
     url: https://pay.futo.org/api/PaymentPortal
-    about: Pay for FUTO Keyboard at pay.futo.org
+    about: Purchase a FUTO Keyboard license with FutoPay
   - name: Zulip Chat
     url: https://chat.futo.org/#narrow/stream/53-Keyboard
     about: FUTO Keyboard community chat

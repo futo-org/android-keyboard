@@ -1,0 +1,101 @@
+name: Bug Report
+description: Let us know about an unexpected error, a crash, or an incorrect behavior.
+labels: ["Bug"]
+title: "Bug: "
+type: bug
+projects: ["futo-org/23"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Thank you for taking the time to fill out this bug report.
+
+        The [android-keyboard](https://github.com/futo-org/android-keyboard) issue tracker is reserved for issues relating to the FUTO Keyboard Android Application
+
+        For general usage questions, please see the [FUTO Keyboard Zulip Channel](https://chat.futo.org/#narrow/stream/53-Keyboard) or the [FUTO Keyboard Discord](https://keyboard.futo.org/discord)
+
+        Please open bug reports one at a time. If you have 3 separate feature requests/bugs, do not combine them into one issue, this makes it really difficult to track and understand them.
+
+        ## Filing a bug report
+
+        To fix your issues faster, we need clear reproduction cases - ideally allowing us to make it happen locally.
+        * Please include all needed context. For example, Device, OS, Application, any relevant settings.
+        * If you've found a particular series of interactions can introduce buggy behavior, please label those steps 1-n with markdown
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Reproduction steps
+      description: Please provide us with the steps to reproduce the issue if possible. This step makes a big difference if we are going to be able to fix it so be as precise as possible.
+      placeholder: |
+        1. Open KDE Connect application
+        2. Go to its settings and tap on "Device name"
+        3. Keep pressing backspace until text starts duplicating itself
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-result
+    attributes:
+      label: Actual result
+      description: What happend? You may want to include a video recording of the issue.
+      placeholder: Tell us what you saw!
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-result
+    attributes:
+      label: Expected result
+      description: What was suppose to happen?
+      placeholder: Tell us what you expected to happen!
+    validations:
+      required: true
+
+  - type: input
+    id: keyboard-version
+    attributes:
+      label: Keyboard Version
+      description: Open the FUTO Keyboard settings and look for the version name at the bottom, or in the Help & Feedback menu. Please make sure you're up-to-date before filing a bug report. Reports from outdated versions may be closed.
+      placeholder: "0.1.22"
+    validations:
+      required: true
+
+  - type: input
+    id: android-version
+    attributes:
+      label: Which android version are you using?
+      placeholder: "Android 15"
+    validations:
+      required: true
+
+  - type: input
+    id: phone-model
+    attributes:
+      label: Which device are you using?
+      placeholder: "Google Pixel 9"
+    validations:
+      required: true
+
+  - type: input
+    id: os-version
+    attributes:
+      label: Which operating system are you using?
+      placeholder: "GrapheneOS/CalyxOS/Tizen/HyperOS 2/..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Are there any other GitHub issues, whether open or closed, that are related to the problem you've described above? If so, please create a list below that mentions each of them. For example:
+        ```
+          - #10
+          - #25
+        ```
+      placeholder:
+      value:
+    validations:
+      required: false
