@@ -293,6 +293,18 @@ class AudioRecognizer(
         modelRunner.preload(settings.modelRunConfiguration)
     }
 
+    private fun expandSpaceIfAllowed(): Boolean {
+        if(canExpandSpace) {
+            // Allocate an extra 30 seconds
+            val newSampleBuffer = FloatBuffer.allocate(floatSamples.capacity() + 16000 * 30)
+            //Log.d("AudioRecognizer", "Allocating extra space: ${floatSamples.capacity() / 16000} -> ${newSampleBuffer.capacity() / 16000}")
+            newSampleBuffer.put(floatSamples.array(), 0, floatSamples.capacity() - floatSamples.remaining())
+            floatSamples = newSampleBuffer
+            return true
+        }
+        return false
+    }
+
     private suspend fun recordingJob(recorder: AudioRecord, vad: VadModel?) {
         var hasTalked = false
         var anyNoiseAtAll = false
@@ -318,15 +330,7 @@ class AudioRecognizer(
             if (nRead <= 0) break
             yield()
 
-            var isRunningOutOfSpace = floatSamples.remaining() < nRead.coerceAtLeast(1600)
-            if(isRunningOutOfSpace && canExpandSpace) {
-                // Allocate an extra 30 seconds
-                val newSampleBuffer = FloatBuffer.allocate(floatSamples.capacity() + 16000 * 30)
-                Log.d("AudioRecognizer", "Allocating extra space: ${floatSamples.capacity() / 16000} -> ${newSampleBuffer.capacity() / 16000}")
-                newSampleBuffer.put(floatSamples.array(), 0, floatSamples.capacity() - floatSamples.remaining())
-                floatSamples = newSampleBuffer
-                isRunningOutOfSpace = false
-            }
+            var isRunningOutOfSpace = (floatSamples.remaining() < nRead.coerceAtLeast(1600)) && !expandSpaceIfAllowed()
 
             val hasNotTalkedRecently = hasTalked && (numConsecutiveNonSpeech > 66) && useVAD
             if (isRunningOutOfSpace || hasNotTalkedRecently) {
@@ -417,7 +421,7 @@ class AudioRecognizer(
                     samples, 0, 1600, AudioRecord.READ_NON_BLOCKING
                 )
                 if (nRead2 > 0) {
-                    if (floatSamples.remaining() < nRead2) {
+                    if (floatSamples.remaining() < nRead2 && !expandSpaceIfAllowed()) {
                         yield()
                         withContext(Dispatchers.Main) {
                             finish()
