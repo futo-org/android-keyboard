@@ -122,7 +122,7 @@ public final class WordComposer {
     /**
      * Clear out the keys registered so far.
      */
-    public void reset() {
+    public void reset(final boolean alsoResetRejectedBatchSuggestion) {
         mCombinerChain.reset();
         mEvents.clear();
         mAutoCorrection = null;
@@ -132,7 +132,8 @@ public final class WordComposer {
         mIsResumed = false;
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
-        mRejectedBatchModeSuggestion = null;
+
+        if(alsoResetRejectedBatchSuggestion) mRejectedBatchModeSuggestion = null;
         refreshTypedWordCache();
     }
 
@@ -277,7 +278,7 @@ public final class WordComposer {
     }
 
     public void setBatchInputWord(final String word) {
-        reset();
+        reset(true);
         mIsBatchMode = true;
         final int length = word.length();
         for (int i = 0; i < length; i = Character.offsetByCodePoints(word, i, 1)) {
@@ -297,7 +298,7 @@ public final class WordComposer {
      * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
      */
     public void setComposingWord(final int[] codePoints, final int[] coordinates) {
-        reset();
+        reset(true);
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
             final Event processedEvent =

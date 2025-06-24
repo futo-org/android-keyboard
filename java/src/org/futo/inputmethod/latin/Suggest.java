@@ -229,6 +229,10 @@ public final class Suggest {
                 || wordComposer.isMostlyCaps()
                 // We never auto-correct when suggestions are resumed because it would be unexpected
                 || wordComposer.isResumed()
+                // If the user just rejected a swipe input, it's likely they're typing a word that
+                // isn't in the dictionary because swiping isn't working, so skip autocorrect for
+                // this case.
+                || wordComposer.getRejectedBatchModeSuggestion() != null
                 // If we don't have a main dictionary, we never want to auto-correct. The reason
                 // for this is, the user may have a contact whose name happens to match a valid
                 // word in their language, and it will unexpectedly auto-correct. For example, if

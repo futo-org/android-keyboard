@@ -313,7 +313,7 @@ public final class InputLogic {
             inputTransaction.setRequiresUpdateSuggestions();
 
             mConnection.finishComposingText();
-            mWordComposer.reset();
+            mWordComposer.reset(true);
 
             mConnection.commitText(suggestionInfo.mWord, 1);
 
@@ -581,18 +581,9 @@ public final class InputLogic {
                         Constants.EVENT_BACKSPACE);
                 resetEntireInputState(mConnection.getExpectedSelectionStart(),
                         mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
-            } else if (mWordComposer.isSingleLetter()) {
-                // We auto-correct the previous (typed, not gestured) string iff it's one character
-                // long. The reason for this is, even in the middle of gesture typing, you'll still
-                // tap one-letter words and you want them auto-corrected (typically, "i" in English
-                // should become "I"). However for any longer word, we assume that the reason for
-                // tapping probably is that the word you intend to type is not in the dictionary,
-                // so we do not attempt to correct, on the assumption that if that was a dictionary
-                // word, the user would probably have gestured instead.
+            } else {
                 commitCurrentAutoCorrection(settingsValues, LastComposedWord.NOT_A_SEPARATOR,
                         handler);
-            } else {
-                commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
             }
         }
         final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
@@ -1212,7 +1203,7 @@ public final class InputLogic {
         if (mWordComposer.isComposingWord()) {
             if (mWordComposer.isBatchMode()) {
                 final String rejectedSuggestion = mWordComposer.getTypedWord();
-                mWordComposer.reset();
+                mWordComposer.reset(true);
                 mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
                 if (!TextUtils.isEmpty(rejectedSuggestion)) {
                     unlearnWord(rejectedSuggestion, inputTransaction.mSettingsValues,
@@ -1221,7 +1212,7 @@ public final class InputLogic {
                 StatsUtils.onBackspaceWordDelete(rejectedSuggestion.length());
             } else if(deleteWholeWords) {
                 final String removedWord = mWordComposer.getTypedWord();
-                mWordComposer.reset();
+                mWordComposer.reset(true);
                 if (!TextUtils.isEmpty(removedWord)) {
                     unlearnWord(removedWord, inputTransaction.mSettingsValues,
                             Constants.EVENT_BACKSPACE);
@@ -2284,7 +2275,7 @@ public final class InputLogic {
      * @param alsoResetLastComposedWord whether to also reset the last composed word.
      */
     private void resetComposingState(final boolean alsoResetLastComposedWord) {
-        mWordComposer.reset();
+        mWordComposer.reset(alsoResetLastComposedWord);
         if (alsoResetLastComposedWord) {
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         }
