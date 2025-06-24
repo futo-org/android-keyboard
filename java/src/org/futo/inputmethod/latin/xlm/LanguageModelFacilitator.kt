@@ -576,7 +576,7 @@ public class LanguageModelFacilitator(
 
     public fun updateSuggestionStripAsync(inputStyle: Int) {
         val settingsValues = settings.current
-        if (!settingsValues.needsToLookupSuggestions()) {
+        if (!settingsValues.needsToLookupSuggestions() && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH) {
             inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.getEmptyInstance())
             return
         }
