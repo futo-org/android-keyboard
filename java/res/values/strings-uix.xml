@@ -364,7 +364,7 @@
     <string name="action_editor_edit_actions">Edit actions</string>
     <string name="action_editor_warning_no_actions">No actions are enabled</string>
     <string name="action_editor_error_more_than_one_action_key">Please assign only one action key. You cannot assign more than one action to the action key.</string>
-    <string name="action_editor_warning_too_many_pinned">Please consider pinning less actions. The suggestion bar will need to be shrunk to accommodate this many actions.</string>
+    <string name="action_editor_warning_too_many_pinned">Please consider pinning fewer actions. The suggestion bar will need to be shrunk to accommodate this many actions.</string>
     <string name="action_editor_add_next_action">Add next</string>
 
     <!-- Action settings -->
