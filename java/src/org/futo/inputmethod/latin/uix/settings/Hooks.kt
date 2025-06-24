@@ -207,3 +207,10 @@ fun SyncDataStoreToPreferencesInt(key: SettingsKey<Int>, sharedPreference: Strin
         editor.putInt(sharedPreference, value)
     }
 }
+
+@Composable
+fun SyncDataStoreToPreferencesFloat(key: SettingsKey<Float>, sharedPreference: String) {
+    SyncDataStoreToPreferences(key) { value, editor ->
+        editor.putFloat(sharedPreference, value)
+    }
+}

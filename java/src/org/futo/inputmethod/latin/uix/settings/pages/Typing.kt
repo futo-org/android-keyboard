@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import android.content.Context
+import android.media.AudioManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -67,18 +68,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.core.content.edit
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.delay
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.LongPressKey
 import org.futo.inputmethod.latin.settings.LongPressKeyLayoutSetting
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.settings.Settings.PREF_KEYPRESS_SOUND_VOLUME
 import org.futo.inputmethod.latin.settings.Settings.PREF_VIBRATION_DURATION_SETTINGS
 import org.futo.inputmethod.latin.settings.description
 import org.futo.inputmethod.latin.settings.name
@@ -87,13 +88,13 @@ import org.futo.inputmethod.latin.settings.toLongPressKeyLayoutItems
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
-import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
+import org.futo.inputmethod.latin.uix.settings.LocalSharedPrefsCache
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
@@ -101,6 +102,9 @@ import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.SettingRadio
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
+import org.futo.inputmethod.latin.uix.settings.SyncDataStoreToPreferencesFloat
+import org.futo.inputmethod.latin.uix.settings.SyncDataStoreToPreferencesInt
+import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.render
@@ -118,6 +122,11 @@ import kotlin.math.sign
 val vibrationDurationSetting = SettingsKey(
     intPreferencesKey("vibration_duration"),
     -1
+)
+
+val keySoundVolumeSetting = SettingsKey(
+    floatPreferencesKey("key_sound_volume"),
+    0.0f
 )
 
 val ActionBarDisplayedSetting = SettingsKey(
@@ -734,11 +743,6 @@ val TypingSettingsMenu = UserSettingsMenu(
             default = {true}
         ),
         userSettingToggleSharedPrefs(
-            title = R.string.sound_on_keypress,
-            key = Settings.PREF_SOUND_ON,
-            default = {booleanResource(R.bool.config_default_sound_enabled)}
-        ),
-        userSettingToggleSharedPrefs(
             title = R.string.popup_on_keypress,
             key = Settings.PREF_POPUP_ON,
             default = {booleanResource(R.bool.config_default_key_preview_popup)}
@@ -750,8 +754,16 @@ val TypingSettingsMenu = UserSettingsMenu(
         ),
         UserSetting(
             name = R.string.typing_settings_vibration_strength,
+            visibilityCheck = {
+                LocalSharedPrefsCache.current!!.currSharedPrefs.getBoolean(
+                    Settings.PREF_VIBRATE_ON,
+                    booleanResource(R.bool.config_default_vibration_enabled)
+                )
+            },
             component = {
                 val context = LocalContext.current
+                SyncDataStoreToPreferencesInt(vibrationDurationSetting, PREF_VIBRATION_DURATION_SETTINGS)
+
                 SettingSlider(
                     title = stringResource(R.string.typing_settings_vibration_strength),
                     setting = vibrationDurationSetting,
@@ -767,25 +779,89 @@ val TypingSettingsMenu = UserSettingsMenu(
                     }
                 )
             }
-        )
+        ),
+        userSettingToggleSharedPrefs(
+            title = R.string.sound_on_keypress,
+            key = Settings.PREF_SOUND_ON,
+            default = {booleanResource(R.bool.config_default_sound_enabled)}
+        ),
+        UserSetting(
+            name = R.string.typing_settings_keypress_sound_volume,
+            visibilityCheck = {
+                LocalSharedPrefsCache.current!!.currSharedPrefs.getBoolean(
+                    Settings.PREF_SOUND_ON,
+                    booleanResource(R.bool.config_default_sound_enabled)
+                )
+            },
+            component = {
+                val context = LocalContext.current
+                SyncDataStoreToPreferencesFloat(keySoundVolumeSetting, PREF_KEYPRESS_SOUND_VOLUME)
+
+                val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                val value = remember { mutableFloatStateOf(0.0f) }
+                val ringerMode = remember { mutableStateOf(audioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) }
+                val firstPlayback = remember { mutableStateOf(false) }
+
+                LaunchedEffect(value.floatValue) {
+                    delay(100L) // debounce
+                    if(firstPlayback.value == false) {
+                        firstPlayback.value = true
+                        return@LaunchedEffect
+                    }
+                    val volume = value.floatValue.let {
+                        if(it == -1.0f) {
+                            Settings.readDefaultKeypressSoundVolume(context.resources)
+                        } else {
+                            it
+                        }
+                    }
+
+                    val shouldPlay = audioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL
+                    ringerMode.value = shouldPlay
+
+                    if(shouldPlay) {
+                        audioManager.playSoundEffect(
+                            AudioManager.FX_KEYPRESS_STANDARD,
+                            volume
+                        )
+                    }
+                }
+
+                if(!ringerMode.value) {
+                    Tip(stringResource(R.string.typing_settings_keypress_sound_volume_ringer_mode_warning))
+                }
+
+                Tip(stringResource(R.string.typing_settings_keypress_sound_volume_vendor_warning))
+
+                SettingSlider(
+                    title = stringResource(R.string.typing_settings_keypress_sound_volume),
+                    setting = keySoundVolumeSetting,
+                    range = 0.0f .. 1.0f,
+                    hardRange = 0.0f .. 1.0f,
+                    transform = {
+                        value.floatValue = it
+                        if(it == 0.0f) {
+                            -1.0f
+                        } else {
+                            it
+                        }
+                    },
+                    indicator = {
+                        if(it <= 0.0f) {
+                            context.getString(R.string.typing_settings_keypress_sound_volume_default)
+                        } else {
+                            "${(it * 100.0f).roundToInt()}%"
+                        }
+                    }
+                )
+            }
+        ),
     )
 )
 
 @Preview(showBackground = true)
 @Composable
 fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavController()) {
-    val context = LocalContext.current
-    val (vibration, _) = useDataStore(key = vibrationDurationSetting.key, default = vibrationDurationSetting.default)
-
-    LaunchedEffect(vibration) {
-        val sharedPrefs = PreferenceUtils.getDefaultSharedPreferences(context)
-        withContext(Dispatchers.Main) {
-            sharedPrefs.edit {
-                putInt(PREF_VIBRATION_DURATION_SETTINGS, vibration)
-            }
-        }
-    }
-
     ScrollableList {
         KeyboardSettingsMenu.render(showBack = true)
         TypingSettingsMenu.render(showBack = false)
