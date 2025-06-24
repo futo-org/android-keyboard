@@ -502,6 +502,8 @@ class UixManager(private val latinIME: LatinIME) {
     private var numSuggestionsSinceNotice = 0
     private var currentNotice: MutableState<ImportantNotice?> = mutableStateOf(null)
 
+    private var inlineStuffHiddenByTyping = mutableStateOf(false)
+
     private var isActionsExpanded = mutableStateOf(false)
     private fun toggleActionsExpanded() {
         isActionsExpanded.value = !isActionsExpanded.value
@@ -576,7 +578,9 @@ class UixManager(private val latinIME: LatinIME) {
                 ActionBar(
                     suggestedWordsOrNull,
                     latinIME.latinIMELegacy as SuggestionStripViewListener,
-                    inlineSuggestions = inlineSuggestions.value,
+                    inlineSuggestions = run {
+                        if(!inlineStuffHiddenByTyping.value) inlineSuggestions.value else emptyList()
+                    },
                     onActionActivated = {
                         keyboardManagerForAction.performHapticAndAudioFeedback(
                             Constants.CODE_TAB,
@@ -597,7 +601,9 @@ class UixManager(private val latinIME: LatinIME) {
                     keyboardManagerForAction = keyboardManagerForAction,
                     isActionsExpanded = isActionsExpanded.value,
                     toggleActionsExpanded = { toggleActionsExpanded() },
-                    quickClipState = quickClipState.value,
+                    quickClipState = run {
+                        if(!inlineStuffHiddenByTyping.value) quickClipState.value else null
+                    },
                     onQuickClipDismiss = { quickClipState.value = null }
                 )
             }
@@ -1238,13 +1244,6 @@ class UixManager(private val latinIME: LatinIME) {
         setContent()
     }
 
-    fun onInputFinishing() {
-        closeActionWindow()
-        languageSwitcherDialog?.dismiss()
-        isShowingActionEditor.value = false
-        resizers.hideResizer()
-    }
-
     fun cleanUpPersistentStates() {
         for((key, value) in persistentStates.entries) {
             if(currWindowAction != key) {
@@ -1402,7 +1401,7 @@ class UixManager(private val latinIME: LatinIME) {
 
     private val quickClipState: MutableState<QuickClipState?> = mutableStateOf(null)
     fun inputStarted(editorInfo: EditorInfo?) {
-        inlineSuggestions.value = emptyList()
+        inlineStuffHiddenByTyping.value = false
         this.editorInfo = editorInfo
 
         currTutorialMode.value = tutorialMode
@@ -1416,10 +1415,17 @@ class UixManager(private val latinIME: LatinIME) {
         quickClipState.value = QuickClip.getCurrentState(latinIME)
     }
 
-    // Called by InputLogic on a non functional event, meaning when user pressed a key that will
-    // probably type a letter or other character
-    fun onNonFunctionalEvent() {
-        quickClipState.value = null
+    fun onInputFinishing() {
+        closeActionWindow()
+        languageSwitcherDialog?.dismiss()
+        isShowingActionEditor.value = false
+        resizers.hideResizer()
+        inlineSuggestions.value = emptyList()
+    }
+
+    // Called by InputLogic on any event
+    fun onInputEvent(textBlank: Boolean) {
+        inlineStuffHiddenByTyping.value = textBlank == false
     }
 
     fun updateLocale(locale: Locale) {

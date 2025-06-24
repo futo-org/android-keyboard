@@ -527,6 +527,8 @@ public final class InputLogic {
                 settingsValues.isWordCodePoint(processedEvent.mCodePoint)
         );
 
+        updateUiInputState();
+
 
         return inputTransaction;
     }
@@ -812,7 +814,6 @@ public final class InputLogic {
             final InputTransaction inputTransaction,
             final LatinIMELegacy.UIHandler handler) {
         inputTransaction.setDidAffectContents();
-        mLatinIMELegacy.getLatinIME().getUixManager().onNonFunctionalEvent();
         switch (event.mCodePoint) {
             case Constants.CODE_ENTER:
                 final EditorInfo editorInfo = getCurrentInputEditorInfo();
@@ -2451,6 +2452,15 @@ public final class InputLogic {
         mSpaceState = SpaceState.PHANTOM;
         keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(settingsValues),
                 getCurrentRecapitalizeState());
+
+        updateUiInputState();
+    }
+
+    private void updateUiInputState() {
+        final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(1, 0);
+        mLatinIMELegacy.getLatinIME().getUixManager().onInputEvent(
+                textBeforeCursor != null && textBeforeCursor.length() == 0
+        );
     }
 
     /**
