@@ -1571,7 +1571,9 @@ public final class InputLogic {
 
 
         final boolean settingsPermitSwapping =
-                inputTransaction.mSettingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL;
+                inputTransaction.mSettingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL
+                        || (inputTransaction.mSettingsValues.mAltSpacesMode >= Settings.SPACES_MODE_SUGGESTIONS
+                                && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM);
 
         // If we are typing a bunch of dashes, strip the space instead of padding them with spaces
         if(inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM
