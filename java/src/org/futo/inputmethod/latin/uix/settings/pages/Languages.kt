@@ -22,12 +22,14 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
@@ -104,7 +106,7 @@ fun LanguageConfigurable(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .size(16.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -113,7 +115,7 @@ fun LanguageConfigurable(
                     kind.kindTitle(LocalContext.current),
                     modifier = Modifier.align(Alignment.CenterVertically),
                     style = Typography.Small,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
                 )
             }
 
@@ -176,12 +178,13 @@ fun ActionableItem(
 ) {
     TextButton(
         onClick = onTrigger, colors = ButtonColors(
-            containerColor = Color.Transparent,
-            contentColor = color,
-            disabledContainerColor = Color.Transparent,
-            disabledContentColor = color.copy(alpha = 0.75f)
+            containerColor = color,
+            contentColor = contentColorFor(color),
+            disabledContainerColor = color,
+            disabledContentColor = contentColorFor(color).copy(alpha = 0.75f)
         ), modifier = Modifier
             .fillMaxWidth()
+            .padding(8.dp, 0.dp)
             .height(44.dp)
     ) {
         Row {
@@ -226,7 +229,7 @@ fun LanguageSurface(
                 )
                 .padding(top = 14.dp, bottom = 12.dp)
         ) {
-            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onPrimaryContainer) {
+            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondaryContainer) {
                 Text(
                     item.languageName,
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp),
@@ -262,7 +265,7 @@ fun LanguageSurface(
                     modifier = Modifier
                         .padding(start = 16.dp, end = 16.dp),
                     style = Typography.SmallMl,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
                 )
 
                 Spacer(modifier = Modifier.height(9.dp))
@@ -286,12 +289,17 @@ fun LanguageSurface(
                             .weight(1.0f)
                             .align(Alignment.CenterVertically),
                         style = Typography.SmallMl,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
                     )
                     Checkbox(
                         checked = item.inMultilingualBucket,
                         onCheckedChange = { onToggleMultilingualBucket(it) },
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            uncheckedColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            checkmarkColor = MaterialTheme.colorScheme.primary
+                        )
                     )
                 }
 
