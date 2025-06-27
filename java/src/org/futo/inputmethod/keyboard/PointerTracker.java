@@ -42,6 +42,7 @@ import org.futo.inputmethod.latin.define.DebugFlags;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
+import org.futo.inputmethod.v2keyboard.Direction;
 
 import java.util.ArrayList;
 
@@ -136,6 +137,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     // Last pointer position.
     private int mLastX;
     private int mLastY;
+
+    private boolean mIsFlickingKey;
+
+    @Nullable
+    private Direction mFlickDirection;
 
     private boolean mIsSlidingCursor;
     private int mStartX;
@@ -723,6 +729,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mSpacebarLongPressed = false;
 
             mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
+            mIsFlickingKey = !mIsSlidingCursor && key.getHasFlick();
+            mFlickDirection = key.flickDirection(0, 0);
             mCurrentKey = key;
         }
     }
@@ -974,6 +982,20 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
 
+        if(mIsFlickingKey && oldKey != null) {
+            final Direction prevDirection = mFlickDirection;
+            mFlickDirection = oldKey.flickDirection(x - mStartX, y - mStartY);
+
+            if(prevDirection != mFlickDirection) {
+                sDrawingProxy.onKeyReleased(oldKey, false);
+                sDrawingProxy.onKeyPressed(oldKey, true);
+            }
+
+            mLastX = x;
+            mLastY = y;
+            return;
+        }
+
         final Key newKey = onMoveKey(x, y);
 
         if (sGestureEnabler.shouldHandleGesture()) {
@@ -1052,6 +1074,16 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             sListener.onUpWithDeletePointerActive();
         } else if(mCursorMoved) {
             sListener.onUpWithPointerActive();
+        }
+
+        if(mIsFlickingKey && currentKey != null) {
+            final Key flickedKey = currentKey.flick(x - mStartX, y - mStartY);
+            detectAndSendKey(flickedKey, mKeyX, mKeyY, eventTime);
+
+            // Cleanup
+            currentKey.flickDirection(0, 0);
+
+            return;
         }
 
         if (isShowingMoreKeysPanel()) {

@@ -31,7 +31,9 @@ import org.futo.inputmethod.keyboard.internal.MoreKeySpec.LettersOnBaseLayout
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.StringUtils
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
+import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
+import org.futo.inputmethod.v2keyboard.computeDirectionsFromDeltaPos
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
@@ -192,6 +194,9 @@ data class Key(
 
     /** Key is enabled and responds on press  */
     val isEnabled: Boolean = code != Constants.CODE_UNSPECIFIED,
+
+    /** Flick keys */
+    val flickKeys: Map<Direction, Key>? = null
 ) {
     /** Validation */
     init {
@@ -336,6 +341,10 @@ data class Key(
     fun selectBackground(provider: DynamicThemeProvider): Drawable? {
         return provider.getKeyStyleDescriptor(visualStyle).let { style ->
             when {
+                mPressed && hasFlick -> run {
+                    style.backgroundDrawableFlicking?.get(mFlickDirection)
+                }
+
                 mPressed -> style.backgroundDrawablePressed
                 else -> style.backgroundDrawable
             }
@@ -381,7 +390,11 @@ data class Key(
     }
 
     val previewLabel: String?
-        get() = if (isShiftedLetterActivated) hintLabel else label
+        get() = when {
+            isShiftedLetterActivated -> hintLabel
+            mPressed && hasFlick && (mFlickDirection != null) -> flickKeys!![mFlickDirection]!!.previewLabel
+            else -> label
+        }
 
     private fun previewHasLetterSize(): Boolean {
         return ((labelFlags and KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO) != 0
@@ -489,6 +502,29 @@ data class Key(
         val dy = y - cy
         return sqrt((dx * dx + dy * dy).toFloat())
     }
+
+    val hasFlick: Boolean = flickKeys != null && flickKeys.isNotEmpty()
+    private var mFlickDirection: Direction? = null
+    fun flickDirection(dx: Int, dy: Int): Direction? = run {
+        if(flickKeys == null) {
+            null
+        } else {
+            val dirs = computeDirectionsFromDeltaPos(
+                dx = dx.toDouble(),
+                dy = dy.toDouble(),
+                threshold = (width / 3).toDouble()
+            )
+            dirs.firstOrNull { flickKeys.contains(it) }
+        }
+    }.also {
+        mFlickDirection = it
+    }
+
+    fun flick(dx: Int, dy: Int): Key =
+        flickDirection(dx, dy)?.let { (flickKeys ?: return@let null)[it] } ?: this
+
+    val flickDirection: Direction?
+        get() = mFlickDirection
 
     companion object {
         @JvmStatic

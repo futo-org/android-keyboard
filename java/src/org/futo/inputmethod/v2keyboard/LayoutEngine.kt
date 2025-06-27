@@ -499,12 +499,13 @@ data class LayoutEngine(
 
     private val validNumbersForHint = "1234567890".map { params.mTextsSet.resolveTextReference("!text/keyspec_symbols_$it") ?: it }.toSet()
     private val showAllHintsSetting = params.mId.mLongPressKeySettings.showHints
-    private fun addKey(data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int, leftGap: LayoutEntry.Gap?, rightGap: LayoutEntry.Gap?) {
+
+    private fun computedKeyToKey(data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int, leftGap: LayoutEntry.Gap?, rightGap: LayoutEntry.Gap?): org.futo.inputmethod.keyboard.Key? {
         // These keys are empty keys and do not get added, leaving an empty gap in place of the key
         // The hitbox of other keys does not get expanded to include this gap though, unlike
         // gaps added for centering rows
         if(data.label.isEmpty() && data.icon.isEmpty() && data.code == Constants.CODE_UNSPECIFIED)
-            return
+            return null
 
 
         val actionsFlags = if(!data.showPopup) { KeyConsts.ACTION_FLAGS_NO_KEY_PREVIEW } else { 0 } or
@@ -544,7 +545,7 @@ data class LayoutEngine(
             0
         }
 
-        val key = org.futo.inputmethod.keyboard.Key(
+        return org.futo.inputmethod.keyboard.Key(
             code = data.code,
             label = data.label,
             width = width - horizontalGapPx.roundToInt(),
@@ -576,8 +577,19 @@ data class LayoutEngine(
                 x + width + (rightGap?.widthPx?.roundToInt() ?: 0),
                 y + height + extendedBottomPadding
             ),
-        )
 
+            // Add flick keys
+            flickKeys = data.flick?.let {
+                it.directions
+                    .mapValues { computedKeyToKey(it.value, x, y, width, height, null, null) }
+                    .filterValues { it != null }
+                    .mapValues { it.value!! }
+            }
+        )
+    }
+
+    private fun addKey(data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int, leftGap: LayoutEntry.Gap?, rightGap: LayoutEntry.Gap?) {
+        val key = computedKeyToKey(data, x, y, width, height, leftGap, rightGap) ?: return
         params.onAddKey(key)
     }
 

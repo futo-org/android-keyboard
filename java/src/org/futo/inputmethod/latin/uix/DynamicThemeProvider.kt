@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
+import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
 /** Visual style descriptor for a key */
@@ -23,7 +24,10 @@ data class VisualStyleDescriptor(
 
     /** Key foreground label/icon color when pressed */
     @ColorInt
-    val foregroundColorPressed: Int = foregroundColor
+    val foregroundColorPressed: Int = foregroundColor,
+
+    /** Key background drawable when flicking */
+    val backgroundDrawableFlicking: Map<Direction?, Drawable?>? = null
 )
 
 interface DynamicThemeProvider {

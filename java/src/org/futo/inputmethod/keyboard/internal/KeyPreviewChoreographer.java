@@ -122,7 +122,7 @@ public final class KeyPreviewChoreographer {
         final int topArea = Math.max(key.getHeight(), (int)(44.0f * density));
 
         final int previewWidth  = Math.min(Math.max(key.getWidth(), (int)(34.0f * density)), (int)(64.0f * density));
-        final int previewHeight = topArea + bottomPadding;
+        int previewHeight = topArea + bottomPadding;
         keyPreviewView.setPadding(0, 0, 0, bottomPadding);
 
         final int keyDrawWidth = key.getDrawWidth();
@@ -137,8 +137,13 @@ public final class KeyPreviewChoreographer {
         keyPreviewView.setPreviewBackground(hasMoreKeys, keyPreviewPosition);
         // The key preview is placed vertically above the top edge of the parent key with an
         // arbitrary offset.
-        final int previewY = key.getY() - previewHeight + mParams.mPreviewOffset
+        int previewY = key.getY() - previewHeight + mParams.mPreviewOffset
                 + CoordinateUtils.y(originCoords) + key.getHeight();
+
+        if(key.getHasFlick()) {
+            previewHeight -= bottomPadding;
+            keyPreviewView.setPadding(0, 0, 0, 0);
+        }
 
         ViewLayoutUtils.placeViewAt(
                 keyPreviewView, previewX, previewY, previewWidth, previewHeight);
