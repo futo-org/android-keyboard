@@ -25,6 +25,8 @@ import org.futo.inputmethod.latin.settings.SettingsValues;
 
 import javax.annotation.Nullable;
 
+// TODO: Use this class to mutate settings based on user behavior (if not manually overridden)
+// e.g. if they type a lot of swear words, maybe disable the swear word blacklist
 @SuppressWarnings("unused")
 public final class StatsUtils {
 

@@ -564,8 +564,8 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     // Note that this method is called from a non-UI thread.
     @SuppressWarnings("static-method")
-    public void setMainDictionaryAvailability(final boolean mainDictionaryAvailable) {
-        PointerTracker.setMainDictionaryAvailability(mainDictionaryAvailable);
+    public void setImeAllowsGestureInput(final boolean value) {
+        PointerTracker.setImeAllowsGestureInput(value);
     }
 
     public void setGestureHandlingEnabledByUser(final boolean isGestureHandlingEnabledByUser,

@@ -32,7 +32,7 @@ import org.futo.inputmethod.latin.common.InputPointers;
 class InputLogicHandler implements Handler.Callback {
     final Handler mNonUIThreadHandler;
     // TODO: remove this reference.
-    final LatinIMELegacy mLatinIMELegacy;
+    //final LatinIMELegacy mLatinIMELegacy;
     final InputLogic mInputLogic;
     private final Object mLock = new Object();
     private boolean mInBatchInput; // synchronized using {@link #mLock}.
@@ -63,7 +63,7 @@ class InputLogicHandler implements Handler.Callback {
 
     InputLogicHandler() {
         mNonUIThreadHandler = null;
-        mLatinIMELegacy = null;
+        //mLatinIMELegacy = null;
         mInputLogic = null;
     }
 
@@ -72,7 +72,7 @@ class InputLogicHandler implements Handler.Callback {
                 InputLogicHandler.class.getSimpleName());
         handlerThread.start();
         mNonUIThreadHandler = new Handler(handlerThread.getLooper(), this);
-        mLatinIMELegacy = latinIMELegacy;
+        //mLatinIMELegacy = latinIMELegacy;
         mInputLogic = inputLogic;
     }
 
@@ -95,8 +95,9 @@ class InputLogicHandler implements Handler.Callback {
     public boolean handleMessage(final Message msg) {
         switch (msg.what) {
             case MSG_GET_SUGGESTED_WORDS:
-                mLatinIMELegacy.getSuggestedWords(msg.arg1 /* inputStyle */,
-                        msg.arg2 /* sequenceNumber */, (OnGetSuggestedWordsCallback) msg.obj);
+                // TODO
+                //mLatinIMELegacy.getSuggestedWords(msg.arg1 /* inputStyle */,
+                //        msg.arg2 /* sequenceNumber */, (OnGetSuggestedWordsCallback) msg.obj);
                 break;
         }
         return true;
@@ -158,13 +159,15 @@ class InputLogicHandler implements Handler.Callback {
         } else {
             suggestedWordsToShowSuggestions = suggestedWordsForBatchInput;
         }
-        mLatinIMELegacy.mHandler.showGesturePreviewAndSuggestionStrip(suggestedWordsToShowSuggestions,
-                isTailBatchInput /* dismissGestureFloatingPreviewText */);
+        // TODO
+        //mLatinIMELegacy.mHandler.showGesturePreviewAndSuggestionStrip(suggestedWordsToShowSuggestions,
+        //        isTailBatchInput /* dismissGestureFloatingPreviewText */);
         if (isTailBatchInput) {
             mInBatchInput = false;
             // The following call schedules onEndBatchInputInternal
             // to be called on the UI thread.
-            mLatinIMELegacy.mHandler.showTailBatchInputResult(suggestedWordsToShowSuggestions);
+            // TODO
+            //mLatinIMELegacy.mHandler.showTailBatchInputResult(suggestedWordsToShowSuggestions);
         }
     }
 

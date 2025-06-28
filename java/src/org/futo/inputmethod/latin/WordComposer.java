@@ -293,7 +293,6 @@ public final class WordComposer {
 
     /**
      * Set the currently composing word to the one passed as an argument.
-     * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
      * @param codePoints the code points to set as the composing word.
      * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
      */

@@ -36,6 +36,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.engine.GlobalIMEMessage
+import org.futo.inputmethod.engine.IMEMessage
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.LatinIMELegacy
 import org.futo.inputmethod.latin.R
@@ -440,7 +442,7 @@ object ResourceHelper {
         runBlocking { context.setSetting(kind.preferenceKeyFor(locale.toString()), "") }
         runBlocking { context.setSetting(kind.namePreferenceKeyFor(locale.toString()), "") }
 
-        LatinIMELegacy.mPendingDictionaryUpdate = true
+        GlobalIMEMessage.tryEmit(IMEMessage.ReloadResources)
     }
 }
 
@@ -502,7 +504,7 @@ class ImportResourceActivity : ComponentActivity() {
                     }
                 }
             }
-            LatinIMELegacy.mPendingDictionaryUpdate = true
+            GlobalIMEMessage.tryEmit(IMEMessage.ReloadResources)
             finish()
         }
     }

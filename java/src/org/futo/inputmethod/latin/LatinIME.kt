@@ -49,10 +49,10 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.engine.IMEManager
+import org.futo.inputmethod.engine.general.WordLearner
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.settings.Settings
@@ -73,7 +73,6 @@ import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.forceUnlockDatastore
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
-import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -82,7 +81,6 @@ import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.utils.JniUtils
-import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.updates.scheduleUpdateCheckingJob
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
 import org.futo.inputmethod.v2keyboard.FloatingKeyboardSize
@@ -172,14 +170,13 @@ open class InputMethodServiceCompose : InputMethodService(), LifecycleOwner, Vie
 
 class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripController,
         DynamicThemeProviderOwner, FoldStateProvider, KeyboardSizeStateProvider {
+
+    val imeManager = IMEManager(this)
+
     val latinIMELegacy = LatinIMELegacy(
         this as InputMethodService,
-        this as LatinIMELegacy.SuggestionStripController
+        this as LatinIMELegacy.SuggestionStripController,
     )
-
-    val inputLogic get() = latinIMELegacy.mInputLogic
-
-    lateinit var languageModelFacilitator: LanguageModelFacilitator
 
     val uixManager = UixManager(this)
     lateinit var suggestionBlacklist: SuggestionBlacklist
@@ -380,16 +377,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         Subtypes.addDefaultSubtypesIfNecessary(this)
 
-        languageModelFacilitator = LanguageModelFacilitator(
-            this,
-            latinIMELegacy.mInputLogic,
-            latinIMELegacy.mDictionaryFacilitator,
-            latinIMELegacy.mSettings,
-            latinIMELegacy.mKeyboardSwitcher,
-            lifecycleScope,
-            suggestionBlacklist
-        )
-
         getSettingBlocking(THEME_KEY).let {
             val themeOption = ThemeOptions[it].orDefault(this@LatinIME)
 
@@ -399,11 +386,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         latinIMELegacy.onCreate()
 
-        languageModelFacilitator.launchProcessor()
-
-        if(isDirectBootUnlocked) {
-            languageModelFacilitator.loadHistoryLog()
-        }
+        imeManager.onCreate()
 
         scheduleUpdateCheckingJob(this)
         launchJob { uixManager.showUpdateNoticeIfNeeded() }
@@ -484,20 +467,11 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onDestroy() {
         unregisterReceiver(unlockReceiver)
-
         stopJobs()
         viewModelStore.clear()
-
         uixManager.onDestroy()
-
-        languageModelFacilitator.saveHistoryLog()
-
-        runBlocking {
-            languageModelFacilitator.destroyModel()
-        }
-
+        imeManager.onDestroy()
         Settings.getInstance().settingsChangedListeners.clear()
-
         latinIMELegacy.onDestroy()
         super.onDestroy()
     }
@@ -594,9 +568,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
         latinIMELegacy.onStartInput(attribute, restarting)
-        languageModelFacilitator.onStartInput()
         uixManager.inputStarted(attribute)
-        cancelDictSync()
+        imeManager.onStartInput()
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
@@ -615,9 +588,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun onFinishInput() {
         super.onFinishInput()
         latinIMELegacy.onFinishInput()
-
         uixManager.onInputFinishing()
-        languageModelFacilitator.saveHistoryLog()
     }
 
     private fun changeInputMethodSubtype(newSubtype: InputMethodSubtype?) {
@@ -627,37 +598,13 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun onWindowShown() {
         super.onWindowShown()
         latinIMELegacy.onWindowShown()
-
         updateColorsIfDynamicChanged()
-        cancelDictSync()
-    }
-
-    var dictSyncJob: Job? = null
-    private fun delayedSyncDicts() {
-        dictSyncJob?.cancel()
-        dictSyncJob = lifecycleScope.launch {
-            withContext(Dispatchers.Default) {
-                delay(5000L)
-                withContext(Dispatchers.Main) {
-                    latinIMELegacy.mDictionaryFacilitator.flushUserHistoryDictionaries()
-                }
-            }
-        }
-    }
-
-    private fun cancelDictSync() {
-        dictSyncJob?.cancel()
     }
 
     override fun onWindowHidden() {
         super.onWindowHidden()
         latinIMELegacy.onWindowHidden()
-
         uixManager.onInputFinishing()
-
-        if(isDirectBootUnlocked) {
-            delayedSyncDicts()
-        }
     }
 
     override fun onUpdateSelection(
@@ -790,10 +737,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         uixManager.setSuggestions(suggestedWords, rtlSubtype)
     }
 
-    override fun maybeShowImportantNoticeTitle(): Boolean {
-        return false
-    }
-
     override fun onLowMemory() {
         super.onLowMemory()
         uixManager.cleanUpPersistentStates()
@@ -814,19 +757,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         return uixManager.onInlineSuggestionsResponse(response)
     }
 
-    fun postUpdateSuggestionStrip(inputStyle: Int): Boolean {
-        if(languageModelFacilitator.shouldPassThroughToLegacy()) return false
-
-        languageModelFacilitator.updateSuggestionStripAsync(inputStyle);
-        return true
-    }
-
     fun requestForgetWord(suggestedWordInfo: SuggestedWordInfo) {
         uixManager.requestForgetWord(suggestedWordInfo)
-    }
-
-    fun refreshSuggestions() {
-        latinIMELegacy.mInputLogic.performUpdateSuggestionStripSync(latinIMELegacy.mSettings.current, SuggestedWords.INPUT_STYLE_TYPING)
     }
 
     fun forceForgetWord(suggestedWordInfo: SuggestedWordInfo) {
@@ -836,12 +768,18 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             setSetting(SUGGESTION_BLACKLIST, existingWords)
         }
 
-        latinIMELegacy.mDictionaryFacilitator.unlearnFromUserHistory(
-            suggestedWordInfo.mWord, NgramContext.EMPTY_PREV_WORDS_INFO,
-            -1, Constants.NOT_A_CODE
-        )
+        imeManager.getActiveIME(Settings.getInstance().current).let {
+            if(it is WordLearner) {
+                it.removeFromHistory(
+                    suggestedWordInfo.mWord,
+                    NgramContext.EMPTY_PREV_WORDS_INFO,
+                    -1,
+                    Constants.NOT_A_CODE
+                )
+            }
+        }
 
-        refreshSuggestions()
+        //TODO("refreshSuggestions")
     }
 
     fun rememberEmojiSuggestion(suggestion: SuggestedWordInfo) {
@@ -865,13 +803,13 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     private var overrideInputConnection: InputConnection? = null
     private var overrideEditorInfo: EditorInfo? = null
     fun overrideInputConnection(to: InputConnection?, editorInfo: EditorInfo?) {
+        imeManager.onFinishInput()
         this.overrideInputConnection = to
         this.overrideEditorInfo = editorInfo
 
         latinIMELegacy.loadSettings()
 
-        inputLogic.finishInput()
-        inputLogic.startInput(RichInputMethodManager.getInstance().combiningRulesExtraValueOfCurrentSubtype, latinIMELegacy.mSettings.current)
+        imeManager.onStartInput()
 
         val currentIC = currentInputConnection
         currentIC?.requestCursorUpdates(InputConnection.CURSOR_UPDATE_IMMEDIATE)
@@ -918,7 +856,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.loadSettings()
         recreateKeyboard()
 
-        languageModelFacilitator.loadHistoryLog()
+        imeManager.onDeviceUnlocked()
 
         uixManager.onPersistentStatesUnlocked()
 

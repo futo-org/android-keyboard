@@ -195,8 +195,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     // Note that this method is called from a non-UI thread.
-    public static void setMainDictionaryAvailability(final boolean mainDictionaryAvailable) {
-        sGestureEnabler.setMainDictionaryAvailability(mainDictionaryAvailable);
+    public static void setImeAllowsGestureInput(final boolean imeAllowsGestureInput) {
+        sGestureEnabler.setImeAllowsGestureInput(imeAllowsGestureInput);
     }
 
     public static void setGestureHandlingEnabledByUser(final boolean gestureHandlingEnabledByUser) {

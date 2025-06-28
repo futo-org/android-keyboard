@@ -227,11 +227,13 @@ val MemoryDebugAction = Action(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text("Keyboard State", style = DebugTitle)
+                    TODO()
+                    /*
                     Text("composingText = ${latinIme.inputLogic.mConnection.composingTextForDebug}", style = DebugLabel)
                     Text("committedTextBeforeComposingText = ${latinIme.inputLogic.mConnection.committedTextBeforeComposingTextForDebug}", style = DebugLabel)
                     Text("LM.shouldPassThroughToLegacy = ${latinIme.languageModelFacilitator.shouldPassThroughToLegacy()}", style = DebugLabel)
                     Text("LM.isTransformerDisabledDueToTimeout = ${latinIme.languageModelFacilitator.isTransformerDisabled()}", style = DebugLabel)
-
+                    */
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text("Screen State Info", style = DebugTitle)

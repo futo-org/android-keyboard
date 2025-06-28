@@ -98,6 +98,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.FoldingOptions
@@ -111,6 +112,7 @@ import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.SupportsNavbarExtension
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
+import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
 import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
@@ -245,7 +247,7 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun createInputTransaction(): ActionInputTransaction {
-        return LatinIMEActionInputTransaction(latinIME.inputLogic)
+        return TODO()//LatinIMEActionInputTransaction(latinIME.inputLogic)
     }
 
     override fun typeText(v: String) {
@@ -373,17 +375,27 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun sendKeyEvent(keyCode: Int, metaState: Int) {
-        latinIME.inputLogic.sendDownUpKeyEvent(keyCode, metaState)
+        val event = Event.createDownUpKeyEvent(keyCode, metaState)
+        latinIME.imeManager.getActiveIME(
+            Settings.getInstance().current
+        ).onEvent(event)
+        //latinIME.inputLogic.sendDownUpKeyEvent(keyCode, metaState)
     }
 
     override fun isShifted(): Boolean = latinIME.latinIMELegacy.mKeyboardSwitcher.mState.shifted
 
     override fun cursorLeft(steps: Int, stepOverWords: Boolean, select: Boolean) {
-        latinIME.inputLogic.cursorLeft(steps, stepOverWords, select)
+        latinIME.imeManager.getActiveIME(
+            Settings.getInstance().current
+        ).onMovePointer(-1, select)
+        //latinIME.inputLogic.cursorLeft(steps, stepOverWords, select)
     }
 
     override fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean) {
-        latinIME.inputLogic.cursorRight(steps, stepOverWords, select)
+        latinIME.imeManager.getActiveIME(
+            Settings.getInstance().current
+        ).onMovePointer( 1, select)
+        //latinIME.inputLogic.cursorRight(steps, stepOverWords, select)
     }
 
     override fun performHapticAndAudioFeedback(code: Int, view: View) {
@@ -535,7 +547,11 @@ class UixManager(private val latinIME: LatinIME) {
 
     fun onActionActivated(rawAction: Action) {
         resizers.hideResizer()
-        latinIME.inputLogic.finishInput()
+        latinIME.imeManager.getActiveIME(
+            Settings.getInstance().current
+        ).onFinishInput() // TODO: Either call onStartInput to correspond, or make a different method to cleanup before activating!
+
+        // TODO: The IME should have a chance to consume the action (e.g. left/right arrows for Japanese preedit)
 
         val action = runBlocking {
             ActionRegistry.getActionOverride(latinIME, rawAction)
@@ -551,7 +567,11 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     fun onActionAltActivated(rawAction: Action) {
-        latinIME.inputLogic.finishInput()
+        latinIME.imeManager.getActiveIME(
+            Settings.getInstance().current
+        ).onFinishInput() // TODO: Either call onStartInput to correspond, or make a different method to cleanup before activating!
+
+        // TODO: The IME should have a chance to consume the action (e.g. left/right arrows for Japanese preedit)
 
         val action = runBlocking {
             ActionRegistry.getActionOverride(latinIME, rawAction)
@@ -1316,7 +1336,7 @@ class UixManager(private val latinIME: LatinIME) {
                 listOf(
                     DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_disable_emojis)) {
                         runBlocking { latinIME.setSetting(SHOW_EMOJI_SUGGESTIONS, false) }
-                        latinIME.refreshSuggestions()
+                        TODO("Refresh suggestions")
                     }
                 )
             } else {

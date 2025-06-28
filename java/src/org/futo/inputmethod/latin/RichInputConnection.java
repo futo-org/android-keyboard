@@ -16,7 +16,6 @@
 
 package org.futo.inputmethod.latin;
 
-import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -33,6 +32,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import org.futo.inputmethod.compat.InputConnectionCompatUtils;
+import org.futo.inputmethod.engine.InputMethodConnectionProvider;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.UnicodeSurrogate;
 import org.futo.inputmethod.latin.common.StringUtils;
@@ -125,7 +125,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     private SpannableStringBuilder mTempObjectForCommitText = new SpannableStringBuilder();
 
-    private final InputMethodService mParent;
+    private final InputMethodConnectionProvider mConnectionProvider;
     private InputConnection mIC;
     private int mNestLevel;
 
@@ -134,10 +134,10 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     private long mLastSlowInputConnectionTime = -SLOW_INPUTCONNECTION_PERSIST_MS;
 
-    public RichInputConnection(final InputMethodService parent) {
+    public RichInputConnection(final InputMethodConnectionProvider parent) {
         if(parent == null) throw new NullPointerException("Input Method Service is null");
 
-        mParent = parent;
+        mConnectionProvider = parent;
         mIC = null;
         mNestLevel = 0;
     }
@@ -194,7 +194,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public void beginBatchEdit() {
         if (++mNestLevel == 1) {
-            mIC = mParent.getCurrentInputConnection();
+            mIC = mConnectionProvider.getCurrentInputConnection();
             if (isConnected()) {
                 mIC.beginBatchEdit();
             }
@@ -262,7 +262,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     private boolean reloadTextCache() {
         mCommittedTextBeforeComposingText.setLength(0);
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         // Call upon the inputconnection directly since our own method is using the cache, and
         // we want to refresh it.
         final CharSequence textBeforeCursor = getTextBeforeCursorAndDetectLaggyConnection(
@@ -371,7 +371,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public int getCursorCapsMode(final int inputType,
             final SpacingAndPunctuations spacingAndPunctuations, final boolean hasSpaceBefore) {
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         if (!isConnected()) {
             return Constants.TextUtils.CAP_MODE_OFF;
         }
@@ -457,7 +457,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     private CharSequence getTextBeforeCursorAndDetectLaggyConnection(
             final int operation, final long timeout, final int n, final int flags) {
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         if (!isConnected()) {
             return null;
         }
@@ -476,7 +476,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     private CharSequence getTextAfterCursorAndDetectLaggyConnection(
             final int operation, final long timeout, final int n, final int flags) {
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         if (!isConnected()) {
             return null;
         }
@@ -527,7 +527,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     public void performEditorAction(final int actionId) {
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         if (isConnected()) {
             mIC.performEditorAction(actionId);
         }
@@ -685,7 +685,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     @Nonnull
     public NgramContext getNgramContextFromNthPreviousWord(
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         if (!isConnected()) {
             return NgramContext.EMPTY_PREV_WORDS_INFO;
         }
@@ -750,7 +750,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public TextRange getWordRangeAtCursor(final SpacingAndPunctuations spacingAndPunctuations,
             final int scriptId) {
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         if (!isConnected()) {
             return null;
         }
@@ -1063,7 +1063,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * than it really is.
      */
     public void tryFixLyingCursorPosition() {
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         final CharSequence textBeforeCursor = getTextBeforeCursor(
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
         final CharSequence selectedText = isConnected() ? mIC.getSelectedText(0 /* flags */) : null;
@@ -1104,7 +1104,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     @Override
     public boolean performPrivateCommand(final String action, final Bundle data) {
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         if (!isConnected()) {
             return false;
         }
@@ -1164,7 +1164,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public boolean requestCursorUpdates(final boolean enableMonitor,
             final boolean requestImmediateCallback) {
-        mIC = mParent.getCurrentInputConnection();
+        mIC = mConnectionProvider.getCurrentInputConnection();
         if (!isConnected()) {
             return false;
         }

@@ -60,6 +60,8 @@ public class Event {
     final public static int EVENT_TYPE_SOFTWARE_GENERATED_STRING = 6;
     // An event corresponding to a cursor move
     final public static int EVENT_TYPE_CURSOR_MOVE = 7;
+    // A KeyEvent
+    final public static int EVENT_TYPE_DOWN_UP_KEYEVENT = 8;
 
     // 0 is a valid code point, so we use -1 here.
     final public static int NOT_A_CODE_POINT = -1;
@@ -143,6 +145,11 @@ public class Event {
             final int x, final int y, final boolean isKeyRepeat) {
         return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, keyCode, x, y,
                 null /* suggestedWordInfo */, isKeyRepeat ? FLAG_REPEAT : FLAG_NONE, null);
+    }
+
+    @Nonnull
+    public static Event createDownUpKeyEvent(final int keyCode, final int metaState) {
+        return new Event(EVENT_TYPE_DOWN_UP_KEYEVENT, null, Constants.NOT_A_CODE, keyCode, metaState, 0, null, FLAG_NONE, null);
     }
 
     @Nonnull
@@ -295,6 +302,10 @@ public class Event {
 
     public boolean isHandled() {
         return EVENT_TYPE_NOT_HANDLED != mEventType;
+    }
+
+    public int getEventType() {
+        return mEventType;
     }
 
     public CharSequence getTextToCommit() {
