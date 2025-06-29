@@ -2,6 +2,7 @@ package org.futo.inputmethod.engine
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.futo.inputmethod.engine.general.GeneralIME
+import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.settings.Settings
@@ -17,7 +18,8 @@ val GlobalIMEMessage = MutableSharedFlow<IMEMessage>(
 
 
 enum class IMEKind(val factory: (IMEHelper) -> IMEInterface) {
-    General({ GeneralIME(it) })
+    General({ GeneralIME(it) }),
+    Japanese({ JapaneseIME(it) })
 }
 
 class IMEManager(
@@ -28,20 +30,28 @@ class IMEManager(
     private val imes: MutableMap<IMEKind, IMEInterface> = mutableMapOf()
     private var activeIme: IMEInterface? = null
 
-    private fun getActiveIMEKind(): IMEKind = IMEKind.General
+    private fun getActiveIMEKind(settingsValues: SettingsValues): IMEKind =
+        when(settingsValues.mLocale.language) {
+            "ja" -> IMEKind.Japanese
+            else -> IMEKind.General
+        }
 
     fun getActiveIME(
         settingsValues: SettingsValues,
     ): IMEInterface {
-        val kind = getActiveIMEKind()
-
-        // TODO: Update `activeIme`. Handle when IMEKind changes (tell old one to finish input, tell new one to start input if we are in input)
+        val kind = getActiveIMEKind(settingsValues)
 
         return imes.getOrPut(kind) {
             kind.factory(helper).also {
                 if(created) it.onCreate()
             }
         }.also {
+            if(activeIme != it && activeIme != null && inInput) {
+                activeIme?.onFinishInput()
+                it.onStartInput(
+                    RichInputMethodManager.getInstance().currentSubtype.keyboardLayoutSetName
+                )
+            }
             activeIme = it
         }
     }

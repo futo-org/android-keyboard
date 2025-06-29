@@ -320,7 +320,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         updateNavigationBarVisibility()
         settingsRefreshRequired = settingsRefreshRequired || refreshSettings
 
-        if(!uixManager.isMainKeyboardHidden.value) {
+        if(!uixManager.isMainKeyboardHidden) {
             recreateKeyboard()
         } else {
             pendingRecreateKeyboard = true
@@ -514,13 +514,13 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     // The keyboard view really doesn't like being detached, so it's always
     // shown, but resized to 0 if an action window is open
     @Composable
-    internal fun LegacyKeyboardView(hidden: Boolean) {
+    internal fun LegacyKeyboardView(modifier: Modifier, hidden: Boolean) {
         val modifier = if(hidden) {
-            Modifier
+            modifier
                 .clipToBounds()
                 .size(0.dp)
         } else {
-            Modifier.onSizeChanged {
+            modifier.onSizeChanged {
                 inputViewHeight = it.height
             }
         }.safeKeyboardPadding()
@@ -733,8 +733,12 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         uixManager.updateVisibility(shouldShowSuggestionsStrip, fullscreenMode)
     }
 
-    override fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean) {
-        uixManager.setSuggestions(suggestedWords, rtlSubtype)
+    override fun setSuggestions(
+        suggestedWords: SuggestedWords?,
+        rtlSubtype: Boolean,
+        useExpandableUi: Boolean
+    ) {
+        uixManager.setSuggestions(suggestedWords, rtlSubtype, useExpandableUi)
     }
 
     override fun onLowMemory() {

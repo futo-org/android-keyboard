@@ -452,7 +452,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun onMovePointer(steps: Int, select: Boolean?) {
-        helper.setNeutralSuggestionStrip()
+        setNeutralSuggestionStrip()
 
         val shiftMode: Int = helper.keyboardShiftMode
         val select = select
@@ -470,7 +470,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun onMoveDeletePointer(steps: Int) {
-        helper.setNeutralSuggestionStrip()
+        setNeutralSuggestionStrip()
         if (inputLogic.mConnection.hasCursorPosition()) {
             val stepOverWords =
                 settings.current.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS
@@ -513,7 +513,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                         0
                     )
                 )
-                helper.showSuggestionStrip(
+                showSuggestionStrip(
                     SuggestedWords(
                         info,
                         null,
@@ -569,13 +569,14 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun getCurrentRecapitalizeState(): Int =
         inputLogic.currentRecapitalizeState
 
+    private val useExpandableUi = true
     override fun setNeutralSuggestionStrip() {
         inputLogic.setSuggestedWords(SuggestedWords.getEmptyInstance())
-        helper.setNeutralSuggestionStrip()
+        helper.setNeutralSuggestionStrip(useExpandableUi)
     }
 
     override fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
         inputLogic.setSuggestedWords(suggestedWords ?: SuggestedWords.getEmptyInstance())
-        helper.showSuggestionStrip(suggestedWords)
+        helper.showSuggestionStrip(suggestedWords, useExpandableUi)
     }
 }

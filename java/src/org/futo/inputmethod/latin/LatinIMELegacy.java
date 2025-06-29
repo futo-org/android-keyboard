@@ -105,7 +105,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     public interface SuggestionStripController {
         public void updateVisibility(boolean shouldShowSuggestionsStrip, boolean fullscreenMode);
-        public void setSuggestions(SuggestedWords suggestedWords, boolean rtlSubtype);
+        public void setSuggestions(SuggestedWords suggestedWords, boolean rtlSubtype, boolean useExpandableUi);
     }
     
     private final InputMethodService mInputMethodService;
@@ -965,8 +965,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
                 || currentSettingsValues.isApplicationSpecifiedCompletionsOn()
                 // We should clear the contextual strip if there is no suggestion from dictionaries.
                 || noSuggestionsFromDictionaries) {
-            mSuggestionStripController.setSuggestions(suggestedWords,
-                    mRichImm.getCurrentSubtype().isRtlSubtype());
+            // TODO: Is this codepath ever used anymore?
+            //mSuggestionStripController.setSuggestions(suggestedWords,
+            //        mRichImm.getCurrentSubtype().isRtlSubtype());
         }
     }
 

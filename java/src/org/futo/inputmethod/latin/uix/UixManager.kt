@@ -59,6 +59,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -500,8 +501,9 @@ class UixManager(private val latinIME: LatinIME) {
     internal val composeView: ComposeView?
         get() = latinIME.composeView
 
-    private var shouldShowSuggestionStrip = mutableStateOf(true)
-    private var suggestedWords: MutableState<SuggestedWords?> = mutableStateOf(null)
+    private val shouldShowSuggestionStrip = mutableStateOf(true)
+    private val suggestedWords: MutableState<SuggestedWords?> = mutableStateOf(null)
+    private val useExpandableSuggestionsUi: MutableState<Boolean> = mutableStateOf(false)
 
     var currWindowAction: MutableState<Action?> = mutableStateOf(null)
     private var persistentStates: HashMap<Action, PersistentActionState?> = hashMapOf()
@@ -543,7 +545,7 @@ class UixManager(private val latinIME: LatinIME) {
     val touchableHeight: Int
         get() = measuredTouchableHeight
 
-    val isMainKeyboardHidden get() = mainKeyboardHidden
+    val isMainKeyboardHidden get() = mainKeyboardHidden.value
 
     fun onActionActivated(rawAction: Action) {
         resizers.hideResizer()
@@ -581,7 +583,9 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     @Composable
-    private fun MainKeyboardViewWithActionBar() {
+    private fun MainKeyboardViewWithActionBar(
+        needToUseExpandableSuggestionUi: Boolean
+    ) {
         val view = LocalView.current
 
         val actionBarShown = useDataStore(ActionBarDisplayedSetting)
@@ -624,7 +628,8 @@ class UixManager(private val latinIME: LatinIME) {
                     quickClipState = run {
                         if(!inlineStuffHiddenByTyping.value) quickClipState.value else null
                     },
-                    onQuickClipDismiss = { quickClipState.value = null }
+                    onQuickClipDismiss = { quickClipState.value = null },
+                    needToUseExpandableSuggestionUi = needToUseExpandableSuggestionUi
                 )
             }
         }
@@ -686,7 +691,8 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     @Composable
-    private fun ActionViewWithHeader(windowImpl: ActionWindow) {
+    private fun ActionViewWithHeader(windowImpl: ActionWindow,
+                                     needToUseExpandableSuggestionUi: Boolean) {
         val heightDiv = if(mainKeyboardHidden.value) {
             1
         } else {
@@ -724,7 +730,7 @@ class UixManager(private val latinIME: LatinIME) {
                         })
                         .safeKeyboardPadding()
                 ) {
-                    windowImpl.WindowContents(keyboardShown = !isMainKeyboardHidden.value)
+                    windowImpl.WindowContents(keyboardShown = !mainKeyboardHidden.value)
                 }
                 Spacer(Modifier.height(5.dp))
             }
@@ -737,14 +743,16 @@ class UixManager(private val latinIME: LatinIME) {
                     null
                 }
 
-                CollapsibleSuggestionsBar(
-                    onCollapse = { toggleExpandAction() },
-                    onClose = { closeActionWindow() },
-                    words = suggestedWordsOrNull,
-                    showClose = currWindowActionWindow.value?.showCloseButton == true,
-                    showCollapse = currWindowActionWindow.value?.positionIsUserManagable == true,
-                    suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
-                )
+                if(!needToUseExpandableSuggestionUi) {
+                    CollapsibleSuggestionsBar(
+                        onCollapse = { toggleExpandAction() },
+                        onClose = { closeActionWindow() },
+                        words = suggestedWordsOrNull,
+                        showClose = currWindowActionWindow.value?.showCloseButton == true,
+                        showCollapse = currWindowActionWindow.value?.positionIsUserManagable == true,
+                        suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
+                    )
+                }
             } else if(showingAboveKeyboard) {
                 ActionSep()
                 Spacer(Modifier.height(1.dp))
@@ -1166,17 +1174,62 @@ class UixManager(private val latinIME: LatinIME) {
 
             KeyboardWindowSelector { gap ->
                 Column {
+                    // TODO: Refactor how we handle expandable suggestions here to not be a mess
+                    val needToUseExpandableSuggestionUi =
+                        useExpandableSuggestionsUi.value && suggestedWords.value?.size()?.equals(0) != true
+                                && mainKeyboardHidden.value == false
+                                && quickClipState.value == null
+                                && currentNotice.value == null
+                                && inlineSuggestions.value.isEmpty()
                     when {
                         currWindowActionWindow.value != null -> ActionViewWithHeader(
-                            currWindowActionWindow.value!!
+                            currWindowActionWindow.value!!,
+                            needToUseExpandableSuggestionUi
                         )
 
-                        else -> MainKeyboardViewWithActionBar()
+                        else -> MainKeyboardViewWithActionBar(
+                            needToUseExpandableSuggestionUi
+                        )
                     }
 
-                    Spacer(modifier = Modifier.height(gap))
+                    if(!needToUseExpandableSuggestionUi) {
+                        Spacer(modifier = Modifier.height(gap))
+                    }
 
-                    latinIME.LegacyKeyboardView(hidden = isMainKeyboardHidden.value)
+                    val kbHeight = remember { mutableIntStateOf(latinIME.size.value!!.height) }
+                    val keyboardViewOffset = remember(needToUseExpandableSuggestionUi) { mutableIntStateOf(0) }
+                    Box(Modifier.let {
+                        if(needToUseExpandableSuggestionUi) {
+                            it.height(
+                                with(LocalDensity.current) { kbHeight.intValue.toDp() }
+                                        + latinIME.sizingCalculator.calculateSuggestionBarHeightDp().dp
+                                        + gap
+                            )
+                        } else {
+                            it
+                        }
+                    }) {
+                        if(needToUseExpandableSuggestionUi) {
+                            ActionBarWithExpandableCandidates(
+                                suggestedWords.value,
+                                latinIME.latinIMELegacy as SuggestionStripViewListener,
+                                isActionsExpanded = isActionsExpanded.value,
+                                toggleActionsExpanded = { toggleActionsExpanded() },
+                                keyboardOffset = keyboardViewOffset,
+                            )
+                        }
+                        latinIME.LegacyKeyboardView(modifier = Modifier.align(Alignment.BottomCenter).onSizeChanged {
+                                // TODO: Is there a better way?
+                                kbHeight.intValue = it.height.let {
+                                    if(it > 0) {
+                                        it
+                                    } else {
+                                        latinIME.size.value!!.height
+                                    }
+                                }
+                            }.absoluteOffset { IntOffset(0, keyboardViewOffset.intValue) },
+                            hidden = mainKeyboardHidden.value)
+                    }
 
                     if(latinIME.size.value !is FloatingKeyboardSize) {
                         Spacer(Modifier.height(navBarHeight()))
@@ -1285,8 +1338,9 @@ class UixManager(private val latinIME: LatinIME) {
         this.shouldShowSuggestionStrip.value = shouldShowSuggestionsStrip
     }
 
-    fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean) {
+    fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean, useExpandableUi: Boolean) {
         this.suggestedWords.value = suggestedWords
+        this.useExpandableSuggestionsUi.value = useExpandableUi
 
         if(currentNotice.value != null) {
             if(numSuggestionsSinceNotice > 1) {

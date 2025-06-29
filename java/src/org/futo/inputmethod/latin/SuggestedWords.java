@@ -236,6 +236,11 @@ public class SuggestedWords {
     }
 
     // non-final for testability.
+    /* TODO: This will need a few extra fields for integration with mozc
+    *         Annotation descripttion
+    *         a11y description?
+    *         Candidate ID, (candidate index?)
+    *         (candidate key?) */
     public static class SuggestedWordInfo {
         public static final int NOT_AN_INDEX = -1;
         public static final int NOT_A_CONFIDENCE = -1;

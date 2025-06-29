@@ -587,7 +587,7 @@ public final class InputLogic {
         mWordBeingCorrectedByCursor = null;
         mInputLogicHandler.onStartBatchInput();
 
-        mImeHelper.setNeutralSuggestionStrip();
+        mIme.setNeutralSuggestionStrip();
         //handler.showGesturePreviewAndSuggestionStrip(
         //        SuggestedWords.getEmptyInstance(), false /* dismissGestureFloatingPreviewText */);
         //handler.cancelUpdateSuggestionStrip();
@@ -654,7 +654,7 @@ public final class InputLogic {
 
     public void onCancelBatchInput() {
         mInputLogicHandler.onCancelBatchInput();
-        mImeHelper.setNeutralSuggestionStrip();
+        mIme.setNeutralSuggestionStrip();
         //handler.showGesturePreviewAndSuggestionStrip(
         //        SuggestedWords.getEmptyInstance(), true /* dismissGestureFloatingPreviewText */);
     }
@@ -1925,7 +1925,7 @@ public final class InputLogic {
         if (null == range) return; // Happens if we don't have an input connection at all
         if (range.length() <= 0) {
             // Race condition, or touching a word in a non-supported script.
-            mImeHelper.setNeutralSuggestionStrip();
+            mIme.setNeutralSuggestionStrip();
             return;
         }
         // If for some strange reason (editor bug or so) we measure the text before the cursor as
@@ -1997,7 +1997,7 @@ public final class InputLogic {
 
     void doShowSuggestionsAndClearAutoCorrectionIndicator(final SuggestedWords suggestedWords) {
         mIsAutoCorrectionIndicatorOn = false;
-        mImeHelper.showSuggestionStrip(suggestedWords);
+        mIme.showSuggestionStrip(suggestedWords);
     }
 
     /**

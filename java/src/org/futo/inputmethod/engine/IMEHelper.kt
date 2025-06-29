@@ -18,7 +18,7 @@ interface InputMethodConnectionProvider {
 
 class IMEHelper(
     private val latinIME: LatinIME
-) : InputMethodConnectionProvider, SuggestionStripViewAccessor {
+) : InputMethodConnectionProvider {
     val context: Context
         get() = latinIME.applicationContext
 
@@ -65,17 +65,19 @@ class IMEHelper(
         return latinIME.currentInputEditorInfo
     }
 
-    override fun setNeutralSuggestionStrip() {
+    fun setNeutralSuggestionStrip(useExpandableUi: Boolean) {
         latinIME.setSuggestions(
             suggestedWords = SuggestedWords.getEmptyInstance(),
-            rtlSubtype = Settings.getInstance().current.mIsRTL
+            rtlSubtype = Settings.getInstance().current.mIsRTL,
+            useExpandableUi = useExpandableUi
         )
     }
 
-    override fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
+    fun showSuggestionStrip(suggestedWords: SuggestedWords?, useExpandableUi: Boolean) {
         latinIME.setSuggestions(
             suggestedWords = suggestedWords,
-            rtlSubtype = Settings.getInstance().current.mIsRTL
+            rtlSubtype = Settings.getInstance().current.mIsRTL,
+            useExpandableUi = useExpandableUi
         )
     }
 }
