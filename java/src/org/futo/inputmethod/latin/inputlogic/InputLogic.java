@@ -293,7 +293,7 @@ public final class InputLogic {
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && suggestedWords.isPunctuationSuggestions()) {
             // We still want to log a suggestion click.
-            StatsUtils.onPickSuggestionManually(
+            StatsUtils.onPickSuggestionManually(mLatinIMELegacy.getLatinIME(),
                     mSuggestedWords, suggestionInfo, mDictionaryFacilitator);
             // Word separators are suggested before the user inputs something.
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
@@ -361,7 +361,7 @@ public final class InputLogic {
         // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
         handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
 
-        StatsUtils.onPickSuggestionManually(
+        StatsUtils.onPickSuggestionManually(mLatinIMELegacy.getLatinIME(),
                 mSuggestedWords, suggestionInfo, mDictionaryFacilitator);
         StatsUtils.onWordCommitSuggestionPickedManually(
                 suggestionInfo.mWord, mWordComposer.isBatchMode());
@@ -1232,7 +1232,7 @@ public final class InputLogic {
                     && inputTransaction.mSettingsValues.mBackspaceUndoesAutocorrect) {
                 final String lastComposedWord = mLastComposedWord.mTypedWord;
                 revertCommit(inputTransaction, inputTransaction.mSettingsValues);
-                StatsUtils.onRevertAutoCorrect();
+                StatsUtils.onRevertAutoCorrect(mLatinIMELegacy.getLatinIME(), lastComposedWord);
                 StatsUtils.onWordCommitUserTyped(lastComposedWord, mWordComposer.isBatchMode());
                 // Restart suggestions when backspacing into a reverted word. This is required for
                 // the final corrected word to be learned, as learning only occurs when suggestions
@@ -1467,7 +1467,9 @@ public final class InputLogic {
             System.currentTimeMillis());
         mDictionaryFacilitator.unlearnFromUserHistory(
             word, ngramContext, timeStampInSeconds, eventType);
-        
+
+        StatsUtils.onWordUnlearned(mLatinIMELegacy.getLatinIME(), word);
+
         // FIXME: For some reason, 2 is the right value some times and 1 is the right value at other times.
         // To make sure it's deleted from history, we just call it with both and one of them should work
         if(settingsValues.mTransformerPredictionEnabled) {
@@ -1779,6 +1781,8 @@ public final class InputLogic {
                 System.currentTimeMillis());
         mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
                 ngramContext, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
+
+        StatsUtils.onWordLearned(mLatinIMELegacy.getLatinIME(), suggestion);
 
         if(settingsValues.mTransformerPredictionEnabled) {
             mLatinIMELegacy.getLanguageModelFacilitator().addToHistory(suggestion, wasAutoCapitalized,
