@@ -92,6 +92,7 @@ import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.setSettingBlocking
+import org.futo.inputmethod.latin.uix.settings.BottomSpacer
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
 import org.futo.inputmethod.latin.uix.settings.LocalSharedPrefsCache
@@ -865,6 +866,7 @@ fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavContro
     ScrollableList {
         KeyboardSettingsMenu.render(showBack = true)
         TypingSettingsMenu.render(showBack = false)
+        BottomSpacer()
     }
 }
 

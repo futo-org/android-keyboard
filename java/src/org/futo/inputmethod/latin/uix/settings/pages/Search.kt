@@ -46,6 +46,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.LocalNavController
+import org.futo.inputmethod.latin.uix.settings.BottomSpacer
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.SettingsMenus
@@ -219,6 +220,8 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                     HorizontalDivider()
                 }
             }
+
+            item { BottomSpacer() }
         }
     }
 }

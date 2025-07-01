@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.settings.BottomSpacer
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -313,5 +314,6 @@ fun CreditsScreen(navController: NavHostController = rememberNavController()) {
         }
 
         CreditsScreenLite.render(showTitle = false)
+        BottomSpacer()
     }
 }
