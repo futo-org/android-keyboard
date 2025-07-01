@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix.settings
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,5 +42,5 @@ fun SetupOrMain(inputMethodEnabled: Boolean, inputMethodSelected: Boolean, doubl
  *  navigation present on the user's device, some spacing at the bottom should fix it. */
 @Composable
 fun BottomSpacer() {
-    Modifier.height(80.dp)
+    Spacer(Modifier.height(80.dp))
 }
