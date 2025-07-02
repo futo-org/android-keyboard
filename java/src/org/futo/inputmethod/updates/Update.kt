@@ -96,7 +96,7 @@ fun Context.openURI(uri: String, newTask: Boolean = false) {
 }
 
 fun Context.openManualUpdateCheck() {
-    openURI("https://keyboard.futo.org/manual_update?version=${BuildConfig.VERSION_CODE}&build=${BuildConfig.FLAVOR}", newTask = true)
+    openURI("https://keyboard.futo.org/manual_update?version=${BuildConfig.VERSION_CODE}&build=${BuildConfig.FLAVOR}&branch=${BuildConfig.BRANCH}", newTask = true)
 }
 
 @Composable
