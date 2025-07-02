@@ -8,6 +8,17 @@ plugins {
 }
 
 def getVersionCode = { ->
+    def envCode = System.getenv('VERSION_CODE')
+    if (envCode?.trim()) {
+        try {
+            return Integer.parseInt(envCode.trim())
+        } catch (NumberFormatException ignored) {
+            project.logger.warn("VERSION_CODE='$envCode' is not a valid integer – falling back to git rev-list.")
+        }
+    } else {
+        project.logger.warn("VERSION_CODE env variable not set – falling back to git rev-list.")
+    }
+
     try {
         def stdout = new ByteArrayOutputStream()
         exec {
@@ -17,11 +28,18 @@ def getVersionCode = { ->
         return Integer.parseInt(stdout.toString().trim())
     } catch (ignored) {
         project.logger.lifecycle("Failed to get rev-list count from git!")
-        return -1;
+        return -1
     }
 }
 
 def getVersionName = { ->
+    def envName = System.getenv('VERSION_NAME')
+    if (envName?.trim()) {
+        return envName.trim()
+    } else {
+        project.logger.warn("VERSION_NAME env variable not set – falling back to git describe.")
+    }
+
     try {
         def stdout = new ByteArrayOutputStream()
         exec {
@@ -31,9 +49,31 @@ def getVersionName = { ->
         return stdout.toString().trim()
     } catch (ignored) {
         project.logger.lifecycle("Failed to get version name tag from git!")
-        return "0.0.0";
+        return "0.0.0"
     }
 }
+
+def getBranch = { ->
+    def envName = System.getenv('BRANCH_NAME')
+    if (envName?.trim()) {
+        return envName.trim()
+    } else {
+        project.logger.warn("BRANCH_NAME env variable not set – falling back to git branch.")
+    }
+
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'branch', '--show-current'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    } catch (ignored) {
+        project.logger.lifecycle("Failed to get branch from git!")
+        return "master"
+    }
+}
+
 
 final def translationsWithoutEngValues = { final String path ->
     final def sourceDir = file(path)
@@ -187,7 +227,7 @@ android {
             buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "false"
             buildConfigField "boolean", "UPDATE_CHECKING", "true"
             buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
-
+            buildConfigField "String", "BRANCH", "\"${getBranch()}\""
             getIsDefault().set(true)
 
             buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
