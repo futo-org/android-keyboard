@@ -569,7 +569,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun getCurrentRecapitalizeState(): Int =
         inputLogic.currentRecapitalizeState
 
-    private val useExpandableUi = true
+    private val useExpandableUi = false
     override fun setNeutralSuggestionStrip() {
         inputLogic.setSuggestedWords(SuggestedWords.getEmptyInstance())
         helper.setNeutralSuggestionStrip(useExpandableUi)

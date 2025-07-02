@@ -6,6 +6,7 @@ import androidx.core.content.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import org.futo.inputmethod.keyboard.internal.KeyboardCodesSet
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.PreferenceUtils
@@ -48,6 +49,12 @@ val AllActions = AllActionsMap.values.toList().verifyNamesAreUnique()
 val AllActionKeys = AllActionsMap.keys.toList()
 
 val ActionIdToInt = AllActionsMap.entries.associate { it.key to AllActions.indexOf(it.value) }
+
+val Action.keyCode
+    get() = AllActions.indexOf(this) + Constants.CODE_ACTION_0
+
+val Action.keyCodeAlt
+    get() = AllActions.indexOf(this) + Constants.CODE_ALT_ACTION_0
 
 // Name integers of actions must be unique
 private fun List<Action>.verifyNamesAreUnique(): List<Action> {

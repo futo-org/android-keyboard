@@ -1,6 +1,7 @@
 package org.futo.inputmethod.engine
 
 import android.content.Context
+import android.graphics.Rect
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -9,7 +10,6 @@ import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.settings.Settings
-import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
 
 interface InputMethodConnectionProvider {
     fun getCurrentInputConnection(): InputConnection?
@@ -33,6 +33,12 @@ class IMEHelper(
 
     public val currentKeyboardScriptId: Int
         get() = latinIME.latinIMELegacy.mKeyboardSwitcher.currentKeyboardScriptId
+
+    public val keyboardRect: Rect
+        get() = run {
+            val kb = latinIME.latinIMELegacy.mKeyboardSwitcher.keyboard
+            return Rect(0, 0, kb?.mBaseWidth ?: 1, kb?.mBaseHeight ?: 1)
+        }
 
     // TODO: Maybe could just wrap this in something else...
     public fun onCodePointDeleted(textBeforeCursor: String) {
