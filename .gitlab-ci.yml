@@ -16,7 +16,8 @@ sync_strings_xml:
     - docker
   stage: sync_translations
   only:
-    - branches
+     refs:
+      - master
   script:
     - sh syncTranslations.sh
 
@@ -31,7 +32,7 @@ buildUnstableBranch:
     - when: never       # block everything else (e.g. tags, master)
   needs: []
   before_script:
-    - git fetch origin
+    - git fetch origin $CI_COMMIT_BRANCH:$CI_COMMIT_BRANCH
     - export GIT_BRANCH="$CI_COMMIT_BRANCH"
     - export GIT_DESCRIBE="$(git describe --tags --dirty)"
     - export GIT_REV_LIST="$(git rev-list --first-parent --count $GIT_BRANCH)"
