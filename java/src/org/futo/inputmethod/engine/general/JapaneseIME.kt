@@ -16,6 +16,7 @@ import com.google.common.base.Optional
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.event.Event
+import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.common.Constants
@@ -112,7 +113,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             useKanaModifierInsensitiveConversion = true
             useTypingCorrection = true
             historyLearningLevel = ProtoConfig.Config.HistoryLearningLevel.DEFAULT_HISTORY
-            incognitoMode = true//settings.mInputAttributes.mNoLearning
+            incognitoMode = BuildConfig.DEBUG//settings.mInputAttributes.mNoLearning
             generalConfig = ProtoConfig.GeneralConfig.newBuilder().apply {
                 uploadUsageStats = false
             }.build()
