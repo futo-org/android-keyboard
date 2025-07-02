@@ -32,7 +32,7 @@ buildUnstableBranch:
   needs: []
   before_script:
     - git fetch origin
-    - export GIT_BRANCH="$(git branch --show-current)"
+    - export GIT_BRANCH="$CI_COMMIT_BRANCH"
     - export GIT_DESCRIBE="$(git describe --tags --dirty)"
     - export GIT_REV_LIST="$(git rev-list --first-parent --count $GIT_BRANCH)"
     - export VERSION_NAME="${GIT_DESCRIBE}--branch-${GIT_BRANCH}-${GIT_REV_LIST}"
