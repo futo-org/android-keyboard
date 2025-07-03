@@ -84,9 +84,7 @@ data class DragDelta(
 
 
 @Composable
-fun BoxScope.ResizerRect(onDragged: (DragDelta) -> Boolean, showResetApply: Boolean, onApply: () -> Unit, onReset: () -> Unit) {
-    val shape = RoundedCornerShape(4.dp)
-
+fun BoxScope.ResizerRect(onDragged: (DragDelta) -> Boolean, showResetApply: Boolean, onApply: () -> Unit, onReset: () -> Unit, shape: RoundedCornerShape = RoundedCornerShape(4.dp)) {
     val draggingState = remember { mutableStateOf<CurrentDraggingTarget?>(null) }
     val wasAccepted = remember { mutableStateOf(onDragged(DragDelta())) }
 
