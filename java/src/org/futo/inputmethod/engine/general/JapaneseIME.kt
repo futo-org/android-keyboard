@@ -397,6 +397,9 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     private fun setComposingText(command: ProtoCommands.Command, inputConnection: InputConnection) {
         val output = command.output
+
+        helper.updateUiInputState(!output.hasPreedit())
+
         if (!output.hasPreedit()) {
             // If preedit field is empty, we should clear composing text in the InputConnection
             // because Mozc server asks us to do so.
