@@ -26,7 +26,8 @@ data class RecognizerViewSettings(
     val modelRunConfiguration: MultiModelRunConfiguration,
     val decodingConfiguration: DecodingConfiguration,
     val recordingConfiguration: RecordingSettings,
-    val groqApiKey: String
+    val groqApiKey: String,
+    val groqModel: String
 )
 
 private val VerboseAnnotations = hashMapOf(
@@ -207,7 +208,8 @@ class RecognizerView(
             modelRunConfiguration = settings.modelRunConfiguration,
             decodingConfiguration = settings.decodingConfiguration,
             recordingConfiguration = settings.recordingConfiguration,
-            groqApiKey = settings.groqApiKey
+            groqApiKey = settings.groqApiKey,
+            groqModel = settings.groqModel
         )
     )
 

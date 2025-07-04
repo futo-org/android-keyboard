@@ -499,6 +499,7 @@
 
     <string name="groq_settings_title">Groq API</string>
     <string name="groq_settings_api_key">Groq API key</string>
+    <string name="groq_settings_model">Groq model</string>
     <string name="groq_settings_test">Test connection</string>
     <string name="groq_settings_testing">Testing...</string>
     <string name="groq_settings_success">Success</string>
