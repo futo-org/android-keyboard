@@ -38,17 +38,16 @@ fun GroqConfigScreen(navController: NavHostController = rememberNavController())
         SettingItem(
             title = stringResource(R.string.groq_settings_test),
             subtitle = testStatus.value,
-            onClick = {
+           onClick = {
+                val testing = stringResource(R.string.groq_settings_testing)
+                val successText = stringResource(R.string.groq_settings_success)
+                val failureText = stringResource(R.string.groq_settings_failure)
                 lifecycleOwner.lifecycleScope.launch {
-                    testStatus.value = stringResource(R.string.groq_settings_testing)
+                    testStatus.value = testing
                     val success = withContext(Dispatchers.IO) {
                         GroqWhisperApi.test(apiKeyItem.value)
                     }
-                    testStatus.value = if(success) {
-                        stringResource(R.string.groq_settings_success)
-                    } else {
-                        stringResource(R.string.groq_settings_failure)
-                    }
+                    testStatus.value = if(success) successText else failureText
                 }
             }
         ) { }
