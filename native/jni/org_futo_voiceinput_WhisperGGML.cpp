@@ -22,13 +22,13 @@ struct WhisperModelState {
     volatile int cancel_flag = 0;
 };
 
-static jlong WhisperGGML_open(JNIEnv *env, jclass clazz, jstring model_dir) {
+static jlong WhisperGGML_open(JNIEnv *env, jclass clazz, jstring model_dir, jboolean use_gpu) {
     std::string model_dir_str = jstring2string(env, model_dir);
 
     auto *state = new WhisperModelState();
 
     AKLOGI("Attempting to load model from file...");
-    state->context = whisper_init_from_file_with_params(model_dir_str.c_str(), { .use_gpu = false });
+    state->context = whisper_init_from_file_with_params(model_dir_str.c_str(), { .use_gpu = (bool)use_gpu });
 
     if(!state->context){
         AKLOGE("Failed to initialize whisper_context from path %s", model_dir_str.c_str());
@@ -39,14 +39,14 @@ static jlong WhisperGGML_open(JNIEnv *env, jclass clazz, jstring model_dir) {
     return reinterpret_cast<jlong>(state);
 }
 
-static jlong WhisperGGML_openFromBuffer(JNIEnv *env, jclass clazz, jobject buffer) {
+static jlong WhisperGGML_openFromBuffer(JNIEnv *env, jclass clazz, jobject buffer, jboolean use_gpu) {
     void* buffer_address = env->GetDirectBufferAddress(buffer);
     jlong buffer_capacity = env->GetDirectBufferCapacity(buffer);
 
     auto *state = new WhisperModelState();
 
     AKLOGI("Attempting to load model from buffer...");
-    state->context = whisper_init_from_buffer_with_params(buffer_address, buffer_capacity, { .use_gpu = false });
+    state->context = whisper_init_from_buffer_with_params(buffer_address, buffer_capacity, { .use_gpu = (bool)use_gpu });
 
     if(!state->context){
         AKLOGE("Failed to initialize whisper_context from direct buffer");
@@ -253,12 +253,12 @@ static void WhisperGGML_cancel(JNIEnv *env, jclass clazz, jlong handle) {
 static const JNINativeMethod sMethods[] = {
         {
                 const_cast<char *>("openNative"),
-                const_cast<char *>("(Ljava/lang/String;)J"),
+                const_cast<char *>("(Ljava/lang/String;Z)J"),
                 reinterpret_cast<void *>(WhisperGGML_open)
         },
         {
                 const_cast<char *>("openFromBufferNative"),
-                const_cast<char *>("(Ljava/nio/Buffer;)J"),
+                const_cast<char *>("(Ljava/nio/Buffer;Z)J"),
                 reinterpret_cast<void *>(WhisperGGML_openFromBuffer)
         },
         {
