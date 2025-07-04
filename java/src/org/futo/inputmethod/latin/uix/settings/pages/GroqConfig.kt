@@ -28,6 +28,20 @@ fun GroqConfigScreen(navController: NavHostController = rememberNavController())
     val apiKeyItem = useDataStore(GROQ_API_KEY)
     val modelItem = useDataStore(GROQ_MODEL)
     val testStatus = remember { mutableStateOf("") }
+    val modelOptions = remember {
+        mutableStateOf(listOf("whisper-large-v3", "whisper-large-v3-en", "whisper-large-v3-turbo"))
+    }
+
+    LaunchedEffect(apiKeyItem.value) {
+        if(apiKeyItem.value.isNotBlank()) {
+            val remote = withContext(Dispatchers.IO) {
+                GroqWhisperApi.availableModels(apiKeyItem.value)
+            }
+            if(!remote.isNullOrEmpty()) {
+                modelOptions.value = remote
+            }
+        }
+    }
 
     ScrollableList {
         ScreenTitle(stringResource(R.string.groq_settings_title), showBack = true, navController)
@@ -40,7 +54,7 @@ fun GroqConfigScreen(navController: NavHostController = rememberNavController())
 
         DropDownPickerSettingItem(
             label = stringResource(R.string.groq_settings_model),
-            options = listOf("whisper-large-v3", "whisper-large-v3-en", "whisper-large-v3-turbo"),
+            options = modelOptions.value,
             selection = modelItem.value,
             onSet = { modelItem.setValue(it) },
             getDisplayName = { it }

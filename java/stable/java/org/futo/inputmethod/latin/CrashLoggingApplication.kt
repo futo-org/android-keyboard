@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin
 import android.app.Application
 import android.content.Context
 import android.os.UserManager
+import org.futo.voiceinput.shared.util.DebugLogger
 import androidx.datastore.preferences.core.Preferences
 import androidx.work.Configuration
 import org.acra.ACRA
@@ -16,6 +17,11 @@ import org.acra.ktx.initAcra
 class CrashLoggingApplication : Application(), Configuration.Provider {
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().build()
+
+    override fun onCreate() {
+        super.onCreate()
+        DebugLogger.init(this)
+    }
 
 
     override fun attachBaseContext(base: Context?) {

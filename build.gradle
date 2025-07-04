@@ -17,7 +17,7 @@ def getVersionCode = { ->
         return Integer.parseInt(stdout.toString().trim())
     } catch (ignored) {
         project.logger.lifecycle("Failed to get rev-list count from git!")
-        return -1;
+        return 1;
     }
 }
 
