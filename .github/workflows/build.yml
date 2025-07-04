@@ -33,6 +33,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: keyboard-apk
-          path: build/outputs/apk/release/*.apk
+          path: build/outputs/apk/**/*.apk
           
 
