@@ -23,6 +23,8 @@ data class RecognizerViewSettings(
     val shouldShowVerboseFeedback: Boolean,
     val shouldShowInlinePartialResult: Boolean,
 
+    val useGpuOffload: Boolean,
+
     val modelRunConfiguration: MultiModelRunConfiguration,
     val decodingConfiguration: DecodingConfiguration,
     val recordingConfiguration: RecordingSettings,
@@ -209,7 +211,8 @@ class RecognizerView(
             decodingConfiguration = settings.decodingConfiguration,
             recordingConfiguration = settings.recordingConfiguration,
             groqApiKey = settings.groqApiKey,
-            groqModel = settings.groqModel
+            groqModel = settings.groqModel,
+            useGpuOffload = settings.useGpuOffload
         )
     )
 

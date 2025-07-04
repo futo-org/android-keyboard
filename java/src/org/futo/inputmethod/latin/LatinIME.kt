@@ -78,6 +78,8 @@ import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
+import org.futo.inputmethod.latin.uix.START_VOICE_ON_OPEN
+import org.futo.inputmethod.latin.uix.actions.VoiceInputAction
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
@@ -604,6 +606,11 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.onStartInputView(info, restarting)
         lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
         updateColorsIfDynamicChanged()
+        if(getSetting(START_VOICE_ON_OPEN)) {
+            lifecycleScope.launch {
+                uixManager.onActionActivated(VoiceInputAction)
+            }
+        }
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {

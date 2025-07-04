@@ -6,14 +6,15 @@ import org.futo.voiceinput.shared.types.ModelLoader
 
 
 class ModelManager(
-    val context: Context
+    val context: Context,
+    var useGpu: Boolean = false
 ) {
     private val loadedModels: HashMap<Any, WhisperGGML> = hashMapOf()
 
     fun obtainModel(model: ModelLoader): WhisperGGML {
-        val key = model.key(context)
+        val key = "${model.key(context)}#${if(useGpu) "gpu" else "cpu"}"
         if (!loadedModels.contains(key)) {
-            loadedModels[key] = model.loadGGML(context)
+            loadedModels[key] = model.loadGGML(context, useGpu)
         }
 
         return loadedModels[key]!!

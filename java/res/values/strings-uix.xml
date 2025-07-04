@@ -493,6 +493,11 @@
     <string name="voice_input_settings_change_models">Models</string>
     <string name="voice_input_settings_change_models_subtitle">To change the models, visit Languages &amp; Models menu</string>
 
+    <string name="voice_input_settings_gpu_offload">GPU acceleration</string>
+    <string name="voice_input_settings_gpu_offload_subtitle">Offload processing to GPU when available</string>
+    <string name="voice_input_settings_start_on_open">Auto-start on keyboard open</string>
+    <string name="voice_input_settings_start_on_open_subtitle">Begin voice input automatically when the keyboard appears</string>
+
     <string name="voice_input_settings_use_groq">Use Groq Whisper</string>
     <string name="voice_input_settings_groq_config">Groq API Settings</string>
     <string name="voice_input_settings_groq_config_subtitle">Configure Groq API key and test</string>
