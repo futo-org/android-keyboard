@@ -27,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.futo.voiceinput.shared.ggml.InferenceCancelledException
@@ -86,7 +87,8 @@ data class RecordingSettings(
 data class AudioRecognizerSettings(
     val modelRunConfiguration: MultiModelRunConfiguration,
     val decodingConfiguration: DecodingConfiguration,
-    val recordingConfiguration: RecordingSettings
+    val recordingConfiguration: RecordingSettings,
+    val groqApiKey: String
 )
 
 class ModelDoesNotExistException(val models: List<ModelLoader>) : Throwable()
@@ -540,6 +542,12 @@ class AudioRecognizer(
 
         val floatArray = floatSamples.array().sliceArray(0 until floatSamples.position())
 
+        val remoteJob = if(settings.groqApiKey.isNotBlank()) {
+            lifecycleScope.async(Dispatchers.IO) {
+                org.futo.voiceinput.shared.groq.GroqWhisperApi.transcribe(floatArray, settings.groqApiKey)
+            }
+        } else null
+
         yield()
         val outputText = try {
              modelRunner.run(
@@ -553,7 +561,10 @@ class AudioRecognizer(
             return
         }
 
+        val remoteResult = remoteJob?.await()
+
         val text = when {
+            remoteResult != null && remoteResult.isNotBlank() -> remoteResult
             isBlankResult(outputText) -> ""
             else -> outputText
         }

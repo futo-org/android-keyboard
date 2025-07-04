@@ -493,6 +493,17 @@
     <string name="voice_input_settings_change_models">Models</string>
     <string name="voice_input_settings_change_models_subtitle">To change the models, visit Languages &amp; Models menu</string>
 
+    <string name="voice_input_settings_use_groq">Use Groq Whisper</string>
+    <string name="voice_input_settings_groq_config">Groq API Settings</string>
+    <string name="voice_input_settings_groq_config_subtitle">Configure Groq API key and test</string>
+
+    <string name="groq_settings_title">Groq API</string>
+    <string name="groq_settings_api_key">Groq API key</string>
+    <string name="groq_settings_test">Test connection</string>
+    <string name="groq_settings_testing">Testing...</string>
+    <string name="groq_settings_success">Success</string>
+    <string name="groq_settings_failure">Failed</string>
+
     <!-- Prediction menu -->
     <string name="prediction_settings_title">Text Prediction</string>
     <string name="prediction_settings_transformer">Transformer LM</string>
