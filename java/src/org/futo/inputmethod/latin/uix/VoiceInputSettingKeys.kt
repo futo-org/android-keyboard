@@ -74,3 +74,8 @@ val GROQ_API_KEY = SettingsKey(
     key = stringPreferencesKey("groq_api_key"),
     default = ""
 )
+
+val GROQ_MODEL = SettingsKey(
+    key = stringPreferencesKey("groq_model"),
+    default = "whisper-large-v3"
+)

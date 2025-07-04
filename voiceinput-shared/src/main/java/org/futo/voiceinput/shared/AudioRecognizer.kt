@@ -88,7 +88,8 @@ data class AudioRecognizerSettings(
     val modelRunConfiguration: MultiModelRunConfiguration,
     val decodingConfiguration: DecodingConfiguration,
     val recordingConfiguration: RecordingSettings,
-    val groqApiKey: String
+    val groqApiKey: String,
+    val groqModel: String
 )
 
 class ModelDoesNotExistException(val models: List<ModelLoader>) : Throwable()
@@ -544,7 +545,7 @@ class AudioRecognizer(
 
         val remoteJob = if(settings.groqApiKey.isNotBlank()) {
             lifecycleScope.async(Dispatchers.IO) {
-                org.futo.voiceinput.shared.groq.GroqWhisperApi.transcribe(floatArray, settings.groqApiKey)
+                org.futo.voiceinput.shared.groq.GroqWhisperApi.transcribe(floatArray, settings.groqApiKey, settings.groqModel)
             }
         } else null
 

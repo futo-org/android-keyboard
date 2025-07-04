@@ -12,10 +12,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.GROQ_API_KEY
+import org.futo.inputmethod.latin.uix.GROQ_MODEL
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.SettingTextField
+import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.voiceinput.shared.groq.GroqWhisperApi
 
@@ -24,6 +26,7 @@ fun GroqConfigScreen(navController: NavHostController = rememberNavController())
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val apiKeyItem = useDataStore(GROQ_API_KEY)
+    val modelItem = useDataStore(GROQ_MODEL)
     val testStatus = remember { mutableStateOf("") }
 
     ScrollableList {
@@ -33,6 +36,14 @@ fun GroqConfigScreen(navController: NavHostController = rememberNavController())
             title = stringResource(R.string.groq_settings_api_key),
             placeholder = "sk-...",
             field = GROQ_API_KEY
+        )
+
+        DropDownPickerSettingItem(
+            label = stringResource(R.string.groq_settings_model),
+            options = listOf("whisper-large-v3", "whisper-large-v3-en", "whisper-large-v3-turbo"),
+            selection = modelItem.value,
+            onSet = { modelItem.setValue(it) },
+            getDisplayName = { it }
         )
 
         val testing = stringResource(R.string.groq_settings_testing)

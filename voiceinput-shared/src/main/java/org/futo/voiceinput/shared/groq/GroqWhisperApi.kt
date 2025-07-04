@@ -40,7 +40,7 @@ object GroqWhisperApi {
         return header.array() + pcmData
     }
 
-    fun transcribe(samples: FloatArray, apiKey: String): String? {
+    fun transcribe(samples: FloatArray, apiKey: String, model: String): String? {
         if(apiKey.isBlank()) return null
         return try {
             val wav = floatArrayToWav(samples)
@@ -60,7 +60,7 @@ object GroqWhisperApi {
             writeString("\r\n")
             writeString("--$boundary\r\n")
             writeString("Content-Disposition: form-data; name=\"model\"\r\n\r\n")
-            writeString("whisper-large-v3\r\n")
+            writeString("$model\r\n")
             writeString("--$boundary--\r\n")
             out.flush()
             out.close()
