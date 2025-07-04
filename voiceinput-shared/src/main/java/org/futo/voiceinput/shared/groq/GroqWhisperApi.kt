@@ -2,6 +2,7 @@ package org.futo.voiceinput.shared.groq
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.decodeFromString
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
@@ -65,7 +66,7 @@ object GroqWhisperApi {
             out.close()
             if(conn.responseCode != HttpURLConnection.HTTP_OK) return null
             val resp = conn.inputStream.readBytes().toString(Charsets.UTF_8)
-            val parsed = json.decodeFromString(TranscriptionResponse.serializer(), resp)
+            val parsed = json.decodeFromString<TranscriptionResponse>(resp)
             parsed.text
         } catch(_: Exception) {
             null
