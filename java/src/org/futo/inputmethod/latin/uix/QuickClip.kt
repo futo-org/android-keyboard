@@ -219,18 +219,28 @@ object QuickClip {
         val clipboardManager =
             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        val clip = clipboardManager.primaryClip
-        if(clip == null) return null
+        val clip = try {
+            clipboardManager.primaryClip
+        } catch (e: SecurityException) {
+            // Access to clipboard may be restricted in incognito contexts
+            return null
+        } ?: return null
 
-        val firstItem = clip.getItemAt(0)
-        if(firstItem == null) return null
+        val firstItem = try {
+            clip.getItemAt(0)
+        } catch (e: SecurityException) {
+            return null
+        } ?: return null
 
         if(cachedPreviousItem == firstItem) return cachedPreviousState?.let {
             if(it.validUntil < System.currentTimeMillis()) it else null
         }
 
-        val description = clip.description
-        if(description == null) return null
+        val description = try {
+            clip.description
+        } catch (e: SecurityException) {
+            return null
+        } ?: return null
 
         val timestamp = description.timestamp
 
