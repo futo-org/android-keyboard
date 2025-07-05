@@ -84,6 +84,11 @@
     <string name="action_clipboard_manager_enable_clipboard_history_button">Enable Clipboard History</string>
     <!-- This message is shown when we're typing in a text field does not support image insertion ("app" refers to the external app that is providing the text field) -->
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
+
+    <string name="action_ai_reply_title">AI Reply</string>
+    <string name="ai_reply_generate">Generate Reply</string>
+    <string name="ai_reply_insert">Insert</string>
+    <string name="quick_clip_ai_reply">AI Reply</string>
     <string name="action_clipboard_manager_settings_title">Clipboard Manager Settings</string>
     <string name="action_clipboard_manager_settings_hours_to_keep_clips">Hours to keep unpinned clips</string>
     <string name="action_clipboard_manager_settings_maximum_clips">Number of unpinned clips to keep</string>
