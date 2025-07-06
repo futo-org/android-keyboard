@@ -4,6 +4,11 @@ The goal is to make a good modern keyboard that stays offline and doesn't spy on
 
 Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads and more information.
 
+## Features
+
+- Offline-first keyboard with privacy-focused design.
+- New settings search button is located at the bottom of the settings screen with an animated border for easier discovery.
+
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
 ## Issue tracking and PRs

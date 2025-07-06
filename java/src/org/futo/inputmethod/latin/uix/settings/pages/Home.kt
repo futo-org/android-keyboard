@@ -10,13 +10,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateColor
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.border
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberInfiniteTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -164,21 +172,13 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
                 .verticalScroll(scrollState)
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-            Row(Modifier.padding(16.dp)) {
-                Text(stringResource(R.string.english_ime_settings), style = Typography.Heading.Medium, modifier = Modifier
-                    .align(CenterVertically)
-                    .weight(1.0f))
-
-                Spacer(Modifier.width(4.dp))
-
-                IconButton(onClick = {
-                    navController.navigate("search")
-                }) {
-                    Icon(Icons.Default.Search, contentDescription = stringResource(
-                        R.string.settings_search_menu_title
-                    ))
-                }
-            }
+            Text(
+                stringResource(R.string.english_ime_settings),
+                style = Typography.Heading.Medium,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth()
+            )
 
             ConditionalMigrateUpdateNotice()
             ConditionalUnpaidNoticeWithNav(navController)
@@ -186,6 +186,33 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             HomeScreenLite.render(showTitle = false)
 
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            val infiniteTransition = rememberInfiniteTransition()
+            val borderColor by infiniteTransition.animateColor(
+                initialValue = MaterialTheme.colorScheme.primary,
+                targetValue = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 1000),
+                    repeatMode = RepeatMode.Reverse
+                )
+            )
+
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .border(2.dp, borderColor, RoundedCornerShape(8.dp))
+                    .clickable { navController.navigate("search") }
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = CenterVertically
+            ) {
+                Icon(Icons.Default.Search, contentDescription = stringResource(
+                    R.string.settings_search_menu_title
+                ))
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.settings_search_menu_title), style = Typography.Heading.Medium)
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
             if(isPaid || LocalInspectionMode.current) {
