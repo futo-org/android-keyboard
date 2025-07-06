@@ -51,6 +51,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputMenu
 import org.futo.inputmethod.latin.uix.settings.pages.GroqConfigScreen
+import org.futo.inputmethod.latin.uix.settings.pages.AiReplyMenu
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
 import org.futo.inputmethod.latin.uix.urlDecode
 import org.futo.inputmethod.latin.uix.urlEncode
@@ -74,6 +75,7 @@ val SettingsMenus = listOf(
     PredictiveTextMenu,
     BlacklistScreenLite,
     VoiceInputMenu,
+    AiReplyMenu,
     ActionsScreen,
     HelpMenu,
     MiscMenu,

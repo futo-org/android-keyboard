@@ -7,7 +7,8 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 ## Features
 
 - Offline-first keyboard with privacy-focused design.
-- New settings search button at the bottom of the settings screen uses an infinite animated border powered by Compose for easier discovery.
+- New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
+- AI Reply menu for configuring Groq-powered quick replies.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
@@ -39,4 +40,11 @@ You can then open the project in Android Studio and build it that way, or use gr
 ```
 ./gradlew assembleUnstableDebug
 ./gradlew assembleStableRelease
+```
+
+Make sure Gradle can locate your Android SDK. Either export `ANDROID_HOME`
+or create a `local.properties` file with:
+
+```
+sdk.dir=/path/to/android-sdk
 ```
