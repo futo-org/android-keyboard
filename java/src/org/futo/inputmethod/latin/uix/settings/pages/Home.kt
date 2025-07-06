@@ -15,9 +15,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateColor
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.foundation.border
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -189,14 +189,15 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             Spacer(modifier = Modifier.height(16.dp))
 
             val infiniteTransition = rememberInfiniteTransition()
-            val borderColor by infiniteTransition.animateColor(
-                initialValue = MaterialTheme.colorScheme.primary,
-                targetValue = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+            val alpha by infiniteTransition.animateFloat(
+                initialValue = 1f,
+                targetValue = 0.2f,
                 animationSpec = infiniteRepeatable(
                     animation = tween(durationMillis = 1000),
                     repeatMode = RepeatMode.Reverse
                 )
             )
+            val borderColor = MaterialTheme.colorScheme.primary.copy(alpha = alpha)
 
             Row(
                 modifier = Modifier
