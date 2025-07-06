@@ -7,7 +7,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 ## Features
 
 - Offline-first keyboard with privacy-focused design.
-- New settings search button is located at the bottom of the settings screen with an animated border for easier discovery.
+- New settings search button at the bottom of the settings screen uses an infinite animated border powered by Compose for easier discovery.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
