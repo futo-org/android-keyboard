@@ -52,6 +52,10 @@ After installing, accept the licenses with:
 ```
 yes | sdkmanager --licenses
 ```
+You will also need the Android NDK for native builds:
+```
+sdkmanager "ndk;25.1.8937393"
+```
 
 Make sure Gradle can locate your Android SDK. Either export `ANDROID_HOME`, for example:
 ```
