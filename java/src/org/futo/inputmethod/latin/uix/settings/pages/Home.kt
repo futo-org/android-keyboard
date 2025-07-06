@@ -100,6 +100,13 @@ val HomeScreenLite = UserSettingsMenu(
         },
 
         userSettingNavigationItem(
+            title = R.string.ai_reply_settings_title,
+            style = NavigationItemStyle.HomeSecondary,
+            navigateTo = AiReplyMenu.navPath,
+            icon = R.drawable.text_prediction
+        ),
+
+        userSettingNavigationItem(
             title = R.string.action_settings_title,
             style = NavigationItemStyle.HomeSecondary,
             navigateTo = "actions",

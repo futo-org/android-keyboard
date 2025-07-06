@@ -8,6 +8,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 
 - Offline-first keyboard with privacy-focused design.
 - New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
+- AI Reply menu for configuring Groq-powered quick replies.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 

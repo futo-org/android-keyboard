@@ -17,10 +17,9 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.GROQ_API_KEY
-import org.futo.inputmethod.latin.uix.GROQ_MODEL
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.getSetting
-import org.futo.voiceinput.shared.groq.GroqChatApi
+import org.futo.voiceinput.shared.groq.stream
 
 private const val DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant that writes concise replies."
 
@@ -40,8 +39,10 @@ private class AiReplyWindow(
             reply.value?.let { Text(it) }
             Button(onClick = {
                 val apiKey = context.getSetting(GROQ_API_KEY)
-                val model = context.getSetting(GROQ_MODEL)
-                reply.value = GroqChatApi.chat(DEFAULT_SYSTEM_PROMPT, text, apiKey, model)
+                reply.value = ""
+                stream(apiKey, text) { token ->
+                    reply.value = (reply.value ?: "") + token
+                }
             }, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.ai_reply_generate))
             }

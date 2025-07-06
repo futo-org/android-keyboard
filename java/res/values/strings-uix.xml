@@ -507,6 +507,12 @@
     <string name="voice_input_settings_groq_config">Groq API Settings</string>
     <string name="voice_input_settings_groq_config_subtitle">Configure Groq API key and test</string>
 
+    <!-- AI Reply menu -->
+    <string name="ai_reply_settings_title">AI Reply</string>
+    <string name="ai_reply_enable">Enable AI Reply</string>
+    <string name="ai_reply_groq_config">Groq API Settings</string>
+    <string name="ai_reply_groq_config_subtitle">Configure Groq API key and model</string>
+
     <string name="groq_settings_title">Groq API</string>
     <string name="groq_settings_api_key">Groq API key</string>
     <string name="groq_settings_model">Groq model</string>
