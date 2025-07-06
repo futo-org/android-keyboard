@@ -10,6 +10,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - Settings search bar integrated into the settings screen with a helpful "Settings search or try typing here." placeholder.
 - AMOLED friendly dark themes with purple, red, blue, and green accents for battery savings.
 - AI Reply menu for configuring Groq-powered quick replies.
+- Voice recognition output is normalized so repeated words are removed.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
