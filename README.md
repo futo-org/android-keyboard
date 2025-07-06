@@ -40,3 +40,10 @@ You can then open the project in Android Studio and build it that way, or use gr
 ./gradlew assembleUnstableDebug
 ./gradlew assembleStableRelease
 ```
+
+Make sure Gradle can locate your Android SDK. Either export `ANDROID_HOME`
+or create a `local.properties` file with:
+
+```
+sdk.dir=/path/to/android-sdk
+```
