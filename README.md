@@ -8,7 +8,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 
 - Offline-first keyboard with privacy-focused design.
 - Settings search bar integrated into the settings screen with a helpful "Settings search or try typing here." placeholder.
-- AMOLED friendly dark themes with multiple accent colors for battery savings.
+- AMOLED friendly dark themes with purple, red, blue, and green accents for battery savings.
 - AI Reply menu for configuring Groq-powered quick replies.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
@@ -52,3 +52,5 @@ or create a `local.properties` file with:
 ```
 sdk.dir=/path/to/android-sdk
 ```
+
+When running GitHub Actions workflows, use the latest `v4` releases of the standard actions such as `actions/upload-artifact@v4` to avoid deprecation errors.
