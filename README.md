@@ -43,6 +43,15 @@ You can then open the project in Android Studio and build it that way, or use gr
 ./gradlew assembleStableRelease
 ```
 
+Install the Android SDK if it isn't already present. On Ubuntu you can run:
+```
+sudo apt-get install android-sdk
+```
+After installing, accept the licenses with:
+```
+yes | sdkmanager --licenses
+```
+
 Make sure Gradle can locate your Android SDK. Either export `ANDROID_HOME`, for example:
 ```
 export ANDROID_HOME=/usr/lib/android-sdk
