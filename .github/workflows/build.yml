@@ -24,7 +24,7 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Build APK
-        run: ./gradlew assembleRelease --debug
+        run: ./gradlew assembleRelease
 
       - name: List APK outputs
         run: ls -lhR build/outputs/apk
