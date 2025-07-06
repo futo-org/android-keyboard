@@ -43,7 +43,10 @@ You can then open the project in Android Studio and build it that way, or use gr
 ./gradlew assembleStableRelease
 ```
 
-Make sure Gradle can locate your Android SDK. Either export `ANDROID_HOME`
+Make sure Gradle can locate your Android SDK. Either export `ANDROID_HOME`, for example:
+```
+export ANDROID_HOME=/usr/lib/android-sdk
+```
 or create a `local.properties` file with:
 
 ```
