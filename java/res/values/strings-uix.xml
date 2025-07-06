@@ -145,6 +145,9 @@
     <string name="theme_default_dark">Dark Mode</string>
     <string name="theme_default_light">Light Mode</string>
     <string name="theme_amoled_dark">AMOLED Dark Purple</string>
+    <string name="theme_amoled_dark_red">AMOLED Dark Red</string>
+    <string name="theme_amoled_dark_blue">AMOLED Dark Blue</string>
+    <string name="theme_amoled_dark_green">AMOLED Dark Green</string>
     <string name="theme_classic_dark">AOSP Material Dark</string>
     <string name="theme_classic_light">AOSP Material Light</string>
     <string name="theme_vi">FUTO VI Theme</string>
@@ -285,6 +288,7 @@
     <string name="settings_search_option_exists_but_disabled">Option is disabled as it depends on another option, tap to visit menu: %1$s</string>
     <string name="settings_search_menu_title">Search</string>
     <string name="settings_search_enter_your_search">Enter a search term…</string>
+    <string name="settings_search_or_try_typing_here">Settings search or try typing here.</string>
     <string name="settings_search_no_options_found">No results found</string>
     <string name="misc_settings_title">Miscellaneous</string>
 

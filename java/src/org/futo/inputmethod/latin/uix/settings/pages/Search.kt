@@ -160,6 +160,15 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                         modifier = Modifier.weight(1.0f).focusRequester(focusRequester),
                         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                         textStyle = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface),
+                        decorationBox = { innerTextField ->
+                            if (textFieldValue.value.text.isEmpty()) {
+                                Text(
+                                    text = stringResource(R.string.settings_search_or_try_typing_here),
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                                )
+                            }
+                            innerTextField()
+                        }
                     )
                 }
             }
