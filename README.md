@@ -4,6 +4,12 @@ The goal is to make a good modern keyboard that stays offline and doesn't spy on
 
 Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads and more information.
 
+## Features
+
+- Offline-first keyboard with privacy-focused design.
+- New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
+- AI Reply menu for configuring Groq-powered quick replies.
+
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
 ## Issue tracking and PRs
@@ -34,4 +40,11 @@ You can then open the project in Android Studio and build it that way, or use gr
 ```
 ./gradlew assembleUnstableDebug
 ./gradlew assembleStableRelease
+```
+
+Make sure Gradle can locate your Android SDK. Either export `ANDROID_HOME`
+or create a `local.properties` file with:
+
+```
+sdk.dir=/path/to/android-sdk
 ```
