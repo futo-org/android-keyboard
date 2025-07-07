@@ -87,5 +87,7 @@ To avoid Play Protect warnings when installing the APK, sign the release build w
     -Pandroid.injected.signing.key.alias=keyAlias \
     -Pandroid.injected.signing.key.password=******
 ```
+You can also provide these values in CI by setting the `KEYSTORE_*` secrets and
+running `setUpPropertiesCI.sh`.
 
 When running GitHub Actions workflows, use the latest `v4` releases of the standard actions such as `actions/upload-artifact@v4` to avoid deprecation errors.
