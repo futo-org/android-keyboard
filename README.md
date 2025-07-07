@@ -77,4 +77,13 @@ or create a `local.properties` file with:
 sdk.dir=/path/to/android-sdk
 ```
 
+To avoid Play Protect warnings when installing the APK, sign the release build with your own keystore:
+```
+./gradlew assemblePlaystoreRelease \
+    -Pandroid.injected.signing.store.file=/path/to/keystore.jks \
+    -Pandroid.injected.signing.store.password=****** \
+    -Pandroid.injected.signing.key.alias=keyAlias \
+    -Pandroid.injected.signing.key.password=******
+```
+
 When running GitHub Actions workflows, use the latest `v4` releases of the standard actions such as `actions/upload-artifact@v4` to avoid deprecation errors.
