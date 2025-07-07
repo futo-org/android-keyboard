@@ -47,9 +47,9 @@ private class AiReplyWindow(
                 val apiKey = context.getSetting(GROQ_API_KEY)
                 coroutineScope.launch(Dispatchers.IO) {
                     try {
-                        reply.value = ""
+                        withContext(Dispatchers.Main) { reply.value = "" }
                         stream(apiKey, text) { token ->
-                            withContext(Dispatchers.Main) {
+                            coroutineScope.launch(Dispatchers.Main) {
                                 reply.value = (reply.value ?: "") + token
                             }
                         }
