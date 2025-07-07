@@ -120,9 +120,6 @@ class AudioRecognizer(
     private var modelJob: Job? = null
     private var loadModelJob: Job? = null
 
-    private val firstPartSamples = 16000 * 30
-    private var firstPartJob: kotlinx.coroutines.Deferred<String>? = null
-
     private var focusRequest: AudioFocusRequest? = null
 
     private var communicationDevice = "unknown"
@@ -235,9 +232,6 @@ class AudioRecognizer(
         isRecording = false
 
         modelRunner.cancelAll()
-
-        firstPartJob?.cancel()
-        firstPartJob = null
 
         unfocusAudio()
 
@@ -387,13 +381,6 @@ class AudioRecognizer(
             }
 
             floatSamples.put(samples.sliceArray(0 until nRead).map { it.toFloat() / Short.MAX_VALUE.toFloat() }.toFloatArray())
-
-            if(firstPartJob == null && floatSamples.position() >= firstPartSamples) {
-                val firstArray = floatSamples.array().sliceArray(0 until firstPartSamples)
-                firstPartJob = lifecycleScope.async(Dispatchers.Default) {
-                    runModelPart(firstArray)
-                }
-            }
             if(floatSamples.position() >= 16000 * 60) {
                 yield()
                 withContext(Dispatchers.Main) { finish() }
@@ -569,46 +556,26 @@ class AudioRecognizer(
                 it.join()
             }
         }
+
         val floatArray = floatSamples.array().sliceArray(0 until floatSamples.position())
-
-        val firstResult = firstPartJob?.await()
-
-        val startSecond = if(firstResult != null) firstPartSamples else 0
-        val secondArray = floatArray.sliceArray(startSecond until floatArray.size)
-
-        val secondResult = runModelPart(secondArray)
-
-        val finalText = listOfNotNull(firstResult, secondResult).joinToString(" ").trim()
-
-        yield()
-        lifecycleScope.launch {
-            withContext(Dispatchers.Main) {
-                yield()
-                listener.finished(finalText)
-            }
-        }
-    }
-
-    private suspend fun runModelPart(audio: FloatArray): String {
-        if(audio.isEmpty()) return ""
 
         val remoteJob = if(settings.groqApiKey.isNotBlank()) {
             lifecycleScope.async(Dispatchers.IO) {
-                org.futo.voiceinput.shared.groq.GroqWhisperApi.transcribe(audio, settings.groqApiKey, settings.groqModel)
+                org.futo.voiceinput.shared.groq.GroqWhisperApi.transcribe(floatArray, settings.groqApiKey, settings.groqModel)
             }
         } else null
 
         yield()
         val outputText = try {
-            modelRunner.run(
-                audio,
+             modelRunner.run(
+                floatArray,
                 settings.modelRunConfiguration,
                 settings.decodingConfiguration,
                 runnerCallback
             ).trim()
-        } catch(e: InferenceCancelledException) {
+        }catch(e: InferenceCancelledException) {
             yield()
-            return ""
+            return
         }
 
         val remoteResult = remoteJob?.await()
@@ -619,7 +586,13 @@ class AudioRecognizer(
             else -> outputText
         }
 
-        return normalizeTranscription(text)
+        yield()
+        lifecycleScope.launch {
+            withContext(Dispatchers.Main) {
+                yield()
+                listener.finished(normalizeTranscription(text))
+            }
+        }
     }
 
     private fun onFinishRecording() {

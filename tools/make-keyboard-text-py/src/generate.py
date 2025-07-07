@@ -6,7 +6,7 @@ import glob
 def load_data():
     all_data = []
     for fname in glob.glob("locales/*.json"):
-        with open(fname, "r") as f:
+        with open(fname, "r", encoding='utf-8') as f:
             all_data.append(json.loads(f.read()))
 
     return all_data

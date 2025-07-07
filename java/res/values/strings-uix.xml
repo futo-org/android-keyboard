@@ -89,8 +89,6 @@
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
 
     <string name="action_ai_reply_title">AI Reply</string>
-    <string name="ai_reply_generate">Generate Reply</string>
-    <string name="ai_reply_insert">Insert</string>
     <string name="quick_clip_ai_reply">AI Reply</string>
     <string name="action_clipboard_manager_settings_title">Clipboard Manager Settings</string>
     <string name="action_clipboard_manager_settings_hours_to_keep_clips">Hours to keep unpinned clips</string>
@@ -526,6 +524,13 @@
     <string name="ai_reply_groq_config_subtitle">Configure Groq reply API key and model</string>
     <string name="ai_reply_prompt_title">AI Reply Prompt</string>
     <string name="ai_reply_prompt_placeholder">e.g. Write a short helpful reply</string>
+    <string name="ai_reply_generate">Generate Reply</string>
+    <string name="ai_reply_insert">Insert Reply</string>
+    <string name="ai_reply_title">AI Reply</string>
+    <string name="ai_reply_error">Error: %s</string>
+    <string name="groq_api_key_required">Please set your Groq API key in settings</string>
+    <string name="generating">Generating…</string>
+    <string name="unknown_error">Unknown error occurred</string>
 
     <string name="groq_reply_settings_title">Groq Reply API</string>
     <string name="groq_reply_settings_api_key">Groq reply API key</string>
