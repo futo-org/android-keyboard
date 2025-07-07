@@ -137,7 +137,8 @@ fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
                         uri = null
                     ) {
                         val clipboard = latestClipboardText(manager!!.getContext())
-                        AiReplyActionHolder.pendingText = clipboard ?: txt.text
+                        AiReplyActionHolder.pendingText =
+                            clipboard?.takeIf { it.isNotBlank() } ?: txt.text
                         manager!!.activateAction(AiReplyAction)
                         QuickClip.markQuickClipDismissed()
                         dismiss()

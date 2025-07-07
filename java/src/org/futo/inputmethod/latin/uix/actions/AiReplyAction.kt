@@ -100,8 +100,11 @@ val AiReplyAction = Action(
     simplePressImpl = null,
     windowImpl = { manager, _ ->
         var text = AiReplyActionHolder.pendingText
-        if(text.isBlank()) {
+        if (text.isBlank()) {
             text = latestClipboardText(manager.getContext()) ?: ""
+        }
+        if (text.isBlank()) {
+            text = ""
         }
         AiReplyActionHolder.pendingText = ""
         AiReplyWindow(manager, text)
