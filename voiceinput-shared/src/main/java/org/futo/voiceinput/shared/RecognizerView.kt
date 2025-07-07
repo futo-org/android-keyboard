@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.compose.ui.graphics.Color
 import org.futo.voiceinput.shared.types.AudioRecognizerListener
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
@@ -91,16 +92,27 @@ class RecognizerView(
 
     @Composable
     fun Content() {
+        val spinnerColor = if (settings.groqApiKey.isNotBlank()) {
+            Color(0xFFFFA500)
+        } else {
+            Color(0xFF4CAF50)
+        }
         when (currentViewState.value) {
             CurrentView.LoadingCircle -> {
                 Column {
-                    RecognizeLoadingCircle(text = loadingCircleText.value)
+                    RecognizeLoadingCircle(
+                        text = loadingCircleText.value,
+                        spinnerColor = spinnerColor
+                    )
                 }
             }
 
             CurrentView.PartialDecodingResult -> {
                 Column {
-                    PartialDecodingResult(text = partialDecodingText.value)
+                    PartialDecodingResult(
+                        text = partialDecodingText.value,
+                        spinnerColor = spinnerColor
+                    )
                 }
             }
 

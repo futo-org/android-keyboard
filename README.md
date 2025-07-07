@@ -20,6 +20,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - Voice input respects the keyboard's caps lock state.
 - Long voice recordings are transcribed in 30 second chunks so earlier audio isn't overwritten.
 - Groq Voice API settings under Voice Input show only Whisper models.
+- The voice input spinner turns orange when using Groq and green for local recognition.
 - New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
 - AI Reply menu for configuring Groq-powered quick replies.
 - AI reply generation now streams responses using coroutines for smoother updates.
