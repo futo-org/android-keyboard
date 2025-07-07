@@ -19,7 +19,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.SettingTextField
 import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.voiceinput.shared.groq.GroqWhisperApi
+import org.futo.voiceinput.shared.groq.GroqChatApi
 
 @Composable
 fun GroqConfigScreen(navController: NavHostController = rememberNavController()) {
@@ -29,13 +29,13 @@ fun GroqConfigScreen(navController: NavHostController = rememberNavController())
     val modelItem = useDataStore(GROQ_MODEL)
     val testStatus = remember { mutableStateOf("") }
     val modelOptions = remember {
-        mutableStateOf(listOf("whisper-large-v3", "whisper-large-v3-en", "whisper-large-v3-turbo"))
+        mutableStateOf(listOf("llama-3.3-70b-versatile", "llama-3.1-8b-instant"))
     }
 
     LaunchedEffect(apiKeyItem.value) {
         if(apiKeyItem.value.isNotBlank()) {
             val remote = withContext(Dispatchers.IO) {
-                GroqWhisperApi.availableModels(apiKeyItem.value)
+                GroqChatApi.availableModels(apiKeyItem.value)
             }
             if(!remote.isNullOrEmpty()) {
                 modelOptions.value = remote
@@ -71,7 +71,7 @@ fun GroqConfigScreen(navController: NavHostController = rememberNavController())
                 lifecycleOwner.lifecycleScope.launch {
                     testStatus.value = testing
                     val success = withContext(Dispatchers.IO) {
-                        GroqWhisperApi.test(apiKeyItem.value)
+                        GroqChatApi.test(apiKeyItem.value)
                     }
                     testStatus.value = if(success) successText else failureText
                 }

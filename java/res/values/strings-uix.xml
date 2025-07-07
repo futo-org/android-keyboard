@@ -84,6 +84,11 @@
     <string name="action_clipboard_manager_enable_clipboard_history_button">Enable Clipboard History</string>
     <!-- This message is shown when we're typing in a text field does not support image insertion ("app" refers to the external app that is providing the text field) -->
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
+
+    <string name="action_ai_reply_title">AI Reply</string>
+    <string name="ai_reply_generate">Generate Reply</string>
+    <string name="ai_reply_insert">Insert</string>
+    <string name="quick_clip_ai_reply">AI Reply</string>
     <string name="action_clipboard_manager_settings_title">Clipboard Manager Settings</string>
     <string name="action_clipboard_manager_settings_hours_to_keep_clips">Hours to keep unpinned clips</string>
     <string name="action_clipboard_manager_settings_maximum_clips">Number of unpinned clips to keep</string>
@@ -140,6 +145,9 @@
     <string name="theme_default_dark">Dark Mode</string>
     <string name="theme_default_light">Light Mode</string>
     <string name="theme_amoled_dark">AMOLED Dark Purple</string>
+    <string name="theme_amoled_dark_red">AMOLED Dark Red</string>
+    <string name="theme_amoled_dark_blue">AMOLED Dark Blue</string>
+    <string name="theme_amoled_dark_green">AMOLED Dark Green</string>
     <string name="theme_classic_dark">AOSP Material Dark</string>
     <string name="theme_classic_light">AOSP Material Light</string>
     <string name="theme_vi">FUTO VI Theme</string>
@@ -280,6 +288,7 @@
     <string name="settings_search_option_exists_but_disabled">Option is disabled as it depends on another option, tap to visit menu: %1$s</string>
     <string name="settings_search_menu_title">Search</string>
     <string name="settings_search_enter_your_search">Enter a search term…</string>
+    <string name="settings_search_or_try_typing_here">Settings search or try typing here.</string>
     <string name="settings_search_no_options_found">No results found</string>
     <string name="misc_settings_title">Miscellaneous</string>
 
@@ -501,6 +510,12 @@
     <string name="voice_input_settings_use_groq">Use Groq Whisper</string>
     <string name="voice_input_settings_groq_config">Groq API Settings</string>
     <string name="voice_input_settings_groq_config_subtitle">Configure Groq API key and test</string>
+
+    <!-- AI Reply menu -->
+    <string name="ai_reply_settings_title">AI Reply</string>
+    <string name="ai_reply_enable">Enable AI Reply</string>
+    <string name="ai_reply_groq_config">Groq API Settings</string>
+    <string name="ai_reply_groq_config_subtitle">Configure Groq API key and model</string>
 
     <string name="groq_settings_title">Groq API</string>
     <string name="groq_settings_api_key">Groq API key</string>

@@ -43,6 +43,7 @@ import org.futo.voiceinput.shared.whisper.ModelManager
 import org.futo.voiceinput.shared.whisper.MultiModelRunConfiguration
 import org.futo.voiceinput.shared.whisper.MultiModelRunner
 import org.futo.voiceinput.shared.whisper.isBlankResult
+import org.futo.voiceinput.shared.util.normalizeTranscription
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import kotlin.math.min
@@ -544,7 +545,7 @@ class AudioRecognizer(
 
         override fun partialResult(string: String) {
             if(isBlankResult(string)) return
-            listener.partialResult(string)
+            listener.partialResult(normalizeTranscription(string))
         }
     }
 
@@ -589,7 +590,7 @@ class AudioRecognizer(
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
                 yield()
-                listener.finished(text)
+                listener.finished(normalizeTranscription(text))
             }
         }
     }

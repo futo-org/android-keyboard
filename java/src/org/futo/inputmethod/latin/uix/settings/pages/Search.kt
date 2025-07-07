@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -137,7 +138,7 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
                     .padding(8.dp)
-                    .height(48.dp)
+                    .defaultMinSize(minHeight = 48.dp)
                     .fillMaxWidth()
             ) {
                 Row(
@@ -160,6 +161,15 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                         modifier = Modifier.weight(1.0f).focusRequester(focusRequester),
                         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                         textStyle = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface),
+                        decorationBox = { innerTextField ->
+                            if (textFieldValue.value.text.isEmpty()) {
+                                Text(
+                                    text = stringResource(R.string.settings_search_or_try_typing_here),
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                                )
+                            }
+                            innerTextField()
+                        }
                     )
                 }
             }

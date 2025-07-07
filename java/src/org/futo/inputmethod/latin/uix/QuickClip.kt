@@ -35,6 +35,10 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.uix.actions.AiReplyAction
+import org.futo.inputmethod.latin.uix.actions.AiReplyActionHolder
+import org.futo.inputmethod.latin.uix.ENABLE_AI_REPLY
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 
 enum class QuickClipKind {
     FullString,
@@ -119,8 +123,26 @@ fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
     } else {
         null
     }
+    val enableAi = useDataStoreValue(ENABLE_AI_REPLY)
 
     LazyRow(Modifier.weight(1.0f)) {
+        state.texts.firstOrNull()?.let { txt ->
+            item {
+                if(enableAi) {
+                    QuickClipPill(
+                        icon = painterResource(R.drawable.text_prediction),
+                        contentDescription = stringResource(R.string.quick_clip_ai_reply),
+                        text = stringResource(R.string.quick_clip_ai_reply),
+                        uri = null
+                    ) {
+                        AiReplyActionHolder.pendingText = txt.text
+                        manager!!.activateAction(AiReplyAction)
+                        QuickClip.markQuickClipDismissed()
+                        dismiss()
+                    }
+                }
+            }
+        }
         state.image?.let { uri ->
             item {
                 QuickClipPill(
