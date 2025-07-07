@@ -11,6 +11,9 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - AMOLED friendly dark themes with purple, red, blue, and green accents for battery savings.
 - AI Reply menu for configuring Groq-powered quick replies using chat completion models fetched from Groq.
 - Voice recognition output is normalized so repeated words are removed.
+- New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
+- AI Reply menu for configuring Groq-powered quick replies.
+- AI reply generation now streams responses using coroutines for smoother updates.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
