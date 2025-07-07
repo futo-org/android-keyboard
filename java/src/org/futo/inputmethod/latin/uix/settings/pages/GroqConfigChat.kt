@@ -11,8 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.GROQ_API_KEY
-import org.futo.inputmethod.latin.uix.GROQ_CHAT_MODEL
+import org.futo.inputmethod.latin.uix.GROQ_REPLY_API_KEY
+import org.futo.inputmethod.latin.uix.GROQ_REPLY_MODEL
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.SettingItem
@@ -25,8 +25,8 @@ import org.futo.voiceinput.shared.groq.GroqChatApi
 fun GroqChatConfigScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val apiKeyItem = useDataStore(GROQ_API_KEY)
-    val modelItem = useDataStore(GROQ_CHAT_MODEL)
+    val apiKeyItem = useDataStore(GROQ_REPLY_API_KEY)
+    val modelItem = useDataStore(GROQ_REPLY_MODEL)
     val testStatus = remember { mutableStateOf("") }
     val modelOptions = remember {
         mutableStateOf(listOf("llama-3.3-70b-versatile", "llama-3.1-8b-instant"))
@@ -44,16 +44,16 @@ fun GroqChatConfigScreen(navController: NavHostController = rememberNavControlle
     }
 
     ScrollableList {
-        ScreenTitle(stringResource(R.string.groq_settings_title), showBack = true, navController)
+        ScreenTitle(stringResource(R.string.groq_reply_settings_title), showBack = true, navController)
 
         SettingTextField(
-            title = stringResource(R.string.groq_settings_api_key),
+            title = stringResource(R.string.groq_reply_settings_api_key),
             placeholder = "sk-...",
-            field = GROQ_API_KEY
+            field = GROQ_REPLY_API_KEY
         )
 
         DropDownPickerSettingItem(
-            label = stringResource(R.string.groq_settings_model),
+            label = stringResource(R.string.groq_reply_settings_model),
             options = modelOptions.value,
             selection = modelItem.value,
             onSet = { modelItem.setValue(it) },

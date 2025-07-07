@@ -13,8 +13,13 @@ val AI_REPLY_PROMPT = SettingsKey(
     default = "Write a short helpful reply"
 )
 
-val GROQ_CHAT_MODEL = SettingsKey(
-    key = stringPreferencesKey("groq_chat_model"),
+val GROQ_REPLY_API_KEY = SettingsKey(
+    key = stringPreferencesKey("groq_reply_api_key"),
+    default = ""
+)
+
+val GROQ_REPLY_MODEL = SettingsKey(
+    key = stringPreferencesKey("groq_reply_model"),
     default = "llama3-70b-8192"
 )
 

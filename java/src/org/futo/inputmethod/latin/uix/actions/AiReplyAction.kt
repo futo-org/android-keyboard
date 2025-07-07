@@ -21,9 +21,9 @@ import android.widget.Toast
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
-import org.futo.inputmethod.latin.uix.GROQ_API_KEY
+import org.futo.inputmethod.latin.uix.GROQ_REPLY_API_KEY
 import org.futo.inputmethod.latin.uix.AI_REPLY_PROMPT
-import org.futo.inputmethod.latin.uix.GROQ_CHAT_MODEL
+import org.futo.inputmethod.latin.uix.GROQ_REPLY_MODEL
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
@@ -58,8 +58,8 @@ private class AiReplyWindow(
                 modifier = Modifier.fillMaxWidth()
             )
             Button(onClick = {
-                val apiKey = context.getSetting(GROQ_API_KEY)
-                val model = context.getSetting(GROQ_CHAT_MODEL)
+                val apiKey = context.getSetting(GROQ_REPLY_API_KEY)
+                val model = context.getSetting(GROQ_REPLY_MODEL)
                 coroutineScope.launch(Dispatchers.IO) {
                     try {
                         withContext(Dispatchers.Main) { reply.value = "" }

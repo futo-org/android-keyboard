@@ -43,6 +43,10 @@ import org.futo.inputmethod.latin.uix.actions.ClipboardFileName
 import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryManager.Companion.onClipboardImportedFlow
 import org.futo.inputmethod.latin.uix.actions.clipboardFile
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
+import org.futo.inputmethod.latin.uix.GROQ_VOICE_API_KEY
+import org.futo.inputmethod.latin.uix.GROQ_VOICE_MODEL
+import org.futo.inputmethod.latin.uix.GROQ_REPLY_API_KEY
+import org.futo.inputmethod.latin.uix.GROQ_REPLY_MODEL
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.findSettingsActivity
@@ -377,7 +381,20 @@ object SettingsExporter {
                 entry.name == datastoreFileName -> {
                     val prefsData = zipIn.readAllBytesCompat()
                     val prefs = PreferencesSerializer.readFrom(prefsData.inputStream().source().buffer())
-                    context.dataStore.updateData { prefs }
+                    val keysToKeep = setOf(
+                        GROQ_VOICE_API_KEY.key,
+                        GROQ_VOICE_MODEL.key,
+                        GROQ_REPLY_API_KEY.key,
+                        GROQ_REPLY_MODEL.key
+                    )
+                    context.dataStore.updateData { current ->
+                        val newPrefs = prefs.toMutablePreferences()
+                        for (key in keysToKeep) {
+                            val value = current[key]
+                            if (value != null) newPrefs[key] = value
+                        }
+                        newPrefs
+                    }
                 }
 
                 entry.name == sharedPreferencesFileName -> {

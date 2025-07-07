@@ -511,20 +511,23 @@
     <string name="voice_input_settings_start_on_open_subtitle">Begin voice input automatically when the keyboard appears</string>
 
     <string name="voice_input_settings_use_groq">Use Groq Whisper</string>
-    <string name="voice_input_settings_groq_config">Groq API Settings</string>
-    <string name="voice_input_settings_groq_config_subtitle">Configure Groq API key and test</string>
+    <string name="voice_input_settings_groq_config">Groq Voice API Settings</string>
+    <string name="voice_input_settings_groq_config_subtitle">Configure Groq voice API key and test</string>
 
     <!-- AI Reply menu -->
     <string name="ai_reply_settings_title">AI Reply</string>
     <string name="ai_reply_enable">Enable AI Reply</string>
-    <string name="ai_reply_groq_config">Groq API Settings</string>
-    <string name="ai_reply_groq_config_subtitle">Configure Groq API key and model</string>
+    <string name="ai_reply_groq_config">Groq Reply API Settings</string>
+    <string name="ai_reply_groq_config_subtitle">Configure Groq reply API key and model</string>
     <string name="ai_reply_prompt_title">AI Reply Prompt</string>
     <string name="ai_reply_prompt_placeholder">e.g. Write a short helpful reply</string>
 
-    <string name="groq_settings_title">Groq API</string>
-    <string name="groq_settings_api_key">Groq API key</string>
-    <string name="groq_settings_model">Groq model</string>
+    <string name="groq_reply_settings_title">Groq Reply API</string>
+    <string name="groq_reply_settings_api_key">Groq reply API key</string>
+    <string name="groq_reply_settings_model">Groq reply model</string>
+    <string name="groq_voice_settings_title">Groq Voice API</string>
+    <string name="groq_voice_settings_api_key">Groq voice API key</string>
+    <string name="groq_voice_settings_model">Groq voice model</string>
     <string name="groq_settings_test">Test connection</string>
     <string name="groq_settings_testing">Testing...</string>
     <string name="groq_settings_success">Success</string>
