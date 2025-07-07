@@ -12,3 +12,8 @@ val AI_REPLY_PROMPT = SettingsKey(
     key = stringPreferencesKey("ai_reply_prompt"),
     default = "Write a short helpful reply"
 )
+
+val ENABLE_SWITCH_APPS = SettingsKey(
+    key = booleanPreferencesKey("enable_switch_apps"),
+    default = true
+)

@@ -8,6 +8,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 
 - Offline-first keyboard with privacy-focused design.
 - Settings search bar integrated into the settings screen with a helpful "Settings search or try typing here." placeholder. The field grows to fit long queries.
+- Most extra features, such as Quick Switch, can be enabled or disabled from the settings.
 - AMOLED friendly dark themes with purple, red, blue, and green accents for battery savings.
 - AI Reply menu for configuring Groq-powered quick replies using chat completion models fetched from Groq.
 - AI Reply prompt can be customized from the keyboard or settings and the clipboard text is sent to Groq for context.
@@ -16,7 +17,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
 - AI Reply menu for configuring Groq-powered quick replies.
 - AI reply generation now streams responses using coroutines for smoother updates.
-- Quick Switch action uses an accessibility service to jump to your previously used app.
+- Quick Switch can be toggled in settings and uses an accessibility service to jump to your previously used app.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 

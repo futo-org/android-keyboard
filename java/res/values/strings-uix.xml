@@ -10,6 +10,7 @@
     <string name="action_redo_title">Redo</string>
     <string name="action_switch_apps_title">Switch Apps</string>
     <string name="action_switch_apps_enable_service">Enable accessibility service to use Switch Apps</string>
+    <string name="switch_apps_enable">Enable Quick Switch action</string>
     <string name="action_text_editor_title">Text Editor</string>
     <string name="action_debug_title">Debug Info</string>
     <string name="action_more_actions_title">All Actions</string>
