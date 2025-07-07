@@ -7,7 +7,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 ## Features
 
 - Offline-first keyboard with privacy-focused design.
-- Settings search bar integrated into the settings screen with a helpful "Settings search or try typing here." placeholder.
+- Settings search bar integrated into the settings screen with a helpful "Settings search or try typing here." placeholder. The field grows to fit long queries.
 - AMOLED friendly dark themes with purple, red, blue, and green accents for battery savings.
 - AI Reply menu for configuring Groq-powered quick replies.
 - Voice recognition output is normalized so repeated words are removed.

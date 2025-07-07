@@ -137,7 +137,7 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
                     .padding(8.dp)
-                    .height(48.dp)
+                    .defaultMinSize(minHeight = 48.dp)
                     .fillMaxWidth()
             ) {
                 Row(
