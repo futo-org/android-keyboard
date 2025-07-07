@@ -9,6 +9,10 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.extendedDarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 
+private fun safeColor(code: String, fallback: String): Color {
+    return try { Color(parseColor(code)) } catch (_: IllegalArgumentException) { Color(parseColor(fallback)) }
+}
+
 private fun colorsFrom(accent: Color, base: Color) = extendedDarkColorScheme(
     primary = accent,
     onPrimary = Color.Black,
@@ -49,8 +53,10 @@ val CustomTheme = ThemeOption(
     name = R.string.theme_custom,
     available = { true },
     obtainColors = {
-        val accent = Color(parseColor(it.getSetting(CustomAccentColor)))
-        val base = Color(parseColor(it.getSetting(CustomBaseColor)))
+        val accentStr = it.getSetting(CustomAccentColor)
+        val baseStr = it.getSetting(CustomBaseColor)
+        val accent = safeColor(accentStr, CustomAccentColor.default)
+        val base = safeColor(baseStr, CustomBaseColor.default)
         colorsFrom(accent, base)
     }
 )
