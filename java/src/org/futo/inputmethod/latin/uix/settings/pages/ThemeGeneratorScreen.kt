@@ -27,15 +27,15 @@ fun ThemeGeneratorScreen(navController: NavHostController) {
         ScreenTitle(stringResource(R.string.theme_generator_title), showBack = true, navController)
         OutlinedTextField(
             value = accent,
-            onValueChange = setAccent,
+            onValueChange = { setAccent(it) },
             label = { Text(stringResource(R.string.theme_generator_accent)) },
-            modifier = Modifier.fillMaxSize().padding(16.dp, 16.dp, 16.dp, 8.dp)
+            modifier = Modifier.fillMaxWidth().padding(16.dp, 16.dp, 16.dp, 8.dp)
         )
         OutlinedTextField(
             value = base,
-            onValueChange = setBase,
+            onValueChange = { setBase(it) },
             label = { Text(stringResource(R.string.theme_generator_base)) },
-            modifier = Modifier.fillMaxSize().padding(16.dp, 8.dp)
+            modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp)
         )
         Button(onClick = { navController.navigateUp() }, modifier = Modifier.padding(16.dp)) {
             Text(stringResource(R.string.theme_generator_save))
