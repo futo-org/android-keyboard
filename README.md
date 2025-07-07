@@ -15,6 +15,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
   The model picker now lists Llama chat models only.
 - Groq Reply API settings store a separate API key and model for chat completions.
 - AI Reply prompt can be customized from the keyboard or settings and the clipboard text is sent to Groq for context.
+- AI Reply now always uses the most recent clipboard entry when generating a reply.
 - Voice recognition output is normalized so repeated words are removed.
 - Voice input respects the keyboard's caps lock state.
 - Groq Voice API settings under Voice Input show only Whisper models.

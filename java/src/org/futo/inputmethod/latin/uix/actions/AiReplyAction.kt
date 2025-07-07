@@ -30,6 +30,7 @@ import org.futo.inputmethod.latin.uix.settings.useDataStore
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.LaunchedEffect
 import org.futo.voiceinput.shared.groq.stream
+import org.futo.inputmethod.latin.uix.utils.latestClipboardText
 
 private const val DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant that writes concise replies."
 
@@ -98,7 +99,10 @@ val AiReplyAction = Action(
     name = R.string.action_ai_reply_title,
     simplePressImpl = null,
     windowImpl = { manager, _ ->
-        val text = AiReplyActionHolder.pendingText
+        var text = AiReplyActionHolder.pendingText
+        if(text.isBlank()) {
+            text = latestClipboardText(manager.getContext()) ?: ""
+        }
         AiReplyActionHolder.pendingText = ""
         AiReplyWindow(manager, text)
     }
