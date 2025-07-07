@@ -15,6 +15,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
 - AI Reply menu for configuring Groq-powered quick replies.
 - AI reply generation now streams responses using coroutines for smoother updates.
+- Quick Switch action uses an accessibility service to jump to your previously used app.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
