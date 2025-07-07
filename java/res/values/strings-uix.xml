@@ -170,6 +170,11 @@
     <string name="theme_dynamic_system">Dynamic Auto</string>
     <string name="theme_dynamic_dark">Dynamic Dark</string>
     <string name="theme_dynamic_light">Dynamic Light</string>
+    <string name="theme_custom">Custom Theme</string>
+    <string name="theme_generator_title">Theme Generator</string>
+    <string name="theme_generator_accent">Accent color (#RRGGBB)</string>
+    <string name="theme_generator_base">Base color (#RRGGBB)</string>
+    <string name="theme_generator_save">Save Theme</string>
 
     <!-- Auto update strings (note: the auto updater is currently inactive) -->
     <string name="autoupdater_service_title">Update Checking service</string>

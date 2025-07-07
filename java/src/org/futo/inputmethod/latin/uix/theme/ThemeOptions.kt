@@ -27,6 +27,7 @@ import org.futo.inputmethod.latin.uix.theme.presets.Sunflower
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DevTheme
 import org.futo.inputmethod.latin.uix.theme.presets.HighContrastYellow
+import org.futo.inputmethod.latin.uix.theme.presets.CustomTheme
 
 data class ThemeOption(
     val dynamic: Boolean,
@@ -64,7 +65,8 @@ val ThemeOptions = mapOf(
     VoiceInputTheme.key to VoiceInputTheme,
     HotDog.key to HotDog,
     DevTheme.key to DevTheme,
-    HighContrastYellow.key to HighContrastYellow
+    HighContrastYellow.key to HighContrastYellow,
+    CustomTheme.key to CustomTheme
 )
 
 val ThemeOptionKeys = ThemeOptions.keys

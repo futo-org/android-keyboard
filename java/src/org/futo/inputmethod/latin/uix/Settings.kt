@@ -348,6 +348,16 @@ val THEME_KEY = SettingsKey(
     default = ""
 )
 
+val CustomAccentColor = SettingsKey(
+    key = stringPreferencesKey("custom_accent_color"),
+    default = "#B2C8FF"
+)
+
+val CustomBaseColor = SettingsKey(
+    key = stringPreferencesKey("custom_base_color"),
+    default = "#121316"
+)
+
 val USE_SYSTEM_VOICE_INPUT = SettingsKey(
     key = booleanPreferencesKey("useSystemVoiceInput"),
     default = false
