@@ -22,8 +22,12 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.GROQ_API_KEY
+import org.futo.inputmethod.latin.uix.AI_REPLY_PROMPT
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.settings.useDataStore
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.LaunchedEffect
 import org.futo.voiceinput.shared.groq.stream
 
 private const val DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant that writes concise replies."
@@ -39,16 +43,26 @@ private class AiReplyWindow(
     override fun WindowContents(keyboardShown: Boolean) {
         val context = LocalContext.current
         val reply = remember { mutableStateOf<String?>(null) }
+        val promptItem = useDataStore(AI_REPLY_PROMPT)
+        val promptText = remember { mutableStateOf(promptItem.value) }
         val coroutineScope = rememberCoroutineScope()
+        LaunchedEffect(promptText.value) { promptItem.setValue(promptText.value) }
         Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(text)
             reply.value?.let { Text(it) }
+            TextField(
+                value = promptText.value,
+                onValueChange = { promptText.value = it },
+                placeholder = { Text(stringResource(R.string.ai_reply_prompt_placeholder)) },
+                modifier = Modifier.fillMaxWidth()
+            )
             Button(onClick = {
                 val apiKey = context.getSetting(GROQ_API_KEY)
                 coroutineScope.launch(Dispatchers.IO) {
                     try {
                         withContext(Dispatchers.Main) { reply.value = "" }
-                        stream(apiKey, text) { token ->
+                        val systemPrompt = promptText.value.ifBlank { DEFAULT_SYSTEM_PROMPT }
+                        stream(apiKey, systemPrompt, text) { token ->
                             coroutineScope.launch(Dispatchers.Main) {
                                 reply.value = (reply.value ?: "") + token
                             }

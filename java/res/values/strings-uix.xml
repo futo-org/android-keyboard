@@ -516,6 +516,8 @@
     <string name="ai_reply_enable">Enable AI Reply</string>
     <string name="ai_reply_groq_config">Groq API Settings</string>
     <string name="ai_reply_groq_config_subtitle">Configure Groq API key and model</string>
+    <string name="ai_reply_prompt_title">AI Reply Prompt</string>
+    <string name="ai_reply_prompt_placeholder">e.g. Write a short helpful reply</string>
 
     <string name="groq_settings_title">Groq API</string>
     <string name="groq_settings_api_key">Groq API key</string>
