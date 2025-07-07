@@ -12,6 +12,11 @@ object GroqChatApi {
     private val json = Json { ignoreUnknownKeys = true }
 
     @Serializable
+    private data class ModelsResponse(val data: List<Model>)
+    @Serializable
+    private data class Model(val id: String)
+
+    @Serializable
     private data class ChatMessage(val role: String, val content: String)
     @Serializable
     private data class ChatRequest(val model: String, val messages: List<ChatMessage>)
@@ -41,6 +46,49 @@ object GroqChatApi {
             parsed.choices.firstOrNull()?.message?.content
         } catch(e: Exception) {
             DebugLogger.log("Groq chat error: ${e.message}")
+            null
+        }
+    }
+
+    fun test(apiKey: String): Boolean {
+        if(apiKey.isBlank()) return false
+        return try {
+            DebugLogger.log("Groq chat test start")
+            val url = URL("https://api.groq.com/openai/v1/models")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "GET"
+            conn.setRequestProperty("Authorization", "Bearer $apiKey")
+            conn.connectTimeout = 5000
+            conn.readTimeout = 5000
+            conn.inputStream.use { it.readBytes() }
+            val ok = conn.responseCode == HttpURLConnection.HTTP_OK
+            DebugLogger.log("Groq chat test result code=${conn.responseCode}")
+            ok
+        } catch(e: Exception) {
+            DebugLogger.log("Groq chat test error: ${e.message}")
+            false
+        }
+    }
+
+    fun availableModels(apiKey: String): List<String>? {
+        if(apiKey.isBlank()) return null
+        return try {
+            DebugLogger.log("Groq chat models fetch")
+            val url = URL("https://api.groq.com/openai/v1/models")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "GET"
+            conn.setRequestProperty("Authorization", "Bearer $apiKey")
+            conn.connectTimeout = 5000
+            conn.readTimeout = 5000
+            val resp = conn.inputStream.readBytes().toString(Charsets.UTF_8)
+            if(conn.responseCode != HttpURLConnection.HTTP_OK) {
+                DebugLogger.log("Groq chat models failed code=${conn.responseCode}")
+                return null
+            }
+            val parsed = json.decodeFromString<ModelsResponse>(resp)
+            parsed.data.map { it.id }.filter { !it.startsWith("whisper-") }
+        } catch(e: Exception) {
+            DebugLogger.log("Groq chat models error: ${e.message}")
             null
         }
     }

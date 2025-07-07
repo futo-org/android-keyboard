@@ -241,15 +241,5 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             )
             Spacer(modifier = Modifier.height(32.dp))
         }
-        TextButton(onClick = {
-            val intent = Intent()
-            intent.setClass(context, TextEditPopupActivity::class.java)
-            intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            )
-            context.startActivity(intent)
-        }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.settings_try_typing_here), color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f), modifier = Modifier.fillMaxWidth())
-        }
     }
 }
