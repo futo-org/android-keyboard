@@ -18,6 +18,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - AI Reply now always uses the most recent clipboard entry when generating a reply, even when launched directly from the actions row.
 - Voice recognition output is normalized so repeated words are removed.
 - Voice input respects the keyboard's caps lock state.
+- Long voice recordings are transcribed in 30 second chunks so earlier audio isn't overwritten.
 - Groq Voice API settings under Voice Input show only Whisper models.
 - New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
 - AI Reply menu for configuring Groq-powered quick replies.

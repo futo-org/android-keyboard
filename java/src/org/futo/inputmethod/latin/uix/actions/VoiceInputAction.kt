@@ -263,14 +263,14 @@ private class VoiceInputActionWindow(
     override fun finished(result: String) {
         wasFinished = true
 
-        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext, manager.isShifted())
+        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext, manager.isCapsLocked())
         inputTransaction.commit(sanitized)
         manager.announce(result)
         manager.closeActionWindow()
     }
 
     override fun partialResult(result: String) {
-        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext, manager.isShifted())
+        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext, manager.isCapsLocked())
         inputTransaction.updatePartial(sanitized)
     }
 
