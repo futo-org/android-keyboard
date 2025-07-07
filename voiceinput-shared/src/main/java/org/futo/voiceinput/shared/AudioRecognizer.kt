@@ -43,6 +43,7 @@ import org.futo.voiceinput.shared.whisper.ModelManager
 import org.futo.voiceinput.shared.whisper.MultiModelRunConfiguration
 import org.futo.voiceinput.shared.whisper.MultiModelRunner
 import org.futo.voiceinput.shared.whisper.isBlankResult
+import org.futo.voiceinput.shared.util.normalizeTranscription
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import kotlin.math.min
@@ -89,7 +90,8 @@ data class AudioRecognizerSettings(
     val decodingConfiguration: DecodingConfiguration,
     val recordingConfiguration: RecordingSettings,
     val groqApiKey: String,
-    val groqModel: String
+    val groqModel: String,
+    val useGpuOffload: Boolean
 )
 
 class ModelDoesNotExistException(val models: List<ModelLoader>) : Throwable()
@@ -103,6 +105,10 @@ class AudioRecognizer(
 ) {
     private var isRecording = false
     private var recorder: AudioRecord? = null
+
+    init {
+        modelManager.useGpu = settings.useGpuOffload
+    }
 
     private val modelRunner = MultiModelRunner(modelManager)
 
@@ -375,6 +381,11 @@ class AudioRecognizer(
             }
 
             floatSamples.put(samples.sliceArray(0 until nRead).map { it.toFloat() / Short.MAX_VALUE.toFloat() }.toFloatArray())
+            if(floatSamples.position() >= 16000 * 60) {
+                yield()
+                withContext(Dispatchers.Main) { finish() }
+                return
+            }
 
             // Don't set hasTalked if the start sound may still be playing, otherwise on some
             // devices the rms just explodes and `hasTalked` is always true
@@ -432,6 +443,11 @@ class AudioRecognizer(
                         break
                     }
                     floatSamples.put(samples.sliceArray(0 until nRead2).map { it.toFloat() / Short.MAX_VALUE.toFloat() }.toFloatArray())
+                    if(floatSamples.position() >= 16000 * 60) {
+                        yield()
+                        withContext(Dispatchers.Main) { finish() }
+                        break
+                    }
                 } else {
                     break
                 }
@@ -529,7 +545,7 @@ class AudioRecognizer(
 
         override fun partialResult(string: String) {
             if(isBlankResult(string)) return
-            listener.partialResult(string)
+            listener.partialResult(normalizeTranscription(string))
         }
     }
 
@@ -574,7 +590,7 @@ class AudioRecognizer(
         lifecycleScope.launch {
             withContext(Dispatchers.Main) {
                 yield()
-                listener.finished(text)
+                listener.finished(normalizeTranscription(text))
             }
         }
     }

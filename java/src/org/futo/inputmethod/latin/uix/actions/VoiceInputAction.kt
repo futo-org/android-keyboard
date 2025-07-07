@@ -39,6 +39,7 @@ import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.USE_GROQ_WHISPER
 import org.futo.inputmethod.latin.uix.GROQ_API_KEY
 import org.futo.inputmethod.latin.uix.GROQ_MODEL
+import org.futo.inputmethod.latin.uix.USE_GPU_OFFLOAD
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.utils.ModelOutputSanitizer
@@ -127,6 +128,9 @@ private class VoiceInputActionWindow(
         val useGroq = context.getSetting(USE_GROQ_WHISPER)
         val groqKey = context.getSetting(GROQ_API_KEY)
         val groqModel = context.getSetting(GROQ_MODEL)
+        val useGpu = context.getSetting(USE_GPU_OFFLOAD)
+
+        state.modelManager.useGpu = useGpu
 
         val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
@@ -154,7 +158,8 @@ private class VoiceInputActionWindow(
                 useVADAutoStop = useVAD
             ),
             groqApiKey = if(useGroq) groqKey else "",
-            groqModel = groqModel
+            groqModel = groqModel,
+            useGpuOffload = useGpu
         )
     }
 

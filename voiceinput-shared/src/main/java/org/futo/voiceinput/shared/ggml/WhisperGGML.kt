@@ -19,11 +19,12 @@ class InferenceCancelledException : Exception()
 
 @Keep
 class WhisperGGML(
-    modelBuffer: Buffer
+    modelBuffer: Buffer,
+    useGpu: Boolean
 ) {
     private var handle: Long = 0L
     init {
-        handle = openFromBufferNative(modelBuffer)
+        handle = openFromBufferNative(modelBuffer, useGpu)
 
         if(handle == 0L) {
             throw IllegalArgumentException("The Whisper model could not be loaded from the given buffer")
@@ -84,8 +85,8 @@ class WhisperGGML(
         handle = 0L
     }
 
-    private external fun openNative(path: String): Long
-    private external fun openFromBufferNative(buffer: Buffer): Long
+    private external fun openNative(path: String, useGpu: Boolean): Long
+    private external fun openFromBufferNative(buffer: Buffer, useGpu: Boolean): Long
     private external fun inferNative(handle: Long, samples: FloatArray, prompt: String, languages: Array<String>, bailLanguages: Array<String>, decodingMode: Int, suppressNonSpeechTokens: Boolean): String
     private external fun cancelNative(handle: Long)
     private external fun closeNative(handle: Long)

@@ -35,6 +35,10 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.uix.actions.AiReplyAction
+import org.futo.inputmethod.latin.uix.actions.AiReplyActionHolder
+import org.futo.inputmethod.latin.uix.ENABLE_AI_REPLY
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 
 enum class QuickClipKind {
     FullString,
@@ -119,8 +123,26 @@ fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
     } else {
         null
     }
+    val enableAi = useDataStoreValue(ENABLE_AI_REPLY)
 
     LazyRow(Modifier.weight(1.0f)) {
+        state.texts.firstOrNull()?.let { txt ->
+            item {
+                if(enableAi) {
+                    QuickClipPill(
+                        icon = painterResource(R.drawable.text_prediction),
+                        contentDescription = stringResource(R.string.quick_clip_ai_reply),
+                        text = stringResource(R.string.quick_clip_ai_reply),
+                        uri = null
+                    ) {
+                        AiReplyActionHolder.pendingText = txt.text
+                        manager!!.activateAction(AiReplyAction)
+                        QuickClip.markQuickClipDismissed()
+                        dismiss()
+                    }
+                }
+            }
+        }
         state.image?.let { uri ->
             item {
                 QuickClipPill(
@@ -219,18 +241,28 @@ object QuickClip {
         val clipboardManager =
             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        val clip = clipboardManager.primaryClip
-        if(clip == null) return null
+        val clip = try {
+            clipboardManager.primaryClip
+        } catch (e: SecurityException) {
+            // Access to clipboard may be restricted in incognito contexts
+            return null
+        } ?: return null
 
-        val firstItem = clip.getItemAt(0)
-        if(firstItem == null) return null
+        val firstItem = try {
+            clip.getItemAt(0)
+        } catch (e: SecurityException) {
+            return null
+        } ?: return null
 
         if(cachedPreviousItem == firstItem) return cachedPreviousState?.let {
             if(it.validUntil < System.currentTimeMillis()) it else null
         }
 
-        val description = clip.description
-        if(description == null) return null
+        val description = try {
+            clip.description
+        } catch (e: SecurityException) {
+            return null
+        } ?: return null
 
         val timestamp = description.timestamp
 
