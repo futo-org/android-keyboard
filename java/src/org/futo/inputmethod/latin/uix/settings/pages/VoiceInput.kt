@@ -98,7 +98,7 @@ val VoiceInputMenu = UserSettingsMenu(
             title = R.string.voice_input_settings_groq_config,
             subtitle = R.string.voice_input_settings_groq_config_subtitle,
             style = NavigationItemStyle.Misc,
-            navigateTo = "groq"
+            navigateTo = "groqWhisper"
         ).copy(visibilityCheck = visibilityCheckNotSystemVoiceInput),
 
         userSettingNavigationItem(

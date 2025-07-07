@@ -19,25 +19,23 @@ import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.SettingTextField
 import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.voiceinput.shared.groq.GroqChatApi
+import org.futo.voiceinput.shared.groq.GroqWhisperApi
 
 @Composable
-fun GroqConfigScreen(navController: NavHostController = rememberNavController()) {
+fun GroqWhisperConfigScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val apiKeyItem = useDataStore(GROQ_API_KEY)
     val modelItem = useDataStore(GROQ_MODEL)
     val testStatus = remember { mutableStateOf("") }
-    val modelOptions = remember {
-        mutableStateOf(listOf("llama-3.3-70b-versatile", "llama-3.1-8b-instant"))
-    }
+    val modelOptions = remember { mutableStateOf(listOf("whisper-large-v3")) }
 
     LaunchedEffect(apiKeyItem.value) {
-        if(apiKeyItem.value.isNotBlank()) {
+        if (apiKeyItem.value.isNotBlank()) {
             val remote = withContext(Dispatchers.IO) {
-                GroqChatApi.availableModels(apiKeyItem.value)
+                GroqWhisperApi.availableModels(apiKeyItem.value)
             }
-            if(!remote.isNullOrEmpty()) {
+            if (!remote.isNullOrEmpty()) {
                 modelOptions.value = remote
             }
         }
@@ -63,7 +61,7 @@ fun GroqConfigScreen(navController: NavHostController = rememberNavController())
         val testing = stringResource(R.string.groq_settings_testing)
         val successText = stringResource(R.string.groq_settings_success)
         val failureText = stringResource(R.string.groq_settings_failure)
-        
+
         SettingItem(
             title = stringResource(R.string.groq_settings_test),
             subtitle = testStatus.value,
@@ -71,9 +69,9 @@ fun GroqConfigScreen(navController: NavHostController = rememberNavController())
                 lifecycleOwner.lifecycleScope.launch {
                     testStatus.value = testing
                     val success = withContext(Dispatchers.IO) {
-                        GroqChatApi.test(apiKeyItem.value)
+                        GroqWhisperApi.test(apiKeyItem.value)
                     }
-                    testStatus.value = if(success) successText else failureText
+                    testStatus.value = if (success) successText else failureText
                 }
             }
         ) { }

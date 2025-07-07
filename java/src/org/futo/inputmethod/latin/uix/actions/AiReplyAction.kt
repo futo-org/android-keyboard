@@ -23,6 +23,7 @@ import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.GROQ_API_KEY
 import org.futo.inputmethod.latin.uix.AI_REPLY_PROMPT
+import org.futo.inputmethod.latin.uix.GROQ_CHAT_MODEL
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
@@ -58,11 +59,16 @@ private class AiReplyWindow(
             )
             Button(onClick = {
                 val apiKey = context.getSetting(GROQ_API_KEY)
+                val model = context.getSetting(GROQ_CHAT_MODEL)
                 coroutineScope.launch(Dispatchers.IO) {
                     try {
                         withContext(Dispatchers.Main) { reply.value = "" }
-                        val systemPrompt = promptText.value.ifBlank { DEFAULT_SYSTEM_PROMPT }
-                        stream(apiKey, systemPrompt, text) { token ->
+                        val systemPrompt = DEFAULT_SYSTEM_PROMPT
+                        val userPrompt = buildString {
+                            if (promptText.value.isNotBlank()) append(promptText.value).append('\n')
+                            append(text)
+                        }
+                        stream(apiKey, systemPrompt, userPrompt, model) { token ->
                             coroutineScope.launch(Dispatchers.Main) {
                                 reply.value = (reply.value ?: "") + token
                             }

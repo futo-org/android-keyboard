@@ -50,7 +50,8 @@ import org.futo.inputmethod.latin.uix.settings.pages.SelectLayoutsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputMenu
-import org.futo.inputmethod.latin.uix.settings.pages.GroqConfigScreen
+import org.futo.inputmethod.latin.uix.settings.pages.GroqChatConfigScreen
+import org.futo.inputmethod.latin.uix.settings.pages.GroqWhisperConfigScreen
 import org.futo.inputmethod.latin.uix.settings.pages.AiReplyMenu
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
 import org.futo.inputmethod.latin.uix.urlDecode
@@ -127,7 +128,8 @@ fun SettingsNavigator(
             composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }
             composable("credits") { CreditsScreen(navController) }
             composable("exportingcfg") { ExportingMenu(navController) }
-            composable("groq") { GroqConfigScreen(navController) }
+            composable("groqChat") { GroqChatConfigScreen(navController) }
+            composable("groqWhisper") { GroqWhisperConfigScreen(navController) }
             composable("credits/thirdparty/{idx}") {
                 ProjectInfoView(
                     it.arguments?.getString("idx")?.toIntOrNull() ?: 0,

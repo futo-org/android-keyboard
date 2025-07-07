@@ -11,9 +11,11 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - Most extra features, such as Quick Switch, can be enabled or disabled from the settings.
 - AMOLED friendly dark themes with purple, red, blue, and green accents for battery savings.
 - AI Reply menu for configuring Groq-powered quick replies using chat completion models fetched from Groq.
+  The model picker now lists Llama chat models only.
 - AI Reply prompt can be customized from the keyboard or settings and the clipboard text is sent to Groq for context.
 - Voice recognition output is normalized so repeated words are removed.
 - Voice input respects the keyboard's caps lock state.
+- Groq API settings under Voice Input show only Whisper models.
 - New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
 - AI Reply menu for configuring Groq-powered quick replies.
 - AI reply generation now streams responses using coroutines for smoother updates.
