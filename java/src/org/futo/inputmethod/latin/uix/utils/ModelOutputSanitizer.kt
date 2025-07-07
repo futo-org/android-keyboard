@@ -32,12 +32,11 @@ object ModelOutputSanitizer {
     private val beforeEndsPunctRegex = Regex(".*[.:?!]$")
 
     @JvmStatic
-    fun sanitize(result: String, textContext: TextContext?): String {
-        if (textContext == null) {
-            return result
-        }
-
+    fun sanitize(result: String, textContext: TextContext?, isShifted: Boolean = false): String {
         val locale = RichInputMethodManager.getInstance().getCurrentSubtypeLocale()
+        if (textContext == null) {
+            return if(isShifted) result.uppercase(locale) else result
+        }
 
         var trimmed = result.trim()
         if (trimmed.isEmpty()) {
@@ -85,6 +84,11 @@ object ModelOutputSanitizer {
         val prefix = if (needsLeadingSpace) " " else ""
         val suffix = if (needsTrailingSpace) " " else ""
 
-        return prefix + trimmed + suffix
+        var finalText = trimmed
+        if(isShifted) {
+            finalText = finalText.uppercase(locale)
+        }
+
+        return prefix + finalText + suffix
     }
 }

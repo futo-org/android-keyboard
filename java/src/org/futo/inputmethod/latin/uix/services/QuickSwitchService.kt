@@ -17,8 +17,8 @@ class QuickSwitchService : AccessibilityService() {
     }
 
     fun switchToPreviousApp() {
-        // GLOBAL_ACTION_TOGGLE_RECENTS should quickly switch to the last app
-        performGlobalAction(GLOBAL_ACTION_TOGGLE_RECENTS)
+        // Use recents action to toggle to the previous app
+        performGlobalAction(GLOBAL_ACTION_RECENTS)
     }
 
     companion object {
