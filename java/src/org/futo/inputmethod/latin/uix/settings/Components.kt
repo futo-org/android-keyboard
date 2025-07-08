@@ -609,9 +609,9 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
         icon = {
             icon?.let {
                 val circleColor = when(style) {
-                    NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.primaryContainer
-                    NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.secondaryContainer
-                    NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.tertiaryContainer
+                    NavigationItemStyle.HomePrimary,
+                    NavigationItemStyle.HomeSecondary,
+                    NavigationItemStyle.HomeTertiary -> LocalKeyboardScheme.current.settingsIconBackground
 
                     NavigationItemStyle.MiscNoArrow,
                     NavigationItemStyle.Misc,

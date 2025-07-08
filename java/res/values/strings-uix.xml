@@ -109,6 +109,7 @@
     <string name="action_keyboard_modes_split">Split</string>
     <!-- This string must be super short (below 10 chars if possible). The title for free-form draggable and resizable QWERTYUIOP keyboard mode. -->
     <string name="action_keyboard_modes_floating">Float</string>
+    <string name="action_keyboard_modes_phone">T9</string>
     <!-- This string must be super short (below 10 chars if possible) -->
     <string name="action_keyboard_modes_resizing_reset_size">Reset</string>
     <!-- This string must be super short (below 10 chars if possible) -->

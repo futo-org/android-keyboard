@@ -32,6 +32,7 @@ import org.futo.inputmethod.latin.uix.TutorialMode
 import org.futo.inputmethod.v2keyboard.KeyboardMode
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.common.Constants
 
 @Composable
 private fun RowScope.KeyboardMode(iconRes: Int, checkedIconRes: Int, name: String, sizingCalculator: KeyboardSizingCalculator, mode: KeyboardMode) {
@@ -139,14 +140,33 @@ val KeyboardModeAction = Action(
                             sizeCalculator, KeyboardMode.Split
                         )
 
-                        KeyboardMode(
-                            R.drawable.keyboard_float,
-                            R.drawable.keyboard_float_fill_check,
-                            stringResource(R.string.action_keyboard_modes_floating),
-                            sizeCalculator, KeyboardMode.Floating
-                        )
+                    KeyboardMode(
+                        R.drawable.keyboard_float,
+                        R.drawable.keyboard_float_fill_check,
+                        stringResource(R.string.action_keyboard_modes_floating),
+                        sizeCalculator, KeyboardMode.Floating
+                    )
+
+                    Surface(
+                        color = Color.Transparent,
+                        modifier = Modifier
+                            .weight(1.0f)
+                            .height(54.dp),
+                        onClick = {
+                            manager.keyboardManagerForAction.sendCodePointEvent(Constants.CODE_TO_PHONE_LAYOUT)
+                            manager.closeActionWindow()
+                        },
+                        contentColor = MaterialTheme.colorScheme.onBackground
+                    ) {
+                        Box(Modifier.height(54.dp), contentAlignment = Alignment.Center) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(painterResource(R.drawable.numpad), contentDescription = null)
+                                Text(stringResource(R.string.action_keyboard_modes_phone), style = Typography.SmallMl)
+                            }
+                        }
                     }
                 }
+            }
             }
 
             override fun close(): CloseResult {

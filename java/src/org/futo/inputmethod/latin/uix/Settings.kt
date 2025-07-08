@@ -363,6 +363,31 @@ val CustomIconColor = SettingsKey(
     default = "#B2C8FF"
 )
 
+val CustomIconBgColor = SettingsKey(
+    key = stringPreferencesKey("custom_icon_bg_color"),
+    default = "#121316"
+)
+
+val CustomKeyBgColor = SettingsKey(
+    key = stringPreferencesKey("custom_key_bg_color"),
+    default = "#121316"
+)
+
+val CustomModifierColor = SettingsKey(
+    key = stringPreferencesKey("custom_modifier_color"),
+    default = "#1E1F21"
+)
+
+val CustomBorderColor = SettingsKey(
+    key = stringPreferencesKey("custom_border_color"),
+    default = "#444444"
+)
+
+val CustomBackgroundImage = SettingsKey(
+    key = stringPreferencesKey("custom_background_image"),
+    default = ""
+)
+
 val USE_SYSTEM_VOICE_INPUT = SettingsKey(
     key = booleanPreferencesKey("useSystemVoiceInput"),
     default = false

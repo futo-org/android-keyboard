@@ -30,6 +30,7 @@ data class ExtraColors(
     val onKeyboardContainerPressed: Color,
 
     val settingsIconColor: Color,
+    val settingsIconBackground: Color,
 
     val hintColor: Color?,
     val hintHiVis: Boolean,
@@ -146,6 +147,8 @@ data class KeyboardColorScheme(
         get() = extended.onKeyboardContainerPressed
     val settingsIconColor: Color
         get() = extended.settingsIconColor
+    val settingsIconBackground: Color
+        get() = extended.settingsIconBackground
     val hintColor: Color?
         get() = extended.hintColor
     val hintHiVis: Boolean
@@ -193,6 +196,7 @@ fun extendedDarkColorScheme(
     keyboardContainerPressed: Color = outline.copy(alpha = 0.33f),
     onKeyboardContainerPressed: Color = Color.Transparent,
     settingsIconColor: Color = primary,
+    settingsIconBackground: Color = primaryContainer,
     hintColor: Color? = null,
     hintHiVis: Boolean = false,
     keyboardBackgroundShader: String? = null
@@ -239,6 +243,7 @@ fun extendedDarkColorScheme(
             keyboardContainerPressed   = keyboardContainerPressed,
             onKeyboardContainerPressed = onKeyboardContainerPressed,
             settingsIconColor         = settingsIconColor,
+            settingsIconBackground    = settingsIconBackground,
             hintColor = hintColor,
             hintHiVis = hintHiVis,
             keyboardBackgroundShader = keyboardBackgroundShader,
@@ -285,6 +290,7 @@ fun extendedLightColorScheme(
     keyboardContainerPressed: Color = outline.copy(alpha = 0.33f),
     onKeyboardContainerPressed: Color = Color.Transparent,
     settingsIconColor: Color = primary,
+    settingsIconBackground: Color = primaryContainer,
     hintColor: Color? = null,
     hintHiVis: Boolean = false,
     keyboardBackgroundShader: String? = null
@@ -331,6 +337,7 @@ fun extendedLightColorScheme(
             keyboardContainerPressed   = keyboardContainerPressed,
             onKeyboardContainerPressed = onKeyboardContainerPressed,
             settingsIconColor         = settingsIconColor,
+            settingsIconBackground    = settingsIconBackground,
             hintColor = hintColor,
             hintHiVis = hintHiVis,
             keyboardBackgroundShader = keyboardBackgroundShader
@@ -415,6 +422,7 @@ fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
             keyboardContainerPressed = scheme.outline.copy(alpha = 0.33f),
             onKeyboardContainerPressed = Color.Transparent,
             settingsIconColor = scheme.primary,
+            settingsIconBackground = scheme.primaryContainer,
             hintColor = null,
             hintHiVis = false
         )
@@ -437,6 +445,7 @@ fun wrapLightColorScheme(scheme: ColorScheme): KeyboardColorScheme {
             keyboardContainerPressed = scheme.outline.copy(alpha = 0.33f),
             onKeyboardContainerPressed = Color.Transparent,
             settingsIconColor = scheme.primary,
+            settingsIconBackground = scheme.primaryContainer,
             hintColor = null,
             hintHiVis = false
         )

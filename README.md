@@ -11,7 +11,8 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - Most extra features, such as Quick Switch, can be enabled or disabled from the settings.
 - AMOLED friendly dark themes with purple, red, blue, and green accents for battery savings.
 - Built-in theme generator lets you pick custom accent and base colors.
-- Theme generator now lets you pick accent, base, and icon colors with a color picker.
+- Theme generator now lets you pick accent, base, icon, and key colors with color pickers.
+- Background images can be loaded for custom themes.
 - Theme generator handles invalid color codes without crashing.
 - Settings icons use accent variations so each menu item has a unique color.
 - AI Reply menu for configuring Groq-powered quick replies using chat completion models fetched from Groq.
@@ -29,6 +30,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - AI reply generation now streams responses using coroutines for smoother updates.
 - Quick Switch can be toggled in settings and uses an accessibility service to jump to your previously used app.
 - T9 phone layout accessible via the action key for quick number entry.
+- The T9 layout is also listed in the Keyboard Modes menu for easy access.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
