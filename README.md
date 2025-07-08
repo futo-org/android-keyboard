@@ -12,6 +12,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - AMOLED friendly dark themes with purple, red, blue, and green accents for battery savings.
 - Built-in theme generator lets you pick custom accent and base colors.
 - Theme generator handles invalid color codes without crashing.
+- Settings icons use accent variations so each menu item has a unique color.
 - AI Reply menu for configuring Groq-powered quick replies using chat completion models fetched from Groq.
   The model picker now lists Llama chat models only.
 - Groq Reply API settings store a separate API key and model for chat completions.
