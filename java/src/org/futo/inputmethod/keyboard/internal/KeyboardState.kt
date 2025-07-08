@@ -509,6 +509,14 @@ class KeyboardState(private val switchActions: SwitchActions) {
                 }
             }
 
+            Constants.CODE_TO_PHONE_LAYOUT -> {
+                if(currentLayout.kind == KeyboardLayoutKind.Phone) {
+                    setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+                } else {
+                    setPhoneLayout()
+                }
+            }
+
             Constants.CODE_TO_ALT_0_LAYOUT,
             Constants.CODE_TO_ALT_1_LAYOUT,
             Constants.CODE_TO_ALT_2_LAYOUT -> {

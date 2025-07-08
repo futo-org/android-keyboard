@@ -54,6 +54,8 @@
     <string name="spoken_description_to_alpha">Letters</string>
     <!-- Spoken description for the "To Numbers" keyboard key. -->
     <string name="spoken_description_to_numeric">Digits</string>
+    <!-- Spoken description for the "To T9" keyboard key. -->
+    <string name="spoken_description_to_phone">T9</string>
     <!-- Spoken description for the "Settings" keyboard key. -->
     <string name="spoken_description_settings">Settings</string>
     <!-- Spoken description for the "Tab" keyboard key. -->

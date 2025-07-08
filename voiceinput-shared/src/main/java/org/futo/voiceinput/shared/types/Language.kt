@@ -3,6 +3,8 @@ package org.futo.voiceinput.shared.types
 enum class Language {
     English,
     Chinese,
+    ChineseTraditional,
+    ChineseSimplified,
     German,
     Spanish,
     Russian,
@@ -108,6 +110,8 @@ fun Language.toWhisperString(): String {
     return when (this) {
         Language.English -> "en"
         Language.Chinese -> "zh"
+        Language.ChineseTraditional -> "zh-TW"
+        Language.ChineseSimplified -> "zh-CN"
         Language.German -> "de"
         Language.Spanish -> "es"
         Language.Russian -> "ru"
@@ -214,6 +218,8 @@ fun getLanguageFromWhisperString(str: String): Language? {
     return when (str) {
         "en" -> Language.English
         "zh" -> Language.Chinese
+        "zh-TW" -> Language.ChineseTraditional
+        "zh-CN" -> Language.ChineseSimplified
         "de" -> Language.German
         "es" -> Language.Spanish
         "ru" -> Language.Russian
