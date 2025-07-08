@@ -70,13 +70,13 @@ val USE_GROQ_WHISPER = SettingsKey(
     default = false
 )
 
-val GROQ_API_KEY = SettingsKey(
-    key = stringPreferencesKey("groq_api_key"),
+val GROQ_VOICE_API_KEY = SettingsKey(
+    key = stringPreferencesKey("groq_voice_api_key"),
     default = ""
 )
 
-val GROQ_MODEL = SettingsKey(
-    key = stringPreferencesKey("groq_model"),
+val GROQ_VOICE_MODEL = SettingsKey(
+    key = stringPreferencesKey("groq_voice_model"),
     default = "whisper-large-v3"
 )
 val USE_GPU_OFFLOAD = SettingsKey(

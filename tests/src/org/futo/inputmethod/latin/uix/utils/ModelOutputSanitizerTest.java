@@ -19,7 +19,7 @@ public class ModelOutputSanitizerTest {
     private final InputMethodSubtype mockSubtypeDe = Subtypes.INSTANCE.makeSubtype("de_DE", "qwertz");
 
     private static String sanitize(String input, TextContext context) {
-        return ModelOutputSanitizer.sanitize(input, context);
+        return ModelOutputSanitizer.sanitize(input, context, false);
     }
 
     private static class TestCase {
@@ -146,14 +146,20 @@ public class ModelOutputSanitizerTest {
     @Test
     public void testPreservesInternalSpacing() {
         TextContext context = new TextContext("Before", "after");
-        Assert.assertEquals(" hello   world ", ModelOutputSanitizer.sanitize("hello   world", context));
+        Assert.assertEquals(" hello   world ", ModelOutputSanitizer.sanitize("hello   world", context, false));
     }
 
     @Test
     public void testHandlesEllipsis() {
         Assert.assertEquals(
                 " hello world ",
-                ModelOutputSanitizer.sanitize("Hello world...", new TextContext("Before", "after"))
+                ModelOutputSanitizer.sanitize("Hello world...", new TextContext("Before", "after"), false)
         );
+    }
+
+    @Test
+    public void testCapsLockUppercases() {
+        TextContext context = new TextContext("", "");
+        Assert.assertEquals("HELLO", ModelOutputSanitizer.sanitize("hello", context, true));
     }
 }

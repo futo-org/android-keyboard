@@ -559,32 +559,48 @@ class AudioRecognizer(
 
         val floatArray = floatSamples.array().sliceArray(0 until floatSamples.position())
 
-        val remoteJob = if(settings.groqApiKey.isNotBlank()) {
-            lifecycleScope.async(Dispatchers.IO) {
-                org.futo.voiceinput.shared.groq.GroqWhisperApi.transcribe(floatArray, settings.groqApiKey, settings.groqModel)
+        // First try Groq if configured
+        if (settings.groqApiKey.isNotBlank()) {
+            try {
+                val groqResult = withContext(Dispatchers.IO) {
+                    org.futo.voiceinput.shared.groq.GroqWhisperApi.transcribe(
+                        floatArray, 
+                        settings.groqApiKey, 
+                        settings.groqModel
+                    )
+                }
+                
+                if (!groqResult.isNullOrBlank()) {
+                    // Groq succeeded, return its result
+                    yield()
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.Main) {
+                            listener.finished(normalizeTranscription(groqResult))
+                        }
+                    }
+                    return
+                }
+                // If we get here, Groq failed, fall through to local model
+            } catch (e: Exception) {
+                // Groq failed, fall through to local model
+                println("Groq transcription failed: ${e.message}")
             }
-        } else null
+        }
 
-        yield()
+        // Either Groq is not configured or it failed, use local model
         val outputText = try {
-             modelRunner.run(
+            modelRunner.run(
                 floatArray,
                 settings.modelRunConfiguration,
                 settings.decodingConfiguration,
                 runnerCallback
             ).trim()
-        }catch(e: InferenceCancelledException) {
+        } catch(e: InferenceCancelledException) {
             yield()
             return
         }
 
-        val remoteResult = remoteJob?.await()
-
-        val text = when {
-            remoteResult != null && remoteResult.isNotBlank() -> remoteResult
-            isBlankResult(outputText) -> ""
-            else -> outputText
-        }
+        val text = if (isBlankResult(outputText)) "" else outputText
 
         yield()
         lifecycleScope.launch {

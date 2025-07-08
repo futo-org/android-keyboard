@@ -4,10 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.ENABLE_AI_REPLY
+import org.futo.inputmethod.latin.uix.AI_REPLY_PROMPT
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
+import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
+import org.futo.inputmethod.latin.uix.settings.SettingTextField
 
 val AiReplyMenu = UserSettingsMenu(
     title = R.string.ai_reply_settings_title,
@@ -17,11 +20,18 @@ val AiReplyMenu = UserSettingsMenu(
             title = R.string.ai_reply_enable,
             setting = ENABLE_AI_REPLY
         ),
+        userSettingDecorationOnly {
+            SettingTextField(
+                title = stringResource(R.string.ai_reply_prompt_title),
+                placeholder = stringResource(R.string.ai_reply_prompt_placeholder),
+                field = AI_REPLY_PROMPT
+            )
+        },
         userSettingNavigationItem(
             title = R.string.ai_reply_groq_config,
             subtitle = R.string.ai_reply_groq_config_subtitle,
             style = NavigationItemStyle.Misc,
-            navigateTo = "groq"
+            navigateTo = "groqChat"
         )
     )
 )

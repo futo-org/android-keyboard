@@ -30,13 +30,19 @@ fun pickGroqModel(apiKey: String, preferredId: String = "llama3-70b-8192"): Stri
     }
 }
 
-fun stream(apiKey: String, prompt: String, preferredId: String? = null, onToken: (String) -> Unit) {
+fun stream(
+    apiKey: String,
+    systemPrompt: String,
+    userPrompt: String,
+    preferredId: String? = null,
+    onToken: (String) -> Unit
+) {
     val model = pickGroqModel(apiKey, preferredId ?: "llama3-70b-8192")
     val reqBody = """
       {
         "model":"$model",
         "stream":true,
-        "messages":[{"role":"user","content":"$prompt"}]
+        "messages":[{"role":"system","content":"$systemPrompt"},{"role":"user","content":"$userPrompt"}]
       }
     """.trimIndent()
 

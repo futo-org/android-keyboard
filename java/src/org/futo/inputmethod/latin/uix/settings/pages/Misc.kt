@@ -9,6 +9,8 @@ import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
+import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
+import org.futo.inputmethod.latin.uix.ENABLE_SWITCH_APPS
 
 val MiscMenu = UserSettingsMenu(
     title = R.string.misc_settings_title,
@@ -24,6 +26,10 @@ val MiscMenu = UserSettingsMenu(
             style = NavigationItemStyle.Misc,
             navigateTo = "exportingcfg"
         ).copy(searchTags = R.string.settings_import_export_tags),
+        userSettingToggleDataStore(
+            title = R.string.switch_apps_enable,
+            setting = ENABLE_SWITCH_APPS
+        ),
         userSettingNavigationItem(
             title = (R.string.settings_import_configuration),
             subtitle = (R.string.settings_import_configuration_subtitle),

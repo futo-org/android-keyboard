@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.THEME_KEY
@@ -263,14 +264,9 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
                 }
 
                 item {
+                    val nav = LocalNavController.current
                     AddCustomThemeButton {
-                        // TODO: Custom themes
-                        val toast = Toast.makeText(
-                            context,
-                            "Custom themes coming eventually",
-                            Toast.LENGTH_SHORT
-                        )
-                        toast.show()
+                        nav.navigate("themeGenerator")
                     }
                 }
 

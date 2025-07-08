@@ -782,6 +782,7 @@ public final class InputLogic {
                 inputTransaction.setDidAffectContents();
                 break;
             case Constants.CODE_TO_NUMBER_LAYOUT:
+            case Constants.CODE_TO_PHONE_LAYOUT:
             case Constants.CODE_TO_ALT_0_LAYOUT:
             case Constants.CODE_TO_ALT_1_LAYOUT:
             case Constants.CODE_TO_ALT_2_LAYOUT:

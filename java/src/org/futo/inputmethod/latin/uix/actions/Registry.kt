@@ -12,6 +12,7 @@ import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.actions.fonttyper.FontTyperAction
+import org.futo.inputmethod.latin.uix.actions.SwitchAppsAction
 import org.futo.inputmethod.latin.uix.actions.AiReplyAction
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSettingBlocking
@@ -41,6 +42,7 @@ val AllActionsMap = mapOf(
     "left" to ArrowLeftAction,
     "right" to ArrowRightAction,
     "font_typer" to FontTyperAction,
+    "switch_apps" to SwitchAppsAction,
     "ai_reply" to AiReplyAction
 )
 

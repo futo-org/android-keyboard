@@ -377,6 +377,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun isShifted(): Boolean = latinIME.latinIMELegacy.mKeyboardSwitcher.mState.shifted
+    override fun isCapsLocked(): Boolean =
+        latinIME.latinIMELegacy.mKeyboardSwitcher.mState.capsLocked
 
     override fun cursorLeft(steps: Int, stepOverWords: Boolean, select: Boolean) {
         latinIME.inputLogic.cursorLeft(steps, stepOverWords, select)

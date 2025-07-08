@@ -8,6 +8,9 @@
     <string name="action_paste_title">Paste from Clipboard</string>
     <string name="action_undo_title">Undo</string>
     <string name="action_redo_title">Redo</string>
+    <string name="action_switch_apps_title">Switch Apps</string>
+    <string name="action_switch_apps_enable_service">Enable accessibility service to use Switch Apps</string>
+    <string name="switch_apps_enable">Enable Quick Switch action</string>
     <string name="action_text_editor_title">Text Editor</string>
     <string name="action_debug_title">Debug Info</string>
     <string name="action_more_actions_title">All Actions</string>
@@ -86,8 +89,6 @@
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
 
     <string name="action_ai_reply_title">AI Reply</string>
-    <string name="ai_reply_generate">Generate Reply</string>
-    <string name="ai_reply_insert">Insert</string>
     <string name="quick_clip_ai_reply">AI Reply</string>
     <string name="action_clipboard_manager_settings_title">Clipboard Manager Settings</string>
     <string name="action_clipboard_manager_settings_hours_to_keep_clips">Hours to keep unpinned clips</string>
@@ -108,6 +109,7 @@
     <string name="action_keyboard_modes_split">Split</string>
     <!-- This string must be super short (below 10 chars if possible). The title for free-form draggable and resizable QWERTYUIOP keyboard mode. -->
     <string name="action_keyboard_modes_floating">Float</string>
+    <string name="action_keyboard_modes_phone">T9</string>
     <!-- This string must be super short (below 10 chars if possible) -->
     <string name="action_keyboard_modes_resizing_reset_size">Reset</string>
     <!-- This string must be super short (below 10 chars if possible) -->
@@ -167,6 +169,12 @@
     <string name="theme_dynamic_system">Dynamic Auto</string>
     <string name="theme_dynamic_dark">Dynamic Dark</string>
     <string name="theme_dynamic_light">Dynamic Light</string>
+    <string name="theme_custom">Custom Theme</string>
+    <string name="theme_generator_title">Theme Generator</string>
+    <string name="theme_generator_accent">Accent color (#RRGGBB)</string>
+    <string name="theme_generator_base">Base color (#RRGGBB)</string>
+    <string name="theme_generator_icon">Icon color (#RRGGBB)</string>
+    <string name="theme_generator_save">Save Theme</string>
 
     <!-- Auto update strings (note: the auto updater is currently inactive) -->
     <string name="autoupdater_service_title">Update Checking service</string>
@@ -508,18 +516,30 @@
     <string name="voice_input_settings_start_on_open_subtitle">Begin voice input automatically when the keyboard appears</string>
 
     <string name="voice_input_settings_use_groq">Use Groq Whisper</string>
-    <string name="voice_input_settings_groq_config">Groq API Settings</string>
-    <string name="voice_input_settings_groq_config_subtitle">Configure Groq API key and test</string>
+    <string name="voice_input_settings_groq_config">Groq Voice API Settings</string>
+    <string name="voice_input_settings_groq_config_subtitle">Configure Groq voice API key and test</string>
 
     <!-- AI Reply menu -->
     <string name="ai_reply_settings_title">AI Reply</string>
     <string name="ai_reply_enable">Enable AI Reply</string>
-    <string name="ai_reply_groq_config">Groq API Settings</string>
-    <string name="ai_reply_groq_config_subtitle">Configure Groq API key and model</string>
+    <string name="ai_reply_groq_config">Groq Reply API Settings</string>
+    <string name="ai_reply_groq_config_subtitle">Configure Groq reply API key and model</string>
+    <string name="ai_reply_prompt_title">AI Reply Prompt</string>
+    <string name="ai_reply_prompt_placeholder">e.g. Write a short helpful reply</string>
+    <string name="ai_reply_generate">Generate Reply</string>
+    <string name="ai_reply_insert">Insert Reply</string>
+    <string name="ai_reply_title">AI Reply</string>
+    <string name="ai_reply_error">Error: %s</string>
+    <string name="groq_api_key_required">Please set your Groq API key in settings</string>
+    <string name="generating">Generating…</string>
+    <string name="unknown_error">Unknown error occurred</string>
 
-    <string name="groq_settings_title">Groq API</string>
-    <string name="groq_settings_api_key">Groq API key</string>
-    <string name="groq_settings_model">Groq model</string>
+    <string name="groq_reply_settings_title">Groq Reply API</string>
+    <string name="groq_reply_settings_api_key">Groq reply API key</string>
+    <string name="groq_reply_settings_model">Groq reply model</string>
+    <string name="groq_voice_settings_title">Groq Voice API</string>
+    <string name="groq_voice_settings_api_key">Groq voice API key</string>
+    <string name="groq_voice_settings_model">Groq voice model</string>
     <string name="groq_settings_test">Test connection</string>
     <string name="groq_settings_testing">Testing...</string>
     <string name="groq_settings_success">Success</string>

@@ -37,8 +37,8 @@ import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.USE_VAD_AUTOSTOP
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.USE_GROQ_WHISPER
-import org.futo.inputmethod.latin.uix.GROQ_API_KEY
-import org.futo.inputmethod.latin.uix.GROQ_MODEL
+import org.futo.inputmethod.latin.uix.GROQ_VOICE_API_KEY
+import org.futo.inputmethod.latin.uix.GROQ_VOICE_MODEL
 import org.futo.inputmethod.latin.uix.USE_GPU_OFFLOAD
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
@@ -126,8 +126,8 @@ private class VoiceInputActionWindow(
         val canExpandSpace = context.getSetting(CAN_EXPAND_SPACE)
         val useVAD = context.getSetting(USE_VAD_AUTOSTOP)
         val useGroq = context.getSetting(USE_GROQ_WHISPER)
-        val groqKey = context.getSetting(GROQ_API_KEY)
-        val groqModel = context.getSetting(GROQ_MODEL)
+        val groqKey = context.getSetting(GROQ_VOICE_API_KEY)
+        val groqModel = context.getSetting(GROQ_VOICE_MODEL)
         val useGpu = context.getSetting(USE_GPU_OFFLOAD)
 
         state.modelManager.useGpu = useGpu
@@ -263,14 +263,14 @@ private class VoiceInputActionWindow(
     override fun finished(result: String) {
         wasFinished = true
 
-        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
+        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext, manager.isCapsLocked())
         inputTransaction.commit(sanitized)
         manager.announce(result)
         manager.closeActionWindow()
     }
 
     override fun partialResult(result: String) {
-        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
+        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext, manager.isCapsLocked())
         inputTransaction.updatePartial(sanitized)
     }
 

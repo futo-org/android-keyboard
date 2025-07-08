@@ -39,6 +39,7 @@ import org.futo.inputmethod.latin.uix.actions.AiReplyAction
 import org.futo.inputmethod.latin.uix.actions.AiReplyActionHolder
 import org.futo.inputmethod.latin.uix.ENABLE_AI_REPLY
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.utils.latestClipboardText
 
 enum class QuickClipKind {
     FullString,
@@ -135,7 +136,9 @@ fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
                         text = stringResource(R.string.quick_clip_ai_reply),
                         uri = null
                     ) {
-                        AiReplyActionHolder.pendingText = txt.text
+                        val clipboard = latestClipboardText(manager!!.getContext())
+                        AiReplyActionHolder.pendingText =
+                            clipboard?.takeIf { it.isNotBlank() } ?: txt.text
                         manager!!.activateAction(AiReplyAction)
                         QuickClip.markQuickClipDismissed()
                         dismiss()

@@ -195,6 +195,17 @@
             android:name=".content.KbContentProvider"
             android:exported="false"
             android:grantUriPermissions="true" />
+
+        <service
+            android:name=".uix.services.QuickSwitchService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data android:name="android.accessibilityservice"
+                android:resource="@xml/quick_switch_service" />
+        </service>
     </application>
 
     <!-- To query enabled input methods for voice IME detection -->

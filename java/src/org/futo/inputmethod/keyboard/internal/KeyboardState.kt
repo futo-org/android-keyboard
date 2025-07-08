@@ -272,6 +272,9 @@ class KeyboardState(private val switchActions: SwitchActions) {
         get() = currentLayout.page == KeyboardLayoutPage.Shifted ||
                 currentLayout.page == KeyboardLayoutPage.ManuallyShifted ||
                 currentLayout.page == KeyboardLayoutPage.ShiftLocked
+
+    val capsLocked: Boolean
+        get() = currentLayout.page == KeyboardLayoutPage.ShiftLocked
     private fun toggleShift(to: Boolean = !shifted, manually: Boolean = false) {
         setLayout(currentLayout.copy(page = when {
             to -> {
@@ -503,6 +506,14 @@ class KeyboardState(private val switchActions: SwitchActions) {
                 } else {
                     // Set number layout
                     setNumberLayout()
+                }
+            }
+
+            Constants.CODE_TO_PHONE_LAYOUT -> {
+                if(currentLayout.kind == KeyboardLayoutKind.Phone) {
+                    setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+                } else {
+                    setPhoneLayout()
                 }
             }
 
