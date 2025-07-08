@@ -10,10 +10,17 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - Settings search bar integrated into the settings screen with a helpful "Settings search or try typing here." placeholder. The field grows to fit long queries.
 - Most extra features, such as Quick Switch, can be enabled or disabled from the settings.
 - AMOLED friendly dark themes with purple, red, blue, and green accents for battery savings.
+- Built-in theme generator lets you pick custom accent and base colors.
 - AI Reply menu for configuring Groq-powered quick replies using chat completion models fetched from Groq.
+  The model picker now lists Llama chat models only.
+- Groq Reply API settings store a separate API key and model for chat completions.
 - AI Reply prompt can be customized from the keyboard or settings and the clipboard text is sent to Groq for context.
+- AI Reply now always uses the most recent clipboard entry when generating a reply, even when launched directly from the actions row.
 - Voice recognition output is normalized so repeated words are removed.
 - Voice input respects the keyboard's caps lock state.
+- Long voice recordings are transcribed in 30 second chunks so earlier audio isn't overwritten.
+- Groq Voice API settings under Voice Input show only Whisper models.
+- The voice input spinner turns orange when using Groq and green for local recognition.
 - New settings search button at the bottom of the settings screen highlights itself with a smooth repeating border animation for easier discovery.
 - AI Reply menu for configuring Groq-powered quick replies.
 - AI reply generation now streams responses using coroutines for smoother updates.
@@ -73,5 +80,16 @@ or create a `local.properties` file with:
 ```
 sdk.dir=/path/to/android-sdk
 ```
+
+To avoid Play Protect warnings when installing the APK, sign the release build with your own keystore:
+```
+./gradlew assemblePlaystoreRelease \
+    -Pandroid.injected.signing.store.file=/path/to/keystore.jks \
+    -Pandroid.injected.signing.store.password=****** \
+    -Pandroid.injected.signing.key.alias=keyAlias \
+    -Pandroid.injected.signing.key.password=******
+```
+You can also provide these values in CI by setting the `KEYSTORE_*` secrets and
+running `setUpPropertiesCI.sh`.
 
 When running GitHub Actions workflows, use the latest `v4` releases of the standard actions such as `actions/upload-artifact@v4` to avoid deprecation errors.

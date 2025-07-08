@@ -23,6 +23,16 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Set up signing configs
+        if: env.KEYSTORE_FILE != ''
+        run: ./setUpPropertiesCI.sh
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          CRASHREPORTING_FILE: ${{ secrets.CRASHREPORTING_FILE }}
+
       - name: Build APK
         run: ./gradlew assemblePlaystoreRelease
 

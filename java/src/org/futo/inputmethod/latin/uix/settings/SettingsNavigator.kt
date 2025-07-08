@@ -48,9 +48,11 @@ import org.futo.inputmethod.latin.uix.settings.pages.SearchScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLanguageScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLayoutsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
+import org.futo.inputmethod.latin.uix.settings.pages.ThemeGeneratorScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputMenu
-import org.futo.inputmethod.latin.uix.settings.pages.GroqConfigScreen
+import org.futo.inputmethod.latin.uix.settings.pages.GroqChatConfigScreen
+import org.futo.inputmethod.latin.uix.settings.pages.GroqWhisperConfigScreen
 import org.futo.inputmethod.latin.uix.settings.pages.AiReplyMenu
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
 import org.futo.inputmethod.latin.uix.urlDecode
@@ -111,6 +113,7 @@ fun SettingsNavigator(
             composable("keyboardAndTyping") { KeyboardAndTypingScreen(navController) }
             composable("resize") { ResizeScreen(navController) }
             composable("themes") { ThemeScreen(navController) }
+            composable("themeGenerator") { ThemeGeneratorScreen(navController) }
             composable("developer") { DeveloperScreen(navController) }
             composable("devtextedit") { DevEditTextVariationsScreen(navController) }
             composable("devlayouts") { DevLayoutList(navController) }
@@ -127,7 +130,8 @@ fun SettingsNavigator(
             composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }
             composable("credits") { CreditsScreen(navController) }
             composable("exportingcfg") { ExportingMenu(navController) }
-            composable("groq") { GroqConfigScreen(navController) }
+            composable("groqChat") { GroqChatConfigScreen(navController) }
+            composable("groqWhisper") { GroqWhisperConfigScreen(navController) }
             composable("credits/thirdparty/{idx}") {
                 ProjectInfoView(
                     it.arguments?.getString("idx")?.toIntOrNull() ?: 0,

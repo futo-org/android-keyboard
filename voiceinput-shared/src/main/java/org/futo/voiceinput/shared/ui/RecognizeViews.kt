@@ -55,6 +55,7 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.delay
 import org.futo.voiceinput.shared.R
 import org.futo.voiceinput.shared.types.MagnitudeState
@@ -201,20 +202,26 @@ fun InnerRecognize(
 
 
 @Composable
-fun ColumnScope.RecognizeLoadingCircle(text: String = "Initializing...") {
+fun ColumnScope.RecognizeLoadingCircle(
+    text: String = "Initializing...",
+    spinnerColor: Color = MaterialTheme.colorScheme.primary
+) {
     CircularProgressIndicator(
         modifier = Modifier.align(Alignment.CenterHorizontally),
-        color = MaterialTheme.colorScheme.primary
+        color = spinnerColor
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(text, modifier = Modifier.align(Alignment.CenterHorizontally))
 }
 
 @Composable
-fun ColumnScope.PartialDecodingResult(text: String = "I am speaking [...]") {
+fun ColumnScope.PartialDecodingResult(
+    text: String = "I am speaking [...]",
+    spinnerColor: Color = MaterialTheme.colorScheme.onPrimary
+) {
     CircularProgressIndicator(
         modifier = Modifier.align(Alignment.CenterHorizontally),
-        color = MaterialTheme.colorScheme.onPrimary
+        color = spinnerColor
     )
     Spacer(modifier = Modifier.height(6.dp))
     Surface(

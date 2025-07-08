@@ -74,6 +74,7 @@ interface KeyboardManagerForAction {
     fun sendKeyEvent(keyCode: Int, metaState: Int)
 
     fun isShifted(): Boolean
+    fun isCapsLocked(): Boolean
 
     fun cursorLeft(steps: Int, stepOverWords: Boolean, select: Boolean)
     fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean)

@@ -31,7 +31,7 @@ val AiReplyMenu = UserSettingsMenu(
             title = R.string.ai_reply_groq_config,
             subtitle = R.string.ai_reply_groq_config_subtitle,
             style = NavigationItemStyle.Misc,
-            navigateTo = "groq"
+            navigateTo = "groqChat"
         )
     )
 )

@@ -48,15 +48,20 @@ object GroqWhisperApi {
     fun transcribe(samples: FloatArray, apiKey: String, model: String): String? {
         if(apiKey.isBlank()) return null
         return try {
-            DebugLogger.log("Groq transcribe start model=$model")
+            DebugLogger.log("Groq transcribe start model=$model, samples=${samples.size}")
             val wav = floatArrayToWav(samples)
+            DebugLogger.log("Groq transcribe WAV size=${wav.size} bytes")
+            
             val boundary = "----VoiceBoundary${System.currentTimeMillis()}"
             val url = URL("https://api.groq.com/openai/v1/audio/transcriptions")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.doOutput = true
+            conn.connectTimeout = 30000  // Increased timeout for file upload
+            conn.readTimeout = 30000     // Increased timeout for response
             conn.setRequestProperty("Authorization", "Bearer $apiKey")
             conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
+            
             val out = DataOutputStream(conn.outputStream)
             fun writeString(s: String) = out.writeBytes(s)
             writeString("--$boundary\r\n")
@@ -70,16 +75,32 @@ object GroqWhisperApi {
             writeString("--$boundary--\r\n")
             out.flush()
             out.close()
-            if(conn.responseCode != HttpURLConnection.HTTP_OK) {
-                DebugLogger.log("Groq transcribe failed code=${conn.responseCode}")
+            
+            DebugLogger.log("Groq transcribe request sent, waiting for response...")
+            val responseCode = conn.responseCode
+            DebugLogger.log("Groq transcribe response code: $responseCode")
+            
+            if(responseCode != HttpURLConnection.HTTP_OK) {
+                // Try to read error response
+                val errorResponse = try {
+                    conn.errorStream?.readBytes()?.toString(Charsets.UTF_8) ?: "No error details"
+                } catch(e: Exception) {
+                    "Failed to read error: ${e.message}"
+                }
+                DebugLogger.log("Groq transcribe failed code=$responseCode, error=$errorResponse")
                 return null
             }
+            
             val resp = conn.inputStream.readBytes().toString(Charsets.UTF_8)
+            DebugLogger.log("Groq transcribe response length: ${resp.length}")
+            DebugLogger.log("Groq transcribe response preview: ${resp.take(200)}")
+            
             val parsed = json.decodeFromString<TranscriptionResponse>(resp)
-            DebugLogger.log("Groq transcribe success")
+            DebugLogger.log("Groq transcribe success: '${parsed.text.take(100)}...'")
             parsed.text
         } catch(e: Exception) {
-            DebugLogger.log("Groq transcribe error: ${e.message}")
+            DebugLogger.log("Groq transcribe error: ${e.javaClass.simpleName} - ${e.message}")
+            e.printStackTrace()
             null
         }
     }
@@ -92,37 +113,85 @@ object GroqWhisperApi {
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "GET"
             conn.setRequestProperty("Authorization", "Bearer $apiKey")
-            conn.connectTimeout = 5000
-            conn.readTimeout = 5000
+            conn.connectTimeout = 10000  // Increased timeout
+            conn.readTimeout = 10000     // Increased timeout
+            
+            DebugLogger.log("Groq test connecting...")
+            val responseCode = conn.responseCode
+            DebugLogger.log("Groq test response code: $responseCode")
+            
+            if(responseCode != HttpURLConnection.HTTP_OK) {
+                val errorResponse = try {
+                    conn.errorStream?.readBytes()?.toString(Charsets.UTF_8) ?: "No error details"
+                } catch(e: Exception) {
+                    "Failed to read error: ${e.message}"
+                }
+                DebugLogger.log("Groq test failed: $errorResponse")
+            }
+            
             conn.inputStream.use { it.readBytes() }
-            val ok = conn.responseCode == HttpURLConnection.HTTP_OK
-            DebugLogger.log("Groq test result code=${conn.responseCode}")
+            val ok = responseCode == HttpURLConnection.HTTP_OK
+            DebugLogger.log("Groq test result: $ok")
             ok
         } catch(e: Exception) {
-            DebugLogger.log("Groq test error: ${e.message}")
+            DebugLogger.log("Groq test error: ${e.javaClass.simpleName} - ${e.message}")
+            e.printStackTrace()
             false
         }
     }
-
-    fun availableModels(apiKey: String): List<String>? {
-        if(apiKey.isBlank()) return null
+        
+    fun availableModels(apiKey: String, maxRetries: Int = 3): List<String>? {
+        if (apiKey.isBlank()) {
+            DebugLogger.log("Groq Whisper models fetch failed: API key is blank")
+            return null
+        }
         return try {
-            DebugLogger.log("Groq models fetch")
+            DebugLogger.log("Groq Whisper models fetch start")
             val url = URL("https://api.groq.com/openai/v1/models")
-            val conn = url.openConnection() as HttpURLConnection
-            conn.requestMethod = "GET"
-            conn.setRequestProperty("Authorization", "Bearer $apiKey")
-            conn.connectTimeout = 5000
-            conn.readTimeout = 5000
-            val resp = conn.inputStream.readBytes().toString(Charsets.UTF_8)
-            if(conn.responseCode != HttpURLConnection.HTTP_OK) {
-                DebugLogger.log("Groq models failed code=${conn.responseCode}")
-                return null
+            var attempt = 0
+            while (attempt < maxRetries) {
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "GET"
+                conn.setRequestProperty("Authorization", "Bearer $apiKey")
+                conn.connectTimeout = 15000
+                conn.readTimeout = 15000
+                DebugLogger.log("Groq Whisper models connecting... attempt ${attempt + 1}")
+                val responseCode = conn.responseCode
+                DebugLogger.log("Groq Whisper models response code: $responseCode")
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val resp = conn.inputStream.readBytes().toString(Charsets.UTF_8)
+                    DebugLogger.log("Groq Whisper models raw response length: ${resp.length}")
+                    DebugLogger.log("Groq Whisper models raw response preview: ${resp.take(200)}")
+                    val parsed = json.decodeFromString<ModelsResponse>(resp)
+                    val allModels = parsed.data.map { it.id }
+                    val whisperModels = allModels.filter { it.lowercase().contains("whisper") }
+                    DebugLogger.log("All models: ${allModels.joinToString(", ")}")
+                    DebugLogger.log("Whisper models: ${whisperModels.joinToString(", ")}")
+                    return if (whisperModels.isEmpty()) {
+                        DebugLogger.log("No whisper models found, returning all models")
+                        allModels.ifEmpty { listOf("whisper-large-v3") } // Fallback
+                    } else {
+                        whisperModels
+                    }
+                } else if (responseCode == 429) {
+                    attempt++
+                    if (attempt < maxRetries) {
+                        Thread.sleep(1000L shl attempt) // Exponential backoff
+                        continue
+                    }
+                    val errorResponse = conn.errorStream?.readBytes()?.toString(Charsets.UTF_8) ?: "No error details"
+                    DebugLogger.log("Groq Whisper models failed code=$responseCode, error=$errorResponse")
+                    return null
+                } else {
+                    val errorResponse = conn.errorStream?.readBytes()?.toString(Charsets.UTF_8) ?: "No error details"
+                    DebugLogger.log("Groq Whisper models failed code=$responseCode, error=$errorResponse")
+                    return null
+                }
             }
-            val parsed = json.decodeFromString<ModelsResponse>(resp)
-            parsed.data.map { it.id }.filter { it.startsWith("whisper-") }
-        } catch(e: Exception) {
-            DebugLogger.log("Groq models error: ${e.message}")
+            return null
+        } catch (e: Exception) {
+            DebugLogger.log("Groq Whisper models error: ${e.javaClass.simpleName} - ${e.message}")
+            e.printStackTrace()
             null
         }
     }

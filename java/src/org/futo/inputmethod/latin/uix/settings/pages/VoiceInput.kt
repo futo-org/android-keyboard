@@ -12,7 +12,7 @@ import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.USE_VAD_AUTOSTOP
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.USE_GROQ_WHISPER
-import org.futo.inputmethod.latin.uix.GROQ_API_KEY
+import org.futo.inputmethod.latin.uix.GROQ_VOICE_API_KEY
 import org.futo.inputmethod.latin.uix.USE_GPU_OFFLOAD
 import org.futo.inputmethod.latin.uix.START_VOICE_ON_OPEN
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -98,7 +98,7 @@ val VoiceInputMenu = UserSettingsMenu(
             title = R.string.voice_input_settings_groq_config,
             subtitle = R.string.voice_input_settings_groq_config_subtitle,
             style = NavigationItemStyle.Misc,
-            navigateTo = "groq"
+            navigateTo = "groqWhisper"
         ).copy(visibilityCheck = visibilityCheckNotSystemVoiceInput),
 
         userSettingNavigationItem(
