@@ -73,7 +73,7 @@ android {
     buildFeatures {
         compose true
         viewBinding true
-        mlModelBinding true
+        mlModelBinding false
     }
 }
 
