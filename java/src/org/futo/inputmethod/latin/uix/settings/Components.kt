@@ -609,9 +609,9 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
         icon = {
             icon?.let {
                 val circleColor = when(style) {
-                    NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.primaryContainer
-                    NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.secondaryContainer
-                    NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.tertiaryContainer
+                    NavigationItemStyle.HomePrimary,
+                    NavigationItemStyle.HomeSecondary,
+                    NavigationItemStyle.HomeTertiary -> LocalKeyboardScheme.current.settingsIconBackground
 
                     NavigationItemStyle.MiscNoArrow,
                     NavigationItemStyle.Misc,
@@ -619,16 +619,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
                     NavigationItemStyle.Mail -> Color.Transparent
                 }
 
-                val iconColor = when(style) {
-                    NavigationItemStyle.HomePrimary -> MaterialTheme.colorScheme.onPrimaryContainer
-                    NavigationItemStyle.HomeSecondary -> MaterialTheme.colorScheme.onSecondaryContainer
-                    NavigationItemStyle.HomeTertiary -> MaterialTheme.colorScheme.onTertiaryContainer
-
-                    NavigationItemStyle.MiscNoArrow,
-                    NavigationItemStyle.Mail,
-                    NavigationItemStyle.ExternalLink,
-                    NavigationItemStyle.Misc -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
-                }
+                val iconColor = LocalKeyboardScheme.current.settingsIconColor
 
                 Canvas(modifier = Modifier.size(48.dp)) {
                     drawCircle(circleColor, this.size.maxDimension / 2.4f)
