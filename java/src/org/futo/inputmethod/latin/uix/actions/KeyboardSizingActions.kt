@@ -153,7 +153,7 @@ val KeyboardModeAction = Action(
                             .weight(1.0f)
                             .height(54.dp),
                         onClick = {
-                            manager.keyboardManagerForAction.sendCodePointEvent(Constants.CODE_TO_PHONE_LAYOUT)
+                            manager.sendCodePointEvent(Constants.CODE_TO_PHONE_LAYOUT)
                             manager.closeActionWindow()
                         },
                         contentColor = MaterialTheme.colorScheme.onBackground
