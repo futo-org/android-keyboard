@@ -7,19 +7,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Job
 import androidx.navigation.NavHostController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.CustomAccentColor
@@ -48,7 +52,7 @@ fun ThemeGeneratorScreen(navController: NavHostController) {
 }
 
 @Composable
-private fun ColorPicker(label: String, colorStr: String, setColor: (String) -> Unit) {
+private fun ColorPicker(label: String, colorStr: String, setColor: (String) -> Job) {
     fun toHex(c: Color): String = String.format("#%06X", 0xFFFFFF and c.toArgb())
     var color by remember(colorStr) { mutableStateOf(runCatching { Color(android.graphics.Color.parseColor(colorStr)) }.getOrDefault(Color.White)) }
     val update = { setColor(toHex(color)) }
