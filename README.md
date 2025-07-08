@@ -27,6 +27,7 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.org/) for downloads 
 - AI Reply menu for configuring Groq-powered quick replies.
 - AI reply generation now streams responses using coroutines for smoother updates.
 - Quick Switch can be toggled in settings and uses an accessibility service to jump to your previously used app.
+- T9 phone layout accessible via the action key for quick number entry.
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
