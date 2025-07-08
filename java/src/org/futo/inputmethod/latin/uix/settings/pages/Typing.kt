@@ -636,7 +636,13 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             subtitle = R.string.keyboard_settings_show_number_row_subtitle,
             key = Settings.PREF_ENABLE_NUMBER_ROW,
             default = {false},
-            icon = { Text("123", style = Typography.Body.MediumMl, color = iconTint) }
+            icon = {
+                Text(
+                    "123",
+                    style = Typography.Body.MediumMl,
+                    color = LocalKeyboardScheme.current.settingsIconColor.copy(alpha = 0.75f)
+                )
+            }
         ),
         userSettingToggleSharedPrefs(
             title = R.string.keyboard_settings_show_arrow_row,
@@ -693,8 +699,11 @@ val TypingSettingsMenu = UserSettingsMenu(
             key = Settings.PREF_GESTURE_INPUT,
             default = {true},
             icon = {
-                Icon(painterResource(id = R.drawable.swipe_icon), contentDescription = null,
-                    tint = iconTint)
+                Icon(
+                    painterResource(id = R.drawable.swipe_icon),
+                    contentDescription = null,
+                    tint = LocalKeyboardScheme.current.settingsIconColor.copy(alpha = 0.75f)
+                )
             }
         ),
         userSettingToggleDataStore(
@@ -702,8 +711,11 @@ val TypingSettingsMenu = UserSettingsMenu(
             subtitle = R.string.typing_settings_suggest_emojis_subtitle,
             setting = SHOW_EMOJI_SUGGESTIONS,
             icon = {
-                Icon(painterResource(id = R.drawable.smile), contentDescription = null,
-                    tint = iconTint)
+                Icon(
+                    painterResource(id = R.drawable.smile),
+                    contentDescription = null,
+                    tint = LocalKeyboardScheme.current.settingsIconColor.copy(alpha = 0.75f)
+                )
             }
         ),
         userSettingToggleSharedPrefs(
@@ -712,8 +724,11 @@ val TypingSettingsMenu = UserSettingsMenu(
             key = Settings.PREF_AUTO_CORRECTION,
             default = {true},
             icon = {
-                Icon(painterResource(id = R.drawable.icon_spellcheck), contentDescription = null,
-                    tint = iconTint)
+                Icon(
+                    painterResource(id = R.drawable.icon_spellcheck),
+                    contentDescription = null,
+                    tint = LocalKeyboardScheme.current.settingsIconColor.copy(alpha = 0.75f)
+                )
             }
         ).copy(searchTags = R.string.auto_correction_tags),
         userSettingToggleSharedPrefs(
@@ -722,7 +737,11 @@ val TypingSettingsMenu = UserSettingsMenu(
             key = Settings.PREF_AUTO_CAP,
             default = {true},
             icon = {
-                Text("Aa", style = Typography.Body.MediumMl, color = iconTint)
+                Text(
+                    "Aa",
+                    style = Typography.Body.MediumMl,
+                    color = LocalKeyboardScheme.current.settingsIconColor.copy(alpha = 0.75f)
+                )
             }
         ),
         userSettingToggleSharedPrefs(
@@ -731,7 +750,11 @@ val TypingSettingsMenu = UserSettingsMenu(
             key = Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD,
             default = {true},
             icon = {
-                Text(".", style = Typography.Body.MediumMl, color = iconTint)
+                Text(
+                    ".",
+                    style = Typography.Body.MediumMl,
+                    color = LocalKeyboardScheme.current.settingsIconColor.copy(alpha = 0.75f)
+                )
             }
         ),
         userSettingToggleSharedPrefs(
