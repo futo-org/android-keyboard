@@ -172,6 +172,7 @@
     <string name="theme_generator_title">Theme Generator</string>
     <string name="theme_generator_accent">Accent color (#RRGGBB)</string>
     <string name="theme_generator_base">Base color (#RRGGBB)</string>
+    <string name="theme_generator_icon">Icon color (#RRGGBB)</string>
     <string name="theme_generator_save">Save Theme</string>
 
     <!-- Auto update strings (note: the auto updater is currently inactive) -->

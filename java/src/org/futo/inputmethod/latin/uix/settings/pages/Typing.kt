@@ -410,8 +410,9 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
     }
 
 
+    val iconTint = LocalKeyboardScheme.current.settingsIconColor.copy(alpha = 0.75f)
     val dragIcon: @Composable () -> Unit = {
-        Icon(Icons.Default.Menu, contentDescription = null, tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+        Icon(Icons.Default.Menu, contentDescription = null, tint = iconTint)
     }
 
     val items = setting.value.toLongPressKeyLayoutItems()
@@ -635,7 +636,7 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             subtitle = R.string.keyboard_settings_show_number_row_subtitle,
             key = Settings.PREF_ENABLE_NUMBER_ROW,
             default = {false},
-            icon = { Text("123", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) }
+            icon = { Text("123", style = Typography.Body.MediumMl, color = iconTint) }
         ),
         userSettingToggleSharedPrefs(
             title = R.string.keyboard_settings_show_arrow_row,
@@ -693,7 +694,7 @@ val TypingSettingsMenu = UserSettingsMenu(
             default = {true},
             icon = {
                 Icon(painterResource(id = R.drawable.swipe_icon), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+                    tint = iconTint)
             }
         ),
         userSettingToggleDataStore(
@@ -702,7 +703,7 @@ val TypingSettingsMenu = UserSettingsMenu(
             setting = SHOW_EMOJI_SUGGESTIONS,
             icon = {
                 Icon(painterResource(id = R.drawable.smile), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+                    tint = iconTint)
             }
         ),
         userSettingToggleSharedPrefs(
@@ -712,7 +713,7 @@ val TypingSettingsMenu = UserSettingsMenu(
             default = {true},
             icon = {
                 Icon(painterResource(id = R.drawable.icon_spellcheck), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+                    tint = iconTint)
             }
         ).copy(searchTags = R.string.auto_correction_tags),
         userSettingToggleSharedPrefs(
@@ -721,7 +722,7 @@ val TypingSettingsMenu = UserSettingsMenu(
             key = Settings.PREF_AUTO_CAP,
             default = {true},
             icon = {
-                Text("Aa", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+                Text("Aa", style = Typography.Body.MediumMl, color = iconTint)
             }
         ),
         userSettingToggleSharedPrefs(
@@ -730,7 +731,7 @@ val TypingSettingsMenu = UserSettingsMenu(
             key = Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD,
             default = {true},
             icon = {
-                Text(".", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+                Text(".", style = Typography.Body.MediumMl, color = iconTint)
             }
         ),
         userSettingToggleSharedPrefs(

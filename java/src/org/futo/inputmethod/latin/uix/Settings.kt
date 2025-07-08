@@ -358,6 +358,11 @@ val CustomBaseColor = SettingsKey(
     default = "#121316"
 )
 
+val CustomIconColor = SettingsKey(
+    key = stringPreferencesKey("custom_icon_color"),
+    default = "#B2C8FF"
+)
+
 val USE_SYSTEM_VOICE_INPUT = SettingsKey(
     key = booleanPreferencesKey("useSystemVoiceInput"),
     default = false

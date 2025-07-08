@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.luminance
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.CustomAccentColor
 import org.futo.inputmethod.latin.uix.CustomBaseColor
+import org.futo.inputmethod.latin.uix.CustomIconColor
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.extendedDarkColorScheme
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -27,7 +28,7 @@ private fun idealOnColor(color: Color): Color {
     return if (color.luminance() > 0.5f) Color.Black else Color.White
 }
 
-private fun colorsFrom(accent: Color, base: Color) = extendedDarkColorScheme(
+private fun colorsFrom(accent: Color, base: Color, icon: Color) = extendedDarkColorScheme(
     primary = accent,
     onPrimary = idealOnColor(accent),
     primaryContainer = accent,
@@ -59,6 +60,7 @@ private fun colorsFrom(accent: Color, base: Color) = extendedDarkColorScheme(
     keyboardFade1 = base,
     primaryTransparent = accent.copy(alpha = 0.3f),
     onSurfaceTransparent = Color.White.copy(alpha = 0.1f),
+    settingsIconColor = icon
 )
 
 val CustomTheme = ThemeOption(
@@ -71,6 +73,8 @@ val CustomTheme = ThemeOption(
         val baseStr = it.getSetting(CustomBaseColor)
         val accent = safeColor(accentStr, CustomAccentColor.default)
         val base = safeColor(baseStr, CustomBaseColor.default)
-        colorsFrom(accent, base)
+        val iconStr = it.getSetting(CustomIconColor)
+        val icon = safeColor(iconStr, CustomIconColor.default)
+        colorsFrom(accent, base, icon)
     }
 )
