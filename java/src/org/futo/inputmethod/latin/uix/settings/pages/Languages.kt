@@ -663,8 +663,8 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 } + " " + context.getString(
                     R.string.language_settings_resource_imported_indicator
                 )
-            } ?: if (BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false)
-                    .isNotEmpty()
+             } ?: if (BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false).isNotEmpty()
+                || locale.language == "ja" // (built-in for now)
             ) {
                 context.getString(R.string.language_settings_resource_builtin_dictionary_name)
             } else {
