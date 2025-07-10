@@ -6,6 +6,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
+import org.futo.inputmethod.engine.general.ActionInputTransactionIME
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.SuggestedWords
@@ -85,5 +86,9 @@ class IMEHelper(
             rtlSubtype = Settings.getInstance().current.mIsRTL,
             useExpandableUi = useExpandableUi
         )
+    }
+
+    fun endInputTransaction(inputTransactionIME: ActionInputTransactionIME) {
+        latinIME.imeManager.endInputTransaction(inputTransactionIME)
     }
 }

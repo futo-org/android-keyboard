@@ -112,7 +112,6 @@ import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.SupportsNavbarExtension
 import org.futo.inputmethod.latin.common.Constants
-import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
 import org.futo.inputmethod.latin.uix.actions.ActionEditor
@@ -131,7 +130,6 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
-import org.futo.inputmethod.latin.uix.utils.TextContext
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 import org.futo.inputmethod.updates.autoDeferManualUpdateIfNeeded
 import org.futo.inputmethod.updates.deferManualUpdate
@@ -198,46 +196,6 @@ fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(
     this@keyboardBottomPadding.absolutePadding(bottom = size.padding.bottom.toDp())
 }
 
-
-private class LatinIMEActionInputTransaction(
-    private val inputLogic: InputLogic
-): ActionInputTransaction {
-    private var isFinished = false
-    override val textContext: TextContext
-
-    init {
-        inputLogic.startSuppressingLogic()
-        textContext = TextContext(
-            beforeCursor = inputLogic.mConnection.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),
-            afterCursor = inputLogic.mConnection.getTextAfterCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0)
-        )
-    }
-
-    private var partialText = ""
-    override fun updatePartial(text: String) {
-        if(isFinished) return
-        partialText = text
-        inputLogic.mConnection.setComposingText(
-            partialText,
-            1
-        )
-    }
-
-    override fun commit(text: String) {
-        if(isFinished) return
-        isFinished = true
-        inputLogic.mConnection.commitText(
-            text,
-            1
-        )
-        inputLogic.endSuppressingLogic()
-    }
-
-    override fun cancel() {
-        commit(partialText)
-    }
-}
-
 class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIME) : KeyboardManagerForAction {
     override fun getContext(): Context {
         return latinIME
@@ -248,7 +206,7 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun createInputTransaction(): ActionInputTransaction {
-        return TODO()//LatinIMEActionInputTransaction(latinIME.inputLogic)
+        return latinIME.imeManager.createInputTransaction()
     }
 
     override fun typeText(v: String) {
