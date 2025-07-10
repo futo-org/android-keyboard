@@ -28,6 +28,7 @@ import org.futo.inputmethod.latin.uix.actions.ArrowRightAction
 import org.futo.inputmethod.latin.uix.actions.UndoAction
 import org.futo.inputmethod.latin.uix.actions.keyCode
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
+import org.futo.inputmethod.latin.utils.InputTypeUtils
 import org.futo.inputmethod.nativelib.mozc.KeycodeConverter
 import org.futo.inputmethod.nativelib.mozc.KeycodeConverter.KeyEventInterface
 import org.futo.inputmethod.nativelib.mozc.KeycodeConverter.getMozcKeyEvent
@@ -237,12 +238,40 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     }
 
 
-    private fun sendCodePoint(codePoint: Int) {
-        // TODO: Are we not overwriting composing text here?
-        helper.getCurrentInputConnection()?.commitText(
-            StringUtils.newSingleCodePointString(codePoint),
-            1
-        )
+    private fun sendCodePoint(codePoint: Int): Unit = when(codePoint) {
+        Constants.CODE_ENTER -> {
+            // TODO: Code duplication between here and InputLogic.handleNonFunctionalEvent
+            val ei = helper.getCurrentEditorInfo() ?: return
+            val ic = helper.getCurrentInputConnection() ?: return
+            val imeOptionsActionId = InputTypeUtils.getImeOptionsActionIdFromEditorInfo(ei)
+
+            val isCustomAction =
+                InputTypeUtils.IME_ACTION_CUSTOM_LABEL == imeOptionsActionId
+            val isEditorAction =
+                EditorInfo.IME_ACTION_NONE != imeOptionsActionId
+
+            if(isCustomAction) {
+                ic.performEditorAction(ei.actionId)
+            } else if(isEditorAction) {
+                ic.performEditorAction(imeOptionsActionId)
+            } else {
+                helper.getCurrentInputConnection()?.commitText(
+                    StringUtils.newSingleCodePointString(Constants.CODE_ENTER),
+                    1
+                )
+            }
+
+            Unit
+        }
+        else -> {
+            // TODO: Are we not overwriting composing text here?
+            helper.getCurrentInputConnection()?.commitText(
+                StringUtils.newSingleCodePointString(codePoint),
+                1
+            )
+
+            Unit
+        }
     }
 
     /** Sends the `KeyEvent`, which is not consumed by the mozc server. */
