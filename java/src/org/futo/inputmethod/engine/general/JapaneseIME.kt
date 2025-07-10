@@ -103,7 +103,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     lateinit var executor: SessionExecutor
 
     private fun updateConfig() {
-        Settings.getInstance().current
+        val settings = Settings.getInstance().current
         executor.config = ProtoConfig.Config.newBuilder().apply {
             sessionKeymap = ProtoConfig.Config.SessionKeymap.MOBILE
             selectionShortcut = ProtoConfig.Config.SelectionShortcut.NO_SHORTCUT // TODO?
@@ -114,7 +114,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             useKanaModifierInsensitiveConversion = true
             useTypingCorrection = true
             historyLearningLevel = ProtoConfig.Config.HistoryLearningLevel.DEFAULT_HISTORY
-            incognitoMode = BuildConfig.DEBUG//settings.mInputAttributes.mNoLearning
+            incognitoMode = BuildConfig.DEBUG || settings.mInputAttributes.mNoLearning || !settings.isPersonalizationEnabled
             generalConfig = ProtoConfig.GeneralConfig.newBuilder().apply {
                 uploadUsageStats = false
             }.build()
