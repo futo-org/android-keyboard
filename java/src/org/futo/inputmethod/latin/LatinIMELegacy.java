@@ -970,6 +970,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     @Override
     public void showSuggestionStrip(SuggestedWords suggestedWords) {
+        // TODO: I think this never gets called anymore
         suggestedWords = getLatinIME().getSuggestionBlacklist().filterBlacklistedSuggestions(suggestedWords);
 
         if (suggestedWords.isEmpty()) {

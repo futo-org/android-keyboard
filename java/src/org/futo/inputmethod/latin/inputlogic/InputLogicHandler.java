@@ -29,6 +29,7 @@ import org.futo.inputmethod.latin.common.InputPointers;
 /**
  * A helper to manage deferred tasks for the input logic.
  */
+// TODO: This class should probably be removed, it doesn't do much anymore. It just sets input pointers and calls postUpdateSuggestionStrip in a really roundabout way, and the callback is no longer called
 class InputLogicHandler implements Handler.Callback {
     final Handler mNonUIThreadHandler;
     // TODO: remove this reference.
@@ -95,9 +96,7 @@ class InputLogicHandler implements Handler.Callback {
     public boolean handleMessage(final Message msg) {
         switch (msg.what) {
             case MSG_GET_SUGGESTED_WORDS:
-                // TODO
-                //mLatinIMELegacy.getSuggestedWords(msg.arg1 /* inputStyle */,
-                //        msg.arg2 /* sequenceNumber */, (OnGetSuggestedWordsCallback) msg.obj);
+                mInputLogic.postUpdateSuggestionStrip(msg.arg1);
                 break;
         }
         return true;
@@ -134,40 +133,8 @@ class InputLogicHandler implements Handler.Callback {
                 return;
             }
             mInputLogic.mWordComposer.setBatchInputPointers(batchPointers);
-            final OnGetSuggestedWordsCallback callback = new OnGetSuggestedWordsCallback() {
-                @Override
-                public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                    showGestureSuggestionsWithPreviewVisuals(suggestedWords, isTailBatchInput);
-                }
-            };
             getSuggestedWords(isTailBatchInput ? SuggestedWords.INPUT_STYLE_TAIL_BATCH
-                    : SuggestedWords.INPUT_STYLE_UPDATE_BATCH, sequenceNumber, callback);
-        }
-    }
-
-    void showGestureSuggestionsWithPreviewVisuals(final SuggestedWords suggestedWordsForBatchInput,
-            final boolean isTailBatchInput) {
-        final SuggestedWords suggestedWordsToShowSuggestions;
-        // We're now inside the callback. This always runs on the Non-UI thread,
-        // no matter what thread updateBatchInput was originally called on.
-        if (suggestedWordsForBatchInput.isEmpty()) {
-            // Use old suggestions if we don't have any new ones.
-            // Previous suggestions are found in InputLogic#mSuggestedWords.
-            // Since these are the most recent ones and we just recomputed
-            // new ones to update them, then the previous ones are there.
-            suggestedWordsToShowSuggestions = mInputLogic.mSuggestedWords;
-        } else {
-            suggestedWordsToShowSuggestions = suggestedWordsForBatchInput;
-        }
-        // TODO
-        //mLatinIMELegacy.mHandler.showGesturePreviewAndSuggestionStrip(suggestedWordsToShowSuggestions,
-        //        isTailBatchInput /* dismissGestureFloatingPreviewText */);
-        if (isTailBatchInput) {
-            mInBatchInput = false;
-            // The following call schedules onEndBatchInputInternal
-            // to be called on the UI thread.
-            // TODO
-            //mLatinIMELegacy.mHandler.showTailBatchInputResult(suggestedWordsToShowSuggestions);
+                    : SuggestedWords.INPUT_STYLE_UPDATE_BATCH, sequenceNumber, null);
         }
     }
 

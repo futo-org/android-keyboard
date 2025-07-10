@@ -254,7 +254,7 @@ public final class InputLogic {
         mDictionaryFacilitator.closeDictionaries();
     }
 
-    private void postUpdateSuggestionStrip(int style) {
+    void postUpdateSuggestionStrip(int style) {
         mIme.updateSuggestions(style);
     }
 
@@ -279,7 +279,7 @@ public final class InputLogic {
         } else {
             resetComposingState(true /* alsoResetLastComposedWord */);
         }
-        postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
+        postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
         final String text = performSpecificTldProcessingOnTextInput(rawText);
         if (SpaceState.PHANTOM == mSpaceState) {
             insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
@@ -577,11 +577,6 @@ public final class InputLogic {
         mImeHelper.updateBoostedCodePoints(boostedCodePoints);
     }
 
-    public void showBatchSuggestions(final SuggestedWords suggestedWordsForBatchInput,
-                                     final boolean isTailBatchInput) {
-        mInputLogicHandler.showGestureSuggestionsWithPreviewVisuals(suggestedWordsForBatchInput, isTailBatchInput);
-    }
-
     public void onStartBatchInput(final SettingsValues settingsValues,
             final KeyboardSwitcher keyboardSwitcher) {
         mWordBeingCorrectedByCursor = null;
@@ -655,8 +650,6 @@ public final class InputLogic {
     public void onCancelBatchInput() {
         mInputLogicHandler.onCancelBatchInput();
         mIme.setNeutralSuggestionStrip();
-        //handler.showGesturePreviewAndSuggestionStrip(
-        //        SuggestedWords.getEmptyInstance(), true /* dismissGestureFloatingPreviewText */);
     }
 
     // TODO: on the long term, this method should become private, but it will be difficult.

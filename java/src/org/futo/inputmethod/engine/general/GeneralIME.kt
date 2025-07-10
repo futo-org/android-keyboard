@@ -50,13 +50,17 @@ interface WordLearner {
     )
 }
 
+interface OnGetSuggestedWordsCallbackWithInputStyle {
+    fun onGetSuggestedWords(suggestedWords: SuggestedWords, inputStyle: Int, sequenceNumber: Int)
+}
+
 /**
  * General IME implementation that works for Latin-based languages and some
  * more: Cyrillic, Hangul (with combiner), etc.
  *
  * Uses BinaryDictionary, etc
  */
-class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionStripViewAccessor {
+class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionStripViewAccessor, OnGetSuggestedWordsCallbackWithInputStyle {
     private val TAG = "GeneralIME"
     private val context = helper.context
 
@@ -98,7 +102,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         settings = settings,
         keyboardSwitcher = KeyboardSwitcher.getInstance(),
         lifecycleScope = helper.lifecycleScope,
-        suggestionBlacklist = suggestionBlacklist
+        suggestionBlacklist = suggestionBlacklist,
+        suggestedWordsCallback = this
     )
 
     override fun addToHistory(
@@ -291,10 +296,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     event.mSuggestedWordInfo!!,
                     helper.keyboardShiftMode,
                     helper.currentKeyboardScriptId
-                ).apply {
-                    // TODO: There is postUpdateSuggestionStrip within inputLogic that we're not using currently
-                    setRequiresUpdateSuggestions()
-                }
+                )
             }
 
             Event.EVENT_TYPE_DOWN_UP_KEYEVENT -> {
@@ -341,29 +343,55 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     @OptIn(ExperimentalCoroutinesApi::class)
     val dictionaryScope = Dispatchers.Default.limitedParallelism(1)
 
+
+    override fun onGetSuggestedWords(
+        suggestedWords: SuggestedWords,
+        inputStyle: Int,
+        sequenceNumber: Int
+    ) {
+        val words = when {
+            suggestedWords.isEmpty && (inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH ||
+                    inputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+                    ) -> inputLogic.mSuggestedWords
+
+            else -> suggestedWords
+        }
+
+        showSuggestionStrip(words)
+        updateSuggestionJob = null
+        when(inputStyle) {
+            SuggestedWords.INPUT_STYLE_TAIL_BATCH ->
+                inputLogic.onUpdateTailBatchInputCompleted(
+                    settings.current,
+                    words,
+                    helper.keyboardSwitcher
+                )
+        }
+    }
+
     var updateSuggestionJob: Job? = null
     private fun updateSuggestionsDictionaryInternal(inputStyle: Int) {
+        val sequenceNumber = SuggestedWords.NOT_A_SEQUENCE_NUMBER
         inputLogic.getSuggestedWords(
             settings.current,
             helper.keyboardSwitcher.keyboard,
             helper.keyboardShiftMode,
             inputStyle,
-            SuggestedWords.NOT_A_SEQUENCE_NUMBER
+            sequenceNumber
         ) { suggestedWords ->
-            showSuggestionStrip(suggestedWords)
-            updateSuggestionJob = null
+            onGetSuggestedWords(suggestedWords, inputStyle, sequenceNumber)
         }
     }
 
     fun updateSuggestions(inputStyle: Int) {
-        // TODO: After we update suggestion strip we have to inform inputLogic
-        // for autocorrect and underline
         if(!languageModelFacilitator.shouldPassThroughToLegacy()) {
             languageModelFacilitator.updateSuggestionStripAsync(inputStyle)
         } else {
             updateSuggestionJob?.cancel()
             updateSuggestionJob = helper.lifecycleScope.launch {
-                delay(40L)
+                when(inputStyle) {
+                    SuggestedWords.INPUT_STYLE_TYPING -> delay(40L)
+                }
                 withContext(dictionaryScope) {
                     updateSuggestionsDictionaryInternal(inputStyle)
                 }
