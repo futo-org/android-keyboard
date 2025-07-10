@@ -57,6 +57,7 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
+import org.futo.inputmethod.engine.IMEInterface;
 import org.futo.inputmethod.engine.IMEManager;
 import org.futo.inputmethod.event.Event;
 import org.futo.inputmethod.event.HardwareEventDecoder;
@@ -697,11 +698,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     int getCurrentAutoCapsState() {
-        return mImeManager.getActiveIME(mSettings.getCurrent()).getCurrentAutoCapsState();
+        return getActiveIME().getCurrentAutoCapsState();
     }
 
     int getCurrentRecapitalizeState() {
-        return mImeManager.getActiveIME(mSettings.getCurrent()).getCurrentRecapitalizeState();
+        return getActiveIME().getCurrentRecapitalizeState();
     }
 
     /**
@@ -833,7 +834,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
                         mKeyboardSwitcher.getKeyboardShiftMode(),
                         mKeyboardSwitcher.getCurrentKeyboardScriptId(), mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);*/
-        mImeManager.getActiveIME(mSettings.getCurrent()).onEvent(event);
+        getActiveIME().onEvent(event);
         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
     }
 
@@ -858,37 +859,33 @@ public class LatinIMELegacy implements KeyboardActionListener,
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onTextInput(final String rawText) {
-        // TODO: have the keyboard pass the correct key code when we need it.
         final Event event = Event.createSoftwareTextEvent(rawText, Constants.CODE_OUTPUT_TEXT);
-        //final InputTransaction completeInputTransaction =
-        //        mInputLogic.onTextInput(mSettings.getCurrent(), event,
-        //                mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
-        //updateStateAfterInputTransaction(completeInputTransaction);
+        getActiveIME().onEvent(event);
         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+    }
+
+    private IMEInterface getActiveIME() {
+        return mImeManager.getActiveIME(mSettings.getCurrent());
     }
 
     @Override
     public void onStartBatchInput() {
-        mImeManager.getActiveIME(mSettings.getCurrent()).onStartBatchInput();
-        //mInputLogic.onStartBatchInput(mSettings.getCurrent(), mKeyboardSwitcher, mHandler);
+        getActiveIME().onStartBatchInput();
     }
 
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
-        mImeManager.getActiveIME(mSettings.getCurrent()).onUpdateBatchInput(batchPointers);
-        //mInputLogic.onUpdateBatchInput(batchPointers);
+        getActiveIME().onUpdateBatchInput(batchPointers);
     }
 
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
-        mImeManager.getActiveIME(mSettings.getCurrent()).onEndBatchInput(batchPointers);
-        //mInputLogic.onEndBatchInput(batchPointers);
+        getActiveIME().onEndBatchInput(batchPointers);
     }
 
     @Override
     public void onCancelBatchInput() {
-        mImeManager.getActiveIME(mSettings.getCurrent()).onCancelBatchInput();
-        //mInputLogic.onCancelBatchInput(mHandler);
+        getActiveIME().onCancelBatchInput();
     }
 
     /**

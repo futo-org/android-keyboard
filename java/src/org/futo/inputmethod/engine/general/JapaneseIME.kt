@@ -176,7 +176,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     override fun onFinishInput() {
         executor.syncData()
         selectionTracker.onFinishInput()
-        executor.resetContext()
+        resetContextAndCommitText()
     }
 
     override fun onUpdateSelection(
@@ -237,6 +237,14 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         return true
     }
 
+    private fun resetContextAndCommitText(text: CharSequence? = null) {
+        executor.resetContext()
+
+        val ic = helper.getCurrentInputConnection() ?: return
+        ic.finishComposingText()
+
+        if(text != null) ic.commitText(text, 1)
+    }
 
     private fun sendCodePoint(codePoint: Int): Unit = when(codePoint) {
         Constants.CODE_ENTER -> {
@@ -255,22 +263,14 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             } else if(isEditorAction) {
                 ic.performEditorAction(imeOptionsActionId)
             } else {
-                helper.getCurrentInputConnection()?.commitText(
-                    StringUtils.newSingleCodePointString(Constants.CODE_ENTER),
-                    1
-                )
+                resetContextAndCommitText(StringUtils.newSingleCodePointString(Constants.CODE_ENTER))
             }
 
             Unit
         }
-        else -> {
-            // TODO: Are we not overwriting composing text here?
-            helper.getCurrentInputConnection()?.commitText(
-                StringUtils.newSingleCodePointString(codePoint),
-                1
-            )
 
-            Unit
+        else -> {
+            resetContextAndCommitText(StringUtils.newSingleCodePointString(codePoint))
         }
     }
 
@@ -671,6 +671,10 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             val mozcId = suggestion.mIndexOfTouchPointOfSecondWord // Re-using this field for now
             val rowIdx = SUGGESTION_ID_INVERSION - suggestion.mScore
             executor.submitCandidate(mozcId, Optional.of(rowIdx), evaluationCallback)
+        }
+
+        Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> {
+            resetContextAndCommitText(event.mText)
         }
 
         else -> {
