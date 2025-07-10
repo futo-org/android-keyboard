@@ -2,6 +2,7 @@ package org.futo.inputmethod.engine.general
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -176,7 +177,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         if (context.isDirectBootUnlocked) onDeviceUnlocked()
 
         suggestionBlacklist.init()
-        
+
         helper.lifecycleScope.launch {
             GlobalIMEMessage.collect { message ->
                 when(message) {
@@ -337,6 +338,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val dictionaryScope = Dispatchers.Default.limitedParallelism(1)
 
     var updateSuggestionJob: Job? = null
