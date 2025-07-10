@@ -579,4 +579,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.setSuggestedWords(suggestedWords ?: SuggestedWords.getEmptyInstance())
         helper.showSuggestionStrip(suggestedWords, useExpandableUi)
     }
+
+    fun debugInfo(): List<String> = listOf(
+        "composingText = ${inputLogic.mConnection.composingTextForDebug}",
+        "committedTextBeforeComposingText = ${inputLogic.mConnection.committedTextBeforeComposingTextForDebug}",
+        "LM.shouldPassThroughToLegacy = ${languageModelFacilitator.shouldPassThroughToLegacy()}",
+        "LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}"
+    )
 }
