@@ -175,6 +175,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         languageModelFacilitator.launchProcessor()
         if (context.isDirectBootUnlocked) onDeviceUnlocked()
 
+        suggestionBlacklist.init()
+        
         helper.lifecycleScope.launch {
             GlobalIMEMessage.collect { message ->
                 when(message) {
@@ -350,6 +352,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             updateSuggestionJob = null
         }
     }
+
     fun updateSuggestions(inputStyle: Int) {
         // TODO: After we update suggestion strip we have to inform inputLogic
         // for autocorrect and underline
@@ -561,6 +564,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun clearUserHistoryDictionaries() {
         dictionaryFacilitator.clearUserHistoryDictionary(context)
         resetDictionaryFacilitator(force = true) // do we need force?
+    }
+
+    override fun requestSuggestionRefresh() {
+        updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING)
     }
 
     override fun getCurrentAutoCapsState(): Int =

@@ -1384,13 +1384,13 @@ class UixManager(private val latinIME: LatinIME) {
             listOf(
                 DialogRequestItem(latinIME.getString(R.string.cancel)) { },
                 DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_add_word_to_blacklist)) {
-                    latinIME.forceForgetWord(suggestedWordInfo)
+                    latinIME.blacklistWord(suggestedWordInfo)
                 },
             ) + if(suggestedWordInfo.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
                 listOf(
                     DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_disable_emojis)) {
                         runBlocking { latinIME.setSetting(SHOW_EMOJI_SUGGESTIONS, false) }
-                        TODO("Refresh suggestions")
+                        latinIME.blacklistWord(null)
                     }
                 )
             } else {

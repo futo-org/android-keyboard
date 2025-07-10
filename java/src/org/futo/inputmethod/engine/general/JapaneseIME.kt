@@ -736,12 +736,19 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     }
 
+    private var prevSuggestions: SuggestedWords? = null
+    override fun requestSuggestionRefresh() {
+        if(prevSuggestions != null) showSuggestionStrip(prevSuggestions)
+    }
+
     private val useExpandableUi = true
     fun setNeutralSuggestionStrip() {
+        prevSuggestions = null
         helper.setNeutralSuggestionStrip(useExpandableUi)
     }
 
     fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
+        prevSuggestions = suggestedWords
         helper.showSuggestionStrip(suggestedWords, useExpandableUi)
     }
 }

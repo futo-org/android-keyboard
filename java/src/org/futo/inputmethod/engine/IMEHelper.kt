@@ -81,7 +81,7 @@ class IMEHelper(
 
     fun showSuggestionStrip(suggestedWords: SuggestedWords?, useExpandableUi: Boolean) {
         latinIME.setSuggestions(
-            suggestedWords = suggestedWords,
+            suggestedWords = suggestedWords ?: SuggestedWords.getEmptyInstance(),
             rtlSubtype = Settings.getInstance().current.mIsRTL,
             useExpandableUi = useExpandableUi
         )

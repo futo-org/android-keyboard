@@ -71,6 +71,9 @@ interface IMEInterface {
     fun onMovingCursorLockEvent(canMoveCursor: Boolean)
     fun clearUserHistoryDictionaries()
 
+    /** Refresh as a result of blacklist update */
+    fun requestSuggestionRefresh()
+
     // TODO: Not sure how to do this properly
     fun getCurrentAutoCapsState(): Int = Constants.TextUtils.CAP_MODE_OFF
     fun getCurrentRecapitalizeState(): Int = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE

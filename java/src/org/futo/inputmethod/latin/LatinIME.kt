@@ -51,6 +51,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.engine.IMEManager
 import org.futo.inputmethod.engine.general.WordLearner
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -734,11 +735,16 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     override fun setSuggestions(
-        suggestedWords: SuggestedWords?,
+        suggestedWords: SuggestedWords,
         rtlSubtype: Boolean,
         useExpandableUi: Boolean
     ) {
-        uixManager.setSuggestions(suggestedWords, rtlSubtype, useExpandableUi)
+        val words = suggestionBlacklist.filterBlacklistedSuggestions(suggestedWords)
+        uixManager.setSuggestions(words, rtlSubtype, useExpandableUi)
+
+        // Cache the auto-correction in accessibility code so we can speak it if the user
+        // touches a key that will insert it.
+        AccessibilityUtils.getInstance().setAutoCorrection(words)
     }
 
     override fun onLowMemory() {
@@ -765,15 +771,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         uixManager.requestForgetWord(suggestedWordInfo)
     }
 
-    fun forceForgetWord(suggestedWordInfo: SuggestedWordInfo) {
-        lifecycleScope.launch {
+    fun blacklistWord(suggestedWordInfo: SuggestedWordInfo?) = lifecycleScope.launch {
+        if(suggestedWordInfo != null) {
             val existingWords = getSetting(SUGGESTION_BLACKLIST).toMutableSet()
             existingWords.add(suggestedWordInfo.mWord)
             setSetting(SUGGESTION_BLACKLIST, existingWords)
         }
 
         imeManager.getActiveIME(Settings.getInstance().current).let {
-            if(it is WordLearner) {
+            if(it is WordLearner && suggestedWordInfo != null) {
                 it.removeFromHistory(
                     suggestedWordInfo.mWord,
                     NgramContext.EMPTY_PREV_WORDS_INFO,
@@ -781,9 +787,11 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                     Constants.NOT_A_CODE
                 )
             }
-        }
 
-        //TODO("refreshSuggestions")
+            withContext(Dispatchers.Main) {
+                it.requestSuggestionRefresh()
+            }
+        }
     }
 
     fun rememberEmojiSuggestion(suggestion: SuggestedWordInfo) {
