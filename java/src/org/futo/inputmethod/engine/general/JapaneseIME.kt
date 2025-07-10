@@ -93,7 +93,7 @@ internal fun getInputFieldType(attribute: EditorInfo): InputFieldType {
 private const val SUGGESTION_ID_INVERSION = 10000
 private const val TAG = "JapaneseIME"
 class JapaneseIME(val helper: IMEHelper) : IMEInterface {
-    companion object { init { MozcLog.forceLoggable = false }}
+    companion object { init { MozcLog.forceLoggable = BuildConfig.DEBUG }}
 
     init {
         if(!helper.context.isDirectBootUnlocked) TODO("Only supported in unlocked state right now")
@@ -286,6 +286,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             return
         }
 
+        if(maybeHandleAction(keyCode)) return
+
         // Following code is to fallback to target activity.
         val nativeKeyEvent = keyEvent.nativeEvent
         val inputConnection = helper.getCurrentInputConnection()
@@ -322,6 +324,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             sendDownUpKeyEvent(keyCode, 0)
         }
     }
+
+    // TODO: Code duplication between InputLogic and here
     fun sendDownUpKeyEvent(keyCode: Int, metaState: Int) {
         val eventTime = SystemClock.uptimeMillis()
         helper.getCurrentInputConnection()?.sendKeyEvent(
@@ -595,46 +599,25 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             }.build())
         }.build()
 
-    private fun maybeHandleAction(keyCode: Int) {
+    // TODO: This rough code pattern appears 3 times in the codebase, probably time to make a util function
+    private fun maybeHandleAction(keyCode: Int): Boolean {
         if (keyCode <= Constants.CODE_ACTION_MAX && keyCode >= Constants.CODE_ACTION_0) {
             val actionId: Int = keyCode - Constants.CODE_ACTION_0
             helper.triggerAction(actionId, false)
-            return
+            return true
         }
 
         if (keyCode <= Constants.CODE_ALT_ACTION_MAX && keyCode >= Constants.CODE_ALT_ACTION_0) {
             val actionId: Int = keyCode - Constants.CODE_ALT_ACTION_0
             helper.triggerAction(actionId, true)
-            return
+            return true
         }
+
+        return false
     }
 
     override fun onEvent(event: Event) = when (event.eventType) {
         Event.EVENT_TYPE_INPUT_KEYPRESS -> {
-            val mozcEvent = when (event.mCodePoint) {
-                Constants.CODE_SPACE -> KeycodeConverter.SPECIALKEY_SPACE
-                Constants.CODE_ENTER -> KeycodeConverter.SPECIALKEY_VIRTUAL_ENTER
-                Constants.NOT_A_CODE -> when (event.mKeyCode) {
-                    Constants.CODE_DELETE -> KeycodeConverter.SPECIALKEY_BACKSPACE
-                    ArrowLeftAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_LEFT
-                    ArrowRightAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_RIGHT
-                    UndoAction.keyCode -> {
-                        executor.undoOrRewind(emptyList(), evaluationCallback)
-                        return
-                    }
-
-                    else -> {
-                        maybeHandleAction(event.mKeyCode)
-                        null
-                    }
-                }
-
-                else -> getMozcKeyEvent(event.mCodePoint)
-            } ?: return run {
-                Log.e(TAG, "Unknown keycode for that event (${ArrowLeftAction.keyCode})")
-                Unit
-            }
-
             val triggeringKeyEvent = if (event.mKeyCode != Event.NOT_A_KEY_CODE) {
                 KeycodeConverter.getKeyEventInterface(
                     KeyEvent(
@@ -651,6 +634,33 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 )
             } else {
                 KeycodeConverter.getKeyEventInterface(event.mCodePoint)
+            }
+
+            val mozcEvent = when (event.mCodePoint) {
+                Constants.CODE_SPACE -> KeycodeConverter.SPECIALKEY_SPACE
+                Constants.CODE_ENTER -> KeycodeConverter.SPECIALKEY_VIRTUAL_ENTER
+                Constants.NOT_A_CODE -> when (event.mKeyCode) {
+                    Constants.CODE_DELETE -> KeycodeConverter.SPECIALKEY_BACKSPACE
+                    ArrowLeftAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_LEFT
+                    ArrowRightAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_RIGHT
+                    UndoAction.keyCode -> {
+                        // TODO: Should probably update mozc-lib to pass key event here explicitly instead of doing it like this
+                        executor.undoOrRewind(emptyList(), { command, _ ->
+                            evaluationCallback.onCompleted(command, Optional.of(triggeringKeyEvent))
+                        })
+                        return
+                    }
+
+                    else -> {
+                        maybeHandleAction(event.mKeyCode)
+                        null
+                    }
+                }
+
+                else -> getMozcKeyEvent(event.mCodePoint)
+            } ?: return run {
+                Log.e(TAG, "Unknown keycode for that event (${ArrowLeftAction.keyCode})")
+                Unit
             }
 
             val touchEvents = emptyList<ProtoCommands.Input.TouchEvent>() /* listOf(
@@ -675,6 +685,13 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
         Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> {
             resetContextAndCommitText(event.mText)
+        }
+
+        Event.EVENT_TYPE_DOWN_UP_KEYEVENT -> {
+            // TODO: Should we be calling this here just to be sure?
+            resetContextAndCommitText()
+
+            sendDownUpKeyEvent(event.mKeyCode, event.mX)
         }
 
         else -> {
