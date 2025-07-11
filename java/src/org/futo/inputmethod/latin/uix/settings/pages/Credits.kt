@@ -40,48 +40,14 @@ import org.futo.inputmethod.latin.uix.settings.SpacedColumn
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.credits.ThirdPartyItem
 import org.futo.inputmethod.latin.uix.settings.pages.credits.ThirdPartyList
+import org.futo.inputmethod.latin.uix.settings.pages.credits.codeContribs
+import org.futo.inputmethod.latin.uix.settings.pages.credits.languageContribs
+import org.futo.inputmethod.latin.uix.settings.pages.credits.layoutContribs
 import org.futo.inputmethod.latin.uix.settings.pages.credits.text
 import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.openURI
-
-@Suppress("HardCodedStringLiteral")
-private val layoutContribs: List<String> = listOf(
-    "tenextractor",
-    "abb128",
-    "abdelhaqueidali",
-    "lomtjjz",
-    "BoFFire",
-    "slycordinator",
-    "IliyanKostov9",
-    "NicolasLagaillardie",
-    "sapradhan",
-    "Imold",
-    "Midnight1938"
-)
-
-@Suppress("HardCodedStringLiteral")
-private val languageContribs: List<String> = listOf(
-    "abb128 (lt, ru)",
-    "Witek (pl)",
-    "Lucas (pt-BR)",
-)
-
-@Suppress("HardCodedStringLiteral")
-private val codeContribs: List<String> = listOf(
-    "venkatesh2090",
-    "s-h-a-d-o-w",
-    "sapradhan",
-    "SkeLLLa",
-    "arbitrary-dev",
-    "tenextractor",
-    "ornstrange",
-    "roguesensei",
-    "remreren",
-    "ravarage"
-)
-
 
 @Composable
 @Preview(showBackground = true)
