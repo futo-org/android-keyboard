@@ -182,7 +182,7 @@ fun SelectLayoutsScreen(navController: NavHostController = rememberNavController
     }
 
     ScrollableList {
-        ScreenTitle(locale.getDisplayName(locale), showBack = true, navController)
+        ScreenTitle(Subtypes.getLocaleDisplayName(locale, locale), showBack = true, navController)
 
         ScreenTitle(stringResource(R.string.language_settings_select_layout))
 
