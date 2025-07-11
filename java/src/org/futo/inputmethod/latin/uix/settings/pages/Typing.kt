@@ -227,8 +227,11 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPressKey, Int) -> Unit, disable: (LongPressKey) -> Unit, dragIcon: @Composable () -> Unit, limits: IntRange) {
-    val talkBackOn = AccessibilityUtils.getInstance().isAccessibilityEnabled
     val context = LocalContext.current
+    val talkBackOn = remember {
+        AccessibilityUtils.init(context)
+        AccessibilityUtils.getInstance().isAccessibilityEnabled
+    }
 
     val customActions = remember(idx, limits, item) {
         buildList {
@@ -312,7 +315,7 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
         title = "${idx+1}. " + item.name(context),
         subtitle = item.description(context),
         icon = {
-            if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
+            if(talkBackOn) {
                 Column {
                     IconButton(onClick = { moveItem(item, -1) }) {
                         Icon(
