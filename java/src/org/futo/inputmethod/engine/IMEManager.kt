@@ -52,9 +52,7 @@ class IMEManager(
         }.also {
             if(activeIme != it && activeIme != null && inInput) {
                 activeIme?.onFinishInput()
-                it.onStartInput(
-                    RichInputMethodManager.getInstance().currentSubtype.keyboardLayoutSetName
-                )
+                startIme(it)
             }
             activeIme = it
         }
@@ -77,15 +75,15 @@ class IMEManager(
 
     private var inInput = false
     fun onStartInput() {
+        val ime = getActiveIME(settings.current)
         inInput = true
-        getActiveIME(settings.current).onStartInput(
-            RichInputMethodManager.getInstance().currentSubtype.keyboardLayoutSetName
-        )
+        startIme(ime)
     }
 
     fun onFinishInput() {
+        val ime = getActiveIME(settings.current)
         inInput = false
-        getActiveIME(settings.current).onFinishInput()
+        ime.onFinishInput()
 
         currentActionInputTransactionIME?.let { endInputTransaction(it) }
     }
@@ -109,6 +107,26 @@ class IMEManager(
         return ime
     }
 
+    private fun startIme(ime: IMEInterface) {
+        ime.onStartInput(
+            RichInputMethodManager.getInstance().currentSubtype.keyboardLayoutSetName
+        )
+
+        // We need to apply previous selection in the event of a switch, because IC.requestCursorUpdates isn't always reliable
+        prevSelection?.apply {
+            if(currHash() == hash) {
+                ime.onUpdateSelection(
+                    oldSelStart,
+                    oldSelEnd,
+                    newSelStart,
+                    newSelEnd,
+                    composingSpanStart,
+                    composingSpanEnd
+                )
+            }
+        }
+    }
+
     fun endInputTransaction(inputTransactionIME: ActionInputTransactionIME) {
         if(inputTransactionIME == currentActionInputTransactionIME) {
             currentActionInputTransactionIME = null
@@ -117,10 +135,40 @@ class IMEManager(
 
             if (inInput) {
                 val existingIme = getActiveIME(settings.current)
-                existingIme.onStartInput(
-                    RichInputMethodManager.getInstance().currentSubtype.keyboardLayoutSetName
-                )
+                startIme(existingIme)
             }
         }
+    }
+
+    data class Selection(
+        val oldSelStart: Int,
+        val oldSelEnd: Int,
+        val newSelStart: Int,
+        val newSelEnd: Int,
+        val composingSpanStart: Int,
+        val composingSpanEnd: Int,
+        val hash: Int
+    )
+
+    private var prevSelection: Selection? = null
+
+    private fun currHash(): Int {
+        return (helper.getCurrentEditorInfo()?.hashCode() ?: 0) xor (helper.getCurrentInputConnection()?.hashCode() ?: 0)
+    }
+
+    fun onUpdateSelection(
+        oldSelStart: Int,
+        oldSelEnd: Int,
+        newSelStart: Int,
+        newSelEnd: Int,
+        composingSpanStart: Int,
+        composingSpanEnd: Int
+    ) {
+        prevSelection = Selection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart, composingSpanEnd, currHash())
+        getActiveIME(settings.current).onUpdateSelection(
+            oldSelStart, oldSelEnd,
+            newSelStart, newSelEnd,
+            composingSpanStart, composingSpanEnd
+        )
     }
 }

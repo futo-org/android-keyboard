@@ -571,7 +571,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         final SettingsValues settingsValues = mSettings.getCurrent();
         if (mInputMethodService.isInputViewShown()) {
             // TODO: Originally belated update selection will not go here
-            mImeManager.getActiveIME(settingsValues).onUpdateSelection(
+            mImeManager.onUpdateSelection(
                     oldSelStart, oldSelEnd,
                     newSelStart, newSelEnd,
                     composingSpanStart, composingSpanEnd
