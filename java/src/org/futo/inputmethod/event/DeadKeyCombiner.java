@@ -193,6 +193,82 @@ public class DeadKeyCombiner implements Combiner {
             addNonStandardDeadCombination(ACCENT_STROKE, 'o', '\u00f8');
             // U+0167: LATIN SMALL LETTER T WITH STROKE
             addNonStandardDeadCombination(ACCENT_STROKE, 't', '\u0167');
+
+            // Combinations with the combining character U+0335 SHORT STROKE OVERLAY
+            // (Mostly same as above, but with some more letters)
+            // U+0243: LATIN CAPITAL LETTER B WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'B', 'Ƀ');
+            // U+0180: LATIN SMALL LETTER B WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'b', 'ƀ');
+            // U+0110: LATIN CAPITAL LETTER D WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'D', 'Đ');
+            // U+0111: LATIN SMALL LETTER D WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'd', 'đ');
+            // U+01E4: LATIN CAPITAL LETTER G WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'G', 'Ǥ');
+            // U+01E5: LATIN SMALL LETTER G WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'g', 'ǥ');
+            // U+0126: LATIN CAPITAL LETTER H WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'H', 'Ħ');
+            // U+0127: LATIN SMALL LETTER H WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'h', 'ħ');
+            // U+0197: LATIN CAPITAL LETTER I WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'I', 'Ɨ');
+            // U+0268: LATIN SMALL LETTER I WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'i', 'ɨ');
+            // U+0248: LATIN CAPITAL LETTER J WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'J', 'Ɉ');
+            // U+0249: LATIN SMALL LETTER J WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'j', 'ɉ');
+            // U+0141: LATIN CAPITAL LETTER L WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'L', 'Ł');
+            // U+0142: LATIN SMALL LETTER L WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'l', 'ł');
+            // U+00D8: LATIN CAPITAL LETTER O WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'O', 'Ø');
+            // U+00F8: LATIN SMALL LETTER O WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'o', 'ø');
+            // U+024C: LATIN CAPITAL LETTER R WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'R', 'Ɍ');
+            // U+024D: LATIN SMALL LETTER R WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'r', 'ɍ');
+            // U+0166: LATIN CAPITAL LETTER T WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'T', 'Ŧ');
+            // U+0167: LATIN SMALL LETTER T WITH STROKE
+            addNonStandardDeadCombination('\u0335', 't', 'ŧ');
+            // U+024E: LATIN CAPITAL LETTER Y WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'Y', 'Ɏ');
+            // U+024F: LATIN SMALL LETTER Y WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'y', 'ɏ');
+            // U+01B5: LATIN CAPITAL LETTER Z WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'Z', 'Ƶ');
+            // U+01B6: LATIN SMALL LETTER Z WITH STROKE
+            addNonStandardDeadCombination('\u0335', 'z', 'ƶ');
+
+            // Letters for Kildin Sámi Cyrillic alphabet
+            // (There is no combining diacritic for the tails on these letters, so we approximate
+            // with a U+0326 COMBINING COMMA BELOW)
+            // U+048A: "Ҋ" CYRILLIC CAPITAL LETTER SHORT I WITH TAIL
+            addNonStandardDeadCombination('\u0326', 'Й', 'Ҋ');
+            // U+048B: "ҋ" CYRILLIC SMALL LETTER SHORT I WITH TAIL
+            addNonStandardDeadCombination('\u0326', 'й', 'ҋ');
+            // U+04C5: "Ӆ" CYRILLIC CAPITAL LETTER EL WITH TAIL
+            addNonStandardDeadCombination('\u0326', 'Л', 'Ӆ');
+            // U+04C6: "ӆ" CYRILLIC SMALL LETTER EL WITH TAIL
+            addNonStandardDeadCombination('\u0326', 'л', 'ӆ');
+            // U+04CD: "Ӎ" CYRILLIC CAPITAL LETTER EM WITH TAIL
+            addNonStandardDeadCombination('\u0326', 'М', 'Ӎ');
+            // U+04CE: "ӎ" CYRILLIC SMALL LETTER EM WITH TAIL
+            addNonStandardDeadCombination('\u0326', 'м', 'ӎ');
+            // U+04C9: "Ӊ" CYRILLIC CAPITAL LETTER EN WITH TAIL
+            addNonStandardDeadCombination('\u0326', 'Н', 'Ӊ');
+            // U+04CA: "ӊ" CYRILLIC SMALL LETTER EN WITH TAIL
+            addNonStandardDeadCombination('\u0326', 'н', 'ӊ');
+            // This one does not have a tail, but it is of the same series
+            // U+048E: "Ҏ" CYRILLIC CAPITAL LETTER ER WITH TICK
+            addNonStandardDeadCombination('\u0326', 'Р', 'Ҏ');
+            // U+048F: "ҏ" CYRILLIC SMALL LETTER ER WITH TICK
+            addNonStandardDeadCombination('\u0326', 'р', 'ҏ');
         }
 
         private static void addNonStandardDeadCombination(final int deadCodePoint,
