@@ -127,5 +127,6 @@ fun UserSettingsMenu.render(showBack: Boolean = true, showTitle: Boolean = true)
 fun UserSettingsMenuScreen(menu: UserSettingsMenu) {
     ScrollableList {
         menu.render()
+        BottomSpacer()
     }
 }

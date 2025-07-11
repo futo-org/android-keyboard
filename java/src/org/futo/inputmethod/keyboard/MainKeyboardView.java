@@ -58,6 +58,7 @@ import org.futo.inputmethod.latin.common.CoordinateUtils;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
+import org.futo.inputmethod.v2keyboard.LayoutManager;
 
 import java.util.List;
 import java.util.Locale;
@@ -841,6 +842,16 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
             if (fitsTextIntoWidth(width, fullText, paint)) {
                 return fullText;
             }
+        }
+
+        // TODO: We have two different exceptional locale systems now, should probably just stick
+        //  with the LayoutManager one.
+
+        final String definedName = LayoutManager.INSTANCE.getExceptionalNameForLocale(
+                locale, locale
+        );
+        if(definedName != null) {
+            return definedName;
         }
 
         if(SubtypeLocaleUtils.isExceptionalLocale(locale.toString())

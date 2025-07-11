@@ -92,6 +92,7 @@ import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.setSettingBlocking
+import org.futo.inputmethod.latin.uix.settings.BottomSpacer
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
 import org.futo.inputmethod.latin.uix.settings.LocalSharedPrefsCache
@@ -226,8 +227,11 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPressKey, Int) -> Unit, disable: (LongPressKey) -> Unit, dragIcon: @Composable () -> Unit, limits: IntRange) {
-    val talkBackOn = AccessibilityUtils.getInstance().isAccessibilityEnabled
     val context = LocalContext.current
+    val talkBackOn = remember {
+        AccessibilityUtils.init(context)
+        AccessibilityUtils.getInstance().isAccessibilityEnabled
+    }
 
     val customActions = remember(idx, limits, item) {
         buildList {
@@ -311,7 +315,7 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
         title = "${idx+1}. " + item.name(context),
         subtitle = item.description(context),
         icon = {
-            if(AccessibilityUtils.getInstance().isAccessibilityEnabled) {
+            if(talkBackOn) {
                 Column {
                     IconButton(onClick = { moveItem(item, -1) }) {
                         Icon(
@@ -865,6 +869,7 @@ fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavContro
     ScrollableList {
         KeyboardSettingsMenu.render(showBack = true)
         TypingSettingsMenu.render(showBack = false)
+        BottomSpacer()
     }
 }
 

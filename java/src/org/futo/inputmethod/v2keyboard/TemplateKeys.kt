@@ -5,6 +5,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutPage
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.actions.AllActionKeys
@@ -113,8 +115,16 @@ data class EnterKey(
     ): ComputedKeyData {
         val attributes = attributes.getEffectiveAttributes(row, keyboard)
 
+        val isShifted = params.mId.mElement.kind == KeyboardLayoutKind.Symbols
+        val hasOptionToMultiLine =
+            params.mId.isMultiLine && params.mId.imeAction() != EditorInfo.IME_ACTION_NONE
+                    && !params.mId.passwordInput()
+        val useShiftEnter = isShifted && hasOptionToMultiLine
+
         // Icon, etc depend on editorInfo.
-        val icon = when(params.mId.imeAction()) {
+        val icon = if (useShiftEnter)
+            KeyboardIconsSet.NAME_ENTER_KEY
+        else when (params.mId.imeAction()) {
             EditorInfo.IME_ACTION_UNSPECIFIED -> KeyboardIconsSet.NAME_ENTER_KEY
             EditorInfo.IME_ACTION_NONE -> KeyboardIconsSet.NAME_ENTER_KEY
             EditorInfo.IME_ACTION_GO -> KeyboardIconsSet.NAME_GO_KEY
@@ -128,13 +138,26 @@ data class EnterKey(
             else -> KeyboardIconsSet.NAME_ENTER_KEY
         }
 
-        val moreKeys = if(params.mId.navigateNext() || params.mId.navigatePrevious()) {
-            "!text/keyspec_emoji_action_key_navigation"
-        } else {
-            "!text/keyspec_emoji_action_key"
+        val code = if (useShiftEnter)
+            Constants.CODE_SHIFT_ENTER
+        else
+            Constants.CODE_ENTER
+
+        val moreKeys = when {
+            // When IME action is overriding normal enter, show the option for shift+enter
+            hasOptionToMultiLine && !useShiftEnter ->
+                "!text/keyspec_emoji_action_key_shift_enter"
+
+            // Show navigation next/previous if necessary
+            params.mId.navigateNext() || params.mId.navigatePrevious() ->
+                "!text/keyspec_emoji_action_key_navigation"
+
+            // Standard enter key actions
+            else ->
+                "!text/keyspec_emoji_action_key"
         }.let {
             MoreKeysBuilder(
-                code = Constants.CODE_ENTER,
+                code = code,
                 mode = attributes.moreKeyMode!!,
                 coordinate = coordinate,
                 row = row,
@@ -145,7 +168,7 @@ data class EnterKey(
 
         return ComputedKeyData(
             label                 = "",
-            code                  = Constants.CODE_ENTER,
+            code                  = code,
             outputText            = null,
             width                 = attributes.width ?: KeyWidth.FunctionalKey,
             icon                  = icon,

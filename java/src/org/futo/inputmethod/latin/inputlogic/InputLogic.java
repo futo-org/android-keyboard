@@ -314,7 +314,7 @@ public final class InputLogic {
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && suggestedWords.isPunctuationSuggestions()) {
             // We still want to log a suggestion click.
-            StatsUtils.onPickSuggestionManually(
+            StatsUtils.onPickSuggestionManually(mImeHelper.getContext(),
                     mSuggestedWords, suggestionInfo, mDictionaryFacilitator);
             // Word separators are suggested before the user inputs something.
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
@@ -382,7 +382,7 @@ public final class InputLogic {
         // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
         postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
 
-        StatsUtils.onPickSuggestionManually(
+        StatsUtils.onPickSuggestionManually(mImeHelper.getContext(),
                 mSuggestedWords, suggestionInfo, mDictionaryFacilitator);
         StatsUtils.onWordCommitSuggestionPickedManually(
                 suggestionInfo.mWord, mWordComposer.isBatchMode());
@@ -1242,7 +1242,7 @@ public final class InputLogic {
                     && inputTransaction.mSettingsValues.mBackspaceUndoesAutocorrect) {
                 final String lastComposedWord = mLastComposedWord.mTypedWord;
                 revertCommit(inputTransaction, inputTransaction.mSettingsValues);
-                StatsUtils.onRevertAutoCorrect();
+                StatsUtils.onRevertAutoCorrect(mImeHelper.getContext(), lastComposedWord);
                 StatsUtils.onWordCommitUserTyped(lastComposedWord, mWordComposer.isBatchMode());
                 // Restart suggestions when backspacing into a reverted word. This is required for
                 // the final corrected word to be learned, as learning only occurs when suggestions
@@ -1480,6 +1480,8 @@ public final class InputLogic {
         mIme.removeFromHistory(word, ngramContext, timeStampInSeconds, eventType);
         mDictionaryFacilitator.unlearnFromUserHistory(
                 word, ngramContext, timeStampInSeconds, eventType);
+
+        StatsUtils.onWordUnlearned(mImeHelper.getContext(), word);
 
         // TODO
         //final NgramContext ngramContext1 = mConnection.getNgramContextFromNthPreviousWord(
@@ -1787,6 +1789,8 @@ public final class InputLogic {
                 mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps();
         final long timeStampInSeconds = TimeUnit.MILLISECONDS.toSeconds(
                 System.currentTimeMillis());
+
+        StatsUtils.onWordLearned(mImeHelper.getContext(), suggestion);
 
         mIme.addToHistory(suggestion, wasAutoCapitalized,
                 ngramContext, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive,
@@ -2346,14 +2350,16 @@ public final class InputLogic {
      *
      * @param keyCode the key code to send inside the key event.
      */
-    public void sendDownUpKeyEvent(final int keyCode, final int metaState) {
+    public boolean sendDownUpKeyEvent(final int keyCode, final int metaState) {
         final long eventTime = SystemClock.uptimeMillis();
-        mConnection.sendKeyEvent(new KeyEvent(eventTime, eventTime,
+        boolean a = mConnection.sendKeyEvent(new KeyEvent(eventTime, eventTime,
                 KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
-        mConnection.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime,
+        boolean b = mConnection.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime,
                 KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+
+        return a || b;
     }
 
     /**
@@ -2367,6 +2373,16 @@ public final class InputLogic {
      */
     // TODO: replace these two parameters with an InputTransaction
     private void sendKeyCodePoint(final SettingsValues settingsValues, final int codePoint) {
+        // In some (rare?) cases KeyEvent will not work because the view isn't focused ( https://github.com/futo-org/android-keyboard/issues/938 )
+        // In other cases commitText won't work (Spotify login code in Grayjay)
+        // We try sending keyEvent first and fallback to commitText. This might cause double numeric
+        // inputs in InputConnections that return false but commit text anyway
+        if (codePoint >= '0' && codePoint <= '9') {
+            if(sendDownUpKeyEvent(codePoint - '0' + KeyEvent.KEYCODE_0, 0)) {
+                return;
+            }
+        }
+
         // TODO: we should do this also when the editor has TYPE_NULL
         if (Constants.CODE_ENTER == codePoint && settingsValues.isBeforeJellyBean()) {
             // Backward compatibility mode. Before Jelly bean, the keyboard would simulate

@@ -16,14 +16,17 @@
 
 package org.futo.inputmethod.latin.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.inputmethod.InputMethodSubtype;
 
 import org.futo.inputmethod.latin.DictionaryFacilitator;
 import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.SuggestedWords;
+import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SettingsValues;
-
-import javax.annotation.Nullable;
+import org.futo.inputmethod.latin.uix.PreferenceUtils;
+import org.futo.inputmethod.latin.uix.settings.BadWordsKt;
 
 // TODO: Use this class to mutate settings based on user behavior (if not manually overridden)
 // e.g. if they type a lot of swear words, maybe disable the swear word blacklist
@@ -38,9 +41,38 @@ public final class StatsUtils {
             RichInputMethodManager richImm) {
     }
 
-    public static void onPickSuggestionManually(final SuggestedWords suggestedWords,
+    private static int swearCounter = 0;
+    private static void incrementSwearCounterAndEnableToggleIfThresholdReached(
+            final Context context,
+            final int weight
+    ) {
+        if(swearCounter == Integer.MIN_VALUE) return;
+
+        swearCounter += weight;
+        if(swearCounter >= 8) {
+            SharedPreferences prefs = PreferenceUtils.INSTANCE.getDefaultSharedPreferences(context);
+            if(!prefs.contains(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE)) {
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE, false);
+                editor.apply();
+            }
+
+            swearCounter = Integer.MIN_VALUE;
+        }
+    }
+
+    public static void onPickSuggestionManually(
+            final Context context,
+            final SuggestedWords suggestedWords,
             final SuggestedWords.SuggestedWordInfo suggestionInfo,
             final DictionaryFacilitator dictionaryFacilitator) {
+        if(swearCounter != Integer.MIN_VALUE
+                && Settings.getInstance().getCurrent().mBlockPotentiallyOffensive
+                && suggestionInfo.isKindOf(SuggestedWords.SuggestedWordInfo.KIND_TYPED)
+                && BadWordsKt.isFiltered(suggestionInfo.mWord)
+        ) {
+            incrementSwearCounterAndEnableToggleIfThresholdReached(context, 4);
+        }
     }
 
     public static void onBackspaceWordDelete(int wordLength) {
@@ -55,7 +87,7 @@ public final class StatsUtils {
     public static void onDeleteMultiCharInput(int multiCharLength) {
     }
 
-    public static void onRevertAutoCorrect() {
+    public static void onRevertAutoCorrect(final Context context, final String typedWord) {
     }
 
     public static void onRevertDoubleSpacePeriod() {
@@ -108,5 +140,22 @@ public final class StatsUtils {
     }
 
     public static void onDecoderLaggy(final int operation, final long duration) {
+    }
+
+    public static void onWordLearned(final Context context, final String word) {
+        if(swearCounter != Integer.MIN_VALUE
+                && Settings.getInstance().getCurrent().mBlockPotentiallyOffensive
+                && BadWordsKt.isFiltered(word)
+        ) {
+            incrementSwearCounterAndEnableToggleIfThresholdReached(context, 1);
+        }
+    }
+    public static void onWordUnlearned(final Context context, final String word) {
+        if(swearCounter != Integer.MIN_VALUE
+                && Settings.getInstance().getCurrent().mBlockPotentiallyOffensive
+                && BadWordsKt.isFiltered(word)
+        ) {
+            incrementSwearCounterAndEnableToggleIfThresholdReached(context, -1);
+        }
     }
 }

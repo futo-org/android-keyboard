@@ -2,17 +2,12 @@ package org.futo.inputmethod.latin.uix
 
 import android.content.Context
 import android.os.Build
-import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -80,18 +75,4 @@ fun AndroidTextInput(allowPredictions: Boolean = true, customOptions: Set<String
             }
         }
     }
-}
-
-
-class TextEditPopupActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            Surface(modifier = Modifier.padding(8.dp), shape = RoundedCornerShape(16.dp)) {
-                AndroidTextInput()
-            }
-        }
-    }
-
 }

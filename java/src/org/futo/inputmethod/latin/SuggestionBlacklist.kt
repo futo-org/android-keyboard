@@ -26,6 +26,7 @@ class SuggestionBlacklist(val settings: Settings, val context: Context, val life
 
     fun isSuggestedWordOk(word: SuggestedWordInfo): Boolean {
         return (word.mWord !in currentBlacklist) && (!offensiveWordsAdded || !isFiltered(word.mWord))
+                 || (word.isKindOf(SuggestedWordInfo.KIND_TYPED))
     }
 
     fun filterBlacklistedSuggestions(suggestions: SuggestedWords): SuggestedWords {
@@ -33,9 +34,7 @@ class SuggestionBlacklist(val settings: Settings, val context: Context, val life
             currentBlacklist = currentBlacklist + badWords
             offensiveWordsAdded = true
         } else if(!settings.current.mBlockPotentiallyOffensive && offensiveWordsAdded) {
-            currentBlacklist = runBlocking {
-                context.getSetting(SUGGESTION_BLACKLIST)
-            }
+            currentBlacklist = context.getSetting(SUGGESTION_BLACKLIST)
             offensiveWordsAdded = false
         }
 
