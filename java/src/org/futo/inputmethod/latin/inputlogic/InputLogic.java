@@ -2352,14 +2352,16 @@ public final class InputLogic {
      *
      * @param keyCode the key code to send inside the key event.
      */
-    public void sendDownUpKeyEvent(final int keyCode, final int metaState) {
+    public boolean sendDownUpKeyEvent(final int keyCode, final int metaState) {
         final long eventTime = SystemClock.uptimeMillis();
-        mConnection.sendKeyEvent(new KeyEvent(eventTime, eventTime,
+        boolean a = mConnection.sendKeyEvent(new KeyEvent(eventTime, eventTime,
                 KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
-        mConnection.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime,
+        boolean b = mConnection.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime,
                 KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+
+        return a || b;
     }
 
     /**
@@ -2373,6 +2375,16 @@ public final class InputLogic {
      */
     // TODO: replace these two parameters with an InputTransaction
     private void sendKeyCodePoint(final SettingsValues settingsValues, final int codePoint) {
+        // In some (rare?) cases KeyEvent will not work because the view isn't focused ( https://github.com/futo-org/android-keyboard/issues/938 )
+        // In other cases commitText won't work (Spotify login code in Grayjay)
+        // We try sending keyEvent first and fallback to commitText. This might cause double numeric
+        // inputs in InputConnections that return false but commit text anyway
+        if (codePoint >= '0' && codePoint <= '9') {
+            if(sendDownUpKeyEvent(codePoint - '0' + KeyEvent.KEYCODE_0, 0)) {
+                return;
+            }
+        }
+
         // TODO: we should do this also when the editor has TYPE_NULL
         if (Constants.CODE_ENTER == codePoint && settingsValues.isBeforeJellyBean()) {
             // Backward compatibility mode. Before Jelly bean, the keyboard would simulate

@@ -533,9 +533,15 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
     }
 
-    public void sendKeyEvent(final KeyEvent keyEvent) {
+    public boolean sendKeyEvent(final KeyEvent keyEvent) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
-        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+
+        boolean result = false;
+        if (isConnected()) {
+            result = mIC.sendKeyEvent(keyEvent);
+        }
+
+        if (result == true && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
             if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
             // This method is only called for enter or backspace when speaking to old applications
             // (target SDK <= 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)), or for digits.
@@ -544,48 +550,47 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             // sending the key events for only Enter and Backspace because some applications
             // mistakenly catch them to do some stuff.
             switch (keyEvent.getKeyCode()) {
-            case KeyEvent.KEYCODE_ENTER:
-                mCommittedTextBeforeComposingText.append("\n");
-                mExpectedSelStart += 1;
-                mExpectedSelEnd = mExpectedSelStart;
-                break;
-            case KeyEvent.KEYCODE_DEL:
-                if (0 == mComposingText.length()) {
-                    if (mCommittedTextBeforeComposingText.length() > 0) {
-                        mCommittedTextBeforeComposingText.delete(
-                                mCommittedTextBeforeComposingText.length() - 1,
-                                mCommittedTextBeforeComposingText.length());
+                case KeyEvent.KEYCODE_ENTER:
+                    mCommittedTextBeforeComposingText.append("\n");
+                    mExpectedSelStart += 1;
+                    mExpectedSelEnd = mExpectedSelStart;
+                    break;
+                case KeyEvent.KEYCODE_DEL:
+                    if (0 == mComposingText.length()) {
+                        if (mCommittedTextBeforeComposingText.length() > 0) {
+                            mCommittedTextBeforeComposingText.delete(
+                                    mCommittedTextBeforeComposingText.length() - 1,
+                                    mCommittedTextBeforeComposingText.length());
+                        }
+                    } else {
+                        mComposingText.delete(mComposingText.length() - 1, mComposingText.length());
                     }
-                } else {
-                    mComposingText.delete(mComposingText.length() - 1, mComposingText.length());
-                }
-                if (mExpectedSelStart > 0 && mExpectedSelStart == mExpectedSelEnd) {
-                    // TODO: Handle surrogate pairs.
-                    mExpectedSelStart -= 1;
-                }
-                mExpectedSelEnd = mExpectedSelStart;
-                break;
-            case KeyEvent.KEYCODE_UNKNOWN:
-                if (null != keyEvent.getCharacters()) {
-                    mCommittedTextBeforeComposingText.append(keyEvent.getCharacters());
-                    mExpectedSelStart += keyEvent.getCharacters().length();
+                    if (mExpectedSelStart > 0 && mExpectedSelStart == mExpectedSelEnd) {
+                        // TODO: Handle surrogate pairs.
+                        mExpectedSelStart -= 1;
+                    }
                     mExpectedSelEnd = mExpectedSelStart;
-                }
-                break;
-            default:
-                final int unicodeChar = keyEvent.getUnicodeChar();
-                if(unicodeChar != 0) {
-                    final String text = StringUtils.newSingleCodePointString(unicodeChar);
-                    mCommittedTextBeforeComposingText.append(text);
-                    mExpectedSelStart += text.length();
-                    mExpectedSelEnd = mExpectedSelStart;
-                }
-                break;
+                    break;
+                case KeyEvent.KEYCODE_UNKNOWN:
+                    if (null != keyEvent.getCharacters()) {
+                        mCommittedTextBeforeComposingText.append(keyEvent.getCharacters());
+                        mExpectedSelStart += keyEvent.getCharacters().length();
+                        mExpectedSelEnd = mExpectedSelStart;
+                    }
+                    break;
+                default:
+                    final int unicodeChar = keyEvent.getUnicodeChar();
+                    if(unicodeChar != 0) {
+                        final String text = StringUtils.newSingleCodePointString(unicodeChar);
+                        mCommittedTextBeforeComposingText.append(text);
+                        mExpectedSelStart += text.length();
+                        mExpectedSelEnd = mExpectedSelStart;
+                    }
+                    break;
             }
         }
-        if (isConnected()) {
-            mIC.sendKeyEvent(keyEvent);
-        }
+
+        return result;
     }
 
     public void setComposingRegion(final int start, final int end) {
