@@ -87,7 +87,7 @@ class FlickClipDrawable(
                 Direction.SouthWest -> {
                     clipPath.lineTo(CX, B)
                     clipPath.lineTo(L, B)
-                    clipPath.lineTo(R, CY)
+                    clipPath.lineTo(L, CY)
                 }
 
                 Direction.North -> {

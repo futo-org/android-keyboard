@@ -207,11 +207,11 @@ data class KeyAttributes(
      */
     val shiftable: Boolean? = null,
 ) {
-    fun getEffectiveAttributes(row: Row, keyboard: Keyboard): KeyAttributes {
+    fun getEffectiveAttributes(row: Row, keyboard: Keyboard, extraAttrs: List<KeyAttributes> = emptyList()): KeyAttributes {
         val attrs = if(row.isBottomRow) {
-            listOf(this, row.attributes, DefaultKeyAttributes)
+            listOf(this) + extraAttrs + listOf(row.attributes, DefaultKeyAttributes)
         } else {
-            listOf(this, row.attributes, keyboard.attributes, DefaultKeyAttributes)
+            listOf(this) + extraAttrs + listOf(row.attributes, keyboard.attributes, DefaultKeyAttributes)
         }
 
         val effectiveWidth = resolve(attrs) { it.width }
@@ -316,8 +316,8 @@ data class BaseKey(
         return moreKeyMode.autoNumFromCoord && moreKeyMode.autoSymFromCoord
     }
 
-    override fun computeData(params: KeyboardParams, row: Row, keyboard: Keyboard, coordinate: KeyCoordinate): ComputedKeyData {
-        val attributes = attributes.getEffectiveAttributes(row, keyboard)
+    fun computeDataWithExtraAttrs(params: KeyboardParams, row: Row, keyboard: Keyboard, coordinate: KeyCoordinate, extraAttrs: List<KeyAttributes>): ComputedKeyData {
+        val attributes = attributes.getEffectiveAttributes(row, keyboard, extraAttrs)
         val shifted = (attributes.shiftable == true) && when(params.mId.mElementId) {
             KeyboardId.ELEMENT_SYMBOLS_SHIFTED -> true
             KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED -> true
@@ -395,6 +395,9 @@ data class BaseKey(
             labelFlags = attributes.labelFlags?.getValue() ?: 0
         )
     }
+
+    override fun computeData(params: KeyboardParams, row: Row, keyboard: Keyboard, coordinate: KeyCoordinate): ComputedKeyData
+        = computeDataWithExtraAttrs(params, row, keyboard, coordinate, emptyList())
 }
 
 /**
