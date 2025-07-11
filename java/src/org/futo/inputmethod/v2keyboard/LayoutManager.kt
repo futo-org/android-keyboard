@@ -7,6 +7,8 @@ import com.charleskorn.kaml.PolymorphismStyle
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.modules.EmptySerializersModule
 import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.actions.BugInfo
@@ -23,6 +25,7 @@ data class Mappings(
 object LayoutManager {
     private var layoutsById: Map<String, Keyboard>? = null
     private var localeToLayoutsMappings: Map<Locale, List<String>>? = null
+    private var localeNames: Map<Locale, Map<Locale, String>>? = null
     private var initialized = false
 
     private fun listFilesRecursively(assetManager: AssetManager, path: String): List<String> {
@@ -48,6 +51,10 @@ object LayoutManager {
         localeToLayoutsMappings = parseMappings(context, "layouts/mapping.yaml").languages.mapKeys {
             localeFromString(it.key)
         }
+
+        localeNames = parseNames(context, "layouts/names.yaml").mapKeys {
+            localeFromString(it.key)
+        }.mapValues { it.value.mapKeys { localeFromString(it.key) }}
 
         val assetManager = context.assets
 
@@ -106,20 +113,57 @@ object LayoutManager {
             it.split("/").last().split(".yaml").first()
         }
     }
+
+    private val unexceptionalLocales = mutableSetOf<Locale>()
+    fun getExceptionalNameForLocale(locale: Locale, inLocale: Locale): String? {
+        if(unexceptionalLocales.contains(locale)) return null
+        val names = localeNames ?: return null
+
+        val entry = names[locale] ?: run {
+            // If there's an entry for "example" but we have "example_US", should still match.
+            // But not the other way around, if there's an override for "example_US", it shouldn't
+            // affect "example"
+            if(locale.country.isNotEmpty()) {
+                val localeWithoutCountry = Locale(locale.language, "", locale.variant)
+                names[localeWithoutCountry]
+            } else {
+                null
+            }
+        }
+
+        if(entry == null) {
+            unexceptionalLocales.add(locale)
+            return null
+        }
+
+        // Search order: try inLocale first, then try any language matching inLocale,
+        // then try its native name, then try its native language name,
+        // then try first name, otherwise return null
+        val translatedEntry = entry[inLocale]
+            ?: entry.entries.find { it.key.language == inLocale.language }?.value
+            ?: entry[locale]
+            ?: entry.entries.find { it.key.language == locale.language }?.value
+            ?: entry.entries.firstOrNull()?.value
+            ?: return null
+
+        return translatedEntry
+    }
 }
 
 private fun parseMappings(context: Context, mappingsPath: String): Mappings {
-    val yaml = Yaml(
-        EmptySerializersModule(),
-        YamlConfiguration(
-            polymorphismStyle = PolymorphismStyle.Property,
-            allowAnchorsAndAliases = true
-        )
-    )
     return context.assets.open(mappingsPath).use { inputStream ->
         val yamlString = inputStream.bufferedReader().use { it.readText() }
 
         yaml.decodeFromString(Mappings.serializer(), yamlString)
+    }
+}
+
+private fun parseNames(context: Context, namesPath: String): Map<String, Map<String, String>> {
+    val namesSerializer = MapSerializer(String.serializer(), MapSerializer(String.serializer(), String.serializer()))
+    return context.assets.open(namesPath).use { inputStream ->
+        val yamlString = inputStream.bufferedReader().use { it.readText() }
+
+        yaml.decodeFromString(namesSerializer, yamlString)
     }
 }
 
