@@ -552,4 +552,14 @@
     <string name="credits_menu_contribute_code_button">Contribute code</string>
     <string name="credits_menu_project_information_title">%s information</string>
     <string name="credits_menu_project_url_link">Project URL</string>
+
+    <!-- Settings category title -->
+    <string name="language_specific_settings_title">Language-specific settings</string>
+
+    <!-- Specific to Japanese input method -->
+    <string name="japanese_settings_title">Japanese Input Settings</string>
+    <string name="japanese_settings_toggle_flick_only">Flick only</string>
+    <string name="japanese_settings_toggle_flick_only_subtitle">Disables cycling between vowels on repeated key presses (Keitai input)</string>
+    <string name="japanese_settings_toggle_halfwidth_space">Use half-width space</string>
+    <string name="japanese_settings_toggle_halfwidth_space_subtitle">Always use half-width space</string>
 </resources>
