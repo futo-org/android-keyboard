@@ -233,7 +233,16 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     private fun maybeProcessDelete(keyCode: Int): Boolean {
         if(keyCode != Constants.CODE_DELETE) return false
-        helper.getCurrentInputConnection()?.deleteSurroundingText(1, 0)
+
+        // If we have a selection, send DEL event to delete the selection
+        if(selectionTracker.lastSelectionEnd != selectionTracker.lastSelectionStart) {
+            sendDownUpKeyEvent(
+                KeyEvent.KEYCODE_DEL,
+                0
+            )
+        } else {
+            helper.getCurrentInputConnection()?.deleteSurroundingText(1, 0)
+        }
         return true
     }
 
