@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import org.futo.inputmethod.engine.IMESettingsMenu
+import org.futo.inputmethod.engine.SettingsByLanguage
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.ErrorDialog
 import org.futo.inputmethod.latin.uix.InfoDialog
@@ -76,8 +78,9 @@ val SettingsMenus = listOf(
     ActionsScreen,
     HelpMenu,
     MiscMenu,
-    CreditsScreenLite
-) + AllActions.mapNotNull { it.settingsMenu }
+    CreditsScreenLite,
+    IMESettingsMenu
+) + AllActions.mapNotNull { it.settingsMenu } + SettingsByLanguage.values
 
 @Composable
 fun SettingsNavigator(

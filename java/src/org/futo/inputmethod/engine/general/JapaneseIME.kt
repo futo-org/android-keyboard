@@ -12,22 +12,34 @@ import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
+import androidx.compose.runtime.remember
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.google.common.base.Optional
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.event.Event
+import org.futo.inputmethod.keyboard.KeyboardId
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.Subtypes
+import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.common.StringUtils
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.actions.ArrowDownAction
 import org.futo.inputmethod.latin.uix.actions.ArrowLeftAction
 import org.futo.inputmethod.latin.uix.actions.ArrowRightAction
+import org.futo.inputmethod.latin.uix.actions.ArrowUpAction
 import org.futo.inputmethod.latin.uix.actions.UndoAction
 import org.futo.inputmethod.latin.uix.actions.keyCode
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
+import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
 import org.futo.inputmethod.latin.utils.InputTypeUtils
 import org.futo.inputmethod.nativelib.mozc.KeycodeConverter
 import org.futo.inputmethod.nativelib.mozc.KeycodeConverter.KeyEventInterface
@@ -45,6 +57,36 @@ import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands.Preedit
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands.SessionCommand
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoConfig
 import java.io.File
+
+object JapaneseIMESettings {
+    val FlickOnly = SettingsKey(
+        booleanPreferencesKey("ime_ja_flick_only"),
+        false
+    )
+
+    val HalfWidthSpace = SettingsKey(
+        booleanPreferencesKey("ime_ja_half_width_space"),
+        false
+    )
+
+    val menu = UserSettingsMenu(
+        title = R.string.japanese_settings_title,
+        navPath = "ime/ja", registerNavPath = true,
+        settings = listOf(
+            userSettingToggleDataStore(
+                title = R.string.japanese_settings_toggle_flick_only,
+                subtitle = R.string.japanese_settings_toggle_flick_only_subtitle,
+                setting = FlickOnly
+            ),
+
+            userSettingToggleDataStore(
+                title = R.string.japanese_settings_toggle_halfwidth_space,
+                subtitle = R.string.japanese_settings_toggle_halfwidth_space_subtitle,
+                setting = HalfWidthSpace
+            )
+        )
+    )
+}
 
 // Focused segment's attribute.
 private val SPAN_CONVERT_HIGHLIGHT = BackgroundColorSpan(0x66EF3566)
@@ -102,15 +144,23 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     val selectionTracker = SelectionTracker()
     lateinit var executor: SessionExecutor
 
-    private fun updateConfig() {
+    var configId: KeyboardId? = null
+    private fun updateConfig(resetSelectionTracker: Boolean = true) {
         val settings = Settings.getInstance().current
+        val useFlickOnly = helper.context.getSetting(JapaneseIMESettings.FlickOnly)
+        val halfWidthOnly = helper.context.getSetting(JapaneseIMESettings.HalfWidthSpace)
+        val id = helper.keyboardSwitcher.keyboard?.mId
+        configId = id
+
         executor.config = ProtoConfig.Config.newBuilder().apply {
             sessionKeymap = ProtoConfig.Config.SessionKeymap.MOBILE
-            selectionShortcut = ProtoConfig.Config.SelectionShortcut.NO_SHORTCUT // TODO?
+            selectionShortcut = ProtoConfig.Config.SelectionShortcut.NO_SHORTCUT
             useEmojiConversion = true
 
-            // TODO: Settings
-            spaceCharacterForm = ProtoConfig.Config.FundamentalCharacterForm.FUNDAMENTAL_INPUT_MODE
+            spaceCharacterForm = when {
+                halfWidthOnly -> ProtoConfig.Config.FundamentalCharacterForm.FUNDAMENTAL_HALF_WIDTH
+                else -> ProtoConfig.Config.FundamentalCharacterForm.FUNDAMENTAL_INPUT_MODE
+            }
             useKanaModifierInsensitiveConversion = true
             useTypingCorrection = true
             historyLearningLevel = ProtoConfig.Config.HistoryLearningLevel.DEFAULT_HISTORY
@@ -120,8 +170,15 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             }.build()
         }.build()
 
-        // TODO: Other keyboards
-        val keyboardSpecification = Keyboard.KeyboardSpecification.TWELVE_KEY_TOGGLE_FLICK_KANA
+        // TODO: Add QWERTY layout at some point
+        val keyboardSpecification = when {
+            id?.mElement?.kind == KeyboardLayoutKind.Symbols ->
+                Keyboard.KeyboardSpecification.SYMBOL_NUMBER
+
+            useFlickOnly -> Keyboard.KeyboardSpecification.TWELVE_KEY_FLICK_KANA
+            else -> Keyboard.KeyboardSpecification.TWELVE_KEY_TOGGLE_FLICK_KANA
+        }
+
         val keyboardRequest = MozcUtil.getRequestBuilder(keyboardSpecification, helper.context.resources.configuration, 3).build()
         executor.updateRequest(
             keyboardRequest,
@@ -133,7 +190,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             evaluationCallback
         )
 
-        selectionTracker.onConfigurationChanged()
+        if(resetSelectionTracker) selectionTracker.onConfigurationChanged()
     }
 
     override fun onCreate() {
@@ -193,9 +250,13 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             composingSpanStart, composingSpanEnd,
             false
         )
+
+        if(BuildConfig.DEBUG) Log.d(TAG, "Update selection from $oldSelStart:$oldSelEnd to $newSelStart:$newSelEnd [$composingSpanStart:$composingSpanEnd]. Status $updateStatus")
+
         when(updateStatus) {
             SelectionTracker.DO_NOTHING -> {}
             SelectionTracker.RESET_CONTEXT -> {
+                if(BuildConfig.DEBUG) Log.d(TAG, "Asked to reset context.")
                 executor.resetContext()
                 helper.getCurrentInputConnection()?.finishComposingText()
                 setNeutralSuggestionStrip()
@@ -382,7 +443,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             return
         }
         var position = MozcUtil.CURSOR_POSITION_TAIL
-        if (output.result.hasCursorOffset()) {
+        if (output.result.hasCursorOffset() && output.result.cursorOffset != 0) {
             if (output.result.cursorOffset == -outputText.codePointCount(0, outputText.length)) {
                 position = MozcUtil.CURSOR_POSITION_HEAD
             } else {
@@ -432,6 +493,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 if (output.hasResult()) output.result.value else null,
                 if (output.hasPreedit()) output.preedit else null,
             )
+            if(BuildConfig.DEBUG) Log.d(TAG, "onRender selectionTracker ${if (output.hasDeletionRange()) output.deletionRange else null}, ${if (output.hasResult()) output.result.value else null}, ${if (output.hasPreedit()) output.preedit else null}")
         } finally {
             inputConnection.endBatchEdit()
         }
@@ -627,6 +689,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     override fun onEvent(event: Event) = when (event.eventType) {
         Event.EVENT_TYPE_INPUT_KEYPRESS -> {
+            if(helper.keyboardSwitcher.keyboard?.mId != configId) updateConfig(false)
+
             val triggeringKeyEvent = if (event.mKeyCode != Event.NOT_A_KEY_CODE) {
                 KeycodeConverter.getKeyEventInterface(
                     KeyEvent(
@@ -649,9 +713,12 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 Constants.CODE_SPACE -> KeycodeConverter.SPECIALKEY_SPACE
                 Constants.CODE_ENTER -> KeycodeConverter.SPECIALKEY_VIRTUAL_ENTER
                 Constants.NOT_A_CODE -> when (event.mKeyCode) {
+                    Constants.CODE_SWITCH_ALPHA_SYMBOL -> null
                     Constants.CODE_DELETE -> KeycodeConverter.SPECIALKEY_BACKSPACE
                     ArrowLeftAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_LEFT
                     ArrowRightAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_RIGHT
+                    ArrowUpAction.keyCode -> KeycodeConverter.SPECIALKEY_UP
+                    ArrowDownAction.keyCode -> KeycodeConverter.SPECIALKEY_DOWN
                     UndoAction.keyCode -> {
                         // TODO: Should probably update mozc-lib to pass key event here explicitly instead of doing it like this
                         executor.undoOrRewind(emptyList(), { command, _ ->
@@ -661,15 +728,14 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                     }
 
                     else -> {
-                        maybeHandleAction(event.mKeyCode)
+                        if(!maybeHandleAction(event.mKeyCode)) {
+                            Log.e(TAG, "Unknown keycode for that event (${event.mCodePoint} ${event.mKeyCode})")
+                        }
                         null
                     }
                 }
 
                 else -> getMozcKeyEvent(event.mCodePoint)
-            } ?: return run {
-                Log.e(TAG, "Unknown keycode for that event (${ArrowLeftAction.keyCode})")
-                Unit
             }
 
             val touchEvents = emptyList<ProtoCommands.Input.TouchEvent>() /* listOf(
@@ -677,12 +743,16 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 touchEvent(event.mX, event.mY, false),
             ) */
 
-            executor.sendKey(
-                mozcEvent,
-                triggeringKeyEvent,
-                touchEvents,
-                evaluationCallback
-            )
+            if(mozcEvent != null) {
+                executor.sendKey(
+                    mozcEvent,
+                    triggeringKeyEvent,
+                    touchEvents,
+                    evaluationCallback
+                )
+            }
+
+            Unit
         }
 
         Event.EVENT_TYPE_SUGGESTION_PICKED -> {

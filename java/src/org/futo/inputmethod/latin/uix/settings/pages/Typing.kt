@@ -75,6 +75,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.engine.IMESettingsMenu
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.LongPressKey
 import org.futo.inputmethod.latin.settings.LongPressKeyLayoutSetting
@@ -867,8 +868,29 @@ val TypingSettingsMenu = UserSettingsMenu(
 @Composable
 fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavController()) {
     ScrollableList {
-        KeyboardSettingsMenu.render(showBack = true)
+        if(IMESettingsMenu.visibilityCheck!!()) {
+            ScreenTitle("", showBack = true, navController)
+            IMESettingsMenu.render(showBack = false)
+            ScreenTitle(
+                stringResource(
+                    KeyboardSettingsMenu.title
+                ),
+                showBack = false,
+                navController
+            )
+        } else {
+            ScreenTitle(
+                stringResource(
+                    KeyboardSettingsMenu.title
+                ),
+                showBack = true,
+                navController
+            )
+        }
+
+        KeyboardSettingsMenu.render(showBack = false, showTitle = false)
         TypingSettingsMenu.render(showBack = false)
+
         BottomSpacer()
     }
 }
