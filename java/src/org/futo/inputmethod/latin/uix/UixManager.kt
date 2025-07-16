@@ -1176,6 +1176,7 @@ class UixManager(private val latinIME: LatinIME) {
                                 isActionsExpanded = isActionsExpanded.value,
                                 toggleActionsExpanded = { toggleActionsExpanded() },
                                 keyboardOffset = keyboardViewOffset,
+                                keyboardHeight = latinIME.size.value?.height ?: kbHeight.intValue
                             )
                         }
                         latinIME.LegacyKeyboardView(modifier = Modifier.align(Alignment.BottomCenter).onSizeChanged {

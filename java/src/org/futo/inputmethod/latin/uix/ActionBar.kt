@@ -55,6 +55,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
@@ -1131,9 +1132,8 @@ private fun <T> buildRows(
 
 @Composable
 private fun RowScope.InlineCandidates(
-    keyboardOffset: MutableIntState?,
-    offset: Float,
-    suggestionsExpanded: MutableState<Boolean>,
+    suggestionsExpansion: MutableFloatState,
+    keyboardHeight: Int,
     lazyListState: LazyListState,
     isActionsExpanded: Boolean,
     toggleActionsExpanded: () -> Unit,
@@ -1141,29 +1141,30 @@ private fun RowScope.InlineCandidates(
     wordList: List<SuggestedWordInfo>,
 ) {
     val view = LocalView.current
+    val expandHeight = with(LocalDensity.current) { 120.dp.toPx().coerceAtMost(keyboardHeight / 2.0f) }
     Box(Modifier.weight(1.0f).fillMaxHeight()) {
-        val totalDragged = remember { mutableFloatStateOf(0.0f) }
         LazyRow(
             modifier = Modifier.matchParentSize().pointerInput(Unit) {
                 detectVerticalDragGestures(
                     onDragStart = {
-                        totalDragged.floatValue = 0.0f
                     },
                     onDragEnd = {
-                        keyboardOffset?.intValue = offset.toInt()
-                        if(totalDragged.floatValue.absoluteValue > 100.0f) {
-                            suggestionsExpanded.value = !suggestionsExpanded.value
+                        if(suggestionsExpansion.floatValue < 0.5f) {
+                            suggestionsExpansion.floatValue = 0.0f
+                        } else {
+                            suggestionsExpansion.floatValue = 1.0f
                         }
-
                     },
                     onDragCancel = {
-                        keyboardOffset?.intValue = 0
+                        if(suggestionsExpansion.floatValue < 0.5f) {
+                            suggestionsExpansion.floatValue = 0.0f
+                        } else {
+                            suggestionsExpansion.floatValue = 1.0f
+                        }
                     }
                 ) { a, b ->
-                    totalDragged.floatValue += b
-                    keyboardOffset?.let {
-                        it.intValue = (it.intValue + b.toInt() * 2).coerceIn(0 until 1000)
-                    }
+                    suggestionsExpansion.floatValue =
+                        (suggestionsExpansion.floatValue + b / expandHeight).coerceIn(0.0f, 1.0f)
                 }
             },
             verticalAlignment = CenterVertically,
@@ -1202,6 +1203,7 @@ fun BoxScope.ActionBarWithExpandableCandidates(
     isActionsExpanded: Boolean,
     toggleActionsExpanded: () -> Unit,
     keyboardOffset: MutableIntState? = null,
+    keyboardHeight: Int = 1000
 ) {
     val wordList = remember(words) {
         words?.mSuggestedWordInfoList?.toList()?.filter {
@@ -1209,13 +1211,14 @@ fun BoxScope.ActionBarWithExpandableCandidates(
         } ?: emptyList()
     }
 
-    val suggestionsExpanded = remember { mutableStateOf(false) }
+    val suggestionsExpansion = remember { mutableFloatStateOf(0.0f) }
     val lazyListState = rememberLazyListState()
     LaunchedEffect(wordList) {
         lazyListState.scrollToItem(1)
     }
 
-    val offset by animateFloatAsState(if (suggestionsExpanded.value) 1000.0f else 0.0f, label = "suggest")
+    val offset by animateFloatAsState(keyboardHeight.toFloat() * suggestionsExpansion.floatValue,
+        label = "suggest")
     LaunchedEffect(offset) { keyboardOffset?.intValue = offset.roundToInt() }
 
     val lastVisibleItemIndex by remember(lazyListState) { derivedStateOf {
@@ -1231,7 +1234,7 @@ fun BoxScope.ActionBarWithExpandableCandidates(
         }
     }
 
-    val canShowSuggest = (keyboardOffset?.intValue ?: 0) > 0 || suggestionsExpanded.value
+    val canShowSuggest = suggestionsExpansion.floatValue > 0.001f
     val listToRender = remember(canShowSuggest, wordList) {
         if(canShowSuggest) {
             wordList.subList(
@@ -1288,9 +1291,8 @@ fun BoxScope.ActionBarWithExpandableCandidates(
             Row(Modifier.safeKeyboardPadding()) {
                 if (wordList.isNotEmpty()) {
                     InlineCandidates(
-                        keyboardOffset,
-                        offset,
-                        suggestionsExpanded,
+                        suggestionsExpansion,
+                        keyboardHeight,
                         lazyListState,
                         isActionsExpanded,
                         toggleActionsExpanded,
@@ -1301,16 +1303,21 @@ fun BoxScope.ActionBarWithExpandableCandidates(
 
                 IconButton(
                     onClick = {
-                        suggestionsExpanded.value = !suggestionsExpanded.value
+                        if(suggestionsExpansion.floatValue < 0.5f) {
+                            suggestionsExpansion.floatValue = 1.0f
+                        } else {
+                            suggestionsExpansion.floatValue = 0.0f
+                        }
                     },
                     modifier = Modifier.width(40.dp)
                 ) {
                     Icon(
-                        if(suggestionsExpanded.value) {
-                            Icons.Default.KeyboardArrowUp
-                        } else {
-                            Icons.Default.KeyboardArrowDown
-                        }, contentDescription = null)
+                        Icons.Default.KeyboardArrowUp,
+                        contentDescription = null,
+                        modifier = Modifier.rotate(
+                            suggestionsExpansion.floatValue * -180.0f
+                        )
+                    )
                 }
             }
         }
