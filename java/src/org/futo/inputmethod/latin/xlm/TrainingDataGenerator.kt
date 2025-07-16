@@ -106,7 +106,7 @@ private object WordMisspelling {
             if(newKey == SHIFT_KEY) {
                 // next char should be uppercased, but it currently doesn't matter
             }else if(newKey == BACKSPACE_KEY) {
-                if(newKeys.size > 0) newKeys.removeLast()
+                if(newKeys.size > 0) newKeys.removeAt(newKeys.lastIndex)
             }else {
                 newKeys.add(newKey)
             }

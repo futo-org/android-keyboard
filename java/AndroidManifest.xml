@@ -158,14 +158,6 @@
         </activity>
 
         <activity
-            android:name=".payment.PaymentActivity"
-            android:exported="false"
-            android:label="@string/payment_screen_short_title"
-            android:clearTaskOnLaunch="false"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-
-        <activity
             android:name=".MicPermissionActivity"
             android:clearTaskOnLaunch="false"
             android:launchMode="standard"

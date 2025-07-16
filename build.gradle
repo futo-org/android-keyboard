@@ -109,7 +109,7 @@ preBuild.dependsOn updateLocales
 android {
     namespace 'org.futo.inputmethod.latin'
 
-    compileSdk 34
+    compileSdk 35
 
     // Required if using classes in android.test.runner
     useLibrary 'android.test.runner'
@@ -122,7 +122,7 @@ android {
 
     defaultConfig {
         minSdk 24
-        targetSdk 34
+        targetSdk 35
         versionName getVersionName()
         versionCode getVersionCode()
 

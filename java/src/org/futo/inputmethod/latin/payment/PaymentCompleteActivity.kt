@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,10 +43,12 @@ class PaymentCompleteActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        PaymentThankYouScreen(onExit = {
-                            startAppActivity(SettingsActivity::class.java, clearTop = true)
-                            finish()
-                        })
+                        Box(Modifier.safeDrawingPadding()) {
+                            PaymentThankYouScreen(onExit = {
+                                startAppActivity(SettingsActivity::class.java, clearTop = true)
+                                finish()
+                            })
+                        }
                     }
                 }
             }
