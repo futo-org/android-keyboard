@@ -36,12 +36,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -99,11 +96,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -129,8 +129,8 @@ import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
-import kotlin.math.absoluteValue
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /*
@@ -205,6 +205,15 @@ val suggestionStyleAlternative = TextStyle(
     fontWeight = FontWeight.Normal,
     fontSize = 18.sp,
     lineHeight = 26.sp,
+    letterSpacing = 0.5.sp,
+    //textAlign = TextAlign.Center
+)
+
+val suggestionStyleCandidateDescription = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Medium,
+    fontSize = 8.sp,
+    lineHeight = 8.sp,
     letterSpacing = 0.5.sp,
     //textAlign = TextAlign.Center
 )
@@ -1004,15 +1013,17 @@ class ExampleListener : SuggestionStripViewListener {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun CandidateItem(modifier: Modifier, it: SuggestedWordInfo, listener: SuggestionStripViewListener,  width: Dp? = null, last: Boolean = false, minWidth: Dp? = null, minPaddingWidth: Dp? = null) {
+private fun CandidateItem(modifier: Modifier, it: SuggestedWordInfo, listener: SuggestionStripViewListener, width: Dp, last: Boolean = false) {
     val word = it.mWord
+    val description = it.mCandidateDescription
     val color = LocalKeyboardScheme.current.onSurface
     val textStyle =
         suggestionStylePrimary.copy(color = color)
-
+    val descTextStyle =
+        suggestionStyleCandidateDescription.copy(color = color.copy(alpha = 0.5f)) // TODO: High contrast for high contrast theme
     Row(
         modifier
-            .widthIn(min = width ?: minWidth ?: 58.dp, max = width ?: Dp.Unspecified)
+            .width(width)
             .combinedClickable(
                 enabled = word != null,
                 onClick = {
@@ -1027,7 +1038,6 @@ private fun CandidateItem(modifier: Modifier, it: SuggestedWordInfo, listener: S
                 }
             )
     ) {
-        if(minPaddingWidth != null) Spacer(Modifier.width(minPaddingWidth))
         Spacer(Modifier.weight(1.0f))
         Box(
             modifier = Modifier
@@ -1050,7 +1060,21 @@ private fun CandidateItem(modifier: Modifier, it: SuggestedWordInfo, listener: S
             }
         }
         Spacer(Modifier.weight(1.0f))
-        if(minPaddingWidth != null) Spacer(Modifier.width(minPaddingWidth))
+
+        if(description != null) {
+            val modifier = Modifier
+                .align(Alignment.Bottom)
+                .padding(0.dp, 0.dp, 0.dp, 4.dp)
+                .testTag("SuggestionItemDescription")
+            Text(
+                description,
+                style = descTextStyle,
+                modifier = modifier,
+                textAlign = TextAlign.Right
+            )
+
+            Spacer(Modifier.weight(1.0f))
+        }
         if(!last) SuggestionSeparator()
     }
 }
@@ -1139,6 +1163,7 @@ private fun RowScope.InlineCandidates(
     toggleActionsExpanded: () -> Unit,
     suggestionStripListener: SuggestionStripViewListener,
     wordList: List<SuggestedWordInfo>,
+    widths: CachedCharacterWidthValues
 ) {
     val view = LocalView.current
     val expandHeight = with(LocalDensity.current) { 120.dp.toPx().coerceAtMost(keyboardHeight / 2.0f) }
@@ -1184,13 +1209,45 @@ private fun RowScope.InlineCandidates(
             itemsIndexed(wordList) { i, it ->
                 CandidateItem(Modifier.height(ActionBarHeight), it,
                     listener = suggestionStripListener,
-                    minWidth = if(i == 0) 120.dp else 48.dp,
-                    minPaddingWidth = 5.dp,
-                    last = i == wordList.size-1
+                    last = i == wordList.size-1,
+                    width = with(LocalDensity.current) {
+                        measureWord(this, widths, it).toDp()
+                    }.coerceAtLeast(if(i == 0) 120.dp else 48.dp)
                 )
             }
         }
     }
+}
+
+private fun String.countLongestLineLength(): Int {
+    var count = 0
+    var biggestCount = 0
+    for(c in this) {
+        if(c == '\n') {
+            biggestCount = max(count, biggestCount)
+            count = 0
+        } else {
+            count += 1
+        }
+    }
+    biggestCount = max(count, biggestCount)
+    return biggestCount
+}
+
+data class CachedCharacterWidthValues(
+    val normal: Int,
+    val description: Int
+)
+
+private fun measureWord(density: Density, widths: CachedCharacterWidthValues, word: SuggestedWordInfo): Int {
+    val minWidth = with(density) { 58.dp.toPx() }
+    val wordWidth = word.mWord.length * widths.normal * 1.04f //measurer.measure(it.mWord, style = suggestionStylePrimary).size.width
+    val extraDescWidth = if(word.mCandidateDescription.isNullOrEmpty()) {
+        0
+    } else {
+        word.mCandidateDescription.countLongestLineLength() * widths.description
+    }
+    return (wordWidth + with(density) { 10.dp.toPx() } + extraDescWidth).coerceAtLeast(minWidth).toInt()
 }
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class,
@@ -1250,8 +1307,11 @@ fun BoxScope.ActionBarWithExpandableCandidates(
     val density = LocalDensity.current
 
     // True width measurement is too slow, estimate it by multiplying constant by number of characters
-    val estimatedCharacterWidth = remember(measurer) {
-        measurer.measure("あ", style=suggestionStylePrimary).size.width
+    val widths = remember(measurer) {
+        CachedCharacterWidthValues(
+            normal = measurer.measure("あ", style=suggestionStylePrimary).size.width,
+            description = measurer.measure("あ", style=suggestionStyleCandidateDescription).size.width
+        )
     }
 
 
@@ -1263,11 +1323,7 @@ fun BoxScope.ActionBarWithExpandableCandidates(
         ) {
             LazyFlowRow(
                 listToRender ?: emptyList(),
-                itemMeasurer = {
-                    val minWidth = with(density) { 58.dp.toPx() }
-                    val wordWidth = it.mWord.length * estimatedCharacterWidth * 1.04f //measurer.measure(it.mWord, style = suggestionStylePrimary).size.width
-                    (wordWidth + with(density) { 10.dp.toPx() }).coerceAtLeast(minWidth).toInt()
-                }
+                itemMeasurer = { measureWord(density, widths, it) }
             ) { allocatedWidth, item, isLast ->
                 CandidateItem(Modifier.height(ActionBarHeight), item, listener = suggestionStripListener, width=with(density) { allocatedWidth.toDp()  }, last=isLast)
             }
@@ -1297,7 +1353,8 @@ fun BoxScope.ActionBarWithExpandableCandidates(
                         isActionsExpanded,
                         toggleActionsExpanded,
                         suggestionStripListener,
-                        wordList
+                        wordList,
+                        widths
                     )
                 }
 
@@ -1338,8 +1395,8 @@ val exampleSuggestionsList = arrayListOf(
 
 // TODO: Annotation description, can also be multiline
 val japaneseSuggestionsList = arrayListOf(
-    SuggestedWordInfo("あいう", "", 97, 1, null, 0, 0),
-    SuggestedWordInfo("アイウ", "", 96, 1, null, 0, 0),
+    SuggestedWordInfo("あいう", "", 97, 1, null, 0, 0, 0, "ＬＯＮＧ　ＡＮＤ　ＣＯＭＰＬＥＸ\nＷＩＴＨ　ＭＵＬＴＩＰＬＥ　ＬＩＮＥＳ\nｓｏｍｅ　ｔｅｘｔ　ｈｅｒｅ"),
+    SuggestedWordInfo("アイウ", "", 96, 1, null, 0, 0, 0, "[あああ]"),
     SuggestedWordInfo("あいうえお", "", 95, 1, null, 0, 0),
     SuggestedWordInfo("アイウェア", "", 94, 1, null, 0, 0),
     SuggestedWordInfo("アイヴ", "", 93, 1, null, 0, 0),

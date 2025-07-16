@@ -12,7 +12,6 @@ import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import androidx.compose.runtime.remember
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.google.common.base.Optional
 import org.futo.inputmethod.engine.IMEHelper
@@ -22,9 +21,8 @@ import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.Subtypes
-import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.SuggestedWords
+import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.common.StringUtils
@@ -632,14 +630,18 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             } else {
                 val candidateList = output.allCandidateWords.candidatesList
                 val suggestedWordList = candidateList.map {
-                    SuggestedWords.SuggestedWordInfo(
+                    SuggestedWordInfo(
                         it.value,
                         "",
                         SUGGESTION_ID_INVERSION - it.index,
                         1,
                         null,
+                        SuggestedWordInfo.NOT_AN_INDEX,
+                        SuggestedWordInfo.NOT_A_CONFIDENCE,
                         it.id,
-                        0
+                        if(it.hasAnnotation() && it.annotation.hasDescription()) {
+                            it.annotation.description
+                        } else { null }
                     )
                 }.let { ArrayList(it) }
 
@@ -757,7 +759,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
         Event.EVENT_TYPE_SUGGESTION_PICKED -> {
             val suggestion = event.mSuggestedWordInfo ?: return
-            val mozcId = suggestion.mIndexOfTouchPointOfSecondWord // Re-using this field for now
+            val mozcId = suggestion.mCandidateIndex
             val rowIdx = SUGGESTION_ID_INVERSION - suggestion.mScore
             executor.submitCandidate(mozcId, Optional.of(rowIdx), evaluationCallback)
         }

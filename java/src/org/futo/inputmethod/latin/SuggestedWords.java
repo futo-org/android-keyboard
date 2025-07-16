@@ -285,6 +285,10 @@ public class SuggestedWords {
         // For auto-commit. This is a measure of how confident we are that we can commit the
         // first word of this suggestion.
         public final int mAutoCommitFirstWordConfidence;
+
+        public final int mCandidateIndex;
+        public final String mCandidateDescription;
+
         private String mDebugString = "";
 
         public boolean mOriginatesFromTransformerLM = false;
@@ -299,11 +303,14 @@ public class SuggestedWords {
          * @param sourceDict What instance of Dictionary produced this suggestion.
          * @param indexOfTouchPointOfSecondWord See mIndexOfTouchPointOfSecondWord.
          * @param autoCommitFirstWordConfidence See mAutoCommitFirstWordConfidence.
+         * @param candidateIndex The IME-defined index of this candidate (for Japanese)
+         * @param candidateDescription The description for this candidate (for Japanese)
          */
         public SuggestedWordInfo(final String word, final String prevWordsContext,
                 final int score, final int kindAndFlags,
                 final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord,
-                final int autoCommitFirstWordConfidence) {
+                final int autoCommitFirstWordConfidence, final int candidateIndex,
+                final String candidateDescription) {
             mWord = word;
             mPrevWordsContext = prevWordsContext;
             mApplicationSpecifiedCompletionInfo = null;
@@ -313,6 +320,16 @@ public class SuggestedWords {
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = indexOfTouchPointOfSecondWord;
             mAutoCommitFirstWordConfidence = autoCommitFirstWordConfidence;
+            mCandidateIndex = candidateIndex;
+            mCandidateDescription = candidateDescription;
+        }
+
+        /** Helper to avoid specifying new candidate fields */
+        public SuggestedWordInfo(final String word, final String prevWordsContext,
+                                 final int score, final int kindAndFlags,
+                                 final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord,
+                                 final int autoCommitFirstWordConfidence) {
+            this(word, prevWordsContext, score, kindAndFlags, sourceDict, indexOfTouchPointOfSecondWord, autoCommitFirstWordConfidence, 0, null);
         }
 
         /**
@@ -330,6 +347,8 @@ public class SuggestedWords {
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = SuggestedWordInfo.NOT_AN_INDEX;
             mAutoCommitFirstWordConfidence = SuggestedWordInfo.NOT_A_CONFIDENCE;
+            mCandidateIndex = 0;
+            mCandidateDescription = null;
         }
 
         public boolean isEligibleForAutoCommit() {
