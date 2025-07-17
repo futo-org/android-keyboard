@@ -192,16 +192,20 @@ data class SavedKeyboardSizingSettings(
 }
 
 fun getDefaultSettingForKind(kind: KeyboardSizeSettingKind, context: Context): SavedKeyboardSizingSettings {
-
     val oldBottomOffset = context.getSettingBlocking(OldKeyboardBottomOffsetSetting).dp
 
     val metrics = context.resources.displayMetrics
     val density = metrics.density.toFloat()
     val minDimDp = (minOf(metrics.widthPixels, metrics.heightPixels).toFloat() / density).dp
 
-    val oldHeightMultiplier = context.getSettingBlocking(OldKeyboardHeightMultiplierSetting) + run {
-        (oldBottomOffset.value * density) / metrics.heightPixels.toFloat()
-    }
+    val oldHeightMultiplier = context.getSettingBlocking(OldKeyboardHeightMultiplierSetting).guardNaN(1.0f) +
+                metrics.heightPixels.toFloat().let { height ->
+                    if(height > 0.0f) {
+                        (oldBottomOffset.value * density) / height
+                    } else {
+                        0.0f
+                    }
+                }
 
     val extraSidePadding = when {
         minDimDp > 600.dp -> 24.dp
@@ -307,6 +311,16 @@ val KeyboardSettings = mapOf(
         stringPreferencesKey("keyboard_settings_fold"), ""),
 )
 
+internal fun Double.guardNaN(default: Double): Double = when {
+    isNaN() -> default
+    else -> this
+}
+
+internal fun Float.guardNaN(default: Float): Float = when {
+    isNaN() -> default
+    else -> this
+}
+
 class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager) {
     val sizeStateProvider = context as KeyboardSizeStateProvider
     val foldStateProvider = context as FoldStateProvider
@@ -334,7 +348,11 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
             KeyboardSettings[sizeState]!!
         )) ?: getDefaultSettingForKind(sizeState, context)
 
-        val transformed = transform(savedSettings)
+        var transformed = transform(savedSettings)
+
+        // Guard against unexpected NaN
+        if(transformed.heightMultiplier.isNaN()) transformed = transformed.copy(heightMultiplier = savedSettings.heightMultiplier)
+        if(transformed.floatingHeightDp.isNaN()) transformed = transformed.copy(floatingHeightDp = savedSettings.floatingHeightDp)
 
         if(transformed != savedSettings) {
             context.setSettingBlocking(KeyboardSettings[sizeState]!!.key, transformed.toJsonString())
@@ -405,7 +423,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         }
 
         val singularRowHeight = ((ResourceUtils.getDefaultKeyboardHeight(context.resources) + heightAddition - padding.bottom) / 4.0) *
-                savedSettings.heightMultiplier
+                savedSettings.heightMultiplier.guardNaN(1.0f)
 
         val numRows = 4.0 +
                 ((effectiveRowCount - 5) / 2.0).coerceAtLeast(0.0) +
@@ -417,7 +435,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     // the input field (e.g. password field). In this case, the full height of the
                     // number row needs to be added to keep the existing keys consistently positioned
                     settings.mIsNumberRowEnabled && !settings.mIsNumberRowEnabledByUser ->
-                        layout.effectiveRows.first { it.isNumberRow }.rowHeight
+                        layout.effectiveRows.first { it.isNumberRow }.rowHeight.guardNaN(0.5).coerceAtLeast(0.0)
 
                     // If it's enabled by user, add only 0.5 to make the keyboard slightly less tall
                     settings.mIsNumberRowEnabled -> 0.5
@@ -430,7 +448,6 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                 }
 
         val recommendedHeight = numRows * singularRowHeight + padding.bottom
-
 
         val foldState = foldStateProvider.foldState.feature
 
@@ -481,7 +498,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                 )
 
             savedSettings.currentMode == KeyboardMode.Floating -> {
-                val singularRowHeightFloat = dp(savedSettings.floatingHeightDp) / 4.0f
+                val singularRowHeightFloat = dp(savedSettings.floatingHeightDp.guardNaN(240.0f)) / 4.0f
                 val recommendedHeightFloat = singularRowHeightFloat * numRows
                 FloatingKeyboardSize(
                     bottomOrigin = Pair(

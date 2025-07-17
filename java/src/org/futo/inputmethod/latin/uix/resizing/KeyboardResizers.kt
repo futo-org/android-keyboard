@@ -100,7 +100,7 @@ open class KeyboardResizeHelper(
                 oneHandedHeightAdditionDp = editedSettings.oneHandedHeightAdditionDp + heightAdditionDiffDp.value,
                 oneHandedRectDp = editedSettings.oneHandedRectDp.copy(bottom = bottomPadding)
             )
-            KeyboardMode.Floating -> TODO()
+            KeyboardMode.Floating -> editedSettings // unused by Floating
         }
     }
 
@@ -131,8 +131,8 @@ open class KeyboardResizeHelper(
                     right = newSidePadding
                 )
             )
-            KeyboardMode.OneHanded -> TODO()
-            KeyboardMode.Floating -> TODO()
+            KeyboardMode.OneHanded -> editedSettings // unused by OneHanded
+            KeyboardMode.Floating -> editedSettings // unused by Floating
         }
     }
 }
