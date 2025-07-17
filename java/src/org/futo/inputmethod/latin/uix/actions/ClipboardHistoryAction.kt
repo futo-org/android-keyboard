@@ -564,7 +564,6 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
 
     override fun close() {
         clipboardManager.removePrimaryClipChangedListener(primaryClipChangedListener)
-        runBlocking { saveClipboard(true)?.join() }
     }
 
 }
