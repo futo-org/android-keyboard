@@ -20,6 +20,7 @@ import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.DebugOnly
+import org.futo.inputmethod.latin.uix.ExperimentalICFix
 import org.futo.inputmethod.latin.uix.HiddenKeysSetting
 import org.futo.inputmethod.latin.uix.OldStyleActionsBar
 import org.futo.inputmethod.latin.uix.SettingsExporter
@@ -71,6 +72,12 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
 
         SettingToggleDataStore(title = "Disable all update reminders", setting = DISABLE_UPDATE_REMINDER)
 
+        SettingToggleDataStore(
+            title = "Voice input alternative composition",
+            subtitle = "Use InputConnection with alternative composition implementation",
+            setting = ExperimentalICFix
+        )
+        
         SettingToggleDataStore(
             title = "Touch typing mode",
             subtitle = "Hides all keys. Touch typists only! Recommended to disable emoji key and enable key borders",

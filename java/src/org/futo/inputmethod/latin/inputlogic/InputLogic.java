@@ -56,6 +56,7 @@ import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
+import org.futo.inputmethod.latin.uix.ActionInputTransaction;
 import org.futo.inputmethod.latin.utils.AsyncResultHolder;
 import org.futo.inputmethod.latin.utils.InputTypeUtils;
 import org.futo.inputmethod.latin.utils.RecapitalizeStatus;
@@ -115,11 +116,25 @@ public final class InputLogic {
     private String mWordBeingCorrectedByCursor = null;
 
     private boolean isLogicSuppressedByExternalLogic = false;
-    public void startSuppressingLogic() {
+    private ActionInputTransaction currTransaction = null;
+    public void startSuppressingLogic(ActionInputTransaction transaction) {
         isLogicSuppressedByExternalLogic = true;
+        currTransaction = transaction;
+        currTransaction.cursorUpdated(
+                mConnection.mExpectedSelStart,
+                mConnection.mExpectedSelEnd,
+                mConnection.mExpectedSelStart,
+                mConnection.mExpectedSelEnd
+        );
     }
+
+    int suppressionCursorStart = 0;
+    int suppressionCursorEnd = 0;
     public void endSuppressingLogic() {
+        currTransaction = null;
         isLogicSuppressedByExternalLogic = false;
+        onUpdateSelection(0, 0, suppressionCursorStart, suppressionCursorEnd,
+                Settings.getInstance().getCurrent());
     }
 
     /**
@@ -381,7 +396,14 @@ public final class InputLogic {
      */
     public boolean onUpdateSelection(final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final SettingsValues settingsValues) {
-        if(isLogicSuppressedByExternalLogic) return false;
+        suppressionCursorStart = newSelStart;
+        suppressionCursorEnd = newSelEnd;
+        if(isLogicSuppressedByExternalLogic) {
+            if(currTransaction != null) {
+                currTransaction.cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
+            }
+            return false;
+        }
 
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
             return false;

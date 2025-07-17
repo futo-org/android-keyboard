@@ -90,6 +90,7 @@ import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.core.view.inputmethod.InputContentInfoCompat
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
@@ -102,6 +103,7 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.FoldingOptions
+import org.futo.inputmethod.latin.InputConnectionPatched
 import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
@@ -198,16 +200,17 @@ fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(
 
 
 private class LatinIMEActionInputTransaction(
-    private val inputLogic: InputLogic
+    private val inputLogic: InputLogic,
+    private val connection: InputConnection
 ): ActionInputTransaction {
     private var isFinished = false
     override val textContext: TextContext
 
     init {
-        inputLogic.startSuppressingLogic()
+        inputLogic.startSuppressingLogic(this)
         textContext = TextContext(
-            beforeCursor = inputLogic.mConnection.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),
-            afterCursor = inputLogic.mConnection.getTextAfterCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0)
+            beforeCursor = connection.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),
+            afterCursor = connection.getTextAfterCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0)
         )
     }
 
@@ -215,7 +218,7 @@ private class LatinIMEActionInputTransaction(
     override fun updatePartial(text: String) {
         if(isFinished) return
         partialText = text
-        inputLogic.mConnection.setComposingText(
+        connection.setComposingText(
             partialText,
             1
         )
@@ -224,7 +227,7 @@ private class LatinIMEActionInputTransaction(
     override fun commit(text: String) {
         if(isFinished) return
         isFinished = true
-        inputLogic.mConnection.commitText(
+        connection.commitText(
             text,
             1
         )
@@ -235,7 +238,23 @@ private class LatinIMEActionInputTransaction(
         commit(partialText)
         isFinished = true
     }
+
+    override fun cursorUpdated(
+        oldSelStart: Int,
+        oldSelEnd: Int,
+        newSelStart: Int,
+        newSelEnd: Int
+    ) {
+        if(connection is InputConnectionPatched) {
+            connection.cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd)
+        }
+    }
 }
+
+val ExperimentalICFix = SettingsKey(
+    booleanPreferencesKey("voice_input_experimental_ic_fix"),
+    false
+)
 
 class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIME) : KeyboardManagerForAction {
     override fun getContext(): Context {
@@ -247,7 +266,16 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun createInputTransaction(): ActionInputTransaction {
-        return LatinIMEActionInputTransaction(latinIME.inputLogic)
+        return LatinIMEActionInputTransaction(
+            latinIME.inputLogic,
+            run {
+                if(latinIME.getSetting(ExperimentalICFix)) {
+                    InputConnectionPatched(latinIME.getBaseInputConnection()!!)
+                } else {
+                    latinIME.getBaseInputConnection()!!
+                }
+            }
+        )
     }
 
     override fun typeText(v: String) {
