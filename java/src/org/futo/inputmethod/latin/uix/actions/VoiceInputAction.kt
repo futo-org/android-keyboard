@@ -219,6 +219,7 @@ private class VoiceInputActionWindow(
         inputTransaction.cancel()
         runBlocking { initJob.cancelAndJoin() }
         recognizerView.value?.cancel()
+        state.modelManager.cancelAll()
         return CloseResult.Default
     }
 
