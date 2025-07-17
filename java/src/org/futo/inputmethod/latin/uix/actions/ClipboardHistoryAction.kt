@@ -235,6 +235,9 @@ val Context.clipboardFile get() = File(filesDir, ClipboardFileName)
 private val ClipboardIOContext = Dispatchers.IO.limitedParallelism(1)
 
 class ClipboardHistoryManager(val context: Context, val coroutineScope: LifecycleCoroutineScope) : PersistentActionState {
+    var clipboardIOFailureReason = ""
+    val clipboardIOFailure = mutableStateOf(false)
+
     companion object {
         val onClipboardImportedFlow = MutableSharedFlow<File>()
     }
@@ -365,7 +368,6 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         }
     }
 
-    val clipboardIOFailure = mutableStateOf(false)
     var saveClipboardLoadJob: Job? = null
     internal fun saveClipboard(exiting: Boolean = false): Job? {
         if(!context.isDirectBootUnlocked) return null
@@ -463,7 +465,6 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
 """))
     }
 
-    var clipboardIOFailureReason = ""
     private suspend fun loadClipboard() = withContext(ClipboardIOContext) {
         if(!context.isDirectBootUnlocked) {
             clipboardIOFailureReason = "Direct Boot not unlocked"
