@@ -40,9 +40,7 @@ object ModelOutputSanitizer {
         val locale = RichInputMethodManager.getInstance().getCurrentSubtypeLocale()
 
         var trimmed = result.trim()
-        if (trimmed.isEmpty()) {
-            return ""
-        }
+        if (trimmed.isEmpty()) return ""
 
         val before = (textContext.beforeCursor?.toString() ?: "")
             .split("\n")
@@ -56,10 +54,14 @@ object ModelOutputSanitizer {
             trimmed = trimmed.dropLast(3)
         }
 
+        if (trimmed.isEmpty()) return ""
+
         // Punctuation
         if (trimmed.last().isPunctuation() && !after.isEmpty()) {
             trimmed = trimmed.dropLast(1)
         }
+
+        if (trimmed.isEmpty()) return ""
 
         // Capitalization - whisper always capitalizes first character
         val beforeTrimmed = before.trimEnd()
