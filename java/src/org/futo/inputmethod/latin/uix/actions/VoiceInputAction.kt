@@ -216,6 +216,7 @@ private class VoiceInputActionWindow(
     }
 
     override fun close(): CloseResult {
+        inputTransaction.cancel()
         runBlocking { initJob.cancelAndJoin() }
         recognizerView.value?.cancel()
         return CloseResult.Default

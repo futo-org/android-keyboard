@@ -233,6 +233,7 @@ private class LatinIMEActionInputTransaction(
 
     override fun cancel() {
         commit(partialText)
+        isFinished = true
     }
 }
 
