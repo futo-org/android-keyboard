@@ -303,7 +303,7 @@ fun LanguageSurface(
                         colors = CheckboxDefaults.colors(
                             checkedColor = MaterialTheme.colorScheme.onSecondaryContainer,
                             uncheckedColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                            checkmarkColor = MaterialTheme.colorScheme.primary
+                            checkmarkColor = MaterialTheme.colorScheme.secondaryContainer
                         )
                     )
                 }
