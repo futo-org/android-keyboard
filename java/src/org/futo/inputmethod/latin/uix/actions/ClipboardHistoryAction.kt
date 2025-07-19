@@ -527,17 +527,25 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
     }
 
     fun onTogglePin(item: ClipboardEntry) {
-        val itemPos = clipboardHistory.indexOf(item).coerceAtLeast(0)
+        var itemPos = clipboardHistory.indexOf(item).coerceAtLeast(0)
         clipboardHistory.removeAll { it == item }
-        clipboardHistory.add(itemPos, item.copy(
-            pinned = !item.pinned,
 
-            // Updating timestamp is necessary to prevent the following situation:
-            // 1. Item is past its expiration time but not removed because it's pinned
-            // 2. User unpins it (possibly by accident!)
-            // 3. Item immediately gets deleted because it's past its expiration time
-            timestamp = System.currentTimeMillis(),
-        ))
+        if(context.getSetting(ClipboardShowPinnedOnTop)) {
+            // With this setting, unpinning can cause the position to dramatically change, so it's
+            // better to just always reinsert into the final position which is more expected.
+            // (the final position is visually the first due to reverse iteration)
+            itemPos = clipboardHistory.size
+        }
+
+        clipboardHistory.add(itemPos, item.copy(
+                pinned = !item.pinned,
+
+                // Updating timestamp is necessary to prevent the following situation:
+                // 1. Item is past its expiration time but not removed because it's pinned
+                // 2. User unpins it (possibly by accident!)
+                // 3. Item immediately gets deleted because it's past its expiration time
+                timestamp = System.currentTimeMillis(),
+            ))
 
         saveClipboard()
     }
