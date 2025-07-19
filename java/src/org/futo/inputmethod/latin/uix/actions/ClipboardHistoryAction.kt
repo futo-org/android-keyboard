@@ -49,7 +49,6 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -514,34 +513,17 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
     }
 
     fun onPaste(item: ClipboardEntry) {
-        val itemPos = clipboardHistory.indexOf(item)
+        val itemPos = clipboardHistory.indexOf(item).coerceAtLeast(0)
         clipboardHistory.removeAll { it == item }
-
-        clipboardHistory.add(itemPos,
-            ClipboardEntry(
-                timestamp = System.currentTimeMillis(),
-                pinned = item.pinned,
-                text = item.text,
-                uri = item.uri,
-                mimeTypes = item.mimeTypes
-            )
-        )
+        clipboardHistory.add(itemPos, item.copy(timestamp = System.currentTimeMillis()))
 
         saveClipboard()
     }
 
-    fun onPin(item: ClipboardEntry) {
+    fun onTogglePin(item: ClipboardEntry) {
+        val itemPos = clipboardHistory.indexOf(item).coerceAtLeast(0)
         clipboardHistory.removeAll { it == item }
-
-        clipboardHistory.add(
-            ClipboardEntry(
-                timestamp = System.currentTimeMillis(),
-                pinned = !item.pinned,
-                text = item.text,
-                uri = item.uri,
-                mimeTypes = item.mimeTypes
-            )
-        )
+        clipboardHistory.add(itemPos, item.copy(pinned = !item.pinned))
 
         saveClipboard()
     }
@@ -633,7 +615,7 @@ val ClipboardHistoryAction = Action(
                                     DialogRequestItem(context.getString(R.string.action_clipboard_manager_unpin_all_items_button)) {
                                         clipboardHistoryManager.clipboardHistory.toList().forEach {
                                             if (it.pinned) {
-                                                clipboardHistoryManager.onPin(it)
+                                                clipboardHistoryManager.onTogglePin(it)
                                             }
                                         }
                                     },
@@ -774,7 +756,7 @@ val ClipboardHistoryAction = Action(
                                     clipboardHistoryManager.onRemove(it)
                                     manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                                 }, onPin = {
-                                    clipboardHistoryManager.onPin(it)
+                                    clipboardHistoryManager.onTogglePin(it)
                                     manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                                 })
                         }
