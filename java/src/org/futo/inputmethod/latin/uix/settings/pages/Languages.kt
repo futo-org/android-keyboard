@@ -617,6 +617,13 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 if (key != null) {
                     val subtypes = inputMethodList[key]!!
                     subtypes.forEach { Subtypes.removeLanguage(context, it) }
+
+                    if(multilingualBucket.value.contains(key)) {
+                        multilingualBucket.value.toMutableSet().apply {
+                            remove(key)
+                            multilingualBucket.setValue(this)
+                        }
+                    }
                 }
             },
             onDismissRequest = {
