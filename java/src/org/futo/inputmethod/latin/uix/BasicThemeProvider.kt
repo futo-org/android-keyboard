@@ -41,7 +41,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
     override val keyboardBackground: Drawable
     override val keyBackground: Drawable
-    override val spaceBarBackground: Drawable
 
     override val keyFeedback: Drawable
 
@@ -390,35 +389,13 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                 else -> makeVisualStyle(
                     highlight,
                     onKeyColor,
-                    highlight, highlightForeground,
+                    background, onBackground,
                     spaceCornerRadius
                 )
             }
         )
 
         keyBackground = keyStyles[KeyVisualStyle.Normal]!!.backgroundDrawable!!
-
-        val spaceDrawable = if(keyBorders) {
-            coloredRoundedRectangle(keyColor, dp(spaceCornerRadius))
-        } else if(expertMode) {
-            coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.1f).toArgb(), dp(spaceCornerRadius))
-        } else {
-            coloredRoundedRectangle(highlight, dp(spaceCornerRadius))
-        }
-
-        spaceBarBackground = StateListDrawable().apply {
-            addState(intArrayOf(android.R.attr.state_pressed),
-                LayerDrawable(
-                    arrayOf(
-                        spaceDrawable,
-                        coloredRoundedRectangle(highlight, dp(spaceCornerRadius))
-                    )
-                )
-            )
-            addState(intArrayOf(),
-                spaceDrawable
-            )
-        }
 
         keyFeedback = GradientDrawable(
             GradientDrawable.Orientation.TOP_BOTTOM,
