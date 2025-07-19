@@ -9,7 +9,9 @@ val SwitchLanguageAction = Action(
     icon = R.drawable.globe,
     name = R.string.show_language_switch_key,
     simplePressImpl = { manager, _ ->
-        Subtypes.switchToNextLanguage(manager.getContext(), 1)
+        if(!Subtypes.switchToNextLanguage(manager.getContext(), 1)) {
+            manager.openInputMethodPicker()
+        }
     },
     altPressImpl = { manager, _ ->
         manager.openInputMethodPicker()

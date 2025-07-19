@@ -784,7 +784,7 @@ public final class InputLogic {
             case Constants.CODE_ACTION_PREVIOUS:
                 performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
                 break;
-            case Constants.CODE_LANGUAGE_SWITCH:
+            case Constants.CODE_LANGUAGE_SWITCH: // TODO: Remove? Action is used instead
                 handleLanguageSwitchKey();
                 break;
             case Constants.CODE_EMOJI:

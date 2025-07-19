@@ -340,4 +340,9 @@ public class RichInputMethodManager {
         }
         return true;
     }
+
+    public List<InputMethodInfo> getEnabledInputMethodList() {
+        final InputMethodManager imm = getInputMethodManager();
+        return imm.getEnabledInputMethodList();
+    }
 }

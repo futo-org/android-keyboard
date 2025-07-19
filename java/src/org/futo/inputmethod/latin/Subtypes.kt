@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import android.view.inputmethod.InputMethodInfo
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodSubtype
 import android.view.inputmethod.InputMethodSubtype.InputMethodSubtypeBuilder
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -273,17 +276,19 @@ object Subtypes {
         return layouts
     }
 
-    fun switchToNextLanguage(context: Context, direction: Int) {
-        if(direction == 0) return
+    fun switchToNextLanguage(
+        context: Context,
+        direction: Int
+    ): Boolean {
+        if(direction == 0) return true
 
         val enabledSubtypes = context.getSettingBlocking(SubtypesSetting).toList()
         val currentSubtype = context.getSettingBlocking(ActiveSubtype)
 
-        if(enabledSubtypes.isEmpty()) return
+        if(enabledSubtypes.isEmpty()) return false
 
-        if(enabledSubtypes.size == 1) {
-            Toast.makeText(context, "Only one language is enabled, can't switch to next", Toast.LENGTH_SHORT).show()
-            return
+        if(enabledSubtypes.size == 1 && currentSubtype == enabledSubtypes.first()) {
+            return false
         }
 
         val index = enabledSubtypes.indexOf(currentSubtype)
@@ -294,6 +299,7 @@ object Subtypes {
         }
 
         context.setSettingBlocking(ActiveSubtype.key, enabledSubtypes[nextIndex])
+        return true
     }
 
     fun getMultilingualBucket(context: Context, locale: Locale): List<Locale> {
@@ -312,7 +318,8 @@ object Subtypes {
 @Composable
 @Preview
 fun LanguageSwitcherDialog(
-    onDismiss: () -> Unit = { }
+    onDismiss: () -> Unit = { },
+    switchToIme: (InputMethodInfo) -> Unit = { }
 ) {
     val inspection = LocalInspectionMode.current
     val context = LocalContext.current
@@ -334,6 +341,22 @@ fun LanguageSwitcherDialog(
         useDataStoreValue(ActiveSubtype)
     }
 
+    val activeIMEs = if(LocalInspectionMode.current) {
+        listOf(
+            InputMethodInfo("com.example.Keyboard", ".Keyboard", "Joe's Keyboard", ""),
+            InputMethodInfo("com.example.Keyboard", ".Keyboard", "Example Keyboard", ""),
+            InputMethodInfo("com.example.Keyboard", ".Keyboard", "Company's Very Special Keyboard Application", ""),
+            InputMethodInfo("com.example.Keyboard", ".Keyboard", null, ""),
+        )
+    } else {
+        remember {
+            RichInputMethodManager.init(context)
+            RichInputMethodManager.getInstance().enabledInputMethodList.filter {
+                it.packageName != context.packageName
+            }
+        }
+    }
+
     Surface(shape = RoundedCornerShape(48.dp), color = MaterialTheme.colorScheme.background) {
         Column {
             Spacer(modifier = Modifier.height(16.dp))
@@ -348,7 +371,6 @@ fun LanguageSwitcherDialog(
 
             LazyColumn(modifier = Modifier.weight(1.0f)) {
                 items(keys) { locale ->
-
                     subtypes[locale]!!.forEach { subtype ->
                         val layoutSetName = subtype.getExtraValueOf(Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET) ?: ""
 
@@ -365,7 +387,8 @@ fun LanguageSwitcherDialog(
                                 navigate = {
                                     context.setSettingBlocking(ActiveSubtype.key, Subtypes.subtypeToString(subtype))
                                     onDismiss()
-                                }
+                                },
+                                icon = if(selected) painterResource(R.drawable.check_circle) else painterResource(R.drawable.circle)
                             )
                         }
 
@@ -378,8 +401,33 @@ fun LanguageSwitcherDialog(
                         } else {
                             item()
                         }
-
                     }
+                }
+
+                item {
+                    if(activeIMEs.isNotEmpty() && keys.isNotEmpty()) {
+                        Spacer(Modifier.height(16.dp))
+                        HorizontalDivider()
+                        Spacer(Modifier.height(16.dp))
+                    }
+                }
+
+                items(activeIMEs) { ime ->
+                    val title = try {
+                        ime.loadLabel(context.packageManager)?.toString()
+                    } catch(_: Exception) {
+                        null
+                    } ?: ime.id
+
+                    NavigationItem(
+                        title = title,
+                        style = NavigationItemStyle.MiscNoArrow,
+                        navigate = {
+                            switchToIme(ime)
+                        },
+                        compact = true,
+                        icon = painterResource(R.drawable.circle)
+                    )
                 }
             }
 

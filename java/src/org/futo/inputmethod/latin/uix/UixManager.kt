@@ -827,11 +827,17 @@ class UixManager(private val latinIME: LatinIME) {
         languageSwitcherDialog?.dismiss()
 
         // Create new dialog
-        languageSwitcherDialog = createDialogComposeView(latinIME) {
+        languageSwitcherDialog = createDialogComposeView(latinIME) { dialog ->
             DataStoreCacheProvider {
                 UixThemeAuto {
                     LanguageSwitcherDialog(
-                        onDismiss = { it.dismiss() }
+                        onDismiss = { dialog.dismiss() },
+                        switchToIme = {
+                            latinIME.lifecycleScope.launch(Dispatchers.Main) {
+                                latinIME.switchInputMethod(it.id)
+                                dialog.dismiss()
+                            }
+                        }
                     )
                 }
             }
