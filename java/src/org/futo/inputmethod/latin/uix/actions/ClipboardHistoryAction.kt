@@ -81,6 +81,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurface
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentSurfaceHeading
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
 import org.futo.inputmethod.latin.uix.theme.Typography
 import java.io.File
 import kotlin.math.roundToInt
@@ -102,6 +103,11 @@ val ClipboardHistoryTimeToKeep = SettingsKey(
 
 val ClipboardHistorySaveSensitive = SettingsKey(
     booleanPreferencesKey("clipboard_history_save_sensitive"),
+    false
+)
+
+val ClipboardShowPinnedOnTop = SettingsKey(
+    booleanPreferencesKey("clipboard_history_show_pinned_on_top"),
     false
 )
 
@@ -719,15 +725,22 @@ val ClipboardHistoryAction = Action(
                         }
                     }
                 } else {
+                    val sortedList = when {
+                        useDataStoreValue(ClipboardShowPinnedOnTop) -> clipboardHistoryManager.clipboardHistory
+                            .sortedBy { it.pinned }
+
+                        else -> clipboardHistoryManager.clipboardHistory
+                    }
+
                     LazyVerticalStaggeredGrid(
                         modifier = Modifier.fillMaxWidth(),
                         columns = StaggeredGridCells.Adaptive(140.dp),
                         verticalItemSpacing = 4.dp,
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        items(clipboardHistoryManager.clipboardHistory.size, key = { r_i ->
-                            val i = clipboardHistoryManager.clipboardHistory.size - r_i - 1
-                            val entry = clipboardHistoryManager.clipboardHistory[i]
+                        items(sortedList.size, key = { r_i ->
+                            val i = sortedList.size - r_i - 1
+                            val entry = sortedList[i]
 
                             entry.text?.let {
                                 if(it.length > 512) {
@@ -740,8 +753,8 @@ val ClipboardHistoryAction = Action(
                             } ?: i
                             i
                         }) { r_i ->
-                            val i = clipboardHistoryManager.clipboardHistory.size - r_i - 1
-                            val entry = clipboardHistoryManager.clipboardHistory[i]
+                            val i = sortedList.size - r_i - 1
+                            val entry = sortedList[i]
                             ClipboardEntryView(
                                 modifier = Modifier.animateItemPlacement(),
                                 clipboardEntry = entry, onPaste = {
@@ -821,6 +834,11 @@ val ClipboardHistoryAction = Action(
                 },
                 visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }
             ),
+
+            userSettingToggleDataStore(
+                title = R.string.action_clipboard_manager_settings_show_pinned_above_others,
+                setting = ClipboardShowPinnedOnTop
+            ).copy(visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }),
         )
     )
 )
