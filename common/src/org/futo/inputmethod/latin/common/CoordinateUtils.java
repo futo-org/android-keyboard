@@ -91,4 +91,8 @@ public final class CoordinateUtils {
             @Nonnull final int[] coords) {
         setXYInArray(coordsArray, index, x(coords), y(coords));
     }
+
+    public static int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
+    }
 }

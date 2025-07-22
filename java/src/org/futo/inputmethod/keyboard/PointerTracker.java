@@ -935,6 +935,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             }
 
             int steps = (x - mStartX) / pointerStep;
+            int STEP_MULTIPLIER_STAGES = 3;
+            int spaceY = oldKey.getY();
+            int step_multiplier = STEP_MULTIPLIER_STAGES - CoordinateUtils.clamp(y, 0, spaceY - 1) * STEP_MULTIPLIER_STAGES / spaceY - 1;
+
             final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
             if (steps != 0 && mStartTime + swipeIgnoreTime < System.currentTimeMillis()) {
                 mCursorMoved = true;
@@ -943,7 +947,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                 if(settingsValues.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_LANGUAGE && !mSpacebarLongPressed) {
                     sListener.onSwipeLanguage(steps);
                 } else {
-                    sListener.onMovePointer(steps);
+                    sListener.onMovePointer(steps << step_multiplier);
                 }
             }
 
