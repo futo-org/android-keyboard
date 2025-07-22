@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.futo.voiceinput.shared.ggml.InferenceCancelledException
+import org.futo.voiceinput.shared.ggml.InvalidModelException
 import org.futo.voiceinput.shared.types.AudioRecognizerListener
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
@@ -510,7 +511,11 @@ class AudioRecognizer(
 
         loadModelJob = lifecycleScope.launch {
             withContext(Dispatchers.Default) {
-                preloadModels()
+                try {
+                    preloadModels()
+                } catch(_: InvalidModelException) {
+                    TODO("Display error to user: model is corrupted, cannot run voice input, please redownload model")
+                }
             }
         }
     }
