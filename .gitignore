@@ -8,3 +8,4 @@ local.properties
 crashreporting.properties
 keystore.properties
 key.jks
+.cxx
