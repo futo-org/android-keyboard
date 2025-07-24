@@ -515,11 +515,11 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.onInitializeInterface()
     }
 
-    private var legacyInputView: View? = null
+    private var legacyInputView: MutableState<View?> = mutableStateOf(null)
     override fun onCreateInputView(): View {
         val composeView = super.onCreateInputView()
 
-        legacyInputView = latinIMELegacy.onCreateInputView()
+        legacyInputView.value = latinIMELegacy.onCreateInputView()
         latinIMELegacy.setComposeInputView(composeView)
 
         uixManager.setContent()
@@ -540,7 +540,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     // The keyboard view really doesn't like being detached, so it's always
     // shown, but resized to 0 if an action window is open
-    @NonSkippableComposable
     @Composable
     internal fun LegacyKeyboardView(hidden: Boolean) {
         val modifier = if(hidden) {
@@ -553,6 +552,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             }
         }.safeKeyboardPadding()
 
+        val legacyInputView = legacyInputView.value
         key(legacyInputView) {
             AndroidView(factory = {
                 legacyInputView!!.also {
@@ -568,10 +568,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     // necessary for when KeyboardSwitcher updates the theme
     fun updateLegacyView(newView: View) {
-        Log.w("LatinIME", "Updating legacy view")
-        legacyInputView = newView
-
-        uixManager.setContent()
+        legacyInputView.value = newView
         composeView?.let {
             latinIMELegacy.setComposeInputView(it)
         }
@@ -586,7 +583,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             latinIMELegacy.setComposeInputView(it)
         }
 
-        latinIMELegacy.setInputView(legacyInputView)
+        latinIMELegacy.setInputView(legacyInputView.value)
     }
 
     override fun setCandidatesView(view: View?) {
@@ -710,7 +707,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onComputeInsets(outInsets: Insets?) {
         // This method may be called before {@link #setInputView(View)}.
-        if (legacyInputView == null || composeView == null) {
+        if (legacyInputView.value == null || composeView == null) {
             return
         }
 
