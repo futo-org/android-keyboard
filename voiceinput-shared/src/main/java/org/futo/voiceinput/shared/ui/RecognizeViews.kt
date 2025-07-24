@@ -100,12 +100,15 @@ private fun FakeToast(modifier: Modifier, message: String?) {
     if(message != null) {
         AnimatedVisibility(
             visible = visible.value,
-            modifier = modifier.alpha(0.9f).background(MaterialTheme.colorScheme.surfaceDim, RoundedCornerShape(100)).padding(16.dp),
+            modifier = modifier
+                .alpha(0.9f)
+                .background(MaterialTheme.colorScheme.surfaceDim, RoundedCornerShape(100))
+                .padding(16.dp),
             enter = fadeIn(),
             exit = fadeOut()
         ) {
             Box {
-                Text(message, modifier = Modifier.align(Alignment.Center), style = Typography.labelSmall)
+                Text(message, modifier = Modifier.align(Alignment.Center), style = Typography.labelSmall, color = MaterialTheme.colorScheme.onSurface)
             }
         }
     }
@@ -113,13 +116,15 @@ private fun FakeToast(modifier: Modifier, message: String?) {
 
 @Composable
 private fun BoxScope.BluetoothToggleIcon(device: MutableState<MicrophoneDeviceState>? = null) {
-    FakeToast(modifier = Modifier.align(Alignment.BottomCenter).offset(y = (-16).dp), message = if(device?.value?.bluetoothActive == true) {
-        "Using Bluetooth mic (${device.value.deviceName})"
-    } else if(device?.value?.bluetoothAvailable == true || device?.value?.bluetoothPreferredByUser == true) {
-        "Using Built-in mic (${device.value.deviceName})"
-    } else {
-        null
-    })
+    FakeToast(modifier = Modifier.align(Alignment.BottomCenter).offset(y = (-16).dp),
+        message = if(device?.value?.bluetoothActive == true) {
+            stringResource(R.string.using_bluetooth_mic, device.value.deviceName)
+        } else if(device?.value?.bluetoothAvailable == true || device?.value?.bluetoothPreferredByUser == true) {
+            stringResource(R.string.using_built_in_mic, device.value.deviceName)
+        } else {
+            null
+        }
+    )
 
     if(device?.value?.bluetoothAvailable == true) {
         val bluetoothColor = MaterialTheme.colorScheme.primary
@@ -238,7 +243,9 @@ fun ColumnScope.PartialDecodingResult(text: String = "I am speaking [...]") {
 
 @Composable
 fun ColumnScope.RecognizeMicError(openSettings: () -> Unit) {
-    Box(Modifier.fillMaxSize().clickable { openSettings() }) {
+    Box(Modifier
+        .fillMaxSize()
+        .clickable { openSettings() }) {
         Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 stringResource(R.string.grant_microphone_permission_to_use_voice_input),
