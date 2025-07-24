@@ -60,7 +60,7 @@ object LayoutManager {
 
         val layoutPaths = getAllLayoutPaths(assetManager)
 
-        layoutsById = layoutPaths.associate { path ->
+        layoutsById = layoutPaths.filter { it != "layouts/names.yaml" }.associate { path ->
             val filename = path.split("/").last().split(".yaml").first()
 
             val keyboard = try {
