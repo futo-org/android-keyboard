@@ -168,9 +168,11 @@ class AudioRecognizer(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
                 val devices = audioManager.availableCommunicationDevices
-                val tgtDevice = devices.firstOrNull {
-                    preferBluetoothMic && it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO
-                } ?: devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_MIC } ?: devices.first()
+                val tgtDevice =
+                    devices.firstOrNull { preferBluetoothMic && it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO } ?:
+                    devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_MIC } ?:
+                    devices.firstOrNull { it.type != AudioDeviceInfo.TYPE_BLUETOOTH_SCO  } ?:
+                    devices.first()
 
                 if (!audioManager.setCommunicationDevice(tgtDevice)) {
                     audioManager.clearCommunicationDevice()
