@@ -111,6 +111,12 @@ val ClipboardShowPinnedOnTop = SettingsKey(
     false
 )
 
+val ClipboardQuickClipsEnabled = SettingsKey(
+    booleanPreferencesKey("clipboard_quick_clips_enabled"),
+    true
+)
+
+
 object UriSerializer : KSerializer<Uri> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Uri", PrimitiveKind.STRING)
 
@@ -800,14 +806,14 @@ val ClipboardHistoryAction = Action(
         navPath = "actions/clipboard_history",
         registerNavPath = true,
         settings = listOf(
-            UserSetting(
-                name = R.string.typing_settings_enable_clipboard_history,
-                component = {
-                    SettingToggleDataStore(
-                        title = stringResource(R.string.typing_settings_enable_clipboard_history),
-                        setting = ClipboardHistoryEnabled
-                    )
-                }
+            userSettingToggleDataStore(
+                title = R.string.action_clipboard_manager_settings_show_quick_clips,
+                setting = ClipboardQuickClipsEnabled
+            ),
+
+            userSettingToggleDataStore(
+                title = R.string.typing_settings_enable_clipboard_history,
+                setting = ClipboardHistoryEnabled
             ).copy(searchTags = R.string.typing_settings_enable_clipboard_history_tags),
 
             UserSetting(
