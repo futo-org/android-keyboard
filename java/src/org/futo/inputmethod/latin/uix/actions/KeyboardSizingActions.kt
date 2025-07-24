@@ -34,9 +34,7 @@ import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import org.futo.inputmethod.latin.uix.theme.Typography
 
 @Composable
-private fun RowScope.KeyboardMode(iconRes: Int, checkedIconRes: Int, name: String, sizingCalculator: KeyboardSizingCalculator, mode: KeyboardMode) {
-    val isChecked = sizingCalculator.getSavedSettings().currentMode == mode
-
+internal fun RowScope.KeyboardMode(iconRes: Int, checkedIconRes: Int, name: String, sizingCalculator: KeyboardSizingCalculator, mode: KeyboardMode, isChecked: Boolean) {
     Surface(
         color = Color.Transparent,
         modifier = Modifier
@@ -92,6 +90,7 @@ val KeyboardModeAction = Action(
 
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
+                val currMode = sizeCalculator.getSavedSettings().currentMode
                 Column {
                     Row(Modifier.height(ActionBarHeight)) {
                         // Hide the back button in the resize tutorial
@@ -122,28 +121,32 @@ val KeyboardModeAction = Action(
                             R.drawable.keyboard_regular,
                             R.drawable.keyboard_fill_check,
                             stringResource(R.string.action_keyboard_modes_standard),
-                            sizeCalculator, KeyboardMode.Regular
+                            sizeCalculator, KeyboardMode.Regular,
+                            currMode == KeyboardMode.Regular
                         )
 
                         KeyboardMode(
                             R.drawable.keyboard_left_handed,
                             R.drawable.keyboard_left_handed_fill_check,
                             stringResource(R.string.action_keyboard_modes_one_handed),
-                            sizeCalculator, KeyboardMode.OneHanded
+                            sizeCalculator, KeyboardMode.OneHanded,
+                            currMode == KeyboardMode.OneHanded
                         )
 
                         KeyboardMode(
                             R.drawable.keyboard_split,
                             R.drawable.keyboard_split_fill_check,
                             stringResource(R.string.action_keyboard_modes_split),
-                            sizeCalculator, KeyboardMode.Split
+                            sizeCalculator, KeyboardMode.Split,
+                            currMode == KeyboardMode.Split
                         )
 
                         KeyboardMode(
                             R.drawable.keyboard_float,
                             R.drawable.keyboard_float_fill_check,
                             stringResource(R.string.action_keyboard_modes_floating),
-                            sizeCalculator, KeyboardMode.Floating
+                            sizeCalculator, KeyboardMode.Floating,
+                            currMode == KeyboardMode.Floating
                         )
                     }
                 }

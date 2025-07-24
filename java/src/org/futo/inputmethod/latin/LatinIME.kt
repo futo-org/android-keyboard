@@ -23,6 +23,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.NonSkippableComposable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -539,6 +540,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     // The keyboard view really doesn't like being detached, so it's always
     // shown, but resized to 0 if an action window is open
+    @NonSkippableComposable
     @Composable
     internal fun LegacyKeyboardView(hidden: Boolean) {
         val modifier = if(hidden) {
