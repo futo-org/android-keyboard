@@ -103,6 +103,9 @@ interface KeyboardManagerForAction {
     fun markTutorialCompleted()
 
     fun overrideKeyboardTypeface(typeface: Typeface?)
+
+    fun copyToClipboard(cut: Boolean = false)
+    fun pasteFromClipboard()
 }
 
 enum class CloseResult {

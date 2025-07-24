@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
@@ -486,6 +487,19 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     override fun overrideKeyboardTypeface(typeface: Typeface?) {
         latinIME.getDrawableProvider().typefaceOverride = typeface
         latinIME.invalidateKeyboard()
+    }
+
+    override fun copyToClipboard(cut: Boolean) {
+        if(cut) {
+            sendKeyEvent(KeyEvent.KEYCODE_X, KeyEvent.META_CTRL_ON)
+        } else {
+            sendKeyEvent(KeyEvent.KEYCODE_C, KeyEvent.META_CTRL_ON)
+        }
+    }
+
+    override fun pasteFromClipboard() {
+        sendKeyEvent(KeyEvent.KEYCODE_V, KeyEvent.META_CTRL_ON)
+        uixManager.dismissQuickClips()
     }
 
     override fun getSizingCalculator(): KeyboardSizingCalculator =
@@ -1437,6 +1451,7 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     private val quickClipState: MutableState<QuickClipState?> = mutableStateOf(null)
+    fun dismissQuickClips() { quickClipState.value = null }
     fun inputStarted(editorInfo: EditorInfo?) {
         inlineStuffHiddenByTyping.value = false
         this.editorInfo = editorInfo
