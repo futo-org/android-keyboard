@@ -191,9 +191,12 @@
     <string name="action_menu_closed">%1$s closed</string>
 
 
+    <!-- Quick clipboard items appear in the suggestion bar after something was recently copied -->
     <string name="quick_clip_full_string">Quick clipboard item: “%s”. Double-tap to paste. Type anything to dismiss.</string>
     <string name="quick_clip_numeric_code">Quick clip of an extracted numeric code: “%s”. Double-tap to paste. Type anything to dismiss.</string>
     <string name="quick_clip_email_address">Quick clip of an extracted email address: “%s”. Double-tap to paste. Type anything to dismiss.</string>
     <string name="quick_clip_url">Quick clip of an extracted URL: “%s”. Double-tap to paste. Type anything to dismiss.</string>
     <string name="quick_clip_image">Quick image clipboard item. Double-tap to paste image. Type anything to dismiss.</string>
+
+    <string name="quick_clip_content_obscured">Plug in a headset to hear contents.</string>
 </resources>
