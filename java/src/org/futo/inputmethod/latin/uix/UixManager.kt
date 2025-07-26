@@ -1138,9 +1138,9 @@ class UixManager(private val latinIME: LatinIME) {
                     val needToUseExpandableSuggestionUi =
                         useExpandableSuggestionsUi.value && suggestedWords.value?.size()?.equals(0) != true
                                 && mainKeyboardHidden.value == false
-                                && quickClipState.value == null
+                                && (quickClipState.value == null || inlineStuffHiddenByTyping.value)
                                 && currentNotice.value == null
-                                && inlineSuggestions.value.isEmpty()
+                                && (inlineSuggestions.value.isEmpty() || inlineStuffHiddenByTyping.value)
                     when {
                         currWindowActionWindow.value != null -> ActionViewWithHeader(
                             currWindowActionWindow.value!!,
