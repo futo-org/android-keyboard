@@ -1,5 +1,5 @@
 default:
-  image: "gitlab.futo.org:5050/keyboard/latinime/gradle:latest"
+  image: "gitlab.futo.org:5050/keyboard/latinime/gradle:35"
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive

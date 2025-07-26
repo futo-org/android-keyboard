@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
@@ -91,6 +92,7 @@ import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.core.view.inputmethod.InputContentInfoCompat
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
@@ -104,6 +106,7 @@ import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.FoldingOptions
+import org.futo.inputmethod.latin.InputConnectionPatched
 import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
@@ -196,6 +199,11 @@ fun Modifier.safeKeyboardPadding(): Modifier {
 fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(LocalDensity.current) {
     this@keyboardBottomPadding.absolutePadding(bottom = size.padding.bottom.toDp())
 }
+
+val ExperimentalICFix = SettingsKey(
+    booleanPreferencesKey("voice_input_experimental_ic_fix"),
+    false
+)
 
 class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIME) : KeyboardManagerForAction {
     override fun getContext(): Context {
@@ -428,6 +436,19 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     override fun overrideKeyboardTypeface(typeface: Typeface?) {
         latinIME.getDrawableProvider().typefaceOverride = typeface
         latinIME.invalidateKeyboard()
+    }
+
+    override fun copyToClipboard(cut: Boolean) {
+        if(cut) {
+            sendKeyEvent(KeyEvent.KEYCODE_X, KeyEvent.META_CTRL_ON)
+        } else {
+            sendKeyEvent(KeyEvent.KEYCODE_C, KeyEvent.META_CTRL_ON)
+        }
+    }
+
+    override fun pasteFromClipboard() {
+        sendKeyEvent(KeyEvent.KEYCODE_V, KeyEvent.META_CTRL_ON)
+        uixManager.dismissQuickClips()
     }
 
     override fun getSizingCalculator(): KeyboardSizingCalculator =
@@ -784,11 +805,17 @@ class UixManager(private val latinIME: LatinIME) {
         languageSwitcherDialog?.dismiss()
 
         // Create new dialog
-        languageSwitcherDialog = createDialogComposeView(latinIME) {
+        languageSwitcherDialog = createDialogComposeView(latinIME) { dialog ->
             DataStoreCacheProvider {
                 UixThemeAuto {
                     LanguageSwitcherDialog(
-                        onDismiss = { it.dismiss() }
+                        onDismiss = { dialog.dismiss() },
+                        switchToIme = {
+                            latinIME.lifecycleScope.launch(Dispatchers.Main) {
+                                latinIME.switchInputMethod(it.id)
+                                dialog.dismiss()
+                            }
+                        }
                     )
                 }
             }
@@ -1435,6 +1462,7 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     private val quickClipState: MutableState<QuickClipState?> = mutableStateOf(null)
+    fun dismissQuickClips() { quickClipState.value = null }
     fun inputStarted(editorInfo: EditorInfo?) {
         inlineStuffHiddenByTyping.value = false
         this.editorInfo = editorInfo

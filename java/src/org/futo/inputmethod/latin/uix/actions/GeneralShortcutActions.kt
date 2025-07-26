@@ -17,7 +17,7 @@ val CutAction = Action(
     icon = R.drawable.scissors,
     name = R.string.action_cut_title,
     simplePressImpl = { manager, _ ->
-        manager.sendKeyEvent(KeyEvent.KEYCODE_X, KeyEvent.META_CTRL_ON)
+        manager.copyToClipboard(cut = true)
     },
     windowImpl = null,
 )
@@ -26,7 +26,7 @@ val CopyAction = Action(
     icon = R.drawable.copy,
     name = R.string.action_copy_title,
     simplePressImpl = { manager, _ ->
-        manager.sendKeyEvent(KeyEvent.KEYCODE_C, KeyEvent.META_CTRL_ON)
+        manager.copyToClipboard(cut = false)
     },
     windowImpl = null,
 )
@@ -35,7 +35,7 @@ val PasteAction = Action(
     icon = R.drawable.clipboard,
     name = R.string.action_paste_title,
     simplePressImpl = { manager, _ ->
-        manager.sendKeyEvent(KeyEvent.KEYCODE_V, KeyEvent.META_CTRL_ON)
+        manager.pasteFromClipboard()
     },
     windowImpl = null,
 )

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- These strings are not used by the keyboard app itself, but by the Google Play payment app -->
+    <string name="payment_app_name">Payment for FUTO Keyboard</string>
+    <string name="payment_app_main_menu_title">You have paid for FUTO Keyboard</string>
+    <string name="payment_app_main_menu_line_1">Thank you for paying!</string>
+    <string name="payment_app_main_menu_line_2">Your purchase will help continued development of FUTO Keyboard, and other FUTO projects.</string>
+    <string name="payment_app_main_menu_line_3">This app only serves to let you pay for FUTO Keyboard through Google‘s payment system. You don’t need to keep this app installed. To get rid of the payment notice in FUTO Keyboard, tap ‘I already paid’ or the button below.</string>
+    <string name="payment_app_activate_keyboard_button">Set FUTO Keyboard as paid</string>
+
+    <string name="payment_app_more_options_download_keyboard">Download FUTO Keyboard from Play Store</string>
+    <string name="payment_app_more_options_visit_website">Visit FUTO Keyboard website</string>
+    <string name="payment_app_more_options_email_support">Email Support</string>
+</resources>

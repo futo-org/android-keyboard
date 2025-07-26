@@ -113,7 +113,7 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
 
 
     wparams.suppress_blank = false;
-    wparams.suppress_non_speech_tokens = suppress_non_speech_tokens;
+    wparams.suppress_non_speech_tokens = (suppress_non_speech_tokens == JNI_TRUE);
     wparams.no_timestamps = num_samples < 16000 * 25;
 
     if(allowed_languages.size() == 0) {

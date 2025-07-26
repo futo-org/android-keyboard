@@ -15,7 +15,10 @@ private fun createBlankResultPermutations(blankResults: List<String>): HashSet<S
 
 private val EMPTY_RESULTS = createBlankResultPermutations(
     listOf(
-        "you", "(bell dings)", "(blank audio)", "(beep)", "(bell)", "(music)", "(music playing)"
+        "you", "(bell dings)", "(blank audio)", "(beep)", "(bell)", "(music)", "(music playing)",
+
+        // TODO: These should be filtered out by suppressNonSpeechTokens but aren't
+        "♪", "♪♪"
     )
 )
 

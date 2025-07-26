@@ -66,7 +66,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.payment.PaymentActivity
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
@@ -248,21 +247,6 @@ fun UnpaidNoticeCondition(
 
     if (force || displayCondition) {
         inner()
-    }
-}
-
-@Composable
-@Preview
-fun ConditionalUnpaidNoticeInVoiceInputWindow(onClose: (() -> Unit)? = null) {
-    val context = LocalContext.current
-
-    UnpaidNoticeCondition {
-        TextButton(onClick = {
-            context.startAppActivity(PaymentActivity::class.java)
-            if (onClose != null) onClose()
-        }) {
-            Text(stringResource(R.string.payment_unpaid_version_indicator), color = MaterialTheme.colorScheme.onSurface)
-        }
     }
 }
 

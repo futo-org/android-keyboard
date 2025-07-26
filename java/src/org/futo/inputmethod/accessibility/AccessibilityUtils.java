@@ -126,10 +126,7 @@ public final class AccessibilityUtils {
      *
      * @return {@code true} if the device should obscure password characters.
      */
-    @SuppressWarnings("deprecation")
-    public boolean shouldObscureInput(final EditorInfo editorInfo) {
-        if (editorInfo == null) return false;
-
+    public boolean shouldObscureInput() {
         // The user can optionally force speaking passwords.
         if (SettingsSecureCompatUtils.ACCESSIBILITY_SPEAK_PASSWORD != null) {
             final boolean speakPassword = Settings.Secure.getInt(mContext.getContentResolver(),
@@ -141,6 +138,20 @@ public final class AccessibilityUtils {
         if (mAudioManager.isWiredHeadsetOn() || mAudioManager.isBluetoothA2dpOn()) {
             return false;
         }
+
+        return true;
+    }
+
+    /**
+     * Returns whether the device should obscure typed password characters.
+     * Typically this means speaking "dot" in place of non-control characters.
+     *
+     * @return {@code true} if the device should obscure password characters.
+     */
+    @SuppressWarnings("deprecation")
+    public boolean shouldObscureInput(final EditorInfo editorInfo) {
+        if (editorInfo == null) return false;
+        if (!shouldObscureInput()) return false;
 
         // Don't speak if the IME is connected to a password field.
         return InputTypeUtils.isPasswordInputType(editorInfo.inputType);

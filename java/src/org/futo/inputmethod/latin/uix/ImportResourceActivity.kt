@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -520,42 +521,44 @@ class ImportResourceActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        settingsCfgImportMetadata.value?.let {
-                            SettingsImportScreen(
-                                metadata = it,
-                                onApply = {
-                                    lifecycleScope.launch {
-                                        withContext(Dispatchers.IO) {
-                                            contentResolver.openInputStream(uri!!)!!.use {
-                                                SettingsExporter.loadSettings(
-                                                    this@ImportResourceActivity,
-                                                    it,
-                                                    true
-                                                )
+                        Box(Modifier.safeDrawingPadding()) {
+                            settingsCfgImportMetadata.value?.let {
+                                SettingsImportScreen(
+                                    metadata = it,
+                                    onApply = {
+                                        lifecycleScope.launch {
+                                            withContext(Dispatchers.IO) {
+                                                contentResolver.openInputStream(uri!!)!!.use {
+                                                    SettingsExporter.loadSettings(
+                                                        this@ImportResourceActivity,
+                                                        it,
+                                                        true
+                                                    )
+                                                }
+                                            }
+                                            withContext(Dispatchers.Main) {
+                                                finish()
                                             }
                                         }
-                                        withContext(Dispatchers.Main) {
-                                            finish()
-                                        }
+                                    },
+                                    onCancel = {
+                                        finish()
                                     }
-                                },
-                                onCancel = {
-                                    finish()
-                                }
-                            )
-                            it
-                        } ?: run {
-                            ImportScreen(
-                                fileKind = fileKind.value,
-                                file = fileBeingImported.value,
-                                onApply = { fileKind, inputMethodSubtype ->
-                                    applySetting(
-                                        fileKind,
-                                        inputMethodSubtype
-                                    )
-                                },
-                                onCancel = { finish() }
-                            )
+                                )
+                                it
+                            } ?: run {
+                                ImportScreen(
+                                    fileKind = fileKind.value,
+                                    file = fileBeingImported.value,
+                                    onApply = { fileKind, inputMethodSubtype ->
+                                        applySetting(
+                                            fileKind,
+                                            inputMethodSubtype
+                                        )
+                                    },
+                                    onCancel = { finish() }
+                                )
+                            }
                         }
                     }
                 }

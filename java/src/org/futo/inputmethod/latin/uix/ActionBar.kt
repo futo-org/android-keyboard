@@ -1578,7 +1578,8 @@ fun PreviewActionBarWithQuickClip(colorScheme: ThemeOption = DefaultDarkScheme) 
                 ),
                 image = "content://example".toUri(),
                 validUntil = Long.MAX_VALUE,
-                imageMimeTypes = listOf()
+                imageMimeTypes = listOf(),
+                isSensitive = true
             )
         )
     }

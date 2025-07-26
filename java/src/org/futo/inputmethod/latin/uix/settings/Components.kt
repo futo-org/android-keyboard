@@ -202,6 +202,7 @@ fun SettingItem(
     disabled: Boolean = false,
     modifier: Modifier = Modifier,
     subcontent: (@Composable () -> Unit)? = null,
+    compact: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val textColor = when(LocalContentColor.current) {
@@ -223,7 +224,7 @@ fun SettingItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .defaultMinSize(0.dp, 68.dp)
+            .defaultMinSize(0.dp, if(compact) { 48.dp } else { 68.dp })
             .let {
                 if(onClick != null) {
                     it.clickable(enabled = !disabled, onClick = {
@@ -602,11 +603,12 @@ enum class NavigationItemStyle {
 }
 
 @Composable
-fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Unit, icon: Painter? = null, subtitle: String? = null) {
+fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Unit, icon: Painter? = null, subtitle: String? = null, compact: Boolean = false) {
     SettingItem(
         title = title,
         subtitle = subtitle,
         onClick = navigate,
+        compact = compact,
         icon = {
             icon?.let {
                 val circleColor = when(style) {
@@ -628,7 +630,7 @@ fun NavigationItem(title: String, style: NavigationItemStyle, navigate: () -> Un
                     NavigationItemStyle.MiscNoArrow,
                     NavigationItemStyle.Mail,
                     NavigationItemStyle.ExternalLink,
-                    NavigationItemStyle.Misc -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
+                    NavigationItemStyle.Misc -> LocalContentColor.current.copy(alpha = 0.75f)
                 }
 
                 Canvas(modifier = Modifier.size(48.dp)) {

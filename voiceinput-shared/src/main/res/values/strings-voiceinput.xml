@@ -47,4 +47,10 @@
     <string name="base_name">Multilingual-74 (default)</string>
     <!-- Model name for the small model -->
     <string name="small_name">Multilingual-244 (slow)</string>
+
+    <!-- Indicates that a bluetooth mic is being used -->
+    <string name="using_bluetooth_mic">Using Bluetooth mic (%1$s)</string>
+
+    <!-- Indicates that although bluetooth mic is preferred, the builtin one is being used instead -->
+    <string name="using_built_in_mic">Using Built-in mic (%1$s)</string>
 </resources>

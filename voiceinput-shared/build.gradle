@@ -1,7 +1,7 @@
 plugins {
-    id 'com.android.library' version '8.2.2'
-    id 'org.jetbrains.kotlin.android' version '2.0.0'
-    id 'org.jetbrains.kotlin.plugin.compose' version '2.0.0'
+    id 'com.android.library' version '8.10.1'
+    id 'org.jetbrains.kotlin.android' version '2.1.0'
+    id 'org.jetbrains.kotlin.plugin.compose' version '2.1.0'
 }
 
 final def translationsWithoutEngValues = { final String path ->
@@ -38,11 +38,11 @@ final def translationsWithoutEngValues = { final String path ->
 
 android {
     namespace 'org.futo.voiceinput.shared'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         minSdk 24
-        targetSdk 34
+        targetSdk 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"

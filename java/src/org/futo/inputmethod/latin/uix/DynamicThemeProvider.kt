@@ -38,7 +38,6 @@ interface DynamicThemeProvider {
 
     val keyboardBackground: Drawable
     val keyBackground: Drawable
-    val spaceBarBackground: Drawable
 
     val keyFeedback: Drawable
 

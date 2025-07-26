@@ -27,6 +27,7 @@ class ModelManager(
 
     suspend fun cleanUp() {
         for (model in loadedModels.entries) {
+            model.value.cancel()
             model.value.close()
         }
 

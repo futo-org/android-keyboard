@@ -1,12 +1,12 @@
-FROM gradle:8.2-jdk17
+FROM gradle:8.14.3-jdk21
 
 USER root
 
-ENV CLI_URL="https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
+ENV CLI_URL="https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip" \
     ANDROID_HOME="/root/Android/Sdk" \
     ANDROID_SDK_ROOT="/root/Android/Sdk" \
-    ANDROID_VERSION=34 \
-    ANDROID_BUILD_TOOLS_VERSION=33.0.0
+    ANDROID_VERSION=35 \
+    ANDROID_BUILD_TOOLS_VERSION=35.0.0
 
 RUN mkdir -p "$ANDROID_HOME" .android \
     && cd "$ANDROID_HOME" \
@@ -24,6 +24,12 @@ RUN sdkmanager --update
 RUN sdkmanager --install "build-tools;${ANDROID_BUILD_TOOLS_VERSION}"
 RUN sdkmanager --install "platforms;android-${ANDROID_VERSION}"
 RUN sdkmanager --install "platform-tools"
-RUN sdkmanager --install "ndk;26.1.10909125"
+RUN sdkmanager --install "ndk;28.2.13676358"
 
-RUN apt update && apt install -y build-essential file apt-utils awscli
+RUN apt update && apt install -y build-essential file apt-utils
+
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.27.55.zip" -o "/tmp/awscliv2.zip" \
+        && (echo "06c43658b5fd71a729455de9a1c09b011d565036513f5c7096af699f4eec755a  /tmp/awscliv2.zip" | sha256sum -c -) \
+        && unzip /tmp/awscliv2.zip -d /tmp \
+        && /tmp/aws/install \
+        && rm -rf /tmp/aws

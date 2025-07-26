@@ -222,7 +222,6 @@ object ModelPaths {
 
         val tgtFile = File(directory, "$BASE_MODEL_NAME.gguf")
         if(!tgtFile.isFile) {
-
             context.resources.openRawResource(BASE_MODEL_RESOURCE).use { inputStream ->
                 FileOutputStream(tgtFile).use { outputStream ->
                     var read = 0

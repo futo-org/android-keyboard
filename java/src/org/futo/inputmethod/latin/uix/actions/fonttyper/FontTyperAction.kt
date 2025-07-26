@@ -201,7 +201,7 @@ internal fun zealousCrop(bitmap: Bitmap, allowPadding: Int = 0): Bitmap {
         }
         top++
     }
-    if (top == height) return createBitmap(1, 1, bitmap.config) // fully transparent
+    if (top == height) return createBitmap(1, 1, bitmap.config!!) // fully transparent
 
     loop@ for (y in height - 1 downTo top) {
         bitmap.getPixels(row, 0, width, 0, y, width, 1)
@@ -227,7 +227,7 @@ internal fun zealousCrop(bitmap: Bitmap, allowPadding: Int = 0): Bitmap {
         right--
     }
 
-    if (right <= left || bottom <= top) return createBitmap(1, 1, bitmap.config)
+    if (right <= left || bottom <= top) return createBitmap(1, 1, bitmap.config!!)
 
     left -= allowPadding
     right += allowPadding
@@ -239,7 +239,7 @@ internal fun zealousCrop(bitmap: Bitmap, allowPadding: Int = 0): Bitmap {
     top = top.coerceIn(0, height - 1)
     bottom = bottom.coerceIn(0, height - 1)
 
-    if (right <= left || bottom <= top) return createBitmap(1, 1, bitmap.config)
+    if (right <= left || bottom <= top) return createBitmap(1, 1, bitmap.config!!)
 
     val cropWidth = right - left + 1
     val cropHeight = bottom - top + 1

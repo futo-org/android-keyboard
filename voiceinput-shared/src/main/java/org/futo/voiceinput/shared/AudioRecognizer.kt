@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.futo.voiceinput.shared.ggml.InferenceCancelledException
+import org.futo.voiceinput.shared.ggml.InvalidModelException
 import org.futo.voiceinput.shared.types.AudioRecognizerListener
 import org.futo.voiceinput.shared.types.InferenceState
 import org.futo.voiceinput.shared.types.Language
@@ -167,9 +168,11 @@ class AudioRecognizer(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
                 val devices = audioManager.availableCommunicationDevices
-                val tgtDevice = devices.firstOrNull {
-                    preferBluetoothMic && it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO
-                } ?: devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_MIC } ?: devices.first()
+                val tgtDevice =
+                    devices.firstOrNull { preferBluetoothMic && it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO } ?:
+                    devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_MIC } ?:
+                    devices.firstOrNull { it.type != AudioDeviceInfo.TYPE_BLUETOOTH_SCO  } ?:
+                    devices.first()
 
                 if (!audioManager.setCommunicationDevice(tgtDevice)) {
                     audioManager.clearCommunicationDevice()
@@ -510,7 +513,11 @@ class AudioRecognizer(
 
         loadModelJob = lifecycleScope.launch {
             withContext(Dispatchers.Default) {
-                preloadModels()
+                try {
+                    preloadModels()
+                } catch(_: InvalidModelException) {
+                    TODO("Display error to user: model is corrupted, cannot run voice input, please redownload model")
+                }
             }
         }
     }

@@ -1,10 +1,10 @@
 //file:noinspection HardCodedStringLiteral
 plugins {
-    id 'com.android.application' version '8.2.2'
-    id 'org.jetbrains.kotlin.android' version '2.0.0'
-    id 'org.jetbrains.kotlin.plugin.compose' version '2.0.0'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.0'
-    id 'com.android.library' version '8.2.2' apply false
+    id 'com.android.application' version '8.10.1'
+    id 'org.jetbrains.kotlin.android' version '2.1.0'
+    id 'org.jetbrains.kotlin.plugin.compose' version '2.1.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.1.0'
+    id 'com.android.library' version '8.10.1' apply false
 }
 
 def getVersionCode = { ->
@@ -156,7 +156,7 @@ preBuild.dependsOn('copyMozcData')
 android {
     namespace 'org.futo.inputmethod.latin'
 
-    compileSdk 34
+    compileSdk 35
 
     // Required if using classes in android.test.runner
     useLibrary 'android.test.runner'
@@ -169,7 +169,7 @@ android {
 
     defaultConfig {
         minSdk 24
-        targetSdk 34
+        targetSdk 35
         versionName getVersionName()
         versionCode getVersionCode()
 
@@ -328,9 +328,10 @@ android {
         noCompress 'dict'
     }
 
+    ndkVersion '28.2.13676358'
     externalNativeBuild {
-        ndkBuild {
-            path 'native/jni/Android.mk'
+        cmake {
+            path 'native/jni/CMakeLists.txt'
         }
     }
 
@@ -364,7 +365,7 @@ dependencies {
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation 'androidx.datastore:datastore-preferences:1.1.1'
+    implementation 'androidx.datastore:datastore-preferences:1.1.7'
     implementation 'androidx.autofill:autofill:1.1.0'
     implementation 'androidx.window:window:1.3.0'
 
