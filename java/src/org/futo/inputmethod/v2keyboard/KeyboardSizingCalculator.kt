@@ -390,7 +390,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         currentMode = if(it.prefersSplit) KeyboardMode.Split else KeyboardMode.Regular
     ) }
 
-    fun calculate(layoutName: String, settings: SettingsValues): ComputedKeyboardSize {
+    fun calculate(layoutName: String, settings: SettingsValues): ComputedKeyboardSize? {
         val savedSettings = getSavedSettings()
 
         val layout = try {
@@ -402,6 +402,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         val effectiveRowCount = layout.effectiveRows.size
 
         val displayMetrics = context.resources.displayMetrics
+        if(displayMetrics.widthPixels == 0) return null // Unable to calculate yet
 
         val heightAddition = when(savedSettings.currentMode) {
             KeyboardMode.Regular -> dp(savedSettings.heightAdditionDp)

@@ -197,11 +197,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     val size: MutableState<ComputedKeyboardSize?> = mutableStateOf(null)
-    private fun calculateSize(): ComputedKeyboardSize
-            = sizingCalculator.calculate(
-        getPrimaryLayoutOverride(currentInputEditorInfo)
-            ?: latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName ?: "qwerty",
-
+    private fun calculateSize(): ComputedKeyboardSize? = sizingCalculator.calculate(
+        getPrimaryLayoutOverride(currentInputEditorInfo) ?: latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName ?: "qwerty",
         Settings.getInstance().current
     )
 
@@ -301,7 +298,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     fun onSizeUpdated() {
-        val newSize = calculateSize()
+        val newSize = calculateSize() ?: return
         val shouldInvalidateKeyboard = size.value?.let { oldSize ->
             when {
                 oldSize is FloatingKeyboardSize && newSize is FloatingKeyboardSize -> {
