@@ -102,6 +102,23 @@ class IMEManager(
         val ime = ActionInputTransactionIME(helper)
         currentActionInputTransactionIME = ime
 
+        if(prevSelection != null) {
+            ime.onUpdateSelection(
+                -1, -1,
+                prevSelection!!.newSelStart,
+                prevSelection!!.newSelEnd,
+                prevSelection!!.composingSpanStart,
+                prevSelection!!.composingSpanEnd
+            )
+        } else {
+            ime.onUpdateSelection(
+                -1, -1,
+                helper.getCurrentEditorInfo()?.initialSelStart ?: -1,
+                helper.getCurrentEditorInfo()?.initialSelEnd ?: -1,
+                -1, -1
+            )
+        }
+
         existingIme.onFinishInput()
 
         return ime

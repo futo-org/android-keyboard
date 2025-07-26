@@ -115,28 +115,6 @@ public final class InputLogic {
     // Note: This does not have a composing span, so it must be handled separately.
     private String mWordBeingCorrectedByCursor = null;
 
-    private boolean isLogicSuppressedByExternalLogic = false;
-    private ActionInputTransaction currTransaction = null;
-    public void startSuppressingLogic(ActionInputTransaction transaction) {
-        isLogicSuppressedByExternalLogic = true;
-        currTransaction = transaction;
-        currTransaction.cursorUpdated(
-                mConnection.mExpectedSelStart,
-                mConnection.mExpectedSelEnd,
-                mConnection.mExpectedSelStart,
-                mConnection.mExpectedSelEnd
-        );
-    }
-
-    int suppressionCursorStart = 0;
-    int suppressionCursorEnd = 0;
-    public void endSuppressingLogic() {
-        currTransaction = null;
-        isLogicSuppressedByExternalLogic = false;
-        onUpdateSelection(0, 0, suppressionCursorStart, suppressionCursorEnd,
-                Settings.getInstance().getCurrent());
-    }
-
     /**
      * Create a new instance of the input logic.
      * @param imeHelper the interface to access IME stuff
@@ -417,15 +395,6 @@ public final class InputLogic {
      */
     public boolean onUpdateSelection(final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final SettingsValues settingsValues) {
-        suppressionCursorStart = newSelStart;
-        suppressionCursorEnd = newSelEnd;
-        if(isLogicSuppressedByExternalLogic) {
-            if(currTransaction != null) {
-                currTransaction.cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
-            }
-            return false;
-        }
-
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
             return false;
         }

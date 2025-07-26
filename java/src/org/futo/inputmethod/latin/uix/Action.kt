@@ -39,7 +39,6 @@ interface ActionInputTransaction {
     fun updatePartial(text: String)
     fun commit(text: String)
     fun cancel()
-    fun cursorUpdated(oldSelStart: Int, oldSelEnd: Int, newSelStart: Int, newSelEnd: Int)
 }
 
 data class DialogRequestItem(

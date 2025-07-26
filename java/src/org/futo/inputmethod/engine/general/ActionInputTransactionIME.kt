@@ -3,12 +3,21 @@ package org.futo.inputmethod.engine.general
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.event.Event
+import org.futo.inputmethod.latin.InputConnectionPatched
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
+import org.futo.inputmethod.latin.uix.ExperimentalICFix
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.utils.TextContext
 
 class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInputTransaction {
+    val ic = if(helper.context.getSetting(ExperimentalICFix)) {
+        InputConnectionPatched(helper.getCurrentInputConnection())
+    } else {
+        helper.getCurrentInputConnection()
+    }
+
     override fun onCreate() {}
     override fun onDestroy() {}
     override fun onDeviceUnlocked() {}
@@ -23,6 +32,9 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
         composingSpanStart: Int,
         composingSpanEnd: Int
     ) {
+        if(ic is InputConnectionPatched) {
+            ic.cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd)
+        }
     }
 
     override fun isGestureHandlingAvailable(): Boolean = false
@@ -44,10 +56,8 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     override fun requestSuggestionRefresh() {}
 
     override val textContext: TextContext = TextContext(
-        beforeCursor = helper.getCurrentInputConnection()
-            ?.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),
-        afterCursor = helper.getCurrentInputConnection()
-            ?.getTextAfterCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0)
+        beforeCursor = ic?.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),
+        afterCursor = ic?.getTextAfterCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0)
     )
 
     private var isFinished = false
@@ -55,7 +65,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     override fun updatePartial(text: String) {
         if (isFinished) return
         partialText = text
-        helper.getCurrentInputConnection()?.setComposingText(
+        ic?.setComposingText(
             partialText,
             1
         )
@@ -64,7 +74,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     override fun commit(text: String) {
         if (isFinished) return
         isFinished = true
-        helper.getCurrentInputConnection()?.commitText(
+        ic?.commitText(
             text,
             1
         )
