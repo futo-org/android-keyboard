@@ -506,6 +506,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         updateNavigationBarVisibility()
         latinIMELegacy.onConfigurationChanged(newConfig)
         super.onConfigurationChanged(newConfig)
+        uixManager.updateLocaleOnCfgChanged()
     }
 
     override fun onInitializeInterface() {

@@ -1480,17 +1480,26 @@ class UixManager(private val latinIME: LatinIME) {
         inlineStuffHiddenByTyping.value = textBlank == false
     }
 
-    fun updateLocale(locale: Locale) {
+    private var prevLocale: Locale? = null
+    fun updateLocale(locale: Locale): Configuration? {
+        var result: Configuration? = null
+        prevLocale = locale
         if(UixLocaleFollowsSubtypeLocale) {
             latinIME.resources.apply {
                 val config = Configuration(configuration)
                 config.setLocale(locale)
+                result = config
                 updateConfiguration(config, displayMetrics)
             }
             setContent()
         }
 
         PersistentEmojiState.loadTranslationsForLanguage(latinIME, locale)
+        return result
+    }
+
+    fun updateLocaleOnCfgChanged(): Configuration? {
+        return prevLocale?.let { updateLocale(it) }
     }
 
     fun onDestroy() {
