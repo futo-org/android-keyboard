@@ -8,9 +8,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_ANDROID_STL_TYPE c++_static)
 
-# We always use O3 because GGML would otherwise run at an unusable speed
+# We always use optimization because GGML would otherwise run at an unusable speed
 set(CMAKE_C_FLAGS_RELEASE   "-O3 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+set(CMAKE_C_FLAGS_DEBUG   "-O1 -ggdb")
+set(CMAKE_CXX_FLAGS_DEBUG "-O1 -ggdb")
 
 add_compile_options(
         -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align
