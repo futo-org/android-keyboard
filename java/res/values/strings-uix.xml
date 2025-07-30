@@ -501,7 +501,6 @@
     <string name="prediction_settings_transformer_finetuning">Transformer fine-tuning</string>
     <string name="prediction_settings_transformer_finetuning_subtitle">May kill your battery if enabled! This feature is pending more work</string>
     <string name="prediction_settings_transformer_models">Transformer Models</string>
-    <string name="prediction_settings_transformer_advanced_params">Advanced Parameters</string>
     <string name="prediction_settings_transformer_alpha_notice">Note: Transformer LM is in alpha state</string>
     <string name="prediction_settings_smart_keyhit_detection">Smart key-hit detection</string>
     <string name="prediction_settings_smart_keyhit_detection_subtitle">Uses dictionary to determine relevant next keys, and boosts their hit area. Boosting is avoided after a backspace</string>
@@ -510,6 +509,7 @@
     <string name="prediction_settings_word_blacklist_none">There are no blacklisted words.</string>
     <string name="prediction_settings_word_blacklist_edit_blacklisted_words_title">View and edit blacklisted words</string>
     <string name="prediction_settings_word_blacklist_edit_blacklisted_words_subtitle">Click here to view the list of blacklisted suggestions, add or remove entries</string>
+
 
     <!-- Help & feedback menu -->
     <string name="help_menu_title">Help &amp; Feedback</string>
@@ -564,4 +564,18 @@
     <string name="japanese_settings_toggle_flick_only_subtitle">Disables cycling between vowels on repeated key presses (Keitai input)</string>
     <string name="japanese_settings_toggle_halfwidth_space">Use half-width space</string>
     <string name="japanese_settings_toggle_halfwidth_space_subtitle">Always use half-width space</string>
+
+    <!-- Advanced parameters, these are only really relevant for English -->
+    <string name="prediction_settings_transformer_advanced_params">Advanced Parameters</string>
+    <string name="prediction_settings_transformer_advanced_params_experimental_notice">Options below are experimental and may be removed or changed in the future as internal workings of the app change. Changing these values may have an adverse impact on your experience.
+
+Note: These only affect English</string>
+    <string name="prediction_settings_transformer_advanced_params_transformer_lm_strength">Transformer LM strength</string>
+    <string name="prediction_settings_transformer_advanced_params_transformer_lm_strength_subtitle">Lower value will make autocorrect behave more similarly to standard AOSP keyboard, while higher value will make it more dependent on the neural network
+Default is %1$s</string>
+    <string name="prediction_settings_transformer_advanced_params_transformer_lm_strength_always_transformer">always Transformer LM</string>
+    <string name="prediction_settings_transformer_advanced_params_transformer_lm_strength_always_binarydictionary">always BinaryDictionary</string>
+    <string name="prediction_settings_transformer_advanced_params_autocorrect_threshold">Autocorrect Threshold</string>
+    <string name="prediction_settings_transformer_advanced_params_autocorrect_threshold_subtitle">A lower threshold will autocorrect more often (and miscorrect more often), while a higher threshold will autocorrect less often (and miscorrect less often).
+Default is %1$s</string>
 </resources>
