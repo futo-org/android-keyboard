@@ -502,6 +502,8 @@
     <string name="prediction_settings_transformer_finetuning_subtitle">May kill your battery if enabled! This feature is pending more work</string>
     <string name="prediction_settings_transformer_models">Transformer Models</string>
     <string name="prediction_settings_transformer_alpha_notice">Note: Transformer LM is in alpha state</string>
+    <!-- When translating this, you can point out the local language specifically, e.g. for Portuguese, "... This has no effect for typing in Portuguese and other languages" -->
+    <string name="prediction_settings_transformer_english_notice">These settings are experimental and only relevant for English. These settings have no effect for other languages.</string>
     <string name="prediction_settings_smart_keyhit_detection">Smart key-hit detection</string>
     <string name="prediction_settings_smart_keyhit_detection_subtitle">Uses dictionary to determine relevant next keys, and boosts their hit area. Boosting is avoided after a backspace</string>
     <string name="prediction_settings_word_blacklist">Word Blacklist</string>
