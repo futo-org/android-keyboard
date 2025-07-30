@@ -301,6 +301,33 @@ val TemplateZWNJKey = BaseKey(
 )
 val TemplateOptionalZWNJKey = OptionalZWNJKey()
 
+data class TemplateCurrencyKey(val currency: String) : AbstractKey {
+    override fun countsToKeyCoordinate(
+        params: KeyboardParams,
+        row: Row,
+        keyboard: Keyboard
+    ): Boolean = true
+
+    override fun computeData(
+        params: KeyboardParams,
+        row: Row,
+        keyboard: Keyboard,
+        coordinate: KeyCoordinate
+    ): ComputedKeyData? {
+        val localeSymbol = params.mTextsSet.resolveSpecialText("keyspec_currency")
+        val symbol = when {
+            localeSymbol != currency -> currency
+            else -> "$"
+        }
+
+        return BaseKey(
+            spec = symbol,
+            attributes = KeyAttributes(useKeySpecShortcut = false)
+        ).computeData(params, row, keyboard, coordinate)
+    }
+
+}
+
 val TemplateKeys = mapOf(
     "shift" to TemplateShiftKey,
     "delete" to TemplateDeleteKey,
@@ -317,4 +344,9 @@ val TemplateKeys = mapOf(
     "alt0" to TemplateAlt0Key,
     "alt1" to TemplateAlt1Key,
     "alt2" to TemplateAlt2Key,
+
+    "currency1" to TemplateCurrencyKey("£"),
+    "currency2" to TemplateCurrencyKey("¢"),
+    "currency3" to TemplateCurrencyKey("€"),
+    "currency4" to TemplateCurrencyKey("¥"),
 )
