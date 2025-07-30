@@ -101,13 +101,9 @@ fun SetupEnableIME() {
     val context = LocalContext.current
 
     val launchImeOptions = {
-        // TODO: look into direct boot to get rid of direct boot warning?
         val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
 
-        intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK
-                or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                or Intent.FLAG_ACTIVITY_NO_HISTORY
-                or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+        intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
 
         context.startActivity(intent)
     }
