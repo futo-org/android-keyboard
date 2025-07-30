@@ -123,7 +123,7 @@ fun ConditionalUpdate(navController: NavHostController = rememberNavController()
                 //context.openURI(lastUpdateResult.apkUrl)
             }
         ) {
-            Icon(Icons.Default.ArrowForward, contentDescription = "Go")
+            Icon(Icons.Default.ArrowForward, contentDescription = null)
         }
     } else if(lastFailed) {
         SettingItem(
@@ -132,7 +132,7 @@ fun ConditionalUpdate(navController: NavHostController = rememberNavController()
                 context.openManualUpdateCheck()
             }
         ) {
-            Icon(Icons.Default.ArrowForward, contentDescription = "Go")
+            Icon(Icons.Default.ArrowForward, contentDescription = null)
         }
     }
 }

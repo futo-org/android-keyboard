@@ -509,6 +509,7 @@
     <string name="prediction_settings_word_blacklist_none">There are no blacklisted words.</string>
     <string name="prediction_settings_word_blacklist_edit_blacklisted_words_title">View and edit blacklisted words</string>
     <string name="prediction_settings_word_blacklist_edit_blacklisted_words_subtitle">Click here to view the list of blacklisted suggestions, add or remove entries</string>
+    <string name="prediction_settings_word_blacklist_remove_word_from_blacklist">Remove word</string>
 
 
     <!-- Help & feedback menu -->
