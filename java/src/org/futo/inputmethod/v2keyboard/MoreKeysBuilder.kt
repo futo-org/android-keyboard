@@ -90,8 +90,12 @@ data class MoreKeysBuilder(
         return this.copy(moreKeys = newMoreKeys)
     }
 
+    @Suppress("HardCodedStringLiteral")
     fun insertMoreKeys(moreKeysToInsert: String): MoreKeysBuilder {
-        val resolved = MoreKeySpec.splitKeySpecs(params.mTextsSet.resolveTextReference(moreKeysToInsert))?.toList()
+        val needToUpdateColumnOrder = moreKeysToInsert == "!text/morekeys_period" && moreKeys.isNotEmpty()
+        val resolved = MoreKeySpec.splitKeySpecs(params.mTextsSet.resolveTextReference(moreKeysToInsert))?.toList()?.map {
+            if(needToUpdateColumnOrder && it == "!autoColumnOrder!8") "!autoColumnOrder!6" else it
+        }
 
         return resolved?.let { insertMoreKeys(it) } ?: this
     }
@@ -99,17 +103,18 @@ data class MoreKeysBuilder(
     private val isNumberRowActive = keyboard.numberRowMode.isActive(params.mId.mNumberRow)
 
     private fun canAddMoreKey(key: LongPressKey): Boolean =
-        row.isLetterRow && when(key) {
-            LongPressKey.QuickActions -> mode.autoSymFromCoord
+        when(key) {
+            LongPressKey.QuickActions -> mode.autoSymFromCoord && row.isLetterRow
 
             // Numbers added to top row requires the number row being inactive
-            LongPressKey.Numbers -> (mode.autoNumFromCoord && !isNumberRowActive)
+            LongPressKey.Numbers -> (mode.autoNumFromCoord && !isNumberRowActive) && row.isLetterRow
 
             // Symbols for top row requires number row being active (it replaces the number long-press keys)
-            LongPressKey.Symbols -> (mode.autoSymFromCoord && (coordinate.regularRow > 0 || isNumberRowActive))
+            LongPressKey.Symbols -> (mode.autoSymFromCoord && (coordinate.regularRow > 0 || isNumberRowActive)) && row.isLetterRow
 
             // Language keys require a-z code
-            LongPressKey.LanguageKeys, LongPressKey.MiscLetters -> mode.autoFromLanguageKey && row.isLetterRow && code > 0
+            LongPressKey.LanguageKeys -> mode.autoFromLanguageKey && code > 0 && (row.isLetterRow || row.isBottomRow)
+            LongPressKey.MiscLetters  -> mode.autoFromLanguageKey && code > 0 && row.isLetterRow
         }
 
     private fun moreKey(key: LongPressKey): String {
