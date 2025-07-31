@@ -615,13 +615,15 @@ class UixManager(private val latinIME: LatinIME) {
                 null
             }
 
-            if(actionBarShown.value) {
+            val inlineSuggestions = run {
+                if(!inlineStuffHiddenByTyping.value) inlineSuggestions.value else emptyList()
+            }
+
+            if(actionBarShown.value || inlineSuggestions.isNotEmpty()) {
                 ActionBar(
                     suggestedWordsOrNull,
                     latinIME.latinIMELegacy as SuggestionStripViewListener,
-                    inlineSuggestions = run {
-                        if(!inlineStuffHiddenByTyping.value) inlineSuggestions.value else emptyList()
-                    },
+                    inlineSuggestions = inlineSuggestions,
                     onActionActivated = {
                         keyboardManagerForAction.performHapticAndAudioFeedback(
                             Constants.CODE_TAB,
