@@ -568,7 +568,7 @@ public final class InputLogic {
         // Require key boosting setting to be enabled
         if(settingsValues.mUseDictionaryKeyBoosting
                 // text field must allow autocorrection
-                && settingsValues.mAutoCorrectionEnabledPerUserSettings
+                && settingsValues.mAutoCorrectionEnabledPerTextFieldSettings
                 // previous codepoint must have been a word codepoint (i.e. exclude boosting after backspace or symbols)
                 && wasWordCodePoint
                 // accessibility must not be enabled
@@ -1786,7 +1786,8 @@ public final class InputLogic {
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
-        if (!settingsValues.mAutoCorrectionEnabledPerUserSettings) return;
+        if (!settingsValues.mAutoCorrectionEnabledPerTextFieldSettings) return;
+        if (!settingsValues.isPersonalizationEnabled()) return;
         if (settingsValues.mInputAttributes.mNoLearning) return;
 
         if (mConnection.hasSlowInputConnection()) {

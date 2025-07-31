@@ -116,6 +116,7 @@ public class SettingsValues {
     public final float mAutoCorrectionThreshold;
     public final float mPlausibilityThreshold;
     public final boolean mAutoCorrectionEnabledPerUserSettings;
+    public final boolean mAutoCorrectionEnabledPerTextFieldSettings;
     private final boolean mSuggestionsEnabledPerUserSettings;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
@@ -213,6 +214,7 @@ public class SettingsValues {
                 && prefs.getBoolean(Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
         mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled
                 && !mInputAttributes.mInputTypeNoAutoCorrect;
+        mAutoCorrectionEnabledPerTextFieldSettings = !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionsEnabledPerUserSettings = readSuggestionsEnabled(prefs);
         mIsInternal = Settings.isInternal(prefs);
         mHasCustomKeyPreviewAnimationParams = prefs.getBoolean(
