@@ -21,6 +21,7 @@ object CurrencyResolver {
         "CH" to EUR,
         "BG" to EUR,
         "MD" to EUR,
+        "HR" to EUR,
         "HU" to EUR,
         "IS" to EUR,
         "MK" to EUR,
@@ -33,7 +34,7 @@ object CurrencyResolver {
         "RO" to EUR,
 
         "BY" to RUB,
-        
+
         "KG" to USD,
         "TJ" to USD,
 
