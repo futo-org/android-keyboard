@@ -61,7 +61,7 @@ public interface MoreKeysPanel {
     // TODO: Currently the MoreKeysPanel is inside a container view that is added to the parent.
     // Consider the simpler approach of placing the MoreKeysPanel itself into the parent view.
     public void showMoreKeysPanel(View parentView, Controller controller, int pointX,
-            int pointY, KeyboardActionListener listener, int[] touchOrigin);
+            int pointY, KeyboardActionListener listener, int[] touchOrigin, boolean strongCaptive);
 
     /**
      * Dismisses the more keys panel and calls the controller's onDismissMoreKeysPanel to remove

@@ -676,6 +676,12 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             subtitle = R.string.keyboard_settings_inline_autofill_subtitle,
             setting = InlineAutofillSetting
         ),
+        userSettingToggleSharedPrefs(
+            title = R.string.keyboard_settings_period_key,
+            subtitle = R.string.keyboard_settings_period_key_subtitle,
+            key = Settings.PREF_ENABLE_ALT_PERIOD_KEY,
+            default = {false},
+        ),
     )
 )
 

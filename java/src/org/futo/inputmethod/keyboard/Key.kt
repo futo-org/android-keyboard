@@ -192,6 +192,9 @@ data class Key(
 
     /** Key is enabled and responds on press  */
     val isEnabled: Boolean = code != Constants.CODE_UNSPECIFIED,
+
+    /** Whether long-press should be fast */
+    val isFastLongPress: Boolean,
 ) {
     /** Validation */
     init {
@@ -559,7 +562,8 @@ data class Key(
                 actionFlags = KeyConsts.ACTION_FLAGS_NO_KEY_PREVIEW,
 
                 moreKeys = listOf(),
-                moreKeysColumnAndFlags = 0
+                moreKeysColumnAndFlags = 0,
+                isFastLongPress = false
             )
         }
     }

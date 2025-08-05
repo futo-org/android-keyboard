@@ -630,7 +630,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         final int pointX = key.getDrawX() + key.getDrawWidth() / 2;
         final int pointY = key.getY() + key.getHeight() - bottomPadding;
 
-        moreKeysKeyboardView.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener, lastCoords);
+        moreKeysKeyboardView.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener, lastCoords, key.isFastLongPress());
         return moreKeysKeyboardView;
     }
 

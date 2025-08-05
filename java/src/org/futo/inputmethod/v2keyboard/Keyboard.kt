@@ -121,7 +121,7 @@ val DefaultBottomRow = Row(
         TemplateActionKey,
         TemplateSpaceKey,
         TemplateOptionalZWNJKey,
-        BaseKey("."),
+        TemplatePeriodKey,
         TemplateEnterKey
     )
 )

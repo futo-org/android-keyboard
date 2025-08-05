@@ -92,9 +92,29 @@ data class MoreKeysBuilder(
 
     @Suppress("HardCodedStringLiteral")
     fun insertMoreKeys(moreKeysToInsert: String): MoreKeysBuilder {
-        val needToUpdateColumnOrder = moreKeysToInsert == "!text/morekeys_period" && moreKeys.isNotEmpty()
-        val resolved = MoreKeySpec.splitKeySpecs(params.mTextsSet.resolveTextReference(moreKeysToInsert))?.toList()?.map {
-            if(needToUpdateColumnOrder && it == "!autoColumnOrder!8") "!autoColumnOrder!6" else it
+        // Special case: when the period key already has moreKeys, force a different column order
+        val forcedColumnOrder = when {
+            moreKeysToInsert == "!text/morekeys_period" && moreKeys.isNotEmpty() ->
+                "!autoColumnOrder!6"
+
+            else -> null
+        }
+
+        val splitSpecs = MoreKeySpec.splitKeySpecs(moreKeysToInsert)?.flatMap {
+            var whatToInsert = params.mTextsSet.resolveTextReference(it)
+            if(whatToInsert == "," && (it == "!text/keyspec_comma" || it == "!text/keyspec_tablet_comma")) {
+                whatToInsert = "\\,"
+            }
+            MoreKeySpec.splitKeySpecs(whatToInsert)?.toList() ?: emptyList()
+        }
+
+        // Apply forced column order
+        val resolved = splitSpecs?.map {
+            if(forcedColumnOrder != null && (it.startsWith(KeyConsts.MORE_KEYS_AUTO_COLUMN_ORDER) || it.startsWith(KeyConsts.MORE_KEYS_FIXED_COLUMN_ORDER))) {
+                forcedColumnOrder
+            } else {
+                it
+            }
         }
 
         return resolved?.let { insertMoreKeys(it) } ?: this

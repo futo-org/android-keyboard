@@ -325,8 +325,36 @@ data class TemplateCurrencyKey(val currency: String) : AbstractKey {
             attributes = KeyAttributes(useKeySpecShortcut = false)
         ).computeData(params, row, keyboard, coordinate)
     }
-
 }
+
+data class PeriodKey(
+    val default: AbstractKey = BaseKey("."),
+    val alternative: AbstractKey = BaseKey(".",
+        moreKeys = listOf(
+            "!text/keyspec_symbols_question",
+            "!text/keyspec_comma",
+            "!"),
+        attributes = KeyAttributes(moreKeyMode = MoreKeyMode.OnlyExplicit, fastMoreKeys = true)
+    )
+) : AbstractKey {
+    override fun countsToKeyCoordinate(
+        params: KeyboardParams,
+        row: Row,
+        keyboard: Keyboard
+    ): Boolean = default.countsToKeyCoordinate(params, row, keyboard)
+
+    override fun computeData(
+        params: KeyboardParams,
+        row: Row,
+        keyboard: Keyboard,
+        coordinate: KeyCoordinate
+    ): ComputedKeyData? = when(params.mId.mAlternativePeriodKey) {
+        false -> default
+        true -> alternative
+    }.computeData(params, row, keyboard, coordinate)
+}
+
+val TemplatePeriodKey = PeriodKey()
 
 val TemplateKeys = mapOf(
     "shift" to TemplateShiftKey,
@@ -344,6 +372,7 @@ val TemplateKeys = mapOf(
     "alt0" to TemplateAlt0Key,
     "alt1" to TemplateAlt1Key,
     "alt2" to TemplateAlt2Key,
+    "period" to TemplatePeriodKey,
 
     "currency1" to TemplateCurrencyKey("£"),
     "currency2" to TemplateCurrencyKey("¢"),

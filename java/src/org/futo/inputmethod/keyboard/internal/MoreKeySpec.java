@@ -53,10 +53,11 @@ public final class MoreKeySpec {
     public final String mIconId;
 
     public final boolean mNeedsToUpperCase;
+    public final boolean mDeduplicatable;
     public final Locale mLocale;
 
     public MoreKeySpec(@Nonnull final String moreKeySpec, boolean needsToUpperCase,
-            @Nonnull final Locale locale) {
+            @Nonnull final Locale locale, boolean deduplicatable) {
         if (moreKeySpec.isEmpty()) {
             throw new KeySpecParser.KeySpecParserError("Empty more key spec");
         }
@@ -79,6 +80,12 @@ public final class MoreKeySpec {
                     ? StringUtils.toTitleCaseOfKeyLabel(outputText, locale) : outputText;
         }
         mIconId = KeySpecParser.getIconId(moreKeySpec);
+        mDeduplicatable = deduplicatable;
+    }
+
+    public MoreKeySpec(@Nonnull final String moreKeySpec, boolean needsToUpperCase,
+                       @Nonnull final Locale locale) {
+        this(moreKeySpec, needsToUpperCase, locale, true);
     }
 
     @Nonnull
@@ -109,7 +116,8 @@ public final class MoreKeySpec {
             return mCode == other.mCode
                     && mIconId == other.mIconId
                     && TextUtils.equals(mLabel, other.mLabel)
-                    && TextUtils.equals(mOutputText, other.mOutputText);
+                    && TextUtils.equals(mOutputText, other.mOutputText)
+                    && mDeduplicatable == other.mDeduplicatable;
         }
         return false;
     }
@@ -158,7 +166,7 @@ public final class MoreKeySpec {
         }
         final ArrayList<MoreKeySpec> filteredMoreKeys = new ArrayList<>();
         for (final MoreKeySpec moreKey : moreKeys) {
-            if (!lettersOnBaseLayout.contains(moreKey)) {
+            if (!lettersOnBaseLayout.contains(moreKey) || !moreKey.mDeduplicatable) {
                 filteredMoreKeys.add(moreKey);
             }
         }
@@ -183,6 +191,7 @@ public final class MoreKeySpec {
         for (final MoreKeySpec moreKey : moreKeys) {
             if (!filteredMoreKeys.contains(moreKey) &&
                     ((moreKey.mCode != baseCode) || (moreKey.mCode == Constants.CODE_OUTPUT_TEXT))
+                    || !moreKey.mDeduplicatable
             ) {
                 filteredMoreKeys.add(moreKey);
             }

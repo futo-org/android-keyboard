@@ -561,6 +561,7 @@ data class LayoutEngine(
             visualStyle = data.style,
             outputText = data.outputText,
             hintLabel = hint,
+            isFastLongPress = data.fastLongPress,
 
             // Add leftGap and rightGap to the hitbox
             // This makes the following area tappable,

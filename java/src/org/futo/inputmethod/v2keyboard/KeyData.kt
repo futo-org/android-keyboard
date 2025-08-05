@@ -39,4 +39,5 @@ data class ComputedKeyData(
     val countsToKeyCoordinate: Boolean,
     val hint: String,
     val labelFlags: Int,
+    val fastLongPress: Boolean = false
 )
