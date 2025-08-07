@@ -241,6 +241,7 @@
 
 #define GGML_PAD(x, n) (((x) + (n) - 1) & ~((n) - 1))
 
+#if defined(__ANDROID__)
 #include <android/log.h>
 #define GGML_ASSERT(x) \
     do { \
@@ -249,6 +250,15 @@
             exit(1); \
         } \
     } while (0)
+#else
+#define GGML_ASSERT(x) \
+    do { \
+        if (!(x)) { \
+            fprintf(stderr, "GGML_ASSERT: %s:%d: %s\n", __FILE__, __LINE__, #x); \
+            exit(1); \
+        } \
+    } while (0)
+#endif
 
 #ifndef NDEBUG
 #define GGML_UNREACHABLE() GGML_ASSERT(!"statement should not be reached")

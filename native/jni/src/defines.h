@@ -102,10 +102,10 @@ AK_FORCE_INLINE static int intArrayToCharArray(const int *const source, const in
 #define LOG_TAG "LatinIME: "
 #endif // LOG_TAG
 
-#if defined(HOST_TOOL)
+#if defined(HOST_TOOL) || !defined(__ANDROID__)
 #include <stdio.h>
-#define AKLOGE(fmt, ...) printf(fmt "\n", ##__VA_ARGS__)
-#define AKLOGI(fmt, ...) printf(fmt "\n", ##__VA_ARGS__)
+#define AKLOGE(fmt, ...) fprintf(stderr, fmt "\n", ##__VA_ARGS__)
+#define AKLOGI(fmt, ...) fprintf(stderr, fmt "\n", ##__VA_ARGS__)
 #else // defined(HOST_TOOL)
 #define AKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
 #define AKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)

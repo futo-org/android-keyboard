@@ -4,6 +4,10 @@
 // Skip NaN asserts
 #define NDEBUG
 
+#if defined(__linux__) && !defined(__BIONIC__)
+#define _GNU_SOURCE
+#include <sched.h>
+#endif
 
 #include "ggml-impl.h"
 #include "ggml-quants.h"

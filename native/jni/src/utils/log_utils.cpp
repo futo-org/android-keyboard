@@ -23,6 +23,7 @@
 
 namespace latinime {
     /* static */ void LogUtils::logToJava(JNIEnv *const env, const char *const format, ...) {
+#if defined(__ANDROID__)
         static const char *TAG = "LatinIME:LogUtils";
         const jclass androidUtilLogClass = env->FindClass("android/util/Log");
         if (!androidUtilLogClass) {
@@ -68,5 +69,12 @@ namespace latinime {
         if (javaString) env->DeleteLocalRef(javaString);
         if (javaTag) env->DeleteLocalRef(javaTag);
         if (androidUtilLogClass) env->DeleteLocalRef(androidUtilLogClass);
+#else
+        va_list args;
+        va_start(args, format);
+        vfprintf(stderr, format, args);
+        va_end(args);
+        fprintf(stderr, "\n");
+#endif
     }
 }
