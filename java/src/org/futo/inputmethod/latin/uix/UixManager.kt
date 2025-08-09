@@ -301,10 +301,13 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun backspace(amount: Int) {
-        latinIME.latinIMELegacy.onCodeInput(
-            Constants.CODE_DELETE,
-            Constants.NOT_A_COORDINATE,
-            Constants.NOT_A_COORDINATE, false)
+        for(i in 0 until amount) {
+            latinIME.latinIMELegacy.onCodeInput(
+                Constants.CODE_DELETE,
+                Constants.NOT_A_COORDINATE,
+                Constants.NOT_A_COORDINATE, false
+            )
+        }
     }
 
     override fun closeActionWindow() {

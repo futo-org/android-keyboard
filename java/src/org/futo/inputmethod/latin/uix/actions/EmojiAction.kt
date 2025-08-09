@@ -954,7 +954,7 @@ val EmojiAction = Action(
                         manager.sendCodePointEvent(Constants.CODE_SPACE)
                         manager.performHapticAndAudioFeedback(Constants.CODE_SPACE, view)
                     }, onBackspace = { isRepeated ->
-                        manager.sendCodePointEvent(Constants.CODE_DELETE)
+                        manager.backspace(1)
                         if(!isRepeated) {
                             manager.performHapticAndAudioFeedback(Constants.CODE_DELETE, view)
                         }

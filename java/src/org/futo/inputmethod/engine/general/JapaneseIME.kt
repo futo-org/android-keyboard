@@ -1,6 +1,7 @@
 package org.futo.inputmethod.engine.general
 
 import android.content.Context
+import android.icu.text.BreakIterator
 import android.os.SystemClock
 import android.text.InputType
 import android.text.SpannableStringBuilder
@@ -300,7 +301,18 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 0
             )
         } else {
-            helper.getCurrentInputConnection()?.deleteSurroundingText(1, 0)
+            val text = helper.getCurrentInputConnection()?.getTextBeforeCursor(8, 0).toString()
+            val bi = BreakIterator.getCharacterInstance()
+
+            bi.setText(text)
+            val end = bi.last()
+            val prev = bi.previous()
+
+            if(prev == -1 || end == -1) {
+                helper.getCurrentInputConnection()?.deleteSurroundingText(1, 0)
+            } else {
+                helper.getCurrentInputConnection()?.deleteSurroundingText(end - prev, 0)
+            }
         }
         return true
     }
