@@ -71,6 +71,8 @@ public class SuggestedWords {
     @Nullable
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
 
+    public final Integer mHighlightedCandidate;
+
     public SuggestedWords(@Nonnull final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
             @Nullable final ArrayList<SuggestedWordInfo> rawSuggestions,
             @Nullable final SuggestedWordInfo typedWordInfo,
@@ -78,7 +80,8 @@ public class SuggestedWords {
             final boolean willAutoCorrect,
             final boolean isObsoleteSuggestions,
             final int inputStyle,
-            final int sequenceNumber) {
+            final int sequenceNumber,
+            final @Nullable Integer highlightedCandidate) {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mRawSuggestions = rawSuggestions;
         mTypedWordValid = typedWordValid;
@@ -87,6 +90,20 @@ public class SuggestedWords {
         mInputStyle = inputStyle;
         mSequenceNumber = sequenceNumber;
         mTypedWordInfo = typedWordInfo;
+        mHighlightedCandidate = highlightedCandidate;
+    }
+
+    public SuggestedWords(@Nonnull final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
+                          @Nullable final ArrayList<SuggestedWordInfo> rawSuggestions,
+                          @Nullable final SuggestedWordInfo typedWordInfo,
+                          final boolean typedWordValid,
+                          final boolean willAutoCorrect,
+                          final boolean isObsoleteSuggestions,
+                          final int inputStyle,
+                          final int sequenceNumber) {
+        this(suggestedWordInfoList, rawSuggestions, typedWordInfo,
+                typedWordValid, willAutoCorrect, isObsoleteSuggestions,
+                inputStyle, sequenceNumber, null);
     }
 
     public boolean isEmpty() {

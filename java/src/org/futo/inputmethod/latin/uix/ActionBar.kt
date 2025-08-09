@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -1250,6 +1249,8 @@ private fun measureWord(density: Density, widths: CachedCharacterWidthValues, wo
     return (wordWidth + with(density) { 10.dp.toPx() } + extraDescWidth).coerceAtLeast(minWidth).toInt()
 }
 
+const val START_OF_CANDIDATES = 1 // The 0th element is the show/hide action bar button
+
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class,
     ExperimentalLayoutApi::class
 )
@@ -1270,8 +1271,13 @@ fun BoxScope.ActionBarWithExpandableCandidates(
 
     val suggestionsExpansion = remember { mutableFloatStateOf(0.0f) }
     val lazyListState = rememberLazyListState()
-    LaunchedEffect(wordList) {
-        lazyListState.scrollToItem(1)
+
+    LaunchedEffect(wordList, words?.mHighlightedCandidate) {
+        if(words?.mHighlightedCandidate != null) {
+            lazyListState.scrollToItem(words.mHighlightedCandidate + START_OF_CANDIDATES)
+        } else {
+            lazyListState.scrollToItem(START_OF_CANDIDATES)
+        }
     }
 
     val offset by animateFloatAsState(keyboardHeight.toFloat() * suggestionsExpansion.floatValue,

@@ -54,7 +54,8 @@ class SuggestionBlacklist(val settings: Settings, val context: Context, val life
             shouldStillAutocorrect,
             suggestions.mIsObsoleteSuggestions,
             suggestions.mInputStyle,
-            suggestions.mSequenceNumber
+            suggestions.mSequenceNumber,
+            suggestions.mHighlightedCandidate
         )
     }
 }

@@ -641,6 +641,15 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 setNeutralSuggestionStrip()
             } else {
                 val candidateList = output.allCandidateWords.candidatesList
+                val selectedIndex = if(output.hasCandidateWindow()) {
+                    if(output.candidateWindow.hasFocusedIndex()) {
+                        output.candidateWindow.focusedIndex
+                    } else {
+                        null
+                    }
+                } else {
+                    null
+                }
                 val suggestedWordList = candidateList.map {
                     SuggestedWordInfo(
                         it.value,
@@ -665,7 +674,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                         true,
                         false,
                         0,
-                        0
+                        0,
+                        selectedIndex
                     )
                 )
             }
