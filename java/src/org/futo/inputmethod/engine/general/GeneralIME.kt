@@ -67,13 +67,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     private val availabilityListener =
         object : DictionaryFacilitator.DictionaryInitializationListener {
             override fun onUpdateMainDictionaryAvailability(isMainDictionaryAvailable: Boolean) {
-                /* TODO
-
-            if (mHandler.hasPendingWaitForDictionaryLoad()) {
-                mHandler.cancelWaitForDictionaryLoad();
-                mHandler.postResumeSuggestions(false /* shouldDelay */);
-            }
-                 */
+                helper.updateGestureAvailability(isGestureHandlingAvailable())
+                // TODO: Original logic here would refresh suggestions
             }
         }
 

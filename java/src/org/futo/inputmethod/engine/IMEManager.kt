@@ -38,6 +38,16 @@ class IMEManager(
             else -> IMEKind.General
         }
 
+    private fun onImeChanged(old: IMEInterface?, new: IMEInterface) {
+        if(old != null && inInput) {
+            activeIme?.onFinishInput()
+            startIme(new)
+        }
+
+        service.latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.setImeAllowsGestureInput(
+            new.isGestureHandlingAvailable())
+    }
+
     fun getActiveIME(
         settingsValues: SettingsValues,
     ): IMEInterface {
@@ -50,9 +60,8 @@ class IMEManager(
                 if(created) it.onCreate()
             }
         }.also {
-            if(activeIme != it && activeIme != null && inInput) {
-                activeIme?.onFinishInput()
-                startIme(it)
+            if(activeIme != it) {
+                onImeChanged(activeIme, it)
             }
             activeIme = it
         }
@@ -89,8 +98,11 @@ class IMEManager(
     }
 
     fun clearUserHistoryDictionaries() {
-        // TODO: Non-active too!
-        getActiveIME(settings.current).clearUserHistoryDictionaries()
+        // TODO: Should also clear in this situation:
+        //  user is in English and hasn't typed in Japanese in months, but has Japanese dictionaries
+        imes.values.forEach {
+            it.clearUserHistoryDictionaries()
+        }
     }
 
     private var currentActionInputTransactionIME: ActionInputTransactionIME? = null
