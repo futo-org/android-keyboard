@@ -206,6 +206,14 @@ data class KeyAttributes(
      * Shift behavior can be customized by using a [CaseSelector].
      */
     val shiftable: Boolean? = null,
+
+    /**
+     * Whether or not the key can be "flicked" to access morekeys instantly, without needing to
+     * wait for long press timeout. This does not behave like actual flick keys in terms of allowing
+     * flicking in all directions, rather it just triggers the morekey popup. Specifying this will
+     * implicitly add the key as the first element in morekeys (may be broken with fixedColumnOrder)
+     */
+    val fastMoreKeys: Boolean? = null
 ) {
     fun getEffectiveAttributes(row: Row, keyboard: Keyboard, extraAttrs: List<KeyAttributes> = emptyList()): KeyAttributes {
         val attrs = if(row.isBottomRow) {
@@ -233,6 +241,7 @@ data class KeyAttributes(
             labelFlags          = resolve(attrs) { it.labelFlags         },
             repeatableEnabled   = resolve(attrs) { it.repeatableEnabled  },
             shiftable           = resolve(attrs) { it.shiftable          },
+            fastMoreKeys        = resolve(attrs) { it.fastMoreKeys       }
         )
     }
 }
@@ -252,6 +261,7 @@ val DefaultKeyAttributes = KeyAttributes(
     labelFlags          = LabelFlags(autoXScale = true),
     repeatableEnabled   = false,
     shiftable           = true,
+    fastMoreKeys        = false
 )
 
 
@@ -367,7 +377,14 @@ data class BaseKey(
                 moreKeysBuilder.insertMoreKeys(getSpecialFromRow(coordinate, row))
         }
 
-        val moreKeys = moreKeysBuilder.build(shifted)
+        var moreKeys = moreKeysBuilder.build(shifted)
+        if(attributes.fastMoreKeys == true && moreKeys.specs.isNotEmpty()) {
+            moreKeys = moreKeys.copy(
+                specs = moreKeys.specs.toMutableList().apply {
+                    add(0, MoreKeySpec(expandedSpec ?: spec, false, params.mId.locale, false))
+                }
+            )
+        }
 
         return ComputedKeyData(
             label = if(shifted) {
@@ -392,7 +409,8 @@ data class BaseKey(
             moreKeyFlags = moreKeys.flags,
             countsToKeyCoordinate = moreKeyMode.autoNumFromCoord && moreKeyMode.autoSymFromCoord,
             hint = hint ?: "",
-            labelFlags = attributes.labelFlags?.getValue() ?: 0
+            labelFlags = attributes.labelFlags?.getValue() ?: 0,
+            fastLongPress = attributes.fastMoreKeys == true
         )
     }
 

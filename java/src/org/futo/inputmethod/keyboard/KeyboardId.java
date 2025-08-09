@@ -70,12 +70,13 @@ public final class KeyboardId {
     public final boolean mIsSplitLayout;
     public final boolean mNumberRow;
     public final boolean mArrowRow;
+    public final boolean mAlternativePeriodKey;
     public final LongPressKeySettings mLongPressKeySettings;
     public final KeyboardLayoutElement mElement;
 
     private final int mHashCode;
 
-    public KeyboardId(String mKeyboardLayoutSetName, Locale mLocale, int mWidth, int mHeight, int mMode, int mElementId, EditorInfo mEditorInfo, boolean mClobberSettingsKey, boolean mBottomEmojiKeyEnabled, int mBottomActionKeyId, String mCustomActionLabel, boolean mHasShortcutKey, boolean mIsSplitLayout, boolean mNumberRow, boolean mArrowRow, LongPressKeySettings mLongPressKeySettings, KeyboardLayoutElement mElement) {
+    public KeyboardId(String mKeyboardLayoutSetName, Locale mLocale, int mWidth, int mHeight, int mMode, int mElementId, EditorInfo mEditorInfo, boolean mClobberSettingsKey, boolean mBottomEmojiKeyEnabled, int mBottomActionKeyId, String mCustomActionLabel, boolean mHasShortcutKey, boolean mIsSplitLayout, boolean mNumberRow, boolean mArrowRow, boolean mAlternativePeriodKey, LongPressKeySettings mLongPressKeySettings, KeyboardLayoutElement mElement) {
         this.mKeyboardLayoutSetName = mKeyboardLayoutSetName;
         this.mLocale = mLocale;
         this.mWidth = mWidth;
@@ -91,6 +92,7 @@ public final class KeyboardId {
         this.mIsSplitLayout = mIsSplitLayout;
         this.mNumberRow = mNumberRow;
         this.mArrowRow = mArrowRow;
+        this.mAlternativePeriodKey = mAlternativePeriodKey;
         this.mLongPressKeySettings = mLongPressKeySettings;
         this.mElement = mElement;
 
@@ -117,6 +119,7 @@ public final class KeyboardId {
                 id.mLocale,
                 id.mIsSplitLayout,
                 id.mNumberRow,
+                id.mAlternativePeriodKey,
                 id.mLongPressKeySettings.hashCode(),
                 id.mElement.hashCode()
         });
@@ -143,6 +146,8 @@ public final class KeyboardId {
                 && other.mLocale.equals(mLocale)
                 && other.mIsSplitLayout == mIsSplitLayout
                 && other.mNumberRow == mNumberRow
+                && other.mAlternativePeriodKey == mAlternativePeriodKey
+                && other.mArrowRow == mArrowRow
                 && other.mLongPressKeySettings.equals(mLongPressKeySettings)
                 && other.mElement.equals(mElement);
     }

@@ -12,6 +12,7 @@
 #include <thread>
 #include <unordered_map>
 #include <tuple>
+#include <stdexcept>
 
 #ifdef _WIN32
 #define DIRECTORY_SEPARATOR '\\'

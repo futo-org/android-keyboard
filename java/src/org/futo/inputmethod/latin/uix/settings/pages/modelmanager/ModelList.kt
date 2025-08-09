@@ -1,7 +1,5 @@
 package org.futo.inputmethod.latin.uix.settings.pages.modelmanager
 
-import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -10,17 +8,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.settings.IMPORT_GGUF_MODEL_REQUEST
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.xlm.ModelInfo
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.openURI
@@ -65,7 +64,9 @@ fun ModelListScreen(navController: NavHostController = rememberNavController()) 
     }
 
     ScrollableList {
-        ScreenTitle("Models", showBack = true, navController)
+        ScreenTitle(stringResource(R.string.prediction_settings_transformer_models), showBack = true, navController)
+
+        Tip(stringResource(R.string.prediction_settings_transformer_english_notice))
 
         modelsByLanguage.forEach { item ->
             Spacer(modifier = Modifier.height(32.dp))

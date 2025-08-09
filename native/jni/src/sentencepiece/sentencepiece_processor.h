@@ -21,6 +21,7 @@
 #include <string_view>
 #include <utility>
 #include <vector>
+#include <stdint.h>
 
 #ifndef SWIG
 namespace absl {

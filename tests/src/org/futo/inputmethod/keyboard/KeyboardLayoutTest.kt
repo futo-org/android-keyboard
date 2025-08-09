@@ -57,6 +57,7 @@ class KeyboardLayoutTest {
             height = 1101 - 10,
             horizontalGap = 10,
             verticalGap = 10,
+            isFastLongPress = false,
         )
 
         val key2 = Key(
@@ -73,6 +74,7 @@ class KeyboardLayoutTest {
             height = 2101 - 10,
             horizontalGap = 10,
             verticalGap = 10,
+            isFastLongPress = false,
         )
 
         val sortedKeys = ArrayList<Key>(2)

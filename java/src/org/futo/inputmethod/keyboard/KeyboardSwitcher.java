@@ -152,6 +152,7 @@ public final class KeyboardSwitcher implements SwitchActions {
                 editorInfo == null ? new EditorInfo() : editorInfo,
                 settingsValues.mIsNumberRowEnabled,
                 settingsValues.mIsArrowRowEnabled,
+                settingsValues.mIsUsingAlternativePeriodKey,
                 sizingCalculator.calculateGap(),
                 settingsValues.mShowsActionKey ? settingsValues.mActionKeyId : null,
                 LongPressKeySettings.load(mThemeContext)

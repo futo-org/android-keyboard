@@ -8,5 +8,6 @@
     <subtype android:icon="@drawable/ic_launcher_foreground"
         android:label="@string/english_ime_name"
         android:imeSubtypeMode="keyboard"
+        android:isAsciiCapable="true"
         android:overridesImplicitlyEnabledSubtype="true" />
 </input-method>

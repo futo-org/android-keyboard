@@ -1,9 +1,12 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
@@ -14,14 +17,15 @@ import org.futo.inputmethod.latin.xlm.BinaryDictTransformerWeightSetting
 @Preview
 @Composable
 fun AdvancedParametersScreen(navController: NavHostController = rememberNavController()) {
+    val context = LocalContext.current
     ScrollableList {
-        ScreenTitle("Advanced Parameters", showBack = true, navController)
+        ScreenTitle(stringResource(R.string.prediction_settings_transformer_advanced_params), showBack = true, navController)
 
-        Tip("Options below are experimental and may be removed or changed in the future as internal workings of the app change. Changing these values may have an adverse impact on your experience.\n\nNote: These only affect English")
+        Tip(stringResource(R.string.prediction_settings_transformer_advanced_params_experimental_notice))
 
         SettingSlider(
-            title = "Transformer LM strength",
-            subtitle = "Lower value will make autocorrect behave more similarly to standard AOSP keyboard, while higher value will make it more dependent on the neural network\nDefault is ${BinaryDictTransformerWeightSetting.default}",
+            title = stringResource(R.string.prediction_settings_transformer_advanced_params_transformer_lm_strength),
+            subtitle = stringResource(R.string.prediction_settings_transformer_advanced_params_transformer_lm_strength_subtitle, "${BinaryDictTransformerWeightSetting.default}"),
             setting = BinaryDictTransformerWeightSetting,
             range = 0.0f .. 100.0f,
             transform = {
@@ -36,10 +40,10 @@ fun AdvancedParametersScreen(navController: NavHostController = rememberNavContr
             indicator = {
                 when {
                     it == Float.POSITIVE_INFINITY -> {
-                        "always Transformer LM"
+                        context.getString(R.string.prediction_settings_transformer_advanced_params_transformer_lm_strength_always_transformer)
                     }
                     it == Float.NEGATIVE_INFINITY -> {
-                        "always Binary Dictionary"
+                        context.getString(R.string.prediction_settings_transformer_advanced_params_transformer_lm_strength_always_binarydictionary)
                     }
                     (it > 0.1f) -> {
                         "a = ${String.format("%.1f", it)}"
@@ -53,8 +57,11 @@ fun AdvancedParametersScreen(navController: NavHostController = rememberNavContr
         )
 
         SettingSlider(
-            title = "Autocorrect Threshold",
-            subtitle = "A lower threshold will autocorrect more often (and miscorrect more often), while a higher threshold will autocorrect less often (and miscorrect less often).\nDefault is ${AutocorrectThresholdSetting.default}",
+            title = stringResource(R.string.prediction_settings_transformer_advanced_params_autocorrect_threshold),
+            subtitle = stringResource(
+                R.string.prediction_settings_transformer_advanced_params_autocorrect_threshold_subtitle,
+                AutocorrectThresholdSetting.default
+            ),
             setting = AutocorrectThresholdSetting,
             range = 0.0f .. 25.0f,
             hardRange = 0.0f .. 25.0f,

@@ -147,6 +147,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private int mStartX;
     private int mStartY;
     private long mStartTime;
+    private boolean mStartedOnFastLongPress;
     private boolean mCursorMoved = false;
     private boolean mSpacebarLongPressed = false;
 
@@ -726,6 +727,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mStartX = x;
             mStartY = y;
             mStartTime = System.currentTimeMillis();
+            mStartedOnFastLongPress = key.isFastLongPress();
             mSpacebarLongPressed = false;
 
             mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
@@ -997,6 +999,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
 
         final Key newKey = onMoveKey(x, y);
+        if(newKey != oldKey && mStartedOnFastLongPress) {
+            onLongPressed();
+            mStartedOnFastLongPress = false;
+            return;
+        }
 
         if (sGestureEnabler.shouldHandleGesture()) {
             // Register move event on gesture tracker.
@@ -1058,6 +1065,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     private void onUpEventInternal(final int x, final int y, final long eventTime) {
+        mStartedOnFastLongPress = false;
         sTimerProxy.cancelKeyTimersOf(this);
         final boolean isInDraggingFinger = mIsInDraggingFinger;
         final boolean isInSlidingKeyInput = mIsInSlidingKeyInput;
@@ -1276,7 +1284,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         // whether or not we are in the dragging finger mode.
         if (mIsInDraggingFinger && key.getMoreKeys() == null) return;
 
-        final int delay = getLongPressTimeout(key.getCode());
+        int delay = getLongPressTimeout(key.getCode());
+        if(key.isFastLongPress()) delay /= 2;
         if (delay <= 0) return;
         sTimerProxy.startLongPressTimerOf(this, delay);
     }

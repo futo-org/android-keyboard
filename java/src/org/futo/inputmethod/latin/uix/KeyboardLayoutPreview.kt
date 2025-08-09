@@ -97,6 +97,7 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
                     editorInfo = editorInfo,
                     numberRow = false,
                     arrowRow = false,
+                    alternativePeriodKey = false,
                     bottomActionKey = null
                 )
             )

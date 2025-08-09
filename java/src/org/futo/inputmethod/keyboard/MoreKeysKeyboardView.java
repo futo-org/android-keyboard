@@ -133,7 +133,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     @Override
     public void showMoreKeysPanel(final View parentView, final Controller controller,
-            final int pointX, final int pointY, final KeyboardActionListener listener, final int[] touchOrigin) {
+            final int pointX, final int pointY, final KeyboardActionListener listener, final int[] touchOrigin,
+            final boolean strongCaptive) {
         mController = controller;
         mListener = listener;
         final View container = getContainerView();
@@ -166,6 +167,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             // If we hit the key too low, keyDetector may not even register the moreKey hit. Need to set extra allowance
             int touchOriginY = CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight();
             int extraAllowance = Math.max(0, touchOriginY - mOriginY - (int)(sideAllowance));
+            if(strongCaptive) extraAllowance = Integer.MAX_VALUE;
             mKeyDetector.setExtraAllowance(extraAllowance);
         }
         controller.onShowMoreKeysPanel(this);

@@ -103,16 +103,16 @@ import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.roundToInt
-import kotlin.streams.toList
 import org.futo.inputmethod.latin.uix.theme.Typography
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.util.Locale
 import java.util.zip.GZIPInputStream
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
+import kotlin.streams.toList
 
 private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
     val lhsLen = lhs.length
@@ -145,6 +145,25 @@ fun <T> List<T>.searchMultiple(searchTarget: String, maxDistance: Int = searchTa
         val minDistanceKey = keys.minByOrNull { levenshteinDistance(searchTarget, it) }
         val minDistance = minDistanceKey?.let { levenshteinDistance(searchTarget, it) }
         if (minDistance != null && minDistance <= maxDistance) Pair(item, minDistance) else null
+    }.sortedBy { it.second }.map { it.first }
+}
+
+fun <T> List<T>.searchMultiple2(searchTarget: String, keyFunction: (T) -> List<String>): List<T> {
+    val query = searchTarget.lowercase()
+    return this.mapNotNull { item ->
+        val keys = keyFunction(item).map { it.lowercase() }
+        val matches = keys.any { it == query }
+        val starts = keys.any { it.startsWith(query) }
+        val contains = keys.any { it.contains(query) }
+
+        val score = when {
+            matches -> 0
+            starts -> 1
+            contains -> 2
+            else -> return@mapNotNull null
+        }
+
+        item to score
     }.sortedBy { it.second }.map { it.first }
 }
 
@@ -693,11 +712,13 @@ fun EmojiGrid(
         }
 
         emojiList =
-            emojiList.filterIsInstance<EmojiItemItem>().searchMultiple(searchFilter) { item ->
+            emojiList.filterIsInstance<EmojiItemItem>().searchMultiple2(searchFilter) { item ->
                 translations?.let {
-                    it.emojiToNames[item.emoji.emoji]?.names?.flatMap { it.split(" ") }
+                    it.emojiToNames[item.emoji.emoji]?.names
+                        ?: it.emojiToNames[item.emoji.emoji.replace("\uFE0F", "")]?.names
+                        ?: it.emojiToNames[item.emoji.emoji + "\uFE0F"]?.names
                 } ?: listOf(item.emoji.description)
-            }.take(30)
+            }.take(30).distinctBy { it.emoji.emoji }
 
         if(emojiList.isEmpty()) {
             emojiList = emojiList + listOf(CategoryItem("No results found"))
@@ -767,12 +788,6 @@ class PersistentEmojiState : PersistentActionState {
             loadedTranslations.put(language, EmojiTranslations(hashMapOf()))
 
             GlobalScope.launch(Dispatchers.IO) {
-                // For English, use gemoji aliases and tags to maintain consistent behavior
-                if(language == "en") {
-                    loadEmojis(context)
-                    return@launch
-                }
-
                 val inputStream = GZIPInputStream(context.resources.openRawResource(R.raw.emoji_i18n))
 
                 var data: JsonObject? = null
@@ -809,7 +824,7 @@ class PersistentEmojiState : PersistentActionState {
                         val ttsName = entry.value.names.last()
 
                         val names = entry.value.names.flatMap { it.split(" ") }
-                        names.filter { wordCounts[it] == 1 }.map { it.lowercase() to entry.key } +
+                        names.filter { wordCounts[it] == 1 && it.length > 1 }.map { it.lowercase() to entry.key } +
                                 if(!ttsName.contains(' ')) {
                                     listOf(ttsName.lowercase() to entry.key)
                                 } else {
@@ -890,9 +905,6 @@ class PersistentEmojiState : PersistentActionState {
                         put(it.emoji, it)
                     }
                 }
-
-                loadedTranslations["en"] = EmojiTranslations(englishTranslations)
-                loadedTranslatedShortcuts["en"] = englishShortcuts
             }
         }
     }
@@ -916,7 +928,6 @@ val EmojiAction = Action(
         state
     },
     windowImpl = { manager, persistentState ->
-        val state = persistentState as PersistentEmojiState
         object : ActionWindow() {
             private val searchText = mutableStateOf("")
             private val searching = mutableStateOf(false)

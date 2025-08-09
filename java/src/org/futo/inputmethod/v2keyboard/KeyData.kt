@@ -92,4 +92,5 @@ data class ComputedKeyData(
     val hint: String,
     val labelFlags: Int,
     val flick: ComputedFlickData? = null,
+    val fastLongPress: Boolean = false,
 )

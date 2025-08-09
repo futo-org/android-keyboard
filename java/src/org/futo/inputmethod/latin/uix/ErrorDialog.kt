@@ -17,7 +17,7 @@ import org.futo.inputmethod.latin.R
 fun ErrorDialog(title: String, body: String, navController: NavHostController = rememberNavController()) {
     AlertDialog(
         icon = {
-            Icon(Icons.Filled.Warning, contentDescription = "Error")
+            Icon(Icons.Filled.Warning, contentDescription = null)
         },
         title = {
             Text(text = title)
@@ -45,7 +45,7 @@ fun ErrorDialog(title: String, body: String, navController: NavHostController = 
 fun InfoDialog(title: String, body: String, navController: NavHostController = rememberNavController()) {
     AlertDialog(
         icon = {
-            Icon(Icons.Filled.Info, contentDescription = "Info")
+            Icon(Icons.Filled.Info, contentDescription = null)
         },
         title = {
             Text(text = title)

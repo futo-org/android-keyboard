@@ -207,7 +207,7 @@ fun AddCustomThemeButton(onClick: () -> Unit = { }) {
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Icon(
-                Icons.Default.Add, contentDescription = "", modifier = Modifier
+                Icons.Default.Add, contentDescription = null, modifier = Modifier
                     .size(48.dp)
                     .align(
                         Alignment.Center

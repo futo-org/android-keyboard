@@ -84,6 +84,7 @@ data class KeyboardLayoutSetV2Params(
     val editorInfo: EditorInfo?,
     val numberRow: Boolean,
     val arrowRow: Boolean,
+    val alternativePeriodKey: Boolean,
     val gap: Float = 4.0f,
     val bottomActionKey: Int?,
     val longPressKeySettings: LongPressKeySettings? = null
@@ -290,6 +291,7 @@ Layout: $layoutName
             false,
             isNumberRowActive,
             params.arrowRow,
+            params.alternativePeriodKey,
             params.longPressKeySettings ?: LongPressKeySettings.load(context),
             element
         )

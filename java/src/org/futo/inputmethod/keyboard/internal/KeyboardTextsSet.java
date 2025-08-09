@@ -42,16 +42,7 @@ public class KeyboardTextsSet {
         if(mResourceLocale == null) return null;
 
         if("keyspec_currency".equals(text)) {
-            try {
-                Locale locale = mResourceLocale;
-                if(locale.getCountry().isEmpty()) {
-                    locale = ULocale.addLikelySubtags(ULocale.forLocale(locale)).toLocale();
-                }
-
-                return Currency.getInstance(locale).getSymbol(locale);
-            } catch (Exception e) {
-                return null;
-            }
+            return CurrencyResolver.INSTANCE.resolve(mResourceLocale);
         }
 
         return null;

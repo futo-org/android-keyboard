@@ -199,4 +199,10 @@
     <string name="quick_clip_image">Quick image clipboard item. Double-tap to paste image. Type anything to dismiss.</string>
 
     <string name="quick_clip_content_obscured">Plug in a headset to hear contents.</string>
+
+    <!-- Spoken description for the button to switch which hand the one-handed mode is on -->
+    <string name="one_handed_mode_switch_hand">Switch handedness</string>
+
+    <!-- Spoken description for the button to exit one-handed mode -->
+    <string name="one_handed_mode_exit">Exit one-handed mode</string>
 </resources>

@@ -42,7 +42,7 @@ import org.futo.inputmethod.latin.uix.settings.userSettingToggleSharedPrefs
 fun BlacklistedWord(word: String, remove: () -> Unit) { 
     SettingItem(word) {
         IconButton(onClick = remove) {
-            Icon(Icons.Default.Clear, contentDescription = "Remove")
+            Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.prediction_settings_word_blacklist_remove_word_from_blacklist))
         }
     }
 }

@@ -5,6 +5,7 @@
 #include <random>
 #include <sstream>
 #include <functional>
+#include <string.h>
 
 struct random_normal_distribution {
     std::mt19937 gen;

@@ -107,6 +107,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static final String PREF_ENABLE_NUMBER_ROW = "pref_enable_number_row";
     public static final String PREF_ENABLE_ARROW_ROW = "pref_enable_arrow_row";
+    public static final String PREF_ENABLE_ALT_PERIOD_KEY = "pref_enable_alt_period_key";
     public static final String PREF_USE_DICT_KEY_BOOSTING = "pref_use_dict_key_boosting";
 
     private static final String PREF_LAST_USED_PERSONALIZATION_TOKEN =
