@@ -135,6 +135,10 @@ class InputLogicHandler implements Handler.Callback {
             mInputLogic.mWordComposer.setBatchInputPointers(batchPointers);
             getSuggestedWords(isTailBatchInput ? SuggestedWords.INPUT_STYLE_TAIL_BATCH
                     : SuggestedWords.INPUT_STYLE_UPDATE_BATCH, sequenceNumber, null);
+
+            if(isTailBatchInput) {
+                mInBatchInput = false;
+            }
         }
     }
 

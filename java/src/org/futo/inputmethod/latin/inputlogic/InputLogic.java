@@ -76,6 +76,10 @@ import javax.annotation.Nonnull;
  * This class manages the input logic.
  */
 public final class InputLogic {
+    // true is old behavior, false feels a bit better though
+    // TODO: Investigate whether this should be an option
+    private static final boolean COMPOSITION_TEXT_AFTER = false;
+
     private static final String TAG = InputLogic.class.getSimpleName();
 
     private final IMEHelper mImeHelper;
@@ -394,7 +398,9 @@ public final class InputLogic {
      * @return whether the cursor has moved as a result of user interaction.
      */
     public boolean onUpdateSelection(final int oldSelStart, final int oldSelEnd,
-            final int newSelStart, final int newSelEnd, final SettingsValues settingsValues) {
+            final int newSelStart, final int newSelEnd,
+            final int composingStart, final int composingEnd,
+            final SettingsValues settingsValues) {
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
             return false;
         }
@@ -419,9 +425,9 @@ public final class InputLogic {
         // should be true, but that is if the framework had taken that wrong cursor position
         // into account, which means we have to reset the entire composing state whenever there
         // is or was a selection regardless of whether it changed or not.
-        if (hasOrHadSelection || !settingsValues.needsToLookupSuggestions()
-                || (selectionChangedOrSafeToReset
-                        && !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount))) {
+        boolean suggestionsDisabled = !settingsValues.needsToLookupSuggestions();
+        boolean noLongerInWord = selectionChangedOrSafeToReset && !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount);
+        if (hasOrHadSelection || suggestionsDisabled || noLongerInWord) {
             // If we are composing a word and moving the cursor, we would want to set a
             // suggestion span for recorrection to work correctly. Unfortunately, that
             // would involve the keyboard committing some new text, which would move the
@@ -458,7 +464,10 @@ public final class InputLogic {
         mRecapitalizeStatus.enable();
         // We moved the cursor. If we are touching a word, we need to resume suggestion.
         mIsAutoCorrectionIndicatorOn = false;
-        // TODO: Necessary? mLatinIMELegacy.mHandler.postResumeSuggestions(true /* shouldDelay */);
+        //mIme.updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING);
+
+        // TODO: Fairly sure some of the above is redundant with this
+        restartSuggestionsOnWordTouchedByCursor(settingsValues, true, mImeHelper.getCurrentKeyboardScriptId());
         // Stop the last recapitalization, if started.
         mRecapitalizeStatus.stop();
         mWordBeingCorrectedByCursor = null;
@@ -948,7 +957,7 @@ public final class InputLogic {
         // each time. We are already doing this for getTextBeforeCursor().
                 (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
                         || !mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
-                                !mConnection.hasSlowInputConnection() /* checkTextAfter */))) {
+                                InputLogic.COMPOSITION_TEXT_AFTER && !mConnection.hasSlowInputConnection() /* checkTextAfter */))) {
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a word connector. The idea here is, word connectors are not
             // separators and they should be treated as normal characters, except in the first
@@ -1430,7 +1439,7 @@ public final class InputLogic {
                 && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             final TextRange range = mConnection.getWordRangeAtCursor(
                     settingsValues.mSpacingAndPunctuations,
-                    currentKeyboardScriptId);
+                    currentKeyboardScriptId, true);
             if (range != null) {
                 return range.mWord.toString();
             }
@@ -1894,7 +1903,7 @@ public final class InputLogic {
         }
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
-                    true /* checkTextAfter */)) {
+                    InputLogic.COMPOSITION_TEXT_AFTER /* checkTextAfter */)) {
 
             //Log.d(TAG, "Reset input state");
             resetEntireInputState(
@@ -1906,12 +1915,16 @@ public final class InputLogic {
 
             // Show predictions.
             mWordComposer.setCapitalizedModeAtStartComposingTime(WordComposer.CAPS_MODE_OFF);
-            postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_RECORRECTION);
+            postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
             return;
         }
         final TextRange range = mConnection.getWordRangeAtCursor(
-                settingsValues.mSpacingAndPunctuations, currentKeyboardScriptId);
-        if (null == range) return; // Happens if we don't have an input connection at all
+                settingsValues.mSpacingAndPunctuations, currentKeyboardScriptId, InputLogic.COMPOSITION_TEXT_AFTER);
+
+        if (null == range) {
+            return; // Happens if we don't have an input connection at all
+        }
+
         if (range.length() <= 0) {
             // Race condition, or touching a word in a non-supported script.
             mIme.setNeutralSuggestionStrip();
@@ -1919,12 +1932,16 @@ public final class InputLogic {
         }
         // If for some strange reason (editor bug or so) we measure the text before the cursor as
         // longer than what the entire text is supposed to be, the safe thing to do is bail out.
-        if (range.mHasUrlSpans) return; // If there are links, we don't resume suggestions. Making
+        if (range.mHasUrlSpans) {
+            return; // If there are links, we don't resume suggestions. Making
+        }
         // edits to a linkified text through batch commands would ruin the URL spans, and unless
         // we take very complicated steps to preserve the whole link, we can't do things right so
         // we just do not resume because it's safer.
         final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
-        if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
+        if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) {
+            return;
+        }
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         final String typedWordString = range.mWord.toString();
         final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
@@ -1937,11 +1954,18 @@ public final class InputLogic {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
+
+        // TODO: I don't think we're using resumable suggestion spans at the moment, it seems to only
+        //  lead to strangeness from other keyboards suggestion spans (e.g. Samsung Keyboard's grammar
+        //  suggestions leads to this showing a huge json string as a suggestion)
         int i = 0;
         for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
             for (final String s : span.getSuggestions()) {
                 ++i;
-                if (!TextUtils.equals(s, typedWordString)) {
+                if (!TextUtils.equals(s, typedWordString)
+                    // Sanity check against the Samsung grammar suggestion case
+                    && !s.contains("{")
+                ) {
                     suggestions.add(new SuggestedWordInfo(s,
                             "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS - i,
                             SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
@@ -1965,7 +1989,7 @@ public final class InputLogic {
             // If there weren't any suggestion spans on this word, suggestions#size() will be 1
             // if shouldIncludeResumedWordInSuggestions is true, 0 otherwise. In this case, we
             // have no useful suggestions, so we will try to compute some for it instead.
-            mInputLogicHandler.getSuggestedWords(Suggest.SESSION_ID_TYPING,
+            mInputLogicHandler.getSuggestedWords(SuggestedWords.INPUT_STYLE_TYPING,
                     SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
                         @Override
                         public void onGetSuggestedWords(final SuggestedWords suggestedWords) {

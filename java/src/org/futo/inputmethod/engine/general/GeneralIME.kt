@@ -258,6 +258,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.onUpdateSelection(
             oldSelStart, oldSelEnd,
             newSelStart, newSelEnd,
+            composingSpanStart, composingSpanEnd,
             Settings.getInstance().current
         )
     }

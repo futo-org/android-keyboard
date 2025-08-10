@@ -754,7 +754,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * @return a range containing the text surrounding the cursor
      */
     public TextRange getWordRangeAtCursor(final SpacingAndPunctuations spacingAndPunctuations,
-            final int scriptId) {
+            final int scriptId, final boolean checkAfter) {
         mIC = mConnectionProvider.getCurrentInputConnection();
         if (!isConnected()) {
             return null;
@@ -770,7 +770,10 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS,
                 NUM_CHARS_TO_GET_BEFORE_CURSOR,
                 InputConnection.GET_TEXT_WITH_STYLES);
-        final CharSequence after = getTextAfterCursorAndDetectLaggyConnection(
+
+        CharSequence after = "";
+
+        if(checkAfter) after = getTextAfterCursorAndDetectLaggyConnection(
                 OPERATION_GET_WORD_RANGE_AT_CURSOR,
                 SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS,
                 NUM_CHARS_TO_GET_AFTER_CURSOR,
