@@ -93,6 +93,7 @@ public class SettingsValues {
     public final boolean mShouldShowLxxSuggestionUi;
     public final boolean mIsNumberRowEnabled;
     public final boolean mIsNumberRowEnabledByUser;
+    public final boolean mUseLocalNumbers;
     public final boolean mIsArrowRowEnabled;
     public final boolean mIsUsingAlternativePeriodKey;
     public final boolean mUseDictionaryKeyBoosting;
@@ -102,7 +103,7 @@ public class SettingsValues {
     public final boolean mBackspaceUndoesAutocorrect;
     public final int mSpacebarMode;
     public final int mBackspaceMode;
-
+    public final int mNumberRowMode;
     public final int mAltSpacesMode;
 
     // From the input box
@@ -166,6 +167,7 @@ public class SettingsValues {
         mIsNumberRowEnabled = mIsNumberRowEnabledByUser
                 || (inputAttributes.mIsPasswordField && !inputAttributes.mIsNumericalPasswordField)
                 || inputAttributes.mIsEmailField;
+        mUseLocalNumbers = !prefs.getBoolean(Settings.PREF_USE_WESTERN_NUMERALS, false);
         mIsArrowRowEnabled = prefs.getBoolean(Settings.PREF_ENABLE_ARROW_ROW, false);
         mIsUsingAlternativePeriodKey = prefs.getBoolean(Settings.PREF_ENABLE_ALT_PERIOD_KEY, false);
         mUseDictionaryKeyBoosting = prefs.getBoolean(Settings.PREF_USE_DICT_KEY_BOOSTING, true);
@@ -190,7 +192,9 @@ public class SettingsValues {
 
         mSpacebarMode = prefs.getInt(Settings.PREF_SPACEBAR_MODE, Settings.SPACEBAR_MODE_SWIPE_CURSOR);
         mBackspaceMode = prefs.getInt(Settings.PREF_BACKSPACE_MODE, Settings.BACKSPACE_MODE_CHARACTERS);
-
+        mNumberRowMode = mIsNumberRowEnabledByUser ?
+                prefs.getInt(Settings.PREF_NUMBER_ROW_MODE, Settings.NUMBER_ROW_MODE_DEFAULT)
+                : Settings.NUMBER_ROW_MODE_DEFAULT;
         mAltSpacesMode = prefs.getInt(Settings.PREF_ALT_SPACES_MODE, Settings.DEFAULT_ALT_SPACES_MODE);
 
         mShouldShowLxxSuggestionUi = Settings.SHOULD_SHOW_LXX_SUGGESTION_UI

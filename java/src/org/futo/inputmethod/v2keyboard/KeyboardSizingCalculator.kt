@@ -399,7 +399,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
             e.printStackTrace()
             LayoutManager.getLayout(context, "qwerty")
         }
-        val effectiveRowCount = layout.effectiveRows.size
+        val effectiveRows = layout.getEffectiveRows(settings.mNumberRowMode)
+        val effectiveRowCount = effectiveRows.size
 
         val displayMetrics = context.resources.displayMetrics
         if(displayMetrics.widthPixels == 0) return null // Unable to calculate yet
@@ -436,7 +437,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     // the input field (e.g. password field). In this case, the full height of the
                     // number row needs to be added to keep the existing keys consistently positioned
                     settings.mIsNumberRowEnabled && !settings.mIsNumberRowEnabledByUser ->
-                        layout.effectiveRows.first { it.isNumberRow }.rowHeight.guardNaN(0.5).coerceAtLeast(0.0)
+                        effectiveRows.first { it.isNumberRow }.rowHeight.guardNaN(0.5).coerceAtLeast(0.0)
 
                     // If it's enabled by user, add only 0.5 to make the keyboard slightly less tall
                     settings.mIsNumberRowEnabled -> 0.5

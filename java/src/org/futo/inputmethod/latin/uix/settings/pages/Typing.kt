@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
@@ -38,6 +39,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -59,15 +62,19 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.input.ImeOptions
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TextInputSession
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.core.graphics.drawable.toBitmap
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -86,6 +93,7 @@ import org.futo.inputmethod.latin.settings.name
 import org.futo.inputmethod.latin.settings.toEncodedString
 import org.futo.inputmethod.latin.settings.toLongPressKeyLayoutItems
 import org.futo.inputmethod.latin.uix.AndroidTextInput
+import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
@@ -97,6 +105,7 @@ import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
 import org.futo.inputmethod.latin.uix.settings.LocalSharedPrefsCache
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.PrimarySettingToggleDataStoreItem
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingItem
@@ -110,7 +119,9 @@ import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsInt
+import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleSharedPrefs
@@ -622,6 +633,105 @@ private fun AutoSpacesSetting() {
     )
 }
 
+val NumberRowSettingMenu = UserSettingsMenu(
+    title = R.string.keyboard_settings_number_row_title,
+    navPath = "numberRow", registerNavPath = true,
+    settings = listOf(
+        userSettingDecorationOnly {
+            PrimarySettingToggleDataStoreItem(
+                stringResource(R.string.keyboard_settings_show_number_row),
+                useSharedPrefsBool(Settings.PREF_ENABLE_NUMBER_ROW, false)
+            )
+        },
+
+        userSettingToggleSharedPrefs(
+            R.string.keyboard_settings_number_row_dont_use_script_digits,
+            default = {false},
+            key = Settings.PREF_USE_WESTERN_NUMERALS,
+        ).copy(visibilityCheck = {
+            useSharedPrefsBool(Settings.PREF_ENABLE_NUMBER_ROW, false).value
+        }),
+
+        UserSetting(name = R.string.keyboard_settings_number_row_style, visibilityCheck = {
+            useSharedPrefsBool(Settings.PREF_ENABLE_NUMBER_ROW, false).value
+        }) {
+            val context = LocalContext.current
+            val scheme = LocalKeyboardScheme.current
+            val provider = remember(scheme) {
+                BasicThemeProvider(context, scheme)
+            }
+            val keySize = with(LocalDensity.current) {
+                32.dp.toPx() to 48.dp.toPx()
+            }
+            val background = remember(provider) {
+                provider.keyBackground.toBitmap(
+                    width = keySize.first.toInt(),
+                    height = keySize.second.toInt()
+                ).asImageBitmap()
+            }
+
+            val measurer = rememberTextMeasurer()
+            val textSizePx = background.height / 2f
+            val textSizeSp = with(LocalDensity.current) { textSizePx.toSp() }
+            val color = LocalKeyboardScheme.current.onKeyboardContainer
+
+            val textLayoutResult = measurer.measure(
+                text = "1",
+                style = TextStyle(
+                    fontSize = textSizeSp,
+                    color = color,
+                    textAlign = TextAlign.Center
+                )
+            )
+
+            SettingRadio(
+                title = stringResource(R.string.keyboard_settings_number_row_style),
+                options = listOf(
+                    Settings.NUMBER_ROW_MODE_DEFAULT,
+                    Settings.NUMBER_ROW_MODE_CLASSIC
+                ),
+                optionNames = listOf(
+                    stringResource(R.string.keyboard_settings_number_row_style_default),
+                    stringResource(R.string.keyboard_settings_number_row_style_classic),
+                ),
+                setting = useSharedPrefsInt(
+                    key = Settings.PREF_NUMBER_ROW_MODE,
+                    default = Settings.NUMBER_ROW_MODE_DEFAULT
+                ),
+                hints = listOf(
+                    {
+                        androidx.compose.foundation.Canvas(
+                            modifier = Modifier.size(32.dp, 48.dp)
+                        ) {
+                            drawText(
+                                textLayoutResult = textLayoutResult,
+                                topLeft = Offset(
+                                    x = background.width / 2.0f - textLayoutResult.size.width / 2.0f,
+                                    y = background.height / 2.0f - textLayoutResult.size.height / 2.0f,
+                                )
+                            )
+                        }
+                    },
+                    {
+                        androidx.compose.foundation.Canvas(
+                            modifier = Modifier.size(32.dp, 48.dp)
+                        ) {
+                            drawImage(background)
+                            drawText(
+                                textLayoutResult = textLayoutResult,
+                                topLeft = Offset(
+                                    x = background.width / 2.0f - textLayoutResult.size.width / 2.0f,
+                                    y = background.height / 2.0f - textLayoutResult.size.height / 2.0f,
+                                )
+                            )
+                        }
+                    },
+                )
+            )
+        }
+    )
+)
+
 val KeyboardSettingsMenu = UserSettingsMenu(
     title = R.string.keyboard_settings_title,
     navPath = "keyboard", registerNavPath = true,
@@ -638,7 +748,8 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             subtitle = R.string.keyboard_settings_show_number_row_subtitle,
             key = Settings.PREF_ENABLE_NUMBER_ROW,
             default = {false},
-            icon = { Text("123", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) }
+            icon = { Text("123", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) },
+            submenu = NumberRowSettingMenu.navPath
         ),
         userSettingToggleSharedPrefs(
             title = R.string.keyboard_settings_show_arrow_row,
@@ -878,4 +989,3 @@ fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavContro
         BottomSpacer()
     }
 }
-

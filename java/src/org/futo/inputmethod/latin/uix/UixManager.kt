@@ -159,8 +159,8 @@ val LocalFoldingState = compositionLocalOf<FoldingOptions> {
     FoldingOptions(null)
 }
 
-val LocalNavController = compositionLocalOf<NavHostController> {
-    error("No nav controller provided")
+val LocalNavController = compositionLocalOf<NavHostController?> {
+    null
 }
 
 private val UixLocaleFollowsSubtypeLocale = true

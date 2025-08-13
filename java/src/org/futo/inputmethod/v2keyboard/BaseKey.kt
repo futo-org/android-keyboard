@@ -343,10 +343,16 @@ data class BaseKey(
             null
         }
 
-        val expandedSpec: String? = params.mTextsSet.resolveTextReference(
+        var expandedSpec: String? = params.mTextsSet.resolveTextReference(
             if(attributes.useKeySpecShortcut != false) { relevantSpecShortcut?.get(0) } else { null }
              ?: spec
         )
+
+        // If the spec is just a number and we just expanded to a shortcut but local numbers is off,
+        // just use the spec
+        if(spec.toIntOrNull() != null && relevantSpecShortcut != null && params.mId.mUseLocalNumbers == false) {
+            expandedSpec = spec
+        }
 
         val label = expandedSpec?.let { KeySpecParser.getLabel(it) } ?: ""
         val icon = expandedSpec?.let { KeySpecParser.getIconId(it) } ?: ""

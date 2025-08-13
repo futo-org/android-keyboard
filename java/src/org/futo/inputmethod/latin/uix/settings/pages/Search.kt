@@ -115,7 +115,7 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                                 stringResource(v.first.title)
                             ),
                             navigate = {
-                                nav.navigate(v.first.navPath)
+                                nav!!.navigate(v.first.navPath)
                             }
                         )
                     }
@@ -198,7 +198,7 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                     val nav = LocalNavController.current
                     Row(Modifier
                         .clickable {
-                            nav.navigate(menu.navPath)
+                            nav!!.navigate(menu.navPath)
                         }
                         .padding(16.dp)) {
                         Text(

@@ -38,6 +38,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.LanguageSettingsLite
 import org.futo.inputmethod.latin.uix.settings.pages.LanguagesScreen
 import org.futo.inputmethod.latin.uix.settings.pages.LongPressMenu
 import org.futo.inputmethod.latin.uix.settings.pages.MiscMenu
+import org.futo.inputmethod.latin.uix.settings.pages.NumberRowSettingMenu
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PaymentThankYouScreen
 import org.futo.inputmethod.latin.uix.settings.pages.PredictiveTextMenu
@@ -67,6 +68,7 @@ val SettingsMenus = listOf(
     HomeScreenLite,
     LanguageSettingsLite,
     KeyboardSettingsMenu,
+    NumberRowSettingMenu,
     TypingSettingsMenu,
     ResizeMenuLite,
     LongPressMenu,

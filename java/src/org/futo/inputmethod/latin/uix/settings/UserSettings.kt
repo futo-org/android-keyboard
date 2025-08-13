@@ -47,8 +47,8 @@ fun userSettingNavigationItem(
             icon = icon?.let { painterResource(it) },
             subtitle = subtitle?.let { stringResource(it) },
             navigate = {
-                if(navigateTo != null) navController.navigate(navigateTo)
-                navigate?.invoke(navController)
+                if(navigateTo != null) navController!!.navigate(navigateTo)
+                navigate?.invoke(navController!!)
             }
         )
     }
@@ -61,12 +61,14 @@ fun userSettingToggleSharedPrefs(
     @StringRes subtitle: Int? = null,
     @StringRes disabledSubtitle: Int? = null,
     disabled: @Composable () -> Boolean = {false},
-    icon: (@Composable () -> Unit)? = null
+    icon: (@Composable () -> Unit)? = null,
+    submenu: String? = null,
 ): UserSetting = UserSetting(
     name = title,
     subtitle = subtitle,
     component = {
         val def = default.invoke()
+        val navController = LocalNavController.current
         SettingToggleSharedPrefs(
             title = stringResource(title),
             key = key,
@@ -74,7 +76,10 @@ fun userSettingToggleSharedPrefs(
             subtitle = subtitle?.let { stringResource(it) },
             disabledSubtitle = disabledSubtitle?.let { stringResource(it) },
             disabled = disabled(),
-            icon = icon
+            icon = icon,
+            onSubmenuNavigate = submenu?.let {{
+                navController!!.navigate(it)
+            }},
         )
     }
 )

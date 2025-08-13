@@ -113,8 +113,10 @@ data class LayoutEngine(
     val horizontalGap = layoutParams.gap
     val verticalGap = layoutParams.gap * 2
 
+    val effectiveRows = keyboard.getEffectiveRows(params.mId.mNumberRowMode)
+
     private val rows = run {
-        val filteredRows = keyboard.effectiveRows.filter {
+        val filteredRows = effectiveRows.filter {
             // Filter the Number row, when it's not active
             when(keyboard.numberRowMode) {
                 NumberRowMode.UserConfigurable -> !it.isNumberRow || params.mId.mNumberRow
@@ -189,7 +191,7 @@ data class LayoutEngine(
 
     private fun computeRegularKeyWidth(layoutWidth: Int = this.layoutWidth): Float {
         return keyboard.overrideWidths[KeyWidth.Regular]?.let { it * layoutWidth.toFloat() } ?: run {
-            (layoutWidth.toFloat() / keyboard.effectiveRows.filter { it.isLetterRow }.maxOf { it.keys.size }.toFloat()) - EPS
+            (layoutWidth.toFloat() / effectiveRows.filter { it.isLetterRow }.maxOf { it.keys.size }.toFloat()) - EPS
         }
     }
 
