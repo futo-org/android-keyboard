@@ -36,6 +36,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
+import org.futo.inputmethod.latin.uix.settings.pages.InlineAutofillSetting
 import kotlin.math.roundToInt
 
 
@@ -51,7 +53,12 @@ private const val maxHeightDp = 48.0f
 fun createInlineSuggestionsRequest(
     context: Context,
     activeColorScheme: KeyboardColorScheme
-): InlineSuggestionsRequest {
+): InlineSuggestionsRequest? {
+    if(context.getSetting(InlineAutofillSetting) == false
+        || context.getSetting(ActionBarDisplayedSetting) == false) {
+        return null
+    }
+
     val fromDp = { v: Float ->
         context.fromDp(v).roundToInt()
     }

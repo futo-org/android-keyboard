@@ -3,6 +3,7 @@ import android.content.Context
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
+import org.futo.inputmethod.latin.settings.Settings
 
 object RowKeyListSerializer : SpacedListSerializer<Key>(KeyPathSerializer)
 
@@ -112,6 +113,20 @@ val DefaultNumberRow = Row(
             shiftLocked = BaseKey(c.toString())
         )
     }
+)
+
+val DefaultNumberRowClassic = Row(
+    numbers = "1234567890".mapIndexed { i, c ->
+        CaseSelector(
+            normal = BaseKey(c.toString()),
+            shiftedManually = BaseKey("!@#$%^&*()"[i].toString()),
+            shiftLocked = BaseKey(c.toString())
+        )
+    },
+    rowHeight = 1.0,
+    attributes = KeyAttributes(
+        width = KeyWidth.Grow
+    )
 )
 
 val DefaultBottomRow = Row(
@@ -286,9 +301,12 @@ data class Keyboard(
         assert(rows.count { it.isLetterRow } in 1..8) { "Keyboard must contain between 1 and 8 letter rows" }
     }
 
-    val effectiveRows = rows.toMutableList().apply {
+    fun getEffectiveRows(numberRowMode: Int) = rows.toMutableList().apply {
         if(find { it.isNumberRow } == null) {
-            add(0, DefaultNumberRow)
+            add(0, when(numberRowMode) {
+                Settings.NUMBER_ROW_MODE_CLASSIC -> DefaultNumberRowClassic
+                else -> DefaultNumberRow
+            })
         }
 
         if(find { it.isBottomRow } == null) {

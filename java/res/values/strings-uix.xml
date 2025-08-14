@@ -468,6 +468,15 @@
     <string name="keyboard_settings_period_key">Quick period key</string>
     <string name="keyboard_settings_period_key_subtitle">Flick the period key to quickly insert most common symbols</string>
 
+    <string name="keyboard_settings_number_row_title">Number row</string>
+    <string name="keyboard_settings_number_row_style">Number row style</string>
+    <!-- Slightly more compact than a full key, has no background -->
+    <string name="keyboard_settings_number_row_style_default">Compact</string>
+    <!-- "Key" as in full-size keyboard key -->
+    <string name="keyboard_settings_number_row_style_classic">Key</string>
+    <!-- Languages like Arabic can have their own digit symbols, this forces use of Western numerals -->
+    <string name="keyboard_settings_number_row_dont_use_script_digits">Always use Western numerals</string>
+
     <!-- misc titles -->
     <string name="settings_keyboard_typing_title">Keyboard &amp; Typing</string>
     <!-- Theme, as in visual style -->

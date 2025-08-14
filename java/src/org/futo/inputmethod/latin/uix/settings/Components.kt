@@ -10,11 +10,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,6 +49,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -100,12 +104,12 @@ import org.futo.inputmethod.latin.uix.theme.Typography
 import kotlin.math.pow
 
 @Composable
-fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHostController = rememberNavController()) {
+fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHostController? = rememberNavController()) {
     val rowModifier = if(showBack) {
         Modifier
             .fillMaxWidth()
             .clickable(onClickLabel = "Navigate back") {
-                navController.navigateUp()
+                navController!!.navigateUp()
             }
     } else {
         Modifier.fillMaxWidth()
@@ -203,7 +207,8 @@ fun SettingItem(
     modifier: Modifier = Modifier,
     subcontent: (@Composable () -> Unit)? = null,
     compact: Boolean = false,
-    content: @Composable () -> Unit
+    onSubmenuNavigate: (() -> Unit)? = null,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     val textColor = when(LocalContentColor.current) {
         MaterialTheme.colorScheme.onPrimary,
@@ -226,69 +231,104 @@ fun SettingItem(
             .fillMaxWidth()
             .defaultMinSize(0.dp, if(compact) { 48.dp } else { 68.dp })
             .let {
-                if(onClick != null) {
+                if(onClick != null && onSubmenuNavigate == null) {
                     it.clickable(enabled = !disabled, onClick = {
                         if (!disabled) {
                             onClick()
+                        }
+                    })
+                } else if(onSubmenuNavigate != null) {
+                    it.clickable(enabled = !disabled, onClick = {
+                        if (!disabled) {
+                            onSubmenuNavigate()
                         }
                     })
                 } else {
                     it
                 }
             }
-            .padding(4.dp)
+            .height(intrinsicSize = IntrinsicSize.Min),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(
-            modifier = Modifier
-                .width(48.dp)
-                .align(Alignment.CenterVertically)
-        ) {
-            Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                if (icon != null) {
-                    icon()
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Row(
-            modifier = Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-                .alpha(
-                    if (disabled) {
-                        0.5f
-                    } else {
-                        1.0f
+        Row(Modifier.weight(1.0f).fillMaxHeight().padding(0.dp, 4.dp)) {
+            Spacer(Modifier.width(4.dp))
+            Spacer(Modifier.width(16.dp))
+            Column(
+                modifier = Modifier
+                    .width(48.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    if (icon != null) {
+                        icon()
                     }
-                )
-        ) {
-            SpacedColumn(4.dp) {
-                Text(
-                    title,
-                    style = Typography.Heading.RegularMl,
-                    color = textColor,
-                    modifier = Modifier.heightIn(min = 24.dp)
-                )
-
-                if (subtitle != null) {
-                    Text(
-                        subtitle,
-                        style = Typography.SmallMl,
-                        color = subTextColor
-                    )
-                } else if(subcontent != null) {
-                    subcontent()
                 }
             }
-        }
-        Box(modifier = Modifier.align(Alignment.CenterVertically)) {
-            content()
+
+            Spacer(Modifier.width(12.dp))
+
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+                    .alpha(
+                        if (disabled) {
+                            0.5f
+                        } else {
+                            1.0f
+                        }
+                    )
+            ) {
+                SpacedColumn(4.dp) {
+                    Text(
+                        title,
+                        style = Typography.Heading.RegularMl,
+                        color = textColor,
+                        modifier = Modifier.heightIn(min = 24.dp)
+                    )
+
+                    if (subtitle != null) {
+                        Text(
+                            subtitle,
+                            style = Typography.SmallMl,
+                            color = subTextColor
+                        )
+                    } else if (subcontent != null) {
+                        subcontent()
+                    }
+                }
+            }
+            if(onSubmenuNavigate != null) { Spacer(Modifier.width(8.dp)) }
         }
 
-        Spacer(modifier = Modifier.width(12.dp))
+        if(onSubmenuNavigate != null) {
+            VerticalDivider(
+                Modifier.height(64.dp),
+                color = MaterialTheme.colorScheme.outline
+            )
+        } else {
+            Spacer(Modifier.width(4.dp))
+        }
+
+        Row(Modifier.let {
+            if(onSubmenuNavigate != null && onClick != null) {
+                it.clickable(enabled = !disabled, onClick = {
+                    if(!disabled) {
+                        onClick()
+                    }
+                })
+            } else {
+                it
+            }
+        }.fillMaxHeight()) {
+            if(onSubmenuNavigate != null) { Spacer(Modifier.width(8.dp)) }
+            Box(modifier = Modifier.align(Alignment.CenterVertically), contentAlignment = Alignment.Center) {
+                content()
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(Modifier.width(4.dp))
+        }
     }
 }
 
@@ -299,7 +339,8 @@ fun SettingToggleRaw(
     setValue: (Boolean) -> Unit,
     subtitle: String? = null,
     disabled: Boolean = false,
-    icon: (@Composable () -> Unit)? = null
+    icon: (@Composable () -> Unit)? = null,
+    onSubmenuNavigate: (() -> Unit)? = null,
 ) {
     SettingItem(
         title = title,
@@ -310,11 +351,18 @@ fun SettingToggleRaw(
             }
         },
         icon = icon,
-        modifier = Modifier.clearAndSetSemantics {
-            this.text = AnnotatedString("$title. $subtitle")
-            this.role = Role.Switch
-            this.toggleableState = ToggleableState(enabled)
-        }
+        modifier = Modifier.let {
+            if(onSubmenuNavigate == null) {
+                it.clearAndSetSemantics {
+                    this.text = AnnotatedString("$title. ${subtitle ?: ""}")
+                    this.role = Role.Switch
+                    this.toggleableState = ToggleableState(enabled)
+                }
+            } else {
+                it
+            }
+        },
+        onSubmenuNavigate = onSubmenuNavigate
     ) {
         Switch(checked = enabled, onCheckedChange = {
             if (!disabled) {
@@ -331,7 +379,8 @@ fun SettingToggleDataStoreItem(
     subtitle: String? = null,
     disabledSubtitle: String? = null,
     disabled: Boolean = false,
-    icon: (@Composable () -> Unit)? = null
+    icon: (@Composable () -> Unit)? = null,
+    onSubmenuNavigate: (() -> Unit)? = null,
 ) {
     val (enabled, setValue) = dataStoreItem
 
@@ -341,7 +390,7 @@ fun SettingToggleDataStoreItem(
         subtitle
     }
 
-    SettingToggleRaw(title, enabled, { setValue(it) }, subtitleValue, disabled, icon)
+    SettingToggleRaw(title, enabled, { setValue(it) }, subtitleValue, disabled, icon, onSubmenuNavigate)
 }
 
 @Composable
@@ -351,7 +400,8 @@ fun SettingToggleDataStore(
     subtitle: String? = null,
     disabledSubtitle: String? = null,
     disabled: Boolean = false,
-    icon: (@Composable () -> Unit)? = null
+    icon: (@Composable () -> Unit)? = null,
+    onSubmenuNavigate: (() -> Unit)? = null,
 ) {
     key(setting) {
         SettingToggleDataStoreItem(
@@ -360,7 +410,8 @@ fun SettingToggleDataStore(
             subtitle,
             disabledSubtitle,
             disabled,
-            icon
+            icon,
+            onSubmenuNavigate
         )
     }
 }
@@ -373,11 +424,12 @@ fun SettingToggleSharedPrefs(
     subtitle: String? = null,
     disabledSubtitle: String? = null,
     disabled: Boolean = false,
-    icon: (@Composable () -> Unit)? = null
+    icon: (@Composable () -> Unit)? = null,
+    onSubmenuNavigate: (() -> Unit)? = null,
 ) {
     key(key) {
         SettingToggleDataStoreItem(
-            title, useSharedPrefsBool(key, default), subtitle, disabledSubtitle, disabled, icon
+            title, useSharedPrefsBool(key, default), subtitle, disabledSubtitle, disabled, icon, onSubmenuNavigate
         )
     }
 }
@@ -388,14 +440,19 @@ fun<T> SettingRadio(
     options: List<T>,
     optionNames: List<String>,
     setting: DataStoreItem<T>,
+    hints: List<@Composable () -> Unit>? = null,
 ) {
     ScreenTitle(title, showBack = false)
     Column {
-        options.zip(optionNames).forEach {
+        options.zip(optionNames).forEachIndexed { i, it ->
             SettingItem(title = it.second, onClick = { setting.setValue(it.first) }, icon = {
                 RadioButton(selected = setting.value == it.first, onClick = null)
+            }, modifier = Modifier.clearAndSetSemantics {
+                this.text = AnnotatedString(it.second)
+                this.role = Role.RadioButton
+                this.selected = setting.value == it.first
             }) {
-                
+                hints?.getOrNull(i)?.let { it() }
             }
         }
     }
@@ -867,5 +924,48 @@ fun RotatingChevronIcon(isExpanded: Boolean, modifier: Modifier = Modifier, tint
         contentDescription = null,
         modifier = modifier.rotate(rotation),
         tint = tint
+    )
+}
+
+@Composable
+fun PrimarySettingToggleDataStoreItem(
+    title: String,
+    dataStoreItem: DataStoreItem<Boolean>,
+) {
+    val (enabled, setValue) = dataStoreItem
+
+    Box(Modifier.padding(24.dp)) {
+        Surface(
+            shape = RoundedCornerShape(48.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            modifier = Modifier.clearAndSetSemantics {
+                this.text = AnnotatedString(title)
+                this.role = Role.Switch
+                this.toggleableState = ToggleableState(enabled)
+            },
+            onClick = {
+                setValue(!enabled)
+            }
+        ) {
+            Row(Modifier.padding(24.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    title,
+                    style = Typography.Heading.RegularMl,
+                    modifier = Modifier.heightIn(min = 24.dp)
+                )
+                Spacer(Modifier.weight(1.0f))
+
+                Switch(checked = enabled, onCheckedChange = null)
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewPrimarySetting() {
+    PrimarySettingToggleDataStoreItem(
+        "Enable",
+        dataStoreItem = DataStoreItem(false, { error("") })
     )
 }

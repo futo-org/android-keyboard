@@ -86,7 +86,7 @@ val HomeScreenLite = UserSettingsMenu(
                 subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) {
                     stringResource(R.string.voice_input_settings_builtin_disabled_notice)
                 } else { null },
-                navigate = { navController.navigate(VoiceInputMenu.navPath) },
+                navigate = { navController!!.navigate(VoiceInputMenu.navPath) },
                 icon = painterResource(R.drawable.mic_fill)
             )
         },

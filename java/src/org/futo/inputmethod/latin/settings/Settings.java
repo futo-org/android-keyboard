@@ -136,6 +136,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final int SPACES_MODE_SUGGESTIONS = 1; // Use antiphantom for suggestion, none for punctuation
     public static final int SPACES_MODE_ALL = 2; // Use antiphantom for all
 
+    public static final String PREF_NUMBER_ROW_MODE = "pref_number_row_mode";
+    public static final int NUMBER_ROW_MODE_DEFAULT = 0;
+    public static final int NUMBER_ROW_MODE_CLASSIC = 1;
+
+    public static final String PREF_USE_WESTERN_NUMERALS = "pref_use_western_numerals";
+
     public static final int DEFAULT_ALT_SPACES_MODE = SPACES_MODE_ALL;
 
     // Emoji

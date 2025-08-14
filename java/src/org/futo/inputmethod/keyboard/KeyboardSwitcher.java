@@ -151,6 +151,8 @@ public final class KeyboardSwitcher implements SwitchActions {
                 multilingualTypingLanguages,
                 editorInfo == null ? new EditorInfo() : editorInfo,
                 settingsValues.mIsNumberRowEnabled,
+                settingsValues.mNumberRowMode,
+                settingsValues.mUseLocalNumbers,
                 settingsValues.mIsArrowRowEnabled,
                 settingsValues.mIsUsingAlternativePeriodKey,
                 sizingCalculator.calculateGap(),
