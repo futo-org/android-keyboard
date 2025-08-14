@@ -712,7 +712,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             // keyboard layout.
             if (callListenerOnPressAndCheckKeyboardLayoutChange(key, 0 /* repeatCount */)) {
                 key = getKeyOn(x, y);
-                if(!key.isModifier())
+                if(key != null && !key.isModifier())
                     key = null;
                 else
                     key = onDownKey(x, y, eventTime);
