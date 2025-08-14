@@ -49,6 +49,7 @@ import org.futo.inputmethod.nativelib.mozc.keyboard.Keyboard
 import org.futo.inputmethod.nativelib.mozc.model.SelectionTracker
 import org.futo.inputmethod.nativelib.mozc.session.SessionExecutor
 import org.futo.inputmethod.nativelib.mozc.session.SessionHandlerFactory
+import org.futo.inputmethod.v2keyboard.CombinerKind
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCandidateWindow
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands.Context.InputFieldType
@@ -863,6 +864,10 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     private var prevSuggestions: SuggestedWords? = null
     override fun requestSuggestionRefresh() {
         if(prevSuggestions != null) showSuggestionStrip(prevSuggestions)
+    }
+
+    override fun setCombiners(kinds: MutableList<CombinerKind>) {
+
     }
 
     private val useExpandableUi = true

@@ -1287,6 +1287,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     public void setCombiners(@NotNull List<@NotNull CombinerKind> combiners) {
-        // TODO: mInputLogic.mWordComposer.setCombiners(combiners);
+        mImeManager.setCombiners(combiners);
     }
 }

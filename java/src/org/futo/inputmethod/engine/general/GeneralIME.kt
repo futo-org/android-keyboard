@@ -31,6 +31,7 @@ import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
+import org.futo.inputmethod.v2keyboard.CombinerKind
 
 interface WordLearner {
     fun addToHistory(
@@ -606,6 +607,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun getCurrentRecapitalizeState(): Int =
         inputLogic.currentRecapitalizeState
+
+    override fun setCombiners(kinds: MutableList<CombinerKind>) {
+        inputLogic.mWordComposer.setCombiners(kinds)
+    }
 
     private val useExpandableUi = false
     override fun setNeutralSuggestionStrip() {

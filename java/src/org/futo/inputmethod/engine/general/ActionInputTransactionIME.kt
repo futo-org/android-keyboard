@@ -10,6 +10,7 @@ import org.futo.inputmethod.latin.uix.ActionInputTransaction
 import org.futo.inputmethod.latin.uix.ExperimentalICFix
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.utils.TextContext
+import org.futo.inputmethod.v2keyboard.CombinerKind
 
 class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInputTransaction {
     val ic = if(helper.context.getSetting(ExperimentalICFix)) {
@@ -54,6 +55,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {}
     override fun clearUserHistoryDictionaries() {}
     override fun requestSuggestionRefresh() {}
+    override fun setCombiners(kinds: MutableList<CombinerKind>) {}
 
     override val textContext: TextContext = TextContext(
         beforeCursor = ic?.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),

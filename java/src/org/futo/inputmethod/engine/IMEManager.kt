@@ -9,6 +9,7 @@ import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValues
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
+import org.futo.inputmethod.v2keyboard.CombinerKind
 
 enum class IMEMessage {
     ReloadResources
@@ -199,5 +200,9 @@ class IMEManager(
             newSelStart, newSelEnd,
             composingSpanStart, composingSpanEnd
         )
+    }
+
+    fun setCombiners(combiners: MutableList<CombinerKind>) {
+        imes.values.forEach { it.setCombiners(combiners) }
     }
 }
