@@ -749,7 +749,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public void onMovePointer(int steps) {
         mImeManager.getActiveIME(
                 mSettings.getCurrent()
-        ).onMovePointer(steps, null);
+        ).onMovePointer(steps, false, null);
     }
 
     @Override

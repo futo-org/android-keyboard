@@ -121,6 +121,8 @@ import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.KeyboardModeAction
 import org.futo.inputmethod.latin.uix.actions.PersistentEmojiState
+import org.futo.inputmethod.latin.uix.actions.keyCode
+import org.futo.inputmethod.latin.uix.actions.keyCodeAlt
 import org.futo.inputmethod.latin.uix.resizing.KeyboardResizers
 import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
@@ -354,14 +356,14 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     override fun cursorLeft(steps: Int, stepOverWords: Boolean, select: Boolean) {
         latinIME.imeManager.getActiveIME(
             Settings.getInstance().current
-        ).onMovePointer(-1, select)
+        ).onMovePointer(-1, stepOverWords, select)
         //latinIME.inputLogic.cursorLeft(steps, stepOverWords, select)
     }
 
     override fun cursorRight(steps: Int, stepOverWords: Boolean, select: Boolean) {
         latinIME.imeManager.getActiveIME(
             Settings.getInstance().current
-        ).onMovePointer( 1, select)
+        ).onMovePointer( 1, stepOverWords, select)
         //latinIME.inputLogic.cursorRight(steps, stepOverWords, select)
     }
 
@@ -526,13 +528,8 @@ class UixManager(private val latinIME: LatinIME) {
 
     val isMainKeyboardHidden get() = mainKeyboardHidden.value
 
-    fun onActionActivated(rawAction: Action) {
+    private fun onActionActivatedInternal(rawAction: Action) {
         resizers.hideResizer()
-        latinIME.imeManager.getActiveIME(
-            Settings.getInstance().current
-        ).onFinishInput() // TODO: Either call onStartInput to correspond, or make a different method to cleanup before activating!
-
-        // TODO: The IME should have a chance to consume the action (e.g. left/right arrows for Japanese preedit)
 
         val action = runBlocking {
             ActionRegistry.getActionOverride(latinIME, rawAction)
@@ -547,18 +544,26 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
-    fun onActionAltActivated(rawAction: Action) {
-        latinIME.imeManager.getActiveIME(
-            Settings.getInstance().current
-        ).onFinishInput() // TODO: Either call onStartInput to correspond, or make a different method to cleanup before activating!
-
-        // TODO: The IME should have a chance to consume the action (e.g. left/right arrows for Japanese preedit)
-
+    private fun onActionAltActivatedInternal(rawAction: Action) {
         val action = runBlocking {
             ActionRegistry.getActionOverride(latinIME, rawAction)
         }
 
         action.altPressImpl?.invoke(keyboardManagerForAction, persistentStates[action])
+    }
+
+    fun onActionActivated(rawAction: Action) {
+        val event = Event.createSoftwareKeypressEvent(Constants.NOT_A_CODE, rawAction.keyCode, 0, 0, false)
+        latinIME.imeManager.getActiveIME(
+            Settings.getInstance().current
+        ).onEvent(event)
+    }
+
+    fun onActionAltActivated(rawAction: Action) {
+        val event = Event.createSoftwareKeypressEvent(Constants.NOT_A_CODE, rawAction.keyCodeAlt, 0, 0, false)
+        latinIME.imeManager.getActiveIME(
+            Settings.getInstance().current
+        ).onEvent(event)
     }
 
     @Composable
@@ -1354,17 +1359,17 @@ class UixManager(private val latinIME: LatinIME) {
         return true
     }
 
-    fun triggerAction(id: Int, alt: Boolean) {
+    fun triggerActionInternalFromIme(id: Int, alt: Boolean) {
         val action = AllActions.getOrNull(id) ?: throw IllegalArgumentException("No such action with ID $id")
 
         if(alt) {
-            onActionAltActivated(action)
+            onActionAltActivatedInternal(action)
         } else {
             if (currWindowAction.value != null && action.windowImpl != null) {
                 closeActionWindow()
             }
 
-            onActionActivated(action)
+            onActionActivatedInternal(action)
         }
     }
 

@@ -516,6 +516,10 @@ public class LanguageModelFacilitator(
         languageModel = null
     }
 
+    public fun close() {
+        userDictionary.unregister()
+    }
+
     private var trainingEnabled = false
 
     public fun launchProcessor() = lifecycleScope.launch {

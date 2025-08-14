@@ -61,7 +61,7 @@ class IMEHelper(
     }
 
     public fun triggerAction(actionId: Int, alt: Boolean) {
-        latinIME.uixManager.triggerAction(actionId, alt)
+        latinIME.uixManager.triggerActionInternalFromIme(actionId, alt)
     }
 
     override fun getCurrentInputConnection(): InputConnection? {

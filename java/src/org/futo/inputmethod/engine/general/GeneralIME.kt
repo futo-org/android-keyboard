@@ -196,6 +196,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
         runBlocking {
             languageModelFacilitator.destroyModel()
+            languageModelFacilitator.close()
         }
     }
 
@@ -481,7 +482,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         return false // GeneralIME does nothing
     }
 
-    override fun onMovePointer(steps: Int, select: Boolean?) {
+    override fun onMovePointer(steps: Int, stepOverWords: Boolean, select: Boolean?) {
         setNeutralSuggestionStrip()
 
         val shiftMode: Int = helper.keyboardShiftMode
@@ -493,9 +494,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
 
         if (steps < 0) {
-            inputLogic.cursorLeft(steps, false, select)
+            inputLogic.cursorLeft(steps, stepOverWords, select)
         } else {
-            inputLogic.cursorRight(steps, false, select)
+            inputLogic.cursorRight(steps, stepOverWords, select)
         }
     }
 

@@ -833,7 +833,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         return false
     }
 
-    override fun onMovePointer(steps: Int, select: Boolean?) {
+    override fun onMovePointer(steps: Int, stepOverWords: Boolean, select: Boolean?) {
 
     }
 

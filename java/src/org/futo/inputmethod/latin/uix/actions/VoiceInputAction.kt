@@ -103,6 +103,7 @@ class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : Persist
 
     override fun close() {
         runBlocking { modelManager.cleanUp() }
+        userDictionaryObserver.unregister()
     }
 }
 
