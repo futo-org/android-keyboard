@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -235,38 +237,35 @@ fun SettingItem(
                             onClick()
                         }
                     })
+                } else if(onSubmenuNavigate != null) {
+                    it.clickable(enabled = !disabled, onClick = {
+                        if (!disabled) {
+                            onSubmenuNavigate()
+                        }
+                    })
                 } else {
                     it
                 }
             }
-            .padding(4.dp),
+            .height(intrinsicSize = IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(Modifier.weight(1.0f).let {
-            if(onSubmenuNavigate != null) {
-                it.clickable(enabled = !disabled, onClick = {
-                    if(!disabled) {
-                        onSubmenuNavigate()
-                    }
-                })
-            } else {
-                it
-            }
-        }) {
-            Spacer(modifier = Modifier.width(16.dp))
+        Row(Modifier.weight(1.0f).fillMaxHeight().padding(0.dp, 4.dp)) {
+            Spacer(Modifier.width(4.dp))
+            Spacer(Modifier.width(16.dp))
             Column(
                 modifier = Modifier
                     .width(48.dp)
                     .align(Alignment.CenterVertically)
             ) {
-                Box(modifier = Modifier.align(Alignment.CenterHorizontally).clearAndSetSemantics {}) {
+                Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                     if (icon != null) {
                         icon()
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(Modifier.width(12.dp))
 
             Row(
                 modifier = Modifier
@@ -299,18 +298,19 @@ fun SettingItem(
                     }
                 }
             }
+            if(onSubmenuNavigate != null) { Spacer(Modifier.width(8.dp)) }
         }
 
         if(onSubmenuNavigate != null) {
             VerticalDivider(
-                Modifier.height(64.dp).padding(8.dp).align(Alignment.CenterVertically),
+                Modifier.height(64.dp),
                 color = MaterialTheme.colorScheme.outline
             )
         } else {
             Spacer(Modifier.width(4.dp))
         }
 
-        Row(Modifier.align(Alignment.CenterVertically).let {
+        Row(Modifier.let {
             if(onSubmenuNavigate != null && onClick != null) {
                 it.clickable(enabled = !disabled, onClick = {
                     if(!disabled) {
@@ -320,12 +320,14 @@ fun SettingItem(
             } else {
                 it
             }
-        }) {
+        }.fillMaxHeight()) {
+            if(onSubmenuNavigate != null) { Spacer(Modifier.width(8.dp)) }
             Box(modifier = Modifier.align(Alignment.CenterVertically), contentAlignment = Alignment.Center) {
                 content()
             }
 
             Spacer(modifier = Modifier.width(12.dp))
+            Spacer(Modifier.width(4.dp))
         }
     }
 }
@@ -352,7 +354,7 @@ fun SettingToggleRaw(
         modifier = Modifier.let {
             if(onSubmenuNavigate == null) {
                 it.clearAndSetSemantics {
-                    this.text = AnnotatedString("$title. $subtitle")
+                    this.text = AnnotatedString("$title. ${subtitle ?: ""}")
                     this.role = Role.Switch
                     this.toggleableState = ToggleableState(enabled)
                 }
@@ -445,6 +447,10 @@ fun<T> SettingRadio(
         options.zip(optionNames).forEachIndexed { i, it ->
             SettingItem(title = it.second, onClick = { setting.setValue(it.first) }, icon = {
                 RadioButton(selected = setting.value == it.first, onClick = null)
+            }, modifier = Modifier.clearAndSetSemantics {
+                this.text = AnnotatedString(it.second)
+                this.role = Role.RadioButton
+                this.selected = setting.value == it.first
             }) {
                 hints?.getOrNull(i)?.let { it() }
             }

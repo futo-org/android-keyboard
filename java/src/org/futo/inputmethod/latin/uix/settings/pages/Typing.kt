@@ -748,7 +748,8 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             subtitle = R.string.keyboard_settings_show_number_row_subtitle,
             key = Settings.PREF_ENABLE_NUMBER_ROW,
             default = {false},
-            icon = { Text("123", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)) },
+            icon = { Text("123", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f),
+                modifier = Modifier.clearAndSetSemantics{}) },
             submenu = NumberRowSettingMenu.navPath
         ),
         userSettingToggleSharedPrefs(
