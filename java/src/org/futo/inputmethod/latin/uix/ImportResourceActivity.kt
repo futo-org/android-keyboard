@@ -383,7 +383,7 @@ object ResourceHelper {
         "en" to BUILTIN_ENGLISH_MODEL
     )
 
-    suspend fun findKeyForLocaleAndKind(context: Context, locale: Locale, kind: FileKind): String? {
+    fun findKeyForLocaleAndKind(context: Context, locale: Locale, kind: FileKind): String? {
         val keysToTry = listOf(
             locale.toString(),
             locale.language,

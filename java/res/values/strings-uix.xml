@@ -180,6 +180,8 @@
     <string name="keyboard_switch_keyboard">Switch Keyboard</string>
     <string name="keyboard_language_settings">Settings</string>
     <string name="keyboard_actionbar_manual_update_check_notice">Please tap to check for updates, or check in settings</string>
+    <!-- Should be fairly short (under 40 chars). Means there are no predictions for this language and a download is necessary by tapping on this notice. Appears in suggestion bar -->
+    <string name="keyboard_actionbar_no_dictionary_installed_notice">No dictionary installed, tap to download?</string>
 
     <!-- Talkback descriptions (screen readers) -->
     <!-- Expands the action bar above the keyboard -->

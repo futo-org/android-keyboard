@@ -185,7 +185,7 @@ val OldStyleActionsBar = SettingsKey(
 
 interface ImportantNotice {
     @Composable fun getText(): String
-    fun onDismiss(context: Context)
+    fun onDismiss(context: Context, auto: Boolean = false)
     fun onOpen(context: Context)
 }
 
@@ -1609,7 +1609,7 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
                     return "Update available: v1.2.3"
                 }
 
-                override fun onDismiss(context: Context) { }
+                override fun onDismiss(context: Context, auto: Boolean) { }
                 override fun onOpen(context: Context) { }
             }
         )
