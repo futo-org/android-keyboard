@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix.settings
 
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -89,7 +90,9 @@ fun SettingsNavigator(
         NavHost(
             navController = navController,
             startDestination = "home",
+            enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None }
         ) {
             composable("home") { HomeScreen(navController) }
