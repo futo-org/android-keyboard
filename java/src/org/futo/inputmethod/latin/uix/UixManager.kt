@@ -91,6 +91,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.core.view.inputmethod.InputContentInfoCompat
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
@@ -101,6 +102,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
+import org.futo.inputmethod.latin.BinaryDictionaryGetter
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.FoldingOptions
 import org.futo.inputmethod.latin.InputConnectionPatched
@@ -108,6 +110,7 @@ import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.RichInputMethodManager
+import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
@@ -135,6 +138,7 @@ import org.futo.inputmethod.updates.autoDeferManualUpdateIfNeeded
 import org.futo.inputmethod.updates.deferManualUpdate
 import org.futo.inputmethod.updates.isManualUpdateTimeExpired
 import org.futo.inputmethod.updates.openManualUpdateCheck
+import org.futo.inputmethod.updates.openURI
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
 import org.futo.inputmethod.v2keyboard.FloatingKeyboardSize
@@ -1269,7 +1273,7 @@ class UixManager(private val latinIME: LatinIME) {
                         return stringResource(R.string.keyboard_actionbar_manual_update_check_notice)
                     }
 
-                    override fun onDismiss(context: Context) {
+                    override fun onDismiss(context: Context, auto: Boolean) {
                         currentNotice.value = null
 
                         runBlocking {
@@ -1319,9 +1323,9 @@ class UixManager(private val latinIME: LatinIME) {
     fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean) {
         this.suggestedWords.value = suggestedWords
 
-        if(currentNotice.value != null) {
-            if(numSuggestionsSinceNotice > 1) {
-                currentNotice.value?.onDismiss(latinIME)
+        if(currentNotice.value != null && suggestedWords?.isEmpty != true) {
+            if(numSuggestionsSinceNotice > 0) {
+                currentNotice.value?.onDismiss(latinIME, true)
             }
             numSuggestionsSinceNotice += 1
         }
@@ -1332,7 +1336,9 @@ class UixManager(private val latinIME: LatinIME) {
         if(latinIME.getSetting(ActionBarDisplayedSetting) == false) return false
         if(latinIME.getSetting(InlineAutofillSetting) == false) return false
 
-        currentNotice.value?.onDismiss(latinIME)
+        if(response.inlineSuggestions.isNotEmpty() == true){
+            currentNotice.value?.onDismiss(latinIME, true)
+        }
 
         inlineSuggestions.value = response.inlineSuggestions.map {
             latinIME.inflateInlineSuggestion(it)
@@ -1453,6 +1459,7 @@ class UixManager(private val latinIME: LatinIME) {
     private val quickClipState: MutableState<QuickClipState?> = mutableStateOf(null)
     fun dismissQuickClips() { quickClipState.value = null }
     fun inputStarted(editorInfo: EditorInfo?) {
+        checkIfDictInstalled()
         inlineStuffHiddenByTyping.value = false
         this.editorInfo = editorInfo
 
@@ -1495,6 +1502,7 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         PersistentEmojiState.loadTranslationsForLanguage(latinIME, locale)
+        checkIfDictInstalled()
         return result
     }
 
@@ -1508,5 +1516,123 @@ class UixManager(private val latinIME: LatinIME) {
             it.close()
         }
         persistentStates.clear()
+    }
+
+    private fun checkIfDictInstalled() {
+        val locale = Subtypes.getLocale(Subtypes.getActiveSubtype(latinIME))
+        val hasImportedDict = ResourceHelper.findKeyForLocaleAndKind(
+            latinIME,
+            locale,
+            FileKind.Dictionary
+        ) != null
+        val hasBuiltInDict = BinaryDictionaryGetter.getDictionaryFiles(locale, latinIME, false, false).isNotEmpty()
+
+        val langsWithDownloadableDictionaries = setOf(
+            "ar",
+            "hy",
+            "as",
+            "bn",
+            "eu",
+            "be",
+            "bg",
+            "ca",
+            "hr",
+            "cs",
+            "da",
+            "nl",
+            "en",
+            "eo",
+            "fi",
+            "fr",
+            "gl",
+            "ka",
+            "de",
+            "gom",
+            "el",
+            "gu",
+            "he",
+            "iw",
+            "hi",
+            "hu",
+            "it",
+            "kn",
+            "ks",
+            "lv",
+            "lt",
+            "lb",
+            "mai",
+            "ml",
+            "mr",
+            "nb",
+            "or",
+            "pl",
+            "pt",
+            "pa",
+            "ro",
+            "ru",
+            "sa",
+            "sat",
+            "sr",
+            "sd",
+            "sl",
+            "es",
+            "sv",
+            "ta",
+            "te",
+            "tok",
+            "tcy",
+            "tr",
+            "uk",
+            "ur",
+            "af",
+            "ar",
+            "bn",
+            "bg",
+            "cs",
+            "fr",
+            "de",
+            "he",
+            "id",
+            "it",
+            "kab",
+            "kk",
+            "pms",
+            "ru",
+            "sk",
+            "es",
+            "uk",
+            "vi",
+        )
+
+        val dismissalSetting = SettingsKey(
+            intPreferencesKey("dictionary_notice_dismiss_${locale.language}"),
+            0
+        )
+
+        if(
+            !hasImportedDict &&
+            !hasBuiltInDict &&
+            langsWithDownloadableDictionaries.contains(locale.language) &&
+            latinIME.getSetting(dismissalSetting) < 15
+        ) {
+            numSuggestionsSinceNotice = 0
+            currentNotice.value = object : ImportantNotice {
+                @Composable
+                override fun getText(): String {
+                    return latinIME.getString(R.string.keyboard_actionbar_no_dictionary_installed_notice)
+                }
+
+                override fun onDismiss(context: Context, auto: Boolean) {
+                    currentNotice.value = null
+                    context.setSettingBlocking(dismissalSetting.key,
+                        context.getSetting(dismissalSetting) + if(auto) 1 else 5)
+                }
+
+                override fun onOpen(context: Context) {
+                    currentNotice.value = null
+                    context.openURI(FileKind.Dictionary.getAddonUrlForLocale(locale), true)
+                }
+            }
+        }
     }
 }
