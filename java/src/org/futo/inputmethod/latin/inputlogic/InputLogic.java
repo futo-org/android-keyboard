@@ -151,6 +151,7 @@ public final class InputLogic {
     public void startInput(final String combiningSpec, final SettingsValues settingsValues) {
         mEnteredText = null;
         mWordBeingCorrectedByCursor = null;
+        mConnection.finishComposingText(); // On screen rotation in case we were composing, finish composition before resetting
         mConnection.onStartInput();
         if (!mWordComposer.getTypedWord().isEmpty()) {
             // For messaging apps that offer send button, the IME does not get the opportunity
@@ -168,7 +169,7 @@ public final class InputLogic {
         mSuggestedWords = SuggestedWords.getEmptyInstance();
 
         final EditorInfo ei = getCurrentInputEditorInfo();
-        if(ei != null && mConnection.resetCachesUponCursorMoveAndReturnSuccess(
+        if(ei != null && !mConnection.resetCachesUponCursorMoveAndReturnSuccess(
             ei.initialSelStart, ei.initialSelEnd, false)) {
             // Sometimes, while rotating, for some reason the framework tells the app we are not
             // connected to it and that means we can't refresh the cache. In this case, schedule
@@ -179,7 +180,7 @@ public final class InputLogic {
             // TODO: needToCallLoadKeyboardLater
         } else {
             mConnection.tryFixLyingCursorPosition();
-            // TODO: postResumeSuggestionsForStartInput
+            //postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
         }
 
         // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
@@ -196,6 +197,12 @@ public final class InputLogic {
             mConnection.requestCursorUpdates(true /* enableMonitor */,
                     true /* requestImmediateCallback */);
         }
+
+        restartSuggestionsOnWordTouchedByCursor(
+                settingsValues,
+                true,
+                mImeHelper.getCurrentKeyboardScriptId()
+        );
     }
 
     /**
@@ -704,7 +711,7 @@ public final class InputLogic {
             inputTransaction.setDidAffectContents();
         }
         if (mWordComposer.isComposingWord()) {
-            setComposingTextInternal(mWordComposer.getTypedWord(), 1);
+            setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             inputTransaction.setDidAffectContents();
             inputTransaction.setRequiresUpdateSuggestions();
         }
@@ -892,11 +899,9 @@ public final class InputLogic {
                     // We also need to unlearn the original word that is now being corrected.
                     unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
                             Constants.EVENT_BACKSPACE);
-                    resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                            mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
-                } else {
-                    commitTyped(inputTransaction.mSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
+                    resetComposingWord(inputTransaction.mSettingsValues, false);
                 }
+                commitTyped(inputTransaction.mSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
             }
             handleNonSeparatorEvent(event, inputTransaction.mSettingsValues, inputTransaction);
         }
@@ -934,9 +939,7 @@ public final class InputLogic {
             // We also need to unlearn the original word that is now being corrected.
             unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
                     Constants.EVENT_BACKSPACE);
-            resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
-            isComposingWord = false;
+            resetComposingWord(settingsValues, false);
         }
         // We want to find out whether to start composing a new word with this character. If so,
         // we need to reset the composing state and switch isComposingWord. The order of the
@@ -1020,8 +1023,7 @@ public final class InputLogic {
             // We also need to unlearn the original word that is now being corrected.
             unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
                     Constants.EVENT_BACKSPACE);
-            resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
+            resetComposingWord(settingsValues, false);
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
@@ -1202,13 +1204,11 @@ public final class InputLogic {
             // We also need to unlearn the original word that is now being corrected.
             unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
                     Constants.EVENT_BACKSPACE);
-            resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
-            // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
+            resetComposingWord(inputTransaction.mSettingsValues, false);
         }
 
         final boolean deleteWholeWords = event.isKeyRepeat()
-                && Settings.getInstance().getCurrent().mBackspaceMode == Settings.BACKSPACE_MODE_WORDS;
+                && inputTransaction.mSettingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS;
 
         if (mWordComposer.isComposingWord()) {
             if (mWordComposer.isBatchMode()) {
@@ -1867,6 +1867,89 @@ public final class InputLogic {
         }
     }
 
+    public boolean resetComposingWord(
+            final SettingsValues settingsValues,
+            final boolean useAfter
+    ) {
+        resetEntireInputState(mConnection.getExpectedSelectionStart(),
+                mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
+        //mSpaceState = SpaceState.NONE;
+        if (settingsValues.isBrokenByRecorrection()
+                // Recorrection is not supported in languages without spaces because we don't know
+                // how to segment them yet.
+                || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                // If we are currently in a batch input, we must not resume suggestions, or the result
+                // of the batch input will replace the new composition. This may happen in the corner case
+                // that the app moves the cursor on its own accord during a batch input.
+                || mInputLogicHandler.isInBatchInput()
+                // If the cursor is not touching a word, or if there is a selection, return right away.
+                || mConnection.hasSelection()
+                // If we don't know the cursor location, return.
+                || mConnection.getExpectedSelectionStart() < 0) {
+            //mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            return false;
+        }
+        final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
+        if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
+                InputLogic.COMPOSITION_TEXT_AFTER /* checkTextAfter */)) {
+            resetEntireInputState(
+                    mConnection.getExpectedSelectionStart(),
+                    mConnection.getExpectedSelectionEnd(),
+                    true
+            );
+
+            return false;
+
+            //Log.d(TAG, "ComposingText1 [" + mConnection.getComposingTextForDebug() + "] , TypedWord [" + mWordComposer.getTypedWord() + "]");
+
+            // Show predictions.
+            //mWordComposer.setCapitalizedModeAtStartComposingTime(WordComposer.CAPS_MODE_OFF);
+            //postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
+            //return;
+        }
+
+        final int currentKeyboardScriptId = mImeHelper.getCurrentKeyboardScriptId();
+
+        final TextRange range = mConnection.getWordRangeAtCursor(
+                settingsValues.mSpacingAndPunctuations, currentKeyboardScriptId, useAfter);
+
+        if (null == range) {
+            return false; // Happens if we don't have an input connection at all
+        }
+
+        if (range.length() <= 0) {
+            // Race condition, or touching a word in a non-supported script.
+            //mIme.setNeutralSuggestionStrip();
+            return false;
+        }
+        // If for some strange reason (editor bug or so) we measure the text before the cursor as
+        // longer than what the entire text is supposed to be, the safe thing to do is bail out.
+        if (range.mHasUrlSpans) {
+            return false; // If there are links, we don't resume suggestions. Making
+        }
+        // edits to a linkified text through batch commands would ruin the URL spans, and unless
+        // we take very complicated steps to preserve the whole link, we can't do things right so
+        // we just do not resume because it's safer.
+        final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
+        if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) {
+            return false;
+        }
+
+        final String typedWordString = range.mWord.toString();
+
+        final int[] codePoints = StringUtils.toCodePointArray(typedWordString);
+        mWordComposer.setComposingWord(codePoints,
+                mImeHelper.getCodepointCoordinates(codePoints));
+        mWordComposer.setCursorPositionWithinWord(
+                typedWordString.codePointCount(0, numberOfCharsInWordBeforeCursor));
+        //if (forStartInput) {
+        //    mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
+        //}
+        mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
+                expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
+        return true;
+    }
+
     /**
      * Check if the cursor is touching a word. If so, restart suggestions on this word, else
      * do nothing.
@@ -1901,111 +1984,14 @@ public final class InputLogic {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
-        final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
-        if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
-                    InputLogic.COMPOSITION_TEXT_AFTER /* checkTextAfter */)) {
 
-            //Log.d(TAG, "Reset input state");
-            resetEntireInputState(
-                    mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(),
-                    true
-            );
-            //Log.d(TAG, "ComposingText1 [" + mConnection.getComposingTextForDebug() + "] , TypedWord [" + mWordComposer.getTypedWord() + "]");
-
-            // Show predictions.
-            mWordComposer.setCapitalizedModeAtStartComposingTime(WordComposer.CAPS_MODE_OFF);
-            postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
-            return;
-        }
-        final TextRange range = mConnection.getWordRangeAtCursor(
-                settingsValues.mSpacingAndPunctuations, currentKeyboardScriptId, InputLogic.COMPOSITION_TEXT_AFTER);
-
-        if (null == range) {
-            return; // Happens if we don't have an input connection at all
-        }
-
-        if (range.length() <= 0) {
-            // Race condition, or touching a word in a non-supported script.
-            mIme.setNeutralSuggestionStrip();
-            return;
-        }
-        // If for some strange reason (editor bug or so) we measure the text before the cursor as
-        // longer than what the entire text is supposed to be, the safe thing to do is bail out.
-        if (range.mHasUrlSpans) {
-            return; // If there are links, we don't resume suggestions. Making
-        }
-        // edits to a linkified text through batch commands would ruin the URL spans, and unless
-        // we take very complicated steps to preserve the whole link, we can't do things right so
-        // we just do not resume because it's safer.
-        final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
-        if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) {
-            return;
-        }
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
-        final String typedWordString = range.mWord.toString();
-        final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
-                "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS + 1,
-                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
-                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
-        suggestions.add(typedWordInfo);
-        if (!isResumableWord(settingsValues, typedWordString)) {
-            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-            return;
-        }
-
-        // TODO: I don't think we're using resumable suggestion spans at the moment, it seems to only
-        //  lead to strangeness from other keyboards suggestion spans (e.g. Samsung Keyboard's grammar
-        //  suggestions leads to this showing a huge json string as a suggestion)
-        int i = 0;
-        for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
-            for (final String s : span.getSuggestions()) {
-                ++i;
-                if (!TextUtils.equals(s, typedWordString)
-                    // Sanity check against the Samsung grammar suggestion case
-                    && !s.contains("{")
-                ) {
-                    suggestions.add(new SuggestedWordInfo(s,
-                            "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS - i,
-                            SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
-                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                            SuggestedWordInfo.NOT_A_CONFIDENCE
-                                    /* autoCommitFirstWordConfidence */));
-                }
-            }
-        }
-        final int[] codePoints = StringUtils.toCodePointArray(typedWordString);
-        mWordComposer.setComposingWord(codePoints,
-                mImeHelper.getCodepointCoordinates(codePoints));
-        mWordComposer.setCursorPositionWithinWord(
-        typedWordString.codePointCount(0, numberOfCharsInWordBeforeCursor));
-        if (forStartInput) {
-            mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
-        }
-        mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
-                expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
-        if (suggestions.size() <= 1) {
-            // If there weren't any suggestion spans on this word, suggestions#size() will be 1
-            // if shouldIncludeResumedWordInSuggestions is true, 0 otherwise. In this case, we
-            // have no useful suggestions, so we will try to compute some for it instead.
-            mInputLogicHandler.getSuggestedWords(SuggestedWords.INPUT_STYLE_TYPING,
-                    SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
-                        @Override
-                        public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                            doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
-                        }});
-        } else {
-            // We found suggestion spans in the word. We'll create the SuggestedWords out of
-            // them, and make willAutoCorrect false. We make typedWordValid false, because the
-            // color of the word in the suggestion strip changes according to this parameter,
-            // and false gives the correct color.
-            final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
-                    null /* rawSuggestions */, typedWordInfo, false /* typedWordValid */,
-                    false /* willAutoCorrect */, false /* isObsoleteSuggestions */,
-                    SuggestedWords.INPUT_STYLE_RECORRECTION, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
-            doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
-        }
+        resetComposingWord(settingsValues, true);
+        mInputLogicHandler.getSuggestedWords(SuggestedWords.INPUT_STYLE_TYPING,
+            SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
+                @Override
+                public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                    doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
+                }});
     }
 
     void doShowSuggestionsAndClearAutoCorrectionIndicator(final SuggestedWords suggestedWords) {
@@ -2110,7 +2096,7 @@ public final class InputLogic {
             final int[] codePoints = StringUtils.toCodePointArray(stringToCommit);
             mWordComposer.setComposingWord(codePoints,
                     mImeHelper.getCodepointCoordinates(codePoints));
-            setComposingTextInternal(textToCommit, 1);
+            setComposingTextInternal(getTextWithUnderline(textToCommit.toString()), 1);
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -2705,8 +2691,10 @@ public final class InputLogic {
      */
     private void setComposingTextInternal(final CharSequence newComposingText,
             final int newCursorPosition) {
-        setComposingTextInternalWithBackgroundColor(newComposingText, newCursorPosition,
-                Color.TRANSPARENT, newComposingText.length());
+        mConnection.setComposingText(newComposingText, newCursorPosition);
+        // TODO: Not using background color, remove the below method?
+        //setComposingTextInternalWithBackgroundColor(newComposingText, newCursorPosition,
+        //        Color.TRANSPARENT, newComposingText.length());
     }
 
     /**

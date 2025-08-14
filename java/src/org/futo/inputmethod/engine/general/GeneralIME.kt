@@ -206,7 +206,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         layout: String
     ) {
         resetDictionaryFacilitator(force = false)
-
+        setNeutralSuggestionStrip()
         dictionaryFacilitator.onStartInput()
         languageModelFacilitator.onStartInput()
         inputLogic.startInput(
@@ -370,7 +370,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         val sequenceNumber = SuggestedWords.NOT_A_SEQUENCE_NUMBER
         inputLogic.getSuggestedWords(
             settings.current,
-            helper.keyboardSwitcher.keyboard,
+            helper.keyboardSwitcher.keyboard ?: return,
             helper.keyboardShiftMode,
             inputStyle,
             sequenceNumber
@@ -565,6 +565,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     Constants.NOT_A_COORDINATE,
                     false
                 )
+            )
+
+            inputLogic.resetComposingWord(
+                Settings.getInstance().current,
+                false
             )
         } else {
             onUpWithPointerActive()

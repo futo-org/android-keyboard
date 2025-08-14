@@ -548,7 +548,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
         // TODO mHandler.cancelUpdateSuggestionStrip();
         // Should do the following in onFinishInputInternal but until JB MR2 it's not called :(
         //mInputLogic.finishInput();
-        mImeManager.onFinishInput();
+        // TODO: I think we are way past JB MR2 so we can stop calling this here now.
+        //  (it breaks inInput on screen rotation)
+        //mImeManager.onFinishInput();
     }
 
     protected void deallocateMemory() {
