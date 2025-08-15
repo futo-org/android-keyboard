@@ -582,6 +582,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         super.onFinishInputView(finishingInput)
         latinIMELegacy.onFinishInputView(finishingInput)
         uixManager.onInputFinishing()
+        imeManager.onFinishInput()
     }
 
     override fun onFinishInput() {

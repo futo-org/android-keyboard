@@ -628,6 +628,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         "composingText = ${inputLogic.mConnection.composingTextForDebug}",
         "committedTextBeforeComposingText = ${inputLogic.mConnection.committedTextBeforeComposingTextForDebug}",
         "LM.shouldPassThroughToLegacy = ${languageModelFacilitator.shouldPassThroughToLegacy()}",
-        "LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}"
+        "LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}",
+        "expected cursor = ${inputLogic.mConnection.mExpectedSelStart}:${inputLogic.mConnection.mExpectedSelEnd}"
     )
+
+    fun debugInfoS() = debugInfo().joinToString("\n")
 }

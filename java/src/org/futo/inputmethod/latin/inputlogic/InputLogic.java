@@ -56,7 +56,6 @@ import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
-import org.futo.inputmethod.latin.uix.ActionInputTransaction;
 import org.futo.inputmethod.latin.utils.AsyncResultHolder;
 import org.futo.inputmethod.latin.utils.InputTypeUtils;
 import org.futo.inputmethod.latin.utils.RecapitalizeStatus;
@@ -140,6 +139,7 @@ public final class InputLogic {
         mIme = ime;
     }
 
+    private int numCursorUpdatesSinceInputStarted = 0;
     /**
      * Initializes the input logic for input in an editor.
      *
@@ -151,6 +151,7 @@ public final class InputLogic {
     public void startInput(final String combiningSpec, final SettingsValues settingsValues) {
         mEnteredText = null;
         mWordBeingCorrectedByCursor = null;
+        numCursorUpdatesSinceInputStarted = 0;
         mConnection.finishComposingText(); // On screen rotation in case we were composing, finish composition before resetting
         mConnection.onStartInput();
         if (!mWordComposer.getTypedWord().isEmpty()) {
@@ -175,12 +176,7 @@ public final class InputLogic {
             // connected to it and that means we can't refresh the cache. In this case, schedule
             // a refresh later.
             // We try resetting the caches up to 5 times before giving up.
-
-            // TODO: postResetCaches 5
-            // TODO: needToCallLoadKeyboardLater
-        } else {
-            mConnection.tryFixLyingCursorPosition();
-            //postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
+            // TODO: Not sure this is necessary anymore
         }
 
         // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
@@ -405,10 +401,18 @@ public final class InputLogic {
      * @return whether the cursor has moved as a result of user interaction.
      */
     public boolean onUpdateSelection(final int oldSelStart, final int oldSelEnd,
-            final int newSelStart, final int newSelEnd,
+            int newSelStart, int newSelEnd,
             final int composingStart, final int composingEnd,
             final SettingsValues settingsValues) {
-        if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
+        numCursorUpdatesSinceInputStarted++;
+        if(numCursorUpdatesSinceInputStarted <= 1) {
+            if(mConnection.tryFixLyingCursorPosition()) {
+                newSelStart = mConnection.mExpectedSelStart;
+                newSelEnd = mConnection.mExpectedSelEnd;
+            }
+        }
+
+        if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd, composingStart, composingEnd)) {
             return false;
         }
         // TODO: the following is probably better done in resetEntireInputState().
@@ -1302,6 +1306,8 @@ public final class InputLogic {
 
             boolean hasUnlearnedWordBeingDeleted = false;
 
+            boolean nowHasWordCharacter = false;
+
             // No cancelling of commit/double space/swap: we have a regular backspace.
             // We should backspace one char and restart suggestion if at the end of a word.
             if (mConnection.hasSelection()) {
@@ -1363,6 +1369,10 @@ public final class InputLogic {
                         return;
                     }
 
+                    if (!inputTransaction.mSettingsValues.mSpacingAndPunctuations.isWordCodePoint(codePointBeforeCursor)) {
+                        nowHasWordCharacter = true;
+                    }
+
                     String textDeleted = new String(Character.toChars(codePointBeforeCursor));
                     int lengthToDelete =
                             Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
@@ -1391,7 +1401,6 @@ public final class InputLogic {
                         }
                     }
 
-                    Log.d(TAG, "lengthToDelete=" + lengthToDelete + ", textDeleted=" + textDeleted);
                     mConnection.deleteTextBeforeCursor(lengthToDelete);
                     int totalDeletedLength = lengthToDelete;
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
@@ -1420,13 +1429,20 @@ public final class InputLogic {
                 unlearnWordBeingDeleted(
                         inputTransaction.mSettingsValues, currentKeyboardScriptId);
             }
+
+            nowHasWordCharacter = nowHasWordCharacter && mConnection.isCursorPrecededByWordCharacter(
+                    inputTransaction.mSettingsValues.mSpacingAndPunctuations);
+
             if (mConnection.hasSlowInputConnection()) {
                 mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             } else if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
                     && inputTransaction.mSettingsValues.mSpacingAndPunctuations
                             .mCurrentLanguageHasSpaces
-                    && !mConnection.isCursorFollowedByWordCharacter(
-                            inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
+                    && (
+                            !mConnection.isCursorFollowedByWordCharacter(inputTransaction.mSettingsValues.mSpacingAndPunctuations)
+                                    || nowHasWordCharacter
+                    )
+            ) {
                 restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
                         false /* forStartInput */, currentKeyboardScriptId);
             }

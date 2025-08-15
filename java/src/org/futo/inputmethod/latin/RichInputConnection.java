@@ -854,6 +854,20 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return true;
     }
 
+    public boolean isCursorPrecededByWordCharacter(
+            final SpacingAndPunctuations spacingAndPunctuations) {
+        final CharSequence before = getTextBeforeCursor(1, 0);
+        if (TextUtils.isEmpty(before)) {
+            return false;
+        }
+        final int codePointBeforeCursor = Character.codePointAt(before, 0);
+        if (spacingAndPunctuations.isWordSeparator(codePointBeforeCursor)
+                || spacingAndPunctuations.isWordConnector(codePointBeforeCursor)) {
+            return false;
+        }
+        return true;
+    }
+
     public void removeTrailingSpace() {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         final int codePointBeforeCursor = getCodePointBeforeCursor();
@@ -964,7 +978,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * @return whether this is a belated expected update or not.
      */
     public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart,
-            final int oldSelEnd, final int newSelEnd) {
+            final int oldSelEnd, final int newSelEnd,
+            final int composingStart, final int composingEnd) {
         // This update is "belated" if we are expecting it. That is, mExpectedSelStart and
         // mExpectedSelEnd match the new values that the TextView is updating TO.
         if (mExpectedSelStart == newSelStart && mExpectedSelEnd == newSelEnd) return true;
@@ -1070,7 +1085,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * detect the most damaging cases: when the cursor position is declared to be much smaller
      * than it really is.
      */
-    public void tryFixLyingCursorPosition() {
+    public boolean tryFixLyingCursorPosition() {
         mIC = mConnectionProvider.getCurrentInputConnection();
         final CharSequence textBeforeCursor = getTextBeforeCursor(
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
@@ -1089,6 +1104,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             // Interestingly, in either case, chances are any action the user takes next will result
             // in a call to onUpdateSelection, which should set things right.
             mExpectedSelStart = mExpectedSelEnd = Constants.NOT_A_CURSOR_POSITION;
+            return false;
         } else {
             final int textLength = textBeforeCursor.length();
             if (textLength < Constants.EDITOR_CONTENTS_CACHE_SIZE
@@ -1106,8 +1122,10 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 if (wasEqual || mExpectedSelStart > mExpectedSelEnd) {
                     mExpectedSelEnd = mExpectedSelStart;
                 }
+                return true;
             }
         }
+        return false;
     }
 
     @Override
