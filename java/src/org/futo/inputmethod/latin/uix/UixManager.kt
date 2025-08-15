@@ -1477,7 +1477,11 @@ class UixManager(private val latinIME: LatinIME) {
     private val quickClipState: MutableState<QuickClipState?> = mutableStateOf(null)
     fun dismissQuickClips() { quickClipState.value = null }
     fun inputStarted(editorInfo: EditorInfo?) {
-        checkIfDictInstalled()
+        try {
+            checkIfDictInstalled()
+        } catch(e: Exception) {
+            e.printStackTrace()
+        }
         inlineStuffHiddenByTyping.value = false
         this.editorInfo = editorInfo
 
@@ -1537,6 +1541,8 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     private fun checkIfDictInstalled() {
+        if(latinIME.isDeviceLocked) return
+
         val locale = Subtypes.getLocale(Subtypes.getActiveSubtype(latinIME))
         val hasImportedDict = ResourceHelper.findKeyForLocaleAndKind(
             latinIME,
