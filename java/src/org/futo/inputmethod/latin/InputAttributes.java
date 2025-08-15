@@ -137,7 +137,7 @@ public final class InputAttributes {
                 || InputTypeUtils.isEmailVariation(variation)
                 || InputType.TYPE_TEXT_VARIATION_URI == variation
                 || InputType.TYPE_TEXT_VARIATION_FILTER == variation
-                || (flagNoSuggestions && variation != InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT)
+                || (flagNoSuggestions && !flagAutoCorrect && variation != InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT)
                 || mIsCodeField;
 
         // TODO: Firefox-based browsers don't set it to WEB_EDIT_TEXT
