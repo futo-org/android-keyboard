@@ -7,6 +7,7 @@ import org.futo.inputmethod.latin.InputConnectionPatched
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
+import org.futo.inputmethod.latin.uix.ExperimentalICComposing
 import org.futo.inputmethod.latin.uix.ExperimentalICFix
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.utils.TextContext
@@ -14,7 +15,9 @@ import org.futo.inputmethod.v2keyboard.CombinerKind
 
 class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInputTransaction {
     val ic = if(helper.context.getSetting(ExperimentalICFix)) {
-        InputConnectionPatched(helper.getCurrentInputConnection())
+        InputConnectionPatched(
+            helper.context.getSetting(ExperimentalICComposing),
+            helper.getCurrentInputConnection())
     } else {
         helper.getCurrentInputConnection()
     }

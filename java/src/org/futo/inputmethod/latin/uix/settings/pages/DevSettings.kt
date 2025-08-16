@@ -20,6 +20,7 @@ import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.DebugOnly
+import org.futo.inputmethod.latin.uix.ExperimentalICComposing
 import org.futo.inputmethod.latin.uix.ExperimentalICFix
 import org.futo.inputmethod.latin.uix.HiddenKeysSetting
 import org.futo.inputmethod.latin.uix.OldStyleActionsBar
@@ -71,12 +72,6 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
         SettingToggleDataStore(title = "Developer mode", setting = IS_DEVELOPER)
 
         SettingToggleDataStore(title = "Disable all update reminders", setting = DISABLE_UPDATE_REMINDER)
-
-        SettingToggleDataStore(
-            title = "Voice input alternative composition",
-            subtitle = "Use InputConnection with alternative composition implementation",
-            setting = ExperimentalICFix
-        )
         
         SettingToggleDataStore(
             title = "Touch typing mode",
@@ -102,6 +97,19 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             title = "Custom layouts",
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("devlayouteditor") }
+        )
+
+        ScreenTitle("Input debugging")
+        SettingToggleDataStore(
+            title = "Voice input alternative composition",
+            subtitle = "Use InputConnection with alternative composition implementation",
+            setting = ExperimentalICFix
+        )
+
+        SettingToggleDataStore(
+            title = "setComposingRegion in voice input alternative composition",
+            subtitle = "Only has effect when used in combination with the above setting",
+            setting = ExperimentalICComposing
         )
 
         ScreenTitle(title = "Payment stuff")

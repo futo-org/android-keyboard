@@ -79,7 +79,7 @@ import android.view.inputmethod.TextAttribute
  */
 @Suppress("HardCodedStringLiteral")
 @SuppressLint("LogConditional")
-class InputConnectionPatched(target: InputConnection?) : InputConnectionWrapper(target, true) {
+class InputConnectionPatched(val useComposing: Boolean, target: InputConnection?) : InputConnectionWrapper(target, true) {
     var ic = target
 
     fun updateIc(to: InputConnection?) {
@@ -219,10 +219,10 @@ class InputConnectionPatched(target: InputConnection?) : InputConnectionWrapper(
 
     override fun setComposingText(text: CharSequence, newCursorPosition: Int): Boolean {
         if(newCursorPosition == 1) {
-            commitComposingTextInternal(text, true)
+            commitComposingTextInternal(text, useComposing)
         } else {
             // TODO("Unsupported")
-            commitComposingTextInternal(text, true)
+            commitComposingTextInternal(text, useComposing)
         }
         return true
     }
