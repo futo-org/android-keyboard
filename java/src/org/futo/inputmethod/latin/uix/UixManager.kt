@@ -258,6 +258,11 @@ val ExperimentalICFix = SettingsKey(
     false
 )
 
+val ExperimentalICComposing = SettingsKey(
+    booleanPreferencesKey("voice_input_experimental_ic_fix_composing"),
+    true
+)
+
 class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIME) : KeyboardManagerForAction {
     override fun getContext(): Context {
         return latinIME
@@ -272,7 +277,7 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
             latinIME.inputLogic,
             run {
                 if(latinIME.getSetting(ExperimentalICFix)) {
-                    InputConnectionPatched(latinIME.getBaseInputConnection()!!)
+                    InputConnectionPatched(latinIME.getSetting(ExperimentalICComposing), latinIME.getBaseInputConnection()!!)
                 } else {
                     latinIME.getBaseInputConnection()!!
                 }
