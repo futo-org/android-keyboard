@@ -269,9 +269,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()
 
     override fun onEvent(event: Event) {
-        Log.d(TAG, "Event: ${event.eventType}")
         val inputTransaction = when (event.eventType) {
-            Event.EVENT_TYPE_INPUT_KEYPRESS -> {
+            Event.EVENT_TYPE_INPUT_KEYPRESS,
+            Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
                 inputLogic.onCodeInput(
                     settings.current,
                     event,

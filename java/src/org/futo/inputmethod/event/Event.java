@@ -62,6 +62,9 @@ public class Event {
     final public static int EVENT_TYPE_CURSOR_MOVE = 7;
     // A KeyEvent
     final public static int EVENT_TYPE_DOWN_UP_KEYEVENT = 8;
+    // Keypress events that did not necessarily come from the user tapping a key on the keyboard.
+    // Used mainly within GeneralIME (e.g. passed to combiners when a word was reselected)
+    final public static int EVENT_TYPE_INPUT_KEYPRESS_RESUMED = 9;
 
     // 0 is a valid code point, so we use -1 here.
     final public static int NOT_A_CODE_POINT = -1;
@@ -182,7 +185,7 @@ public class Event {
     @Nonnull
     public static Event createEventForCodePointFromUnknownSource(final int codePoint) {
         // TODO: should we have a different type of event for this? After all, it's not a key press.
-        return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, NOT_A_KEY_CODE,
+        return new Event(EVENT_TYPE_INPUT_KEYPRESS_RESUMED, null /* text */, codePoint, NOT_A_KEY_CODE,
                 Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
                 null /* suggestedWordInfo */, FLAG_NONE, null /* next */);
     }
@@ -199,7 +202,7 @@ public class Event {
     public static Event createEventForCodePointFromAlreadyTypedText(final int codePoint,
             final int x, final int y) {
         // TODO: should we have a different type of event for this? After all, it's not a key press.
-        return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, NOT_A_KEY_CODE,
+        return new Event(EVENT_TYPE_INPUT_KEYPRESS_RESUMED, null /* text */, codePoint, NOT_A_KEY_CODE,
                 x, y, null /* suggestedWordInfo */, FLAG_NONE, null /* next */);
     }
 
@@ -321,6 +324,7 @@ public class Event {
         case EVENT_TYPE_CURSOR_MOVE:
             return "";
         case EVENT_TYPE_INPUT_KEYPRESS:
+        case EVENT_TYPE_INPUT_KEYPRESS_RESUMED:
             return StringUtils.newSingleCodePointString(mCodePoint);
         case EVENT_TYPE_GESTURE:
         case EVENT_TYPE_SOFTWARE_GENERATED_STRING:

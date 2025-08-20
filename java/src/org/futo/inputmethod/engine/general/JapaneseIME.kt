@@ -713,7 +713,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     }
 
     override fun onEvent(event: Event) = when (event.eventType) {
-        Event.EVENT_TYPE_INPUT_KEYPRESS -> {
+        Event.EVENT_TYPE_INPUT_KEYPRESS,
+        Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
             if(helper.keyboardSwitcher.keyboard?.mId != configId) updateConfig(false)
 
             val triggeringKeyEvent = if (event.mKeyCode != Event.NOT_A_KEY_CODE) {
