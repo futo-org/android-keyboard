@@ -722,7 +722,7 @@ public final class InputLogic {
             inputTransaction.setDidAffectContents();
         }
         if (mWordComposer.isComposingWord()) {
-            setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
+            setComposingTextInternal(mWordComposer.getTypedWordWithStyles(), 1);
             inputTransaction.setDidAffectContents();
             inputTransaction.setRequiresUpdateSuggestions();
         } else {

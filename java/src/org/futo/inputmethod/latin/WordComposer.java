@@ -321,6 +321,10 @@ public final class WordComposer {
         return mTypedWordCache.toString();
     }
 
+    public CharSequence getTypedWordWithStyles() {
+        return mTypedWordCache;
+    }
+
     /**
      * Whether this composer is composing or about to compose a word in which only the first letter
      * is a capital.
