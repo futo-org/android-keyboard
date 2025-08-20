@@ -502,6 +502,13 @@ public final class InputLogic {
             @Nonnull final Event event, final int keyboardShiftMode,
             final int currentKeyboardScriptId) {
         mWordBeingCorrectedByCursor = null;
+
+        if(mWordComposer.isComposingWord() && mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+            // TODO: Double check this isn't causing any new regressions. I believe this is also redundant
+            //  with a lot of subsequent similar checks scattered in various handleXyz functions
+            unlearnWord(mWordComposer.getTypedWord(), settingsValues, Constants.EVENT_BACKSPACE);
+            resetComposingWord(settingsValues, false);
+        }
         final Event processedEvent = mWordComposer.processEvent(event);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
                 processedEvent, SystemClock.uptimeMillis(), mSpaceState,
@@ -716,6 +723,10 @@ public final class InputLogic {
         }
         if (mWordComposer.isComposingWord()) {
             setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
+            inputTransaction.setDidAffectContents();
+            inputTransaction.setRequiresUpdateSuggestions();
+        } else {
+            setComposingTextInternal("", 1);
             inputTransaction.setDidAffectContents();
             inputTransaction.setRequiresUpdateSuggestions();
         }
@@ -1369,7 +1380,7 @@ public final class InputLogic {
                         return;
                     }
 
-                    if (!inputTransaction.mSettingsValues.mSpacingAndPunctuations.isWordCodePoint(codePointBeforeCursor)) {
+                    if (!inputTransaction.mSettingsValues.isWordCodePoint(codePointBeforeCursor)) {
                         nowHasWordCharacter = true;
                     }
 

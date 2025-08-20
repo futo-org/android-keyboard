@@ -240,17 +240,8 @@ class KoreanCombiner(private val combineInitials: Boolean = false): Combiner {
         if (!isHangulLetter(keypress)) {
             if (!TextUtils.isEmpty(buffer)) {
                 if (event.mKeyCode == Constants.CODE_DELETE) {
-                    return if (buffer.length == 1) {
-                        reset()
-                        Event.createHardwareKeypressEvent(0x20, Constants.CODE_SPACE,
-                            event, event.isKeyRepeat)
-                        // for some reason, this is needed, otherwise if there is only one letter
-                        // in the buffer it won't be deleted
-                    }
-                    else {
-                        buffer.setLength(buffer.length - 1)
-                        Event.createConsumedEvent(event)
-                    }
+                    buffer.setLength(buffer.length - 1)
+                    return Event.createConsumedEvent(event)
                 }
             }
             return event

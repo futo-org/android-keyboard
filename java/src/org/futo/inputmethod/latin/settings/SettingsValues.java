@@ -291,8 +291,11 @@ public class SettingsValues {
     }
 
     public boolean isWordCodePoint(final int code) {
+        int type = Character.getType(code);
         return Character.isLetter(code) || isWordConnector(code)
-                || Character.COMBINING_SPACING_MARK == Character.getType(code)
+                || Character.NON_SPACING_MARK == type
+                || Character.ENCLOSING_MARK == type
+                || Character.COMBINING_SPACING_MARK == type
                 // A digit can be a word codepoint because the user may have mistapped a number
                 // instead of a letter, in which case the digit should be considered part of a word.
                 || (Character.isDigit(code) && mIsNumberRowEnabled);

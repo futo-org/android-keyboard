@@ -37,6 +37,7 @@ import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.UnicodeSurrogate;
 import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.inputlogic.PrivateCommandPerformer;
+import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
 import org.futo.inputmethod.latin.utils.CapsModeUtils;
 import org.futo.inputmethod.latin.utils.DebugLogUtils;
@@ -741,6 +742,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             final SpacingAndPunctuations spacingAndPunctuations, final int scriptId) {
         // We always consider word connectors part of compositions.
         return spacingAndPunctuations.isWordConnector(codePoint)
+                || Settings.getInstance().getCurrent().isWordCodePoint(codePoint) // TODO: This wasn't originally here, why not?
                 // Otherwise, it's part of composition if it's part of script and not a separator.
                 || (!spacingAndPunctuations.isWordSeparator(codePoint)
                         && ScriptUtils.isLetterPartOfScript(codePoint, scriptId));

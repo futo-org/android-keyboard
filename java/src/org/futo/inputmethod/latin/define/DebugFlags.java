@@ -18,8 +18,10 @@ package org.futo.inputmethod.latin.define;
 
 import android.content.SharedPreferences;
 
+import org.futo.inputmethod.latin.BuildConfig;
+
 public final class DebugFlags {
-    public static final boolean DEBUG_ENABLED = false;
+    public static final boolean DEBUG_ENABLED = BuildConfig.DEBUG;
 
     private DebugFlags() {
         // This class is not publicly instantiable.
