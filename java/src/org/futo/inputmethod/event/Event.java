@@ -184,7 +184,6 @@ public class Event {
      */
     @Nonnull
     public static Event createEventForCodePointFromUnknownSource(final int codePoint) {
-        // TODO: should we have a different type of event for this? After all, it's not a key press.
         return new Event(EVENT_TYPE_INPUT_KEYPRESS_RESUMED, null /* text */, codePoint, NOT_A_KEY_CODE,
                 Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
                 null /* suggestedWordInfo */, FLAG_NONE, null /* next */);
@@ -201,7 +200,6 @@ public class Event {
     @Nonnull
     public static Event createEventForCodePointFromAlreadyTypedText(final int codePoint,
             final int x, final int y) {
-        // TODO: should we have a different type of event for this? After all, it's not a key press.
         return new Event(EVENT_TYPE_INPUT_KEYPRESS_RESUMED, null /* text */, codePoint, NOT_A_KEY_CODE,
                 x, y, null /* suggestedWordInfo */, FLAG_NONE, null /* next */);
     }
