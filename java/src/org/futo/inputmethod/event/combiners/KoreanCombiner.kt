@@ -235,6 +235,8 @@ class KoreanCombiner(private val combineInitials: Boolean = false): Combiner {
 
     override fun processEvent(previousEvents: ArrayList<Event>?, event: Event?): Event {
         if (event == null) return Event.createNotHandledEvent()
+        if (event.eventType != Event.EVENT_TYPE_INPUT_KEYPRESS) return event
+
         val keypress = event.mCodePoint.toChar()
 
         if (!isHangulLetter(keypress)) {
