@@ -13,6 +13,7 @@ data class UserSetting(
     @StringRes val name: Int,
     @StringRes val subtitle: Int? = null,
     @StringRes val searchTags: Int? = null,
+    val searchTagList: List<Int>? = searchTags?.let { listOf(it) } ?: null,
     val visibilityCheck: (@Composable () -> Boolean)? = null,
     val appearInSearchIfVisibilityCheckFailed: Boolean = true,
     val appearsInSearch: Boolean = true,
