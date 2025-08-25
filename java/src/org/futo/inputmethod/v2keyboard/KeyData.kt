@@ -73,6 +73,8 @@ fun computeDirectionsFromDeltaPos(
 data class ComputedFlickData(
     // It is illegal for child ComputedKeyData to also contain flick data
     val directions: Map<Direction, ComputedKeyData>,
+    val label: String? = null,
+    val icon: String? = null
 )
 
 data class ComputedKeyData(

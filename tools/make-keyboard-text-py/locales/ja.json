@@ -1,7 +1,9 @@
 {
   "locale": "ja",
   "morekeys": {},
-  "keyspec": {},
+  "keyspec": {
+    "currency": "¥"
+  },
   "label": {},
   "keylabel": {
     "to_alpha": "←"

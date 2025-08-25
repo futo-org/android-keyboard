@@ -5859,7 +5859,16 @@ public final class KeyboardTextsTable {
 
     private static final String[] TEXTS_ja = {
         "ja",
-        "\u2190"
+        "\u2190",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "\u00a5"
     };
 
 

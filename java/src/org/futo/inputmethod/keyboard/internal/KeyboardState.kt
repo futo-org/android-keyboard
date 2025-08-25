@@ -259,7 +259,6 @@ class KeyboardState(private val switchActions: SwitchActions) {
         val alphabetKind = if(preferredAlphabetKind.first == currentLayoutSet) {
             preferredAlphabetKind.second
         } else {
-            Log.d(TAG, "Mismatch! [$preferredAlphabetKind], [$currentLayoutSet]")
             preferredAlphabetKind = currentLayoutSet to 0
             0
         }

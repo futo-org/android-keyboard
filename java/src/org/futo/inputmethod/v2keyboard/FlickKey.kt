@@ -19,7 +19,9 @@ data class FlickKey(
     val downLeft: Key? = null,
     val downRight: Key? = null,
 
-    val attributes: KeyAttributes? = null
+    val attributes: KeyAttributes? = null,
+    val label: String? = null,
+    val icon: String? = null,
 ) : AbstractKey {
     private val extraAttrs = attributes?.let { listOf(attributes) } ?: emptyList()
 
@@ -47,7 +49,9 @@ data class FlickKey(
                 (upRight   as? BaseKey)?.let { put(Direction.NorthEast, it.computeDataWithExtraAttrs(params, row, keyboard, coordinate, extraAttrs)) }
                 (downLeft  as? BaseKey)?.let { put(Direction.SouthWest, it.computeDataWithExtraAttrs(params, row, keyboard, coordinate, extraAttrs)) }
                 (downRight as? BaseKey)?.let { put(Direction.SouthEast, it.computeDataWithExtraAttrs(params, row, keyboard, coordinate, extraAttrs)) }
-            }
+            },
+            label = label,
+            icon = icon
         ),
         showPopup = true
     )

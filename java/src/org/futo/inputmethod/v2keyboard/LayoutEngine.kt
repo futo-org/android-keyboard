@@ -587,7 +587,10 @@ data class LayoutEngine(
                     .mapValues { computedKeyToKey(it.value, x, y, width, height, null, null) }
                     .filterValues { it != null }
                     .mapValues { it.value!! }
-            }
+            },
+
+            labelOverride = data.flick?.label,
+            iconOverride = data.flick?.icon,
         )
     }
 

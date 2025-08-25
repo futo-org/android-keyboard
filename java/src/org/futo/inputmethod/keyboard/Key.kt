@@ -200,6 +200,12 @@ data class Key(
 
     /** Whether long-press should be fast */
     val isFastLongPress: Boolean,
+
+    /** Affects the key itself but not the popup */
+    val labelOverride: String? = null,
+
+    /** Affects the key itself but not the popup */
+    val iconOverride: String? = null,
 ) {
     /** Validation */
     init {
@@ -425,6 +431,15 @@ data class Key(
 
     fun getIcon(iconSet: KeyboardIconsSet, alpha: Int): Drawable? {
         val iconId = iconId
+        val icon = iconSet.getIconDrawable(iconId)
+        if (icon != null) {
+            icon.alpha = alpha
+        }
+        return icon
+    }
+
+    fun getIconOverride(iconSet: KeyboardIconsSet, alpha: Int): Drawable? {
+        val iconId = iconOverride ?: iconId
         val icon = iconSet.getIconDrawable(iconId)
         if (icon != null) {
             icon.alpha = alpha

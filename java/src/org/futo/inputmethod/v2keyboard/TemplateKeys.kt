@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
-import org.futo.inputmethod.keyboard.internal.KeyboardLayoutPage
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.actions.AllActionKeys
@@ -314,7 +313,7 @@ data class TemplateCurrencyKey(val currency: String) : AbstractKey {
         keyboard: Keyboard,
         coordinate: KeyCoordinate
     ): ComputedKeyData? {
-        val localeSymbol = params.mTextsSet.resolveSpecialText("keyspec_currency")
+        val localeSymbol = params.mTextsSet.getText("keyspec_currency")
         val symbol = when {
             localeSymbol != currency -> currency
             else -> "$"
