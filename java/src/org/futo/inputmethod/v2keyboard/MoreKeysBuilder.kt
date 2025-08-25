@@ -1,9 +1,9 @@
 package org.futo.inputmethod.v2keyboard
 
 import org.futo.inputmethod.keyboard.KeyConsts
-import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.keyboard.internal.MoreKeySpec
+import org.futo.inputmethod.keyboard.internal.isAlphabet
 import org.futo.inputmethod.latin.settings.LongPressKey
 
 typealias MoreKeys = List<String>
@@ -15,7 +15,7 @@ val QwertySymbols = listOf(
 )
 
 private fun getNumForCoordinate(keyCoordinate: KeyCoordinate): String {
-    if(keyCoordinate.element.kind != KeyboardLayoutKind.Alphabet) return ""
+    if(!keyCoordinate.element.kind.isAlphabet) return ""
 
     if(keyCoordinate.regularRow == 0) {
         val colOffset = (keyCoordinate.measurement.numColumnsByRow[keyCoordinate.regularRow] - 10) / 2
@@ -34,7 +34,7 @@ private fun getNumForCoordinate(keyCoordinate: KeyCoordinate): String {
 
 
 private fun symsForCoord(keyCoordinate: KeyCoordinate): String {
-    if(keyCoordinate.element.kind != KeyboardLayoutKind.Alphabet) return ""
+    if(!keyCoordinate.element.kind.isAlphabet) return ""
 
     val row = QwertySymbols.getOrNull(keyCoordinate.regularRow) ?: return ""
 
@@ -52,7 +52,7 @@ private fun symsForCoord(keyCoordinate: KeyCoordinate): String {
 }
 
 private fun actionForCoord(keyCoordinate: KeyCoordinate): String {
-    if(keyCoordinate.element.kind != KeyboardLayoutKind.Alphabet) return ""
+    if(!keyCoordinate.element.kind.isAlphabet) return ""
 
     val row = QwertySymbols.getOrNull(keyCoordinate.regularRow)
     val letter = row?.getOrNull(keyCoordinate.regularColumn)

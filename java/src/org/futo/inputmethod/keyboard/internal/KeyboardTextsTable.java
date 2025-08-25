@@ -5857,6 +5857,11 @@ public final class KeyboardTextsTable {
         "\u044a,\u044b"
     };
 
+    private static final String[] TEXTS_ja = {
+        "ja",
+        "\u2190"
+    };
+
 
     private static final Object[] LOCALES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
@@ -5932,7 +5937,8 @@ public final class KeyboardTextsTable {
         "lv", TEXTS_lv,
         "new", TEXTS_new,
         "sr__#Latn", TEXTS_sr___Latn,
-        "uk", TEXTS_uk
+        "uk", TEXTS_uk,
+        "ja", TEXTS_ja
     };
 
     static {

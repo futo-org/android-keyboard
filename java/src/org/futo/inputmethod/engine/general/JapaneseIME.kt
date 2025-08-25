@@ -172,8 +172,19 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
         // TODO: Add QWERTY layout at some point
         val keyboardSpecification = when {
-            id?.mElement?.kind == KeyboardLayoutKind.Symbols ->
+            id?.mElement?.kind == KeyboardLayoutKind.Symbols ||
+            id?.mElement?.kind == KeyboardLayoutKind.Number ||
+            id?.mElement?.kind == KeyboardLayoutKind.NumberBasic ||
+            id?.mElement?.kind == KeyboardLayoutKind.Phone ->
                 Keyboard.KeyboardSpecification.SYMBOL_NUMBER
+
+            id?.mElement?.kind == KeyboardLayoutKind.Alphabet1 ||
+            id?.mElement?.kind == KeyboardLayoutKind.Alphabet2 ||
+            id?.mElement?.kind == KeyboardLayoutKind.Alphabet3 ->
+                if(!useFlickOnly)
+                    Keyboard.KeyboardSpecification.TWELVE_KEY_TOGGLE_FLICK_ALPHABET
+                else
+                    Keyboard.KeyboardSpecification.TWELVE_KEY_FLICK_ALPHABET
 
             useFlickOnly -> Keyboard.KeyboardSpecification.TWELVE_KEY_FLICK_KANA
             else -> Keyboard.KeyboardSpecification.TWELVE_KEY_TOGGLE_FLICK_KANA

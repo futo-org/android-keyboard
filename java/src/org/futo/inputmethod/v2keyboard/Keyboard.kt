@@ -2,6 +2,7 @@ package org.futo.inputmethod.v2keyboard
 import android.content.Context
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
+import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.latin.settings.Settings
 
@@ -185,6 +186,12 @@ data class LayoutSetOverrides(
     val phoneShifted: String = "phone_shift"
 )
 
+@Serializable
+data class SubKeyboard(
+    val rows: List<Row>,
+    val attributes: KeyAttributes = KeyAttributes()
+)
+
 /**
  * A keyboard layout definition, the entry point for the layout yaml files.
  */
@@ -283,7 +290,9 @@ data class Keyboard(
      * Whether or not automatic shifting should apply for this keyboard, when input starts or a
      * sentence is finished.
      */
-    val autoShift: Boolean = true
+    val autoShift: Boolean = true,
+
+    val subKeyboards: Map<KeyboardLayoutKind, SubKeyboard> = emptyMap(),
 
 
     //val element: KeyboardElement = KeyboardElement.Alphabet,

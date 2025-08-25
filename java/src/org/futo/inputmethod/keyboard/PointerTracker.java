@@ -694,6 +694,20 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
     }
 
+    private boolean areTwoKeysCompatibleFollowingLayoutChange(final Key a, final Key b) {
+        if(a == null || b == null) return false;
+
+        if(a.getCode() == Constants.CODE_SHIFT && b.getCode() == Constants.CODE_SHIFT) {
+            return true;
+        }
+
+        if(a.getCode() == Constants.CODE_SWITCH_ALPHA_SYMBOL && b.getCode() == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
+            return true;
+        }
+
+        return false;
+    }
+
     private void onDownEventInternal(final int x, final int y, final long eventTime) {
         Key key = onDownKey(x, y, eventTime);
         // Key selection by dragging finger is allowed when 1) key selection by dragging finger is
@@ -711,8 +725,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             // {@link #setKeyboard}. In those cases, we should update key according to the new
             // keyboard layout.
             if (callListenerOnPressAndCheckKeyboardLayoutChange(key, 0 /* repeatCount */)) {
+                Key prevKey = key;
                 key = getKeyOn(x, y);
-                if(key != null && !key.isModifier())
+
+                if(key != null && !key.isModifier() || !areTwoKeysCompatibleFollowingLayoutChange(prevKey, key))
                     key = null;
                 else
                     key = onDownKey(x, y, eventTime);

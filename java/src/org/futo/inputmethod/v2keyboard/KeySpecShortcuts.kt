@@ -41,7 +41,8 @@ val KeySpecShortcuts = listOf(
     ),
 
     // Alphabet-only shortcuts
-    listOf(KeyboardLayoutKind.Alphabet) to shortcutsOf(
+    listOf(KeyboardLayoutKind.Alphabet0, KeyboardLayoutKind.Alphabet1,
+           KeyboardLayoutKind.Alphabet2, KeyboardLayoutKind.Alphabet3) to shortcutsOf(
         "q" to listOf("keyspec_q"),
         "w" to listOf("keyspec_w"),
         "y" to listOf("keyspec_y"),

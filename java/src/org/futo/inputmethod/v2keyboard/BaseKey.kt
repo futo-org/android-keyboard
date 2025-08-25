@@ -244,9 +244,26 @@ data class KeyAttributes(
             fastMoreKeys        = resolve(attrs) { it.fastMoreKeys       }
         )
     }
+
+    operator fun plus(other: KeyAttributes): KeyAttributes {
+        val attrs = listOf(this, other)
+        return KeyAttributes(
+            width               = resolve(attrs) { it.width              },
+            style               = resolve(attrs) { it.style              },
+            anchored            = resolve(attrs) { it.anchored           },
+            showPopup           = resolve(attrs) { it.showPopup          },
+            moreKeyMode         = resolve(attrs) { it.moreKeyMode        },
+            useKeySpecShortcut  = resolve(attrs) { it.useKeySpecShortcut },
+            longPressEnabled    = resolve(attrs) { it.longPressEnabled   },
+            labelFlags          = resolve(attrs) { it.labelFlags         },
+            repeatableEnabled   = resolve(attrs) { it.repeatableEnabled  },
+            shiftable           = resolve(attrs) { it.shiftable          },
+            fastMoreKeys        = resolve(attrs) { it.fastMoreKeys       }
+        )
+    }
 }
 
-private fun<T, O> resolve(attributes: List<O>, getter: (O) -> T?): T? =
+internal fun<T, O> resolve(attributes: List<O>, getter: (O) -> T?): T? =
     attributes.firstNotNullOfOrNull(getter)
 
 
@@ -318,6 +335,8 @@ data class BaseKey(
      * If set, overrides a default hint from the value of moreKeys.
      */
     val hint: String? = null,
+
+    val code: Int? = null
 ) : AbstractKey {
     override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean {
         val attributes = attributes.getEffectiveAttributes(row, keyboard)
@@ -356,7 +375,7 @@ data class BaseKey(
 
         val label = expandedSpec?.let { KeySpecParser.getLabel(it) } ?: ""
         val icon = expandedSpec?.let { KeySpecParser.getIconId(it) } ?: ""
-        val code = KeySpecParser.getCode(expandedSpec)
+        val code = code ?: KeySpecParser.getCode(expandedSpec)
         val outputText = KeySpecParser.getOutputText(expandedSpec)
 
         val moreKeyMode = attributes.moreKeyMode!!

@@ -105,7 +105,7 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
             )
 
             keyboard.value = layoutSet.getKeyboard(KeyboardLayoutElement(
-                kind = KeyboardLayoutKind.Alphabet,
+                kind = KeyboardLayoutKind.Alphabet0,
                 page = KeyboardLayoutPage.Base
             ))
         }

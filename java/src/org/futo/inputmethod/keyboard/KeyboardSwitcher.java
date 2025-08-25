@@ -166,7 +166,8 @@ public final class KeyboardSwitcher implements SwitchActions {
                     params
             );
 
-            mState.onLoadKeyboard(editorInfo, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
+            mState.onLoadKeyboard(editorInfo, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState,
+                    layoutSetName);
             mLatinIMELegacy.setCombiners(mKeyboardLayoutSet.getMainLayout().getCombiners());
             mKeyboardTextsSet.setLocale(mRichImm.getCurrentSubtypeLocale(), mThemeContext);
         } catch (Exception e) {

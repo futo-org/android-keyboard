@@ -1,22 +1,56 @@
-// TODO: Save numpad preference?
 package org.futo.inputmethod.keyboard.internal
 
 import android.util.Log
 import android.view.ViewConfiguration
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.VisibleForTesting
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.keyboard.Key
 import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.keyboard.KeyboardId
+import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.v2keyboard.getKeyboardMode
 
 enum class KeyboardLayoutKind {
-    Alphabet,
+    Alphabet0,
+    Alphabet1,
+    Alphabet2,
+    Alphabet3,
     Symbols,
     Phone,
     Number,
-    NumberBasic
+    NumberBasic,
+}
+
+val KeyboardLayoutKind.isAlphabet get() = when(this) {
+    KeyboardLayoutKind.Alphabet0 -> true
+    KeyboardLayoutKind.Alphabet1 -> true
+    KeyboardLayoutKind.Alphabet2 -> true
+    KeyboardLayoutKind.Alphabet3 -> true
+    else -> false
+}
+
+fun KeyboardLayoutKind.toAlphaKind(): Int? = when(this) {
+    KeyboardLayoutKind.Alphabet0 -> 0
+    KeyboardLayoutKind.Alphabet1 -> 1
+    KeyboardLayoutKind.Alphabet2 -> 2
+    KeyboardLayoutKind.Alphabet3 -> 3
+    else -> null
+}
+
+fun fromAlphaKind(int: Int): KeyboardLayoutKind? = when(int) {
+    0 -> KeyboardLayoutKind.Alphabet0
+    1 -> KeyboardLayoutKind.Alphabet1
+    2 -> KeyboardLayoutKind.Alphabet2
+    3 -> KeyboardLayoutKind.Alphabet3
+    else -> null
+}
+
+fun KeyboardLayoutKind.normalize() = when(this) {
+    KeyboardLayoutKind.Alphabet1, KeyboardLayoutKind.Alphabet2, KeyboardLayoutKind.Alphabet3 ->
+        KeyboardLayoutKind.Alphabet0
+    else -> this
 }
 
 enum class KeyboardLayoutPage(val locked: Boolean, val altIdx: Int? = null) {
@@ -43,18 +77,10 @@ data class KeyboardLayoutElement(
     val page: KeyboardLayoutPage
 ) {
     fun normalize(): KeyboardLayoutElement =
-        this.copy(kind = kind, page = page.normalize())
+        this.copy(kind = kind.normalize(), page = page.normalize())
 
     val elementId: Int
         get() = when(kind) {
-            KeyboardLayoutKind.Alphabet -> when(page) {
-                KeyboardLayoutPage.Base -> KeyboardId.ELEMENT_ALPHABET
-                KeyboardLayoutPage.Shifted -> KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED
-                KeyboardLayoutPage.ManuallyShifted -> KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED
-                KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED
-                else -> KeyboardId.ELEMENT_ALPHABET
-            }
-
             KeyboardLayoutKind.Symbols -> when(page) {
                 KeyboardLayoutPage.Base -> KeyboardId.ELEMENT_SYMBOLS
                 KeyboardLayoutPage.Shifted,
@@ -72,17 +98,29 @@ data class KeyboardLayoutElement(
             }
 
             KeyboardLayoutKind.Number, KeyboardLayoutKind.NumberBasic -> KeyboardId.ELEMENT_NUMBER
+
+            KeyboardLayoutKind.Alphabet0,
+            KeyboardLayoutKind.Alphabet1,
+            KeyboardLayoutKind.Alphabet2,
+            KeyboardLayoutKind.Alphabet3 -> when(page) {
+                KeyboardLayoutPage.Base -> KeyboardId.ELEMENT_ALPHABET
+                KeyboardLayoutPage.Shifted -> KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED
+                KeyboardLayoutPage.ManuallyShifted -> KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED
+                KeyboardLayoutPage.ShiftLocked -> KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED
+                else -> KeyboardId.ELEMENT_ALPHABET
+            }
         }
 
     companion object {
         @JvmStatic
+        @VisibleForTesting
         fun fromElementId(value: Int): KeyboardLayoutElement =
             when(value) {
-                KeyboardId.ELEMENT_ALPHABET                    -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.Base)
-                KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED     -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.ManuallyShifted)
-                KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED  -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.Shifted)
-                KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED       -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.ShiftLocked)
-                KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet, page = KeyboardLayoutPage.ShiftLocked)
+                KeyboardId.ELEMENT_ALPHABET                    -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet0, page = KeyboardLayoutPage.Base)
+                KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED     -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet0, page = KeyboardLayoutPage.ManuallyShifted)
+                KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED  -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet0, page = KeyboardLayoutPage.Shifted)
+                KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED       -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet0, page = KeyboardLayoutPage.ShiftLocked)
+                KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Alphabet0, page = KeyboardLayoutPage.ShiftLocked)
                 KeyboardId.ELEMENT_SYMBOLS                     -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Symbols, page = KeyboardLayoutPage.Base)
                 KeyboardId.ELEMENT_SYMBOLS_SHIFTED             -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Symbols, page = KeyboardLayoutPage.Shifted)
                 KeyboardId.ELEMENT_PHONE                       -> KeyboardLayoutElement(kind = KeyboardLayoutKind.Phone, page = KeyboardLayoutPage.Base)
@@ -101,10 +139,11 @@ interface SwitchActions {
 internal data class SavedKeyboardState(
     val isValid: Boolean = false,
     val layout: KeyboardLayoutElement = KeyboardLayoutElement(
-        KeyboardLayoutKind.Alphabet,
+        KeyboardLayoutKind.Alphabet0,
         KeyboardLayoutPage.Base
     ),
-    val prefersNumberLayout: Boolean = false
+    val prefersNumberLayout: Boolean = false,
+    val preferredAlphabetKind: Pair<String, Int> = "" to 0
 ) {
     override fun toString(): String {
         if (!isValid) {
@@ -129,7 +168,7 @@ internal data class SavedKeyboardState(
 class KeyboardState(private val switchActions: SwitchActions) {
     companion object {
         private const val TAG = "KeyboardState"
-        private const val DEBUG_EVENT = false
+        private val DEBUG_EVENT = BuildConfig.DEBUG
         private const val DEBUG_INTERNAL_ACTION = false
 
         @JvmStatic
@@ -150,14 +189,16 @@ class KeyboardState(private val switchActions: SwitchActions) {
     private var savedKeyboardState = SavedKeyboardState()
 
     private var currentLayout = KeyboardLayoutElement(
-        kind = KeyboardLayoutKind.Alphabet,
+        kind = KeyboardLayoutKind.Alphabet0,
         page = KeyboardLayoutPage.Base
     )
 
     private val isAlphabet: Boolean
-        get() = currentLayout.kind == KeyboardLayoutKind.Alphabet
+        get() = currentLayout.kind.isAlphabet
 
     private var prefersNumberLayout = false
+    private var currentLayoutSet = ""
+    private var preferredAlphabetKind: Pair<String, Int> = "" to 0
 
     private val debugState: String
         get() = "Layout $currentLayout, alphabetShiftState: $alphabetShiftState, shiftKeyState $shiftKeyState, symbolKeyState $symbolKeyState"
@@ -215,17 +256,27 @@ class KeyboardState(private val switchActions: SwitchActions) {
             else -> KeyboardLayoutPage.Base
         }
 
+        val alphabetKind = if(preferredAlphabetKind.first == currentLayoutSet) {
+            preferredAlphabetKind.second
+        } else {
+            Log.d(TAG, "Mismatch! [$preferredAlphabetKind], [$currentLayoutSet]")
+            preferredAlphabetKind = currentLayoutSet to 0
+            0
+        }
+
         setLayout(KeyboardLayoutElement(
-            kind = KeyboardLayoutKind.Alphabet,
+            kind = fromAlphaKind(alphabetKind) ?: KeyboardLayoutKind.Alphabet0,
             page = page
         ))
 
         switchActions.requestUpdatingShiftState(autoCapsFlags, recapitalizeMode)
     }
 
-    fun onLoadKeyboard(editorInfo: EditorInfo?, autoCapsFlags: Int, recapitalizeMode: Int) {
+    fun onLoadKeyboard(editorInfo: EditorInfo?, autoCapsFlags: Int, recapitalizeMode: Int, layoutSetName: String?) {
         // Reset alphabet shift state.
         alphabetShiftState.isShiftLocked = false
+
+        if(layoutSetName != null) currentLayoutSet = layoutSetName
 
         shiftKeyState.onRelease()
         symbolKeyState.onRelease()
@@ -252,7 +303,8 @@ class KeyboardState(private val switchActions: SwitchActions) {
         savedKeyboardState = SavedKeyboardState(
             isValid = true,
             layout = currentLayout,
-            prefersNumberLayout = prefersNumberLayout
+            prefersNumberLayout = prefersNumberLayout,
+            preferredAlphabetKind = preferredAlphabetKind
         )
 
         if (DEBUG_EVENT) {
@@ -465,6 +517,11 @@ class KeyboardState(private val switchActions: SwitchActions) {
         }
     }
 
+    private fun switchToAlpha(alphaIndex: Int, autoCapsFlags: Int, recapitalizeMode: Int) {
+        preferredAlphabetKind = currentLayoutSet to alphaIndex
+        setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+    }
+
     private fun switchToAltLayout(altLayoutIdx: Int, autoCapsFlags: Int, recapitalizeMode: Int) {
         val altPage = when(altLayoutIdx) {
             0 -> KeyboardLayoutPage.Alt0
@@ -511,6 +568,13 @@ class KeyboardState(private val switchActions: SwitchActions) {
             Constants.CODE_TO_ALT_2_LAYOUT -> {
                 switchToAltLayout(Constants.CODE_TO_ALT_0_LAYOUT - code,
                     autoCapsFlags, recapitalizeMode)
+            }
+
+            Constants.CODE_TO_ALPHA_0_LAYOUT,
+            Constants.CODE_TO_ALPHA_1_LAYOUT,
+            Constants.CODE_TO_ALPHA_2_LAYOUT,
+            Constants.CODE_TO_ALPHA_3_LAYOUT -> {
+                switchToAlpha(Constants.CODE_TO_ALPHA_0_LAYOUT - code, autoCapsFlags, recapitalizeMode)
             }
         }
 
