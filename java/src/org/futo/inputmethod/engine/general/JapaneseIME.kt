@@ -27,6 +27,7 @@ import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
@@ -171,6 +172,9 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             }
             useKanaModifierInsensitiveConversion = true
             useTypingCorrection = true
+
+            yenSignCharacter = ProtoConfig.Config.YenSignCharacter.YEN_SIGN
+
             historyLearningLevel = ProtoConfig.Config.HistoryLearningLevel.DEFAULT_HISTORY
             incognitoMode = BuildConfig.DEBUG || settings.mInputAttributes.mNoLearning || !settings.isPersonalizationEnabled
             generalConfig = ProtoConfig.GeneralConfig.newBuilder().apply {
@@ -228,12 +232,18 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
         val dictFile = ResourceHelper.findFileForKind(
             helper.context,
-            Locale.JAPANESE,
+            Locale.forLanguageTag("ja-JP"),
+            FileKind.Dictionary
+        ) ?: ResourceHelper.findFileForKind(
+            helper.context,
+            RichInputMethodManager.getInstance().currentSubtypeLocale,
             FileKind.Dictionary
         )
 
-        Log.d(TAG, "userProfileDirectory path = ${userProfileDirectory.absolutePath}")
-        Log.d(TAG, "dictFile path = ${dictFile?.absolutePath}")
+        if(BuildConfig.DEBUG) {
+            Log.d(TAG, "userProfileDirectory path = ${userProfileDirectory.absolutePath}")
+            Log.d(TAG, "dictFile path = ${dictFile?.absolutePath}")
+        }
 
         MozcJNI.load(
             userProfileDirectory.absolutePath,
