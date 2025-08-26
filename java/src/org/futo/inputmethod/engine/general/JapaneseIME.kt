@@ -27,7 +27,8 @@ import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.RichInputMethodManager
+import org.futo.inputmethod.latin.Subtypes
+import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
@@ -234,11 +235,21 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             helper.context,
             Locale.forLanguageTag("ja-JP"),
             FileKind.Dictionary
-        ) ?: ResourceHelper.findFileForKind(
-            helper.context,
-            RichInputMethodManager.getInstance().currentSubtypeLocale,
-            FileKind.Dictionary
-        )
+        ) ?: run {
+            // Locate the exact locale in case it's something unexpected (different country, script, etc)
+            val subtypes = helper.context.getSetting(SubtypesSetting)
+            subtypes.map {
+                Subtypes.getLocale(Subtypes.convertToSubtype(it))
+            }.firstNotNullOfOrNull {
+                if(it.language.lowercase() == "ja") {
+                    ResourceHelper.findFileForKind(
+                        helper.context,
+                        it,
+                        FileKind.Dictionary
+                    )
+                } else null
+            }
+        }
 
         if(BuildConfig.DEBUG) {
             Log.d(TAG, "userProfileDirectory path = ${userProfileDirectory.absolutePath}")
