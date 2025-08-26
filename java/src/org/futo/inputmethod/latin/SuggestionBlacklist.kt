@@ -40,7 +40,9 @@ class SuggestionBlacklist(val settings: Settings, val context: Context, val life
 
         val filter: (SuggestedWordInfo) -> Boolean = { it -> isSuggestedWordOk(it) || (it == suggestions.mTypedWordInfo) }
 
-        val shouldStillAutocorrect = suggestions.mWillAutoCorrect && filter(suggestions.getInfo(SuggestedWords.INDEX_OF_AUTO_CORRECTION))
+        val shouldStillAutocorrect = suggestions.mWillAutoCorrect
+                && (suggestions.size() > SuggestedWords.INDEX_OF_AUTO_CORRECTION)
+                && filter(suggestions.getInfo(SuggestedWords.INDEX_OF_AUTO_CORRECTION))
 
         val filtered = suggestions.mSuggestedWordInfoList.filter(filter)
 

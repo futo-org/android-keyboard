@@ -1,6 +1,5 @@
 package org.futo.inputmethod.engine.general
 
-import android.content.Context
 import android.icu.text.BreakIterator
 import android.os.SystemClock
 import android.text.InputType
@@ -14,9 +13,15 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import com.google.android.apps.inputmethod.libs.mozc.session.MozcJNI
 import com.google.common.base.Optional
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
+import org.futo.inputmethod.engine.IMEMessage
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
@@ -28,6 +33,8 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.common.StringUtils
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.FileKind
+import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.ArrowDownAction
 import org.futo.inputmethod.latin.uix.actions.ArrowLeftAction
@@ -57,6 +64,7 @@ import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands.Preedit
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands.SessionCommand
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoConfig
 import java.io.File
+import java.util.Locale
 
 object JapaneseIMESettings {
     val FlickOnly = SettingsKey(
@@ -108,7 +116,7 @@ private val SPAN_PARTIAL_SUGGESTION_COLOR = BackgroundColorSpan(0x194DB6AC)
 private val SPAN_UNDERLINE = UnderlineSpan()
 
 
-internal fun placeMozcData(context: Context) {
+/*internal fun placeMozcData(context: Context) {
     context.resources.openRawResource(R.raw.mozc).use { input ->
         File(context.cacheDir, "mozc.data").also {
             try { it.delete() }catch(e: Exception) { }
@@ -116,7 +124,7 @@ internal fun placeMozcData(context: Context) {
             input.copyTo(output)
         }
     }
-}
+}*/
 
 internal fun getInputFieldType(attribute: EditorInfo): InputFieldType {
     val inputType = attribute.inputType
@@ -204,8 +212,37 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         if(resetSelectionTracker) selectionTracker.onConfigurationChanged()
     }
 
+    private fun initMozc() {
+        val info = helper.context.applicationInfo
+        // Ensure the user profile directory exists.
+        val userProfileDirectory = File(info.dataDir, ".mozc")
+        if (!userProfileDirectory.exists()) {
+            // No profile directory is found. Create the one.
+            if (!userProfileDirectory.mkdirs()) {
+                // Failed to create a directory. The mozc conversion engine will be able to run
+                // even in this case, but no persistent data (e.g. user history, user dictionary)
+                // will be stored, so some fuctions using them won't work well.
+                MozcLog.e("Failed to create user profile directory: " + userProfileDirectory.absolutePath)
+            }
+        }
+
+        val dictFile = ResourceHelper.findFileForKind(
+            helper.context,
+            Locale.JAPANESE,
+            FileKind.Dictionary
+        )
+
+        Log.d(TAG, "userProfileDirectory path = ${userProfileDirectory.absolutePath}")
+        Log.d(TAG, "dictFile path = ${dictFile?.absolutePath}")
+
+        MozcJNI.load(
+            userProfileDirectory.absolutePath,
+            dictFile?.absolutePath ?: ""
+        )
+    }
+
     override fun onCreate() {
-        placeMozcData(helper.context)
+        initMozc()
 
         executor = SessionExecutor.getInstanceInitializedIfNecessary(
             SessionHandlerFactory(helper.context),
@@ -214,6 +251,24 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
         updateConfig()
         executor.syncData()
+
+        helper.lifecycleScope.launch {
+            GlobalIMEMessage.collect { message ->
+                when(message) {
+                    IMEMessage.ReloadResources -> withContext(Dispatchers.Main) {
+                        initMozc()
+
+                        executor.reset(
+                            SessionHandlerFactory(helper.context),
+                            helper.context
+                        )
+
+                        updateConfig()
+                        executor.syncData()
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroy() {

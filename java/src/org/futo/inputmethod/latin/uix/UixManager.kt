@@ -1631,6 +1631,7 @@ class UixManager(private val latinIME: LatinIME) {
             "es",
             "uk",
             "vi",
+            "ja"
         )
 
         val dismissalSetting = SettingsKey(

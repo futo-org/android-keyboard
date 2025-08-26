@@ -354,12 +354,20 @@ fun determineFileKind(context: Context, file: Uri): FileKindAndInfo {
         val voiceInputMagic = 0x6c6d6767.toUInt()
         val transformerMagic = 0x47475546.toUInt()
         val dictionaryMagic = 0x9bc13afe.toUInt()
+        val mozcMagic = 0xef4d4f5a.toUInt()
 
         val magic = ByteBuffer.wrap(array).getInt().toUInt()
 
         when {
             magic == voiceInputMagic -> FileKindAndInfo(FileKind.VoiceInput, null, null)
             magic == transformerMagic -> FileKindAndInfo(FileKind.Transformer, null, null)
+            magic == mozcMagic -> {
+                FileKindAndInfo(
+                    FileKind.Dictionary,
+                    name = "Japanese Dictionary",
+                    locale = "ja"
+                )
+            }
             magic == dictionaryMagic -> {
                 val metadata = parseDictionaryMetadataKV(inputStream)
 
@@ -398,7 +406,7 @@ object ResourceHelper {
         return key
     }
 
-    suspend fun findFileForKind(context: Context, locale: Locale, kind: FileKind): File? {
+    fun findFileForKind(context: Context, locale: Locale, kind: FileKind): File? {
         val key = findKeyForLocaleAndKind(context, locale, kind) ?: return null
 
         val settingValue: String = context.getSetting(kind.preferenceKeyFor(key), "")
