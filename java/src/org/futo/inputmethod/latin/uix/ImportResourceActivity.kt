@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -39,6 +40,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
+import org.futo.inputmethod.latin.BinaryDictionaryGetter
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.LatinIMELegacy
 import org.futo.inputmethod.latin.R
@@ -59,6 +61,7 @@ import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
 import org.futo.inputmethod.latin.xlm.ModelPaths
+import org.futo.inputmethod.updates.openURI
 import org.futo.voiceinput.shared.BUILTIN_ENGLISH_MODEL
 import org.futo.voiceinput.shared.types.ModelFileFile
 import org.futo.voiceinput.shared.types.ModelLoader
@@ -596,5 +599,76 @@ class ImportResourceActivity : ComponentActivity() {
 
         val key = getSetting(THEME_KEY)
         this.themeOption.value = ThemeOptions[key].orDefault(this)
+    }
+}
+
+object MissingDictionaryHelper {
+    sealed class DictCheckResult {
+        object CheckFailed : DictCheckResult()
+        object DontShowDictNotice : DictCheckResult()
+        data class ShowDictNotice(val locale: Locale, val dismissalSetting: SettingsKey<Int>) : DictCheckResult()
+    }
+    fun checkIfDictInstalled(context: Context): DictCheckResult {
+        if(context.isDeviceLocked) return DictCheckResult.CheckFailed
+
+        val locale = Subtypes.getLocale(Subtypes.getActiveSubtype(context))
+        val hasImportedDict = ResourceHelper.findKeyForLocaleAndKind(
+            context,
+            locale,
+            FileKind.Dictionary
+        ) != null
+        val hasBuiltInDict = BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false).isNotEmpty()
+
+        // These languages have an automatic prompt to download the right file on keyboard.futo.org
+        val langsWithDownloadableDictionaries = setOf(
+            "ar", "hy", "as", "bn", "eu", "be", "bg", "ca", "hr", "cs", "da", "nl", "en", "eo", "fi",
+            "fr", "gl", "ka", "de", "gom", "el", "gu", "he", "iw", "hi", "hu", "it", "kn", "ks", "lv",
+            "lt", "lb", "mai", "ml", "mr", "nb", "or", "pl", "pt", "pa", "ro", "ru", "sa", "sat", "sr",
+            "sd", "sl", "es", "sv", "ta", "te", "tok", "tcy", "tr", "uk", "ur", "af", "ar", "bn", "bg",
+            "cs", "fr", "de", "he", "id", "it", "kab", "kk", "pms", "ru", "sk", "es", "uk", "vi",
+            "ja"
+        )
+
+        // Typing is severely broken in Japanese without the dictionary, it is vital that this message
+        // is shown every time until the user downloads the dictionary
+        val undismissableLanguages = setOf("ja")
+
+        val dismissalSetting = SettingsKey(
+            intPreferencesKey("dictionary_notice_dismiss_${locale.language}"),
+            0
+        )
+
+        if(
+            !hasImportedDict &&
+            !hasBuiltInDict &&
+            langsWithDownloadableDictionaries.contains(locale.language) &&
+            (context.getSetting(dismissalSetting) < 15 || undismissableLanguages.contains(locale.language))
+        ) {
+            return DictCheckResult.ShowDictNotice(locale, dismissalSetting)
+        }
+
+        return DictCheckResult.DontShowDictNotice
+    }
+
+    class NoDictionaryNotice(
+        val dismissalSetting: SettingsKey<Int>,
+        val locale: Locale,
+        val string: String,
+        val resetNotice: () -> Unit) : ImportantNotice {
+        @Composable
+        override fun getText(): String {
+            return string
+        }
+
+        override fun onDismiss(context: Context, auto: Boolean) {
+            resetNotice()
+            context.setSettingBlocking(dismissalSetting.key,
+                context.getSetting(dismissalSetting) + if(auto) 1 else 5)
+        }
+
+        override fun onOpen(context: Context) {
+            resetNotice()
+            context.openURI(FileKind.Dictionary.getAddonUrlForLocale(locale), true)
+        }
     }
 }

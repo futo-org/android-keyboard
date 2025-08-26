@@ -1546,139 +1546,24 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     private fun checkIfDictInstalled() {
-        if(latinIME.isDeviceLocked) return
-
-        val locale = Subtypes.getLocale(Subtypes.getActiveSubtype(latinIME))
-        val hasImportedDict = ResourceHelper.findKeyForLocaleAndKind(
-            latinIME,
-            locale,
-            FileKind.Dictionary
-        ) != null
-        val hasBuiltInDict = BinaryDictionaryGetter.getDictionaryFiles(locale, latinIME, false, false).isNotEmpty()
-
-        val langsWithDownloadableDictionaries = setOf(
-            "ar",
-            "hy",
-            "as",
-            "bn",
-            "eu",
-            "be",
-            "bg",
-            "ca",
-            "hr",
-            "cs",
-            "da",
-            "nl",
-            "en",
-            "eo",
-            "fi",
-            "fr",
-            "gl",
-            "ka",
-            "de",
-            "gom",
-            "el",
-            "gu",
-            "he",
-            "iw",
-            "hi",
-            "hu",
-            "it",
-            "kn",
-            "ks",
-            "lv",
-            "lt",
-            "lb",
-            "mai",
-            "ml",
-            "mr",
-            "nb",
-            "or",
-            "pl",
-            "pt",
-            "pa",
-            "ro",
-            "ru",
-            "sa",
-            "sat",
-            "sr",
-            "sd",
-            "sl",
-            "es",
-            "sv",
-            "ta",
-            "te",
-            "tok",
-            "tcy",
-            "tr",
-            "uk",
-            "ur",
-            "af",
-            "ar",
-            "bn",
-            "bg",
-            "cs",
-            "fr",
-            "de",
-            "he",
-            "id",
-            "it",
-            "kab",
-            "kk",
-            "pms",
-            "ru",
-            "sk",
-            "es",
-            "uk",
-            "vi",
-            "ja"
-        )
-
-        // Typing is severely broken in Japanese without the dictionary, it is vital that this message
-        // is shown every time unti the user downloads the dictionary
-        val undismissableLanguages = setOf("ja")
-
-        val dismissalSetting = SettingsKey(
-            intPreferencesKey("dictionary_notice_dismiss_${locale.language}"),
-            0
-        )
-
-        if(
-            !hasImportedDict &&
-            !hasBuiltInDict &&
-            langsWithDownloadableDictionaries.contains(locale.language) &&
-            (latinIME.getSetting(dismissalSetting) < 15 || undismissableLanguages.contains(locale.language))
-        ) {
-            numSuggestionsSinceNotice = 0
-            currentNotice.value = NoDictionaryNotice(
-                dismissalSetting,
-                locale,
-                latinIME.getString(R.string.keyboard_actionbar_no_dictionary_installed_notice)
-            ) { currentNotice.value = null }
-        } else if(currentNotice.value is NoDictionaryNotice) {
-            currentNotice.value = null
+        val check = MissingDictionaryHelper.checkIfDictInstalled(latinIME)
+        when(check) {
+            MissingDictionaryHelper.DictCheckResult.CheckFailed -> { }
+            MissingDictionaryHelper.DictCheckResult.DontShowDictNotice -> {
+                // Hide any existing one, e.g. if user just installed a dict or switched to a language
+                // with a dict.
+                if(currentNotice.value is MissingDictionaryHelper.NoDictionaryNotice) {
+                    currentNotice.value = null
+                }
+            }
+            is MissingDictionaryHelper.DictCheckResult.ShowDictNotice -> {
+                numSuggestionsSinceNotice = 0
+                currentNotice.value = MissingDictionaryHelper.NoDictionaryNotice(
+                    check.dismissalSetting,
+                    check.locale,
+                    latinIME.getString(R.string.keyboard_actionbar_no_dictionary_installed_notice)
+                ) { currentNotice.value = null }
+            }
         }
-    }
-}
-
-class NoDictionaryNotice(
-    val dismissalSetting: SettingsKey<Int>,
-    val locale: Locale,
-    val string: String,
-    val resetNotice: () -> Unit) : ImportantNotice {
-    @Composable
-    override fun getText(): String {
-        return string
-    }
-
-    override fun onDismiss(context: Context, auto: Boolean) {
-        resetNotice()
-        context.setSettingBlocking(dismissalSetting.key,
-            context.getSetting(dismissalSetting) + if(auto) 1 else 5)
-    }
-
-    override fun onOpen(context: Context) {
-        resetNotice()
-        context.openURI(FileKind.Dictionary.getAddonUrlForLocale(locale), true)
     }
 }
