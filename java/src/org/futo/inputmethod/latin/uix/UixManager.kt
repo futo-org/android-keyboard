@@ -1634,6 +1634,10 @@ class UixManager(private val latinIME: LatinIME) {
             "ja"
         )
 
+        // Typing is severely broken in Japanese without the dictionary, it is vital that this message
+        // is shown every time unti the user downloads the dictionary
+        val undismissableLanguages = setOf("ja")
+
         val dismissalSetting = SettingsKey(
             intPreferencesKey("dictionary_notice_dismiss_${locale.language}"),
             0
@@ -1643,26 +1647,38 @@ class UixManager(private val latinIME: LatinIME) {
             !hasImportedDict &&
             !hasBuiltInDict &&
             langsWithDownloadableDictionaries.contains(locale.language) &&
-            latinIME.getSetting(dismissalSetting) < 15
+            (latinIME.getSetting(dismissalSetting) < 15 || undismissableLanguages.contains(locale.language))
         ) {
             numSuggestionsSinceNotice = 0
-            currentNotice.value = object : ImportantNotice {
-                @Composable
-                override fun getText(): String {
-                    return latinIME.getString(R.string.keyboard_actionbar_no_dictionary_installed_notice)
-                }
-
-                override fun onDismiss(context: Context, auto: Boolean) {
-                    currentNotice.value = null
-                    context.setSettingBlocking(dismissalSetting.key,
-                        context.getSetting(dismissalSetting) + if(auto) 1 else 5)
-                }
-
-                override fun onOpen(context: Context) {
-                    currentNotice.value = null
-                    context.openURI(FileKind.Dictionary.getAddonUrlForLocale(locale), true)
-                }
-            }
+            currentNotice.value = NoDictionaryNotice(
+                dismissalSetting,
+                locale,
+                latinIME.getString(R.string.keyboard_actionbar_no_dictionary_installed_notice)
+            ) { currentNotice.value = null }
+        } else if(currentNotice.value is NoDictionaryNotice) {
+            currentNotice.value = null
         }
+    }
+}
+
+class NoDictionaryNotice(
+    val dismissalSetting: SettingsKey<Int>,
+    val locale: Locale,
+    val string: String,
+    val resetNotice: () -> Unit) : ImportantNotice {
+    @Composable
+    override fun getText(): String {
+        return string
+    }
+
+    override fun onDismiss(context: Context, auto: Boolean) {
+        resetNotice()
+        context.setSettingBlocking(dismissalSetting.key,
+            context.getSetting(dismissalSetting) + if(auto) 1 else 5)
+    }
+
+    override fun onOpen(context: Context) {
+        resetNotice()
+        context.openURI(FileKind.Dictionary.getAddonUrlForLocale(locale), true)
     }
 }

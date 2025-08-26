@@ -364,7 +364,7 @@ fun determineFileKind(context: Context, file: Uri): FileKindAndInfo {
             magic == mozcMagic -> {
                 FileKindAndInfo(
                     FileKind.Dictionary,
-                    name = "Japanese Dictionary",
+                    name = "日本語辞書",
                     locale = "ja"
                 )
             }
