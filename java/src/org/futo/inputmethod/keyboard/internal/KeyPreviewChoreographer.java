@@ -19,6 +19,8 @@ package org.futo.inputmethod.keyboard.internal;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -143,6 +145,11 @@ public final class KeyPreviewChoreographer {
         if(key.getHasFlick()) {
             previewHeight -= bottomPadding;
             keyPreviewView.setPadding(0, 0, 0, 0);
+            keyPreviewView.setGravity(Gravity.CENTER);
+            keyPreviewView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    Math.min(keyPreviewView.getWidth(), keyPreviewView.getHeight()) * 0.7f);
+        } else {
+            keyPreviewView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         }
 
         ViewLayoutUtils.placeViewAt(

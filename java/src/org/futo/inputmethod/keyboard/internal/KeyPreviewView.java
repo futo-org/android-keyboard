@@ -94,15 +94,17 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         int width = canvas.getWidth();
         int height = canvas.getHeight();
 
+        int dim = Math.min(width, height);
+
         Paint paint = new Paint();
         paint.setTypeface(getTypeface());
         paint.setColor(getCurrentTextColor());
-        paint.setTextSize(getTextSize() * 0.45f);
+        paint.setTextSize(dim * 0.265f);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setAntiAlias(true);
 
-
         final float yp = 2.7f; // TODO
+        final float offsMul = 0.33f;
 
         int cx = width / 2;
         int cy = (int)(height / 2 + paint.getTextSize() / yp);
@@ -111,12 +113,12 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
             Key value = flickKeys.get(dir);
             Pair<Double, Double> vec = KeyDataKt.toVector(dir);
 
-            int x = (int)(cx - (vec.getFirst() * width / 3.2f));
-            int y = (int)(cy - (vec.getSecond() * height / 3.2f));
+            int x = (int)(cx - (vec.getFirst() * width * offsMul));
+            int y = (int)(cy - (vec.getSecond() * height * offsMul));
             canvas.drawText(value.getPreviewLabel(), x, y, paint);
         }
 
-        paint.setTextSize(getTextSize() * 0.7f);
+        paint.setTextSize(dim * 0.485f);
 
         canvas.drawText(
                 currKey.getPreviewLabel(),

@@ -124,6 +124,7 @@ data class LabelFlags(
     val hasHintLabel: Boolean = false,
     val followKeyLabelRatio: Boolean = false,
     val followKeyLetterRatio: Boolean = false,
+    val followKeyHintLabelRatio: Boolean = false,
     val followKeyLargeLetterRatio: Boolean = false,
     val autoXScale: Boolean = false,
 ) {
@@ -134,6 +135,7 @@ data class LabelFlags(
         KeyConsts.LABEL_FLAGS_HAS_HINT_LABEL.and(hasHintLabel) or
         KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO.and(followKeyLabelRatio) or
         KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO.and(followKeyLetterRatio) or
+        KeyConsts.LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO.and(followKeyHintLabelRatio) or
         KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO.and(followKeyLargeLetterRatio) or
         KeyConsts.LABEL_FLAGS_AUTO_X_SCALE.and(autoXScale)
 }
