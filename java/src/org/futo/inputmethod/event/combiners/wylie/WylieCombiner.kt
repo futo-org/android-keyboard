@@ -1,7 +1,6 @@
-package org.futo.inputmethod.event.combiners
+package org.futo.inputmethod.event.combiners.wylie
 
 import android.text.TextUtils
-import io.bdrc.ewtsconverter.EwtsConverter
 import org.futo.inputmethod.event.Combiner
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.common.Constants
