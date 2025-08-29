@@ -1,5 +1,6 @@
 package org.futo.inputmethod.engine.general
 
+import android.annotation.SuppressLint
 import android.icu.text.BreakIterator
 import android.os.SystemClock
 import android.text.InputType
@@ -211,13 +212,13 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         executor.switchInputMode(
             Optional.of(KeycodeConverter.getKeyEventInterface(0)),
             keyboardSpecification.compositionMode,
-            evaluationCallback
+            resettableEvaluationCallback
         )
 
         if(resetSelectionTracker) selectionTracker.onConfigurationChanged()
     }
 
-    private fun initMozc() {
+    private fun initJniDictLocations() {
         val info = helper.context.applicationInfo
         // Ensure the user profile directory exists.
         val userProfileDirectory = File(info.dataDir, ".mozc")
@@ -262,30 +263,34 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         )
     }
 
-    override fun onCreate() {
-        initMozc()
+    internal fun mozcInit() {
+        initJniDictLocations()
 
-        executor = SessionExecutor.getInstanceInitializedIfNecessary(
-            SessionHandlerFactory(helper.context),
-            helper.context
-        )
+        if(!::executor.isInitialized) {
+            executor = SessionExecutor.getInstanceInitializedIfNecessary(
+                SessionHandlerFactory(helper.context),
+                helper.context
+            )
+        } else {
+            executor.reset(
+                SessionHandlerFactory(helper.context),
+                helper.context
+            )
+        }
+
+        executor.setLogging(BuildConfig.DEBUG)
 
         updateConfig()
         executor.syncData()
+    }
 
+    override fun onCreate() {
+        mozcInit()
         helper.lifecycleScope.launch {
             GlobalIMEMessage.collect { message ->
                 when(message) {
                     IMEMessage.ReloadResources -> withContext(Dispatchers.Main) {
-                        initMozc()
-
-                        executor.reset(
-                            SessionHandlerFactory(helper.context),
-                            helper.context
-                        )
-
-                        updateConfig()
-                        executor.syncData()
+                        mozcInit()
                     }
                 }
             }
@@ -294,6 +299,11 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     override fun onDestroy() {
         executor.syncData()
+        // Might need to edit mozc library to add a reset function not just for tests
+        // This is necessary because reinit JNI after onDestroy -> onCreate and the old
+        // session executor is no longer valid
+        @SuppressLint("VisibleForTests")
+        SessionExecutor.setInstanceForTest(Optional.absent())
     }
 
     override fun onDeviceUnlocked() {
@@ -711,6 +721,22 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         }
         if (!inputConnection.setSelection(caretPosition, caretPosition)) {
             Log.e(TAG, "Failed to set selection.")
+        }
+    }
+
+    // If switch input mode fails for whatever reason, we'll try resetting mozc
+    private val resettableEvaluationCallback = object : SessionExecutor.EvaluationCallback {
+        override fun onCompleted(
+            command: Optional<ProtoCommands.Command>,
+            triggeringKeyEvent: Optional<KeyEventInterface>
+        ) {
+            if(!command.isPresent) return
+            val output = command.get().output
+            if(output.hasErrorCode() && output.errorCode == ProtoCommands.Output.ErrorCode.SESSION_FAILURE) {
+                mozcInit()
+            } else {
+                evaluationCallback.onCompleted(command, triggeringKeyEvent)
+            }
         }
     }
 

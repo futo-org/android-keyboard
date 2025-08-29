@@ -316,6 +316,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     fun invalidateKeyboard(refreshSettings: Boolean = false) {
+        if(destroying) return
         size.value = calculateSize()
         updateNavigationBarVisibility()
         settingsRefreshRequired = settingsRefreshRequired || refreshSettings
@@ -465,7 +466,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         }
     }
 
+    private var destroying = false
     override fun onDestroy() {
+        destroying = true
         unregisterReceiver(unlockReceiver)
         stopJobs()
         viewModelStore.clear()

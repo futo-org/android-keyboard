@@ -444,6 +444,7 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun overrideKeyboardTypeface(typeface: Typeface?) {
+        if(latinIME.getDrawableProvider().typefaceOverride == typeface) return
         latinIME.getDrawableProvider().typefaceOverride = typeface
         latinIME.invalidateKeyboard()
     }
