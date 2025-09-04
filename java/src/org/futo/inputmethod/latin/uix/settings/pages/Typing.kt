@@ -587,7 +587,12 @@ val LongPressMenu = UserSettingsMenu(
             )
         },
         UserSetting(
-            name = R.string.morekey_settings_space_behavior
+            name = R.string.morekey_settings_space_behavior,
+            searchTagList = listOf(
+                R.string.morekey_settings_space_behavior_swipe_cursor,
+                R.string.morekey_settings_space_behavior_swipe_lang,
+                R.string.morekey_settings_space_behavior_only_cursor
+            )
         ) {
             SettingRadio(
                 title = stringResource(R.string.morekey_settings_space_behavior),

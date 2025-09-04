@@ -9,13 +9,32 @@
 #define DEBUG_SWIPE false
 
 namespace util {
+    static int findKeyIdx(const latinime::ProximityInfo *proximityInfo, int codePoint) {
+        // Try to find exact match first
+        int keyIdx = proximityInfo->getKeyIndexOf(codePoint);
+
+        // Try lowercase
+        if(keyIdx == NOT_AN_INDEX)
+            keyIdx = proximityInfo->getKeyIndexOf(latinime::CharUtils::toLowerCase(codePoint));
+
+        // Try base codepoint
+        if(keyIdx == NOT_AN_INDEX)
+            keyIdx = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseCodePoint(codePoint));
+
+        // Try base lowercase
+        if(keyIdx == NOT_AN_INDEX)
+            keyIdx = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint));
+
+        return keyIdx;
+    }
+
     static AK_FORCE_INLINE int getDistanceBetweenPoints(const latinime::DicTraverseSession *const traverseSession, int codePoint, int index) {
         auto proximityInfoState = traverseSession->getProximityInfoState(0);
         auto proximityInfo = traverseSession->getProximityInfo();
         int px = proximityInfoState->getInputX(index);
         int py = proximityInfoState->getInputY(index);
 
-        int keyIdx = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint));
+        int keyIdx = findKeyIdx(proximityInfo, codePoint);
         int kx = proximityInfo->getKeyCenterXOfKeyIdG(keyIdx, NOT_A_COORDINATE, false);
         int ky = proximityInfo->getKeyCenterYOfKeyIdG(keyIdx, NOT_A_COORDINATE, false);
 
@@ -55,7 +74,7 @@ namespace util {
         int l1x = proximityInfoState->getInputX(index1);
         int l1y = proximityInfoState->getInputY(index1);
 
-        int keyIdx = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint));
+        int keyIdx = findKeyIdx(proximityInfo, codePoint);
         int px = proximityInfo->getKeyCenterXOfKeyIdG(keyIdx, NOT_A_COORDINATE, false);
         int py = proximityInfo->getKeyCenterYOfKeyIdG(keyIdx, NOT_A_COORDINATE, false);
 
@@ -68,8 +87,8 @@ namespace util {
         int px = proximityInfoState->getInputX(index);
         int py = proximityInfoState->getInputY(index);
 
-        int keyIdx0 = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint0));
-        int keyIdx1 = proximityInfo->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint1));
+        int keyIdx0 = findKeyIdx(proximityInfo, codePoint0);
+        int keyIdx1 = findKeyIdx(proximityInfo, codePoint1);
         int l0x = proximityInfo->getKeyCenterXOfKeyIdG(keyIdx0, NOT_A_COORDINATE, false);
         int l0y = proximityInfo->getKeyCenterYOfKeyIdG(keyIdx0, NOT_A_COORDINATE, false);
         int l1x = proximityInfo->getKeyCenterXOfKeyIdG(keyIdx1, NOT_A_COORDINATE, false);
@@ -90,8 +109,8 @@ namespace util {
     ) {
         float totalDistance = 0.0;
 
-        const int ki_0 = traverseSession->getProximityInfo()->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint0));
-        const int ki_1 = traverseSession->getProximityInfo()->getKeyIndexOf(latinime::CharUtils::toBaseLowerCase(codePoint1));
+        const int ki_0 = findKeyIdx(traverseSession->getProximityInfo(), codePoint0);
+        const int ki_1 = findKeyIdx(traverseSession->getProximityInfo(), codePoint1);
 
         const float l0x = traverseSession->getProximityInfo()->getKeyCenterXOfKeyIdG(ki_0, NOT_A_COORDINATE, false);
         const float l0y = traverseSession->getProximityInfo()->getKeyCenterYOfKeyIdG(ki_0, NOT_A_COORDINATE, false);

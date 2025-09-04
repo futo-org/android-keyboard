@@ -83,7 +83,9 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
             .associate {
                 it to run {
                     normalizeString(context.getString(it.name)) + "\n" +
-                            (it.searchTags?.let { normalizeString(context.getString(it)) } ?: "") + "\n" +
+                            (it.searchTagList?.joinToString("\n") { normalizeString(context.getString(it)) }
+                                ?: it.searchTags?.let { normalizeString(context.getString(it)) }
+                                ?: "") + "\n" +
                             (it.subtitle?.let { normalizeString(context.getString(it)) } ?: "")
                 }
             }
