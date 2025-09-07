@@ -139,10 +139,11 @@ internal fun getInputFieldType(attribute: EditorInfo): InputFieldType {
     } else InputFieldType.NORMAL
 }
 
+fun mozcUserProfileDir(context: Context) = File(context.applicationInfo.dataDir, ".mozc")
+
 fun initJniDictLocations(context: Context) {
-    val info = context.applicationInfo
     // Ensure the user profile directory exists.
-    val userProfileDirectory = File(info.dataDir, ".mozc")
+    val userProfileDirectory = mozcUserProfileDir(context)
     if (!userProfileDirectory.exists()) {
         // No profile directory is found. Create the one.
         if (!userProfileDirectory.mkdirs()) {
@@ -366,8 +367,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 settings.mInputAttributes.mNoLearning || !settings.isPersonalizationEnabled ->
                     ProtoConfig.Config.HistoryLearningLevel.READ_ONLY
 
-                BuildConfig.DEBUG ->
-                    ProtoConfig.Config.HistoryLearningLevel.READ_ONLY
+                //BuildConfig.DEBUG ->
+                //    ProtoConfig.Config.HistoryLearningLevel.READ_ONLY
 
                 else ->
                     ProtoConfig.Config.HistoryLearningLevel.DEFAULT_HISTORY

@@ -33,6 +33,7 @@ import okio.ByteString.Companion.toByteString
 import okio.buffer
 import okio.sink
 import okio.source
+import org.futo.inputmethod.engine.general.mozcUserProfileDir
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.PreferenceUtils.getDefaultSharedPreferences
 import org.futo.inputmethod.latin.uix.actions.ClipboardFileName
@@ -272,7 +273,14 @@ object SettingsExporter {
             }
         }
 
-        // TODO: Collect personal dictionary
+        // Collect mozc (Japanese user typing history, etc)
+        mozcUserProfileDir(context).listFiles()?.forEach { subfile ->
+            assert(!subfile.isDirectory)
+            val entry = ZipEntry("mozc/${subfile.name}")
+            zipOut.putNextEntry(entry)
+            subfile.inputStream().use { it.copyTo(zipOut) }
+            zipOut.closeEntry()
+        }
     }
 
     private fun String.splitSlash(): String = split("/", limit = 2)[1]
@@ -309,6 +317,8 @@ object SettingsExporter {
                     it.deleteRecursively()
                 }
             }
+
+            mozcUserProfileDir(context).deleteRecursively()
         }
         while (entry != null) {
             when {
@@ -362,6 +372,18 @@ object SettingsExporter {
                     subdir.mkdirs()
 
                     File(subdir, fileName).outputStream().use {
+                        zipIn.copyTo(it)
+                    }
+                }
+
+                entry.name.startsWith("mozc/") -> {
+                    val relDir = entry.name.split('/', limit=2).last()
+
+                    assert(!relDir.contains('/'))
+
+                    val userProfileDir = mozcUserProfileDir(context)
+                    userProfileDir.mkdirs()
+                    File(userProfileDir, relDir).outputStream().use {
                         zipIn.copyTo(it)
                     }
                 }
