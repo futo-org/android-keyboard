@@ -808,6 +808,7 @@ fun<T> DropDownPicker(
     selection: T?,
     onSet: (T) -> Unit,
     getDisplayName: (T) -> String,
+    scrollableOptions: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -846,7 +847,14 @@ fun<T> DropDownPicker(
         }
 
         AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
-            Column {
+            val scrollState = rememberScrollState()
+            Column(Modifier.let {
+                if(scrollableOptions) {
+                    it.verticalScroll(scrollState)
+                } else {
+                    it
+                }
+            }) {
                 Spacer(Modifier.height(9.dp))
                 Column(
                     Modifier.fillMaxWidth().background(
