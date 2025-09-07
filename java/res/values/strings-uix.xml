@@ -594,4 +594,18 @@ Default is %1$s</string>
     <string name="prediction_settings_transformer_advanced_params_autocorrect_threshold">Autocorrect Threshold</string>
     <string name="prediction_settings_transformer_advanced_params_autocorrect_threshold_subtitle">A lower threshold will autocorrect more often (and miscorrect more often), while a higher threshold will autocorrect less often (and miscorrect less often).
 Default is %1$s</string>
+
+    <!-- Personal dictionary -->
+    <string name="personal_dictionary_shortcut_error_symbols">Error: Shortcut may not start with symbol</string>
+    <plurals name="personal_dictionary_language_word_count">
+        <item quantity="one">%1$s word</item>
+        <item quantity="other">%1$s words</item>
+    </plurals>
+    <string name="personal_dictionary_imported_additional_files_list_header">Files</string>
+    <string name="personal_dictionary_import_additional_file">Import</string>
+    <string name="personal_dictionary_words_list_header">Words</string>
+    <string name="personal_dictionary_cancel_action">Cancel</string>
+    <string name="personal_dictionary_delete_additional_file">Delete extra dictionary file?</string>
+    <!-- %1$s will be replaced with the custom dictionary name -->
+    <string name="personal_dictionary_delete_additional_file_text">%1$s will be deleted</string>
 </resources>
