@@ -146,13 +146,6 @@ tasks.register('updateContributors') {
 
 preBuild.dependsOn updateLocales
 
-tasks.register('copyMozcData', Copy) {
-    from 'libs/mozc.data'
-    into 'java/res/raw'
-}
-preBuild.dependsOn('copyMozcData')
-
-
 android {
     namespace 'org.futo.inputmethod.latin'
 
