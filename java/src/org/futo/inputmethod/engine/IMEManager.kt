@@ -12,7 +12,8 @@ import org.futo.inputmethod.latin.uix.ActionInputTransaction
 import org.futo.inputmethod.v2keyboard.CombinerKind
 
 enum class IMEMessage {
-    ReloadResources
+    ReloadResources,
+    ReloadPersonalDict,
 }
 val GlobalIMEMessage = MutableSharedFlow<IMEMessage>(
     replay = 0,

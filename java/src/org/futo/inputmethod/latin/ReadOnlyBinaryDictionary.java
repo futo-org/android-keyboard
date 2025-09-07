@@ -51,7 +51,7 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<Integer> getNextValidCodePoints(ComposedData composedData) {
-        if (mLock.readLock().tryLock()) {
+        if (isValidDictionary() && mLock.readLock().tryLock()) {
             try {
                 return mBinaryDictionary.getNextValidCodePoints(composedData);
             } finally {

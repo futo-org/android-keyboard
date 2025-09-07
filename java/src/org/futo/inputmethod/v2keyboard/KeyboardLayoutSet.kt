@@ -54,7 +54,7 @@ fun Locale.getKeyboardScript(): Script =
 
 
 
-private fun EditorInfo.getPrivateImeOptions(): Map<String, String> {
+internal fun EditorInfo.getPrivateImeOptions(): Map<String, String> {
     val options = mutableMapOf<String, String>()
     val imeOptions = privateImeOptions ?: return options
 

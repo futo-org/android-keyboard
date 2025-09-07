@@ -138,7 +138,11 @@ public class SettingsValues {
 
     public SettingsValues(final Context context, final SharedPreferences prefs, final Resources res,
             @Nonnull final InputAttributes inputAttributes) {
-        mLocale = res.getConfiguration().locale;
+        if(inputAttributes.mLocaleOverride != null) {
+            mLocale = inputAttributes.mLocaleOverride;
+        } else {
+            mLocale = res.getConfiguration().locale;
+        }
         mIsRTL = TextUtils.getLayoutDirectionFromLocale(mLocale) == View.LAYOUT_DIRECTION_RTL;
         // Get the resources
         mSpacingAndPunctuations = new SpacingAndPunctuations(res);

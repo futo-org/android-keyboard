@@ -146,7 +146,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     fun resetDictionaryFacilitator(force: Boolean = false) {
         val settings = settings.current
 
-        val locales = RichInputMethodManager.getInstance().currentSubtypeLocales
+        val locales = settings.mInputAttributes.mLocaleOverride?.let {
+            listOf(it)
+        } ?: RichInputMethodManager.getInstance().currentSubtypeLocales
         if ((!force)
             && dictionaryFacilitator.isForLocales(locales)
             && dictionaryFacilitator.isForAccount(settings.mAccount)
@@ -185,6 +187,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     IMEMessage.ReloadResources -> withContext(Dispatchers.Main) {
                         resetDictionaryFacilitator(force = true)
                     }
+                    else -> {}
                 }
             }
         }

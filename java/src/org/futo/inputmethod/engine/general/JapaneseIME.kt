@@ -1,6 +1,7 @@
 package org.futo.inputmethod.engine.general
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.icu.text.BreakIterator
 import android.os.SystemClock
 import android.text.InputType
@@ -35,19 +36,23 @@ import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.common.StringUtils
+import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.UserDictionaryIO
 import org.futo.inputmethod.latin.uix.actions.ArrowDownAction
 import org.futo.inputmethod.latin.uix.actions.ArrowLeftAction
 import org.futo.inputmethod.latin.uix.actions.ArrowRightAction
 import org.futo.inputmethod.latin.uix.actions.ArrowUpAction
 import org.futo.inputmethod.latin.uix.actions.UndoAction
 import org.futo.inputmethod.latin.uix.actions.keyCode
+import org.futo.inputmethod.latin.uix.getImportedUserDictFilesForLocale
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.pages.pdict.decodeJapanesePersonalWord
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
 import org.futo.inputmethod.latin.utils.InputTypeUtils
 import org.futo.inputmethod.nativelib.mozc.KeycodeConverter
@@ -66,8 +71,10 @@ import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands.Context.Inpu
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands.Preedit
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands.SessionCommand
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoConfig
+import org.mozc.android.inputmethod.japanese.protobuf.ProtoUserDictionaryStorage
 import java.io.File
 import java.util.Locale
+import kotlin.collections.filter
 
 object JapaneseIMESettings {
     val FlickOnly = SettingsKey(
@@ -118,17 +125,6 @@ private val SPAN_PARTIAL_SUGGESTION_COLOR = BackgroundColorSpan(0x194DB6AC)
 // Underline.
 private val SPAN_UNDERLINE = UnderlineSpan()
 
-
-/*internal fun placeMozcData(context: Context) {
-    context.resources.openRawResource(R.raw.mozc).use { input ->
-        File(context.cacheDir, "mozc.data").also {
-            try { it.delete() }catch(e: Exception) { }
-        }.outputStream().use { output ->
-            input.copyTo(output)
-        }
-    }
-}*/
-
 internal fun getInputFieldType(attribute: EditorInfo): InputFieldType {
     val inputType = attribute.inputType
     if (MozcUtil.isPasswordField(inputType)) {
@@ -141,6 +137,195 @@ internal fun getInputFieldType(attribute: EditorInfo): InputFieldType {
     return if (inputClass == InputType.TYPE_CLASS_NUMBER) {
         InputFieldType.NUMBER
     } else InputFieldType.NORMAL
+}
+
+fun initJniDictLocations(context: Context) {
+    val info = context.applicationInfo
+    // Ensure the user profile directory exists.
+    val userProfileDirectory = File(info.dataDir, ".mozc")
+    if (!userProfileDirectory.exists()) {
+        // No profile directory is found. Create the one.
+        if (!userProfileDirectory.mkdirs()) {
+            // Failed to create a directory. The mozc conversion engine will be able to run
+            // even in this case, but no persistent data (e.g. user history, user dictionary)
+            // will be stored, so some fuctions using them won't work well.
+            MozcLog.e("Failed to create user profile directory: " + userProfileDirectory.absolutePath)
+        }
+    }
+
+    val dictFile = ResourceHelper.findFileForKind(
+        context,
+        Locale.forLanguageTag("ja-JP"),
+        FileKind.Dictionary
+    ) ?: run {
+        // Locate the exact locale in case it's something unexpected (different country, script, etc)
+        val subtypes = context.getSetting(SubtypesSetting)
+        subtypes.map {
+            Subtypes.getLocale(Subtypes.convertToSubtype(it))
+        }.firstNotNullOfOrNull {
+            if(it.language.lowercase() == "ja") {
+                ResourceHelper.findFileForKind(
+                    context,
+                    it,
+                    FileKind.Dictionary
+                )
+            } else null
+        }
+    }
+
+    if(BuildConfig.DEBUG) {
+        Log.d(TAG, "userProfileDirectory path = ${userProfileDirectory.absolutePath}")
+        Log.d(TAG, "dictFile path = ${dictFile?.absolutePath}")
+    }
+
+    MozcJNI.load(
+        userProfileDirectory.absolutePath,
+        dictFile?.absolutePath ?: ""
+    )
+}
+
+private const val MOZC_DICT_NAME = "FUTO_UserDict"
+typealias MozcStatus = ProtoUserDictionaryStorage.UserDictionaryCommandStatus.Status
+fun refreshMozcDictionaries(context: Context, executor: SessionExecutor) {
+    val necessaryDictionaries = getImportedUserDictFilesForLocale(context, Locale.JAPANESE)
+    val missingDictionaries = necessaryDictionaries.toMutableList()
+    val userDictionaryIO = UserDictionaryIO(context)
+
+    val sessionResult = executor.sendUserDictionaryCommand(
+        ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
+            .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.CREATE_SESSION)
+            .build()
+    )
+
+    if(!sessionResult.hasSessionId())
+        throw Exception("Failed to create mozc session")
+
+    val sessionId = sessionResult.sessionId
+    try {
+        executor.sendUserDictionaryCommand(
+            ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
+                .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.LOAD)
+                .setSessionId(sessionId)
+                .build()
+        ).let {
+            if (it.status != MozcStatus.USER_DICTIONARY_COMMAND_SUCCESS)
+                Log.e("MozcDic", "Loading failed! This is not fatal, we can re-make the user dictionary.")
+        }
+
+        val enumerateDictionariesResult = executor.sendUserDictionaryCommand(
+            ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
+                .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.GET_USER_DICTIONARY_NAME_LIST)
+                .setSessionId(sessionId)
+                .build()
+        )
+
+        if(enumerateDictionariesResult.status != MozcStatus.USER_DICTIONARY_COMMAND_SUCCESS || !enumerateDictionariesResult.hasStorage())
+            throw Exception("Listing dictionaries failed!")
+
+        val dicts = enumerateDictionariesResult.storage.dictionariesList
+        Log.d("MozcDic", "Dictionary enumeration: ${dicts.size} entries, data: ${dicts.map { it.id to it.name }}")
+
+        val extraDictionaries = mutableListOf<ProtoUserDictionaryStorage.UserDictionary>()
+        dicts.forEach { mozcDict ->
+            val matchesExpected = missingDictionaries.removeAll { dict ->
+                mozcDict.name == dict.first.nameWithoutExtension
+            }
+
+            if(!matchesExpected) {
+                extraDictionaries.add(mozcDict)
+            }
+        }
+
+        // Delete extra (no longer necessary) dictionaries
+        // (this will also delete $MOZC_DICT_NAME)
+        extraDictionaries.forEach {
+            Log.d("MozcDic", "Delete dict ${it.name} ${it.id}")
+            executor.sendUserDictionaryCommand(
+                ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
+                    .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.DELETE_DICTIONARY)
+                    .setDictionaryId(it.id)
+                    .setSessionId(sessionId)
+                    .build()
+            ).let {
+                if (it.status != MozcStatus.USER_DICTIONARY_COMMAND_SUCCESS)
+                    throw Exception("Deleting dictionary failed!")
+            }
+        }
+
+        // Add missing dictionaries
+        missingDictionaries.forEach {
+            Log.d("MozcDic", "Create dict ${it.first.nameWithoutExtension}")
+
+            executor.sendUserDictionaryCommand(
+                ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
+                    .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.IMPORT_DATA)
+                    .setData(it.first.inputStream().use { it.bufferedReader().readText() } )
+                    .setDictionaryName(it.first.nameWithoutExtension)
+                    .setSessionId(sessionId)
+                    .setIgnoreInvalidEntries(true)
+                    .build()
+            ).let {
+                if (it.status != MozcStatus.USER_DICTIONARY_COMMAND_SUCCESS)
+                    throw Exception("Importing data failed! [${it.status}]")
+            }
+        }
+
+        // Create new user dict
+        val result = executor.sendUserDictionaryCommand(
+            ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
+                .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.CREATE_DICTIONARY)
+                .setDictionaryName(MOZC_DICT_NAME)
+                .setSessionId(sessionId)
+                .build()
+        )
+        result.let {
+            if (it.status != MozcStatus.USER_DICTIONARY_COMMAND_SUCCESS || !it.hasDictionaryId())
+                throw Exception("Creating FUTO_UserDict failed!")
+        }
+        val dictId = result.dictionaryId
+
+        // Add every word from personal dictionary
+        val words = userDictionaryIO.get()
+            .filter { it.locale?.let { localeFromString(it) }?.language == "ja" }
+            .mapNotNull { decodeJapanesePersonalWord(it) }
+
+        words.forEach {
+            executor.sendUserDictionaryCommand(
+                ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
+                    .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.ADD_ENTRY)
+                    .setEntry(
+                        ProtoUserDictionaryStorage.UserDictionary.Entry.newBuilder()
+                            .setKey(it.furigana)
+                            .setValue(it.output)
+                            .setPos(it.pos.id)
+                            .build()
+                    )
+                    .setDictionaryId(dictId)
+                    .setSessionId(sessionId)
+                    .build()
+            ).let {
+                if (it.status != MozcStatus.USER_DICTIONARY_COMMAND_SUCCESS)
+                    throw Exception("Adding word failed!")
+            }
+        }
+
+        executor.sendUserDictionaryCommand(
+            ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
+                .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.SAVE)
+                .setSessionId(sessionId)
+                .build()
+        ).let {
+            if (it.status != MozcStatus.USER_DICTIONARY_COMMAND_SUCCESS)
+                throw Exception("Saving user dict failed! [${it.status}]")
+        }
+    } finally {
+        executor.sendUserDictionaryCommand(
+            ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
+                .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.DELETE_SESSION)
+                .setSessionId(sessionId)
+                .build()
+        )
+    }
 }
 
 private const val SUGGESTION_ID_INVERSION = 10000
@@ -177,8 +362,17 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
             yenSignCharacter = ProtoConfig.Config.YenSignCharacter.YEN_SIGN
 
-            historyLearningLevel = ProtoConfig.Config.HistoryLearningLevel.DEFAULT_HISTORY
-            incognitoMode = BuildConfig.DEBUG || settings.mInputAttributes.mNoLearning || !settings.isPersonalizationEnabled
+            historyLearningLevel = when {
+                settings.mInputAttributes.mNoLearning || !settings.isPersonalizationEnabled ->
+                    ProtoConfig.Config.HistoryLearningLevel.READ_ONLY
+
+                BuildConfig.DEBUG ->
+                    ProtoConfig.Config.HistoryLearningLevel.READ_ONLY
+
+                else ->
+                    ProtoConfig.Config.HistoryLearningLevel.DEFAULT_HISTORY
+            }
+            incognitoMode = false
             generalConfig = ProtoConfig.GeneralConfig.newBuilder().apply {
                 uploadUsageStats = false
             }.build()
@@ -218,53 +412,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         if(resetSelectionTracker) selectionTracker.onConfigurationChanged()
     }
 
-    private fun initJniDictLocations() {
-        val info = helper.context.applicationInfo
-        // Ensure the user profile directory exists.
-        val userProfileDirectory = File(info.dataDir, ".mozc")
-        if (!userProfileDirectory.exists()) {
-            // No profile directory is found. Create the one.
-            if (!userProfileDirectory.mkdirs()) {
-                // Failed to create a directory. The mozc conversion engine will be able to run
-                // even in this case, but no persistent data (e.g. user history, user dictionary)
-                // will be stored, so some fuctions using them won't work well.
-                MozcLog.e("Failed to create user profile directory: " + userProfileDirectory.absolutePath)
-            }
-        }
-
-        val dictFile = ResourceHelper.findFileForKind(
-            helper.context,
-            Locale.forLanguageTag("ja-JP"),
-            FileKind.Dictionary
-        ) ?: run {
-            // Locate the exact locale in case it's something unexpected (different country, script, etc)
-            val subtypes = helper.context.getSetting(SubtypesSetting)
-            subtypes.map {
-                Subtypes.getLocale(Subtypes.convertToSubtype(it))
-            }.firstNotNullOfOrNull {
-                if(it.language.lowercase() == "ja") {
-                    ResourceHelper.findFileForKind(
-                        helper.context,
-                        it,
-                        FileKind.Dictionary
-                    )
-                } else null
-            }
-        }
-
-        if(BuildConfig.DEBUG) {
-            Log.d(TAG, "userProfileDirectory path = ${userProfileDirectory.absolutePath}")
-            Log.d(TAG, "dictFile path = ${dictFile?.absolutePath}")
-        }
-
-        MozcJNI.load(
-            userProfileDirectory.absolutePath,
-            dictFile?.absolutePath ?: ""
-        )
-    }
-
     internal fun mozcInit() {
-        initJniDictLocations()
+        initJniDictLocations(helper.context)
 
         if(!::executor.isInitialized) {
             executor = SessionExecutor.getInstanceInitializedIfNecessary(
@@ -278,10 +427,12 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             )
         }
 
-        executor.setLogging(BuildConfig.DEBUG)
+        executor.setLogging(BuildConfig.DEBUG == true)
 
         updateConfig()
         executor.syncData()
+
+        refreshMozcDictionaries(helper.context, executor)
     }
 
     override fun onCreate() {
@@ -292,6 +443,10 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                     IMEMessage.ReloadResources -> withContext(Dispatchers.Main) {
                         mozcInit()
                     }
+                    IMEMessage.ReloadPersonalDict -> withContext(Dispatchers.Main) {
+                        refreshMozcDictionaries(helper.context, executor)
+                    }
+                    else -> {}
                 }
             }
         }

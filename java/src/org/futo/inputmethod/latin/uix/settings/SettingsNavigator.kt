@@ -55,6 +55,10 @@ import org.futo.inputmethod.latin.uix.settings.pages.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputMenu
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
+import org.futo.inputmethod.latin.uix.settings.pages.pdict.ConfirmDeleteExtraDictFileDialog
+import org.futo.inputmethod.latin.uix.settings.pages.pdict.PersonalDictionaryLanguageList
+import org.futo.inputmethod.latin.uix.settings.pages.pdict.PersonalDictionaryLanguageListForLocale
+import org.futo.inputmethod.latin.uix.settings.pages.pdict.WordPopupDialogF
 import org.futo.inputmethod.latin.uix.urlDecode
 import org.futo.inputmethod.latin.uix.urlEncode
 
@@ -107,6 +111,25 @@ fun SettingsNavigator(
                     navController,
                     it.arguments?.getString("lang")?.urlDecode() ?: ""
                 )
+            }
+            composable("pdict") {
+                PersonalDictionaryLanguageList()
+            }
+            composable("pdict/{lang}") {
+                PersonalDictionaryLanguageListForLocale(
+                    navController,
+                    it,
+                    it.arguments?.getString("lang")?.urlDecode() ?: "all"
+                )
+            }
+            dialog("pdictword/{lang}/{word}") {
+                WordPopupDialogF(
+                    locale = it.arguments?.getString("lang")?.urlDecode(),
+                    selectedWord = it.arguments?.getString("word")?.urlDecode(),
+                )
+            }
+            dialog("pdictdelete/{dict}") {
+                ConfirmDeleteExtraDictFileDialog(it.arguments?.getString("dict")?.urlDecode()!!)
             }
             composable("advancedparams") { AdvancedParametersScreen(navController) }
             composable("actionEdit") { ActionEditorScreen(navController) }
