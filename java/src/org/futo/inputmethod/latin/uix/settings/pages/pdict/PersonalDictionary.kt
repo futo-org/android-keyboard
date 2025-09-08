@@ -207,7 +207,7 @@ fun PersonalDictionaryLanguageListForLocale(
     }
     LazyColumn {
         item {
-            ScreenTitle(locale?.getDisplayName(LocalConfiguration.current.locale) ?: stringResource(R.string.user_dict_settings_all_languages), showBack = true)
+            ScreenTitle(locale?.getDisplayName(LocalConfiguration.current.locale) ?: stringResource(R.string.user_dict_settings_all_languages), showBack = true, navController = navController)
         }
 
         if(localeSupportsFileImport(locale) || files.isNotEmpty()) {
@@ -284,7 +284,7 @@ fun PersonalDictionaryLanguageList() {
     val allLanguagesCount = words.count { it.locale == null }
 
     ScrollableList {
-        ScreenTitle(stringResource(R.string.edit_personal_dictionary), showBack = true)
+        ScreenTitle(stringResource(R.string.edit_personal_dictionary), showBack = true, navController = nav)
         NavigationItem(
             title = stringResource(R.string.user_dict_settings_all_languages),
             subtitle = pluralStringResource(R.plurals.personal_dictionary_language_word_count, allLanguagesCount, allLanguagesCount),

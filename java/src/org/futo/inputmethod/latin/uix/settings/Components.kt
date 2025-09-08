@@ -98,13 +98,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
+import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import kotlin.math.pow
 
 @Composable
-fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHostController? = rememberNavController()) {
+fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHostController? = LocalNavController.current ?: rememberNavController()) {
     val rowModifier = if(showBack) {
         Modifier
             .fillMaxWidth()
