@@ -142,6 +142,15 @@ internal fun getInputFieldType(attribute: EditorInfo): InputFieldType {
 fun mozcUserProfileDir(context: Context) = File(context.applicationInfo.dataDir, ".mozc")
 
 fun initJniDictLocations(context: Context) {
+    if(!context.isDirectBootUnlocked) {
+        val tmpDir = File("/tmp/.mozc")
+        tmpDir.mkdirs()
+        MozcJNI.load(
+            tmpDir.absolutePath,
+            ""
+        )
+    }
+
     // Ensure the user profile directory exists.
     val userProfileDirectory = mozcUserProfileDir(context)
     if (!userProfileDirectory.exists()) {
@@ -334,10 +343,6 @@ private const val TAG = "JapaneseIME"
 class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     companion object { init { MozcLog.forceLoggable = BuildConfig.DEBUG }}
 
-    init {
-        if(!helper.context.isDirectBootUnlocked) TODO("Only supported in unlocked state right now")
-    }
-
     val selectionTracker = SelectionTracker()
     lateinit var executor: SessionExecutor
 
@@ -418,12 +423,12 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
         if(!::executor.isInitialized) {
             executor = SessionExecutor.getInstanceInitializedIfNecessary(
-                SessionHandlerFactory(helper.context),
+                SessionHandlerFactory(Optional.absent()),
                 helper.context
             )
         } else {
             executor.reset(
-                SessionHandlerFactory(helper.context),
+                SessionHandlerFactory(Optional.absent()),
                 helper.context
             )
         }
@@ -431,9 +436,11 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         executor.setLogging(BuildConfig.DEBUG == true)
 
         updateConfig()
-        executor.syncData()
 
-        refreshMozcDictionaries(helper.context, executor)
+        if(helper.context.isDirectBootUnlocked) {
+            executor.syncData()
+            refreshMozcDictionaries(helper.context, executor)
+        }
     }
 
     override fun onCreate() {
@@ -463,7 +470,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     }
 
     override fun onDeviceUnlocked() {
-        throw Exception("Should never be called!")
+        mozcInit()
     }
 
     override fun onStartInput(layout: String) {
