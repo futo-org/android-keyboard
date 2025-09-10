@@ -118,7 +118,7 @@
     <subtype
             android:label="@string/subtype_generic"
             android:subtypeLocale="sr"
-    />	
+    />
     <subtype
             android:label="@string/subtype_generic"
             android:subtypeLocale="sv"
