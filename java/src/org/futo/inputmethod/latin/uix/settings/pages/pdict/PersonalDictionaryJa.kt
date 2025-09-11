@@ -94,10 +94,10 @@ data class JapanesePersonalWord(
     val pos: PosTypes
 )
 
-fun JapanesePersonalWord.encode() = PersonalWord(
+fun JapanesePersonalWord.encode(locale: Locale? = Locale.JAPANESE) = PersonalWord(
     word = output,
     shortcut = "${furigana}\t${PosTypes.entries.indexOf(pos)}",
-    locale = "ja",
+    locale = locale?.toString(),
     appId = 0,
     frequency = 0
 )
@@ -162,7 +162,7 @@ fun JapaneseWordPopupDialog(selectedWord: JapanesePersonalWord? = null, locale: 
                     TextButton(
                         onClick = {
                             val udictIo = UserDictionaryIO(context)
-                            udictIo.remove(listOf(selectedWord.encode()))
+                            udictIo.remove(listOf(selectedWord.encode(locale)))
                             GlobalIMEMessage.tryEmit(IMEMessage.ReloadPersonalDict)
                             navController!!.navigateUp()
                         },
@@ -185,14 +185,14 @@ fun JapaneseWordPopupDialog(selectedWord: JapanesePersonalWord? = null, locale: 
                     val udictIo = UserDictionaryIO(context)
                     if (selectedWord != null) {
                         // Edit existing word by deleting it then re-inserting the new one
-                        udictIo.remove(listOf(selectedWord.encode()))
+                        udictIo.remove(listOf(selectedWord.encode(locale)))
                     }
 
                     val wordToAdd = JapanesePersonalWord(
                         furigana = furigana.value,
                         output = word.value,
                         pos = pos.value
-                    ).encode()
+                    ).encode(locale)
 
                     udictIo.put(
                         listOf(
