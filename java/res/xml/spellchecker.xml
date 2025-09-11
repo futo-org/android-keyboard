@@ -59,4 +59,8 @@
             android:label="@string/subtype_generic"
             android:subtypeLocale="pt_BR"
     />
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="pt_PT"
+    />	
 </spell-checker>
