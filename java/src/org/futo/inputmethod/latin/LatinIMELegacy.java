@@ -82,15 +82,13 @@ import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener;
 import org.futo.inputmethod.latin.utils.ApplicationUtils;
 import org.futo.inputmethod.latin.utils.JniUtils;
 import org.futo.inputmethod.latin.utils.StatsUtils;
-import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.latin.utils.ViewLayoutUtils;
-import org.futo.inputmethod.v2keyboard.CombinerKind;
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -1286,7 +1284,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         getLatinIME().onEmojiDeleted(textBeforeCursor);
     }
 
-    public void setCombiners(@NotNull List<@NotNull CombinerKind> combiners) {
-        mImeManager.setCombiners(combiners);
+    public void setLayout(@NotNull KeyboardLayoutSetV2 layout) {
+        mImeManager.setLayout(layout);
     }
 }

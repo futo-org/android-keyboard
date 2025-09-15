@@ -64,7 +64,7 @@ import org.futo.inputmethod.nativelib.mozc.keyboard.Keyboard
 import org.futo.inputmethod.nativelib.mozc.model.SelectionTracker
 import org.futo.inputmethod.nativelib.mozc.session.SessionExecutor
 import org.futo.inputmethod.nativelib.mozc.session.SessionHandlerFactory
-import org.futo.inputmethod.v2keyboard.CombinerKind
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCandidateWindow
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoCommands.Context.InputFieldType
@@ -74,7 +74,6 @@ import org.mozc.android.inputmethod.japanese.protobuf.ProtoConfig
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoUserDictionaryStorage
 import java.io.File
 import java.util.Locale
-import kotlin.collections.filter
 
 object JapaneseIMESettings {
     val FlickOnly = SettingsKey(
@@ -346,6 +345,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     val selectionTracker = SelectionTracker()
     lateinit var executor: SessionExecutor
 
+    var layoutHint: String? = null
     var configId: KeyboardId? = null
     private fun updateConfig(resetSelectionTracker: Boolean = true) {
         val settings = Settings.getInstance().current
@@ -384,13 +384,18 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             }.build()
         }.build()
 
-        // TODO: Add QWERTY layout at some point
         val keyboardSpecification = when {
             id?.mElement?.kind == KeyboardLayoutKind.Symbols ||
             id?.mElement?.kind == KeyboardLayoutKind.Number ||
             id?.mElement?.kind == KeyboardLayoutKind.NumberBasic ||
             id?.mElement?.kind == KeyboardLayoutKind.Phone ->
                 Keyboard.KeyboardSpecification.SYMBOL_NUMBER
+
+            id?.mElement?.kind == KeyboardLayoutKind.Alphabet0 && layoutHint == "qwerty" ->
+                Keyboard.KeyboardSpecification.QWERTY_KANA
+
+            id?.mElement?.kind == KeyboardLayoutKind.Alphabet1 && layoutHint == "qwerty" ->
+                Keyboard.KeyboardSpecification.QWERTY_ALPHABET
 
             id?.mElement?.kind == KeyboardLayoutKind.Alphabet1 ||
             id?.mElement?.kind == KeyboardLayoutKind.Alphabet2 ||
@@ -1143,8 +1148,9 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         if(prevSuggestions != null) showSuggestionStrip(prevSuggestions)
     }
 
-    override fun setCombiners(kinds: MutableList<CombinerKind>) {
-
+    override fun setLayout(layout: KeyboardLayoutSetV2) {
+        layoutHint = layout.mainLayout.imeHint
+        updateConfig()
     }
 
     private val useExpandableUi = true

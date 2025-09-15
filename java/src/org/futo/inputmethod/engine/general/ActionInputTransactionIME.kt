@@ -11,7 +11,7 @@ import org.futo.inputmethod.latin.uix.ExperimentalICComposing
 import org.futo.inputmethod.latin.uix.ExperimentalICFix
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.utils.TextContext
-import org.futo.inputmethod.v2keyboard.CombinerKind
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
 class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInputTransaction {
     val ic = if(helper.context.getSetting(ExperimentalICFix)) {
@@ -58,7 +58,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {}
     override fun clearUserHistoryDictionaries() {}
     override fun requestSuggestionRefresh() {}
-    override fun setCombiners(kinds: MutableList<CombinerKind>) {}
+    override fun setLayout(layout: KeyboardLayoutSetV2) { }
 
     override val textContext: TextContext = TextContext(
         beforeCursor = ic?.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),

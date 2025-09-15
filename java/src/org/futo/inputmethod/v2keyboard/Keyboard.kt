@@ -293,6 +293,7 @@ data class Keyboard(
     val autoShift: Boolean = true,
 
     val subKeyboards: Map<KeyboardLayoutKind, SubKeyboard> = emptyMap(),
+    val imeHint: String? = null
 
 
     //val element: KeyboardElement = KeyboardElement.Alphabet,

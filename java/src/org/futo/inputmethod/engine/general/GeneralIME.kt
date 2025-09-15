@@ -1,6 +1,5 @@
 package org.futo.inputmethod.engine.general
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -31,7 +30,7 @@ import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
-import org.futo.inputmethod.v2keyboard.CombinerKind
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
 interface WordLearner {
     fun addToHistory(
@@ -612,8 +611,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun getCurrentRecapitalizeState(): Int =
         inputLogic.currentRecapitalizeState
 
-    override fun setCombiners(kinds: MutableList<CombinerKind>) {
-        inputLogic.mWordComposer.setCombiners(kinds)
+    override fun setLayout(layout: KeyboardLayoutSetV2) {
+        inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
     }
 
     private val useExpandableUi = false

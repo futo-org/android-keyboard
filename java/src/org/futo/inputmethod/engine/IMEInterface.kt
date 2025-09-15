@@ -4,7 +4,7 @@ import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.utils.RecapitalizeStatus
-import org.futo.inputmethod.v2keyboard.CombinerKind
+import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
 interface IMEInterface {
     // Basic lifecycle
@@ -79,7 +79,6 @@ interface IMEInterface {
     fun getCurrentAutoCapsState(): Int = Constants.TextUtils.CAP_MODE_OFF
     fun getCurrentRecapitalizeState(): Int = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE
 
-    // TODO: onStartInput contains layout String, maybe it would be better to pass this information
-    //  there (e.g. pass the full KeyboardLayoutSetV2)
-    fun setCombiners(kinds: MutableList<CombinerKind>)
+    // TODO: It would be ideal if this were passed in onStartInput instead
+    fun setLayout(layout: KeyboardLayoutSetV2)
 }
