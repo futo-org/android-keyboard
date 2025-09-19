@@ -33,24 +33,24 @@ class KoashurCombiner: Combiner {
             // ACUTE dead key combinations (letter + \u00B4)
             Pair('t', DEAD_ACUTE) to 'ṭ',  // U+1E6D
             Pair('T', DEAD_ACUTE) to 'Ṭ',  // U+1E6C
-            Pair('d', DEAD_ACUTE) to 'ḍ',  // U+1E0D
-            Pair('D', DEAD_ACUTE) to 'Ḍ',  // U+1E0C
             Pair('e', DEAD_ACUTE) to 'è',  // U+00E8
             Pair('E', DEAD_ACUTE) to 'È',  // U+00C8
             Pair('o', DEAD_ACUTE) to 'ó',  // U+00F3
             Pair('O', DEAD_ACUTE) to 'Ó',  // U+00D3
-            
+    
             // CARON dead key combinations (letter + \u030C)
-            Pair('e', DEAD_CARON) to 'ë',  // U+00EB
-            Pair('E', DEAD_CARON) to 'Ë',  // U+00CB
+            Pair('d', DEAD_CARON) to 'ḍ',  // U+1E0D
+            Pair('D', DEAD_CARON) to 'Ḍ',  // U+1E0C
+            Pair('e', DEAD_CARON) to 'ě',  // U+00EB
+            Pair('E', DEAD_CARON) to 'Ě',  // U+00CB
             Pair('o', DEAD_CARON) to 'ö',  // U+00F6
             Pair('O', DEAD_CARON) to 'Ö',  // U+00D6
             Pair('y', DEAD_CARON) to 'ÿ',  // U+00FF
             Pair('Y', DEAD_CARON) to 'Ÿ',  // U+0178
             Pair('r', DEAD_CARON) to 'ē',  // U+0113 (using r for ē)
             Pair('R', DEAD_CARON) to 'Ē',  // U+0112 (using R for Ē)
-            Pair('w', DEAD_CARON) to 'ě',  // U+011B (using w for ě)
-            Pair('W', DEAD_CARON) to 'Ě'   // U+011A (using W for Ě)
+            Pair('w', DEAD_CARON) to 'ë',  // U+011B (using w for ě)
+            Pair('W', DEAD_CARON) to 'Ë'   // U+011A (using W for Ě)
         )
         
         private val deadKeys = setOf(DEAD_ACUTE, DEAD_CARON)
