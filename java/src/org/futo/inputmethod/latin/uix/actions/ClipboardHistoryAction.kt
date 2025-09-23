@@ -410,8 +410,9 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                 clipboardFileSwap.writeText(json)
 
                 // Validate it can be read
-                if (decodeFile(clipboardFileSwap) != list) {
-                    throw Exception("Saved file data does not match expected data")
+                val decodedData = decodeFile(clipboardFileSwap)
+                if (decodedData != list) {
+                    throw Exception("Saved file data does not match expected data. Decoded: $decodedData, expected: $list")
                 }
 
                 // Move current to bak
