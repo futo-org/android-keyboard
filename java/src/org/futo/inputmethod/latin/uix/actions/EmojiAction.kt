@@ -307,7 +307,7 @@ fun generateSkinToneVariants(emoji: String, emojiMap: Map<String, EmojiItem>): L
                 part
             }
         }
-        variants.add(variant)
+        variants.add(variant.replace("\uFE0F", ""))
     }
 
     return variants
