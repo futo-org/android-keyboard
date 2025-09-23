@@ -256,6 +256,26 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return true;
     }
 
+    public boolean tryExtractCursorPosition() {
+        if(!isConnected()) return false;
+        final ExtractedTextRequest r = new ExtractedTextRequest();
+        r.flags = 0;
+        r.token = 1;
+        r.hintMaxLines = 1;
+        r.hintMaxChars = 512;
+
+        final ExtractedText t = mIC.getExtractedText(r, 0);
+        if(t == null) return false;
+
+        int selStart = t.selectionStart + t.startOffset;
+        int selEnd = t.selectionEnd + t.startOffset;
+        if(selStart < 0 || selEnd < 0) return false;
+
+        mExpectedSelStart = selStart;
+        mExpectedSelEnd = selEnd;
+        return true;
+    }
+
     /**
      * Reload the cached text from the InputConnection.
      *
@@ -1089,6 +1109,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public boolean tryFixLyingCursorPosition() {
         mIC = mConnectionProvider.getCurrentInputConnection();
+        if(tryExtractCursorPosition()) return true;
         final CharSequence textBeforeCursor = getTextBeforeCursor(
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
         final CharSequence selectedText = isConnected() ? mIC.getSelectedText(0 /* flags */) : null;
