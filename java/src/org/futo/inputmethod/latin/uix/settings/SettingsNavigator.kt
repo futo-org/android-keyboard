@@ -141,6 +141,7 @@ fun SettingsNavigator(
             composable("themes") { ThemeScreen(navController) }
             composable("developer") { DeveloperScreen(navController) }
             composable("devtextedit") { DevEditTextVariationsScreen(navController) }
+            composable("devbuggytextedit") { BuggyTextEditVariations(navController) }
             composable("devlayouts") { DevLayoutList(navController) }
             composable("devlayouteditor") { DevLayoutEditor(navController) }
             composable("devkeyboard") { DevKeyboardScreen(navController) }

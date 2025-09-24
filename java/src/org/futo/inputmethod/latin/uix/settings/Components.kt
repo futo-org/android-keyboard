@@ -342,6 +342,7 @@ fun SettingToggleRaw(
     disabled: Boolean = false,
     icon: (@Composable () -> Unit)? = null,
     onSubmenuNavigate: (() -> Unit)? = null,
+    compact: Boolean = false,
 ) {
     SettingItem(
         title = title,
@@ -363,7 +364,8 @@ fun SettingToggleRaw(
                 it
             }
         },
-        onSubmenuNavigate = onSubmenuNavigate
+        onSubmenuNavigate = onSubmenuNavigate,
+        compact = compact
     ) {
         Switch(checked = enabled, onCheckedChange = {
             if (!disabled) {
