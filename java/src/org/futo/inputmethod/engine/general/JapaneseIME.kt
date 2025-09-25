@@ -1140,7 +1140,10 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     }
 
     override fun clearUserHistoryDictionaries() {
-
+        if(helper.context.isDirectBootUnlocked) {
+            executor.clearUserHistory()
+            executor.clearUserPrediction()
+        }
     }
 
     private var prevSuggestions: SuggestedWords? = null

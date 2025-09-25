@@ -9,6 +9,7 @@ import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValues
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
 enum class IMEMessage {
@@ -100,10 +101,13 @@ class IMEManager(
     }
 
     fun clearUserHistoryDictionaries() {
-        // TODO: Should also clear in this situation:
-        //  user is in English and hasn't typed in Japanese in months, but has Japanese dictionaries
-        imes.values.forEach {
-            it.clearUserHistoryDictionaries()
+        if(!created || !helper.context.isDirectBootUnlocked) return
+        IMEKind.entries.forEach { kind ->
+            imes.getOrPut(kind) {
+                kind.factory(helper).also {
+                    if(created) it.onCreate()
+                }
+            }.clearUserHistoryDictionaries()
         }
     }
 
