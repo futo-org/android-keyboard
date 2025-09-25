@@ -1,6 +1,5 @@
 package org.futo.inputmethod.engine.general
 
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -8,7 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
+import org.futo.inputmethod.annotations.UsedForTesting
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
@@ -248,6 +247,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun onFinishInput() {
         inputLogic.finishInput()
         dictionaryFacilitator.onFinishInput(context)
+        updateSuggestionJob?.cancel()
         delayedSync()
     }
 
@@ -323,6 +323,12 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
             Event.EVENT_TYPE_CURSOR_MOVE -> { null }
             else -> { null }
+        }
+
+        when(inputTransaction?.requiredShiftUpdate) {
+            InputTransaction.SHIFT_UPDATE_LATER,
+            InputTransaction.SHIFT_UPDATE_NOW ->
+                helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
         }
 
         if(inputTransaction?.requiresUpdateSuggestions() == true) {
@@ -594,4 +600,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     )
 
     fun debugInfoS() = debugInfo().joinToString("\n")
+
+    @UsedForTesting
+    override fun recycle() {
+        inputLogic.recycle()
+    }
 }

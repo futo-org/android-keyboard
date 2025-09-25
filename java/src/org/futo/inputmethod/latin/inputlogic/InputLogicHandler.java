@@ -32,8 +32,6 @@ import org.futo.inputmethod.latin.common.InputPointers;
 // TODO: This class should probably be removed, it doesn't do much anymore. It just sets input pointers and calls postUpdateSuggestionStrip in a really roundabout way, and the callback is no longer called
 class InputLogicHandler implements Handler.Callback {
     final Handler mNonUIThreadHandler;
-    // TODO: remove this reference.
-    //final LatinIMELegacy mLatinIMELegacy;
     final InputLogic mInputLogic;
     private final Object mLock = new Object();
     private boolean mInBatchInput; // synchronized using {@link #mLock}.

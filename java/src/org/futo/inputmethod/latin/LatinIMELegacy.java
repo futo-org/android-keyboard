@@ -46,7 +46,6 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -131,15 +130,10 @@ public class LatinIMELegacy implements KeyboardActionListener,
     private View mInputView;
     private View mComposeInputView;
     private InsetsUpdater mInsetsUpdater;
-    private final SuggestionStripController mSuggestionStripController;
 
     private RichInputMethodManager mRichImm;
     public final KeyboardSwitcher mKeyboardSwitcher;
-    private final SubtypeState mSubtypeState = new SubtypeState();
     private EmojiAltPhysicalKeyDetector mEmojiAltPhysicalKeyDetector;
-    // Working variable for {@link #startShowingInputView()} and
-    // {@link #onEvaluateInputViewShown()}.
-    private boolean mIsExecutingStartShowingInputView;
 
     // Used for re-initialize keyboard layout after onConfigurationChange.
     @Nullable private Context mDisplayContext;
@@ -147,19 +141,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
             new DictionaryDumpBroadcastReceiver(this);
 
-    private AlertDialog mOptionsDialog;
-
     private final boolean mIsHardwareAcceleratedDrawingEnabled;
-
-    static final class SubtypeState {
-        private InputMethodSubtype mLastActiveSubtype;
-        private boolean mCurrentSubtypeHasBeenUsed;
-
-        public void setCurrentSubtypeHasBeenUsed() {
-            mCurrentSubtypeHasBeenUsed = true;
-        }
-
-    }
 
     // Loading the native library eagerly to avoid unexpected UnsatisfiedLinkError at the initial
     // JNI call as much as possible.
@@ -170,7 +152,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public LatinIMELegacy(InputMethodService inputMethodService, SuggestionStripController suggestionStripController) {
         super();
         mInputMethodService = inputMethodService;
-        mSuggestionStripController = suggestionStripController;
         mSettings = Settings.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mIsHardwareAcceleratedDrawingEnabled = true;
@@ -213,15 +194,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         mSettings.loadSettings(mInputMethodService, mLocale, inputAttributes);
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(currentSettingsValues);
-        // This method is called on startup and language switch, before the new layout has
-        // been displayed. Opening dictionaries never affects responsivity as dictionaries are
-        // asynchronously loaded.
-        // TODO
-        //if (!mHandler.hasPendingReopenDictionaries()) {
-        //    resetDictionaryFacilitator(mRichImm.getCurrentSubtypeLocales());
-        //}
         refreshPersonalizationDictionarySession(currentSettingsValues);
-        //resetDictionaryFacilitatorIfNecessary();
     }
 
     private void refreshPersonalizationDictionarySession(
@@ -243,7 +216,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public void recycle() {
         mInputMethodService.unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         mInputMethodService.unregisterReceiver(mRingerModeChangeReceiver);
-        // TODO: mInputLogic.recycle();
+        mImeManager.recycle();
     }
 
     public boolean isImeSuppressedByHardwareKeyboard() {
@@ -266,15 +239,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
             // TODO: we should probably do this unconditionally here, rather than only when we
             // have a change in hardware keyboard configuration.
             loadSettings();
-            settingsValues = mSettings.getCurrent();
-            if (isImeSuppressedByHardwareKeyboard()) {
-                // We call cleanupInternalStateForFinishInput() because it's the right thing to do;
-                // however, it seems at the moment the framework is passing us a seemingly valid
-                // but actually non-functional InputConnection object. So if this bug ever gets
-                // fixed we'll be able to remove the composition, but until it is this code is
-                // actually not doing much.
-                cleanupInternalStateForFinishInput();
-            }
         }
     }
 
@@ -347,23 +311,19 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
-        // TODO: Debounce PENDING_IMS_CALLBACK mHandler.onStartInput(editorInfo, restarting);
         onStartInputInternal(editorInfo, restarting);
     }
 
     public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
-        // TODO: Debounce PENDING_IMS_CALLBACK mHandler.onStartInputView(editorInfo, restarting);
         onStartInputViewInternal(editorInfo, restarting);
     }
 
     public void onFinishInputView(final boolean finishingInput) {
         StatsUtils.onFinishInputView();
-        // TODO: Debounce PENDING_IMS_CALLBACK mHandler.onFinishInputView(finishingInput);
         onFinishInputViewInternal(finishingInput);
     }
 
     public void onFinishInput() {
-        // TODO: Debounce PENDING_IMS_CALLBACK mHandler.onFinishInput();
         onFinishInputInternal();
     }
 
@@ -460,26 +420,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
         // In the practice, if it is, we should have gotten onConfigurationChanged so it should
         // be fine, but this is horribly confusing and must be fixed AS SOON AS POSSIBLE.
 
-        // In some cases the input connection has not been reset yet and we can't access it. In
-        // this case we will need to call loadKeyboard() later, when it's accessible, so that we
-        // can go into the correct mode, so we need to do some housekeeping here.
-        final boolean needToCallLoadKeyboardLater;
-        //final Suggest suggest = mInputLogic.mSuggest;
-        if (!isImeSuppressedByHardwareKeyboard()) {
-            // The app calling setText() has the effect of clearing the composing
-            // span, so we should reset our state unconditionally, even if restarting is true.
-            // We also tell the input logic about the combining rules for the current subtype, so
-            // it can adjust its combiners if needed.
-            //mInputLogic.startInput(mRichImm.getCombiningRulesExtraValueOfCurrentSubtype(),
-            //        currentSettingsValues);
-            // TODO: IME.onStartInput
-            // (or handle it not in legacy?)
-
-        } else {
-            // If we have a hardware keyboard we don't need to call loadKeyboard later anyway.
-            needToCallLoadKeyboardLater = false;
-        }
-
         if (isDifferentTextField ||
                 !currentSettingsValues.hasSameOrientation(mInputMethodService.getResources().getConfiguration())) {
             loadSettings();
@@ -489,11 +429,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
             currentSettingsValues = mSettings.getCurrent();
 
             switcher.loadKeyboard(editorInfo, currentSettingsValues, getCurrentAutoCapsState());
-            if (false && needToCallLoadKeyboardLater) { // TODO
-                // If we need to call loadKeyboard again later, we need to save its state now. The
-                // later call will be done in #retryResetCaches.
-                switcher.saveKeyboardState();
-            }
         } else if (restarting) {
             switcher.resetKeyboardStateToAlphabet(getCurrentAutoCapsState());
             // In apps like Talk, we come here when the text is sent and the field gets emptied and
@@ -502,11 +437,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
             // Space state must be updated before calling updateShiftState
             switcher.requestUpdatingShiftState(getCurrentAutoCapsState());
         }
-        // This will set the punctuation suggestions if next word suggestion is off;
-        // otherwise it will clear the suggestion strip.
-        setNeutralSuggestionStrip();
-
-        // TODO mHandler.cancelUpdateSuggestionStrip();
 
         updateMainKeyboardViewSettings();
 
@@ -533,17 +463,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     void onFinishInputViewInternal(final boolean finishingInput) {
-        cleanupInternalStateForFinishInput();
-    }
 
-    private void cleanupInternalStateForFinishInput() {
-        // Remove pending messages related to update suggestions
-        // TODO mHandler.cancelUpdateSuggestionStrip();
-        // Should do the following in onFinishInputInternal but until JB MR2 it's not called :(
-        //mInputLogic.finishInput();
-        // TODO: I think we are way past JB MR2 so we can stop calling this here now.
-        //  (it breaks inInput on screen rotation)
-        //mImeManager.onFinishInput();
     }
 
     protected void deallocateMemory() {
@@ -565,13 +485,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
         // we want to show suggestions anyway.
         final SettingsValues settingsValues = mSettings.getCurrent();
         if (mInputMethodService.isInputViewShown()) {
-            // TODO: Originally belated update selection will not go here
             mImeManager.onUpdateSelection(
                     oldSelStart, oldSelEnd,
                     newSelStart, newSelEnd,
                     composingSpanStart, composingSpanEnd
             );
-            mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState());
         }
     }
 
@@ -608,45 +526,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
         mKeyboardSwitcher.onHideWindow();
 
         if (TRACE) Debug.stopMethodTracing();
-        if (isShowingOptionDialog()) {
-            mOptionsDialog.dismiss();
-            mOptionsDialog = null;
-        }
-    }
-
-    public void onDisplayCompletions(final CompletionInfo[] applicationSpecifiedCompletions) {
-        if (DebugFlags.DEBUG_ENABLED) {
-            Log.i(TAG, "Received completions:");
-            if (applicationSpecifiedCompletions != null) {
-                for (int i = 0; i < applicationSpecifiedCompletions.length; i++) {
-                    Log.i(TAG, "  #" + i + ": " + applicationSpecifiedCompletions[i]);
-                }
-            }
-        }
-        if (!mSettings.getCurrent().isApplicationSpecifiedCompletionsOn()) {
-            return;
-        }
-        // If we have an update request in flight, we need to cancel it so it does not override
-        // these completions.
-        // TODO mHandler.cancelUpdateSuggestionStrip();
-        if (applicationSpecifiedCompletions == null) {
-            setNeutralSuggestionStrip();
-            return;
-        }
-
-        final ArrayList<SuggestedWords.SuggestedWordInfo> applicationSuggestedWords =
-                SuggestedWords.getFromApplicationSpecifiedCompletions(
-                        applicationSpecifiedCompletions);
-        final SuggestedWords suggestedWords = new SuggestedWords(applicationSuggestedWords,
-                null /* rawSuggestions */,
-                null /* typedWord */,
-                false /* typedWordValid */,
-                false /* willAutoCorrect */,
-                false /* isObsoleteSuggestions */,
-                SuggestedWords.INPUT_STYLE_APPLICATION_SPECIFIED /* inputStyle */,
-                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
-        // When in fullscreen mode, show completions generated by the application forcibly
-        setSuggestedWords(suggestedWords);
     }
 
     public void setInsets(final InputMethodService.Insets insets) {
@@ -719,12 +598,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     @Override
     public void onRequestPermissionsResult(boolean allGranted) {
-        setNeutralSuggestionStrip();
+
     }
 
     @Override
     public boolean onCustomRequest(final int requestCode) {
-        if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER:
             getLatinIME().getUixManager().showLanguageSwitcher();
@@ -763,7 +641,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     @Override
     public void onSwipeLanguage(int direction) {
-        // TODO: Don't pass to IME interface here? Not sure
         Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, direction);
     }
 
@@ -772,14 +649,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
         if(canMoveCursor) {
             hapticAndAudioFeedback(Constants.CODE_UNSPECIFIED, 0);
         }
-    }
-
-    private boolean isShowingOptionDialog() {
-        return mOptionsDialog != null && mOptionsDialog.isShowing();
-    }
-
-    public void switchToNextSubtype() {
-        Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, 1);
     }
 
     // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
@@ -878,26 +747,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
         getActiveIME().onCancelBatchInput();
     }
 
-    /**
-     * To be called after the InputLogic has gotten a chance to act on the suggested words by the
-     * IME for the full gesture, possibly updating the TextView to reflect the first suggestion.
-     * <p>
-     * This method must be run on the UI Thread.
-     * @param suggestedWords suggested words by the IME for the full gesture.
-     */
-    public void onTailBatchInputResultShown(final SuggestedWords suggestedWords) {
-
-    }
-
-    // This method must run on the UI Thread.
-    void showGesturePreviewAndSuggestionStrip(@Nonnull final SuggestedWords suggestedWords,
-            final boolean dismissGestureFloatingPreviewText) {
-        showSuggestionStrip(suggestedWords);
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        mainKeyboardView.showGestureFloatingPreviewText(suggestedWords,
-                dismissGestureFloatingPreviewText /* dismissDelayed */);
-    }
-
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onFinishSlidingInput() {
@@ -912,64 +761,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
         // Nothing to do so far.
     }
 
-    public boolean hasSuggestionStripView() {
-        return null != mSuggestionStripController;
-    }
-
-    private void setSuggestedWords(final SuggestedWords suggestedWords) {
-        final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        // TODO mInputLogic.setSuggestedWords(suggestedWords);
-        // TODO: Modify this when we support suggestions with hard keyboard
-        if (!hasSuggestionStripView()) {
-            return;
-        }
-        if (!mInputMethodService.onEvaluateInputViewShown()) {
-            return;
-        }
-
-        final boolean shouldShowSuggestionCandidates =
-                currentSettingsValues.mInputAttributes.mShouldShowSuggestions
-                && currentSettingsValues.isSuggestionsEnabledPerUserSettings();
-        final boolean shouldShowSuggestionsStripUnlessPassword = currentSettingsValues.mShowsVoiceInputKey || shouldShowSuggestionCandidates || currentSettingsValues.isApplicationSpecifiedCompletionsOn();
-        final boolean shouldShowSuggestionsStrip = shouldShowSuggestionsStripUnlessPassword
-                && !currentSettingsValues.mInputAttributes.mIsPasswordField;
-        mSuggestionStripController.updateVisibility(shouldShowSuggestionsStrip, mInputMethodService.isFullscreenMode());
-        if (!shouldShowSuggestionsStrip) {
-            return;
-        }
-
-        final boolean isEmptyApplicationSpecifiedCompletions =
-                currentSettingsValues.isApplicationSpecifiedCompletionsOn()
-                && suggestedWords.isEmpty();
-        final boolean noSuggestionsFromDictionaries = suggestedWords.isEmpty()
-                || suggestedWords.isPunctuationSuggestions()
-                || isEmptyApplicationSpecifiedCompletions;
-        final boolean isBeginningOfSentencePrediction = (suggestedWords.mInputStyle
-                == SuggestedWords.INPUT_STYLE_BEGINNING_OF_SENTENCE_PREDICTION);
-
-        if (currentSettingsValues.isSuggestionsEnabledPerUserSettings()
-                || currentSettingsValues.isApplicationSpecifiedCompletionsOn()
-                // We should clear the contextual strip if there is no suggestion from dictionaries.
-                || noSuggestionsFromDictionaries) {
-            // TODO: Is this codepath ever used anymore?
-            //mSuggestionStripController.setSuggestions(suggestedWords,
-            //        mRichImm.getCurrentSubtype().isRtlSubtype());
-        }
-    }
-
     @Override
     public void showSuggestionStrip(SuggestedWords suggestedWords) {
-        // TODO: I think this never gets called anymore
-        suggestedWords = getLatinIME().getSuggestionBlacklist().filterBlacklistedSuggestions(suggestedWords);
-
-        if (suggestedWords.isEmpty()) {
-            setNeutralSuggestionStrip();
-        } else {
-            setSuggestedWords(suggestedWords);
-        }
-        // Cache the auto-correction in accessibility code so we can speak it if the user
-        // touches a key that will insert it.
-        AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords);
+        // Does not get called anymore.
     }
 
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
@@ -991,12 +785,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
         getLatinIME().requestForgetWord(word);
     }
 
-    // This will show either an empty suggestion strip (if prediction is enabled) or
-    // punctuation suggestions (if it's disabled).
     @Override
     public void setNeutralSuggestionStrip() {
-        final SuggestedWords neutralSuggestions = SuggestedWords.getEmptyInstance();
-        setSuggestedWords(neutralSuggestions);
+
     }
 
     // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
@@ -1016,58 +807,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
         }
     }
 
-    /**
-     * After an input transaction has been executed, some state must be updated. This includes
-     * the shift state of the keyboard and suggestions. This method looks at the finished
-     * inputTransaction to find out what is necessary and updates the state accordingly.
-     * @param inputTransaction The transaction that has been executed.
-     */
-    private void updateStateAfterInputTransaction(final InputTransaction inputTransaction) {
-        // TODO
-        /*
-        switch (inputTransaction.getRequiredShiftUpdate()) {
-        case InputTransaction.SHIFT_UPDATE_LATER:
-            mHandler.postUpdateShiftState();
-            break;
-        case InputTransaction.SHIFT_UPDATE_NOW:
-            mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
-                    getCurrentRecapitalizeState());
-            break;
-        default: // SHIFT_NO_UPDATE
-        }
-        if (inputTransaction.requiresUpdateSuggestions()) {
-            final int inputStyle;
-            if (inputTransaction.mEvent.isSuggestionStripPress()) {
-                // Suggestion strip press: no input.
-                inputStyle = SuggestedWords.INPUT_STYLE_NONE;
-            } else if (inputTransaction.mEvent.isGesture()) {
-                inputStyle = SuggestedWords.INPUT_STYLE_TAIL_BATCH;
-            } else {
-                inputStyle = SuggestedWords.INPUT_STYLE_TYPING;
-            }
-            mHandler.postUpdateSuggestionStrip(inputStyle);
-        }
-        if (inputTransaction.didAffectContents()) {
-            mSubtypeState.setCurrentSubtypeHasBeenUsed();
-        }*/
-    }
-
     private void hapticAndAudioFeedback(final int code, final int repeatCount) {
         final MainKeyboardView keyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (keyboardView != null && keyboardView.isInDraggingFinger()) {
             // No need to feedback while finger is dragging.
             return;
-        }
-        if (repeatCount > 0) {
-            if (code == Constants.CODE_DELETE && true /* TODO !mInputLogic.mConnection.canDeleteCharacters() */) {
-                // No need to feedback when repeat delete key will have no effect.
-                return;
-            }
-            // TODO: Use event time that the last feedback has been generated instead of relying on
-            // a repeat count to thin out feedback.
-            if (repeatCount % PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT == 0) {
-                return;
-            }
         }
         final AudioAndHapticFeedbackManager feedbackManager =
                 AudioAndHapticFeedbackManager.getInstance();

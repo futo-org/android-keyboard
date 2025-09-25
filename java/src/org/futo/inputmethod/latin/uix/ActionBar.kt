@@ -1399,7 +1399,6 @@ val exampleSuggestionsList = arrayListOf(
     SuggestedWordInfo("extra3", "", 95, 1, null, 0, 0)
 )
 
-// TODO: Annotation description, can also be multiline
 val japaneseSuggestionsList = arrayListOf(
     SuggestedWordInfo("あいう", "", 97, 1, null, 0, 0, 0, "ＬＯＮＧ　ＡＮＤ　ＣＯＭＰＬＥＸ\nＷＩＴＨ　ＭＵＬＴＩＰＬＥ　ＬＩＮＥＳ\nｓｏｍｅ　ｔｅｘｔ　ｈｅｒｅ"),
     SuggestedWordInfo("アイウ", "", 96, 1, null, 0, 0, 0, "[あああ]"),

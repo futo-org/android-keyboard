@@ -650,7 +650,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     override fun onDisplayCompletions(completions: Array<out CompletionInfo>?) {
-        latinIMELegacy.onDisplayCompletions(completions)
+
     }
 
     override fun onComputeInsets(outInsets: Insets?) {

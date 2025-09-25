@@ -73,8 +73,6 @@ import javax.annotation.Nonnull;
  * This class manages the input logic.
  */
 public final class InputLogic {
-    // true is old behavior, false feels a bit better though
-    // TODO: Investigate whether this should be an option
     private static final boolean COMPOSITION_TEXT_AFTER = false;
 
     private static final String TAG = InputLogic.class.getSimpleName();
@@ -782,7 +780,7 @@ public final class InputLogic {
                 // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
                 break;
             case Constants.CODE_SETTINGS:
-                onSettingsKeyPressed();
+                // obsolete
                 break;
             case Constants.CODE_SHORTCUT:
                 // We need to switch to the shortcut IME. This is handled by LatinIME since the
@@ -794,8 +792,8 @@ public final class InputLogic {
             case Constants.CODE_ACTION_PREVIOUS:
                 performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
                 break;
-            case Constants.CODE_LANGUAGE_SWITCH: // TODO: Remove? Action is used instead
-                handleLanguageSwitchKey();
+            case Constants.CODE_LANGUAGE_SWITCH:
+                // obsolete
                 break;
             case Constants.CODE_EMOJI:
                 // Note: Switching emoji keyboard is being handled in
@@ -1513,13 +1511,6 @@ public final class InputLogic {
     }
 
     /**
-     * Handle a press on the language switch key (the "globe key")
-     */
-    private void handleLanguageSwitchKey() {
-        // TODO: Not used anymore? mLatinIMELegacy.switchToNextSubtype();
-    }
-
-    /**
      * Swap a space with a space-swapping punctuation sign.
      *
      * This method will check that there are two characters before the cursor and that the first
@@ -2197,13 +2188,6 @@ public final class InputLogic {
             return text.substring(1);
         }
         return text;
-    }
-
-    /**
-     * Handle a press on the settings key.
-     */
-    private void onSettingsKeyPressed() {
-        // TODO: No longer used? mLatinIMELegacy.displaySettingsDialog();
     }
 
     /**

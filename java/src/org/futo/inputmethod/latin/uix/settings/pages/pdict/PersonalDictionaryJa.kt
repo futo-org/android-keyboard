@@ -63,8 +63,6 @@ enum class PosTypes(val id: MozcPos, val text: String) {
     GENERIC_SUFFIX(MozcPos.GENERIC_SUFFIX, "接尾一般"),
     PERSON_NAME_SUFFIX(MozcPos.PERSON_NAME_SUFFIX, "接尾人名"),
     PLACE_NAME_SUFFIX(MozcPos.PLACE_NAME_SUFFIX, "接尾地名"),
-
-    // TODO: What are these? A lot of duplicates? Should not be exposed in UI.
     WA_GROUP1_VERB(MozcPos.WA_GROUP1_VERB, "動詞ワ行五段"),
     KA_GROUP1_VERB(MozcPos.KA_GROUP1_VERB, "動詞カ行五段"),
     SA_GROUP1_VERB(MozcPos.SA_GROUP1_VERB, "動詞サ行五段"),

@@ -965,17 +965,6 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     }
 
-    private fun touchEvent(x: Int, y: Int, down: Boolean) = ProtoCommands.Input.TouchEvent.newBuilder().apply {
-            sourceId = 2 // TODO: Supposed to correspond to keyboard keys, not be a constant
-            addStroke(ProtoCommands.Input.TouchPosition.newBuilder().apply {
-                action = if(down) ProtoCommands.Input.TouchAction.TOUCH_DOWN
-                else ProtoCommands.Input.TouchAction.TOUCH_UP
-
-                this.x = x.toFloat() / helper.keyboardRect.width().toFloat()
-                this.y = y.toFloat() / helper.keyboardRect.height().toFloat()
-            }.build())
-        }.build()
-
     // TODO: This rough code pattern appears 3 times in the codebase, probably time to make a util function
     private fun maybeHandleAction(keyCode: Int): Boolean {
         if (keyCode <= Constants.CODE_ACTION_MAX && keyCode >= Constants.CODE_ACTION_0) {
@@ -1045,10 +1034,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 else -> getMozcKeyEvent(event.mCodePoint)
             }
 
-            val touchEvents = emptyList<ProtoCommands.Input.TouchEvent>() /* listOf(
-                touchEvent(event.mX, event.mY, true),
-                touchEvent(event.mX, event.mY, false),
-            ) */
+            val touchEvents = emptyList<ProtoCommands.Input.TouchEvent>()
 
             if(mozcEvent != null) {
                 executor.sendKey(

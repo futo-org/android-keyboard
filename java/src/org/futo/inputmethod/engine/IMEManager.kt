@@ -1,6 +1,7 @@
 package org.futo.inputmethod.engine
 
 import kotlinx.coroutines.flow.MutableSharedFlow
+import org.futo.inputmethod.annotations.UsedForTesting
 import org.futo.inputmethod.engine.general.ActionInputTransactionIME
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
@@ -218,5 +219,10 @@ class IMEManager(
 
     fun setLayout(layout: KeyboardLayoutSetV2) {
         imes.values.forEach { it.onLayoutUpdated(layout) }
+    }
+
+    @UsedForTesting
+    fun recycle() {
+        imes.values.forEach { it.recycle() }
     }
 }

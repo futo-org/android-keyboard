@@ -1,5 +1,6 @@
 package org.futo.inputmethod.engine
 
+import org.futo.inputmethod.annotations.UsedForTesting
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
@@ -82,4 +83,6 @@ interface IMEInterface {
      */
     fun getCurrentAutoCapsState(): Int = Constants.TextUtils.CAP_MODE_OFF
 
+    @UsedForTesting
+    fun recycle() { }
 }
