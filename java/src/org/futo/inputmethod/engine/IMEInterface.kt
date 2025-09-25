@@ -3,7 +3,6 @@ package org.futo.inputmethod.engine
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
-import org.futo.inputmethod.latin.utils.RecapitalizeStatus
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
 interface IMEInterface {
@@ -13,7 +12,8 @@ interface IMEInterface {
     fun onDeviceUnlocked()
 
     // State
-    fun onStartInput(layout: String)
+    fun onStartInput()
+    fun onLayoutUpdated(layout: KeyboardLayoutSetV2)
     fun onOrientationChanged()
     fun onFinishInput()
     fun onUpdateSelection(
@@ -82,6 +82,4 @@ interface IMEInterface {
      */
     fun getCurrentAutoCapsState(): Int = Constants.TextUtils.CAP_MODE_OFF
 
-    // TODO: It would be ideal if this were passed in onStartInput instead
-    fun setLayout(layout: KeyboardLayoutSetV2)
 }

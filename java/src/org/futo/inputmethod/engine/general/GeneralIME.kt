@@ -206,9 +206,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         languageModelFacilitator.loadHistoryLog()
     }
 
-    override fun onStartInput(
-        layout: String
-    ) {
+    override fun onStartInput() {
         resetDictionaryFacilitator(force = false)
         setNeutralSuggestionStrip()
         dictionaryFacilitator.onStartInput()
@@ -608,7 +606,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun getCurrentAutoCapsState(): Int =
         inputLogic.getCurrentAutoCapsState(settings.current)
 
-    override fun setLayout(layout: KeyboardLayoutSetV2) {
+    override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
     }
 

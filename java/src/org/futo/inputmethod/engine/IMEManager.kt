@@ -139,9 +139,7 @@ class IMEManager(
     }
 
     private fun startIme(ime: IMEInterface) {
-        ime.onStartInput(
-            RichInputMethodManager.getInstance().currentSubtype.keyboardLayoutSetName
-        )
+        ime.onStartInput()
 
         // We need to apply previous selection in the event of a switch, because IC.requestCursorUpdates isn't always reliable
         prevSelection?.apply {
@@ -204,6 +202,6 @@ class IMEManager(
     }
 
     fun setLayout(layout: KeyboardLayoutSetV2) {
-        imes.values.forEach { it.setLayout(layout) }
+        imes.values.forEach { it.onLayoutUpdated(layout) }
     }
 }

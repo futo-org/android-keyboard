@@ -25,7 +25,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     override fun onCreate() {}
     override fun onDestroy() {}
     override fun onDeviceUnlocked() {}
-    override fun onStartInput(layout: String) {}
+    override fun onStartInput() {}
     override fun onOrientationChanged() {}
     override fun onFinishInput() {}
     override fun onUpdateSelection(
@@ -58,7 +58,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {}
     override fun clearUserHistoryDictionaries() {}
     override fun requestSuggestionRefresh() {}
-    override fun setLayout(layout: KeyboardLayoutSetV2) { }
+    override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) { }
 
     override val textContext: TextContext = TextContext(
         beforeCursor = ic?.getTextBeforeCursor(Constants.VOICE_INPUT_CONTEXT_SIZE, 0),

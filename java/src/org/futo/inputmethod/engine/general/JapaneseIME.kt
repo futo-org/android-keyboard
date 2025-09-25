@@ -478,7 +478,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         mozcInit()
     }
 
-    override fun onStartInput(layout: String) {
+    override fun onStartInput() {
         setNeutralSuggestionStrip()
         updateConfig()
         executor.resetContext()
@@ -1148,7 +1148,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         if(prevSuggestions != null) showSuggestionStrip(prevSuggestions)
     }
 
-    override fun setLayout(layout: KeyboardLayoutSetV2) {
+    override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
         layoutHint = layout.mainLayout.imeHint
         updateConfig()
     }
