@@ -1,5 +1,6 @@
 package org.futo.inputmethod.engine.general
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -7,6 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
@@ -68,7 +70,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         object : DictionaryFacilitator.DictionaryInitializationListener {
             override fun onUpdateMainDictionaryAvailability(isMainDictionaryAvailable: Boolean) {
                 helper.updateGestureAvailability(isGestureHandlingAvailable())
-                // TODO: Original logic here would refresh suggestions
+                updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING)
             }
         }
 
@@ -142,7 +144,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
 
-    fun resetDictionaryFacilitator(force: Boolean = false) {
+    fun resetDictionaryFacilitator(force: Boolean = false, reloadMainDictionary: Boolean = false) {
         val settings = settings.current
 
         val locales = settings.mInputAttributes.mLocaleOverride?.let {
@@ -159,7 +161,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             context,
             locales, settings.mUseContactsDict,
             settings.mUsePersonalizedDicts,
-            force && true,  /* forceReloadMainDictionary */ // TODO: Not sure
+            reloadMainDictionary,
             settings.mAccount, "",  /* dictNamePrefix */
             availabilityListener /* DictionaryInitializationListener */
         )
@@ -184,7 +186,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             GlobalIMEMessage.collect { message ->
                 when(message) {
                     IMEMessage.ReloadResources -> withContext(Dispatchers.Main) {
-                        resetDictionaryFacilitator(force = true)
+                        resetDictionaryFacilitator(force = true, reloadMainDictionary = true)
                     }
                     else -> {}
                 }
@@ -207,7 +209,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun onStartInput() {
-        resetDictionaryFacilitator(force = false)
+        resetDictionaryFacilitator()
         setNeutralSuggestionStrip()
         dictionaryFacilitator.onStartInput()
         languageModelFacilitator.onStartInput()
@@ -323,9 +325,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             else -> { null }
         }
 
-        // TODO: Shift update
-
-        if(inputTransaction?.requiresUpdateSuggestions() != null) { // TODO
+        if(inputTransaction?.requiresUpdateSuggestions() == true) {
             val inputStyle = if(inputTransaction.mEvent.isSuggestionStripPress) {
                 SuggestedWords.INPUT_STYLE_NONE
             } else if(inputTransaction.mEvent.isGesture) {
@@ -394,11 +394,6 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     updateSuggestionsDictionaryInternal(inputStyle)
                 }
             }
-            // TODO: The below method is broken?
-            /*inputLogic.performUpdateSuggestionStripSync(
-                settings.current,
-                inputStyle
-            )*/
         }
     }
 
@@ -411,45 +406,15 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 return true
             }
         } else {
-            // TODO: ASYNC!!!!!
             if(updateSuggestionJob?.isActive == true) {
-                //runBlocking { updateSuggestionJob?.join() }
                 updateSuggestionJob?.cancel()
                 runBlocking(dictionaryScope) {
                     updateSuggestionsDictionaryInternal(SuggestedWords.INPUT_STYLE_TYPING)
                 }
             }
-
-
-            /*
-                        if (handler.hasPendingUpdateSuggestions()) {
-                handler.cancelUpdateSuggestionStrip();
-                // To know the input style here, we should retrieve the in-flight "update suggestions"
-                // message and read its arg1 member here. However, the Handler class does not let
-                // us retrieve this message, so we can't do that. But in fact, we notice that
-                // we only ever come here when the input style was typing. In the case of batch
-                // input, we update the suggestions synchronously when the tail batch comes. Likewise
-                // for application-specified completions. As for recorrections, we never auto-correct,
-                // so we don't come here either. Hence, the input style is necessarily
-                // INPUT_STYLE_TYPING.
-                performUpdateSuggestionStripSync(settingsValues, SuggestedWords.INPUT_STYLE_TYPING);
-            }
-             */
             return true
         }
     }
-    /*
-    override fun onTextInput(text: String?) {
-        val event = Event.createSoftwareTextEvent(text, Constants.CODE_OUTPUT_TEXT)
-        val completeInputTransaction: InputTransaction =
-            inputLogic.onTextInput(
-                settings.current,
-                event,
-
-            )
-
-        TODO("updateStateAfterInputTransaction")
-    }*/
 
     override fun onStartBatchInput() {
         inputLogic.onStartBatchInput(
@@ -513,11 +478,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         } else {
             var steps = steps
             while (steps < 0) {
-                // TODO: Verify this is right
                 onEvent(
                     Event.createSoftwareKeypressEvent(
-                        Constants.CODE_DELETE,
                         Event.NOT_A_CODE_POINT,
+                        Constants.CODE_DELETE,
                         Constants.NOT_A_COORDINATE,
                         Constants.NOT_A_COORDINATE,
                         false
@@ -596,7 +560,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun clearUserHistoryDictionaries() {
         dictionaryFacilitator.clearUserHistoryDictionary(context)
-        resetDictionaryFacilitator(force = true) // do we need force?
+        resetDictionaryFacilitator(force = true)
     }
 
     override fun requestSuggestionRefresh() {

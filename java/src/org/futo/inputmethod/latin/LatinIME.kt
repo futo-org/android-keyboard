@@ -382,9 +382,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             activeColorScheme.value = themeOption.obtainColors(this@LatinIME)
         }
 
-        latinIMELegacy.onCreate()
-
         imeManager.onCreate()
+        latinIMELegacy.onCreate()
 
         scheduleUpdateCheckingJob(this)
         launchJob { uixManager.showUpdateNoticeIfNeeded() }
