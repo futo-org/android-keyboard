@@ -488,24 +488,19 @@ public class LatinIMELegacy implements KeyboardActionListener,
             mainKeyboardView.closing();
             currentSettingsValues = mSettings.getCurrent();
 
-            switcher.loadKeyboard(editorInfo, currentSettingsValues, getCurrentAutoCapsState(),
-                    getCurrentRecapitalizeState());
+            switcher.loadKeyboard(editorInfo, currentSettingsValues, getCurrentAutoCapsState());
             if (false && needToCallLoadKeyboardLater) { // TODO
                 // If we need to call loadKeyboard again later, we need to save its state now. The
                 // later call will be done in #retryResetCaches.
                 switcher.saveKeyboardState();
             }
         } else if (restarting) {
-            // TODO: Come up with a more comprehensive way to reset the keyboard layout when
-            // a keyboard layout set doesn't get reloaded in this method.
-            switcher.resetKeyboardStateToAlphabet(getCurrentAutoCapsState(),
-                    getCurrentRecapitalizeState());
+            switcher.resetKeyboardStateToAlphabet(getCurrentAutoCapsState());
             // In apps like Talk, we come here when the text is sent and the field gets emptied and
             // we need to re-evaluate the shift state, but not the whole layout which would be
             // disruptive.
             // Space state must be updated before calling updateShiftState
-            switcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
-                    getCurrentRecapitalizeState());
+            switcher.requestUpdatingShiftState(getCurrentAutoCapsState());
         }
         // This will set the punctuation suggestions if next word suggestion is off;
         // otherwise it will clear the suggestion strip.
@@ -576,8 +571,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
                     newSelStart, newSelEnd,
                     composingSpanStart, composingSpanEnd
             );
-            mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
-                    getCurrentRecapitalizeState());
+            mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState());
         }
     }
 
@@ -699,10 +693,6 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     int getCurrentAutoCapsState() {
         return getActiveIME().getCurrentAutoCapsState();
-    }
-
-    int getCurrentRecapitalizeState() {
-        return getActiveIME().getCurrentRecapitalizeState();
     }
 
     /**
@@ -835,7 +825,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
                         mKeyboardSwitcher.getCurrentKeyboardScriptId(), mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);*/
         getActiveIME().onEvent(event);
-        mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+        mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState());
     }
 
     // A helper method to split the code point and the key code. Ultimately, they should not be
@@ -861,7 +851,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public void onTextInput(final String rawText) {
         final Event event = Event.createSoftwareTextEvent(rawText, Constants.CODE_OUTPUT_TEXT);
         getActiveIME().onEvent(event);
-        mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+        mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState());
     }
 
     private IMEInterface getActiveIME() {
@@ -912,8 +902,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     @Override
     public void onFinishSlidingInput() {
         // User finished sliding input.
-        mKeyboardSwitcher.onFinishSlidingInput(getCurrentAutoCapsState(),
-                getCurrentRecapitalizeState());
+        mKeyboardSwitcher.onFinishSlidingInput(getCurrentAutoCapsState());
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
@@ -1023,7 +1012,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
         if (mKeyboardSwitcher.getMainKeyboardView() != null) {
             // Reload keyboard because the current language has been changed.
             mKeyboardSwitcher.loadKeyboard(mInputMethodService.getCurrentInputEditorInfo(), mSettings.getCurrent(),
-                    getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+                    getCurrentAutoCapsState());
         }
     }
 
@@ -1091,8 +1080,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     @Override
     public void onPressKey(final int primaryCode, final int repeatCount,
             final boolean isSinglePointer) {
-        mKeyboardSwitcher.onPressKey(primaryCode, isSinglePointer, getCurrentAutoCapsState(),
-                getCurrentRecapitalizeState());
+        mKeyboardSwitcher.onPressKey(primaryCode, isSinglePointer, getCurrentAutoCapsState());
         hapticAndAudioFeedback(primaryCode, repeatCount);
     }
 
@@ -1100,8 +1088,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     // press matching call is {@link #onPressKey(int,int,boolean)} above.
     @Override
     public void onReleaseKey(final int primaryCode, final boolean withSliding) {
-        mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding, getCurrentAutoCapsState(),
-                getCurrentRecapitalizeState());
+        mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding, getCurrentAutoCapsState());
     }
 
     private HardwareEventDecoder getHardwareKeyEventDecoder(final int deviceId) {

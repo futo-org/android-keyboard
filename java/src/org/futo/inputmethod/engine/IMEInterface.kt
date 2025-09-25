@@ -75,9 +75,12 @@ interface IMEInterface {
     /** Refresh as a result of blacklist update */
     fun requestSuggestionRefresh()
 
-    // TODO: Not sure how to do this properly
+    /**
+     * Hints the keyboard switcher whether to auto-shift (capitalize) the layout or not.
+     * For immediate changes, call imeHelper.keyboardSwitcher.requestUpdatingShiftState(mode)
+     * Value of CAP_MODE_OFF will unshift it, any other value will shift it.
+     */
     fun getCurrentAutoCapsState(): Int = Constants.TextUtils.CAP_MODE_OFF
-    fun getCurrentRecapitalizeState(): Int = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE
 
     // TODO: It would be ideal if this were passed in onStartInput instead
     fun setLayout(layout: KeyboardLayoutSetV2)

@@ -209,14 +209,12 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             latinIMELegacy.mKeyboardSwitcher.loadKeyboard(
                 currentInputEditorInfo ?: return,
                 latinIMELegacy.mSettings.current,
-                latinIMELegacy.currentAutoCapsState,
-                latinIMELegacy.currentRecapitalizeState
+                latinIMELegacy.currentAutoCapsState
             )
         } else {
             latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(
                 currentInputEditorInfo ?: return,
                 latinIMELegacy.currentAutoCapsState,
-                latinIMELegacy.currentRecapitalizeState,
                 latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName
             )
         }

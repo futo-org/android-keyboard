@@ -88,17 +88,16 @@ public class MockKeyboardSwitcher implements SwitchActions {
     }
 
     @Override
-    public void requestUpdatingShiftState(final int currentAutoCapsState,
-            final int currentRecapitalizeState) {
-        mState.onUpdateShiftState(currentAutoCapsState, currentRecapitalizeState);
+    public void requestUpdatingShiftState(final int currentAutoCapsState) {
+        mState.onUpdateShiftState(currentAutoCapsState);
     }
 
     public void updateShiftState() {
-        mState.onUpdateShiftState(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+        mState.onUpdateShiftState(mAutoCapsState);
     }
 
     public void loadKeyboard() {
-        mState.onLoadKeyboard(null, mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+        mState.onLoadKeyboard(null, mAutoCapsState, null);
     }
 
     public void saveKeyboardState() {
@@ -106,17 +105,16 @@ public class MockKeyboardSwitcher implements SwitchActions {
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer) {
-        mState.onPressKey(code, isSinglePointer, mAutoCapsState,
-                RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+        mState.onPressKey(code, isSinglePointer, mAutoCapsState);
     }
 
     public void onReleaseKey(final int code, final boolean withSliding) {
-        onReleaseKey(code, withSliding, mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+        onReleaseKey(code, withSliding, mAutoCapsState);
     }
 
     public void onReleaseKey(final int code, final boolean withSliding,
-            final int currentAutoCapsState, final int currentRecapitalizeState) {
-        mState.onReleaseKey(code, withSliding, currentAutoCapsState, currentRecapitalizeState);
+            final int currentAutoCapsState) {
+        mState.onReleaseKey(code, withSliding, currentAutoCapsState);
         if (mLongPressTimeoutCode == code) {
             mLongPressTimeoutCode = 0;
         }
@@ -135,10 +133,10 @@ public class MockKeyboardSwitcher implements SwitchActions {
                 Event.createSoftwareKeypressEvent(code /* codePoint */, code /* keyCode */,
                         Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
                         false /* isKeyRepeat */);
-        mState.onEvent(event, mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+        mState.onEvent(event, mAutoCapsState);
     }
 
     public void onFinishSlidingInput() {
-        mState.onFinishSlidingInput(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+        mState.onFinishSlidingInput(mAutoCapsState);
     }
 }

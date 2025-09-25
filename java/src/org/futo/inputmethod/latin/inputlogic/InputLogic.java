@@ -632,8 +632,7 @@ public final class InputLogic {
                 // after typing some letters and a period, then gesturing; the keyboard is not in
                 // caps mode yet, but since a gesture is starting, it should go in caps mode,
                 // unless the user explictly said it should not.
-                keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(settingsValues),
-                        getCurrentRecapitalizeState());
+                keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(settingsValues));
             }
         }
         mConnection.endBatchEdit();
@@ -2482,8 +2481,7 @@ public final class InputLogic {
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.PHANTOM;
-        keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(settingsValues),
-                getCurrentRecapitalizeState());
+        keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(settingsValues));
 
         updateUiInputState();
     }

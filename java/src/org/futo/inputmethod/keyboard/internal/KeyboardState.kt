@@ -133,7 +133,7 @@ data class KeyboardLayoutElement(
 
 interface SwitchActions {
     fun setKeyboard(element: KeyboardLayoutElement)
-    fun requestUpdatingShiftState(autoCapsFlags: Int, recapitalizeMode: Int)
+    fun requestUpdatingShiftState(autoCapsFlags: Int)
 }
 
 internal data class SavedKeyboardState(
@@ -249,7 +249,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
         ))
     }
 
-    private fun setAlphabetLayout(autoCapsFlags: Int, recapitalizeMode: Int) {
+    private fun setAlphabetLayout(autoCapsFlags: Int) {
         val page = when {
             alphabetShiftState.isShiftLocked -> KeyboardLayoutPage.ShiftLocked
             alphabetShiftState.isManualShifted -> KeyboardLayoutPage.ManuallyShifted
@@ -268,10 +268,10 @@ class KeyboardState(private val switchActions: SwitchActions) {
             page = page
         ))
 
-        switchActions.requestUpdatingShiftState(autoCapsFlags, recapitalizeMode)
+        switchActions.requestUpdatingShiftState(autoCapsFlags)
     }
 
-    fun onLoadKeyboard(editorInfo: EditorInfo?, autoCapsFlags: Int, recapitalizeMode: Int, layoutSetName: String?) {
+    fun onLoadKeyboard(editorInfo: EditorInfo?, autoCapsFlags: Int, layoutSetName: String?) {
         // Reset alphabet shift state.
         alphabetShiftState.isShiftLocked = false
 
@@ -289,9 +289,9 @@ class KeyboardState(private val switchActions: SwitchActions) {
 
             else ->
                 if (savedKeyboardState.isValid) {
-                    onRestoreKeyboardState(autoCapsFlags, recapitalizeMode)
+                    onRestoreKeyboardState(autoCapsFlags)
                 } else {
-                    setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+                    setAlphabetLayout(autoCapsFlags)
                 }
         }
 
@@ -311,12 +311,12 @@ class KeyboardState(private val switchActions: SwitchActions) {
         }
     }
 
-    private fun onRestoreKeyboardState(autoCapsFlags: Int, recapitalizeMode: Int) {
+    private fun onRestoreKeyboardState(autoCapsFlags: Int) {
         val state = savedKeyboardState
 
         setLayout(state.layout)
         prefersNumberLayout = state.prefersNumberLayout
-        switchActions.requestUpdatingShiftState(autoCapsFlags, recapitalizeMode)
+        switchActions.requestUpdatingShiftState(autoCapsFlags)
     }
 
     val shifted: Boolean
@@ -373,13 +373,10 @@ class KeyboardState(private val switchActions: SwitchActions) {
         shiftTime = null
     }
 
-    fun onPressKey(
-        code: Int, isSinglePointer: Boolean, autoCapsFlags: Int,
-        recapitalizeMode: Int
-    ) {
+    fun onPressKey(code: Int, isSinglePointer: Boolean, autoCapsFlags: Int) {
         if (DEBUG_EVENT) {
             Log.d(
-                TAG, "onPressKey: code=${Constants.printableCode(code)} flags($autoCapsFlags, $recapitalizeMode) single=$isSinglePointer state=$debugState"
+                TAG, "onPressKey: code=${Constants.printableCode(code)} flags($autoCapsFlags) single=$isSinglePointer state=$debugState"
             )
         }
 
@@ -401,7 +398,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
                 symbolKeyState.onPress()
                 if(currentLayout.kind == KeyboardLayoutKind.Symbols
                     || currentLayout.kind == KeyboardLayoutKind.Number) {
-                    setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+                    setAlphabetLayout(autoCapsFlags)
                 } else {
                     setSymbolLayout()
                 }
@@ -413,27 +410,23 @@ class KeyboardState(private val switchActions: SwitchActions) {
         }
     }
 
-    private fun finalizeChord(autoCapsFlags: Int,
-                              recapitalizeMode: Int) {
+    private fun finalizeChord(autoCapsFlags: Int) {
         when {
             shiftKeyState.isChording && shifted -> toggleShift(false)
-            symbolKeyState.isChording && !isAlphabet -> setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+            symbolKeyState.isChording && !isAlphabet -> setAlphabetLayout(autoCapsFlags)
             symbolKeyState.isChording && isAlphabet -> setSymbolLayout()
         }
     }
 
-    fun onReleaseKey(
-        code: Int, withSliding: Boolean, autoCapsFlags: Int,
-        recapitalizeMode: Int
-    ) {
+    fun onReleaseKey(code: Int, withSliding: Boolean, autoCapsFlags: Int) {
         if (DEBUG_EVENT) {
             Log.d(
-                TAG, "onReleaseKey: code=${Constants.printableCode(code)} flags($autoCapsFlags, $recapitalizeMode) sliding=$withSliding state=$debugState"
+                TAG, "onReleaseKey: code=${Constants.printableCode(code)} flags($autoCapsFlags) sliding=$withSliding state=$debugState"
             )
         }
         when (code) {
             Constants.CODE_SHIFT -> {
-                finalizeChord(autoCapsFlags, recapitalizeMode)
+                finalizeChord(autoCapsFlags)
                 if(!withSliding)
                     shiftKeyState.onRelease()
             }
@@ -441,7 +434,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
                 lockShift()
             }
             Constants.CODE_SWITCH_ALPHA_SYMBOL -> {
-                finalizeChord(autoCapsFlags, recapitalizeMode)
+                finalizeChord(autoCapsFlags)
                 if(!withSliding)
                     symbolKeyState.onRelease()
             }
@@ -452,7 +445,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
                     && currentLayout.page == KeyboardLayoutPage.Base
                     && currentLayout.kind == KeyboardLayoutKind.Symbols
                 ) {
-                    setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+                    setAlphabetLayout(autoCapsFlags)
                 }
             }
             else -> {
@@ -461,38 +454,35 @@ class KeyboardState(private val switchActions: SwitchActions) {
         }
     }
 
-    fun onUpdateShiftState(autoCapsFlags: Int, recapitalizeMode: Int) {
+    fun onUpdateShiftState(autoCapsFlags: Int) {
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onUpdateShiftState($autoCapsFlags, $recapitalizeMode): $debugState")
+            Log.d(TAG, "onUpdateShiftState($autoCapsFlags): $debugState")
         }
-        updateAlphabetShiftState(autoCapsFlags, recapitalizeMode)
+        updateAlphabetShiftState(autoCapsFlags)
     }
 
-    // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
-    // when a keyboard layout set doesn't get reloaded in LatinIME.onStartInputViewInternal().
     fun onResetKeyboardStateToAlphabet(
-        autoCapsFlags: Int,
-        recapitalizeMode: Int
+        autoCapsFlags: Int
     ) {
         if (DEBUG_EVENT) {
             Log.d(
                 TAG, "onResetKeyboardStateToAlphabet: $debugState"
             )
         }
-        //resetKeyboardStateToAlphabet(autoCapsFlags, recapitalizeMode)
+        setAlphabetLayout(autoCapsFlags)
     }
 
-    fun onFinishSlidingInput(autoCapsFlags: Int, recapitalizeMode: Int) {
+    fun onFinishSlidingInput(autoCapsFlags: Int) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onFinishSlidingInput: $debugState")
         }
 
-        finalizeChord(autoCapsFlags, recapitalizeMode)
+        finalizeChord(autoCapsFlags)
         shiftKeyState.onRelease()
         symbolKeyState.onRelease()
     }
 
-    private fun updateAlphabetShiftState(autoCapsFlags: Int, recapitalizeMode: Int) {
+    private fun updateAlphabetShiftState(autoCapsFlags: Int) {
         // Only return to main layout in alphabet layout
         if(!isAlphabet) return
 
@@ -516,12 +506,12 @@ class KeyboardState(private val switchActions: SwitchActions) {
         }
     }
 
-    private fun switchToAlpha(alphaIndex: Int, autoCapsFlags: Int, recapitalizeMode: Int) {
+    private fun switchToAlpha(alphaIndex: Int, autoCapsFlags: Int) {
         preferredAlphabetKind = currentLayoutSet to alphaIndex
-        setAlphabetLayout(autoCapsFlags, recapitalizeMode)
+        setAlphabetLayout(autoCapsFlags)
     }
 
-    private fun switchToAltLayout(altLayoutIdx: Int, autoCapsFlags: Int, recapitalizeMode: Int) {
+    private fun switchToAltLayout(altLayoutIdx: Int, autoCapsFlags: Int) {
         val altPage = when(altLayoutIdx) {
             0 -> KeyboardLayoutPage.Alt0
             1 -> KeyboardLayoutPage.Alt1
@@ -533,19 +523,19 @@ class KeyboardState(private val switchActions: SwitchActions) {
         if(currentLayout.page == altPage) {
             // Switch back to base
             toggleShift(false)
-            updateAlphabetShiftState(autoCapsFlags, recapitalizeMode)
+            updateAlphabetShiftState(autoCapsFlags)
         } else {
             alphabetShiftState.setShifted(false)
             setLayout(currentLayout.copy(page = altPage))
         }
     }
 
-    fun onEvent(event: Event, autoCapsFlags: Int, recapitalizeMode: Int) {
+    fun onEvent(event: Event, autoCapsFlags: Int) {
         val code = if (event.isFunctionalKeyEvent) event.mKeyCode else event.mCodePoint
         if (DEBUG_EVENT) {
             Log.d(
                 TAG, "onEvent: code=" + Constants.printableCode(code)
-                        + " flags($autoCapsFlags, $recapitalizeMode)"
+                        + " flags($autoCapsFlags)"
                         + " " + debugState
             )
         }
@@ -565,20 +555,19 @@ class KeyboardState(private val switchActions: SwitchActions) {
             Constants.CODE_TO_ALT_0_LAYOUT,
             Constants.CODE_TO_ALT_1_LAYOUT,
             Constants.CODE_TO_ALT_2_LAYOUT -> {
-                switchToAltLayout(Constants.CODE_TO_ALT_0_LAYOUT - code,
-                    autoCapsFlags, recapitalizeMode)
+                switchToAltLayout(Constants.CODE_TO_ALT_0_LAYOUT - code, autoCapsFlags)
             }
 
             Constants.CODE_TO_ALPHA_0_LAYOUT,
             Constants.CODE_TO_ALPHA_1_LAYOUT,
             Constants.CODE_TO_ALPHA_2_LAYOUT,
             Constants.CODE_TO_ALPHA_3_LAYOUT -> {
-                switchToAlpha(Constants.CODE_TO_ALPHA_0_LAYOUT - code, autoCapsFlags, recapitalizeMode)
+                switchToAlpha(Constants.CODE_TO_ALPHA_0_LAYOUT - code, autoCapsFlags)
             }
         }
 
         if (Constants.isLetterCode(code)) {
-            updateAlphabetShiftState(autoCapsFlags, recapitalizeMode)
+            updateAlphabetShiftState(autoCapsFlags)
         }
     }
 }

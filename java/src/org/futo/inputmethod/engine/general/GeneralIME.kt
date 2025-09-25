@@ -608,9 +608,6 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun getCurrentAutoCapsState(): Int =
         inputLogic.getCurrentAutoCapsState(settings.current)
 
-    override fun getCurrentRecapitalizeState(): Int =
-        inputLogic.currentRecapitalizeState
-
     override fun setLayout(layout: KeyboardLayoutSetV2) {
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
     }
