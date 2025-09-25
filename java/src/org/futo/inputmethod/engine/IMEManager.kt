@@ -5,10 +5,10 @@ import org.futo.inputmethod.engine.general.ActionInputTransactionIME
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.LatinIME
-import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValues
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
+import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
@@ -101,7 +101,13 @@ class IMEManager(
     }
 
     fun clearUserHistoryDictionaries() {
-        if(!created || !helper.context.isDirectBootUnlocked) return
+        if(!created) {
+            throwIfDebug(IllegalStateException("Cannot clear user history dictionaries before being created."))
+            return
+        }
+
+        if(!helper.context.isDirectBootUnlocked) return
+
         IMEKind.entries.forEach { kind ->
             imes.getOrPut(kind) {
                 kind.factory(helper).also {
@@ -113,8 +119,13 @@ class IMEManager(
 
     private var currentActionInputTransactionIME: ActionInputTransactionIME? = null
     fun createInputTransaction(): ActionInputTransaction {
-        if(currentActionInputTransactionIME != null) TODO()
-        if(!inInput) TODO()
+        if(currentActionInputTransactionIME != null) {
+            throwIfDebug(IllegalStateException("Cannot create an input transaction while one is already active."))
+            endInputTransaction(currentActionInputTransactionIME!!)
+        }
+        if(!inInput) {
+            throwIfDebug(IllegalStateException("Cannot create an input transaction while outside of input."))
+        }
 
         val existingIme = getActiveIME(settings.current)
         val ime = ActionInputTransactionIME(helper)
