@@ -1284,7 +1284,6 @@ public final class InputLogic {
                 // like the smiley key or the .com key.
                 mConnection.deleteTextBeforeCursor(mEnteredText.length());
                 StatsUtils.onDeleteMultiCharInput(mEnteredText.length());
-                mImeHelper.onCodePointDeleted(mEnteredText);
                 mEnteredText = null;
                 // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
                 // In addition we know that spaceState is false, and that we should not be
@@ -1430,9 +1429,6 @@ public final class InputLogic {
                         }
                     }
                     StatsUtils.onBackspacePressed(totalDeletedLength);
-
-                    if(codePointBeforeCursor >= 0x1F600)
-                        mImeHelper.onCodePointDeleted(textDeleted);
                 }
             }
             if (!hasUnlearnedWordBeingDeleted) {

@@ -62,7 +62,6 @@ import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
-import org.futo.inputmethod.latin.uix.EmojiTracker.unuseEmoji
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
@@ -803,14 +802,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 withContext(Dispatchers.Default) {
                     useEmoji(suggestion.mWord)
                 }
-            }
-        }
-    }
-
-    fun onEmojiDeleted(emoji: String) {
-        lifecycleScope.launch {
-            withContext(Dispatchers.Default) {
-                unuseEmoji(emoji)
             }
         }
     }

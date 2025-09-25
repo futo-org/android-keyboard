@@ -41,11 +41,6 @@ class IMEHelper(
             return Rect(0, 0, kb?.mBaseWidth ?: 1, kb?.mBaseHeight ?: 1)
         }
 
-    // TODO: Maybe could just wrap this in something else...
-    public fun onCodePointDeleted(textBeforeCursor: String) {
-        latinIME.onEmojiDeleted(textBeforeCursor)
-    }
-
     public fun updateBoostedCodePoints(codes: Set<Int>?) {
         latinIME.latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.mKeyDetector?.let {
             it.updateBoostedCodePoints(codes)
