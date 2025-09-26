@@ -48,7 +48,7 @@ class LanguageModel(
     }
 
 
-    private fun getComposeInfo(composedData: ComposedData, keyDetector: KeyDetector): ComposeInfo {
+    private fun getComposeInfo(composedData: ComposedData): ComposeInfo {
         var partialWord = composedData.mTypedWord
 
         val inputPointers = composedData.mInputPointers
@@ -164,7 +164,6 @@ class LanguageModel(
         suggestedWords: SuggestedWords,
         composedData: ComposedData,
         ngramContext: NgramContext,
-        keyDetector: KeyDetector,
         personalDictionary: List<String>,
     ): List<SuggestedWordInfo>? = withContext(LanguageModelScope) {
         if (mNativeState == 0L) {
@@ -174,7 +173,7 @@ class LanguageModel(
         }
 
         var composeInfo = withContext(Dispatchers.Main) {
-            getComposeInfo(composedData, keyDetector)
+            getComposeInfo(composedData)
         }
 
         if(composeInfo.xCoords.size != composeInfo.yCoords.size) {
@@ -219,46 +218,20 @@ class LanguageModel(
         }.sortedByDescending { it.mScore }
     }
 
-    suspend fun getSuggestions(
-        composedData: ComposedData,
-        ngramContext: NgramContext,
-        keyDetector: KeyDetector,
-        settingsValuesForSuggestion: SettingsValuesForSuggestion?,
+    private suspend fun loadModelIfNeeded() = if(mNativeState == 0L) {
+        loadModel()
+        false
+    } else {
+        true
+    }
+
+    private fun getSuggestionsInternal(
         proximityInfoHandle: Long,
-        sessionId: Int,
+        context: String,
+        composeInfo: ComposeInfo,
         autocorrectThreshold: Float,
-        inOutWeightOfLangModelVsSpatialModel: FloatArray?,
-        personalDictionary: List<String>,
         bannedWords: Array<String>
-    ): ArrayList<SuggestedWordInfo>? = withContext(LanguageModelScope) {
-        if (mNativeState == 0L) {
-            loadModel()
-            Log.d("LanguageModel", "Exiting because mNativeState == 0")
-            return@withContext null
-        }
-
-        // Disable gesture for now
-        if(composedData.mIsBatchMode) {
-            return@withContext null
-        }
-
-
-        var composeInfo = with(Dispatchers.Main) {
-            getComposeInfo(composedData, keyDetector)
-        }
-
-        if(composeInfo.xCoords.size != composeInfo.yCoords.size) {
-            Log.w("LanguageModel", "Dropping composeInfo with mismatching coords size")
-            return@withContext null
-        }
-
-        var context = getContext(composeInfo, ngramContext)
-
-        composeInfo = safeguardComposeInfo(composeInfo)
-        context = safeguardContext(context)
-        context = addPersonalDictionary(context, personalDictionary)
-
-
+    ): ArrayList<SuggestedWordInfo> {
         val maxResults = 128
         val outProbabilities = FloatArray(maxResults)
         val outStrings = arrayOfNulls<String>(maxResults)
@@ -329,23 +302,32 @@ class LanguageModel(
             )
         }
 
-        /*
-        if(kind == SuggestedWords.SuggestedWordInfo.KIND_PREDICTION) {
-            // TODO: Forcing the thing to appear
-            for (int i = suggestions.size(); i < 3; i++) {
-                String word = " ";
-                for (int j = 0; j < i; j++) word += " ";
-
-                suggestions.add(new SuggestedWords.SuggestedWordInfo(word, context, 1, kind, this, 0, 0));
-            }
-        }
-        */
-
         for (suggestion in suggestions) {
             suggestion.mOriginatesFromTransformerLM = true
         }
 
-        return@withContext suggestions
+        return suggestions
+    }
+
+    suspend fun getSuggestions(
+        composedData: ComposedData,
+        ngramContext: NgramContext,
+        proximityInfoHandle: Long,
+        autocorrectThreshold: Float,
+        personalDictionary: List<String>,
+        bannedWords: Array<String>
+    ): ArrayList<SuggestedWordInfo>? = withContext(LanguageModelScope) {
+        if(!loadModelIfNeeded()) return@withContext null
+        if(composedData.mIsBatchMode) return@withContext null
+        var composeInfo = getComposeInfo(composedData)
+        var context = getContext(composeInfo, ngramContext)
+
+        composeInfo = safeguardComposeInfo(composeInfo)
+        context = safeguardContext(context)
+
+        context = addPersonalDictionary(context, personalDictionary)
+
+        return@withContext getSuggestionsInternal(proximityInfoHandle, context, composeInfo, autocorrectThreshold, bannedWords)
     }
 
     suspend fun closeInternalLocked() = withContext(LanguageModelScope) {

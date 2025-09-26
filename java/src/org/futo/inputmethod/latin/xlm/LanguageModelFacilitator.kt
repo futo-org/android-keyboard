@@ -235,12 +235,8 @@ public class LanguageModelFacilitator(
             return languageModel?.getSuggestions(
                 values.composedData,
                 values.ngramContext,
-                keyboardSwitcher.mainKeyboardView.mKeyDetector,
-                settingsForPrediction,
                 proximityInfoHandle,
-                -1,
                 autocorrectThreshold,
-                floatArrayOf(),
                 userDictionary.getWords().map { it.word },
                 suggestionBlacklist.currentBlacklist.toTypedArray<String>()
             )
@@ -317,7 +313,6 @@ public class LanguageModelFacilitator(
                             results,
                             values.composedData,
                             values.ngramContext,
-                            keyboardSwitcher.mainKeyboardView.mKeyDetector,
                             userDictionary.getWords().map { it.word }
                         )
 
