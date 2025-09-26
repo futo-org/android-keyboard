@@ -147,6 +147,21 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return mIC != null;
     }
 
+    private void updateConnection() {
+        InputConnection ic = mConnectionProvider.getCurrentInputConnection();
+        if(ic == null) {
+            mIC = null;
+            return;
+        }
+        if(mIC != null && mIC instanceof InputConnectionPatched && ((InputConnectionPatched) mIC).getMTarget() == ic) return;
+
+        if(true) {
+            ic = new InputConnectionPatched(false, ic);
+        }
+
+        mIC = ic;
+    }
+
     /**
      * Returns whether or not the underlying InputConnection is slow. When true, we want to avoid
      * calling InputConnection methods that trigger an IPC round-trip (e.g., getTextAfterCursor).
@@ -194,8 +209,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     public void beginBatchEdit() {
-        if (++mNestLevel == 1) {
-            mIC = mConnectionProvider.getCurrentInputConnection();
+        /*if (++mNestLevel == 1) {
+            updateConnection();
             if (isConnected()) {
                 mIC.beginBatchEdit();
             }
@@ -206,15 +221,15 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             Log.e(TAG, "Nest level too deep : " + mNestLevel);
         }
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
-        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();*/
     }
 
     public void endBatchEdit() {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        /*if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
         if (--mNestLevel == 0 && isConnected()) {
             mIC.endBatchEdit();
         }
-        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();*/
     }
 
     public void restartBatchEdit() {
@@ -257,6 +272,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     public boolean tryExtractCursorPosition() {
+        // TODO: Might be a good idea to test if the framework can be trusted to provide accurate selectionStart
+        //  e.g. request getTextBeforeCursor(huge number), count, compare to selectionStart
         if(!isConnected()) return false;
         final ExtractedTextRequest r = new ExtractedTextRequest();
         r.flags = 0;
@@ -283,7 +300,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     private boolean reloadTextCache() {
         mCommittedTextBeforeComposingText.setLength(0);
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         // Call upon the inputconnection directly since our own method is using the cache, and
         // we want to refresh it.
         final CharSequence textBeforeCursor = getTextBeforeCursorAndDetectLaggyConnection(
@@ -299,6 +316,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             Log.e(TAG, "Unable to connect to the editor to retrieve text.");
             return false;
         }
+        Log.d(TAG, "reloadTextCache: [" + textBeforeCursor + "]");
         mCommittedTextBeforeComposingText.append(textBeforeCursor);
         return true;
     }
@@ -317,6 +335,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // TODO: this is not correct! The cursor is not necessarily after the composing text.
         // In the practice right now this is only called when input ends so it will be reset so
         // it works, but it's wrong and should be fixed.
+        Log.d(TAG, "finishComposingText: Appending mComposingText=[" + mComposingText + "] to [" + mCommittedTextBeforeComposingText + "]");
         mCommittedTextBeforeComposingText.append(mComposingText);
         mComposingText.setLength(0);
         if (isConnected()) {
@@ -333,6 +352,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public void commitText(final CharSequence text, final int newCursorPosition) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        Log.d(TAG, "commitText: Appending text=[" + text + "] to [" + mCommittedTextBeforeComposingText + "]");
         mCommittedTextBeforeComposingText.append(text);
         // TODO: the following is exceedingly error-prone. Right now when the cursor is in the
         // middle of the composing word mComposingText only holds the part of the composing text
@@ -392,7 +412,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public int getCursorCapsMode(final int inputType,
             final SpacingAndPunctuations spacingAndPunctuations, final boolean hasSpaceBefore) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return Constants.TextUtils.CAP_MODE_OFF;
         }
@@ -478,7 +498,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     private CharSequence getTextBeforeCursorAndDetectLaggyConnection(
             final int operation, final long timeout, final int n, final int flags) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return null;
         }
@@ -497,7 +517,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     private CharSequence getTextAfterCursorAndDetectLaggyConnection(
             final int operation, final long timeout, final int n, final int flags) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return null;
         }
@@ -523,6 +543,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // Right now we never come here in this case because we reset the composing state before we
         // come here in this case, but we need to fix this.
         final int remainingChars = mComposingText.length() - beforeLength;
+        Log.d(TAG, "deleteTextBeforeCursor(" + beforeLength + "), mComposingText=[" + mComposingText + "] mCommittedText=[" + mCommittedTextBeforeComposingText + "], remainingChars=" + remainingChars);
         if (remainingChars >= 0) {
             mComposingText.setLength(remainingChars);
         } else {
@@ -530,7 +551,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             // Never cut under 0
             final int len = Math.max(mCommittedTextBeforeComposingText.length()
                     + remainingChars, 0);
+
+            Log.d(TAG, "                               " + "remainingChars is negative, so we set " + mCommittedTextBeforeComposingText.length() + " to " + len);
+            Log.d(TAG, "                               " + "old: [" + mCommittedTextBeforeComposingText + "]:" + mCommittedTextBeforeComposingText.length());
             mCommittedTextBeforeComposingText.setLength(len);
+            Log.d(TAG, "                               " + "new: [" + mCommittedTextBeforeComposingText + "]:" + mCommittedTextBeforeComposingText.length());
         }
         if (mExpectedSelStart > beforeLength) {
             mExpectedSelStart -= beforeLength;
@@ -541,6 +566,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             mExpectedSelEnd -= mExpectedSelStart;
             mExpectedSelStart = 0;
         }
+        Log.d(TAG, "                           mComposingText=[" + mComposingText + "] mCommittedText=[" + mCommittedTextBeforeComposingText + "]");
         if (isConnected()) {
             mIC.deleteSurroundingText(beforeLength, 0);
         }
@@ -548,7 +574,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     public void performEditorAction(final int actionId) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (isConnected()) {
             mIC.performEditorAction(actionId);
         }
@@ -570,6 +596,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             // racy and has unpredictable results, but for backward compatibility we continue
             // sending the key events for only Enter and Backspace because some applications
             // mistakenly catch them to do some stuff.
+            Log.d(TAG, "sendKeyEvent: Appending event=[" + keyEvent + "] to [" + mCommittedTextBeforeComposingText + "]");
             switch (keyEvent.getKeyCode()) {
                 case KeyEvent.KEYCODE_ENTER:
                     mCommittedTextBeforeComposingText.append("\n");
@@ -614,7 +641,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return result;
     }
 
-    public void setComposingRegion(final int start, final int end) {
+    public void setComposingRegion(final int start, final int end, final String expectedWord) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         final CharSequence textBeforeCursor =
@@ -631,9 +658,14 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                     textBeforeCursor.length()));
             mCommittedTextBeforeComposingText.append(
                     textBeforeCursor.subSequence(0, indexOfStartOfComposingText));
+            Log.d(TAG, "setComposingRegion expectedWord [" + expectedWord + "] vs [" + mCommittedTextBeforeComposingText + "]" + " [" + mComposingText + "]");
         }
         if (isConnected()) {
-            mIC.setComposingRegion(start, end);
+            if(mIC instanceof InputConnectionPatched) {
+                ((InputConnectionPatched)mIC).setComposingRegionWithText(start, end, expectedWord);
+            } else {
+                mIC.setComposingRegion(start, end);
+            }
         }
     }
 
@@ -671,6 +703,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         mExpectedSelStart = start;
         mExpectedSelEnd = end;
+        Log.d(TAG, "setSelection " + start + ":" + end);
         if (isConnected()) {
             final boolean isIcValid = mIC.setSelection(start, end);
             if (!isIcValid) {
@@ -711,7 +744,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     @Nonnull
     public NgramContext getNgramContextFromNthPreviousWord(
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return NgramContext.EMPTY_PREV_WORDS_INFO;
         }
@@ -777,7 +810,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public TextRange getWordRangeAtCursor(final SpacingAndPunctuations spacingAndPunctuations,
             final int scriptId, final boolean checkAfter) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return null;
         }
@@ -1002,6 +1035,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart,
             final int oldSelEnd, final int newSelEnd,
             final int composingStart, final int composingEnd) {
+        if(mIC != null && mIC instanceof InputConnectionPatched) {
+            ((InputConnectionPatched) mIC).cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
+        }
         // This update is "belated" if we are expecting it. That is, mExpectedSelStart and
         // mExpectedSelEnd match the new values that the TextView is updating TO.
         if (mExpectedSelStart == newSelStart && mExpectedSelEnd == newSelEnd) return true;
@@ -1108,7 +1144,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * than it really is.
      */
     public boolean tryFixLyingCursorPosition() {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if(tryExtractCursorPosition()) return true;
         final CharSequence textBeforeCursor = getTextBeforeCursor(
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
@@ -1153,7 +1189,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     @Override
     public boolean performPrivateCommand(final String action, final Bundle data) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return false;
         }
@@ -1164,10 +1200,23 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return mExpectedSelStart;
     }
 
+    public int getExtractedSelectionStart() {
+        if(!isConnected()) return -1;
+        final ExtractedText t = mIC.getExtractedText(new ExtractedTextRequest(), 0);
+        if(t == null) return -1;
+        return t.selectionStart;
+    }
+
     public int getExpectedSelectionEnd() {
         return mExpectedSelEnd;
     }
 
+    public int getExtractedSelectionEnd() {
+        if(!isConnected()) return -1;
+        final ExtractedText t = mIC.getExtractedText(new ExtractedTextRequest(), 0);
+        if(t == null) return -1;
+        return t.selectionEnd;
+    }
     /**
      * @return whether there is a selection currently active.
      */
@@ -1213,7 +1262,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public boolean requestCursorUpdates(final boolean enableMonitor,
             final boolean requestImmediateCallback) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return false;
         }
@@ -1339,5 +1388,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public StringBuilder getCommittedTextBeforeComposingTextForDebug() {
         return mCommittedTextBeforeComposingText;
+    }
+
+    public void send() {
+        if(mIC == null) return;
+        if(!(mIC instanceof InputConnectionPatched)) return;
+        ((InputConnectionPatched)mIC).send();
     }
 }

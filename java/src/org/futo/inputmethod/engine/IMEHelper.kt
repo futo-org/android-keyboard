@@ -90,4 +90,8 @@ class IMEHelper(
     fun updateGestureAvailability(to: Boolean) {
         latinIME.latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.setImeAllowsGestureInput(to)
     }
+
+    fun requestCursorUpdate() {
+        latinIME.imeManager.ensureUpdateSelectionFinished()
+    }
 }

@@ -1,6 +1,12 @@
 package org.futo.inputmethod.engine
 
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.futo.inputmethod.annotations.UsedForTesting
 import org.futo.inputmethod.engine.general.ActionInputTransactionIME
 import org.futo.inputmethod.engine.general.GeneralIME
@@ -201,6 +207,22 @@ class IMEManager(
         return (helper.getCurrentEditorInfo()?.hashCode() ?: 0) xor (helper.getCurrentInputConnection()?.hashCode() ?: 0)
     }
 
+    private var pendingUpdateSelection: Pair<Job, Selection>? = null
+    fun ensureUpdateSelectionFinished() {
+        // TODO: IMEs need to know to call this manually before important places rn (and Japanese doesnt)
+        pendingUpdateSelection?.let {
+            it.first.cancel()
+
+            val s = it.second
+            getActiveIME(settings.current).onUpdateSelection(
+                s.oldSelStart, s.oldSelEnd,
+                s.newSelStart, s.newSelEnd,
+                s.composingSpanStart, s.composingSpanEnd
+            )
+        }
+        pendingUpdateSelection = null
+    }
+
     fun onUpdateSelection(
         oldSelStart: Int,
         oldSelEnd: Int,
@@ -209,12 +231,20 @@ class IMEManager(
         composingSpanStart: Int,
         composingSpanEnd: Int
     ) {
-        prevSelection = Selection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart, composingSpanEnd, currHash())
-        getActiveIME(settings.current).onUpdateSelection(
-            oldSelStart, oldSelEnd,
-            newSelStart, newSelEnd,
-            composingSpanStart, composingSpanEnd
-        )
+        val sel = Selection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart, composingSpanEnd, currHash())
+        pendingUpdateSelection?.first?.cancel()
+        pendingUpdateSelection = service.lifecycleScope.launch {
+            delay(20L)
+            withContext(Dispatchers.Main) {
+                prevSelection = sel
+                getActiveIME(settings.current).onUpdateSelection(
+                    oldSelStart, oldSelEnd,
+                    newSelStart, newSelEnd,
+                    composingSpanStart, composingSpanEnd
+                )
+                pendingUpdateSelection = null
+            }
+        } to sel
     }
 
     fun setLayout(layout: KeyboardLayoutSetV2) {

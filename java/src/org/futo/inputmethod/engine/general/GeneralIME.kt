@@ -271,6 +271,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()
 
     override fun onEvent(event: Event) {
+        helper.requestCursorUpdate()
+
         val inputTransaction = when (event.eventType) {
             Event.EVENT_TYPE_INPUT_KEYPRESS,
             Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
@@ -324,6 +326,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             Event.EVENT_TYPE_CURSOR_MOVE -> { null }
             else -> { null }
         }
+
+        inputLogic.mConnection.send()
 
         when(inputTransaction?.requiredShiftUpdate) {
             InputTransaction.SHIFT_UPDATE_LATER,
@@ -537,11 +541,6 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     Constants.NOT_A_COORDINATE,
                     false
                 )
-            )
-
-            inputLogic.resetComposingWord(
-                Settings.getInstance().current,
-                false
             )
         } else {
             onUpWithPointerActive()

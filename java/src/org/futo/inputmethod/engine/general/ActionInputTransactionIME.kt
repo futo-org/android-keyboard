@@ -74,6 +74,8 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
             partialText,
             1
         )
+
+        (ic as? InputConnectionPatched)?.send()
     }
 
     override fun commit(text: String) {
@@ -84,10 +86,12 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
             1
         )
         helper.endInputTransaction(this)
+        (ic as? InputConnectionPatched)?.send()
     }
 
     override fun cancel() {
         commit(partialText)
+        (ic as? InputConnectionPatched)?.send()
     }
 
     fun ensureFinished() {
