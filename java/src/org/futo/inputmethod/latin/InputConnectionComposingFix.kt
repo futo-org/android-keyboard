@@ -1,12 +1,16 @@
 package org.futo.inputmethod.latin
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.inputmethod.ExtractedText
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnectionWrapper
 import android.view.inputmethod.TextAttribute
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.getSetting
 
 /*
  This is an experimental wrapper for InputConnection to deal with apps that don't compose text
@@ -80,9 +84,39 @@ import android.view.inputmethod.TextAttribute
  prevText = text
  */
 
+val TextInputAlternativeIC = SettingsKey(
+    key = booleanPreferencesKey("text_input_experimental_ic_fix"),
+    default = true
+)
+
+val TextInputAlternativeICComposing = SettingsKey(
+    key = booleanPreferencesKey("text_input_experimental_ic_fix_use_composing"),
+    default = false
+)
+
+val TextInputBufferedIC = SettingsKey(
+    key = booleanPreferencesKey("text_input_buffered_ic"),
+    default = true
+)
+
+interface IBufferedInputConnection {
+    fun send()
+}
+
 @Suppress("HardCodedStringLiteral")
 @SuppressLint("LogConditional")
-class InputConnectionPatched(val useComposing: Boolean, target: InputConnection?) : InputConnectionWrapper(null, true) {
+class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolean, target: InputConnection?) : InputConnectionWrapper(null, true), IBufferedInputConnection {
+    companion object {
+        @JvmStatic
+        fun createWithSettingsFromContext(context: Context, target: InputConnection): InputConnection {
+            if(context.getSetting(TextInputAlternativeIC) == false) return target
+            return InputConnectionPatched(
+                context.getSetting(TextInputAlternativeICComposing),
+                context.getSetting(TextInputBufferedIC),
+                target
+            )
+        }
+    }
     var mTarget: InputConnection? = null
     var ic: InputConnection? = null
     init {
@@ -92,7 +126,9 @@ class InputConnectionPatched(val useComposing: Boolean, target: InputConnection?
     fun updateIc(to: InputConnection?) {
         if(to == mTarget) return
         mTarget = to
-        ic = to?.let { BufferedInputConnection(it) }
+        ic = to?.let {
+            if(useBuffering) BufferedInputConnection(it) else it
+        }
         setTarget(ic)
 
         if (BuildConfig.DEBUG) Log.d(TAG, "InputConnection updated!! Kill everything")
@@ -165,6 +201,30 @@ class InputConnectionPatched(val useComposing: Boolean, target: InputConnection?
         selEnd -= amount
     }
 
+    private fun locateWordEndOffset(word: String, textBefore: String, textAfter: String): Int? {
+        val combined = textBefore + textAfter
+        var wordStart = -1000
+        var wordOffset = 0
+        var currCoordinate = -textBefore.length
+        for(c in combined) {
+            if(c != word[wordOffset]) {
+                wordOffset = 0
+                wordStart = -1000
+            }
+
+            if(c == word[wordOffset]) {
+                if(wordStart == -1000) wordStart = currCoordinate
+                wordOffset++
+            }
+
+            if(wordOffset == word.length) return wordStart + wordOffset
+
+            currCoordinate += 1
+        }
+
+        return null
+    }
+
     private fun commitComposingTextInternal(text: CharSequence, setComposing: Boolean) {
         val extracted: ExtractedText? = null// super.getExtractedText(ExtractedTextRequest().apply { hintMaxChars = 512 }, 0)
         if(BuildConfig.DEBUG) Log.d(TAG, "commitComposingTextInternal text=[$text] composingText=[$composingText] extracted=[${extracted?.text}][${extracted?.selectionStart} vs $selStart] composingStart=$composingStart setComposing=$setComposing ")
@@ -190,6 +250,17 @@ class InputConnectionPatched(val useComposing: Boolean, target: InputConnection?
             isAddition = false
         }*/
         if(composingStart != -1) {
+            if(cursor >= composingStart && cursor < composingEnd) {
+                // Locate ourselves, may need to move cursor
+                val textBefore = getTextBeforeCursor(composingText.length, 0)?.toString() ?: ""
+                val textAfter = getTextAfterCursor(composingText.length, 0)?.toString() ?: ""
+                val offs = locateWordEndOffset(composingText, textBefore, textAfter)
+                if(offs != null && offs > 0) {
+                    if(BuildConfig.DEBUG) Log.d(TAG, "Moving cursor by $offs to be at end of word")
+                    super.setSelection(cursor + offs, cursor + offs)
+                }
+            }
+
             isAddition = isAddition && text.startsWith(composingText)
             if(isAddition) {
                 // Simple case: when the new text starts with the previous text, we can just append
@@ -289,7 +360,8 @@ class InputConnectionPatched(val useComposing: Boolean, target: InputConnection?
         composingEnd = end
 
         if(BuildConfig.DEBUG) Log.d(TAG, "setComposingRegion acquired text=[$composingText] from ${text.text} ${text.startOffset}")
-        //return super.setComposingRegion(start, end)
+
+        if(useComposing) return super.setComposingRegion(start, end)
         return true
     }
 
@@ -298,7 +370,7 @@ class InputConnectionPatched(val useComposing: Boolean, target: InputConnection?
         if(newCursorPosition == 1) {
             commitComposingTextInternal(text, false)
         } else {
-            // TODO: Unsupported
+            // TODO("Unsupported [$text] [$newCursorPosition] [$composingText]")
             commitComposingTextInternal(text, false)
         }
         finishComposingText()
@@ -345,8 +417,8 @@ class InputConnectionPatched(val useComposing: Boolean, target: InputConnection?
         return setComposingText(text, newCursorPosition)
     }
 
-    fun send() {
-        (ic as? BufferedInputConnection)?.send()
+    override fun send() {
+        (ic as? IBufferedInputConnection)?.send()
     }
 }
 
@@ -360,7 +432,7 @@ class InputConnectionPatched(val useComposing: Boolean, target: InputConnection?
  * send() is called), so send() should be called at the end to ensure consistent state. A workaround
  * is offered for getText[Before/After]Cursor
  */
-class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(target, true) {
+class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(target, true), IBufferedInputConnection {
     sealed class InputCommand {
         data class Commit(val text: String) : InputCommand()
         data class Delete(val before: Int, val after: Int) : InputCommand()
@@ -451,7 +523,7 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
         newCursorPosition: Int,
         textAttribute: TextAttribute?
     ): Boolean {
-        Log.d("BufferedInputConnection", "commit (" + text + ")")
+        if(BuildConfig.DEBUG) Log.d("BufferedInputConnection", "commit (" + text + ")")
         assert(newCursorPosition == 1)
         commandQueue.add(InputCommand.Commit(text.toString()))
         return true
@@ -460,7 +532,7 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
     override fun commitText(text: CharSequence?, newCursorPosition: Int): Boolean {
         assert(newCursorPosition == 1)
         if(text == null) return true
-        Log.d("BufferedInputConnection", "commit (" + text + ")")
+        if(BuildConfig.DEBUG) Log.d("BufferedInputConnection", "commit (" + text + ")")
         commandQueue.add(InputCommand.Commit(text.toString()))
         return true
     }
@@ -484,9 +556,9 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
         return applyAfter(super.getTextAfterCursor(n + extraHeadroom(), flags)?.toString() ?: return null).take(n)
     }
 
-    fun send() {
+    override fun send() {
         val mergedList = merge(commandQueue)
-        Log.d("BufferedInputConnection", "Command queue: $commandQueue, merged: $mergedList")
+        if(BuildConfig.DEBUG) Log.d("BufferedInputConnection", "Command queue: $commandQueue, merged: $mergedList")
         commandQueue.clear()
 
         mergedList.forEach { when(it) {

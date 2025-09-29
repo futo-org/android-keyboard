@@ -75,8 +75,6 @@ import javax.annotation.Nonnull;
 public final class InputLogic {
     private static final boolean COMPOSITION_TEXT_AFTER = false;
 
-    public static final boolean COMPATIBLE_INPUT = true;
-
     private static final String TAG = InputLogic.class.getSimpleName();
 
     private final IMEHelper mImeHelper;
@@ -689,7 +687,7 @@ public final class InputLogic {
 
         // Put a blue underline to a word in TextView which will be auto-corrected.
         if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
-                && mWordComposer.isComposingWord() && !COMPATIBLE_INPUT) {
+                && mWordComposer.isComposingWord() && mConnection.useAutoCorrectIndicator()) {
             mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
             final CharSequence textWithUnderline =
                     getTextWithUnderline(mWordComposer.getTypedWord());
@@ -2269,7 +2267,7 @@ public final class InputLogic {
     // TODO: Shouldn't this go in some *Utils class instead?
     private CharSequence getTextWithUnderline(final String text) {
         // TODO: Locale should be determined based on context and the text given.
-        return (mIsAutoCorrectionIndicatorOn && !COMPATIBLE_INPUT)
+        return (mIsAutoCorrectionIndicatorOn && mConnection.useAutoCorrectIndicator())
                 ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
                     mImeHelper.getContext(), text, getDictionaryFacilitatorLocale())
                 : text;

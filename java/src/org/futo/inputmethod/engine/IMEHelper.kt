@@ -15,6 +15,8 @@ import org.futo.inputmethod.latin.settings.Settings
 interface InputMethodConnectionProvider {
     fun getCurrentInputConnection(): InputConnection?
     fun getCurrentEditorInfo(): EditorInfo?
+
+    fun getContext1(): Context
 }
 
 class IMEHelper(
@@ -66,6 +68,8 @@ class IMEHelper(
     override fun getCurrentEditorInfo(): EditorInfo? {
         return latinIME.currentInputEditorInfo
     }
+
+    override fun getContext1(): Context = context
 
     fun setNeutralSuggestionStrip(useExpandableUi: Boolean) {
         latinIME.setSuggestions(

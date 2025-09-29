@@ -17,6 +17,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     val ic = if(helper.context.getSetting(ExperimentalICFix)) {
         InputConnectionPatched(
             helper.context.getSetting(ExperimentalICComposing),
+            false,
             helper.getCurrentInputConnection())
     } else {
         helper.getCurrentInputConnection()

@@ -155,9 +155,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         if(mIC != null && mIC instanceof InputConnectionPatched && ((InputConnectionPatched) mIC).getMTarget() == ic) return;
 
-        if(true) {
-            ic = new InputConnectionPatched(false, ic);
-        }
+        ic = InputConnectionPatched.createWithSettingsFromContext(mConnectionProvider.getContext1(), ic);
 
         mIC = ic;
     }
@@ -1394,5 +1392,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if(mIC == null) return;
         if(!(mIC instanceof InputConnectionPatched)) return;
         ((InputConnectionPatched)mIC).send();
+    }
+    public boolean useAutoCorrectIndicator() {
+        return !(mIC instanceof InputConnectionPatched);
     }
 }
