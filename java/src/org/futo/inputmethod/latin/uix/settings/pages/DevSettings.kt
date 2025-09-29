@@ -113,12 +113,11 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             setting = TextInputBufferedIC,
             disabled = useDataStoreValue(TextInputAlternativeIC) == false
         )
-        // Broken
-        /*SettingToggleDataStore(
+        SettingToggleDataStore(
             title = "Use setComposingRegion",
             setting = TextInputAlternativeICComposing,
             disabled = useDataStoreValue(TextInputAlternativeIC) == false
-        )*/
+        )
 
         NavigationItem(
             title = "Buggy text edit variations",

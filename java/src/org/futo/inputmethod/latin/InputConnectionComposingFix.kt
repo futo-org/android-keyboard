@@ -228,8 +228,7 @@ class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolea
     private fun commitComposingTextInternal(text: CharSequence, setComposing: Boolean) {
         val extracted: ExtractedText? = null// super.getExtractedText(ExtractedTextRequest().apply { hintMaxChars = 512 }, 0)
         if(BuildConfig.DEBUG) Log.d(TAG, "commitComposingTextInternal text=[$text] composingText=[$composingText] extracted=[${extracted?.text}][${extracted?.selectionStart} vs $selStart] composingStart=$composingStart setComposing=$setComposing ")
-
-        if(setComposing) super.finishComposingText()
+        if(useComposing || setComposing) super.finishComposingText()
         var cursor = selStart
         var isAddition = true
         if(cursor == -1) {
@@ -436,6 +435,7 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
     sealed class InputCommand {
         data class Commit(val text: String) : InputCommand()
         data class Delete(val before: Int, val after: Int) : InputCommand()
+        data class SetComposingRegion(val start: Int, val end: Int) : InputCommand()
     }
 
     val commandQueue = mutableListOf<InputCommand>()
@@ -464,6 +464,8 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
 
                     deletedAfterAmount += cmd.after
                 }
+
+                is InputCommand.SetComposingRegion -> {}
             }
         }
 
@@ -474,6 +476,10 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
                 if (deletedAmount > 0) add(InputCommand.Delete(deletedAmount, 0))
                 if (text.isNotEmpty()) add(InputCommand.Commit(text))
                 if (deletedAfterAmount > 0) add(InputCommand.Delete(0, deletedAfterAmount))
+            }
+
+            commands.filterIsInstance<InputCommand.SetComposingRegion>().lastOrNull()?.let {
+                add(it)
             }
         }
     }
@@ -492,6 +498,7 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
                         }
                     )
                 }
+                else -> {}
             }
         }
         return result
@@ -511,6 +518,7 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
                         }
                     )
                 }
+                else -> {}
             }
         }
         return result
@@ -556,6 +564,15 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
         return applyAfter(super.getTextAfterCursor(n + extraHeadroom(), flags)?.toString() ?: return null).take(n)
     }
 
+    override fun setComposingRegion(start: Int, end: Int): Boolean {
+        commandQueue.add(InputCommand.SetComposingRegion(start, end))
+        return true
+    }
+
+    override fun setComposingRegion(start: Int, end: Int, textAttribute: TextAttribute?): Boolean {
+        return setComposingRegion(start, end)
+    }
+
     override fun send() {
         val mergedList = merge(commandQueue)
         if(BuildConfig.DEBUG) Log.d("BufferedInputConnection", "Command queue: $commandQueue, merged: $mergedList")
@@ -564,6 +581,7 @@ class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(
         mergedList.forEach { when(it) {
             is InputCommand.Commit -> { super.commitText(it.text, 1) }
             is InputCommand.Delete -> { super.deleteSurroundingTextInCodePoints(it.before, it.after) }
+            is InputCommand.SetComposingRegion -> { super.setComposingRegion(it.start, it.end) }
         } }
     }
 }
