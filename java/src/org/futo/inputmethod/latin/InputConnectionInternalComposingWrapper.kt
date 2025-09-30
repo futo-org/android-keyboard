@@ -11,78 +11,7 @@ import android.view.inputmethod.TextAttribute
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
-
-/*
- This is an experimental wrapper for InputConnection to deal with apps that don't compose text
- properly or have weird input logic that behaves in unexpected ways (e.g. doesnt allow certain
- characters to be typed)
-
- Standard input procedure
-
- setComposing h
- setComposing he
- setComposing hel
- setComposing helk
- setComposing helko
- commitText   hello (autocorrected)
-
- We need to translate this to
- send keyevent h
- send keyevent e
- send keyevent l
- send keyevent k
- send keyevent o
- send keyevent backspace
- send keyevent backspace
- send keyevent l
- send keyevent o
-
- setComposing h
- setComposing he
- setComposing hel
- setComposing helk
- setComposing hel (backspaced)
- commitText hello (selected autocomplete)
-
- Weird edge cases
-    App is filtering non-alphanumeric characters
-
- setComposing Hello                     actual text committed: [Hello]
- setComposing Hello, my deer friend.    actual text committed: [Hellomydeerfriend]
- setComposing Hello, my dear friend.
-
- Procedure to resolve a deletion
- 1. Get past text
- 2. Identify where it starts (I guess we can rely on composingStart being stable, just not composingEnd)
- 3. Get common denominator, in this case: [Hello]
- 4. Backspace N characters. N = currentCursorPosition - composingStart - lenCommonDenominator
- 5. Retype the subsequent characters
-
- Problem: If we're calling setComposing back to back, we may not be able to rely on currentCursorPosition.
-
- Core logic for setComposing(text):
- if(alreadyComposing) {
-   isAddition = text.startsWith(prevText)
-   if(isAddition) {
-     for char in text.substring(prevText.length) {
-        sendKeyUpDown(char)
-     }
-   } else {
-     // Cant rely on prevText being accurate
-     pastText = getPastTextUntil(composingStart)
-
-     commonLength = getCommonLength(pastText, text)
-     backspace(cursorPosition - composingStart - commonLength)
-     for char in text.substring(commonLength) {
-       sendKeyUpDown(char)
-     }
-   }
- } else {
-   // start composing
-   composingStart = cursorPosition
- }
- prevText = text
- */
+import kotlin.text.iterator
 
 val TextInputAlternativeIC = SettingsKey(
     key = booleanPreferencesKey("text_input_experimental_ic_fix"),
@@ -99,18 +28,34 @@ val TextInputBufferedIC = SettingsKey(
     default = true
 )
 
-interface IBufferedInputConnection {
-    fun send()
-}
-
+/*
+ * This is a wrapper around InputConnection that works around wonky app behavior by avoiding use of
+ * the actual composing API. When apps don't implement it correctly or do weird things around it,
+ * letters and entire words can become duplicated, causing a poor user experience.
+ * Related issue: https://github.com/futo-org/android-keyboard/issues/1519
+ *
+ * This wrapper implements setComposingText, setComposingRegion by keeping track of the state
+ * internally and it ultimately issues commitText and deleteSurroundingText calls to the underlying
+ * input connection. It can also use the buffering wrapper to further work around bugs. It makes
+ * some assumptions about the way the IME uses the API.
+ *
+ * The downside of this is that it's not possible to use visual spans for indicating composition
+ * state (e.g. autocorrect, dead keys)
+ *
+ * The `send()` method should be called if buffering is enabled to actually send the commands.
+ */
 @Suppress("HardCodedStringLiteral")
 @SuppressLint("LogConditional")
-class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolean, target: InputConnection?) : InputConnectionWrapper(null, true), IBufferedInputConnection {
+class InputConnectionInternalComposingWrapper(
+    val useSetComposingRegion: Boolean,
+    val useBufferingWrapper: Boolean,
+    target: InputConnection?
+) : InputConnectionWrapper(null, true), IBufferedInputConnection {
     companion object {
         @JvmStatic
         fun createWithSettingsFromContext(context: Context, target: InputConnection): InputConnection {
             if(context.getSetting(TextInputAlternativeIC) == false) return target
-            return InputConnectionPatched(
+            return InputConnectionInternalComposingWrapper(
                 context.getSetting(TextInputAlternativeICComposing),
                 context.getSetting(TextInputBufferedIC),
                 target
@@ -127,7 +72,7 @@ class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolea
         if(to == mTarget) return
         mTarget = to
         ic = to?.let {
-            if(useBuffering) BufferedInputConnection(it) else it
+            if(useBufferingWrapper) InputConnectionWithBufferingWrapper(it) else it
         }
         setTarget(ic)
 
@@ -156,26 +101,7 @@ class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolea
         if(BuildConfig.DEBUG) Log.d(TAG, " * Cursor updated: $oldSelStart-$oldSelEnd : $newSelStart-$newSelEnd * ")
         selStart = newSelStart
         selEnd = newSelEnd
-        //super.finishComposingText()
     }
-
-    /*private fun sendDownUpKeyEvent(keyCode: Int, metaState: Int) {
-        val eventTime = SystemClock.uptimeMillis()
-        super.sendKeyEvent(
-            KeyEvent(
-                eventTime, eventTime,
-                KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
-                KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE
-            )
-        )
-        super.sendKeyEvent(
-            KeyEvent(
-                SystemClock.uptimeMillis(), eventTime,
-                KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
-                KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE
-            )
-        )
-    }*/
 
     private fun typeChars(text: CharSequence) {
         super.commitText(text, 1)
@@ -192,9 +118,7 @@ class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolea
     }
 
     private fun backspace(amount: Int) {
-        //if(BuildConfig.DEBUG) Log.d(TAG, "deleteSurroundingText($amount, 0) step 1 - textBeforeCursor = ${super.getTextBeforeCursor(60, 0)}")
         super.deleteSurroundingText(amount, 0)
-        //if(BuildConfig.DEBUG) Log.d(TAG, "                                  step 2 - textBeforeCursor = ${super.getTextBeforeCursor(60, 0)}")
 
         // In case editor is not sending cursor updates, try to keep track of it ourselves
         selStart -= amount
@@ -228,7 +152,7 @@ class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolea
     private fun commitComposingTextInternal(text: CharSequence, setComposing: Boolean) {
         val extracted: ExtractedText? = null// super.getExtractedText(ExtractedTextRequest().apply { hintMaxChars = 512 }, 0)
         if(BuildConfig.DEBUG) Log.d(TAG, "commitComposingTextInternal text=[$text] composingText=[$composingText] extracted=[${extracted?.text}][${extracted?.selectionStart} vs $selStart] composingStart=$composingStart setComposing=$setComposing ")
-        if(useComposing || setComposing) super.finishComposingText()
+        if(useSetComposingRegion || setComposing) super.finishComposingText()
         var cursor = selStart
         var isAddition = true
         if(cursor == -1) {
@@ -310,10 +234,10 @@ class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolea
 
     override fun setComposingText(text: CharSequence, newCursorPosition: Int): Boolean {
         if(newCursorPosition == 1) {
-            commitComposingTextInternal(text, useComposing)
+            commitComposingTextInternal(text, useSetComposingRegion)
         } else {
             // TODO("Unsupported")
-            commitComposingTextInternal(text, useComposing)
+            commitComposingTextInternal(text, useSetComposingRegion)
         }
         return true
     }
@@ -360,7 +284,7 @@ class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolea
 
         if(BuildConfig.DEBUG) Log.d(TAG, "setComposingRegion acquired text=[$composingText] from ${text.text} ${text.startOffset}")
 
-        if(useComposing) return super.setComposingRegion(start, end)
+        if(useSetComposingRegion) return super.setComposingRegion(start, end)
         return true
     }
 
@@ -418,170 +342,5 @@ class InputConnectionPatched(val useComposing: Boolean, val useBuffering: Boolea
 
     override fun send() {
         (ic as? IBufferedInputConnection)?.send()
-    }
-}
-
-
-/*
- * Some apps misbehave when they receive multiple calls back to back
- * e.g. delete(4), commit("ello"), commit(" ")
- *
- * This fixes it by queueing all operations and sending them only at the end. A downside is that the
- * commands will not have immediate effect (e.g. getSurroundingText will not show updates until
- * send() is called), so send() should be called at the end to ensure consistent state. A workaround
- * is offered for getText[Before/After]Cursor
- */
-class BufferedInputConnection(target: InputConnection) : InputConnectionWrapper(target, true), IBufferedInputConnection {
-    sealed class InputCommand {
-        data class Commit(val text: String) : InputCommand()
-        data class Delete(val before: Int, val after: Int) : InputCommand()
-        data class SetComposingRegion(val start: Int, val end: Int) : InputCommand()
-    }
-
-    val commandQueue = mutableListOf<InputCommand>()
-
-    private fun merge(commands: List<InputCommand>): List<InputCommand> {
-        var text = ""
-        var deletedAmount = 0
-        var deletedAfterAmount = 0
-
-        for (cmd in commands) {
-            when (cmd) {
-                is InputCommand.Commit -> {
-                    text += cmd.text
-                }
-
-                is InputCommand.Delete -> {
-                    val len = text.codePointCount(0, text.length)
-                    val keep = len - cmd.before
-                    if(keep > 0) {
-                        val end = text.offsetByCodePoints(0, keep)
-                        text = text.substring(0, end)
-                    } else {
-                        text = ""
-                        deletedAmount -= keep
-                    }
-
-                    deletedAfterAmount += cmd.after
-                }
-
-                is InputCommand.SetComposingRegion -> {}
-            }
-        }
-
-        return buildList {
-            if(deletedAmount > 0 && deletedAfterAmount > 0 && text.isEmpty()) {
-                add(InputCommand.Delete(deletedAmount, deletedAfterAmount))
-            } else {
-                if (deletedAmount > 0) add(InputCommand.Delete(deletedAmount, 0))
-                if (text.isNotEmpty()) add(InputCommand.Commit(text))
-                if (deletedAfterAmount > 0) add(InputCommand.Delete(0, deletedAfterAmount))
-            }
-
-            commands.filterIsInstance<InputCommand.SetComposingRegion>().lastOrNull()?.let {
-                add(it)
-            }
-        }
-    }
-
-    private fun applyBefore(beforeTxt: String): String {
-        var result = beforeTxt
-        commandQueue.forEach { cmd ->
-            when(cmd) {
-                is InputCommand.Commit -> result += cmd.text
-                is InputCommand.Delete -> {
-                    result = result.substring(0,
-                        try {
-                            result.offsetByCodePoints(result.length, -cmd.before)
-                        } catch(e: IndexOutOfBoundsException) {
-                            0
-                        }
-                    )
-                }
-                else -> {}
-            }
-        }
-        return result
-    }
-
-    private fun applyAfter(afterTxt: String): String {
-        var result = afterTxt
-        commandQueue.forEach { cmd ->
-            when(cmd) {
-                is InputCommand.Commit -> { }
-                is InputCommand.Delete -> {
-                    result = result.substring(
-                        try {
-                            result.offsetByCodePoints(0, cmd.after)
-                        } catch(e: IndexOutOfBoundsException) {
-                            result.length
-                        }
-                    )
-                }
-                else -> {}
-            }
-        }
-        return result
-    }
-
-    private fun extraHeadroom() = 16
-
-    override fun commitText(
-        text: CharSequence,
-        newCursorPosition: Int,
-        textAttribute: TextAttribute?
-    ): Boolean {
-        if(BuildConfig.DEBUG) Log.d("BufferedInputConnection", "commit (" + text + ")")
-        assert(newCursorPosition == 1)
-        commandQueue.add(InputCommand.Commit(text.toString()))
-        return true
-    }
-
-    override fun commitText(text: CharSequence?, newCursorPosition: Int): Boolean {
-        assert(newCursorPosition == 1)
-        if(text == null) return true
-        if(BuildConfig.DEBUG) Log.d("BufferedInputConnection", "commit (" + text + ")")
-        commandQueue.add(InputCommand.Commit(text.toString()))
-        return true
-    }
-
-    override fun deleteSurroundingText(beforeLength: Int, afterLength: Int): Boolean {
-        commandQueue.add(InputCommand.Delete(beforeLength, afterLength))
-        return true
-    }
-
-    override fun deleteSurroundingTextInCodePoints(beforeLength: Int, afterLength: Int): Boolean {
-        if(afterLength > 0) super.deleteSurroundingTextInCodePoints(0, afterLength)
-        commandQueue.add(InputCommand.Delete(beforeLength, afterLength))
-        return true
-    }
-
-    override fun getTextBeforeCursor(n: Int, flags: Int): CharSequence? {
-        return applyBefore(super.getTextBeforeCursor(n + extraHeadroom(), flags)?.toString() ?: return null).takeLast(n)
-    }
-
-    override fun getTextAfterCursor(n: Int, flags: Int): CharSequence? {
-        return applyAfter(super.getTextAfterCursor(n + extraHeadroom(), flags)?.toString() ?: return null).take(n)
-    }
-
-    override fun setComposingRegion(start: Int, end: Int): Boolean {
-        commandQueue.add(InputCommand.SetComposingRegion(start, end))
-        return true
-    }
-
-    override fun setComposingRegion(start: Int, end: Int, textAttribute: TextAttribute?): Boolean {
-        return setComposingRegion(start, end)
-    }
-
-    override fun send() {
-        val mergedList = merge(commandQueue)
-        if(BuildConfig.DEBUG) Log.d("BufferedInputConnection", "Command queue: $commandQueue, merged: $mergedList")
-        commandQueue.clear()
-
-        mergedList.forEach { when(it) {
-            is InputCommand.Commit -> { super.commitText(it.text, 1) }
-            is InputCommand.Delete -> { super.deleteSurroundingTextInCodePoints(it.before, it.after) }
-            is InputCommand.SetComposingRegion -> { super.setComposingRegion(it.start, it.end) }
-        } }
     }
 }

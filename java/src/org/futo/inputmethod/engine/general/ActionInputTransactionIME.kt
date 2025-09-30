@@ -3,7 +3,7 @@ package org.futo.inputmethod.engine.general
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.event.Event
-import org.futo.inputmethod.latin.InputConnectionPatched
+import org.futo.inputmethod.latin.InputConnectionInternalComposingWrapper
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
@@ -15,7 +15,7 @@ import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
 class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInputTransaction {
     val ic = if(helper.context.getSetting(ExperimentalICFix)) {
-        InputConnectionPatched(
+        InputConnectionInternalComposingWrapper(
             helper.context.getSetting(ExperimentalICComposing),
             false,
             helper.getCurrentInputConnection())
@@ -37,7 +37,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
         composingSpanStart: Int,
         composingSpanEnd: Int
     ) {
-        if(ic is InputConnectionPatched) {
+        if(ic is InputConnectionInternalComposingWrapper) {
             ic.cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd)
         }
     }
@@ -76,7 +76,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
             1
         )
 
-        (ic as? InputConnectionPatched)?.send()
+        (ic as? InputConnectionInternalComposingWrapper)?.send()
     }
 
     override fun commit(text: String) {
@@ -87,12 +87,12 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
             1
         )
         helper.endInputTransaction(this)
-        (ic as? InputConnectionPatched)?.send()
+        (ic as? InputConnectionInternalComposingWrapper)?.send()
     }
 
     override fun cancel() {
         commit(partialText)
-        (ic as? InputConnectionPatched)?.send()
+        (ic as? InputConnectionInternalComposingWrapper)?.send()
     }
 
     fun ensureFinished() {

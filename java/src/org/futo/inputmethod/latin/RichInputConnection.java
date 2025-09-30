@@ -153,9 +153,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             mIC = null;
             return;
         }
-        if(mIC != null && mIC instanceof InputConnectionPatched && ((InputConnectionPatched) mIC).getMTarget() == ic) return;
+        if(mIC != null && mIC instanceof InputConnectionInternalComposingWrapper && ((InputConnectionInternalComposingWrapper) mIC).getMTarget() == ic) return;
 
-        ic = InputConnectionPatched.createWithSettingsFromContext(mConnectionProvider.getContext1(), ic);
+        ic = InputConnectionInternalComposingWrapper.createWithSettingsFromContext(mConnectionProvider.getContext1(), ic);
 
         mIC = ic;
     }
@@ -659,8 +659,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             Log.d(TAG, "setComposingRegion expectedWord [" + expectedWord + "] vs [" + mCommittedTextBeforeComposingText + "]" + " [" + mComposingText + "]");
         }
         if (isConnected()) {
-            if(mIC instanceof InputConnectionPatched) {
-                ((InputConnectionPatched)mIC).setComposingRegionWithText(start, end, expectedWord);
+            if(mIC instanceof InputConnectionInternalComposingWrapper) {
+                ((InputConnectionInternalComposingWrapper)mIC).setComposingRegionWithText(start, end, expectedWord);
             } else {
                 mIC.setComposingRegion(start, end);
             }
@@ -1033,8 +1033,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart,
             final int oldSelEnd, final int newSelEnd,
             final int composingStart, final int composingEnd) {
-        if(mIC != null && mIC instanceof InputConnectionPatched) {
-            ((InputConnectionPatched) mIC).cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
+        if(mIC != null && mIC instanceof InputConnectionInternalComposingWrapper) {
+            ((InputConnectionInternalComposingWrapper) mIC).cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
         }
         // This update is "belated" if we are expecting it. That is, mExpectedSelStart and
         // mExpectedSelEnd match the new values that the TextView is updating TO.
@@ -1390,10 +1390,10 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public void send() {
         if(mIC == null) return;
-        if(!(mIC instanceof InputConnectionPatched)) return;
-        ((InputConnectionPatched)mIC).send();
+        if(!(mIC instanceof InputConnectionInternalComposingWrapper)) return;
+        ((InputConnectionInternalComposingWrapper)mIC).send();
     }
     public boolean useAutoCorrectIndicator() {
-        return !(mIC instanceof InputConnectionPatched);
+        return !(mIC instanceof InputConnectionInternalComposingWrapper);
     }
 }
