@@ -1902,6 +1902,8 @@ public final class InputLogic {
         //}
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor(), typedWordString);
+
+        mConnection.send();
         return true;
     }
 
