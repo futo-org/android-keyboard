@@ -479,9 +479,10 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     }
 
     override fun onStartInput() {
+        executor.removePendingEvaluations()
+        executor.resetContext()
         setNeutralSuggestionStrip()
         updateConfig()
-        executor.resetContext()
         selectionTracker.onStartInput(
             helper.getCurrentEditorInfo()?.initialSelStart ?: -1,
             helper.getCurrentEditorInfo()?.initialSelEnd ?: -1,
