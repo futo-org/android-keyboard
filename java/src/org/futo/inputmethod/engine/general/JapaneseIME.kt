@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.google.android.apps.inputmethod.libs.mozc.session.MozcJNI
@@ -478,16 +479,45 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         mozcInit()
     }
 
+    // Similar to RichInputConnection.tryExtractCursorPosition
+    private fun initSelectionTracker() {
+        var selStart = -1
+        var selEnd = -1
+
+        helper.getCurrentInputConnection()?.let { ic ->
+            ic.getExtractedText(ExtractedTextRequest().apply {
+                flags = 0
+                token = 1
+                hintMaxLines = 1
+                hintMaxChars = 512
+            }, 0)?.let { t ->
+                selStart = t.selectionStart + t.startOffset
+                selEnd = t.selectionEnd + t.startOffset
+            }
+        }
+
+        helper.getCurrentEditorInfo()?.let { ei ->
+            if(selStart < 0 || selEnd < 0) {
+                selStart = ei.initialSelStart
+                selEnd = ei.initialSelEnd
+            }
+        }
+
+        // Any non -1 negative value is invalid, safeguard against it
+        if(selStart < 0 || selEnd < 0) {
+            selStart = -1
+            selEnd = -1
+        }
+
+        selectionTracker.onStartInput(selStart, selEnd, false)
+    }
+
     override fun onStartInput() {
         executor.removePendingEvaluations()
         executor.resetContext()
         setNeutralSuggestionStrip()
         updateConfig()
-        selectionTracker.onStartInput(
-            helper.getCurrentEditorInfo()?.initialSelStart ?: -1,
-            helper.getCurrentEditorInfo()?.initialSelEnd ?: -1,
-            false
-        )
+        initSelectionTracker()
 
         helper.getCurrentEditorInfo()?.let { executor.switchInputFieldType(getInputFieldType(it)) }
     }
