@@ -166,7 +166,8 @@ fun CreditCategorySection(
             VerticalGrid(
                 items = names.indices.toList(),
                 columns = columns,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
                 modifier = Modifier
                     .background(
                         Brush.verticalGradient(listOf(bgGradient1, bgGradient2))

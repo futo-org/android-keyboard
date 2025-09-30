@@ -1,6 +1,11 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.Path
+import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -15,12 +20,14 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.withClip
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
+import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
 val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), true)
@@ -30,6 +37,106 @@ val KeyHintsSetting   = SettingsKey(booleanPreferencesKey("keyHints"), false)
 fun<T> Preferences.get(key: SettingsKey<T>): T {
     return this[key.key] ?: key.default
 }
+
+class FlickClipDrawable(
+    private val background: Drawable,
+    private val inner: Drawable,
+    private val quarter: Direction?
+) : Drawable() {
+    private val clipPath = Path()
+
+    override fun onBoundsChange(b: Rect) {
+        super.onBoundsChange(b)
+        inner.bounds = b
+        background.bounds = b
+
+        (inner as? GradientDrawable)?.setSize(b.width(), b.height())
+        (background as? GradientDrawable)?.setSize(b.width(), b.height())
+
+        val L = b.left.toFloat()
+        val T = b.top.toFloat()
+        val R = b.right.toFloat()
+        val B = b.bottom.toFloat()
+
+        val CX = b.exactCenterX()
+        val CY = b.exactCenterY()
+
+        clipPath.reset()
+
+        if(quarter != null) {
+            clipPath.moveTo(CX, CY)
+            when (quarter) {
+                Direction.NorthWest -> {
+                    clipPath.lineTo(CX, T)
+                    clipPath.lineTo(L, T)
+                    clipPath.lineTo(L, CY)
+                }
+
+                Direction.NorthEast -> {
+                    clipPath.lineTo(CX, T)
+                    clipPath.lineTo(R, T)
+                    clipPath.lineTo(R, CY)
+                }
+
+                Direction.SouthEast -> {
+                    clipPath.lineTo(CX, B)
+                    clipPath.lineTo(R, B)
+                    clipPath.lineTo(R, CY)
+                }
+
+                Direction.SouthWest -> {
+                    clipPath.lineTo(CX, B)
+                    clipPath.lineTo(L, B)
+                    clipPath.lineTo(L, CY)
+                }
+
+                Direction.North -> {
+                    clipPath.lineTo(L, T)
+                    clipPath.lineTo(R, T)
+                }
+
+                Direction.West -> {
+                    clipPath.lineTo(L, B)
+                    clipPath.lineTo(L, T)
+                }
+
+                Direction.East -> {
+                    clipPath.lineTo(R, B)
+                    clipPath.lineTo(R, T)
+                }
+
+                Direction.South -> {
+                    clipPath.lineTo(L, B)
+                    clipPath.lineTo(R, B)
+                }
+            }
+            clipPath.close()
+        } else {
+            val radius = minOf(bounds.width(), bounds.height()) / 2.0f
+            clipPath.addCircle(CX, CY, radius / 1.4f, Path.Direction.CW)
+        }
+    }
+
+    override fun draw(canvas: Canvas) {
+        background.draw(canvas)
+        canvas.withClip(clipPath) {
+            inner.draw(canvas)
+        }
+    }
+
+    override fun setAlpha(alpha: Int) {
+        inner.alpha = alpha
+        background.alpha = alpha
+    }
+
+    override fun setColorFilter(cf: ColorFilter?) {
+        inner.colorFilter = cf
+        background.colorFilter = cf
+    }
+
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+}
+
 
 class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorScheme) :
     DynamicThemeProvider {
@@ -128,12 +235,23 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         val bg = coloredRoundedRectangle(background, dp(roundedness))
         val bgPressed = coloredRoundedRectangle(Color(highlight).compositeOver(Color(background)).toArgb(), dp(roundedness))
         val fgPressed = Color(foregroundPressed).compositeOver(Color(foreground)).toArgb()
+
+        val flickBg = Color(foreground).let {
+            it.copy(alpha = it.alpha * 0.92f)
+        }.toArgb()
         return VisualStyleDescriptor(
             backgroundDrawable = bg,
             foregroundColor    = foreground,
 
             backgroundDrawablePressed = bgPressed,
-            foregroundColorPressed = fgPressed
+            foregroundColorPressed = fgPressed,
+
+            backgroundDrawableFlicking = buildMap {
+                Direction.entries.forEach {
+                    put(it, FlickClipDrawable(bgPressed, coloredRoundedRectangle(flickBg, dp(roundedness)), it))
+                }
+                put(null, bgPressed)
+            }
         )
     }
 

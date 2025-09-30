@@ -385,11 +385,20 @@ val TextEditAction = Action(
                                 (if(shift) { KeyEvent.META_SHIFT_ON } else { 0 }) or
                                 (if(ctrl) { KeyEvent.META_CTRL_ON } else { 0 })
 
-                        when(direction) {
-                            Direction.Left -> manager.cursorLeft(1, stepOverWords = ctrl, select = shift)
-                            Direction.Right -> manager.cursorRight(1, stepOverWords = ctrl, select = shift)
-                            Direction.Up -> manager.sendKeyEvent(KeyEvent.KEYCODE_DPAD_UP, keyEventMetaState)
-                            Direction.Down -> manager.sendKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, keyEventMetaState)
+                         when {
+                            keyEventMetaState == 0 && direction == Direction.Left ->
+                                manager.activateAction(ArrowLeftAction)
+                            keyEventMetaState == 0 && direction == Direction.Right ->
+                                manager.activateAction(ArrowRightAction)
+                            keyEventMetaState == 0 && direction == Direction.Up ->
+                                manager.activateAction(ArrowUpAction)
+                            keyEventMetaState == 0 && direction == Direction.Down ->
+                                manager.activateAction(ArrowDownAction)
+
+                            direction == Direction.Left -> manager.cursorLeft(1, stepOverWords = ctrl, select = shift)
+                            direction == Direction.Right -> manager.cursorRight(1, stepOverWords = ctrl, select = shift)
+                            direction == Direction.Up -> manager.sendKeyEvent(KeyEvent.KEYCODE_DPAD_UP, keyEventMetaState)
+                            direction == Direction.Down -> manager.sendKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, keyEventMetaState)
                         }
 
                         manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)

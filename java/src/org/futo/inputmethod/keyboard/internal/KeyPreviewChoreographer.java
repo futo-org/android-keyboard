@@ -19,6 +19,8 @@ package org.futo.inputmethod.keyboard.internal;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -122,7 +124,7 @@ public final class KeyPreviewChoreographer {
         final int topArea = Math.max(key.getHeight(), (int)(44.0f * density));
 
         final int previewWidth  = Math.min(Math.max(key.getWidth(), (int)(34.0f * density)), (int)(64.0f * density));
-        final int previewHeight = topArea + bottomPadding;
+        int previewHeight = topArea + bottomPadding;
         keyPreviewView.setPadding(0, 0, 0, bottomPadding);
 
         final int keyDrawWidth = key.getDrawWidth();
@@ -137,8 +139,18 @@ public final class KeyPreviewChoreographer {
         keyPreviewView.setPreviewBackground(hasMoreKeys, keyPreviewPosition);
         // The key preview is placed vertically above the top edge of the parent key with an
         // arbitrary offset.
-        final int previewY = key.getY() - previewHeight + mParams.mPreviewOffset
+        int previewY = key.getY() - previewHeight + mParams.mPreviewOffset
                 + CoordinateUtils.y(originCoords) + key.getHeight();
+
+        if(key.getHasFlick()) {
+            previewHeight -= bottomPadding;
+            keyPreviewView.setPadding(0, 0, 0, 0);
+            keyPreviewView.setGravity(Gravity.CENTER);
+            keyPreviewView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    Math.min(keyPreviewView.getWidth(), keyPreviewView.getHeight()) * 0.7f);
+        } else {
+            keyPreviewView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        }
 
         ViewLayoutUtils.placeViewAt(
                 keyPreviewView, previewX, previewY, previewWidth, previewHeight);

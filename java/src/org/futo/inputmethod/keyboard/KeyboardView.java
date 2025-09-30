@@ -25,7 +25,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.text.TextUtils;
@@ -398,12 +397,12 @@ public class KeyboardView extends View {
         // Draw key label.
         final Keyboard keyboard = getKeyboard();
         final Drawable icon = (keyboard == null) ? null
-                : key.getIcon(keyboard.mIconsSet, params.mAnimAlpha);
+                : key.getIconOverride(keyboard.mIconsSet, params.mAnimAlpha);
         final Drawable hintIcon = (keyboard == null) ? null
                 : key.getHintIcon(keyboard.mIconsSet, params.mAnimAlpha);
         float labelX = centerX;
         float labelBaseline = centerY;
-        final String label = key.getLabel();
+        final String label = key.getLabelOverride() == null ? key.getLabel() : key.getLabelOverride();
         if (label != null && icon == null) {
             paint.setTypeface(mDrawableProvider.selectKeyTypeface(key.selectTypeface(params)));
             paint.setTextSize(key.selectTextSize(params));

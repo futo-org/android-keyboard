@@ -19,25 +19,36 @@ import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.HandwritingGesture
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputContentInfo
+import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.PreviewableHandwritingGesture
 import android.view.inputmethod.SurroundingText
 import android.view.inputmethod.TextAttribute
 import android.view.inputmethod.TextBoundsInfoResult
 import android.view.inputmethod.TextSnapshot
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -112,13 +123,15 @@ class ActionEditTextInputConnection(val ic: InputConnection, val view: ActionEdi
 class ActionEditText(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = android.R.attr.editTextStyle
+    defStyleAttr: Int = android.R.attr.editTextStyle,
+    val inspection: Boolean = false
 ) :
     androidx.appcompat.widget.AppCompatEditText(context, attrs, defStyleAttr) {
     var inputConnection: InputConnection? = null
         private set
 
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
+        if(inspection) return null
         inputConnection = super.onCreateInputConnection(outAttrs)?.let {
             ActionEditTextInputConnection(it, this)
         }
@@ -151,19 +164,20 @@ class ActionEditText(
 
 
 @Composable
-fun ActionTextEditor(
+private fun GenericEditTextCompose(
     text: MutableState<String>,
-    multiline: Boolean = false,
-    textSize: TextUnit = 16.sp,
+    multiline: Boolean,
+    textSize: TextUnit,
+    placeholder: String?,
+    autocorrect: Boolean,
     typeface: Typeface? = null,
-    autocorrect: Boolean = false
+    modifier: Modifier = Modifier,
+    onOverride: ((InputConnection, EditorInfo) -> Unit)? = null,
+    onUnoverride: (() -> Unit)? = null,
+    autofocus: Boolean = false,
+    forceQwerty: Boolean = false,
 ) {
     val context = LocalContext.current
-    val manager = if(LocalInspectionMode.current) {
-        null
-    } else {
-        LocalManager.current
-    }
 
     val height = with(LocalDensity.current) {
         48.dp.toPx()
@@ -182,78 +196,151 @@ fun ActionTextEditor(
     val color = LocalContentColor.current
     val textSizeToUse = with(LocalDensity.current) { textSize.toPx() }
     val typefaceToUse = typeface
-    if(!LocalInspectionMode.current) {
-        val editText = remember {
-            ActionEditText(context).apply {
+    val inspection = LocalInspectionMode.current
+    val editText = remember {
+        ActionEditText(context, inspection = inspection).apply {
+            this.inputType = inputType
+
+            setTextChangeCallback { text.value = it }
+
+            setText(text.value)
+            setTextColor(color.toArgb())
+            placeholder?.let { setHint(it) }
+
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeToUse)
+            typefaceToUse?.let { setTypeface(it) }
+
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+            privateImeOptions = StringBuilder().apply {
+                if(!autocorrect) append("org.futo.inputmethod.latin.NoSuggestions=1,")
+                if(forceQwerty) append("org.futo.inputmethod.latin.ForceLayout=qwerty,org.futo.inputmethod.latin.ForceLocale=zz,")
+            }.toString()
+
+            setHeight(height.toInt())
+
+            val editorInfo = EditorInfo().apply {
                 this.inputType = inputType
-
-                setTextChangeCallback { text.value = it }
-
-                setText(text.value)
-                setTextColor(color.toArgb())
-
-                setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeToUse)
-                typefaceToUse?.let { setTypeface(it) }
-
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-
-                privateImeOptions = if(!autocorrect) {
-                    "org.futo.inputmethod.latin.NoSuggestions=1"
-                } else {
-                    ""
-                }
-
-                setHeight(height.toInt())
-
-                val editorInfo = EditorInfo().apply {
-                    this.inputType = inputType
-                    this.packageName = context.packageName
-                }
-                onCreateInputConnection(editorInfo)
-
-                manager?.overrideInputConnection(inputConnection!!, editorInfo)
-
-                // Remove underline and padding
-                background = null
-                setPadding(0, 0, 0, 0)
-
-                requestFocus()
+                this.packageName = context.packageName
             }
+            onCreateInputConnection(editorInfo)
+
+            onOverride?.invoke(inputConnection!!, editorInfo)
+
+            // Remove underline and padding
+            background = null
+            setPadding(0, 0, 0, 0)
+
+            if(autofocus) requestFocus()
+        }
+    }
+
+    LaunchedEffect(text.value) {
+        if(text.value != editText.getText().toString()) {
+            editText.setText(text.value)
+        }
+    }
+
+    AndroidView(
+        factory = { editText },
+        modifier = modifier,
+        onRelease = {
+            onUnoverride?.invoke()
+        }
+    )
+
+    val fgColor = LocalContentColor.current
+    val primaryColor = MaterialTheme.colorScheme.primary
+
+    LaunchedEffect(fgColor, primaryColor) {
+        editText.setTextColor(fgColor.toArgb())
+        editText.setHintTextColor(fgColor.copy(alpha = 0.7f).toArgb())
+        editText.highlightColor = primaryColor.copy(alpha = 0.7f).toArgb()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            editText.textCursorDrawable?.setTint(primaryColor.toArgb())
+            editText.textSelectHandle?.setTint(primaryColor.toArgb())
+            editText.textSelectHandleLeft?.setTint(primaryColor.toArgb())
+            editText.textSelectHandleRight?.setTint(primaryColor.toArgb())
+        }
+    }
+
+    val token = LocalView.current.windowToken
+    DisposableEffect(autofocus, token) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if(autofocus) {
+            imm.showSoftInput(editText, 0)
         }
 
-        LaunchedEffect(text.value) {
-            if(text.value != editText.getText().toString()) {
-                editText.setText(text.value)
-            }
+        onDispose {
+            imm.hideSoftInputFromWindow(token, 0)
         }
+    }
+}
 
+@Composable
+fun ActionTextEditor(
+    text: MutableState<String>,
+    multiline: Boolean = false,
+    textSize: TextUnit = 16.sp,
+    typeface: Typeface? = null,
+    autocorrect: Boolean = false
+) {
+    val manager = if(!LocalInspectionMode.current) LocalManager.current else null
+    GenericEditTextCompose(
+        text = text,
+        multiline = multiline,
+        textSize = textSize,
+        typeface = typeface,
+        autocorrect = autocorrect,
+        placeholder = null,
+        modifier = Modifier.fillMaxSize(),
+        onOverride = { ic, ed ->
+            manager!!.overrideInputConnection(ic, ed)
+        },
+        onUnoverride = {
+            manager!!.unsetInputConnection()
+        }
+    )
+}
 
-        AndroidView(
-            factory = { editText },
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            onRelease = {
-                manager?.unsetInputConnection()
+@Composable
+fun SettingsTextEdit(
+    text: MutableState<String>,
+    multiline: Boolean = false,
+    placeholder: String? = null,
+    textSize: TextUnit = 16.sp,
+    icon: (@Composable () -> Unit)? = null,
+    autocorrect: Boolean = true,
+    autofocus: Boolean = false,
+    forceQwerty: Boolean = false,
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(8.dp, 0.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            icon?.let {
+                it.invoke()
+                Spacer(modifier = Modifier.width(8.dp))
             }
-        )
 
-        val fgColor = LocalContentColor.current
-        val primaryColor = MaterialTheme.colorScheme.primary
-
-        LaunchedEffect(fgColor, primaryColor) {
-            editText.setTextColor(fgColor.toArgb())
-            editText.setHintTextColor(fgColor.copy(alpha = 0.7f).toArgb())
-            editText.highlightColor = primaryColor.copy(alpha = 0.7f).toArgb()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                editText.textCursorDrawable?.setTint(primaryColor.toArgb())
-                editText.textSelectHandle?.setTint(primaryColor.toArgb())
-                editText.textSelectHandleLeft?.setTint(primaryColor.toArgb())
-                editText.textSelectHandleRight?.setTint(primaryColor.toArgb())
-            }
+            GenericEditTextCompose(
+                text = text,
+                multiline = multiline,
+                textSize = textSize,
+                placeholder = placeholder,
+                autocorrect = autocorrect,
+                autofocus = autofocus,
+                forceQwerty = forceQwerty
+            )
         }
     }
 }

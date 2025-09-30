@@ -307,7 +307,7 @@ fun generateSkinToneVariants(emoji: String, emojiMap: Map<String, EmojiItem>): L
                 part
             }
         }
-        variants.add(variant)
+        variants.add(variant.replace("\uFE0F", ""))
     }
 
     return variants
@@ -954,7 +954,7 @@ val EmojiAction = Action(
                         manager.sendCodePointEvent(Constants.CODE_SPACE)
                         manager.performHapticAndAudioFeedback(Constants.CODE_SPACE, view)
                     }, onBackspace = { isRepeated ->
-                        manager.sendCodePointEvent(Constants.CODE_DELETE)
+                        manager.backspace(1)
                         if(!isRepeated) {
                             manager.performHapticAndAudioFeedback(Constants.CODE_DELETE, view)
                         }

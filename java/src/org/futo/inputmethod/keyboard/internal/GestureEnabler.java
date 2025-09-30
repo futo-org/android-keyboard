@@ -21,20 +21,20 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils;
 public final class GestureEnabler {
     /** True if we should handle gesture events. */
     private boolean mShouldHandleGesture;
-    private boolean mMainDictionaryAvailable;
+    private boolean mImeAllowsGestureInput;
     private boolean mGestureHandlingEnabledByInputField;
     private boolean mGestureHandlingEnabledByUser;
 
     private void updateGestureHandlingMode() {
-        mShouldHandleGesture = mMainDictionaryAvailable
+        mShouldHandleGesture = mImeAllowsGestureInput
                 && mGestureHandlingEnabledByInputField
                 && mGestureHandlingEnabledByUser
                 && !AccessibilityUtils.getInstance().isTouchExplorationEnabled();
     }
 
     // Note that this method is called from a non-UI thread.
-    public void setMainDictionaryAvailability(final boolean mainDictionaryAvailable) {
-        mMainDictionaryAvailable = mainDictionaryAvailable;
+    public void setImeAllowsGestureInput(final boolean imeAllowsGestureInput) {
+        mImeAllowsGestureInput = imeAllowsGestureInput;
         updateGestureHandlingMode();
     }
 

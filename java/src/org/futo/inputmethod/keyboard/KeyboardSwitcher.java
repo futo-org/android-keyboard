@@ -126,7 +126,7 @@ public final class KeyboardSwitcher implements SwitchActions {
     }
 
     public void loadKeyboard(final EditorInfo editorInfo, final SettingsValues settingsValues,
-            final int currentAutoCapsState, final int currentRecapitalizeState) {
+            final int currentAutoCapsState) {
 
         final Resources res = mThemeContext.getResources();
 
@@ -166,8 +166,9 @@ public final class KeyboardSwitcher implements SwitchActions {
                     params
             );
 
-            mState.onLoadKeyboard(editorInfo, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
-            mLatinIMELegacy.setCombiners(mKeyboardLayoutSet.getMainLayout().getCombiners());
+            mState.onLoadKeyboard(editorInfo, transformAutoCapsState(currentAutoCapsState),
+                    layoutSetName);
+            mLatinIMELegacy.setLayout(mKeyboardLayoutSet);
             mKeyboardTextsSet.setLocale(mRichImm.getCurrentSubtypeLocale(), mThemeContext);
         } catch (Exception e) {
             Log.e(TAG, "loading keyboard failed: ", e);
@@ -238,26 +239,22 @@ public final class KeyboardSwitcher implements SwitchActions {
         return null;
     }
 
-    // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
-    // when a keyboard layout set doesn't get reloaded in LatinIME.onStartInputViewInternal().
-    public void resetKeyboardStateToAlphabet(final int currentAutoCapsState,
-            final int currentRecapitalizeState) {
-        mState.onResetKeyboardStateToAlphabet(transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
+    public void resetKeyboardStateToAlphabet(final int currentAutoCapsState) {
+        mState.onResetKeyboardStateToAlphabet(transformAutoCapsState(currentAutoCapsState));
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer,
-            final int currentAutoCapsState, final int currentRecapitalizeState) {
-        mState.onPressKey(code, isSinglePointer, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
+            final int currentAutoCapsState) {
+        mState.onPressKey(code, isSinglePointer, transformAutoCapsState(currentAutoCapsState));
     }
 
     public void onReleaseKey(final int code, final boolean withSliding,
-            final int currentAutoCapsState, final int currentRecapitalizeState) {
-        mState.onReleaseKey(code, withSliding, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
+            final int currentAutoCapsState) {
+        mState.onReleaseKey(code, withSliding, transformAutoCapsState(currentAutoCapsState));
     }
 
-    public void onFinishSlidingInput(final int currentAutoCapsState,
-            final int currentRecapitalizeState) {
-        mState.onFinishSlidingInput(transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
+    public void onFinishSlidingInput(final int currentAutoCapsState) {
+        mState.onFinishSlidingInput(transformAutoCapsState(currentAutoCapsState));
     }
 
     public boolean isImeSuppressedByHardwareKeyboard(
@@ -285,8 +282,8 @@ public final class KeyboardSwitcher implements SwitchActions {
     }
 
     @Override
-    public void requestUpdatingShiftState(int autoCapsFlags, int recapitalizeMode) {
-        mState.onUpdateShiftState(transformAutoCapsState(autoCapsFlags), recapitalizeMode);
+    public void requestUpdatingShiftState(int autoCapsFlags) {
+        mState.onUpdateShiftState(transformAutoCapsState(autoCapsFlags));
     }
 
     public enum KeyboardSwitchState {
@@ -325,9 +322,8 @@ public final class KeyboardSwitcher implements SwitchActions {
     /**
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
-    public void onEvent(final Event event, final int currentAutoCapsState,
-            final int currentRecapitalizeState) {
-        mState.onEvent(event, transformAutoCapsState(currentAutoCapsState), currentRecapitalizeState);
+    public void onEvent(final Event event, final int currentAutoCapsState) {
+        mState.onEvent(event, transformAutoCapsState(currentAutoCapsState));
     }
 
     public boolean isShowingKeyboardId(@Nonnull int... keyboardIds) {

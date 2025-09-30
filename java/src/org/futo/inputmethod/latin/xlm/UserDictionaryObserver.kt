@@ -25,13 +25,15 @@ class UserDictionaryObserver(context: Context) {
     }
 
     init {
-        contentResolver.registerContentObserver(uri, true, contentObserver)
+        try {
+            contentResolver.registerContentObserver(uri, true, contentObserver)
+        } catch(_: Exception) { }
         updateWords()
     }
 
     fun getWords(): List<Word> = words
 
-    private fun updateWords() {
+    internal fun updateWords() {
         val projection = arrayOf(UserDictionary.Words.WORD, UserDictionary.Words.FREQUENCY)
         val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
 
@@ -71,6 +73,8 @@ class UserDictionaryObserver(context: Context) {
     }
 
     fun unregister() {
-        contentResolver.unregisterContentObserver(contentObserver)
+        try {
+            contentResolver.unregisterContentObserver(contentObserver)
+        } catch(_: Exception) { }
     }
 }

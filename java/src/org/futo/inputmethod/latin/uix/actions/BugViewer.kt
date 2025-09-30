@@ -32,6 +32,36 @@ public object BugViewerState {
     }
 }
 
+private val Throwable.rootCause: Throwable?
+    get() = generateSequence(this) { it.cause }.lastOrNull()?.takeIf { it !== this }
+
+fun throwIfDebug(ex: Exception) {
+    if(BuildConfig.DEBUG || BuildConfig.FLAVOR == "unstable") {
+        throw ex
+    } else {
+        val sw = java.io.StringWriter()
+        ex.printStackTrace(java.io.PrintWriter(sw))
+
+        BugViewerState.pushBug(
+            BugInfo(
+                name = ex.javaClass.simpleName,
+                details = buildString {
+                    appendLine("Message: ${ex.message ?: "<no message>"}")
+                    appendLine()
+                    appendLine("Stack-trace:")
+                    append(sw.toString().trim())
+                    ex.rootCause?.let { root ->
+                        appendLine()
+                        appendLine()
+                        appendLine("Root cause: ${root.javaClass.simpleName}")
+                        appendLine("Root message: ${root.message ?: "<no message>"}")
+                    }
+                }
+            )
+        )
+    }
+}
+
 val BugViewerAction = Action(
     icon = R.drawable.code,
     name = R.string.action_bug_viewer_title,

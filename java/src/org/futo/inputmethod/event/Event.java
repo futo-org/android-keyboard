@@ -60,6 +60,11 @@ public class Event {
     final public static int EVENT_TYPE_SOFTWARE_GENERATED_STRING = 6;
     // An event corresponding to a cursor move
     final public static int EVENT_TYPE_CURSOR_MOVE = 7;
+    // A KeyEvent
+    final public static int EVENT_TYPE_DOWN_UP_KEYEVENT = 8;
+    // Keypress events that did not necessarily come from the user tapping a key on the keyboard.
+    // Used mainly within GeneralIME (e.g. passed to combiners when a word was reselected)
+    final public static int EVENT_TYPE_INPUT_KEYPRESS_RESUMED = 9;
 
     // 0 is a valid code point, so we use -1 here.
     final public static int NOT_A_CODE_POINT = -1;
@@ -75,7 +80,9 @@ public class Event {
     // This event has already been consumed.
     final private static int FLAG_CONSUMED = 0x4;
 
-    final private int mEventType; // The type of event - one of the constants above
+    // The type of event - one of the constants above
+    final private int mEventType;
+
     // The code point associated with the event, if relevant. This is a unicode code point, and
     // has nothing to do with other representations of the key. It is only relevant if this event
     // is of KEYPRESS type, but for a mode key like hankaku/zenkaku or ctrl, there is no code point
@@ -146,6 +153,11 @@ public class Event {
     }
 
     @Nonnull
+    public static Event createDownUpKeyEvent(final int keyCode, final int metaState) {
+        return new Event(EVENT_TYPE_DOWN_UP_KEYEVENT, null, Constants.NOT_A_CODE, keyCode, metaState, 0, null, FLAG_NONE, null);
+    }
+
+    @Nonnull
     public static Event createHardwareKeypressEvent(final int codePoint, final int keyCode,
             final Event next, final boolean isKeyRepeat) {
         return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, keyCode,
@@ -172,8 +184,7 @@ public class Event {
      */
     @Nonnull
     public static Event createEventForCodePointFromUnknownSource(final int codePoint) {
-        // TODO: should we have a different type of event for this? After all, it's not a key press.
-        return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, NOT_A_KEY_CODE,
+        return new Event(EVENT_TYPE_INPUT_KEYPRESS_RESUMED, null /* text */, codePoint, NOT_A_KEY_CODE,
                 Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
                 null /* suggestedWordInfo */, FLAG_NONE, null /* next */);
     }
@@ -189,8 +200,7 @@ public class Event {
     @Nonnull
     public static Event createEventForCodePointFromAlreadyTypedText(final int codePoint,
             final int x, final int y) {
-        // TODO: should we have a different type of event for this? After all, it's not a key press.
-        return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, NOT_A_KEY_CODE,
+        return new Event(EVENT_TYPE_INPUT_KEYPRESS_RESUMED, null /* text */, codePoint, NOT_A_KEY_CODE,
                 x, y, null /* suggestedWordInfo */, FLAG_NONE, null /* next */);
     }
 
@@ -297,6 +307,10 @@ public class Event {
         return EVENT_TYPE_NOT_HANDLED != mEventType;
     }
 
+    public int getEventType() {
+        return mEventType;
+    }
+
     public CharSequence getTextToCommit() {
         if (isConsumed()) {
             return ""; // A consumed event should input no text.
@@ -308,6 +322,7 @@ public class Event {
         case EVENT_TYPE_CURSOR_MOVE:
             return "";
         case EVENT_TYPE_INPUT_KEYPRESS:
+        case EVENT_TYPE_INPUT_KEYPRESS_RESUMED:
             return StringUtils.newSingleCodePointString(mCodePoint);
         case EVENT_TYPE_GESTURE:
         case EVENT_TYPE_SOFTWARE_GENERATED_STRING:

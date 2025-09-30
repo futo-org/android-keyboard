@@ -112,6 +112,12 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             setting = ExperimentalICComposing
         )
 
+        NavigationItem(
+            title = "Buggy text edit variations",
+            style = NavigationItemStyle.Misc,
+            navigate = { navController.navigate("devbuggytextedit") }
+        )
+
         ScreenTitle(title = "Payment stuff")
 
         SettingToggleDataStore(title = "Is paid", setting = IS_ALREADY_PAID)

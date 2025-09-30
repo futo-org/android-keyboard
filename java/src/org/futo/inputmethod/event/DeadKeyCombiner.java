@@ -16,7 +16,10 @@
 
 package org.futo.inputmethod.event;
 
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
 import android.util.SparseIntArray;
 
 import org.futo.inputmethod.latin.common.Constants;
@@ -374,6 +377,13 @@ public class DeadKeyCombiner implements Combiner {
 
     @Override
     public CharSequence getCombiningStateFeedback() {
-        return mDeadSequence;
+        if(mDeadSequence.length() == 0) return mDeadSequence;
+
+        final String s = "_" + mDeadSequence;
+        SpannableString spannable = new SpannableString(s);
+        spannable.setSpan(new BackgroundColorSpan(0x66EF3566), 0, s.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
+
+        return spannable;
     }
 }

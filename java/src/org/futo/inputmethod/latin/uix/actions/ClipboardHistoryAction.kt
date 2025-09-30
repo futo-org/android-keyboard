@@ -297,7 +297,12 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                 ) == true
 
                 // TODO: Support images and other non-text media
-                if (text != null && uri == null && (!isSensitive || canSaveSensitive)) {
+                val passesUriCheck = when {
+                    uri == null -> true
+                    text != null && mimeTypes.contains("text/plain") -> true
+                    else -> false
+                }
+                if (text != null && passesUriCheck && (!isSensitive || canSaveSensitive)) {
                     val isAlreadyPinned = clipboardHistory.firstOrNull {
                         ((it.text != null && it.text == text) || (it.uri != null && it.uri == uri)) && it.pinned
                     }?.pinned ?: false
@@ -310,7 +315,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                         timestamp = timestamp,
                         pinned = isAlreadyPinned,
                         text = text,
-                        uri = uri,
+                        uri = null,
                         mimeTypes = mimeTypes
                     )
                     clipboardHistory.add(newEntry)
@@ -410,8 +415,9 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                 clipboardFileSwap.writeText(json)
 
                 // Validate it can be read
-                if (decodeFile(clipboardFileSwap) != list) {
-                    throw Exception("Saved file data does not match expected data")
+                val decodedData = decodeFile(clipboardFileSwap)
+                if (decodedData != list) {
+                    throw Exception("Saved file data does not match expected data. Decoded: $decodedData, expected: $list")
                 }
 
                 // Move current to bak

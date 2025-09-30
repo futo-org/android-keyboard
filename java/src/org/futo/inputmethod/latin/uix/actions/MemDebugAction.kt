@@ -19,7 +19,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import org.futo.inputmethod.engine.general.GeneralIME
+import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.LocalFoldingState
@@ -227,11 +230,18 @@ val MemoryDebugAction = Action(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text("Keyboard State", style = DebugTitle)
-                    Text("composingText = ${latinIme.inputLogic.mConnection.composingTextForDebug}", style = DebugLabel)
-                    Text("committedTextBeforeComposingText = ${latinIme.inputLogic.mConnection.committedTextBeforeComposingTextForDebug}", style = DebugLabel)
-                    Text("LM.shouldPassThroughToLegacy = ${latinIme.languageModelFacilitator.shouldPassThroughToLegacy()}", style = DebugLabel)
-                    Text("LM.isTransformerDisabledDueToTimeout = ${latinIme.languageModelFacilitator.isTransformerDisabled()}", style = DebugLabel)
+                    val ime = remember { latinIme.imeManager.getActiveIME(Settings.getInstance().current) }
+                    when(ime) {
+                        is GeneralIME -> {
+                            ime.debugInfo().forEach {
+                                Text(it, style = DebugLabel)
+                            }
+                        }
 
+                        is JapaneseIME -> {
+                            Text("JapaneseIME [no debug info yet]", style = DebugLabel)
+                        }
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text("Screen State Info", style = DebugTitle)

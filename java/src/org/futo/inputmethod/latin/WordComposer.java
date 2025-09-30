@@ -16,6 +16,8 @@
 
 package org.futo.inputmethod.latin;
 
+import android.util.Log;
+
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.event.CombinerChain;
 import org.futo.inputmethod.event.Event;
@@ -173,6 +175,7 @@ public final class WordComposer {
         // The retained state of the combiner chain may have changed while processing the event,
         // so we need to update our cache.
         refreshTypedWordCache();
+        mCursorPositionWithinWord = mCodePointSize; // TODO: This wasn't originally here, why not?
         mEvents.add(event);
         return processedEvent;
     }
@@ -226,7 +229,7 @@ public final class WordComposer {
 
     public boolean isCursorFrontOrMiddleOfComposingWord() {
         if (DBG && mCursorPositionWithinWord > mCodePointSize) {
-            throw new RuntimeException("Wrong cursor position : " + mCursorPositionWithinWord
+            Log.e("WordComposer", "Wrong cursor position : " + mCursorPositionWithinWord
                     + "in a word of size " + mCodePointSize);
         }
         return mCursorPositionWithinWord != mCodePointSize;
@@ -246,6 +249,7 @@ public final class WordComposer {
         int cursorPos = mCursorPositionWithinWord;
         // TODO: Don't make that copy. We can do this directly from mTypedWordCache.
         final int[] codePoints = StringUtils.toCodePointArray(mTypedWordCache);
+        if(codePoints.length == 0) return false;
         if (expectedMoveAmount >= 0) {
             // Moving the cursor forward for the expected amount or until the end of the word has
             // been reached, whichever comes first.
@@ -293,7 +297,6 @@ public final class WordComposer {
 
     /**
      * Set the currently composing word to the one passed as an argument.
-     * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
      * @param codePoints the code points to set as the composing word.
      * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
      */
@@ -316,6 +319,10 @@ public final class WordComposer {
      */
     public String getTypedWord() {
         return mTypedWordCache.toString();
+    }
+
+    public CharSequence getTypedWordWithStyles() {
+        return mTypedWordCache;
     }
 
     /**

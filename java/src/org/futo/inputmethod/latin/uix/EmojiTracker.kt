@@ -26,16 +26,6 @@ object EmojiTracker {
         }
     }
 
-    suspend fun Context.unuseEmoji(emoji: String) {
-        if(isDeviceLocked) return
-
-        /*dataStore.edit {
-            val split = (it[lastUsedEmoji] ?: "").split("<|>")
-            val idxToRemove = split.indexOfFirst { v -> v == emoji || v.trim() == emoji.trim() }
-            it[lastUsedEmoji] = split.filterIndexed { i, _ -> i != idxToRemove}.joinToString("<|>")
-        }*/
-    }
-
     suspend fun Context.getRecentEmojis(): List<String> {
         if(isDeviceLocked) return listOf()
 

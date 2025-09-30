@@ -41,6 +41,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.KeyboardLayoutPreview
+import org.futo.inputmethod.latin.uix.SettingsTextEdit
 import org.futo.inputmethod.latin.uix.actions.searchMultiple
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -67,7 +68,7 @@ fun SelectLanguageScreen(navController: NavHostController = rememberNavControlle
     val layoutMapping = remember { LayoutManager.getLayoutMapping(context) }
 
     val systemLocale = remember { context.resources.configuration.locales[0] }
-    val textFieldValue = remember { mutableStateOf(TextFieldValue("")) }
+    val textFieldValue = remember { mutableStateOf("") }
 
     val locales = remember {
         layoutMapping.keys.toList().sortedBy {
@@ -75,10 +76,10 @@ fun SelectLanguageScreen(navController: NavHostController = rememberNavControlle
         }
     }
 
-    val searchKeys = if(textFieldValue.value.text.isEmpty()) {
+    val searchKeys = if(textFieldValue.value.isEmpty()) {
         locales
     } else {
-        locales.searchMultiple(textFieldValue.value.text.lowercase(), limitLength = true, maxDistance = Int.MAX_VALUE) {
+        locales.searchMultiple(textFieldValue.value.lowercase(), limitLength = true, maxDistance = Int.MAX_VALUE) {
             listOf(
                 it.language,
                 Subtypes.getLocaleDisplayName(it, systemLocale),
@@ -93,27 +94,13 @@ fun SelectLanguageScreen(navController: NavHostController = rememberNavControlle
         }
 
         item {
-            Surface(color = MaterialTheme.colorScheme.surfaceContainerHighest, shape = RoundedCornerShape(8.dp), modifier = Modifier
-                .padding(8.dp)
-                .height(48.dp)
-                .fillMaxWidth()) {
-                Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Search, contentDescription = stringResource(R.string.language_settings_search))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    BasicTextField(
-                        value = textFieldValue.value,
-                        onValueChange = { textFieldValue.value = it },
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            platformImeOptions = PlatformImeOptions(
-                                privateImeOptions = "org.futo.inputmethod.latin.NoSuggestions=1,org.futo.inputmethod.latin.ForceLayout=qwerty,org.futo.inputmethod.latin.ForceLocale=zz"
-                            )
-                        ),
-                        modifier = Modifier.weight(1.0f),
-                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-                        textStyle = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface)
+            Box(Modifier.padding(8.dp)) {
+                SettingsTextEdit(textFieldValue, icon = {
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = stringResource(R.string.settings_search_menu_title)
                     )
-
-                }
+                }, autofocus = true, forceQwerty = true)
             }
         }
 

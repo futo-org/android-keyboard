@@ -5,9 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
-import android.net.Uri
-import android.provider.UserDictionary
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
@@ -36,8 +33,8 @@ import okio.ByteString.Companion.toByteString
 import okio.buffer
 import okio.sink
 import okio.source
+import org.futo.inputmethod.engine.general.mozcUserProfileDir
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.PreferenceUtils.getDefaultSharedPreferences
 import org.futo.inputmethod.latin.uix.actions.ClipboardFileName
 import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryManager.Companion.onClipboardImportedFlow
@@ -72,62 +69,6 @@ data class PersonalWord(
     val appId: Int,
     val shortcut: String?
 )
-
-private class UserDictionaryIO(val context: Context) {
-    private val contentResolver = context.applicationContext.contentResolver
-    private val uri: Uri = UserDictionary.Words.CONTENT_URI
-
-    fun get(): List<PersonalWord> {
-        val result = mutableListOf<PersonalWord>()
-        val projection = arrayOf(UserDictionary.Words.WORD, UserDictionary.Words.FREQUENCY, UserDictionary.Words.LOCALE, UserDictionary.Words.APP_ID, UserDictionary.Words.SHORTCUT)
-        val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
-
-        cursor?.use {
-            val wordColumn = it.getColumnIndex(UserDictionary.Words.WORD)
-            val frequencyColumn = it.getColumnIndex(UserDictionary.Words.FREQUENCY)
-            val localeColumn = it.getColumnIndex(UserDictionary.Words.LOCALE)
-            val appIdColumn = it.getColumnIndex(UserDictionary.Words.APP_ID)
-            val shortcutColumn = it.getColumnIndex(UserDictionary.Words.SHORTCUT)
-
-            while (it.moveToNext()) {
-                val word = it.getString(wordColumn)
-                val frequency = it.getInt(frequencyColumn)
-                val locale = it.getString(localeColumn)
-                val appId = it.getInt(appIdColumn)
-                val shortcut = it.getString(shortcutColumn)
-                result.add(PersonalWord(
-                        word,
-                        frequency,
-                        locale,
-                        appId,
-                        shortcut
-                    ))
-            }
-        }
-
-        return result
-    }
-
-    fun put(from: List<PersonalWord>, clear: Boolean = false) {
-        if(clear) {
-            contentResolver.delete(uri, null, null)
-        }
-
-        val currWords = get().toSet()
-        from.filter {
-            !currWords.contains(it)
-        }.forEach {
-            UserDictionary.Words.addWord(
-                context,
-                it.word,
-                it.frequency,
-                it.shortcut,
-                it.locale?.let { localeFromString(it) }
-            )
-        }
-    }
-}
-
 
 @Suppress("HardCodedStringLiteral")
 object SettingsExporter {
@@ -332,7 +273,14 @@ object SettingsExporter {
             }
         }
 
-        // TODO: Collect personal dictionary
+        // Collect mozc (Japanese user typing history, etc)
+        mozcUserProfileDir(context).listFiles()?.forEach { subfile ->
+            assert(!subfile.isDirectory)
+            val entry = ZipEntry("mozc/${subfile.name}")
+            zipOut.putNextEntry(entry)
+            subfile.inputStream().use { it.copyTo(zipOut) }
+            zipOut.closeEntry()
+        }
     }
 
     private fun String.splitSlash(): String = split("/", limit = 2)[1]
@@ -369,6 +317,8 @@ object SettingsExporter {
                     it.deleteRecursively()
                 }
             }
+
+            mozcUserProfileDir(context).deleteRecursively()
         }
         while (entry != null) {
             when {
@@ -422,6 +372,18 @@ object SettingsExporter {
                     subdir.mkdirs()
 
                     File(subdir, fileName).outputStream().use {
+                        zipIn.copyTo(it)
+                    }
+                }
+
+                entry.name.startsWith("mozc/") -> {
+                    val relDir = entry.name.split('/', limit=2).last()
+
+                    assert(!relDir.contains('/'))
+
+                    val userProfileDir = mozcUserProfileDir(context)
+                    userProfileDir.mkdirs()
+                    File(userProfileDir, relDir).outputStream().use {
                         zipIn.copyTo(it)
                     }
                 }

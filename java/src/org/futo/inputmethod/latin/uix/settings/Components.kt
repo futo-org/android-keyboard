@@ -98,13 +98,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
+import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.theme.Typography
 import kotlin.math.pow
 
 @Composable
-fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHostController? = rememberNavController()) {
+fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHostController? = LocalNavController.current ?: rememberNavController()) {
     val rowModifier = if(showBack) {
         Modifier
             .fillMaxWidth()
@@ -341,6 +342,7 @@ fun SettingToggleRaw(
     disabled: Boolean = false,
     icon: (@Composable () -> Unit)? = null,
     onSubmenuNavigate: (() -> Unit)? = null,
+    compact: Boolean = false,
 ) {
     SettingItem(
         title = title,
@@ -362,7 +364,8 @@ fun SettingToggleRaw(
                 it
             }
         },
-        onSubmenuNavigate = onSubmenuNavigate
+        onSubmenuNavigate = onSubmenuNavigate,
+        compact = compact
     ) {
         Switch(checked = enabled, onCheckedChange = {
             if (!disabled) {
@@ -808,6 +811,7 @@ fun<T> DropDownPicker(
     selection: T?,
     onSet: (T) -> Unit,
     getDisplayName: (T) -> String,
+    scrollableOptions: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -846,7 +850,14 @@ fun<T> DropDownPicker(
         }
 
         AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
-            Column {
+            val scrollState = rememberScrollState()
+            Column(Modifier.let {
+                if(scrollableOptions) {
+                    it.verticalScroll(scrollState)
+                } else {
+                    it
+                }
+            }) {
                 Spacer(Modifier.height(9.dp))
                 Column(
                     Modifier.fillMaxWidth().background(

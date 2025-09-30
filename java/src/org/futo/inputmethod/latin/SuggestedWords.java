@@ -71,6 +71,8 @@ public class SuggestedWords {
     @Nullable
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
 
+    public final Integer mHighlightedCandidate;
+
     public SuggestedWords(@Nonnull final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
             @Nullable final ArrayList<SuggestedWordInfo> rawSuggestions,
             @Nullable final SuggestedWordInfo typedWordInfo,
@@ -78,7 +80,8 @@ public class SuggestedWords {
             final boolean willAutoCorrect,
             final boolean isObsoleteSuggestions,
             final int inputStyle,
-            final int sequenceNumber) {
+            final int sequenceNumber,
+            final @Nullable Integer highlightedCandidate) {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mRawSuggestions = rawSuggestions;
         mTypedWordValid = typedWordValid;
@@ -87,6 +90,20 @@ public class SuggestedWords {
         mInputStyle = inputStyle;
         mSequenceNumber = sequenceNumber;
         mTypedWordInfo = typedWordInfo;
+        mHighlightedCandidate = highlightedCandidate;
+    }
+
+    public SuggestedWords(@Nonnull final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
+                          @Nullable final ArrayList<SuggestedWordInfo> rawSuggestions,
+                          @Nullable final SuggestedWordInfo typedWordInfo,
+                          final boolean typedWordValid,
+                          final boolean willAutoCorrect,
+                          final boolean isObsoleteSuggestions,
+                          final int inputStyle,
+                          final int sequenceNumber) {
+        this(suggestedWordInfoList, rawSuggestions, typedWordInfo,
+                typedWordValid, willAutoCorrect, isObsoleteSuggestions,
+                inputStyle, sequenceNumber, null);
     }
 
     public boolean isEmpty() {
@@ -236,6 +253,11 @@ public class SuggestedWords {
     }
 
     // non-final for testability.
+    /* TODO: This will need a few extra fields for integration with mozc
+    *         Annotation descripttion
+    *         a11y description?
+    *         Candidate ID, (candidate index?)
+    *         (candidate key?) */
     public static class SuggestedWordInfo {
         public static final int NOT_AN_INDEX = -1;
         public static final int NOT_A_CONFIDENCE = -1;
@@ -280,6 +302,10 @@ public class SuggestedWords {
         // For auto-commit. This is a measure of how confident we are that we can commit the
         // first word of this suggestion.
         public final int mAutoCommitFirstWordConfidence;
+
+        public final int mCandidateIndex;
+        public final String mCandidateDescription;
+
         private String mDebugString = "";
 
         public boolean mOriginatesFromTransformerLM = false;
@@ -294,11 +320,14 @@ public class SuggestedWords {
          * @param sourceDict What instance of Dictionary produced this suggestion.
          * @param indexOfTouchPointOfSecondWord See mIndexOfTouchPointOfSecondWord.
          * @param autoCommitFirstWordConfidence See mAutoCommitFirstWordConfidence.
+         * @param candidateIndex The IME-defined index of this candidate (for Japanese)
+         * @param candidateDescription The description for this candidate (for Japanese)
          */
         public SuggestedWordInfo(final String word, final String prevWordsContext,
                 final int score, final int kindAndFlags,
                 final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord,
-                final int autoCommitFirstWordConfidence) {
+                final int autoCommitFirstWordConfidence, final int candidateIndex,
+                final String candidateDescription) {
             mWord = word;
             mPrevWordsContext = prevWordsContext;
             mApplicationSpecifiedCompletionInfo = null;
@@ -308,6 +337,16 @@ public class SuggestedWords {
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = indexOfTouchPointOfSecondWord;
             mAutoCommitFirstWordConfidence = autoCommitFirstWordConfidence;
+            mCandidateIndex = candidateIndex;
+            mCandidateDescription = candidateDescription;
+        }
+
+        /** Helper to avoid specifying new candidate fields */
+        public SuggestedWordInfo(final String word, final String prevWordsContext,
+                                 final int score, final int kindAndFlags,
+                                 final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord,
+                                 final int autoCommitFirstWordConfidence) {
+            this(word, prevWordsContext, score, kindAndFlags, sourceDict, indexOfTouchPointOfSecondWord, autoCommitFirstWordConfidence, 0, null);
         }
 
         /**
@@ -325,6 +364,8 @@ public class SuggestedWords {
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = SuggestedWordInfo.NOT_AN_INDEX;
             mAutoCommitFirstWordConfidence = SuggestedWordInfo.NOT_A_CONFIDENCE;
+            mCandidateIndex = 0;
+            mCandidateDescription = null;
         }
 
         public boolean isEligibleForAutoCommit() {

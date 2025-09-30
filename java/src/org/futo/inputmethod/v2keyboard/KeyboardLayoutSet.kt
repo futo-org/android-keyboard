@@ -54,7 +54,7 @@ fun Locale.getKeyboardScript(): Script =
 
 
 
-private fun EditorInfo.getPrivateImeOptions(): Map<String, String> {
+internal fun EditorInfo.getPrivateImeOptions(): Map<String, String> {
     val options = mutableMapOf<String, String>()
     val imeOptions = privateImeOptions ?: return options
 
@@ -196,14 +196,23 @@ Layout: $layoutName
     val phoneSymbolsLayout = safeGetLayout(mainLayout.layoutSetOverrides.phoneShifted)
     val numberBasicLayout = safeGetLayout("number_basic")
 
+    private fun getSubKeyboard(element: KeyboardLayoutElement): org.futo.inputmethod.v2keyboard.Keyboard? {
+        return mainLayout.subKeyboards[element.kind]?.let {
+            mainLayout.copy(
+                rows = it.rows,
+                attributes = it.attributes + mainLayout.attributes
+            )
+        }
+    }
+
     val elements = mapOf(
         KeyboardLayoutElement(
-            kind = KeyboardLayoutKind.Alphabet,
+            kind = KeyboardLayoutKind.Alphabet0,
             page = KeyboardLayoutPage.Base
         ) to mainLayout,
 
         KeyboardLayoutElement(
-            kind = KeyboardLayoutKind.Alphabet,
+            kind = KeyboardLayoutKind.Alphabet0,
             page = KeyboardLayoutPage.Shifted
         ) to mainLayout,
 
@@ -239,7 +248,7 @@ Layout: $layoutName
     )
 
     private fun getKeyboardLayoutForElement(element: KeyboardLayoutElement): org.futo.inputmethod.v2keyboard.Keyboard {
-        return elements[element.normalize()] ?: run {
+        return getSubKeyboard(element) ?: elements[element.normalize()] ?: run {
             // If this is an alt layout, try to get the matching alt
             element.page.altIdx?.let { altIdx ->
                 val baseElement = element.copy(page = KeyboardLayoutPage.Base)

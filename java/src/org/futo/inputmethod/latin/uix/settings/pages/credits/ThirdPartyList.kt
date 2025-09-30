@@ -90,4 +90,18 @@ val ThirdPartyList: List<ThirdPartyItem> = listOf(
         "Copyright (c) 2020 The Anton Project Authors",
         License.OFL1_1
     ),
+    TP(
+        "mozc",
+        "Japanese input powered by mozc",
+        "https://github.com/google/mozc",
+        "Copyright 2010-2018, Google Inc",
+        License.BSD3
+    ),
+    TP(
+        "mozc dictionaries",
+        "Japanese dictionaries include data from IPAdic",
+        "https://github.com/google/mozc",
+        "Copyright 2000, 2001, 2002, 2003 Nara Institute of Science and Technology.  All Rights Reserved.",
+        License.NAIST_2003
+    ),
 )

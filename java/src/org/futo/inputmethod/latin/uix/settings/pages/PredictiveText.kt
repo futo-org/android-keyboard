@@ -61,9 +61,7 @@ val PredictiveTextMenu = UserSettingsMenu(
             style = NavigationItemStyle.HomePrimary,
             icon = R.drawable.book,
             navigate = { nav ->
-                val intent = Intent("android.settings.USER_DICTIONARY_SETTINGS")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                nav.context.startActivity(intent)
+                nav.navigate("pdict")
             }
         ),
 

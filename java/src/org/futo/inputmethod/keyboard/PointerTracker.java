@@ -42,6 +42,7 @@ import org.futo.inputmethod.latin.define.DebugFlags;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
+import org.futo.inputmethod.v2keyboard.Direction;
 
 import java.util.ArrayList;
 
@@ -137,6 +138,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private int mLastX;
     private int mLastY;
 
+    private boolean mIsFlickingKey;
+
+    @Nullable
+    private Direction mFlickDirection;
+
     private boolean mIsSlidingCursor;
     private int mStartX;
     private int mStartY;
@@ -190,8 +196,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     // Note that this method is called from a non-UI thread.
-    public static void setMainDictionaryAvailability(final boolean mainDictionaryAvailable) {
-        sGestureEnabler.setMainDictionaryAvailability(mainDictionaryAvailable);
+    public static void setImeAllowsGestureInput(final boolean imeAllowsGestureInput) {
+        sGestureEnabler.setImeAllowsGestureInput(imeAllowsGestureInput);
     }
 
     public static void setGestureHandlingEnabledByUser(final boolean gestureHandlingEnabledByUser) {
@@ -688,6 +694,20 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
     }
 
+    private boolean areTwoKeysCompatibleFollowingLayoutChange(final Key a, final Key b) {
+        if(a == null || b == null) return false;
+
+        if(a.getCode() == Constants.CODE_SHIFT && b.getCode() == Constants.CODE_SHIFT) {
+            return true;
+        }
+
+        if(a.getCode() == Constants.CODE_SWITCH_ALPHA_SYMBOL && b.getCode() == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
+            return true;
+        }
+
+        return false;
+    }
+
     private void onDownEventInternal(final int x, final int y, final long eventTime) {
         Key key = onDownKey(x, y, eventTime);
         // Key selection by dragging finger is allowed when 1) key selection by dragging finger is
@@ -705,8 +725,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             // {@link #setKeyboard}. In those cases, we should update key according to the new
             // keyboard layout.
             if (callListenerOnPressAndCheckKeyboardLayoutChange(key, 0 /* repeatCount */)) {
+                Key prevKey = key;
                 key = getKeyOn(x, y);
-                if(!key.isModifier())
+
+                if(key != null && !key.isModifier() || !areTwoKeysCompatibleFollowingLayoutChange(prevKey, key))
                     key = null;
                 else
                     key = onDownKey(x, y, eventTime);
@@ -725,6 +747,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mSpacebarLongPressed = false;
 
             mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
+            mIsFlickingKey = !mIsSlidingCursor && key.getHasFlick();
+            mFlickDirection = key.flickDirection(0, 0);
             mCurrentKey = key;
         }
     }
@@ -976,6 +1000,20 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
 
+        if(mIsFlickingKey && oldKey != null) {
+            final Direction prevDirection = mFlickDirection;
+            mFlickDirection = oldKey.flickDirection(x - mStartX, y - mStartY);
+
+            if(prevDirection != mFlickDirection) {
+                sDrawingProxy.onKeyReleased(oldKey, false);
+                sDrawingProxy.onKeyPressed(oldKey, true);
+            }
+
+            mLastX = x;
+            mLastY = y;
+            return;
+        }
+
         final Key newKey = onMoveKey(x, y);
         if(newKey != oldKey && mStartedOnFastLongPress) {
             onLongPressed();
@@ -1060,6 +1098,16 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             sListener.onUpWithDeletePointerActive();
         } else if(mCursorMoved) {
             sListener.onUpWithPointerActive();
+        }
+
+        if(mIsFlickingKey && currentKey != null) {
+            final Key flickedKey = currentKey.flick(x - mStartX, y - mStartY);
+            detectAndSendKey(flickedKey, mKeyX, mKeyY, eventTime);
+
+            // Cleanup
+            currentKey.flickDirection(0, 0);
+
+            return;
         }
 
         if (isShowingMoreKeysPanel()) {

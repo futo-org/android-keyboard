@@ -20,6 +20,7 @@ class CrashLoggingApplication : Application(), Configuration.Provider {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+        if(BuildConfig.DEBUG) return
 
         val userManager = getSystemService(Context.USER_SERVICE) as UserManager
         if(userManager.isUserUnlocked) {

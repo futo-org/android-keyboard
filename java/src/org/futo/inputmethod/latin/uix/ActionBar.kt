@@ -1,15 +1,21 @@
 package org.futo.inputmethod.latin.uix
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -17,13 +23,20 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,12 +45,19 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
@@ -55,6 +75,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -74,10 +95,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -104,6 +129,7 @@ import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /*
@@ -178,6 +204,15 @@ val suggestionStyleAlternative = TextStyle(
     fontWeight = FontWeight.Normal,
     fontSize = 18.sp,
     lineHeight = 26.sp,
+    letterSpacing = 0.5.sp,
+    //textAlign = TextAlign.Center
+)
+
+val suggestionStyleCandidateDescription = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Medium,
+    fontSize = 8.sp,
+    lineHeight = 8.sp,
     letterSpacing = 0.5.sp,
     //textAlign = TextAlign.Center
 )
@@ -734,7 +769,8 @@ fun ActionBar(
     importantNotice: ImportantNotice? = null,
     keyboardManagerForAction: KeyboardManagerForAction? = null,
     quickClipState: QuickClipState? = null,
-    onQuickClipDismiss: () -> Unit = {}
+    onQuickClipDismiss: () -> Unit = {},
+    needToUseExpandableSuggestionUi: Boolean = false
 ) {
     val view = LocalView.current
     val context = LocalContext.current
@@ -745,7 +781,13 @@ fun ActionBar(
 
     Column(Modifier
         .height(
-            ActionBarHeight * if (useDoubleHeight) 2 else 1
+            ActionBarHeight * (if (useDoubleHeight) 2 else 1).let {
+                if(needToUseExpandableSuggestionUi) {
+                    it - 1
+                } else {
+                    it
+                }
+            }
         )
         .semantics {
             testTag = "ActionBar"
@@ -764,6 +806,7 @@ fun ActionBar(
             }
         }
 
+        if(needToUseExpandableSuggestionUi) return@Column
         ActionSep()
 
         Surface(
@@ -966,6 +1009,387 @@ class ExampleListener : SuggestionStripViewListener {
     }
 }
 
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun CandidateItem(modifier: Modifier, it: SuggestedWordInfo, listener: SuggestionStripViewListener, width: Dp, last: Boolean = false) {
+    val word = it.mWord
+    val description = it.mCandidateDescription
+    val color = LocalKeyboardScheme.current.onSurface
+    val textStyle =
+        suggestionStylePrimary.copy(color = color)
+    val descTextStyle =
+        suggestionStyleCandidateDescription.copy(color = color.copy(alpha = 0.5f)) // TODO: High contrast for high contrast theme
+    Row(
+        modifier
+            .width(width)
+            .combinedClickable(
+                enabled = word != null,
+                onClick = {
+                    listener.pickSuggestionManually(
+                        it
+                    )
+                },
+                onLongClick = {
+                    listener.requestForgetWord(
+                        it
+                    )
+                }
+            )
+    ) {
+        Spacer(Modifier.weight(1.0f))
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                //.widthIn(min = width ?: 48.dp, max = width ?: Dp.Unspecified)
+                .testTag("SuggestionItem"),
+        ) {
+            CompositionLocalProvider(LocalContentColor provides color) {
+                if (word != null) {
+                    val modifier = Modifier
+                        .align(Center)
+                        .padding(2.dp)
+                        .testTag("SuggestionItemText")
+                    Text(
+                        word,
+                        style = textStyle,
+                        modifier = modifier
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.weight(1.0f))
+
+        if(description != null) {
+            val modifier = Modifier
+                .align(Alignment.Bottom)
+                .padding(0.dp, 0.dp, 0.dp, 4.dp)
+                .testTag("SuggestionItemDescription")
+            Text(
+                description,
+                style = descTextStyle,
+                modifier = modifier,
+                textAlign = TextAlign.Right
+            )
+
+            Spacer(Modifier.weight(1.0f))
+        }
+        if(!last) SuggestionSeparator()
+    }
+}
+
+
+private fun<T> measureTime(label: String, operation: () -> T): T {
+    val t0 = System.currentTimeMillis()
+    val result = operation()
+    val t1 = System.currentTimeMillis()
+
+    println("Operation $label took ${t1-t0}ms")
+    return result
+}
+
+@SuppressLint("UnusedBoxWithConstraintsScope")
+@Composable
+fun <T> LazyFlowRow(
+    items: List<T>,
+    itemMeasurer: (T) -> Int,
+    modifier: Modifier = Modifier,
+    itemContent: @Composable (width: Int, T, isLast: Boolean) -> Unit
+) {
+    BoxWithConstraints(modifier) {
+        val density = LocalDensity.current
+        val maxWidthPx = with(density) { maxWidth.roundToPx() }
+
+        val rows: List<List<Pair<Int, T>>> by remember(items, maxWidthPx) {
+            mutableStateOf(
+                measureTime("buildRows") {
+                    buildRows(
+                        items,
+                        itemMeasurer,
+                        maxWidthPx
+                    )
+                }
+            )
+        }
+
+        LazyColumn {
+            items(rows) { row ->
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    row.forEachIndexed { i, it -> itemContent(it.first, it.second, i == row.size-1) }
+                }
+            }
+        }
+    }
+}
+
+private fun <T> buildRows(
+    source: List<T>,
+    itemMeasurer: (T) -> Int,
+    maxWidthPx: Int
+): List<List<Pair<Int, T>>> {
+    if (source.isEmpty() || maxWidthPx <= 0) return emptyList()
+
+    val rows = mutableListOf<List<Pair<Int, T>>>()
+    var currentWidth = 0
+    var currentRow = mutableListOf<Pair<Int, T>>()
+
+    source.forEach { item ->
+        val itemSpace = itemMeasurer(item)
+
+        if (currentWidth + itemSpace > maxWidthPx && currentRow.isNotEmpty()) {
+            val widthLeftOver = maxWidthPx - currentWidth
+            val extraWidthPerItem = widthLeftOver / currentRow.size
+            rows.add(currentRow.map {
+                (it.first + extraWidthPerItem) to it.second
+            })
+            currentRow = mutableListOf()
+            currentWidth = 0
+        }
+        currentRow.add(itemSpace to item)
+        currentWidth += itemSpace
+    }
+    if (currentRow.isNotEmpty()) rows.add(currentRow)
+    return rows
+}
+
+
+@Composable
+private fun RowScope.InlineCandidates(
+    suggestionsExpansion: MutableFloatState,
+    keyboardHeight: Int,
+    lazyListState: LazyListState,
+    isActionsExpanded: Boolean,
+    toggleActionsExpanded: () -> Unit,
+    suggestionStripListener: SuggestionStripViewListener,
+    wordList: List<SuggestedWordInfo>,
+    widths: CachedCharacterWidthValues
+) {
+    val view = LocalView.current
+    val expandHeight = with(LocalDensity.current) { 120.dp.toPx().coerceAtMost(keyboardHeight / 2.0f) }
+    Box(Modifier.weight(1.0f).fillMaxHeight()) {
+        LazyRow(
+            modifier = Modifier.matchParentSize().pointerInput(Unit) {
+                detectVerticalDragGestures(
+                    onDragStart = {
+                    },
+                    onDragEnd = {
+                        if(suggestionsExpansion.floatValue < 0.5f) {
+                            suggestionsExpansion.floatValue = 0.0f
+                        } else {
+                            suggestionsExpansion.floatValue = 1.0f
+                        }
+                    },
+                    onDragCancel = {
+                        if(suggestionsExpansion.floatValue < 0.5f) {
+                            suggestionsExpansion.floatValue = 0.0f
+                        } else {
+                            suggestionsExpansion.floatValue = 1.0f
+                        }
+                    }
+                ) { a, b ->
+                    suggestionsExpansion.floatValue =
+                        (suggestionsExpansion.floatValue + b / expandHeight).coerceIn(0.0f, 1.0f)
+                }
+            },
+            verticalAlignment = CenterVertically,
+            state = lazyListState
+        ) {
+            item {
+                val manager = LocalManager.current
+                ExpandActionsButton(isActionsExpanded) {
+                    toggleActionsExpanded()
+
+                    manager.performHapticAndAudioFeedback(
+                        Constants.CODE_TAB,
+                        view
+                    )
+                }
+            }
+            itemsIndexed(wordList) { i, it ->
+                CandidateItem(Modifier.height(ActionBarHeight), it,
+                    listener = suggestionStripListener,
+                    last = i == wordList.size-1,
+                    width = with(LocalDensity.current) {
+                        measureWord(this, widths, it).toDp()
+                    }.coerceAtLeast(if(i == 0) 120.dp else 48.dp)
+                )
+            }
+        }
+    }
+}
+
+private fun String.countLongestLineLength(): Int {
+    var count = 0
+    var biggestCount = 0
+    for(c in this) {
+        if(c == '\n') {
+            biggestCount = max(count, biggestCount)
+            count = 0
+        } else {
+            count += 1
+        }
+    }
+    biggestCount = max(count, biggestCount)
+    return biggestCount
+}
+
+data class CachedCharacterWidthValues(
+    val normal: Int,
+    val description: Int
+)
+
+private fun measureWord(density: Density, widths: CachedCharacterWidthValues, word: SuggestedWordInfo): Int {
+    val minWidth = with(density) { 58.dp.toPx() }
+    val wordWidth = word.mWord.length * widths.normal * 1.04f //measurer.measure(it.mWord, style = suggestionStylePrimary).size.width
+    val extraDescWidth = if(word.mCandidateDescription.isNullOrEmpty()) {
+        0
+    } else {
+        word.mCandidateDescription.countLongestLineLength() * widths.description
+    }
+    return (wordWidth + with(density) { 10.dp.toPx() } + extraDescWidth).coerceAtLeast(minWidth).toInt()
+}
+
+const val START_OF_CANDIDATES = 1 // The 0th element is the show/hide action bar button
+
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class,
+    ExperimentalLayoutApi::class
+)
+@Composable
+fun BoxScope.ActionBarWithExpandableCandidates(
+    words: SuggestedWords?,
+    suggestionStripListener: SuggestionStripViewListener,
+    isActionsExpanded: Boolean,
+    toggleActionsExpanded: () -> Unit,
+    keyboardOffset: MutableIntState? = null,
+    keyboardHeight: Int = 1000
+) {
+    val wordList = remember(words) {
+        words?.mSuggestedWordInfoList?.toList()?.filter {
+            !it.isKindOf(KIND_TYPED)
+        } ?: emptyList()
+    }
+
+    val suggestionsExpansion = remember { mutableFloatStateOf(0.0f) }
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(wordList, words?.mHighlightedCandidate) {
+        if(words?.mHighlightedCandidate != null) {
+            lazyListState.scrollToItem(words.mHighlightedCandidate + START_OF_CANDIDATES)
+        } else {
+            lazyListState.scrollToItem(START_OF_CANDIDATES)
+        }
+    }
+
+    val offset by animateFloatAsState(keyboardHeight.toFloat() * suggestionsExpansion.floatValue,
+        label = "suggest")
+    LaunchedEffect(offset) { keyboardOffset?.intValue = offset.roundToInt() }
+
+    val lastVisibleItemIndex by remember(lazyListState) { derivedStateOf {
+            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.let {
+                val endOfViewport = lazyListState.layoutInfo.viewportEndOffset
+                val visibilityThreshold = it.offset + it.size * 2 / 3
+                if(endOfViewport > visibilityThreshold) {
+                    it.index
+                } else {
+                    it.index - 1
+                }
+            } ?: 0
+        }
+    }
+
+    val canShowSuggest = suggestionsExpansion.floatValue > 0.001f
+    val listToRender = remember(canShowSuggest, wordList) {
+        if(canShowSuggest) {
+            wordList.subList(
+                lastVisibleItemIndex.coerceAtMost(wordList.size),
+                wordList.size
+            )
+        } else {
+            null
+        }
+    }
+
+    val measurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+
+    // True width measurement is too slow, estimate it by multiplying constant by number of characters
+    val widths = remember(measurer) {
+        CachedCharacterWidthValues(
+            normal = measurer.measure("あ", style=suggestionStylePrimary).size.width,
+            description = measurer.measure("あ", style=suggestionStyleCandidateDescription).size.width
+        )
+    }
+
+
+    if(canShowSuggest) {
+        Surface(
+            Modifier.fillMaxWidth().padding(0.dp, ActionBarHeight, 0.dp, 0.dp)
+                .heightIn(max = with(density) { keyboardOffset?.intValue?.toDp() ?: 0.dp })
+                .safeKeyboardPadding()
+        ) {
+            LazyFlowRow(
+                listToRender ?: emptyList(),
+                itemMeasurer = { measureWord(density, widths, it) }
+            ) { allocatedWidth, item, isLast ->
+                CandidateItem(Modifier.height(ActionBarHeight), item, listener = suggestionStripListener, width=with(density) { allocatedWidth.toDp()  }, last=isLast)
+            }
+        }
+    }
+
+    Column(Modifier
+            .semantics {
+                testTag = "ActionBar"
+                testTagsAsResourceId = true
+            }
+            .height(ActionBarHeight)
+            .align(Alignment.TopCenter)
+    ) {
+        ActionSep()
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.0f), color = actionBarColor()
+        ) {
+            Row(Modifier.safeKeyboardPadding()) {
+                if (wordList.isNotEmpty()) {
+                    InlineCandidates(
+                        suggestionsExpansion,
+                        keyboardHeight,
+                        lazyListState,
+                        isActionsExpanded,
+                        toggleActionsExpanded,
+                        suggestionStripListener,
+                        wordList,
+                        widths
+                    )
+                }
+
+                IconButton(
+                    onClick = {
+                        if(suggestionsExpansion.floatValue < 0.5f) {
+                            suggestionsExpansion.floatValue = 1.0f
+                        } else {
+                            suggestionsExpansion.floatValue = 0.0f
+                        }
+                    },
+                    modifier = Modifier.width(40.dp)
+                ) {
+                    Icon(
+                        Icons.Default.KeyboardArrowUp,
+                        contentDescription = null,
+                        modifier = Modifier.rotate(
+                            suggestionsExpansion.floatValue * -180.0f
+                        )
+                    )
+                }
+            }
+        }
+
+        ActionSep(true)
+    }
+}
+
+
 val exampleSuggestionsList = arrayListOf(
     SuggestedWordInfo("verylongword123", "", 100, 1, null, 0, 0),
     SuggestedWordInfo("world understanding of patience", "",  99, 1, null, 0, 0),
@@ -975,10 +1399,121 @@ val exampleSuggestionsList = arrayListOf(
     SuggestedWordInfo("extra3", "", 95, 1, null, 0, 0)
 )
 
+val japaneseSuggestionsList = arrayListOf(
+    SuggestedWordInfo("あいう", "", 97, 1, null, 0, 0, 0, "ＬＯＮＧ　ＡＮＤ　ＣＯＭＰＬＥＸ\nＷＩＴＨ　ＭＵＬＴＩＰＬＥ　ＬＩＮＥＳ\nｓｏｍｅ　ｔｅｘｔ　ｈｅｒｅ"),
+    SuggestedWordInfo("アイウ", "", 96, 1, null, 0, 0, 0, "[あああ]"),
+    SuggestedWordInfo("あいうえお", "", 95, 1, null, 0, 0),
+    SuggestedWordInfo("アイウェア", "", 94, 1, null, 0, 0),
+    SuggestedWordInfo("アイヴ", "", 93, 1, null, 0, 0),
+    SuggestedWordInfo("相打ち", "", 92, 1, null, 0, 0),
+    SuggestedWordInfo("愛う", "", 91, 1, null, 0, 0),
+    SuggestedWordInfo("会いう", "", 90, 1, null, 0, 0),
+    SuggestedWordInfo("アイう", "", 89, 1, null, 0, 0),
+    SuggestedWordInfo("合いう", "", 88, 1, null, 0, 0),
+    SuggestedWordInfo("藍う", "", 87, 1, null, 0, 0),
+    SuggestedWordInfo("遭いう", "", 86, 1, null, 0, 0),
+    SuggestedWordInfo("逢いう", "", 85, 1, null, 0, 0),
+    SuggestedWordInfo("亜依う", "", 84, 1, null, 0, 0),
+    SuggestedWordInfo("亜衣う", "", 83, 1, null, 0, 0),
+    SuggestedWordInfo("遇いう", "", 82, 1, null, 0, 0),
+    SuggestedWordInfo("愛衣う", "", 81, 1, null, 0, 0),
+    SuggestedWordInfo("安威う", "", 80, 1, null, 0, 0),
+    SuggestedWordInfo("愛依う", "", 79, 1, null, 0, 0),
+    SuggestedWordInfo("會いう", "", 78, 1, null, 0, 0),
+    SuggestedWordInfo("吾唯う", "", 77, 1, null, 0, 0),
+    SuggestedWordInfo("艾う", "", 76, 1, null, 0, 0),
+    SuggestedWordInfo("阿井う", "", 75, 1, null, 0, 0),
+    SuggestedWordInfo("亜以う", "", 74, 1, null, 0, 0),
+    SuggestedWordInfo("愛良う", "", 73, 1, null, 0, 0),
+    SuggestedWordInfo("歩惟う", "", 72, 1, null, 0, 0),
+    SuggestedWordInfo("亜伊う", "", 71, 1, null, 0, 0),
+    SuggestedWordInfo("アイ", "", 70, 1, null, 0, 0),
+    SuggestedWordInfo("あい", "", 69, 1, null, 0, 0),
+    SuggestedWordInfo("会い", "", 68, 1, null, 0, 0),
+    SuggestedWordInfo("合い", "", 67, 1, null, 0, 0),
+    SuggestedWordInfo("亜依", "", 66, 1, null, 0, 0),
+    SuggestedWordInfo("遭い", "", 65, 1, null, 0, 0),
+    SuggestedWordInfo("亜衣", "", 64, 1, null, 0, 0),
+    SuggestedWordInfo("逢い", "", 63, 1, null, 0, 0),
+    SuggestedWordInfo("愛衣", "", 62, 1, null, 0, 0),
+    SuggestedWordInfo("愛依", "", 61, 1, null, 0, 0),
+    SuggestedWordInfo("安威", "", 60, 1, null, 0, 0),
+    SuggestedWordInfo("吾唯", "", 59, 1, null, 0, 0),
+    SuggestedWordInfo("あ", "", 58, 1, null, 0, 0),
+    SuggestedWordInfo("亜以", "", 57, 1, null, 0, 0),
+    SuggestedWordInfo("阿井", "", 56, 1, null, 0, 0),
+    SuggestedWordInfo("愛良", "", 55, 1, null, 0, 0),
+    SuggestedWordInfo("遇い", "", 54, 1, null, 0, 0),
+    SuggestedWordInfo("歩惟", "", 53, 1, null, 0, 0),
+    SuggestedWordInfo("亜伊", "", 52, 1, null, 0, 0),
+    SuggestedWordInfo("杏依", "", 51, 1, null, 0, 0),
+    SuggestedWordInfo("歩唯", "", 50, 1, null, 0, 0),
+    SuggestedWordInfo("亜唯", "", 49, 1, null, 0, 0),
+    SuggestedWordInfo("會い", "", 48, 1, null, 0, 0),
+    SuggestedWordInfo("彩衣", "", 47, 1, null, 0, 0),
+    SuggestedWordInfo("安居", "", 46, 1, null, 0, 0),
+    SuggestedWordInfo("阿惟", "", 45, 1, null, 0, 0),
+    SuggestedWordInfo("安衣", "", 44, 1, null, 0, 0),
+    SuggestedWordInfo("亜惟", "", 43, 1, null, 0, 0),
+    SuggestedWordInfo("阿衣", "", 42, 1, null, 0, 0),
+    SuggestedWordInfo("亜", "", 41, 1, null, 0, 0),
+    SuggestedWordInfo("空い", "", 40, 1, null, 0, 0),
+    SuggestedWordInfo("開い", "", 39, 1, null, 0, 0),
+    SuggestedWordInfo("飽い", "", 38, 1, null, 0, 0),
+    SuggestedWordInfo("明い", "", 37, 1, null, 0, 0),
+    SuggestedWordInfo("在", "", 36, 1, null, 0, 0),
+    SuggestedWordInfo("有", "", 35, 1, null, 0, 0),
+    SuggestedWordInfo("厭い", "", 34, 1, null, 0, 0),
+    SuggestedWordInfo("合", "", 33, 1, null, 0, 0),
+    SuggestedWordInfo("娃", "", 32, 1, null, 0, 0),
+    SuggestedWordInfo("哀", "", 31, 1, null, 0, 0),
+    SuggestedWordInfo("相", "", 30, 1, null, 0, 0),
+    SuggestedWordInfo("挨", "", 29, 1, null, 0, 0),
+    SuggestedWordInfo("逢", "", 28, 1, null, 0, 0),
+    SuggestedWordInfo("愛", "", 27, 1, null, 0, 0),
+    SuggestedWordInfo("鮎", "", 26, 1, null, 0, 0),
+    SuggestedWordInfo("藍", "", 25, 1, null, 0, 0),
+    SuggestedWordInfo("饗", "", 24, 1, null, 0, 0),
+    SuggestedWordInfo("姶", "", 23, 1, null, 0, 0),
+    SuggestedWordInfo("曖", "", 22, 1, null, 0, 0),
+    SuggestedWordInfo("哇", "", 21, 1, null, 0, 0),
+    SuggestedWordInfo("噫", "", 20, 1, null, 0, 0),
+    SuggestedWordInfo("欸", "", 19, 1, null, 0, 0),
+    SuggestedWordInfo("殪", "", 18, 1, null, 0, 0),
+    SuggestedWordInfo("瞹", "", 17, 1, null, 0, 0),
+    SuggestedWordInfo("藹", "", 16, 1, null, 0, 0),
+    SuggestedWordInfo("阨", "", 15, 1, null, 0, 0),
+    SuggestedWordInfo("靉", "", 14, 1, null, 0, 0),
+    SuggestedWordInfo("鞋", "", 13, 1, null, 0, 0),
+    SuggestedWordInfo("乃", "", 12, 1, null, 0, 0),
+    SuggestedWordInfo("生", "", 11, 1, null, 0, 0),
+    SuggestedWordInfo("会", "", 10, 1, null, 0, 0),
+    SuggestedWordInfo("医", "", 9, 1, null, 0, 0),
+    SuggestedWordInfo("和", "", 8, 1, null, 0, 0),
+    SuggestedWordInfo("秋", "", 7, 1, null, 0, 0),
+    SuggestedWordInfo("間", "", 6, 1, null, 0, 0),
+    SuggestedWordInfo("綾", "", 5, 1, null, 0, 0),
+    SuggestedWordInfo("優", "", 4, 1, null, 0, 0),
+    SuggestedWordInfo("會", "", 3, 1, null, 0, 0),
+    SuggestedWordInfo("埃", "", 2, 1, null, 0, 0),
+    SuggestedWordInfo("隘", "", 1, 1, null, 0, 0),
+)
+
 val exampleSuggestedWords = SuggestedWords(
     exampleSuggestionsList,
     exampleSuggestionsList,
     exampleSuggestionsList[0],
+    true,
+    true,
+    false,
+    0,
+    0
+)
+
+val japaneseSuggestedWords = SuggestedWords(
+    japaneseSuggestionsList,
+    japaneseSuggestionsList,
+    japaneseSuggestionsList[0],
     true,
     true,
     false,
@@ -1010,6 +1545,21 @@ fun PreviewActionBarWithSuggestions(colorScheme: ThemeOption = DefaultDarkScheme
             toggleActionsExpanded = { },
             onActionAltActivated = { }
         )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewActionBarWithExpandableCandidates(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
+        Box(Modifier.fillMaxWidth().height(250.dp)) {
+            ActionBarWithExpandableCandidates(
+                words = japaneseSuggestedWords,
+                suggestionStripListener = ExampleListener(),
+                isActionsExpanded = false,
+                toggleActionsExpanded = { },
+            )
+        }
     }
 }
 

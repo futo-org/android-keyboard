@@ -18,6 +18,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import org.futo.inputmethod.engine.general.OnGetSuggestedWordsCallbackWithInputStyle
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.BinaryDictionary
 import org.futo.inputmethod.latin.Dictionary
@@ -130,7 +131,8 @@ public class LanguageModelFacilitator(
     val settings: Settings,
     val keyboardSwitcher: KeyboardSwitcher,
     val lifecycleScope: LifecycleCoroutineScope,
-    val suggestionBlacklist: SuggestionBlacklist
+    val suggestionBlacklist: SuggestionBlacklist,
+    val suggestedWordsCallback: OnGetSuggestedWordsCallbackWithInputStyle
 ) {
     private val userDictionary = UserDictionaryObserver(context)
 
@@ -145,7 +147,7 @@ public class LanguageModelFacilitator(
     private val sharedFlow = MutableSharedFlow<PredictionInputValues>(replay = 0, extraBufferCapacity = 1)
 
     private var currentSequenceId = 0
-    private val sequenceIdFinishedFlow = MutableSharedFlow<Pair<Int, SuggestedWords?>>(replay = 1, extraBufferCapacity = 1)
+    private val sequenceIdFinishedFlow = MutableSharedFlow<Pair<PredictionInputValues, SuggestedWords?>>(replay = 1, extraBufferCapacity = 1)
 
     private val computationSemaphore = Semaphore(1)
     public fun hasPendingUpdate(): Boolean =
@@ -161,15 +163,19 @@ public class LanguageModelFacilitator(
                 withTimeout(700L) {
                     computationSemaphore.acquire()
                     computationSemaphore.release()
-                    val suggestedWords: SuggestedWords? = try {
-                        sequenceIdFinishedFlow.first { it.first >= currentSequenceId }.second
+                    val result = try {
+                        sequenceIdFinishedFlow.first { it.first.sequenceId >= currentSequenceId }
                     } catch (ignored: Exception) {
                         null
                     }
 
-                    // If it's non-null the processing thread is waiting on the main thread to send this to suggestionStripViewAccessor, so just send it ourselves
-                    suggestedWords?.let {
-                        inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(it)
+                    // If it's non-null the processing thread is waiting on the main thread to send this to callback, so just send it ourselves
+                    if(result?.second != null) {
+                        suggestedWordsCallback.onGetSuggestedWords(
+                            result.second!!,
+                            result.first.inputStyle,
+                            result.first.sequenceId
+                        )
                     }
                 }
                 numConsecutiveTimeouts = 0
@@ -229,12 +235,8 @@ public class LanguageModelFacilitator(
             return languageModel?.getSuggestions(
                 values.composedData,
                 values.ngramContext,
-                keyboardSwitcher.mainKeyboardView.mKeyDetector,
-                settingsForPrediction,
                 proximityInfoHandle,
-                -1,
                 autocorrectThreshold,
-                floatArrayOf(),
                 userDictionary.getWords().map { it.word },
                 suggestionBlacklist.currentBlacklist.toTypedArray<String>()
             )
@@ -261,7 +263,11 @@ public class LanguageModelFacilitator(
             inputLogic.mWordComposer.setAutoCorrection(null)
 
             if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH-1) {
-                inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
+                suggestedWordsCallback.onGetSuggestedWords(
+                    SuggestedWords.getEmptyInstance(),
+                    values.inputStyle,
+                    values.sequenceId
+                )
                 return
             }
 
@@ -282,8 +288,12 @@ public class LanguageModelFacilitator(
 
             val job = Job()
             CoroutineScope(Dispatchers.Default + job).launch {
-                delay(500)
-                inputLogic.mSuggestionStripViewAccessor.setNeutralSuggestionStrip()
+                delay(500L)
+                suggestedWordsCallback.onGetSuggestedWords(
+                    SuggestedWords.getEmptyInstance(),
+                    values.inputStyle,
+                    values.sequenceId
+                )
             }
 
 
@@ -303,7 +313,6 @@ public class LanguageModelFacilitator(
                             results,
                             values.composedData,
                             values.ngramContext,
-                            keyboardSwitcher.mainKeyboardView.mKeyDetector,
                             userDictionary.getWords().map { it.word }
                         )
 
@@ -335,17 +344,17 @@ public class LanguageModelFacilitator(
                         !suggestionBlacklist.isSuggestedWordOk(it)
                     }
 
-                    sequenceIdFinishedFlow.emit(Pair(values.sequenceId, finalResults))
+                    sequenceIdFinishedFlow.emit(Pair(values, finalResults))
 
                     withContext(Dispatchers.Main) {
-                        inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(finalResults)
-
-                        if(values.composedData.mIsBatchMode) {
-                            inputLogic.showBatchSuggestions(finalResults, values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH);
-                        }
+                        suggestedWordsCallback.onGetSuggestedWords(
+                            finalResults,
+                            values.inputStyle,
+                            values.sequenceId
+                        )
                     }
 
-                    sequenceIdFinishedFlow.emit(Pair(values.sequenceId, null))
+                    sequenceIdFinishedFlow.emit(Pair(values, null))
                 }
                 return
             }
@@ -483,26 +492,27 @@ public class LanguageModelFacilitator(
             computationSemaphore.release()
         }
 
-        sequenceIdFinishedFlow.emit(Pair(values.sequenceId, suggestedWords))
+        sequenceIdFinishedFlow.emit(Pair(values, suggestedWords))
 
         withContext(Dispatchers.Main) {
-            inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords)
-
-            if (values.composedData.mIsBatchMode) {
-                inputLogic.showBatchSuggestions(
-                    suggestedWords,
-                    values.inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
-                )
-            }
+            suggestedWordsCallback.onGetSuggestedWords(
+                suggestedWords,
+                values.inputStyle,
+                values.sequenceId
+            )
         }
 
-        sequenceIdFinishedFlow.emit(Pair(values.sequenceId, null))
+        sequenceIdFinishedFlow.emit(Pair(values, null))
     }
 
     public suspend fun destroyModel() {
         Log.d("LanguageModelFacilitator", "destroyModel called")
         languageModel?.closeInternalLocked()
         languageModel = null
+    }
+
+    public fun close() {
+        userDictionary.unregister()
     }
 
     private var trainingEnabled = false
@@ -577,7 +587,11 @@ public class LanguageModelFacilitator(
     public fun updateSuggestionStripAsync(inputStyle: Int) {
         val settingsValues = settings.current
         if (!settingsValues.needsToLookupSuggestions() && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH) {
-            inputLogic.mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.getEmptyInstance())
+            suggestedWordsCallback.onGetSuggestedWords(
+                SuggestedWords.getEmptyInstance(),
+                inputStyle,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER
+            )
             return
         }
 

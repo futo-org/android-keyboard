@@ -124,6 +124,7 @@ data class LabelFlags(
     val hasHintLabel: Boolean = false,
     val followKeyLabelRatio: Boolean = false,
     val followKeyLetterRatio: Boolean = false,
+    val followKeyHintLabelRatio: Boolean = false,
     val followKeyLargeLetterRatio: Boolean = false,
     val autoXScale: Boolean = false,
 ) {
@@ -134,6 +135,7 @@ data class LabelFlags(
         KeyConsts.LABEL_FLAGS_HAS_HINT_LABEL.and(hasHintLabel) or
         KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO.and(followKeyLabelRatio) or
         KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO.and(followKeyLetterRatio) or
+        KeyConsts.LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO.and(followKeyHintLabelRatio) or
         KeyConsts.LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO.and(followKeyLargeLetterRatio) or
         KeyConsts.LABEL_FLAGS_AUTO_X_SCALE.and(autoXScale)
 }
@@ -215,11 +217,11 @@ data class KeyAttributes(
      */
     val fastMoreKeys: Boolean? = null
 ) {
-    fun getEffectiveAttributes(row: Row, keyboard: Keyboard): KeyAttributes {
+    fun getEffectiveAttributes(row: Row, keyboard: Keyboard, extraAttrs: List<KeyAttributes> = emptyList()): KeyAttributes {
         val attrs = if(row.isBottomRow) {
-            listOf(this, row.attributes, DefaultKeyAttributes)
+            listOf(this) + extraAttrs + listOf(row.attributes, DefaultKeyAttributes)
         } else {
-            listOf(this, row.attributes, keyboard.attributes, DefaultKeyAttributes)
+            listOf(this) + extraAttrs + listOf(row.attributes, keyboard.attributes, DefaultKeyAttributes)
         }
 
         val effectiveWidth = resolve(attrs) { it.width }
@@ -244,9 +246,26 @@ data class KeyAttributes(
             fastMoreKeys        = resolve(attrs) { it.fastMoreKeys       }
         )
     }
+
+    operator fun plus(other: KeyAttributes): KeyAttributes {
+        val attrs = listOf(this, other)
+        return KeyAttributes(
+            width               = resolve(attrs) { it.width              },
+            style               = resolve(attrs) { it.style              },
+            anchored            = resolve(attrs) { it.anchored           },
+            showPopup           = resolve(attrs) { it.showPopup          },
+            moreKeyMode         = resolve(attrs) { it.moreKeyMode        },
+            useKeySpecShortcut  = resolve(attrs) { it.useKeySpecShortcut },
+            longPressEnabled    = resolve(attrs) { it.longPressEnabled   },
+            labelFlags          = resolve(attrs) { it.labelFlags         },
+            repeatableEnabled   = resolve(attrs) { it.repeatableEnabled  },
+            shiftable           = resolve(attrs) { it.shiftable          },
+            fastMoreKeys        = resolve(attrs) { it.fastMoreKeys       }
+        )
+    }
 }
 
-private fun<T, O> resolve(attributes: List<O>, getter: (O) -> T?): T? =
+internal fun<T, O> resolve(attributes: List<O>, getter: (O) -> T?): T? =
     attributes.firstNotNullOfOrNull(getter)
 
 
@@ -318,6 +337,8 @@ data class BaseKey(
      * If set, overrides a default hint from the value of moreKeys.
      */
     val hint: String? = null,
+
+    val code: Int? = null
 ) : AbstractKey {
     override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean {
         val attributes = attributes.getEffectiveAttributes(row, keyboard)
@@ -326,8 +347,8 @@ data class BaseKey(
         return moreKeyMode.autoNumFromCoord && moreKeyMode.autoSymFromCoord
     }
 
-    override fun computeData(params: KeyboardParams, row: Row, keyboard: Keyboard, coordinate: KeyCoordinate): ComputedKeyData {
-        val attributes = attributes.getEffectiveAttributes(row, keyboard)
+    fun computeDataWithExtraAttrs(params: KeyboardParams, row: Row, keyboard: Keyboard, coordinate: KeyCoordinate, extraAttrs: List<KeyAttributes>): ComputedKeyData {
+        val attributes = attributes.getEffectiveAttributes(row, keyboard, extraAttrs)
         val shifted = (attributes.shiftable == true) && when(params.mId.mElementId) {
             KeyboardId.ELEMENT_SYMBOLS_SHIFTED -> true
             KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED -> true
@@ -356,7 +377,7 @@ data class BaseKey(
 
         val label = expandedSpec?.let { KeySpecParser.getLabel(it) } ?: ""
         val icon = expandedSpec?.let { KeySpecParser.getIconId(it) } ?: ""
-        val code = KeySpecParser.getCode(expandedSpec)
+        val code = code ?: KeySpecParser.getCode(expandedSpec)
         val outputText = KeySpecParser.getOutputText(expandedSpec)
 
         val moreKeyMode = attributes.moreKeyMode!!
@@ -419,6 +440,9 @@ data class BaseKey(
             fastLongPress = attributes.fastMoreKeys == true
         )
     }
+
+    override fun computeData(params: KeyboardParams, row: Row, keyboard: Keyboard, coordinate: KeyCoordinate): ComputedKeyData
+        = computeDataWithExtraAttrs(params, row, keyboard, coordinate, emptyList())
 }
 
 /**

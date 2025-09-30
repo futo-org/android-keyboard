@@ -17,6 +17,8 @@
 package org.futo.inputmethod.keyboard.internal;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
@@ -24,14 +26,18 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.widget.TextView;
 
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
+import org.futo.inputmethod.v2keyboard.Direction;
+import org.futo.inputmethod.v2keyboard.KeyDataKt;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
+
+import kotlin.Pair;
 
 /**
  * The pop up key preview view.
@@ -57,6 +63,7 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         mDrawableProvider = DynamicThemeProvider.obtainFromContext(context);
     }
 
+    private Key currKey;
     public void setPreviewVisual(final Key key, final KeyboardIconsSet iconsSet,
             final KeyDrawParams drawParams) {
         // What we show as preview should match what we show on a key top in onDraw().
@@ -73,6 +80,60 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         setTypeface(mDrawableProvider.selectKeyTypeface(key.selectPreviewTypeface(drawParams)));
         // TODO Should take care of temporaryShiftLabel here.
         setTextAndScaleX(key.getWidth(), key.getPreviewLabel());
+        currKey = key;
+    }
+
+    private boolean drawFlickKeys(final Canvas canvas) {
+        if(currKey == null) return false;
+
+        Map<Direction, Key> flickKeys = currKey.getFlickKeys();
+        if(flickKeys == null || flickKeys.isEmpty()) return false;
+
+        if(currKey.getFlickDirection() != null) return false;
+
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+
+        int dim = Math.min(width, height);
+
+        Paint paint = new Paint();
+        paint.setTypeface(getTypeface());
+        paint.setColor(getCurrentTextColor());
+        paint.setTextSize(dim * 0.265f);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setAntiAlias(true);
+
+        final float yp = 2.7f; // TODO
+        final float offsMul = 0.33f;
+
+        int cx = width / 2;
+        int cy = (int)(height / 2 + paint.getTextSize() / yp);
+
+        for(Direction dir : flickKeys.keySet()) {
+            Key value = flickKeys.get(dir);
+            Pair<Double, Double> vec = KeyDataKt.toVector(dir);
+
+            int x = (int)(cx - (vec.getFirst() * width * offsMul));
+            int y = (int)(cy - (vec.getSecond() * height * offsMul));
+            canvas.drawText(value.getPreviewLabel(), x, y, paint);
+        }
+
+        paint.setTextSize(dim * 0.485f);
+
+        canvas.drawText(
+                currKey.getPreviewLabel(),
+                cx,
+                (int)(height / 2 + paint.getTextSize() / yp),
+                paint
+        );
+
+        return true;
+    }
+
+    @Override
+    protected void onDraw(final Canvas canvas) {
+        if(!drawFlickKeys(canvas)) super.onDraw(canvas);
+
     }
 
     private void setTextAndScaleX(int maxWidth, final String text) {

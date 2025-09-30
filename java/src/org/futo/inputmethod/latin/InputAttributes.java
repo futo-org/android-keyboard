@@ -24,11 +24,16 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
+import androidx.annotation.Nullable;
+
 import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.utils.InputTypeUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -47,6 +52,10 @@ public final class InputAttributes {
     final public boolean mShouldInsertSpacesAutomatically;
     final public boolean mIsUriField;
     final public boolean mIsCodeField;
+    @Nullable
+    final public Locale mLocaleOverride;
+    @Nullable
+    final public String mLayoutOverride;
 
     /**
      * Whether the floating gesture preview should be disabled. If true, this should override the
@@ -100,6 +109,8 @@ public final class InputAttributes {
             mNoLearning = false;
             mIsEmailField = false;
             mIsWebField = false;
+            mLocaleOverride = null;
+            mLayoutOverride = null;
             return;
         }
         // inputClass == InputType.TYPE_CLASS_TEXT
@@ -171,6 +182,15 @@ public final class InputAttributes {
         }
 
         mNoLearning = noLearning || mIsPasswordField || mIsCodeField;
+
+        final Map<String, String> privateImeOptions = parsePrivateImeOptions(editorInfo);
+        if(privateImeOptions.containsKey("org.futo.inputmethod.latin.ForceLocale")) {
+            mLocaleOverride = Locale.forLanguageTag(Objects.requireNonNull(privateImeOptions.get("org.futo.inputmethod.latin.ForceLocale")));
+        } else {
+            mLocaleOverride = null;
+        }
+
+        mLayoutOverride = privateImeOptions.get("org.futo.inputmethod.latin.ForceLayout");
     }
 
     public boolean isTypeNull() {
@@ -188,6 +208,20 @@ public final class InputAttributes {
         final boolean noMicrophone = InputAttributes.inPrivateImeOptions(
                 mPackageNameForPrivateImeOptions, NO_MICROPHONE, mEditorInfo);
         return noMicrophone || deprecatedNoMicrophone;
+    }
+
+    private static Map<String, String> parsePrivateImeOptions(final EditorInfo editorInfo) {
+        final String privateOptions = editorInfo.privateImeOptions;
+        final Map<String, String> result = new HashMap<>();
+        if(privateOptions == null) return result;
+
+        for(String entry : privateOptions.split(",")) {
+            String[] kv = entry.split("=", 2);
+            if(kv.length != 2) continue;
+
+            result.put(kv[0], kv[1]);
+        }
+        return result;
     }
 
     @SuppressWarnings("unused")

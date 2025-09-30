@@ -16,9 +16,38 @@ sync_strings_xml:
     - docker
   stage: sync_translations
   only:
-    - branches
+     refs:
+      - master
   script:
     - sh syncTranslations.sh
+
+
+buildUnstableBranch:
+  stage: build
+  tags:
+    - docker
+  rules:
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != "master"'
+      when: manual
+    - when: never       # block everything else (e.g. tags, master)
+  needs: []
+  before_script:
+    - git fetch origin $CI_COMMIT_BRANCH:$CI_COMMIT_BRANCH
+    - export GIT_BRANCH="$CI_COMMIT_BRANCH"
+    - export GIT_DESCRIBE="$(git describe --tags --dirty)"
+    - export GIT_REV_LIST="$(git rev-list --first-parent --count $GIT_BRANCH)"
+    - export VERSION_NAME="${GIT_DESCRIBE}--branch-${GIT_BRANCH}-${GIT_REV_LIST}"
+    - export VERSION_CODE="$(curl -s https://dl.keyboard.futo.org/nightly_version | head -n 1 | tr -d '\r')"
+    - echo $VERSION_CODE $VERSION_NAME
+    - ./setUpPropertiesCI.sh
+  script:
+    - gradle assembleUnstableRelease -s
+    - mv build/outputs/apk/unstable/release/latinime-unstable-release.apk ./keyboard-unstable-$VERSION_NAME.apk
+    - ./uploadNightlyBranch.sh ./keyboard-unstable-$VERSION_NAME.apk $VERSION_CODE $VERSION_NAME $GIT_BRANCH
+  artifacts:
+    name: "keyboard-unstable-$VERSION_NAME"
+    paths:
+      - ./*.apk
 
 buildUnstable:
   tags:
