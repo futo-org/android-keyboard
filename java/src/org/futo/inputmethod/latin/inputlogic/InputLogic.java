@@ -292,6 +292,27 @@ public final class InputLogic {
         return inputTransaction;
     }
 
+    /** Only used when automatic spaces is set to NONE */
+    private void insertSuggestionAndKeepComposing(final SettingsValues settingsValues,
+                                                  final String word,
+                                                  final boolean updateSuggestions) {
+        final boolean needToUpdateSuggestionStrip = updateSuggestions && word != mWordComposer.getTypedWord();
+
+        if(word.indexOf(' ') != -1 || mWordComposer.isBatchMode()) {
+            commitChosenWord(settingsValues, word, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
+                    LastComposedWord.NOT_A_SEPARATOR, 1);
+            mLastComposedWord.deactivate();
+            resetComposingWord(settingsValues, false);
+        } else {
+            final int[] codePoints = StringUtils.toCodePointArray(word);
+            mWordComposer.setComposingWord(codePoints,
+                    mImeHelper.getCodepointCoordinates(codePoints));
+            setComposingTextInternal(word, 1);
+        }
+
+        if(needToUpdateSuggestionStrip) postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
+    }
+
     /**
      * A suggestion was picked from the suggestion strip.
      * @param settingsValues the current values of the settings.
@@ -361,6 +382,14 @@ public final class InputLogic {
             inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
             resetComposingState(true /* alsoResetLastComposedWord */);
             mConnection.commitCompletion(suggestionInfo.mApplicationSpecifiedCompletionInfo);
+            mConnection.endBatchEdit();
+            return inputTransaction;
+        }
+
+        // The logic for no auto-spaces is a little different, we need to stay in composing
+        // state. If the suggestion has spaces in it, then we have to compose the final word.
+        if(settingsValues.mAltSpacesMode == Settings.SPACES_MODE_NONE) {
+            insertSuggestionAndKeepComposing(settingsValues, suggestion, true);
             mConnection.endBatchEdit();
             return inputTransaction;
         }
@@ -621,7 +650,7 @@ public final class InputLogic {
                 || settingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
             final boolean autoShiftHasBeenOverriden = keyboardSwitcher.getKeyboardShiftMode() !=
                     getCurrentAutoCapsState(settingsValues);
-            mSpaceState = SpaceState.PHANTOM;
+            if(settingsValues.mAltSpacesMode != Settings.SPACES_MODE_NONE) mSpaceState = SpaceState.PHANTOM;
             if (!autoShiftHasBeenOverriden) {
                 // When we change the space state, we need to update the shift state of the
                 // keyboard unless it has been overridden manually. This is happening for example
@@ -943,7 +972,7 @@ public final class InputLogic {
             insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
         }
 
-        if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+        if (mWordComposer.isCursorFrontOrMiddleOfComposingWord() || mWordComposer.isBatchMode()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the character at the current cursor position.
             // We also need to unlearn the original word that is now being corrected.
@@ -2036,7 +2065,7 @@ public final class InputLogic {
         if (inputTransaction.mSettingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             mConnection.commitText(textToCommit, 1);
             if (usePhantomSpace) {
-                mSpaceState = SpaceState.PHANTOM;
+                if(settingsValues.mAltSpacesMode != Settings.SPACES_MODE_NONE) mSpaceState = SpaceState.PHANTOM;
             }
         } else {
             // For languages without spaces, we revert the typed string but the cursor is flush
@@ -2353,7 +2382,7 @@ public final class InputLogic {
 
             mSpaceState = SpaceState.ANTIPHANTOM;
             sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
-        } else {
+        } else if(settingsValues.mAltSpacesMode != Settings.SPACES_MODE_NONE) {
             mSpaceState = SpaceState.PHANTOM;
         }
     }
@@ -2378,7 +2407,7 @@ public final class InputLogic {
         setComposingTextInternal(batchInputText, 1);
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
-        mSpaceState = SpaceState.PHANTOM;
+        if(settingsValues.mAltSpacesMode != Settings.SPACES_MODE_NONE) mSpaceState = SpaceState.PHANTOM;
         keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(settingsValues));
 
         updateUiInputState();

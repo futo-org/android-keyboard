@@ -619,9 +619,10 @@ val LongPressMenu = UserSettingsMenu(
 private fun AutoSpacesSetting() {
     val altSpacesMode = useSharedPrefsInt(Settings.PREF_ALT_SPACES_MODE, Settings.DEFAULT_ALT_SPACES_MODE)
     val autoSpaceModes = mapOf(
-        Settings.SPACES_MODE_ALL to stringResource(R.string.typing_settings_auto_space_mode_auto),
-        Settings.SPACES_MODE_SUGGESTIONS to stringResource(R.string.typing_settings_auto_space_mode_suggestions),
-        Settings.SPACES_MODE_LEGACY to stringResource(R.string.typing_settings_auto_space_mode_legacy)
+        Settings.SPACES_MODE_ALL to stringResource(R.string.typing_settings_auto_space_mode_auto2),
+        Settings.SPACES_MODE_SUGGESTIONS to stringResource(R.string.typing_settings_auto_space_mode_suggestions2),
+        Settings.SPACES_MODE_LEGACY to stringResource(R.string.typing_settings_auto_space_mode_legacy2),
+        Settings.SPACES_MODE_NONE to stringResource(R.string.typing_settings_auto_space_mode_none2),
     )
     DropDownPickerSettingItem(
         label = stringResource(R.string.typing_settings_auto_space_mode),
