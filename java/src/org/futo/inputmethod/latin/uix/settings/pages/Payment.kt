@@ -133,7 +133,7 @@ fun useNumberOfDaysInstalled(): MutableIntState {
 }
 
 @Composable
-fun ParagraphText(it: String, modifier: Modifier = Modifier, color: Color = LocalContentColor.current) {
+fun ParagraphText(it: String, modifier: Modifier = Modifier, color: Color = LocalContentColor.current.copy(alpha=0.9f)) {
     Text(it, modifier = modifier, style = Typography.SmallMl, color = color)
 }
 
@@ -145,9 +145,9 @@ fun IconText(icon: Painter, title: String, body: String) {
             .padding(8.dp, 10.dp)
             .size(with(LocalDensity.current) { Typography.Heading.Medium.fontSize.toDp() }))
         Column(modifier = Modifier.padding(6.dp)) {
-            Text(title, style = Typography.Body.Regular, color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(title, style = Typography.Body.Regular, color = LocalContentColor.current)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(body, style = Typography.SmallMl, color = MaterialTheme.colorScheme.onSecondaryContainer)
+            Text(body, style = Typography.SmallMl, color = LocalContentColor.current.copy(alpha = 0.9f))
         }
     }
 }
@@ -160,20 +160,17 @@ fun PaymentBody(verbose: Boolean) {
         // Doesn't make sense to say "You've been using for ... days" if it's less than seven days
         if (numDaysInstalled.intValue >= 7) {
             ParagraphText(
-                stringResource(R.string.payment_screen_sales_paragraph_1, numDaysInstalled.value),
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                stringResource(R.string.payment_screen_sales_paragraph_1, numDaysInstalled.value)
             )
         } else {
             ParagraphText(
-                stringResource(R.string.payment_screen_sales_paragraph_1_alt),
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                stringResource(R.string.payment_screen_sales_paragraph_1_alt)
             )
         }
 
         if (!verbose) {
             ParagraphText(
-                stringResource(R.string.payment_screen_sales_paragraph_2),
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                stringResource(R.string.payment_screen_sales_paragraph_2)
             )
         }
     }
@@ -380,7 +377,7 @@ fun PaymentSurfaceHeading(title: String) {
     Text(
         title,
         style = Typography.Body.MediumMl,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
+        color = LocalContentColor.current
     )
 }
 

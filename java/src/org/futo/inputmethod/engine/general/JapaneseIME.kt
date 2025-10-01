@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.google.android.apps.inputmethod.libs.mozc.session.MozcJNI
@@ -232,7 +233,7 @@ fun refreshMozcDictionaries(context: Context, executor: SessionExecutor) {
             throw Exception("Listing dictionaries failed!")
 
         val dicts = enumerateDictionariesResult.storage.dictionariesList
-        Log.d("MozcDic", "Dictionary enumeration: ${dicts.size} entries, data: ${dicts.map { it.id to it.name }}")
+        if(BuildConfig.DEBUG) Log.d("MozcDic", "Dictionary enumeration: ${dicts.size} entries, data: ${dicts.map { it.id to it.name }}")
 
         val extraDictionaries = mutableListOf<ProtoUserDictionaryStorage.UserDictionary>()
         dicts.forEach { mozcDict ->
@@ -248,7 +249,7 @@ fun refreshMozcDictionaries(context: Context, executor: SessionExecutor) {
         // Delete extra (no longer necessary) dictionaries
         // (this will also delete $MOZC_DICT_NAME)
         extraDictionaries.forEach {
-            Log.d("MozcDic", "Delete dict ${it.name} ${it.id}")
+            if(BuildConfig.DEBUG) Log.d("MozcDic", "Delete dict ${it.name} ${it.id}")
             executor.sendUserDictionaryCommand(
                 ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
                     .setType(ProtoUserDictionaryStorage.UserDictionaryCommand.CommandType.DELETE_DICTIONARY)
@@ -263,7 +264,7 @@ fun refreshMozcDictionaries(context: Context, executor: SessionExecutor) {
 
         // Add missing dictionaries
         missingDictionaries.forEach {
-            Log.d("MozcDic", "Create dict ${it.first.nameWithoutExtension}")
+            if(BuildConfig.DEBUG) Log.d("MozcDic", "Create dict ${it.first.nameWithoutExtension}")
 
             executor.sendUserDictionaryCommand(
                 ProtoUserDictionaryStorage.UserDictionaryCommand.newBuilder()
@@ -478,15 +479,45 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         mozcInit()
     }
 
+    // Similar to RichInputConnection.tryExtractCursorPosition
+    private fun initSelectionTracker() {
+        var selStart = -1
+        var selEnd = -1
+
+        helper.getCurrentInputConnection()?.let { ic ->
+            ic.getExtractedText(ExtractedTextRequest().apply {
+                flags = 0
+                token = 1
+                hintMaxLines = 1
+                hintMaxChars = 512
+            }, 0)?.let { t ->
+                selStart = t.selectionStart + t.startOffset
+                selEnd = t.selectionEnd + t.startOffset
+            }
+        }
+
+        helper.getCurrentEditorInfo()?.let { ei ->
+            if(selStart < 0 || selEnd < 0) {
+                selStart = ei.initialSelStart
+                selEnd = ei.initialSelEnd
+            }
+        }
+
+        // Any non -1 negative value is invalid, safeguard against it
+        if(selStart < 0 || selEnd < 0) {
+            selStart = -1
+            selEnd = -1
+        }
+
+        selectionTracker.onStartInput(selStart, selEnd, false)
+    }
+
     override fun onStartInput() {
+        executor.removePendingEvaluations()
+        executor.resetContext()
         setNeutralSuggestionStrip()
         updateConfig()
-        executor.resetContext()
-        selectionTracker.onStartInput(
-            helper.getCurrentEditorInfo()?.initialSelStart ?: -1,
-            helper.getCurrentEditorInfo()?.initialSelEnd ?: -1,
-            false
-        )
+        initSelectionTracker()
 
         helper.getCurrentEditorInfo()?.let { executor.switchInputFieldType(getInputFieldType(it)) }
     }
@@ -723,7 +754,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             if (output.result.cursorOffset == -outputText.codePointCount(0, outputText.length)) {
                 position = MozcUtil.CURSOR_POSITION_HEAD
             } else {
-                Log.e(TAG, "Unsupported position: " + output.result.toString())
+                if(BuildConfig.DEBUG) Log.e(TAG, "Unsupported position: " + output.result.toString())
             }
         }
         if (!inputConnection.commitText(outputText, position)) {
@@ -1025,7 +1056,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
                     else -> {
                         if(!maybeHandleAction(event.mKeyCode)) {
-                            Log.e(TAG, "Unknown keycode for that event (${event.mCodePoint} ${event.mKeyCode})")
+                            if(BuildConfig.DEBUG) Log.e(TAG, "Unknown keycode for that event (${event.mCodePoint} ${event.mKeyCode})")
                         }
                         null
                     }
@@ -1067,7 +1098,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         }
 
         else -> {
-            Log.e(TAG, "Unhandled event type ${event.eventType}: $event")
+            if(BuildConfig.DEBUG) Log.e(TAG, "Unhandled event type ${event.eventType}: $event")
 
             Unit
         }
