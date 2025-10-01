@@ -372,6 +372,13 @@ public final class WordComposer {
     }
 
     /**
+     * Returns true if we have dashes in the composing word.
+     */
+    public boolean hasDashes() {
+        return getTypedWord().indexOf('-') != -1;
+    }
+
+    /**
      * Returns true if the composing word is entirely digits.
      */
     public boolean isEntirelyDigits() {
