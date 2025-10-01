@@ -787,6 +787,11 @@ class PersistentEmojiState : PersistentActionState {
             if (loadedTranslations.contains(language)) return
             loadedTranslations.put(language, EmojiTranslations(hashMapOf()))
 
+            if(language == "en") {
+                // Shortcuts are sourced from gemoji
+                GlobalScope.launch(Dispatchers.IO) { loadEmojis(context) }
+            }
+
             GlobalScope.launch(Dispatchers.IO) {
                 val inputStream = GZIPInputStream(context.resources.openRawResource(R.raw.emoji_i18n))
 
@@ -832,7 +837,7 @@ class PersistentEmojiState : PersistentActionState {
                                 }
                     }.reversed().toMap()
 
-                    loadedTranslatedShortcuts.put(language, aliases)
+                    if(language != "en") loadedTranslatedShortcuts.put(language, aliases)
                 }
             }
 
@@ -852,7 +857,8 @@ class PersistentEmojiState : PersistentActionState {
                     .toList()
 
                 val englishShortcuts = hashMapOf<String, String>()
-                val englishTranslations = hashMapOf<String, EmojiNames>()
+                val englishLooseShortcuts = hashMapOf<String, String>()
+                //val englishTranslations = hashMapOf<String, EmojiNames>()
 
                 emojis.value = (emojiData + supplementalEmoteData).mapNotNull {
                     val emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content
@@ -869,12 +875,10 @@ class PersistentEmojiState : PersistentActionState {
                     if(!supported) {
                         null
                     } else {
-                        englishTranslations.put(emoji, EmojiNames((tags + aliases)
-                            .flatMap { listOf(it) + it.split("_") }
-                            .toSet().toList()))
+                        //englishTranslations.put(emoji, EmojiNames((tags + aliases)
+                        //    .flatMap { listOf(it) + it.split("_") }
+                        //    .toSet().toList()))
 
-                        // Add absolute alias matches first (e.g. "joy") and only later put first-word
-                        // tag/alias matches (e.g. "joy_cat")
                         aliases.forEach { x ->
                             if(!englishShortcuts.containsKey(x)) {
                                 englishShortcuts.put(x, emoji)
@@ -883,8 +887,8 @@ class PersistentEmojiState : PersistentActionState {
 
                         (tags + aliases).forEach { x ->
                             val v = x.split("_").first()
-                            if(!englishShortcuts.containsKey(v)) {
-                                englishShortcuts.put(v, emoji)
+                            if(!englishLooseShortcuts.containsKey(v)) {
+                                englishLooseShortcuts.put(v, emoji)
                             }
                         }
 
@@ -903,6 +907,12 @@ class PersistentEmojiState : PersistentActionState {
                 emojiMap = HashMap<String, EmojiItem>().apply {
                     emojis.value!!.forEach {
                         put(it.emoji, it)
+                    }
+                }
+
+                loadedTranslatedShortcuts["en"] = englishShortcuts.apply {
+                    englishLooseShortcuts.forEach {
+                        if(!containsKey(it.key)) put(it.key, it.value)
                     }
                 }
             }
