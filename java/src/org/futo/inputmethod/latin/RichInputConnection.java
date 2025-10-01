@@ -932,7 +932,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public void removeLeadingSpace() {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if(spaceFollowsCursor()) {
-            // TODO: Verify this is safe to do
             mIC.deleteSurroundingText(0, 1);
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();

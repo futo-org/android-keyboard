@@ -10,6 +10,7 @@ import android.view.inputmethod.InputConnectionWrapper
 import android.view.inputmethod.TextAttribute
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
 import kotlin.text.iterator
 
@@ -233,12 +234,8 @@ class InputConnectionInternalComposingWrapper(
     }
 
     override fun setComposingText(text: CharSequence, newCursorPosition: Int): Boolean {
-        if(newCursorPosition == 1) {
-            commitComposingTextInternal(text, useSetComposingRegion)
-        } else {
-            // TODO("Unsupported")
-            commitComposingTextInternal(text, useSetComposingRegion)
-        }
+        if(newCursorPosition != 1) throwIfDebug(UnsupportedOperationException("newCursorPosition must be 1"))
+        commitComposingTextInternal(text, useSetComposingRegion)
         return true
     }
 
@@ -251,51 +248,48 @@ class InputConnectionInternalComposingWrapper(
         return true
     }
 
-    fun setComposingRegionWithText(start: Int, end: Int, text: String): Boolean {
-        val v = setComposingRegion(start, end)
-        if(BuildConfig.DEBUG && composingText != text) {
-            Log.e(TAG, "Expected composingText [$text] does not match actual [$composingText]")
-        }
-        return v
-    }
-
-    override fun setComposingRegion(start: Int, end: Int): Boolean {
-        if(BuildConfig.DEBUG) Log.d(TAG, "setComposingRegion($start, $end), was [$composingText] $composingStart-$composingEnd")
-        if(end < start) throw IllegalArgumentException()
-
-        val text = super.getExtractedText(ExtractedTextRequest(), 0)
-        if(text == null) TODO()
-        if(text.startOffset > start) TODO()
-
-        if(text.text.length < end) {
-            Log.e(TAG, "text length [${text.text}] is shorter than the requested end $start to $end")
-            composingText = ""
-            composingStart = -1
-            composingEnd = -1
-            return true
-        }
-
-        composingText = text.text.substring(
-            start - text.startOffset, end - text.startOffset
-        )
-
+    fun setComposingRegionWithText(start: Int, end: Int, text: String?): Boolean {
         composingStart = start
         composingEnd = end
+        composingText = text ?: ""
 
-        if(BuildConfig.DEBUG) Log.d(TAG, "setComposingRegion acquired text=[$composingText] from ${text.text} ${text.startOffset}")
+        if(text == null || BuildConfig.DEBUG) {
+            val extracted = super.getExtractedText(ExtractedTextRequest(), 0)
+            if(extracted == null || extracted.startOffset > start || extracted.text.length < end) {
+                // Maybe our best bet here is to set cursor position to end, then get text before cursor (end-start)
+                //  and then we could restore the position back, but that would be quite a mess...
+                if(BuildConfig.DEBUG) Log.e(TAG, "setComposingRegion was out of bounds for extracted text")
+
+                if(text == null) {
+                    composingStart = -1
+                    composingEnd = -1
+                    composingText = ""
+                    return false
+                }
+            } else {
+                composingText = extracted.text.substring(
+                    start - extracted.startOffset, end - extracted.startOffset
+                )
+
+                if(text != null && BuildConfig.DEBUG && composingText != text)
+                    Log.e(TAG, "Expected composingText [$text], but actually got [$composingText]")
+            }
+        }
+
+        if(BuildConfig.DEBUG) Log.d(TAG, "setComposingRegion acquired text=[$composingText]")
 
         if(useSetComposingRegion) return super.setComposingRegion(start, end)
         return true
     }
 
+    override fun setComposingRegion(start: Int, end: Int): Boolean {
+        return setComposingRegionWithText(start, end, null)
+    }
+
     override fun commitText(text: CharSequence, newCursorPosition: Int): Boolean {
         if(BuildConfig.DEBUG) Log.d(TAG, "commitText [$text] $newCursorPosition")
-        if(newCursorPosition == 1) {
-            commitComposingTextInternal(text, false)
-        } else {
-            // TODO("Unsupported [$text] [$newCursorPosition] [$composingText]")
-            commitComposingTextInternal(text, false)
-        }
+        if(newCursorPosition != 1) throwIfDebug(UnsupportedOperationException("newCursorPosition must be 1"))
+        commitComposingTextInternal(text, false)
         finishComposingText()
         return true
     }
@@ -308,39 +302,21 @@ class InputConnectionInternalComposingWrapper(
     }
 
     override fun deleteSurroundingTextInCodePoints(beforeLength: Int, afterLength: Int): Boolean {
-        super.finishComposingText()
-        selStart -= beforeLength
-        selEnd -= beforeLength
-        // TODO: Codepoints........
-        //  (note: BufferedInputConnection treats it as codepoints anyway, but this is wrong for selStart/selEnd changing)
-        return super.deleteSurroundingText(beforeLength, afterLength)
-    }
-
-    // ignore below
-    override fun commitText(
-        text: CharSequence,
-        newCursorPosition: Int,
-        textAttribute: TextAttribute?
-    ): Boolean {
-        // TODO
-        return commitText(text, newCursorPosition)
-    }
-
-    override fun setComposingRegion(start: Int, end: Int, textAttribute: TextAttribute?): Boolean {
-        // TODO
-        return setComposingRegion(start, end)
-    }
-
-    override fun setComposingText(
-        text: CharSequence,
-        newCursorPosition: Int,
-        textAttribute: TextAttribute?
-    ): Boolean {
-        // TODO
-        return setComposingText(text, newCursorPosition)
+        throwIfDebug(UnsupportedOperationException("Please use deleteSurroundingText instead"))
+        return false
     }
 
     override fun send() {
         (ic as? IBufferedInputConnection)?.send()
     }
+
+    // TextAttributes are unsupported by this wrapper
+    override fun commitText(text: CharSequence, newCursorPosition: Int, textAttribute: TextAttribute?) =
+        commitText(text, newCursorPosition)
+
+    override fun setComposingRegion(start: Int, end: Int, textAttribute: TextAttribute?) =
+        setComposingRegion(start, end)
+
+    override fun setComposingText(text: CharSequence, newCursorPosition: Int, textAttribute: TextAttribute?) =
+        setComposingText(text, newCursorPosition)
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnectionWrapper
 import android.view.inputmethod.TextAttribute
+import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 
 interface IBufferedInputConnection {
     fun send()
@@ -39,11 +40,9 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
                 }
 
                 is InputCommand.Delete -> {
-                    val len = text.codePointCount(0, text.length)
-                    val keep = len - cmd.before
+                    val keep = text.length - cmd.before
                     if(keep > 0) {
-                        val end = text.offsetByCodePoints(0, keep)
-                        text = text.substring(0, end)
+                        text = text.substring(0, keep)
                     } else {
                         text = ""
                         deletedAmount -= keep
@@ -77,13 +76,7 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
             when(cmd) {
                 is InputCommand.Commit -> result += cmd.text
                 is InputCommand.Delete -> {
-                    result = result.substring(0,
-                        try {
-                            result.offsetByCodePoints(result.length, -cmd.before)
-                        } catch(e: IndexOutOfBoundsException) {
-                            0
-                        }
-                    )
+                    result = result.substring(0, result.length - cmd.before)
                 }
                 else -> {}
             }
@@ -97,13 +90,7 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
             when(cmd) {
                 is InputCommand.Commit -> { }
                 is InputCommand.Delete -> {
-                    result = result.substring(
-                        try {
-                            result.offsetByCodePoints(0, cmd.after)
-                        } catch(e: IndexOutOfBoundsException) {
-                            result.length
-                        }
-                    )
+                    result = result.substring(cmd.after)
                 }
                 else -> {}
             }
@@ -138,9 +125,8 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
     }
 
     override fun deleteSurroundingTextInCodePoints(beforeLength: Int, afterLength: Int): Boolean {
-        if(afterLength > 0) super.deleteSurroundingTextInCodePoints(0, afterLength)
-        commandQueue.add(InputCommand.Delete(beforeLength, afterLength))
-        return true
+        throwIfDebug(UnsupportedOperationException("Please use deleteSurroundingText instead"))
+        return false
     }
 
     override fun getTextBeforeCursor(n: Int, flags: Int): CharSequence? {
@@ -167,7 +153,7 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
 
         mergedList.forEach { when(it) {
             is InputCommand.Commit -> { super.commitText(it.text, 1) }
-            is InputCommand.Delete -> { super.deleteSurroundingTextInCodePoints(it.before, it.after) }
+            is InputCommand.Delete -> { super.deleteSurroundingText(it.before, it.after) }
             is InputCommand.SetComposingRegion -> { super.setComposingRegion(it.start, it.end) }
         } }
     }
