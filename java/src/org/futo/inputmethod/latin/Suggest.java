@@ -306,6 +306,14 @@ public final class Suggest {
                 false /* isObsoleteSuggestions */, inputStyle, sequenceNumber);
     }
 
+    // Returns whether the provided codepoint should trigger an autocorrection
+    public static boolean shouldCodePointAutocorrect(final int codePoint) {
+        // Dash will never autocorrect because the autocorrect currently doesn't take the dash
+        // suffix into account, this leads to it miscorrecting prefixes like "un-" to "in-"
+        // because in most cases, "un" is a typo of "in"
+        return codePoint != '-';
+    }
+
 
     // Retrieves suggestions for non-batch input (typing, recorrection, predictions...)
     // and calls the callback function with the suggestions.

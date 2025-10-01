@@ -1037,7 +1037,8 @@ public final class InputLogic {
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
-            if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
+            if (settingsValues.mAutoCorrectionEnabledPerUserSettings
+                    && Suggest.shouldCodePointAutocorrect(codePoint)) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
                 commitCurrentAutoCorrection(settingsValues, separator);
