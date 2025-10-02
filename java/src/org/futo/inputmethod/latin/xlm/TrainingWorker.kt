@@ -298,8 +298,8 @@ public fun scheduleTrainingWorkerBackground(context: Context) {
     val constraints = Constraints.Builder()
         .setRequiresBatteryNotLow(true)
         .setRequiresCharging(true)
-        .setRequiredNetworkType(NetworkType.UNMETERED) // If device is on a metered network, the user may be travelling
-        //.setRequiresDeviceIdle(true)
+        .setRequiresDeviceIdle(true)
+        //.setRequiredNetworkType(NetworkType.UNMETERED) // If device is on a metered network, the user may be travelling
         .build()
     
     val request = PeriodicWorkRequest.Builder(
