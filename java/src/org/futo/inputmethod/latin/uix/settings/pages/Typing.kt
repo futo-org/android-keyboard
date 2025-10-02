@@ -775,13 +775,6 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             navigateTo = "longPress",
             icon = R.drawable.arrow_up
         ),
-        userSettingNavigationItem(
-            title = R.string.keyboard_settings_extra_layouts,
-            subtitle = R.string.keyboard_settings_extra_layouts_subtitle,
-            style = NavigationItemStyle.Misc,
-            navigateTo = "languages",
-            icon = R.drawable.keyboard
-        ),
         userSettingToggleDataStore(
             title = R.string.keyboard_settings_show_suggestion_row,
             subtitle = R.string.keyboard_settings_show_suggestion_row_subtitle,
@@ -833,16 +826,6 @@ val TypingSettingsMenu = UserSettingsMenu(
                     tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
         ),
-        userSettingToggleSharedPrefs(
-            title = R.string.auto_correction,
-            subtitle = R.string.auto_correction_summary,
-            key = Settings.PREF_AUTO_CORRECTION,
-            default = {true},
-            icon = {
-                Icon(painterResource(id = R.drawable.icon_spellcheck), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
-            }
-        ).copy(searchTags = R.string.auto_correction_tags),
         userSettingToggleSharedPrefs(
             title = R.string.auto_cap,
             subtitle = R.string.auto_cap_summary,
