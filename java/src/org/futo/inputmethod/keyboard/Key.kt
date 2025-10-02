@@ -379,7 +379,7 @@ data class Key(
     fun selectHintTypeface(provider: DynamicThemeProvider, params: KeyDrawParams): Typeface {
         return when {
             hasHintLabel || provider.hintHiVis -> Typeface.DEFAULT_BOLD
-            else -> Typeface.DEFAULT
+            else -> Typeface.DEFAULT_BOLD
         }
     }
 

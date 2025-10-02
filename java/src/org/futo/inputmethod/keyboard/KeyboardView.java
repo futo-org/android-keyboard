@@ -487,7 +487,7 @@ public class KeyboardView extends View {
                 final float hintLabelWidth = TypefaceUtils.getStringWidth(hintLabel, paint);
                 hintX = keyWidth - mKeyHintLetterPadding
                         - Math.max(hintDigitWidth, hintLabelWidth) / 2.0f;
-                hintBaseline = -paint.ascent();
+                hintBaseline = -paint.ascent() + mKeyHintLetterPadding;
                 paint.setTextAlign(Align.CENTER);
             }
             final float adjustmentY = params.mHintLabelVerticalAdjustment * labelCharHeight;
