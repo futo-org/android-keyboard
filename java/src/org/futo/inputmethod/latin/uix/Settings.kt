@@ -371,7 +371,7 @@ val USE_SYSTEM_VOICE_INPUT = SettingsKey(
 )
 
 val USE_TRANSFORMER_FINETUNING = SettingsKey(
-    key = booleanPreferencesKey("useTransformerFinetuning"),
+    key = booleanPreferencesKey("useTransformerFinetuning2"),
     default = false
 )
 
