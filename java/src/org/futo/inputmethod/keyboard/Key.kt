@@ -18,6 +18,7 @@ package org.futo.inputmethod.keyboard
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.text.TextUtils
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -378,8 +379,17 @@ data class Key(
 
     fun selectHintTypeface(provider: DynamicThemeProvider, params: KeyDrawParams): Typeface {
         return when {
-            hasHintLabel || provider.hintHiVis -> Typeface.DEFAULT_BOLD
-            else -> Typeface.DEFAULT_BOLD
+            hasHintLabel || provider.hintHiVis -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                Typeface.create(Typeface.DEFAULT, 700, false)
+            } else {
+                Typeface.DEFAULT_BOLD
+            }
+
+            else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                Typeface.create(Typeface.DEFAULT, 500, false)
+            } else {
+                Typeface.DEFAULT
+            }
         }
     }
 
@@ -390,7 +400,7 @@ data class Key(
                 else -> style.foregroundColor
             }
         }.let {
-            Color(it).copy(alpha = 0.5f).toArgb()
+            Color(it).copy(alpha = 0.8f).toArgb()
         }
     }
 
