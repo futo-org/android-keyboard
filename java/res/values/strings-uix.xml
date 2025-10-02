@@ -451,9 +451,10 @@
 
     <!-- Automatic space insertion -->
     <string name="typing_settings_auto_space_mode">Automatic spaces mode</string>
-    <string name="typing_settings_auto_space_mode_auto">Automatically insert spaces after punctuation or after inserting suggestions</string>
-    <string name="typing_settings_auto_space_mode_suggestions">Automatically insert spaces only after inserting suggestions</string>
-    <string name="typing_settings_auto_space_mode_legacy">Do not automatically insert any spaces (legacy mode)</string>
+    <string name="typing_settings_auto_space_mode_auto2">Immediate space after suggestions &amp; punctuation</string>
+    <string name="typing_settings_auto_space_mode_suggestions2">Immediate space after suggestions</string>
+    <string name="typing_settings_auto_space_mode_legacy2">Delayed space after suggestions (legacy mode)</string>
+    <string name="typing_settings_auto_space_mode_none2">Disabled (not recommended)</string>
 
     <!-- Misc keyboard settings -->
     <string name="keyboard_settings_title">Keyboard</string>

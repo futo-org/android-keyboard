@@ -111,7 +111,7 @@ object LayoutManager {
         ensureInitialized()
         return getAllLayoutPaths(context.assets).map {
             it.split("/").last().split(".yaml").first()
-        }
+        }.filter { it != "names" }
     }
 
     private val unexceptionalLocales = mutableSetOf<Locale>()

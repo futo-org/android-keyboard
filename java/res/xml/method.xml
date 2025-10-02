@@ -4,7 +4,8 @@
     android:settingsActivity="org.futo.inputmethod.latin.uix.settings.SettingsActivity"
     android:isDefault="true"
     android:supportsSwitchingToNextInputMethod="true"
-    android:supportsInlineSuggestions="true">
+    android:supportsInlineSuggestions="true"
+    android:suppressesSpellChecker="true">
     <subtype android:icon="@drawable/ic_launcher_foreground"
         android:label="@string/english_ime_name"
         android:imeSubtypeMode="keyboard"

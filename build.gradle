@@ -254,6 +254,7 @@ android {
             buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "false"
             buildConfigField "boolean", "UPDATE_CHECKING", "true"
             buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
+            buildConfigField "String", "BRANCH", "\"${getBranch()}\""
 
             buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
             buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
@@ -267,6 +268,7 @@ android {
             buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "true"
             buildConfigField "boolean", "UPDATE_CHECKING", "false"
             buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
+            buildConfigField "String", "BRANCH", "\"${getBranch()}\""
 
             buildConfigField "String", "PAYMENT_URL", "\"https://play.google.com/store/apps/details?id=org.futo.keyboardpayment\""
             buildConfigField "String", "PAYMENT_PRICE", "\"~\$11.99\""

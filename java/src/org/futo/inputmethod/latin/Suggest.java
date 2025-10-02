@@ -214,6 +214,9 @@ public final class Suggest {
                 // If we don't have suggestion results, we can't evaluate the first suggestion
                 // for auto-correction
                 || suggestionResults.isEmpty()
+                // If the word has dashes, we never auto-correct because it had to have been
+                // typed with a lot of care
+                || wordComposer.hasDashes()
                 // If the word has digits, we never auto-correct because it's likely the word
                 // was type with a lot of care, unless number row is active
                 || (wordComposer.hasDigits() && !numberRowActive)
@@ -301,6 +304,14 @@ public final class Suggest {
                 isTypedWordValid,
                 hasAutoCorrection /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */, inputStyle, sequenceNumber);
+    }
+
+    // Returns whether the provided codepoint should trigger an autocorrection
+    public static boolean shouldCodePointAutocorrect(final int codePoint) {
+        // Dash will never autocorrect because the autocorrect currently doesn't take the dash
+        // suffix into account, this leads to it miscorrecting prefixes like "un-" to "in-"
+        // because in most cases, "un" is a typo of "in"
+        return codePoint != '-';
     }
 
 

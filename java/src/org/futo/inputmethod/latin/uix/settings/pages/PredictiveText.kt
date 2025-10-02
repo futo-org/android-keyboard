@@ -31,12 +31,11 @@ val PredictiveTextMenu = UserSettingsMenu(
         ),
 
         // if(transformerLmEnabled) {
-        userSettingToggleDataStore(
-            title = R.string.prediction_settings_transformer_finetuning,
-            subtitle = R.string.prediction_settings_transformer_finetuning_subtitle,
-            setting = USE_TRANSFORMER_FINETUNING
-        ).copy(visibilityCheck = visibilityCheckLMEnabled),
-
+        //userSettingToggleDataStore(
+        //    title = R.string.prediction_settings_transformer_finetuning,
+        //    subtitle = R.string.prediction_settings_transformer_finetuning_subtitle,
+        //    setting = USE_TRANSFORMER_FINETUNING
+        //).copy(visibilityCheck = visibilityCheckLMEnabled),
 
         userSettingNavigationItem(
             title = R.string.prediction_settings_transformer_models,

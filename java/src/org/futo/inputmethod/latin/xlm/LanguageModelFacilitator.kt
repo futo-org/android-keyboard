@@ -36,7 +36,6 @@ import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
-import org.futo.inputmethod.latin.uix.actions.PersistentEmojiState
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.utils.AsyncResultHolder
@@ -552,6 +551,13 @@ public class LanguageModelFacilitator(
             }
         }
 
+        launch {
+            withContext(Dispatchers.Default) {
+                context.getSettingFlow(SHOW_EMOJI_SUGGESTIONS).collect { shouldSuggestEmojis = it }
+            }
+        }
+
+        /*
         trainingEnabled = context.getSetting(USE_TRANSFORMER_FINETUNING)
         launch {
             withContext(Dispatchers.Default) {
@@ -567,15 +573,10 @@ public class LanguageModelFacilitator(
             }
         }
 
-        launch {
-            withContext(Dispatchers.Default) {
-                context.getSettingFlow(SHOW_EMOJI_SUGGESTIONS).collect { shouldSuggestEmojis = it }
-            }
-        }
-
         if(trainingEnabled) {
             scheduleTrainingWorkerBackground(context)
         }
+        */
     }
 
     public fun shouldPassThroughToLegacy(): Boolean = when {
@@ -725,6 +726,7 @@ public class LanguageModelFacilitator(
     }
 
     public fun saveHistoryLog() {
+        if(!context.getSetting(USE_TRANSFORMER_FINETUNING)) historyLog.clear()
         saveHistoryLogBackup(context, historyLog)
     }
 

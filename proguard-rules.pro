@@ -52,9 +52,6 @@
 -keep class org.futo.inputmethod.latin.makedict.ProbabilityInfo
 -keep class org.futo.inputmethod.keyboard.KeyboardLayout { *; }
 
--keep class org.tensorflow.lite.Interpreter** { *; }
--keep class org.futo.pocketfft.** { *; }
-
 -dontobfuscate
 -optimizations !code/allocation/variable
 

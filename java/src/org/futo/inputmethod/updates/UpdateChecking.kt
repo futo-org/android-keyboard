@@ -103,7 +103,7 @@ suspend fun retrieveSavedLastUpdateCheckResult(context: Context): UpdateResult? 
 
 const val JOB_ID: Int = 15782788
 fun scheduleUpdateCheckingJob(context: Context) {
-    if(!BuildConfig.UPDATE_CHECKING) return
+    if(!BuildConfig.UPDATE_CHECKING_NETWORK) return
 
     val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
@@ -114,7 +114,7 @@ fun scheduleUpdateCheckingJob(context: Context) {
 
     var jobInfoBuilder = JobInfo.Builder(JOB_ID, ComponentName(context, UpdateCheckingService::class.java))
         .setPeriodic(1000L * 60L * 60L * 12L) // every 12 hours
-        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED) // on unmetered Wi-Fi
+        //.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED) // on unmetered Wi-Fi
         .setPersisted(true) // persist after reboots
 
     // Update checking has minimum priority

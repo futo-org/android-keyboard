@@ -95,9 +95,6 @@ dependencies {
     implementation 'androidx.datastore:datastore-preferences:1.1.1'
 
     implementation(name:'vad-release', ext:'aar')
-    implementation(name:'pocketfft-release', ext:'aar')
-
-    implementation(name:'tensorflow-lite-support-api', ext:'aar')
 
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1'
 }
