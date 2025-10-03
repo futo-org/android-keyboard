@@ -1,8 +1,11 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
 import android.content.Intent
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.booleanResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.Settings
@@ -76,8 +79,12 @@ val PredictiveTextMenu = UserSettingsMenu(
             title = R.string.auto_correction,
             subtitle = R.string.auto_correction_summary,
             key = Settings.PREF_AUTO_CORRECTION,
-            default = {true}
-        ),
+            default = {true},
+            icon = {
+                Icon(painterResource(id = R.drawable.icon_spellcheck), contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+            }
+        ).copy(searchTags = R.string.auto_correction_tags),
 
         userSettingToggleSharedPrefs(
             title = R.string.prediction_settings_smart_keyhit_detection,

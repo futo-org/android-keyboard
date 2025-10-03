@@ -96,7 +96,10 @@ import org.futo.inputmethod.v2keyboard.isFoldableInnerDisplayAllowed
 import kotlin.math.roundToInt
 
 /** Whether or not we can render into the navbar */
-val SupportsNavbarExtension = Build.VERSION.SDK_INT >= 28
+val SupportsNavbarExtension =
+    Build.VERSION.SDK_INT >= 28 &&
+            // https://github.com/futo-org/android-keyboard/issues/772
+            !Build.MANUFACTURER.lowercase().contains("motorola")
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
