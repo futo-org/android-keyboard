@@ -96,10 +96,11 @@ import org.futo.inputmethod.v2keyboard.isFoldableInnerDisplayAllowed
 import kotlin.math.roundToInt
 
 /** Whether or not we can render into the navbar */
-val SupportsNavbarExtension =
-    Build.VERSION.SDK_INT >= 28 &&
-            // https://github.com/futo-org/android-keyboard/issues/772
-            !Build.MANUFACTURER.lowercase().contains("motorola")
+val SupportsNavbarExtension = Build.VERSION.SDK_INT >= 28
+
+val UseTransparentNavbar =
+    // https://github.com/futo-org/android-keyboard/issues/772
+    !Build.MANUFACTURER.lowercase().contains("motorola")
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -232,15 +233,19 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         if(SupportsNavbarExtension) {
             val shouldMaintainContrast = size.value is FloatingKeyboardSize
 
-            val color = (colorScheme.navigationBarColor ?: colorScheme.keyboardSurface).copy(alpha = 0.0f).toArgb()
+            val color = (colorScheme.navigationBarColor ?: colorScheme.keyboardSurface)
 
             window.window?.let { window ->
-                applyWindowColors(window, color, statusBar = false)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    window.setNavigationBarContrastEnforced(shouldMaintainContrast)
-                }
+                if(UseTransparentNavbar) {
+                    applyWindowColors(window, color.copy(alpha = 0.0f).toArgb(), statusBar = false)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        window.setNavigationBarContrastEnforced(shouldMaintainContrast)
+                    }
 
-                WindowCompat.setDecorFitsSystemWindows(window, false)
+                    WindowCompat.setDecorFitsSystemWindows(window, false)
+                } else {
+                    applyWindowColors(window, color.toArgb(), statusBar = false)
+                }
             }
         } else {
             val color = colorScheme.navigationBarColor?.toArgb() ?: drawableProvider?.keyboardColor
