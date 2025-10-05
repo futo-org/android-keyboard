@@ -7,6 +7,7 @@ import android.os.SystemClock
 import android.text.InputType
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextUtils
 import android.text.style.BackgroundColorSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
@@ -762,6 +763,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         }
     }
 
+    private var hasPreedit = false
     internal fun renderInputConnection(command: ProtoCommands.Command, keyEvent: KeyEventInterface?) {
         val inputConnection = helper.getCurrentInputConnection() ?: return
         val output = command.output
@@ -804,6 +806,15 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         } finally {
             inputConnection.endBatchEdit()
         }
+
+        hasPreedit = output.hasPreedit()
+        helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
+    }
+
+    // We use the "shift" alphabet state to show the language switch key
+    override fun getCurrentAutoCapsState() = when {
+        !hasPreedit && layoutHint == "12key" -> TextUtils.CAP_MODE_CHARACTERS
+        else -> Constants.TextUtils.CAP_MODE_OFF
     }
 
     private fun setComposingText(command: ProtoCommands.Command, inputConnection: InputConnection) {
