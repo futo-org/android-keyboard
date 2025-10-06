@@ -151,10 +151,12 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
         if(BuildConfig.DEBUG) Log.d("BufferedInputConnection", "Command queue: $commandQueue, merged: $mergedList")
         commandQueue.clear()
 
+        if(mergedList.size > 1) super.beginBatchEdit()
         mergedList.forEach { when(it) {
             is InputCommand.Commit -> { super.commitText(it.text, 1) }
             is InputCommand.Delete -> { super.deleteSurroundingText(it.before, it.after) }
             is InputCommand.SetComposingRegion -> { super.setComposingRegion(it.start, it.end) }
         } }
+        if(mergedList.size > 1) super.endBatchEdit()
     }
 }
