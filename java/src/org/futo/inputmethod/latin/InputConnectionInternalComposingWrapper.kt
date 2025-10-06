@@ -182,6 +182,7 @@ class InputConnectionInternalComposingWrapper(
                 if(offs != null && offs > 0) {
                     if(BuildConfig.DEBUG) Log.d(TAG, "Moving cursor by $offs to be at end of word")
                     super.setSelection(cursor + offs, cursor + offs)
+                    cursor += offs
                 }
             }
 
