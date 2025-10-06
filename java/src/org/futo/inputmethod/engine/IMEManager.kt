@@ -209,7 +209,6 @@ class IMEManager(
 
     private var pendingUpdateSelection: Pair<Job, Selection>? = null
     fun ensureUpdateSelectionFinished() {
-        // TODO: IMEs need to know to call this manually before important places rn (and Japanese doesnt)
         pendingUpdateSelection?.let {
             it.first.cancel()
 

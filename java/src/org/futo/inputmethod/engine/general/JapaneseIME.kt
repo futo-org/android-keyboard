@@ -1024,94 +1024,93 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         return false
     }
 
-    override fun onEvent(event: Event) = when (event.eventType) {
-        Event.EVENT_TYPE_INPUT_KEYPRESS,
-        Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
-            if(helper.keyboardSwitcher.keyboard?.mId != configId) updateConfig(false)
+    override fun onEvent(event: Event) {
+        helper.requestCursorUpdate()
+        when (event.eventType) {
+            Event.EVENT_TYPE_INPUT_KEYPRESS,
+            Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
+                if(helper.keyboardSwitcher.keyboard?.mId != configId) updateConfig(false)
 
-            val triggeringKeyEvent = if (event.mKeyCode != Event.NOT_A_KEY_CODE) {
-                KeycodeConverter.getKeyEventInterface(
-                    KeyEvent(
-                        System.currentTimeMillis(),
-                        System.currentTimeMillis(),
-                        KeyEvent.ACTION_DOWN,
-                        event.mKeyCode,
-                        0,
-                        0,
-                        KeyCharacterMap.VIRTUAL_KEYBOARD,
-                        0,
-                        KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE
+                val triggeringKeyEvent = if (event.mKeyCode != Event.NOT_A_KEY_CODE) {
+                    KeycodeConverter.getKeyEventInterface(
+                        KeyEvent(
+                            System.currentTimeMillis(),
+                            System.currentTimeMillis(),
+                            KeyEvent.ACTION_DOWN,
+                            event.mKeyCode,
+                            0,
+                            0,
+                            KeyCharacterMap.VIRTUAL_KEYBOARD,
+                            0,
+                            KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE
+                        )
                     )
-                )
-            } else {
-                KeycodeConverter.getKeyEventInterface(event.mCodePoint)
-            }
-
-            val mozcEvent = when (event.mCodePoint) {
-                Constants.CODE_SPACE -> KeycodeConverter.SPECIALKEY_SPACE
-                Constants.CODE_ENTER -> KeycodeConverter.SPECIALKEY_VIRTUAL_ENTER
-                Constants.NOT_A_CODE -> when (event.mKeyCode) {
-                    Constants.CODE_SWITCH_ALPHA_SYMBOL -> null
-                    Constants.CODE_DELETE -> KeycodeConverter.SPECIALKEY_BACKSPACE
-                    ArrowLeftAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_LEFT
-                    ArrowRightAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_RIGHT
-                    ArrowUpAction.keyCode -> KeycodeConverter.SPECIALKEY_UP
-                    ArrowDownAction.keyCode -> KeycodeConverter.SPECIALKEY_DOWN
-                    UndoAction.keyCode -> {
-                        // TODO: Should probably update mozc-lib to pass key event here explicitly instead of doing it like this
-                        executor.undoOrRewind(emptyList(), { command, _ ->
-                            evaluationCallback.onCompleted(command, Optional.of(triggeringKeyEvent))
-                        })
-                        return
-                    }
-
-                    else -> {
-                        if(!maybeHandleAction(event.mKeyCode)) {
-                            if(BuildConfig.DEBUG) Log.e(TAG, "Unknown keycode for that event (${event.mCodePoint} ${event.mKeyCode})")
-                        }
-                        null
-                    }
+                } else {
+                    KeycodeConverter.getKeyEventInterface(event.mCodePoint)
                 }
 
-                else -> getMozcKeyEvent(event.mCodePoint)
+                val mozcEvent = when (event.mCodePoint) {
+                    Constants.CODE_SPACE -> KeycodeConverter.SPECIALKEY_SPACE
+                    Constants.CODE_ENTER -> KeycodeConverter.SPECIALKEY_VIRTUAL_ENTER
+                    Constants.NOT_A_CODE -> when (event.mKeyCode) {
+                        Constants.CODE_SWITCH_ALPHA_SYMBOL -> null
+                        Constants.CODE_DELETE -> KeycodeConverter.SPECIALKEY_BACKSPACE
+                        ArrowLeftAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_LEFT
+                        ArrowRightAction.keyCode -> KeycodeConverter.SPECIALKEY_VIRTUAL_RIGHT
+                        ArrowUpAction.keyCode -> KeycodeConverter.SPECIALKEY_UP
+                        ArrowDownAction.keyCode -> KeycodeConverter.SPECIALKEY_DOWN
+                        UndoAction.keyCode -> {
+                            // TODO: Should probably update mozc-lib to pass key event here explicitly instead of doing it like this
+                            executor.undoOrRewind(emptyList(), { command, _ ->
+                                evaluationCallback.onCompleted(command, Optional.of(triggeringKeyEvent))
+                            })
+                            return
+                        }
+
+                        else -> {
+                            if(!maybeHandleAction(event.mKeyCode)) {
+                                if(BuildConfig.DEBUG) Log.e(TAG, "Unknown keycode for that event (${event.mCodePoint} ${event.mKeyCode})")
+                            }
+                            null
+                        }
+                    }
+
+                    else -> getMozcKeyEvent(event.mCodePoint)
+                }
+
+                val touchEvents = emptyList<ProtoCommands.Input.TouchEvent>()
+
+                if(mozcEvent != null) {
+                    executor.sendKey(
+                        mozcEvent,
+                        triggeringKeyEvent,
+                        touchEvents,
+                        evaluationCallback
+                    )
+                }
             }
 
-            val touchEvents = emptyList<ProtoCommands.Input.TouchEvent>()
-
-            if(mozcEvent != null) {
-                executor.sendKey(
-                    mozcEvent,
-                    triggeringKeyEvent,
-                    touchEvents,
-                    evaluationCallback
-                )
+            Event.EVENT_TYPE_SUGGESTION_PICKED -> {
+                val suggestion = event.mSuggestedWordInfo ?: return
+                val mozcId = suggestion.mCandidateIndex
+                val rowIdx = SUGGESTION_ID_INVERSION - suggestion.mScore
+                executor.submitCandidate(mozcId, Optional.of(rowIdx), evaluationCallback)
             }
 
-            Unit
-        }
+            Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> {
+                resetContextAndCommitText(event.mText)
+            }
 
-        Event.EVENT_TYPE_SUGGESTION_PICKED -> {
-            val suggestion = event.mSuggestedWordInfo ?: return
-            val mozcId = suggestion.mCandidateIndex
-            val rowIdx = SUGGESTION_ID_INVERSION - suggestion.mScore
-            executor.submitCandidate(mozcId, Optional.of(rowIdx), evaluationCallback)
-        }
+            Event.EVENT_TYPE_DOWN_UP_KEYEVENT -> {
+                // TODO: Should we be calling this here just to be sure?
+                resetContextAndCommitText()
 
-        Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> {
-            resetContextAndCommitText(event.mText)
-        }
+                sendDownUpKeyEvent(event.mKeyCode, event.mX)
+            }
 
-        Event.EVENT_TYPE_DOWN_UP_KEYEVENT -> {
-            // TODO: Should we be calling this here just to be sure?
-            resetContextAndCommitText()
-
-            sendDownUpKeyEvent(event.mKeyCode, event.mX)
-        }
-
-        else -> {
-            if(BuildConfig.DEBUG) Log.e(TAG, "Unhandled event type ${event.eventType}: $event")
-
-            Unit
+            else -> {
+                if(BuildConfig.DEBUG) Log.e(TAG, "Unhandled event type ${event.eventType}: $event")
+            }
         }
     }
 

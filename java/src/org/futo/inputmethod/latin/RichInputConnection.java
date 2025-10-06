@@ -155,7 +155,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         if(mIC != null && mIC instanceof InputConnectionInternalComposingWrapper && ((InputConnectionInternalComposingWrapper) mIC).getMTarget() == ic) return;
 
-        ic = InputConnectionInternalComposingWrapper.createWithSettingsFromContext(mConnectionProvider.getContext1(), ic);
+        ic = InputConnectionInternalComposingWrapper.createWithSettingsFromContext(mConnectionProvider.getContextForSettings(), ic);
 
         mIC = ic;
     }
