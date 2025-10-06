@@ -15,6 +15,7 @@ import org.futo.inputmethod.latin.settings.Settings
 interface InputMethodConnectionProvider {
     fun getCurrentInputConnection(): InputConnection?
     fun getCurrentEditorInfo(): EditorInfo?
+    fun getContextForSettings(): Context
 }
 
 class IMEHelper(
@@ -67,6 +68,8 @@ class IMEHelper(
         return latinIME.currentInputEditorInfo
     }
 
+    override fun getContextForSettings(): Context = context
+
     fun setNeutralSuggestionStrip(useExpandableUi: Boolean) {
         latinIME.setSuggestions(
             suggestedWords = SuggestedWords.getEmptyInstance(),
@@ -89,5 +92,16 @@ class IMEHelper(
 
     fun updateGestureAvailability(to: Boolean) {
         latinIME.latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.setImeAllowsGestureInput(to)
+    }
+
+    /**
+     * Please call this in `onEvent` before processing the event. It will make sure any pending
+     * cursor update gets processed (they are typically delayed 20ms for debouncing purposes)
+     *
+     * In the future, IMEManager should probably call this automatically, but the current control
+     * flow doesn't allow that
+     */
+    fun requestCursorUpdate() {
+        latinIME.imeManager.ensureUpdateSelectionFinished()
     }
 }

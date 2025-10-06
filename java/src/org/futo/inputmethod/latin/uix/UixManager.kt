@@ -204,12 +204,12 @@ fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(
 
 val ExperimentalICFix = SettingsKey(
     booleanPreferencesKey("voice_input_experimental_ic_fix"),
-    false
+    true
 )
 
 val ExperimentalICComposing = SettingsKey(
     booleanPreferencesKey("voice_input_experimental_ic_fix_composing"),
-    true
+    false
 )
 
 class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIME) : KeyboardManagerForAction {

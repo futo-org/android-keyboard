@@ -440,6 +440,7 @@ public final class InputLogic {
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd, composingStart, composingEnd)) {
             return false;
         }
+
         // TODO: the following is probably better done in resetEntireInputState().
         // it should only happen when the cursor moved, and the very purpose of the
         // test below is to narrow down whether this happened or not. Likewise with
@@ -715,7 +716,7 @@ public final class InputLogic {
 
         // Put a blue underline to a word in TextView which will be auto-corrected.
         if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
-                && mWordComposer.isComposingWord()) {
+                && mWordComposer.isComposingWord() && mConnection.useAutoCorrectIndicator()) {
             mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
             final CharSequence textWithUnderline =
                     getTextWithUnderline(mWordComposer.getTypedWord());
@@ -1250,7 +1251,7 @@ public final class InputLogic {
         final boolean deleteWholeWords = event.isKeyRepeat()
                 && inputTransaction.mSettingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS;
 
-        if (mWordComposer.isComposingWord()) {
+        if (mWordComposer.isComposingWord() && !mConnection.hasSelection()) {
             if (mWordComposer.isBatchMode()) {
                 final String rejectedSuggestion = mWordComposer.getTypedWord();
                 mWordComposer.reset(true);
@@ -1867,6 +1868,11 @@ public final class InputLogic {
             return false;
         }
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
+        final int actualCursorPosition = mConnection.getExtractedSelectionStart();
+        if(actualCursorPosition != expectedCursorPosition) {
+            Log.e(TAG, "ResetComposingWord: cursors don't match! Expected: " + expectedCursorPosition + ", actual: " + actualCursorPosition);
+            return false;
+        }
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
                 InputLogic.COMPOSITION_TEXT_AFTER /* checkTextAfter */)) {
             resetEntireInputState(
@@ -1923,7 +1929,9 @@ public final class InputLogic {
         //    mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
         //}
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
-                expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
+                expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor(), typedWordString);
+
+        mConnection.send();
         return true;
     }
 
@@ -1940,6 +1948,7 @@ public final class InputLogic {
             final boolean forStartInput,
             // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
+        mConnection.send();
         mSpaceState = SpaceState.NONE;
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
@@ -2240,6 +2249,8 @@ public final class InputLogic {
         }
         mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart, newSelEnd,
                 shouldFinishComposition);
+
+        mImeHelper.getKeyboardSwitcher().requestUpdatingShiftState(getCurrentAutoCapsState(Settings.getInstance().getCurrent()));
     }
 
     /**
@@ -2286,7 +2297,7 @@ public final class InputLogic {
     // TODO: Shouldn't this go in some *Utils class instead?
     private CharSequence getTextWithUnderline(final String text) {
         // TODO: Locale should be determined based on context and the text given.
-        return mIsAutoCorrectionIndicatorOn
+        return (mIsAutoCorrectionIndicatorOn && mConnection.useAutoCorrectIndicator())
                 ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
                     mImeHelper.getContext(), text, getDictionaryFacilitatorLocale())
                 : text;
@@ -2406,6 +2417,7 @@ public final class InputLogic {
         mWordComposer.setBatchInputWord(batchInputText);
         setComposingTextInternal(batchInputText, 1);
         mConnection.endBatchEdit();
+        mConnection.send();
         // Space state must be updated before calling updateShiftState
         if(settingsValues.mAltSpacesMode != Settings.SPACES_MODE_NONE) mSpaceState = SpaceState.PHANTOM;
         keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(settingsValues));
@@ -2487,7 +2499,7 @@ public final class InputLogic {
                 // ignored by TextView.
                 mConnection.commitCorrection(new CorrectionInfo(
                         mConnection.getExpectedSelectionEnd() - stringToCommit.length(),
-                        typedWord, stringToCommit));
+                        "", stringToCommit));
                 String prevWordsContext = (autoCorrectionOrNull != null)
                         ? autoCorrectionOrNull.mPrevWordsContext
                         : "";
@@ -2629,94 +2641,12 @@ public final class InputLogic {
      * Used as an injection point for each call of
      * {@link RichInputConnection#setComposingText(CharSequence, int)}.
      *
-     * <p>Currently using this method is optional and you can still directly call
-     * {@link RichInputConnection#setComposingText(CharSequence, int)}, but it is recommended to
-     * use this method whenever possible.<p>
-     * <p>TODO: Should we move this mechanism to {@link RichInputConnection}?</p>
-     *
      * @param newComposingText the composing text to be set
      * @param newCursorPosition the new cursor position
      */
     private void setComposingTextInternal(final CharSequence newComposingText,
             final int newCursorPosition) {
         mConnection.setComposingText(newComposingText, newCursorPosition);
-        // TODO: Not using background color, remove the below method?
-        //setComposingTextInternalWithBackgroundColor(newComposingText, newCursorPosition,
-        //        Color.TRANSPARENT, newComposingText.length());
-    }
-
-    /**
-     * Equivalent to {@link #setComposingTextInternal(CharSequence, int)} except that this method
-     * allows to set {@link BackgroundColorSpan} to the composing text with the given color.
-     *
-     * <p>TODO: Currently the background color is exclusive with the black underline, which is
-     * automatically added by the framework. We need to change the framework if we need to have both
-     * of them at the same time.</p>
-     * <p>TODO: Should we move this method to {@link RichInputConnection}?</p>
-     *
-     * @param newComposingText the composing text to be set
-     * @param newCursorPosition the new cursor position
-     * @param backgroundColor the background color to be set to the composing text. Set
-     * {@link Color#TRANSPARENT} to disable the background color.
-     * @param coloredTextLength the length of text, in Java chars, which should be rendered with
-     * the given background color.
-     */
-    private void setComposingTextInternalWithBackgroundColor(final CharSequence newComposingText,
-            final int newCursorPosition, final int backgroundColor, final int coloredTextLength) {
-        final CharSequence composingTextToBeSet;
-        if (backgroundColor == Color.TRANSPARENT) {
-            composingTextToBeSet = newComposingText;
-        } else {
-            final SpannableString spannable = new SpannableString(newComposingText);
-            final BackgroundColorSpan backgroundColorSpan =
-                    new BackgroundColorSpan(backgroundColor);
-            final int spanLength = Math.min(coloredTextLength, spannable.length());
-            spannable.setSpan(backgroundColorSpan, 0, spanLength,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
-            composingTextToBeSet = spannable;
-        }
-        mConnection.setComposingText(composingTextToBeSet, newCursorPosition);
-    }
-
-    /**
-     * Gets an object allowing private IME commands to be sent to the
-     * underlying editor.
-     * @return An object for sending private commands to the underlying editor.
-     */
-    public PrivateCommandPerformer getPrivateCommandPerformer() {
-        return mConnection;
-    }
-
-    /**
-     * Gets the expected index of the first char of the composing span within the editor's text.
-     * Returns a negative value in case there appears to be no valid composing span.
-     *
-     * @see #getComposingLength()
-     * @see RichInputConnection#hasSelection()
-     * @see RichInputConnection#isCursorPositionKnown()
-     * @see RichInputConnection#getExpectedSelectionStart()
-     * @see RichInputConnection#getExpectedSelectionEnd()
-     * @return The expected index in Java chars of the first char of the composing span.
-     */
-    // TODO: try and see if we can get rid of this method. Ideally the users of this class should
-    // never need to know this.
-    public int getComposingStart() {
-        if (!mConnection.isCursorPositionKnown() || mConnection.hasSelection()) {
-            return -1;
-        }
-        return mConnection.getExpectedSelectionStart() - mWordComposer.size();
-    }
-
-    /**
-     * Gets the expected length in Java chars of the composing span.
-     * May be 0 if there is no valid composing span.
-     * @see #getComposingStart()
-     * @return The expected length of the composing span.
-     */
-    // TODO: try and see if we can get rid of this method. Ideally the users of this class should
-    // never need to know this.
-    public int getComposingLength() {
-        return mWordComposer.size();
     }
 
     /**

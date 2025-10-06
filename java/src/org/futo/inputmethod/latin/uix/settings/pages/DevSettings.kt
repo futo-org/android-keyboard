@@ -18,6 +18,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.TextInputAlternativeIC
+import org.futo.inputmethod.latin.TextInputAlternativeICComposing
+import org.futo.inputmethod.latin.TextInputBufferedIC
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.DebugOnly
 import org.futo.inputmethod.latin.uix.ExperimentalICComposing
@@ -37,6 +40,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingTextField
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 import org.futo.inputmethod.updates.dismissedMigrateUpdateNotice
 import java.io.File
@@ -99,23 +103,38 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             navigate = { navController.navigate("devlayouteditor") }
         )
 
-        ScreenTitle("Input debugging")
+        ScreenTitle("Text input debug")
         SettingToggleDataStore(
-            title = "Voice input alternative composition",
-            subtitle = "Use InputConnection with alternative composition implementation",
-            setting = ExperimentalICFix
+            title = "Text input alt. composition",
+            setting = TextInputAlternativeIC
         )
-
         SettingToggleDataStore(
-            title = "setComposingRegion in voice input alternative composition",
-            subtitle = "Only has effect when used in combination with the above setting",
-            setting = ExperimentalICComposing
+            title = "Use buffering",
+            setting = TextInputBufferedIC,
+            disabled = useDataStoreValue(TextInputAlternativeIC) == false
+        )
+        SettingToggleDataStore(
+            title = "Use setComposingRegion",
+            setting = TextInputAlternativeICComposing,
+            disabled = useDataStoreValue(TextInputAlternativeIC) == false
         )
 
         NavigationItem(
             title = "Buggy text edit variations",
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("devbuggytextedit") }
+        )
+
+        ScreenTitle("Voice input debug")
+        SettingToggleDataStore(
+            title = "Voice input alt. composition",
+            setting = ExperimentalICFix
+        )
+
+        SettingToggleDataStore(
+            title = "Use setComposingRegion",
+            setting = ExperimentalICComposing,
+            disabled = useDataStoreValue(ExperimentalICFix) == false
         )
 
         ScreenTitle(title = "Payment stuff")

@@ -147,6 +147,19 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return mIC != null;
     }
 
+    private void updateConnection() {
+        InputConnection ic = mConnectionProvider.getCurrentInputConnection();
+        if(ic == null) {
+            mIC = null;
+            return;
+        }
+        if(mIC != null && mIC instanceof InputConnectionInternalComposingWrapper && ((InputConnectionInternalComposingWrapper) mIC).getMTarget() == ic) return;
+
+        ic = InputConnectionInternalComposingWrapper.createWithSettingsFromContext(mConnectionProvider.getContextForSettings(), ic);
+
+        mIC = ic;
+    }
+
     /**
      * Returns whether or not the underlying InputConnection is slow. When true, we want to avoid
      * calling InputConnection methods that trigger an IPC round-trip (e.g., getTextAfterCursor).
@@ -194,8 +207,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     public void beginBatchEdit() {
-        if (++mNestLevel == 1) {
-            mIC = mConnectionProvider.getCurrentInputConnection();
+        /*if (++mNestLevel == 1) {
+            updateConnection();
             if (isConnected()) {
                 mIC.beginBatchEdit();
             }
@@ -206,15 +219,15 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             Log.e(TAG, "Nest level too deep : " + mNestLevel);
         }
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
-        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();*/
     }
 
     public void endBatchEdit() {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        /*if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
         if (--mNestLevel == 0 && isConnected()) {
             mIC.endBatchEdit();
         }
-        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();*/
     }
 
     public void restartBatchEdit() {
@@ -257,6 +270,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     public boolean tryExtractCursorPosition() {
+        // TODO: Might be a good idea to test if the framework can be trusted to provide accurate selectionStart
+        //  e.g. request getTextBeforeCursor(huge number), count, compare to selectionStart
         if(!isConnected()) return false;
         final ExtractedTextRequest r = new ExtractedTextRequest();
         r.flags = 0;
@@ -283,7 +298,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     private boolean reloadTextCache() {
         mCommittedTextBeforeComposingText.setLength(0);
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         // Call upon the inputconnection directly since our own method is using the cache, and
         // we want to refresh it.
         final CharSequence textBeforeCursor = getTextBeforeCursorAndDetectLaggyConnection(
@@ -392,7 +407,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public int getCursorCapsMode(final int inputType,
             final SpacingAndPunctuations spacingAndPunctuations, final boolean hasSpaceBefore) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return Constants.TextUtils.CAP_MODE_OFF;
         }
@@ -478,7 +493,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     private CharSequence getTextBeforeCursorAndDetectLaggyConnection(
             final int operation, final long timeout, final int n, final int flags) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return null;
         }
@@ -497,7 +512,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     private CharSequence getTextAfterCursorAndDetectLaggyConnection(
             final int operation, final long timeout, final int n, final int flags) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return null;
         }
@@ -548,7 +563,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     public void performEditorAction(final int actionId) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (isConnected()) {
             mIC.performEditorAction(actionId);
         }
@@ -614,7 +629,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return result;
     }
 
-    public void setComposingRegion(final int start, final int end) {
+    public void setComposingRegion(final int start, final int end, final String expectedWord) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         final CharSequence textBeforeCursor =
@@ -633,7 +648,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                     textBeforeCursor.subSequence(0, indexOfStartOfComposingText));
         }
         if (isConnected()) {
-            mIC.setComposingRegion(start, end);
+            if(mIC instanceof InputConnectionInternalComposingWrapper) {
+                ((InputConnectionInternalComposingWrapper)mIC).setComposingRegionWithText(start, end, expectedWord);
+            } else {
+                mIC.setComposingRegion(start, end);
+            }
         }
     }
 
@@ -711,7 +730,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     @Nonnull
     public NgramContext getNgramContextFromNthPreviousWord(
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return NgramContext.EMPTY_PREV_WORDS_INFO;
         }
@@ -777,7 +796,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public TextRange getWordRangeAtCursor(final SpacingAndPunctuations spacingAndPunctuations,
             final int scriptId, final boolean checkAfter) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return null;
         }
@@ -901,7 +920,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public void removeLeadingSpace() {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if(spaceFollowsCursor()) {
-            // TODO: Verify this is safe to do
             mIC.deleteSurroundingText(0, 1);
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
@@ -1002,6 +1020,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart,
             final int oldSelEnd, final int newSelEnd,
             final int composingStart, final int composingEnd) {
+        if(mIC != null && mIC instanceof InputConnectionInternalComposingWrapper) {
+            ((InputConnectionInternalComposingWrapper) mIC).cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
+        }
         // This update is "belated" if we are expecting it. That is, mExpectedSelStart and
         // mExpectedSelEnd match the new values that the TextView is updating TO.
         if (mExpectedSelStart == newSelStart && mExpectedSelEnd == newSelEnd) return true;
@@ -1108,7 +1129,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * than it really is.
      */
     public boolean tryFixLyingCursorPosition() {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if(tryExtractCursorPosition()) return true;
         final CharSequence textBeforeCursor = getTextBeforeCursor(
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
@@ -1153,7 +1174,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     @Override
     public boolean performPrivateCommand(final String action, final Bundle data) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return false;
         }
@@ -1164,10 +1185,23 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return mExpectedSelStart;
     }
 
+    public int getExtractedSelectionStart() {
+        if(!isConnected()) return -1;
+        final ExtractedText t = mIC.getExtractedText(new ExtractedTextRequest(), 0);
+        if(t == null) return -1;
+        return t.selectionStart;
+    }
+
     public int getExpectedSelectionEnd() {
         return mExpectedSelEnd;
     }
 
+    public int getExtractedSelectionEnd() {
+        if(!isConnected()) return -1;
+        final ExtractedText t = mIC.getExtractedText(new ExtractedTextRequest(), 0);
+        if(t == null) return -1;
+        return t.selectionEnd;
+    }
     /**
      * @return whether there is a selection currently active.
      */
@@ -1213,7 +1247,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      */
     public boolean requestCursorUpdates(final boolean enableMonitor,
             final boolean requestImmediateCallback) {
-        mIC = mConnectionProvider.getCurrentInputConnection();
+        updateConnection();
         if (!isConnected()) {
             return false;
         }
@@ -1339,5 +1373,14 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public StringBuilder getCommittedTextBeforeComposingTextForDebug() {
         return mCommittedTextBeforeComposingText;
+    }
+
+    public void send() {
+        if(mIC == null) return;
+        if(!(mIC instanceof InputConnectionInternalComposingWrapper)) return;
+        ((InputConnectionInternalComposingWrapper)mIC).send();
+    }
+    public boolean useAutoCorrectIndicator() {
+        return !(mIC instanceof InputConnectionInternalComposingWrapper);
     }
 }
