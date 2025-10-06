@@ -285,7 +285,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         keyBorders = context.getSettingBlocking(KeyBordersSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
 
-        hintColor = colorScheme.hintColor?.toArgb()
+        hintColor = colorScheme.hintColor?.toArgb() ?: colorScheme.onSurfaceVariant.toArgb()
         hintHiVis = colorScheme.hintHiVis
 
         val primary = colorScheme.primary.toArgb()
