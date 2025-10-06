@@ -1357,8 +1357,6 @@ public final class InputLogic {
                 }
                 final int numCharsDeleted = mConnection.getExpectedSelectionEnd()
                         - mConnection.getExpectedSelectionStart();
-                Log.d(TAG, "backspacing on selection, selection = " + mConnection.getExpectedSelectionStart() + ":" + mConnection.getExpectedSelectionEnd() + " selected text = " + selection + " will delete " + numCharsDeleted);
-                Log.d(TAG, "                extracted selection = " + mConnection.getExtractedSelectionStart() + ":" + mConnection.getExtractedSelectionEnd());
                 mConnection.setSelection(mConnection.getExpectedSelectionEnd(),
                         mConnection.getExpectedSelectionEnd());
                 mConnection.deleteTextBeforeCursor(numCharsDeleted);

@@ -314,7 +314,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             Log.e(TAG, "Unable to connect to the editor to retrieve text.");
             return false;
         }
-        Log.d(TAG, "reloadTextCache: [" + textBeforeCursor + "]");
         mCommittedTextBeforeComposingText.append(textBeforeCursor);
         return true;
     }
@@ -333,7 +332,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // TODO: this is not correct! The cursor is not necessarily after the composing text.
         // In the practice right now this is only called when input ends so it will be reset so
         // it works, but it's wrong and should be fixed.
-        Log.d(TAG, "finishComposingText: Appending mComposingText=[" + mComposingText + "] to [" + mCommittedTextBeforeComposingText + "]");
         mCommittedTextBeforeComposingText.append(mComposingText);
         mComposingText.setLength(0);
         if (isConnected()) {
@@ -350,7 +348,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public void commitText(final CharSequence text, final int newCursorPosition) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
-        Log.d(TAG, "commitText: Appending text=[" + text + "] to [" + mCommittedTextBeforeComposingText + "]");
         mCommittedTextBeforeComposingText.append(text);
         // TODO: the following is exceedingly error-prone. Right now when the cursor is in the
         // middle of the composing word mComposingText only holds the part of the composing text
@@ -541,7 +538,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // Right now we never come here in this case because we reset the composing state before we
         // come here in this case, but we need to fix this.
         final int remainingChars = mComposingText.length() - beforeLength;
-        Log.d(TAG, "deleteTextBeforeCursor(" + beforeLength + "), mComposingText=[" + mComposingText + "] mCommittedText=[" + mCommittedTextBeforeComposingText + "], remainingChars=" + remainingChars);
         if (remainingChars >= 0) {
             mComposingText.setLength(remainingChars);
         } else {
@@ -549,11 +545,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             // Never cut under 0
             final int len = Math.max(mCommittedTextBeforeComposingText.length()
                     + remainingChars, 0);
-
-            Log.d(TAG, "                               " + "remainingChars is negative, so we set " + mCommittedTextBeforeComposingText.length() + " to " + len);
-            Log.d(TAG, "                               " + "old: [" + mCommittedTextBeforeComposingText + "]:" + mCommittedTextBeforeComposingText.length());
             mCommittedTextBeforeComposingText.setLength(len);
-            Log.d(TAG, "                               " + "new: [" + mCommittedTextBeforeComposingText + "]:" + mCommittedTextBeforeComposingText.length());
         }
         if (mExpectedSelStart > beforeLength) {
             mExpectedSelStart -= beforeLength;
@@ -564,7 +556,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             mExpectedSelEnd -= mExpectedSelStart;
             mExpectedSelStart = 0;
         }
-        Log.d(TAG, "                           mComposingText=[" + mComposingText + "] mCommittedText=[" + mCommittedTextBeforeComposingText + "]");
         if (isConnected()) {
             mIC.deleteSurroundingText(beforeLength, 0);
         }
@@ -594,7 +585,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             // racy and has unpredictable results, but for backward compatibility we continue
             // sending the key events for only Enter and Backspace because some applications
             // mistakenly catch them to do some stuff.
-            Log.d(TAG, "sendKeyEvent: Appending event=[" + keyEvent + "] to [" + mCommittedTextBeforeComposingText + "]");
             switch (keyEvent.getKeyCode()) {
                 case KeyEvent.KEYCODE_ENTER:
                     mCommittedTextBeforeComposingText.append("\n");
@@ -656,7 +646,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                     textBeforeCursor.length()));
             mCommittedTextBeforeComposingText.append(
                     textBeforeCursor.subSequence(0, indexOfStartOfComposingText));
-            Log.d(TAG, "setComposingRegion expectedWord [" + expectedWord + "] vs [" + mCommittedTextBeforeComposingText + "]" + " [" + mComposingText + "]");
         }
         if (isConnected()) {
             if(mIC instanceof InputConnectionInternalComposingWrapper) {
@@ -701,7 +690,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         }
         mExpectedSelStart = start;
         mExpectedSelEnd = end;
-        Log.d(TAG, "setSelection " + start + ":" + end);
         if (isConnected()) {
             final boolean isIcValid = mIC.setSelection(start, end);
             if (!isIcValid) {
