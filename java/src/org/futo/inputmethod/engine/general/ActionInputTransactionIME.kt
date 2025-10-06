@@ -70,6 +70,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     private var partialText = ""
     override fun updatePartial(text: String) {
         if (isFinished) return
+        helper.requestCursorUpdate()
         partialText = text
         ic?.setComposingText(
             partialText,
@@ -81,6 +82,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
 
     override fun commit(text: String) {
         if (isFinished) return
+        helper.requestCursorUpdate()
         isFinished = true
         ic?.commitText(
             text,
@@ -91,6 +93,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     }
 
     override fun cancel() {
+        helper.requestCursorUpdate()
         commit(partialText)
         (ic as? InputConnectionInternalComposingWrapper)?.send()
     }

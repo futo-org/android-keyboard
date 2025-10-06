@@ -18,7 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.R
@@ -258,6 +261,38 @@ val MemoryDebugAction = Action(
                     state.value.forEach {
                         val value = it.value.toInt().toFloat() / 1000.0f
                         Text("${it.key}: ${String.format("%.2f", value)}MB", style = DebugLabel)
+                    }
+
+                    Button(onClick = {
+                        val testTexts = listOf(
+                            "One type of sentence.",
+                            "One other type of sentence?",
+                            "[Three kinds now! Okay, this text should appear identically 5 times]"
+                        )
+
+
+                        val txn = manager.createInputTransaction()
+                        testTexts.forEach { txn.updatePartial(it) }
+                        txn.commit(testTexts.last() + " ")
+
+
+                        val innerDelays = listOf(16L, 20L, 24L, 200L)
+                        manager.getLifecycleScope().launch {
+                            for(innerDelay in innerDelays) {
+                                delay(1000L)
+                                run {
+                                    val txn = manager.createInputTransaction()
+                                    testTexts.forEach {
+                                        delay(innerDelay)
+                                        withContext(Dispatchers.Main) { txn.updatePartial(it) }
+                                    }
+                                    withContext(Dispatchers.Main) { txn.commit(testTexts.last() + " ") }
+                                }
+                            }
+                        }
+
+                    }) {
+                        Text("Test action input transaction")
                     }
 
                     Button(onClick = {

@@ -18,6 +18,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -253,15 +254,19 @@ private class VoiceInputActionWindow(
     override fun finished(result: String) {
         wasFinished = true
 
-        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
-        inputTransaction.commit(sanitized)
-        manager.announce(result)
-        manager.closeActionWindow()
+        manager.getLifecycleScope().launch(Dispatchers.Main) {
+            val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
+            inputTransaction.commit(sanitized)
+            manager.announce(result)
+            manager.closeActionWindow()
+        }
     }
 
     override fun partialResult(result: String) {
-        val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
-        inputTransaction.updatePartial(sanitized)
+        manager.getLifecycleScope().launch(Dispatchers.Main) {
+            val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
+            inputTransaction.updatePartial(sanitized)
+        }
     }
 
     override fun requestPermission(onGranted: () -> Unit, onRejected: () -> Unit): Boolean {
