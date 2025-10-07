@@ -76,7 +76,7 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
             when(cmd) {
                 is InputCommand.Commit -> result += cmd.text
                 is InputCommand.Delete -> {
-                    result = result.substring(0, result.length - cmd.before)
+                    result = result.substring(0, (result.length - cmd.before).coerceAtLeast(0))
                 }
                 else -> {}
             }
@@ -90,7 +90,7 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
             when(cmd) {
                 is InputCommand.Commit -> { }
                 is InputCommand.Delete -> {
-                    result = result.substring(cmd.after)
+                    result = result.substring((cmd.after).coerceAtMost(result.length))
                 }
                 else -> {}
             }
