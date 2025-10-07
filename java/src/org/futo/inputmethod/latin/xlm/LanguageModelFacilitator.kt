@@ -159,7 +159,7 @@ public class LanguageModelFacilitator(
         if(languageModel == null) return false
         runBlocking {
             try {
-                withTimeout(700L) {
+                withTimeout(450L) {
                     computationSemaphore.acquire()
                     computationSemaphore.release()
                     val result = try {
