@@ -484,49 +484,43 @@ internal fun detectJapaneseUserDict(inputStream: InputStream): DetectedUserDictF
     return detectJapaneseUserDictInner(firstLineStr, inputStream, encodingAndOffset.first)?.copy(offset = encodingAndOffset.second)
 }
 
+fun determineFileKind(inputStream: InputStream): FileKindAndInfo {
+    val array = ByteArray(4)
+    inputStream.read(array)
 
+    val voiceInputMagic = 0x6c6d6767.toUInt()
+    val transformerMagic = 0x47475546.toUInt()
+    val dictionaryMagic = 0x9bc13afe.toUInt()
+    val mozcMagic = 0xef4d4f5a.toUInt()
 
-fun determineFileKind(context: Context, file: Uri): FileKindAndInfo {
-    val contentResolver = context.contentResolver
+    val magic = ByteBuffer.wrap(array).getInt().toUInt()
 
-    return contentResolver.openInputStream(file)?.use { inputStream ->
-        val array = ByteArray(4)
-        inputStream.read(array)
-
-        val voiceInputMagic = 0x6c6d6767.toUInt()
-        val transformerMagic = 0x47475546.toUInt()
-        val dictionaryMagic = 0x9bc13afe.toUInt()
-        val mozcMagic = 0xef4d4f5a.toUInt()
-
-        val magic = ByteBuffer.wrap(array).getInt().toUInt()
-
-        when {
-            magic == voiceInputMagic -> FileKindAndInfo(FileKind.VoiceInput, null, null)
-            magic == transformerMagic -> FileKindAndInfo(FileKind.Transformer, null, null)
-            magic == mozcMagic -> {
-                FileKindAndInfo(
-                    FileKind.Dictionary,
-                    // TODO: Dont hardcode name? No metadata in file to tell name, but we could try hashing etc
-                    name = "日本語辞書",
-                    locale = "ja"
-                )
-            }
-            magic == dictionaryMagic -> {
-                val metadata = parseDictionaryMetadataKV(inputStream)
-
-                FileKindAndInfo(
-                    FileKind.Dictionary,
-                    name = metadata?.get("description"),
-                    locale = metadata?.get("locale")
-                )
-            }
-
-            (magic == 0x1f8b0808.toUInt()) || (magic == 0x1f8b0800.toUInt()) || (magic == 0x64696374.toUInt()) ->
-                FileKindAndInfo(FileKind.Invalid, null, null, InvalidFileHint.ImportedWordListInsteadOfDict)
-
-            else -> FileKindAndInfo(FileKind.Invalid, null, null)
+    return when {
+        magic == voiceInputMagic -> FileKindAndInfo(FileKind.VoiceInput, null, null)
+        magic == transformerMagic -> FileKindAndInfo(FileKind.Transformer, null, null)
+        magic == mozcMagic -> {
+            FileKindAndInfo(
+                FileKind.Dictionary,
+                // TODO: Dont hardcode name? No metadata in file to tell name, but we could try hashing etc
+                name = "日本語辞書",
+                locale = "ja"
+            )
         }
-    } ?: FileKindAndInfo(FileKind.Invalid, null, null)
+        magic == dictionaryMagic -> {
+            val metadata = parseDictionaryMetadataKV(inputStream)
+
+            FileKindAndInfo(
+                FileKind.Dictionary,
+                name = metadata?.get("description"),
+                locale = metadata?.get("locale")
+            )
+        }
+
+        (magic == 0x1f8b0808.toUInt()) || (magic == 0x1f8b0800.toUInt()) || (magic == 0x64696374.toUInt()) ->
+            FileKindAndInfo(FileKind.Invalid, null, null, InvalidFileHint.ImportedWordListInsteadOfDict)
+
+        else -> FileKindAndInfo(FileKind.Invalid, null, null)
+    }
 }
 
 object ResourceHelper {
@@ -810,6 +804,12 @@ class ImportResourceActivity : ComponentActivity() {
         }
     }
 
+    private fun getInputStream(): InputStream? = try {
+        uri?.let { contentResolver.openInputStream(it) }
+    } catch(e: Exception) {
+        null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -817,14 +817,16 @@ class ImportResourceActivity : ComponentActivity() {
 
         val filePath = intent?.data?.path
         fileBeingImported.value = filePath
-        fileKind.value = determineFileKind(applicationContext, uri!!)
+        fileKind.value = getInputStream()?.use { determineFileKind(it) } ?: FileKindAndInfo(FileKind.Invalid, null, null)
         settingsCfgImportMetadata.value = if(fileKind.value.kind == FileKind.Invalid) {
-            SettingsExporter.getCfgFileMetadata(contentResolver.openInputStream(uri!!)!!)
+            getInputStream()?.use {
+                SettingsExporter.getCfgFileMetadata(it)
+            }
         } else {
             null
         }
         userDictFileMetadata.value = if(fileKind.value.kind == FileKind.Invalid && settingsCfgImportMetadata.value == null) {
-            val x = detectJapaneseUserDict(contentResolver.openInputStream(uri!!)!!)
+            val x = getInputStream()?.use { detectJapaneseUserDict(it) }
             if(x != null) {
                 fileKind.value = FileKindAndInfo(
                     FileKind.Dictionary,
