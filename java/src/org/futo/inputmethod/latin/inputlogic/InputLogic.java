@@ -1807,7 +1807,8 @@ public final class InputLogic {
         mRecapitalizeStatus.rotate();
         mConnection.setSelection(selectionEnd, selectionEnd);
         mConnection.deleteTextBeforeCursor(numCharsSelected);
-        mConnection.commitText(mRecapitalizeStatus.getRecapitalizedString(), 0);
+        mConnection.commitText(mRecapitalizeStatus.getRecapitalizedString(), 1); // This was originally 0, but we no longer support 0
+        mConnection.send();
         mConnection.setSelection(mRecapitalizeStatus.getNewCursorStart(),
                 mRecapitalizeStatus.getNewCursorEnd());
     }
