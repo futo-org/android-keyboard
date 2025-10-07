@@ -40,6 +40,7 @@ import org.futo.inputmethod.latin.ActiveSubtype
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
+import org.futo.inputmethod.v2keyboard.LayoutManager
 import java.io.File
 
 // Used before first unlock (direct boot)
@@ -201,6 +202,8 @@ fun forceUnlockDatastore(context: Context): DataStore<Preferences>? {
 private fun lockedDatastoreWithSubtypes(context: Context): DataStore<Preferences> {
     if (!DefaultDataStore.subtypesInitialized) {
         DefaultDataStore.subtypesInitialized = true
+
+        LayoutManager.init(context)
 
         @OptIn(DelicateCoroutinesApi::class)
         GlobalScope.launch {
