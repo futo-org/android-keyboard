@@ -17,7 +17,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     val ic = if(helper.context.getSetting(ExperimentalICFix)) {
         InputConnectionInternalComposingWrapper(
             helper.context.getSetting(ExperimentalICComposing),
-            false,
+            true,
             helper.getCurrentInputConnection())
     } else {
         helper.getCurrentInputConnection()
@@ -38,7 +38,9 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
         composingSpanEnd: Int
     ) {
         if(ic is InputConnectionInternalComposingWrapper) {
-            ic.cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd)
+            if(!ic.mightBeBelated(oldSelStart, oldSelEnd, newSelStart, newSelEnd)) {
+                ic.cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd)
+            }
         }
     }
 
@@ -70,7 +72,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     private var partialText = ""
     override fun updatePartial(text: String) {
         if (isFinished) return
-        //helper.requestCursorUpdate()
+        helper.requestCursorUpdate()
         partialText = text
         ic?.setComposingText(
             partialText,

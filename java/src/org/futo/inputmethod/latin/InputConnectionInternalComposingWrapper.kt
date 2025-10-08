@@ -104,6 +104,23 @@ class InputConnectionInternalComposingWrapper(
         selEnd = newSelEnd
     }
 
+    var previousUpdateWasBelated = false
+    fun mightBeBelated(
+        oldSelStart: Int,
+        oldSelEnd: Int,
+        newSelStart: Int,
+        newSelEnd: Int
+    ): Boolean {
+        return when {
+            oldSelStart == -1 -> false
+            composingStart == -1 -> false
+            (newSelStart != newSelEnd || selStart != selEnd) -> false
+            (oldSelStart == selStart || oldSelEnd == selEnd) -> false
+            (newSelStart >= composingStart && newSelStart < selStart) -> true
+            else -> false
+        }.also { previousUpdateWasBelated = it }
+    }
+
     private fun typeChars(text: CharSequence) {
         if(BuildConfig.DEBUG) Log.d(TAG, "    commitText($text)")
         super.commitText(text, 1)
@@ -152,6 +169,22 @@ class InputConnectionInternalComposingWrapper(
         return null
     }
 
+    private fun extractPosition(): Int? {
+        val extracted = super.getExtractedText(ExtractedTextRequest().apply { hintMaxChars = 1 }, 0)
+        if(extracted != null) {
+            val newCursorPos = extracted.selectionStart + extracted.startOffset
+            if(newCursorPos >= composingStart) {
+                selStart = newCursorPos
+                selEnd = newCursorPos
+
+                if(BuildConfig.DEBUG) Log.d(TAG, "Extracted cursor position for backtracking: $newCursorPos")
+                return newCursorPos
+            }
+        }
+
+        return null
+    }
+
     private fun commitComposingTextInternal(text: CharSequence, setComposing: Boolean) {
         val extracted: ExtractedText? = null// super.getExtractedText(ExtractedTextRequest().apply { hintMaxChars = 512 }, 0)
         if(BuildConfig.DEBUG) Log.d(TAG, "commitComposingTextInternal text=[$text] composingText=[$composingText] extracted=[${extracted?.text}][${extracted?.selectionStart} vs $selStart] composingStart=$composingStart setComposing=$setComposing ")
@@ -176,6 +209,7 @@ class InputConnectionInternalComposingWrapper(
             isAddition = false
         }*/
         if(composingStart != -1) {
+            var located = false
             if(cursor >= composingStart && cursor < composingEnd) {
                 // Locate ourselves, may need to move cursor
                 val textBefore = getTextBeforeCursor(composingText.length, 0)?.toString() ?: ""
@@ -184,7 +218,10 @@ class InputConnectionInternalComposingWrapper(
                 if(offs != null && offs > 0) {
                     if(BuildConfig.DEBUG) Log.d(TAG, "Moving cursor by $offs to be at end of word")
                     super.setSelection(cursor + offs, cursor + offs)
+                    selStart += offs
+                    selEnd += offs
                     cursor += offs
+                    located = true
                 }
             }
 
@@ -200,6 +237,10 @@ class InputConnectionInternalComposingWrapper(
             } else if(cursor >= composingStart) {
                 // When it's not a simple addition, we'll have to backtrack by deleting a certain
                 // number of characters.
+                if(previousUpdateWasBelated && !located) {
+                    // Our cursor position may be incorrect for this situation, try to extract it
+                    extractPosition()?.let { cursor = it }
+                }
 
                 // Try to get past text. Some frameworks might filter out characters or do other
                 // wonky stuff, so we can't trust that pastText is actually previous composingText.
@@ -228,6 +269,10 @@ class InputConnectionInternalComposingWrapper(
             }
         } else {
             if(BuildConfig.DEBUG) Log.d(TAG, " Case Begin: type [$text]")
+            if(previousUpdateWasBelated) {
+                // Our cursor position may be incorrect for this situation, try to extract it
+                extractPosition()?.let { cursor = it }
+            }
             composingStart = cursor
             typeChars(text)
             if(setComposing) super.setComposingRegion(composingStart, selStart)
