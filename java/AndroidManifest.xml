@@ -131,6 +131,7 @@
             </intent-filter>
         </receiver>
 
+        <!--
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
             android:foregroundServiceType="specialUse"
@@ -140,7 +141,7 @@
                 android:value="Neural network model training"/>
 
         </service>
-
+        -->
         <activity
             android:name=".payment.PaymentCompleteActivity"
             android:exported="true"

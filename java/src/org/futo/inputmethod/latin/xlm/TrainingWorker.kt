@@ -1,15 +1,18 @@
 package org.futo.inputmethod.latin.xlm
 
+import android.content.Context
+import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.preferences.core.intPreferencesKey
+import kotlinx.coroutines.flow.MutableSharedFlow
+
+/*
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.PowerManager
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.NotificationCompat
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -20,7 +23,6 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
@@ -28,39 +30,6 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import java.io.File
 import java.util.concurrent.TimeUnit
-
-val NUM_TRAINING_RUNS_KEY = intPreferencesKey("training_runs_count")
-
-const val CHANNEL_ID = "TRAINING"
-const val NOTIFICATION_ID = 1
-
-enum class TrainingState {
-    None,
-    Training,
-    ErrorInadequateData,
-    Finished,
-    FatalError,
-}
-
-data class TrainingStateWithModel(
-    val state: TrainingState,
-    val model: String?
-)
-
-enum class LanguageModelFacilitatorRequest {
-    ResetModel,
-    ClearTrainingLog
-}
-
-object TrainingWorkerStatus {
-    val state = MutableSharedFlow<TrainingStateWithModel>(replay = 1)
-    val lmRequest = MutableSharedFlow<LanguageModelFacilitatorRequest>(replay = 0)
-    val isTraining = mutableStateOf(false)
-
-    val loss = MutableSharedFlow<Float>(replay = 4)
-    val progress = MutableSharedFlow<Float>(replay = 4)
-}
-
 class TrainingWorker(val context: Context, val parameters: WorkerParameters) : CoroutineWorker(context, parameters) {
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as
@@ -332,3 +301,39 @@ public fun scheduleTrainingWorkerImmediately(context: Context, model: ModelInfoL
 
     workManager.enqueue(workRequest)
 }
+*/
+
+val NUM_TRAINING_RUNS_KEY = intPreferencesKey("training_runs_count")
+
+const val CHANNEL_ID = "TRAINING"
+const val NOTIFICATION_ID = 1
+
+enum class TrainingState {
+    None,
+    Training,
+    ErrorInadequateData,
+    Finished,
+    FatalError,
+}
+
+data class TrainingStateWithModel(
+    val state: TrainingState,
+    val model: String?
+)
+
+enum class LanguageModelFacilitatorRequest {
+    ResetModel,
+    ClearTrainingLog
+}
+
+object TrainingWorkerStatus {
+    val state = MutableSharedFlow<TrainingStateWithModel>(replay = 1)
+    val lmRequest = MutableSharedFlow<LanguageModelFacilitatorRequest>(replay = 0)
+    val isTraining = mutableStateOf(false)
+
+    val loss = MutableSharedFlow<Float>(replay = 4)
+    val progress = MutableSharedFlow<Float>(replay = 4)
+}
+
+public fun scheduleTrainingWorkerBackground(context: Context) { }
+public fun scheduleTrainingWorkerImmediately(context: Context, model: ModelInfoLoader? = null, trainingData: String? = null) { }

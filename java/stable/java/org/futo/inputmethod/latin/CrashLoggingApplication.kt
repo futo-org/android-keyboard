@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.os.UserManager
 import androidx.datastore.preferences.core.Preferences
-import androidx.work.Configuration
+//import androidx.work.Configuration
 import org.acra.ACRA
 import org.acra.config.dialog
 //import org.acra.config.httpSender
@@ -13,10 +13,9 @@ import org.acra.config.mailSender
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
 
-class CrashLoggingApplication : Application(), Configuration.Provider {
-    override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder().build()
-
+class CrashLoggingApplication : Application() /*, Configuration.Provider*/ {
+    //override val workManagerConfiguration: Configuration
+    //    get() = Configuration.Builder().build()
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
