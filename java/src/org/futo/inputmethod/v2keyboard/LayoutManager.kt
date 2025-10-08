@@ -23,7 +23,7 @@ data class Mappings(
 )
 
 object LayoutManager {
-    private var layoutsById: Map<String, Keyboard>? = null
+    private var layoutsById: Map<String, LazyKeyboard>? = null
     private var localeToLayoutsMappings: Map<Locale, List<String>>? = null
     private var localeNames: Map<Locale, Map<Locale, String>>? = null
     private var initialized = false
@@ -61,22 +61,8 @@ object LayoutManager {
         val layoutPaths = getAllLayoutPaths(assetManager)
 
         layoutsById = layoutPaths.filter { it != "layouts/names.yaml" }.associate { path ->
-            val filename = path.split("/").last().split(".yaml").first()
-
-            val keyboard = try {
-                parseKeyboardYaml(context, path).apply { id = filename }
-            } catch(e: Exception) {
-                BugViewerState.pushBug(BugInfo(
-                    "LayoutManager",
-                    "Failed to parse layout $filename\nMessage: ${e.message}, cause: ${e.cause?.message}"
-                ))
-
-                e.printStackTrace()
-
-                parseKeyboardYaml(context, "layouts/Special/error.yaml").apply { id = filename }
-            }
-
-            filename to keyboard
+            val keyboard = LazyKeyboard(path)
+            keyboard.filename to keyboard
         }
     }
 
@@ -88,7 +74,7 @@ object LayoutManager {
         ensureInitialized()
         if(name.startsWith("custom")) return CustomLayout.getCustomLayout(context, name)
 
-        return layoutsById?.get(name) ?: throw IllegalArgumentException("Failed to find keyboard layout $name. Available layouts: ${layoutsById?.keys}")
+        return layoutsById?.get(name)?.get(context) ?: throw IllegalArgumentException("Failed to find keyboard layout $name. Available layouts: ${layoutsById?.keys}")
     }
 
     fun getLayoutOrNull(context: Context, name: String): Keyboard? {
@@ -99,7 +85,7 @@ object LayoutManager {
             null
         }
 
-        return layoutsById?.get(name)
+        return layoutsById?.get(name)?.get(context)
     }
 
     fun getLayoutMapping(context: Context): Map<Locale, List<String>> {
@@ -179,7 +165,37 @@ fun parseKeyboardYamlString(yamlString: String): Keyboard {
     return yaml.decodeFromString(Keyboard.serializer(), yamlString)
 }
 
-private fun parseKeyboardYaml(context: Context, layoutPath: String): Keyboard {
+internal class LazyKeyboard(
+    val path: String
+) {
+    val filename = path.split("/").last().split(".yaml").first()
+    var keyboard: Keyboard? = null
+
+    private fun load(context: Context): Keyboard = try {
+        parseKeyboardYaml(context, path).apply {
+            id = filename
+        }
+    } catch(e: Exception) {
+        BugViewerState.pushBug(BugInfo(
+            "LayoutManager",
+            "Failed to parse layout $filename\nMessage: ${e.message}, cause: ${e.cause?.message}"
+        ))
+
+        e.printStackTrace()
+
+        parseKeyboardYaml(context, "layouts/Special/error.yaml").apply { id = filename }
+    }
+
+    fun get(context: Context): Keyboard {
+        return keyboard ?: run {
+            load(context).also {
+                keyboard = it
+            }
+        }
+    }
+}
+
+internal fun parseKeyboardYaml(context: Context, layoutPath: String): Keyboard {
     return context.assets.open(layoutPath).use { inputStream ->
         val yamlString = inputStream.bufferedReader().use { it.readText() }
 
