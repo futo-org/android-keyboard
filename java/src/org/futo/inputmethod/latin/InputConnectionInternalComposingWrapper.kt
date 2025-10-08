@@ -105,6 +105,7 @@ class InputConnectionInternalComposingWrapper(
     }
 
     private fun typeChars(text: CharSequence) {
+        if(BuildConfig.DEBUG) Log.d(TAG, "    commitText($text)")
         super.commitText(text, 1)
 
         // In case editor is not sending cursor updates, try to keep track of it ourselves
@@ -119,6 +120,7 @@ class InputConnectionInternalComposingWrapper(
     }
 
     private fun backspace(amount: Int) {
+        if(BuildConfig.DEBUG) Log.d(TAG, "    backspace($amount)")
         super.deleteSurroundingText(amount, 0)
 
         // In case editor is not sending cursor updates, try to keep track of it ourselves
