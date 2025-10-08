@@ -1,10 +1,22 @@
 package org.futo.voiceinput.shared
 
 import android.content.Context
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import org.futo.voiceinput.shared.types.AudioRecognizerListener
 import org.futo.voiceinput.shared.types.InferenceState
@@ -57,6 +69,8 @@ interface RecognizerViewListener {
 
     // Return true if a permission modal was shown, otherwise return false
     fun requestPermission(onGranted: () -> Unit, onRejected: () -> Unit): Boolean
+
+    fun openSettings()
 }
 
 class RecognizerView(
@@ -70,7 +84,7 @@ class RecognizerView(
     private val statusState = mutableStateOf(MagnitudeState.NOT_TALKED_YET)
 
     enum class CurrentView {
-        LoadingCircle, PartialDecodingResult, InnerRecognize, PermissionError
+        LoadingCircle, PartialDecodingResult, InnerRecognize, PermissionError, ModelError
     }
 
     private val loadingCircleText = mutableStateOf("")
@@ -113,6 +127,26 @@ class RecognizerView(
                     RecognizeMicError(openSettings = { recognizer.openPermissionSettings() })
                 }
             }
+
+            CurrentView.ModelError -> {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        enabled = true,
+                        onClickLabel = null,
+                        onClick = {
+                            listener.openSettings()
+                        },
+                        role = null,
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() })) {
+                    Text(
+                        stringResource(R.string.model_load_error),
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(8.dp), textAlign = TextAlign.Center)
+                }
+            }
         }
     }
 
@@ -135,6 +169,11 @@ class RecognizerView(
 
         override fun languageDetected(language: Language) {
             // TODO
+        }
+
+        override fun modelLoadingFailed() {
+            listener.cancelled()
+            currentViewState.value = CurrentView.ModelError
         }
 
         override fun partialResult(result: String) {

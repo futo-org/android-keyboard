@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix.actions
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,7 @@ import org.futo.inputmethod.latin.uix.USE_VAD_AUTOSTOP
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.utils.ModelOutputSanitizer
 import org.futo.inputmethod.latin.xlm.UserDictionaryObserver
 import org.futo.inputmethod.updates.openURI
@@ -271,6 +273,16 @@ private class VoiceInputActionWindow(
 
     override fun requestPermission(onGranted: () -> Unit, onRejected: () -> Unit): Boolean {
         return false
+    }
+
+    override fun openSettings() {
+        val intent = Intent()
+        intent.setClass(context, SettingsActivity::class.java)
+        intent.setFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        )
+        intent.putExtra("navDest", "languages")
+        context.startActivity(intent)
     }
 }
 

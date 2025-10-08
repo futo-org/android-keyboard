@@ -516,7 +516,10 @@ class AudioRecognizer(
                 try {
                     preloadModels()
                 } catch(_: InvalidModelException) {
-                    TODO("Display error to user: model is corrupted, cannot run voice input, please redownload model")
+                    withContext(Dispatchers.Main) {
+                        reset()
+                        listener.modelLoadingFailed()
+                    }
                 }
             }
         }

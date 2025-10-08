@@ -53,4 +53,9 @@
 
     <!-- Indicates that although bluetooth mic is preferred, the builtin one is being used instead -->
     <string name="using_built_in_mic">Using Built-in mic (%1$s)</string>
+
+    <!-- Occurs when the model is corrupted, or loading failed for some other unknown reason,
+         usually the fix is to re-download the model and re-import it. For example this may happen
+         when the model is imported before the file is finished downloading -->
+    <string name="model_load_error">Error loading model. It may be corrupted or incomplete. Try reverting it to default or downloading again.</string>
 </resources>
