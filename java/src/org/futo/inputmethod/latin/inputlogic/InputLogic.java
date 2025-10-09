@@ -442,6 +442,8 @@ public final class InputLogic {
             return false;
         }
 
+        mConnection.updateICCursor(oldSelStart, newSelStart, oldSelEnd, newSelEnd);
+
         // TODO: the following is probably better done in resetEntireInputState().
         // it should only happen when the cursor moved, and the very purpose of the
         // test below is to narrow down whether this happened or not. Likewise with

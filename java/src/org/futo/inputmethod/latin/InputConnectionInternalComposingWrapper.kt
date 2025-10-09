@@ -30,8 +30,8 @@ val TextInputBufferedIC = SettingsKey(
 )
 
 val VoiceInputAlternativeIC = SettingsKey(
-    booleanPreferencesKey("voice_input_experimental_ic_fix1"),
-    false
+    booleanPreferencesKey("voice_input_experimental_ic_fix11"),
+    true
 )
 
 val VoiceInputAlternativeICComposing = SettingsKey(
@@ -122,12 +122,18 @@ class InputConnectionInternalComposingWrapper(
         newSelEnd: Int
     ): Boolean {
         return when {
-            oldSelStart == -1 -> false
-            composingStart == -1 -> false
-            (newSelStart != newSelEnd || selStart != selEnd) -> false
-            (oldSelStart == selStart || oldSelEnd == selEnd) -> false
-            (newSelStart >= composingStart && newSelStart < selStart) -> true
-            else -> false
+            selStart == newSelStart && selEnd == newSelEnd -> true
+            (selStart == oldSelStart && selEnd == oldSelEnd)
+                    && (oldSelStart != newSelStart || oldSelEnd != newSelEnd) -> false
+            else -> (newSelStart == newSelEnd)
+                    && (newSelStart - oldSelStart) * (selStart - newSelStart) >= 0
+                    && (newSelEnd - oldSelEnd) * (selEnd - newSelEnd) >= 0
+            //oldSelStart == -1 -> false
+            //composingStart == -1 -> false
+            //(newSelStart != newSelEnd || selStart != selEnd) -> false
+            //(oldSelStart == selStart || oldSelEnd == selEnd) -> false
+            //(newSelStart >= composingStart && newSelStart < selStart) -> true
+            //else -> false
         }.also { previousUpdateWasBelated = it }
     }
 

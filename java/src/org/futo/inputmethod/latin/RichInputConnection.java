@@ -1020,9 +1020,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart,
             final int oldSelEnd, final int newSelEnd,
             final int composingStart, final int composingEnd) {
-        if(mIC != null && mIC instanceof InputConnectionInternalComposingWrapper) {
-            ((InputConnectionInternalComposingWrapper) mIC).cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
-        }
         // This update is "belated" if we are expecting it. That is, mExpectedSelStart and
         // mExpectedSelEnd match the new values that the TextView is updating TO.
         if (mExpectedSelStart == newSelStart && mExpectedSelEnd == newSelEnd) return true;
@@ -1039,6 +1036,13 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return (newSelStart == newSelEnd)
                 && (newSelStart - oldSelStart) * (mExpectedSelStart - newSelStart) >= 0
                 && (newSelEnd - oldSelEnd) * (mExpectedSelEnd - newSelEnd) >= 0;
+    }
+
+    public void updateICCursor(final int oldSelStart, final int newSelStart,
+                             final int oldSelEnd, final int newSelEnd) {
+        if(mIC != null && mIC instanceof InputConnectionInternalComposingWrapper) {
+            ((InputConnectionInternalComposingWrapper) mIC).cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
+        }
     }
 
     /**
