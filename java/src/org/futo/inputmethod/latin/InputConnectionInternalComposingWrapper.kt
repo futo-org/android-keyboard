@@ -29,6 +29,16 @@ val TextInputBufferedIC = SettingsKey(
     default = true
 )
 
+val VoiceInputAlternativeIC = SettingsKey(
+    booleanPreferencesKey("voice_input_experimental_ic_fix1"),
+    false
+)
+
+val VoiceInputAlternativeICComposing = SettingsKey(
+    booleanPreferencesKey("voice_input_experimental_ic_fix_composing"),
+    false
+)
+
 /*
  * This is a wrapper around InputConnection that works around wonky app behavior by avoiding use of
  * the actual composing API. When apps don't implement it correctly or do weird things around it,

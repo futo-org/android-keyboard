@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -21,13 +20,12 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.TextInputAlternativeIC
 import org.futo.inputmethod.latin.TextInputAlternativeICComposing
 import org.futo.inputmethod.latin.TextInputBufferedIC
+import org.futo.inputmethod.latin.VoiceInputAlternativeIC
+import org.futo.inputmethod.latin.VoiceInputAlternativeICComposing
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.DebugOnly
-import org.futo.inputmethod.latin.uix.ExperimentalICComposing
-import org.futo.inputmethod.latin.uix.ExperimentalICFix
 import org.futo.inputmethod.latin.uix.HiddenKeysSetting
 import org.futo.inputmethod.latin.uix.OldStyleActionsBar
-import org.futo.inputmethod.latin.uix.SettingsExporter
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.UixManagerInstanceForDebug
 import org.futo.inputmethod.latin.uix.actions.clipboardFile
@@ -43,7 +41,6 @@ import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 import org.futo.inputmethod.updates.dismissedMigrateUpdateNotice
-import java.io.File
 import kotlin.system.exitProcess
 
 
@@ -128,13 +125,13 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
         ScreenTitle("Voice input debug")
         SettingToggleDataStore(
             title = "Voice input alt. composition",
-            setting = ExperimentalICFix
+            setting = VoiceInputAlternativeIC
         )
 
         SettingToggleDataStore(
             title = "Use setComposingRegion",
-            setting = ExperimentalICComposing,
-            disabled = useDataStoreValue(ExperimentalICFix) == false
+            setting = VoiceInputAlternativeICComposing,
+            disabled = useDataStoreValue(VoiceInputAlternativeIC) == false
         )
 
         ScreenTitle(title = "Payment stuff")

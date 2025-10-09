@@ -4,19 +4,19 @@ import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.InputConnectionInternalComposingWrapper
+import org.futo.inputmethod.latin.VoiceInputAlternativeIC
+import org.futo.inputmethod.latin.VoiceInputAlternativeICComposing
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
-import org.futo.inputmethod.latin.uix.ExperimentalICComposing
-import org.futo.inputmethod.latin.uix.ExperimentalICFix
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.utils.TextContext
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
 class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInputTransaction {
-    val ic = if(helper.context.getSetting(ExperimentalICFix)) {
+    val ic = if(helper.context.getSetting(VoiceInputAlternativeIC)) {
         InputConnectionInternalComposingWrapper(
-            helper.context.getSetting(ExperimentalICComposing),
+            helper.context.getSetting(VoiceInputAlternativeICComposing),
             true,
             helper.getCurrentInputConnection())
     } else {

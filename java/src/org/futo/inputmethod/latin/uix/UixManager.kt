@@ -91,8 +91,6 @@ import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.core.view.inputmethod.InputContentInfoCompat
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
@@ -104,14 +102,12 @@ import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
-import org.futo.inputmethod.latin.BinaryDictionaryGetter
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.FoldingOptions
 import org.futo.inputmethod.latin.LanguageSwitcherDialog
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.RichInputMethodManager
-import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
@@ -140,7 +136,6 @@ import org.futo.inputmethod.updates.autoDeferManualUpdateIfNeeded
 import org.futo.inputmethod.updates.deferManualUpdate
 import org.futo.inputmethod.updates.isManualUpdateTimeExpired
 import org.futo.inputmethod.updates.openManualUpdateCheck
-import org.futo.inputmethod.updates.openURI
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
 import org.futo.inputmethod.v2keyboard.FloatingKeyboardSize
@@ -201,16 +196,6 @@ fun Modifier.safeKeyboardPadding(): Modifier {
 fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(LocalDensity.current) {
     this@keyboardBottomPadding.absolutePadding(bottom = size.padding.bottom.toDp())
 }
-
-val ExperimentalICFix = SettingsKey(
-    booleanPreferencesKey("voice_input_experimental_ic_fix"),
-    true
-)
-
-val ExperimentalICComposing = SettingsKey(
-    booleanPreferencesKey("voice_input_experimental_ic_fix_composing"),
-    false
-)
 
 class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIME) : KeyboardManagerForAction {
     override fun getContext(): Context {
