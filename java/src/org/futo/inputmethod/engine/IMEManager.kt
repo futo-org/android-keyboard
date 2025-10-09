@@ -138,15 +138,21 @@ class IMEManager(
         val ime = ActionInputTransactionIME(helper)
         currentActionInputTransactionIME = ime
 
-        if(prevSelection != null) {
-            ime.onUpdateSelection(
-                -1, -1,
-                prevSelection!!.newSelStart,
-                prevSelection!!.newSelEnd,
-                prevSelection!!.composingSpanStart,
-                prevSelection!!.composingSpanEnd
-            )
-        } else {
+        var selectionUpdated = false
+        prevSelection?.apply {
+            if(currHash() == hash) {
+                ime.onUpdateSelection(
+                    -1, -1,
+                    newSelStart,
+                    newSelEnd,
+                    composingSpanStart,
+                    composingSpanEnd
+                )
+                selectionUpdated = true
+            }
+        }
+
+        if(!selectionUpdated) {
             ime.onUpdateSelection(
                 -1, -1,
                 helper.getCurrentEditorInfo()?.initialSelStart ?: -1,
