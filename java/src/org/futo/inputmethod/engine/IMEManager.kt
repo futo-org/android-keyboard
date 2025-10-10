@@ -97,6 +97,7 @@ class IMEManager(
         val ime = getActiveIME(settings.current)
         inInput = true
         startIme(ime)
+        prevSelection = null
     }
 
     fun onFinishInput() {
