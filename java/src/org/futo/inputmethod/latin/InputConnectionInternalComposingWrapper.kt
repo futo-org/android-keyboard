@@ -201,6 +201,7 @@ class InputConnectionInternalComposingWrapper(
                 cursor = extracted
             } else {
                 Log.e(TAG, "Could not extract cursor position")
+                ic?.requestCursorUpdates(CURSOR_UPDATE_IMMEDIATE)
                 return
             }
         }
