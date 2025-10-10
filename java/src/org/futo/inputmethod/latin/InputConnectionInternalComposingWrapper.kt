@@ -109,7 +109,7 @@ class InputConnectionInternalComposingWrapper(
         newSelStart: Int,
         newSelEnd: Int
     ) {
-        if(BuildConfig.DEBUG) Log.d(TAG, " * Cursor updated: $oldSelStart-$oldSelEnd : $newSelStart-$newSelEnd * ")
+        if(BuildConfig.DEBUG) Log.d(TAG, " [${System.identityHashCode(this)}] Cursor updated: $oldSelStart-$oldSelEnd : $newSelStart-$newSelEnd * ")
         selStart = newSelStart
         selEnd = newSelEnd
     }
@@ -122,18 +122,12 @@ class InputConnectionInternalComposingWrapper(
         newSelEnd: Int
     ): Boolean {
         return when {
-            selStart == newSelStart && selEnd == newSelEnd -> true
+            selStart == newSelStart && selEnd == newSelEnd -> false // In this case it's not belated, it's up to date, we want to skip logic where we extract cursor position
             (selStart == oldSelStart && selEnd == oldSelEnd)
                     && (oldSelStart != newSelStart || oldSelEnd != newSelEnd) -> false
             else -> (newSelStart == newSelEnd)
                     && (newSelStart - oldSelStart) * (selStart - newSelStart) >= 0
                     && (newSelEnd - oldSelEnd) * (selEnd - newSelEnd) >= 0
-            //oldSelStart == -1 -> false
-            //composingStart == -1 -> false
-            //(newSelStart != newSelEnd || selStart != selEnd) -> false
-            //(oldSelStart == selStart || oldSelEnd == selEnd) -> false
-            //(newSelStart >= composingStart && newSelStart < selStart) -> true
-            //else -> false
         }.also { previousUpdateWasBelated = it }
     }
 
@@ -142,8 +136,8 @@ class InputConnectionInternalComposingWrapper(
         super.commitText(text, 1)
 
         // In case editor is not sending cursor updates, try to keep track of it ourselves
-        selStart += text.length
-        selEnd += text.length
+        if(selStart != -1) selStart += text.length
+        if(selEnd != -1) selEnd += text.length
     }
 
     private fun getCommonLength(a: CharSequence, b: CharSequence): Int {
@@ -157,8 +151,8 @@ class InputConnectionInternalComposingWrapper(
         super.deleteSurroundingText(amount, 0)
 
         // In case editor is not sending cursor updates, try to keep track of it ourselves
-        selStart -= amount
-        selEnd -= amount
+        if(selStart != -1) selStart -= amount
+        if(selEnd != -1) selEnd -= amount
     }
 
     private fun locateWordEndOffset(word: String, textBefore: String, textAfter: String): Int? {
@@ -186,19 +180,13 @@ class InputConnectionInternalComposingWrapper(
     }
 
     private fun extractPosition(): Int? {
-        val extracted = super.getExtractedText(ExtractedTextRequest().apply { hintMaxChars = 1 }, 0)
-        if(extracted != null) {
-            val newCursorPos = extracted.selectionStart + extracted.startOffset
-            if(newCursorPos >= composingStart) {
-                selStart = newCursorPos
-                selEnd = newCursorPos
+        val selection = InputConnectionUtil.extractSelection(this)
+        if(selection.first == -1) return null
 
-                if(BuildConfig.DEBUG) Log.d(TAG, "Extracted cursor position for backtracking: $newCursorPos")
-                return newCursorPos
-            }
-        }
-
-        return null
+        if(BuildConfig.DEBUG) Log.d(TAG, "Extracted cursor position for backtracking: $selection")
+        selStart = selection.first
+        selEnd = selection.second
+        return selection.first
     }
 
     private fun commitComposingTextInternal(text: CharSequence, setComposing: Boolean) {
@@ -208,13 +196,12 @@ class InputConnectionInternalComposingWrapper(
         var cursor = selStart
         var isAddition = true
         if(cursor == -1) {
-            val extracted = super.getExtractedText(ExtractedTextRequest().apply { hintMaxChars = 512 }, 0)
-            if(extracted == null) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "exit due to no cursor pos")
-                //requestCursorUpdates(CURSOR_UPDATE_IMMEDIATE)
+            val extracted = extractPosition()
+            if(extracted != null) {
+                cursor = extracted
             } else {
-                cursor = extracted.selectionStart
-                selStart = cursor
+                Log.e(TAG, "Could not extract cursor position")
+                return
             }
         }
         // :c
@@ -360,8 +347,8 @@ class InputConnectionInternalComposingWrapper(
 
     override fun deleteSurroundingText(beforeLength: Int, afterLength: Int): Boolean {
         super.finishComposingText()
-        selStart -= beforeLength
-        selEnd -= beforeLength
+        if(selStart != -1) selStart -= beforeLength
+        if(selEnd != -1) selEnd -= beforeLength
         return super.deleteSurroundingText(beforeLength, afterLength)
     }
 

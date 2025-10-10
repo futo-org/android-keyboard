@@ -438,11 +438,11 @@ public final class InputLogic {
             }
         }
 
+        mConnection.updateICCursor(oldSelStart, newSelStart, oldSelEnd, newSelEnd);
+
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd, composingStart, composingEnd)) {
             return false;
         }
-
-        mConnection.updateICCursor(oldSelStart, newSelStart, oldSelEnd, newSelEnd);
 
         // TODO: the following is probably better done in resetEntireInputState().
         // it should only happen when the cursor moved, and the very purpose of the
@@ -1875,6 +1875,7 @@ public final class InputLogic {
         final int actualCursorPosition = mConnection.getExtractedSelectionStart();
         if(actualCursorPosition != expectedCursorPosition) {
             Log.e(TAG, "ResetComposingWord: cursors don't match! Expected: " + expectedCursorPosition + ", actual: " + actualCursorPosition);
+            mConnection.tryExtractCursorPosition();
             return false;
         }
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,

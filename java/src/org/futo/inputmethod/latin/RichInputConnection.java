@@ -52,6 +52,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import kotlin.Pair;
+
 /**
  * Enrichment class for InputConnection to simplify interaction and add functionality.
  *
@@ -273,21 +275,13 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // TODO: Might be a good idea to test if the framework can be trusted to provide accurate selectionStart
         //  e.g. request getTextBeforeCursor(huge number), count, compare to selectionStart
         if(!isConnected()) return false;
-        final ExtractedTextRequest r = new ExtractedTextRequest();
-        r.flags = 0;
-        r.token = 1;
-        r.hintMaxLines = 1;
-        r.hintMaxChars = 512;
 
-        final ExtractedText t = mIC.getExtractedText(r, 0);
-        if(t == null) return false;
+        Pair<Integer, Integer> selection = InputConnectionUtil.INSTANCE.extractSelection(mIC, 0);
 
-        int selStart = t.selectionStart + t.startOffset;
-        int selEnd = t.selectionEnd + t.startOffset;
-        if(selStart < 0 || selEnd < 0) return false;
+        if(selection.getFirst() == -1) return false;
 
-        mExpectedSelStart = selStart;
-        mExpectedSelEnd = selEnd;
+        mExpectedSelStart = selection.getFirst();
+        mExpectedSelEnd = selection.getSecond();
         return true;
     }
 
@@ -1041,7 +1035,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public void updateICCursor(final int oldSelStart, final int newSelStart,
                              final int oldSelEnd, final int newSelEnd) {
         if(mIC != null && mIC instanceof InputConnectionInternalComposingWrapper) {
-            ((InputConnectionInternalComposingWrapper) mIC).cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
+            if(!((InputConnectionInternalComposingWrapper) mIC).mightBeBelated(oldSelStart, oldSelEnd, newSelStart, newSelEnd)) {
+                ((InputConnectionInternalComposingWrapper) mIC).cursorUpdated(oldSelStart, oldSelEnd, newSelStart, newSelEnd);
+            }
         }
     }
 
@@ -1191,9 +1187,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public int getExtractedSelectionStart() {
         if(!isConnected()) return -1;
-        final ExtractedText t = mIC.getExtractedText(new ExtractedTextRequest(), 0);
-        if(t == null) return -1;
-        return t.selectionStart;
+        return InputConnectionUtil.INSTANCE.extractSelection(mIC, 0).getFirst();
     }
 
     public int getExpectedSelectionEnd() {
@@ -1202,9 +1196,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public int getExtractedSelectionEnd() {
         if(!isConnected()) return -1;
-        final ExtractedText t = mIC.getExtractedText(new ExtractedTextRequest(), 0);
-        if(t == null) return -1;
-        return t.selectionEnd;
+        return InputConnectionUtil.INSTANCE.extractSelection(mIC, 0).getSecond();
     }
     /**
      * @return whether there is a selection currently active.

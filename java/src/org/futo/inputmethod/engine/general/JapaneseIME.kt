@@ -30,6 +30,7 @@ import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.latin.BuildConfig
+import org.futo.inputmethod.latin.InputConnectionUtil
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
@@ -486,15 +487,9 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         var selEnd = -1
 
         helper.getCurrentInputConnection()?.let { ic ->
-            ic.getExtractedText(ExtractedTextRequest().apply {
-                flags = 0
-                token = 1
-                hintMaxLines = 1
-                hintMaxChars = 512
-            }, 0)?.let { t ->
-                selStart = t.selectionStart + t.startOffset
-                selEnd = t.selectionEnd + t.startOffset
-            }
+            val selection = InputConnectionUtil.extractSelection(ic)
+            selStart = selection.first
+            selEnd = selection.second
         }
 
         helper.getCurrentEditorInfo()?.let { ei ->
