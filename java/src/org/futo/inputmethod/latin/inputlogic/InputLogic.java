@@ -1875,7 +1875,7 @@ public final class InputLogic {
         }
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
         final int actualCursorPosition = mConnection.getExtractedSelectionStart();
-        if(actualCursorPosition != expectedCursorPosition) {
+        if(actualCursorPosition != -1 && actualCursorPosition != expectedCursorPosition) {
             Log.e(TAG, "ResetComposingWord: cursors don't match! Expected: " + expectedCursorPosition + ", actual: " + actualCursorPosition);
             mConnection.tryExtractCursorPosition();
             return false;
