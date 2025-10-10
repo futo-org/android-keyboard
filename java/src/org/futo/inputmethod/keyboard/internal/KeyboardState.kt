@@ -462,6 +462,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
     }
 
     fun onResetKeyboardStateToAlphabet(
+        editorInfo: EditorInfo?,
         autoCapsFlags: Int
     ) {
         if (DEBUG_EVENT) {
@@ -469,7 +470,13 @@ class KeyboardState(private val switchActions: SwitchActions) {
                 TAG, "onResetKeyboardStateToAlphabet: $debugState"
             )
         }
-        setAlphabetLayout(autoCapsFlags)
+        when(getKeyboardMode(editorInfo ?: EditorInfo())) {
+            KeyboardId.MODE_NUMBER, KeyboardId.MODE_PHONE,
+            KeyboardId.MODE_DATE, KeyboardId.MODE_TIME,
+            KeyboardId.MODE_DATETIME -> onLoadKeyboard(editorInfo, autoCapsFlags, currentLayoutSet)
+
+            else -> setAlphabetLayout(autoCapsFlags)
+        }
     }
 
     fun onFinishSlidingInput(autoCapsFlags: Int) {

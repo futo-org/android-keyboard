@@ -430,7 +430,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
             switcher.loadKeyboard(editorInfo, currentSettingsValues, getCurrentAutoCapsState());
         } else if (restarting) {
-            switcher.resetKeyboardStateToAlphabet(getCurrentAutoCapsState());
+            switcher.resetKeyboardStateToAlphabet(editorInfo, getCurrentAutoCapsState());
             // In apps like Talk, we come here when the text is sent and the field gets emptied and
             // we need to re-evaluate the shift state, but not the whole layout which would be
             // disruptive.
