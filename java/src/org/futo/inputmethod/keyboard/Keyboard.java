@@ -251,7 +251,9 @@ public class Keyboard {
         final int length = codePoints.length;
         final int[] coordinates = CoordinateUtils.newCoordinateArray(length);
         for (int i = 0; i < length; ++i) {
-            final Key key = getKey(codePoints[i]);
+            Key key = getKey(codePoints[i]);
+            if(key == null) key = getKey(Character.toLowerCase(codePoints[i]));
+            if(key == null) key = getKey(Character.toUpperCase(codePoints[i]));
             if (null != key) {
                 CoordinateUtils.setXYInArray(coordinates, i,
                         key.getX() + key.getWidth() / 2, key.getY() + key.getHeight() / 2);
