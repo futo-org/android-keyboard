@@ -341,8 +341,13 @@ class InputConnectionInternalComposingWrapper(
     override fun commitText(text: CharSequence, newCursorPosition: Int): Boolean {
         if(BuildConfig.DEBUG) Log.d(TAG, "commitText [$text] $newCursorPosition")
         if(newCursorPosition != 1) throwIfDebug(UnsupportedOperationException("newCursorPosition must be 1"))
-        commitComposingTextInternal(text, false)
-        finishComposingText()
+
+        if(composingStart != -1) {
+            commitComposingTextInternal(text, false)
+            finishComposingText()
+        } else {
+            typeChars(text)
+        }
         return true
     }
 
