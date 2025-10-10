@@ -179,6 +179,8 @@ public final class InputLogic {
         // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
         // so we try using some heuristics to find out about these and fix them.
         mConnection.tryFixLyingCursorPosition();
+        mConnection.updateICCursor(-1, mConnection.mExpectedSelStart, -1, mConnection.mExpectedSelEnd);
+
         cancelDoubleSpacePeriodCountdown();
         if (InputLogicHandler.NULL_HANDLER == mInputLogicHandler) {
             mInputLogicHandler = new InputLogicHandler(null, this);
