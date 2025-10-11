@@ -241,7 +241,7 @@ class InputConnectionInternalComposingWrapper(
             } else if(cursor >= composingStart) {
                 // When it's not a simple addition, we'll have to backtrack by deleting a certain
                 // number of characters.
-                if(previousUpdateWasBelated && !located) {
+                if((previousUpdateWasBelated && !located) || (cursor - composingStart != composingText.length)) {
                     // Our cursor position may be incorrect for this situation, try to extract it
                     extractPosition()?.let { cursor = it }
                 }
