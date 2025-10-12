@@ -128,7 +128,10 @@ class InputConnectionInternalComposingWrapper(
             else -> (newSelStart == newSelEnd)
                     && (newSelStart - oldSelStart) * (selStart - newSelStart) >= 0
                     && (newSelEnd - oldSelEnd) * (selEnd - newSelEnd) >= 0
-        }.also { previousUpdateWasBelated = it }
+        }.also {
+            if(BuildConfig.DEBUG) Log.d(TAG, " $newSelStart:$newSelEnd belated = $it (current $selStart:$selEnd)")
+            previousUpdateWasBelated = it
+        }
     }
 
     private fun typeChars(text: CharSequence) {
@@ -151,8 +154,8 @@ class InputConnectionInternalComposingWrapper(
         super.deleteSurroundingText(amount, 0)
 
         // In case editor is not sending cursor updates, try to keep track of it ourselves
-        if(selStart != -1) selStart -= amount
-        if(selEnd != -1) selEnd -= amount
+        if(selStart != -1) selStart = (selStart - amount).coerceAtLeast(0)
+        if(selEnd != -1) selEnd = (selEnd - amount).coerceAtLeast(0)
     }
 
     private fun locateWordEndOffset(word: String, textBefore: String, textAfter: String): Int? {
@@ -195,7 +198,7 @@ class InputConnectionInternalComposingWrapper(
         if(useSetComposingRegion || setComposing) super.finishComposingText()
         var cursor = selStart
         var isAddition = true
-        if(cursor == -1) {
+        if(cursor < 0) {
             val extracted = extractPosition()
             if(extracted != null) {
                 cursor = extracted
@@ -352,10 +355,18 @@ class InputConnectionInternalComposingWrapper(
     }
 
     override fun deleteSurroundingText(beforeLength: Int, afterLength: Int): Boolean {
+        if(BuildConfig.DEBUG) Log.d(TAG, "    deleteSurroundingText($beforeLength, $afterLength) $selStart:$selEnd")
         super.finishComposingText()
-        if(selStart != -1) selStart -= beforeLength
-        if(selEnd != -1) selEnd -= beforeLength
+        if(selStart != -1) selStart = (selStart - beforeLength).coerceAtLeast(0)
+        if(selEnd != -1) selEnd = (selEnd - beforeLength).coerceAtLeast(0)
         return super.deleteSurroundingText(beforeLength, afterLength)
+    }
+
+    override fun setSelection(start: Int, end: Int): Boolean {
+        if(BuildConfig.DEBUG) Log.d(TAG, "    manual setSelection($start, $end) from $selStart:$selEnd")
+        selStart = start
+        selEnd = end
+        return super.setSelection(start, end)
     }
 
     override fun deleteSurroundingTextInCodePoints(beforeLength: Int, afterLength: Int): Boolean {
