@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
+import org.futo.inputmethod.latin.uix.theme.presets.CatppuccinMocha
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialLight
 import org.futo.inputmethod.latin.uix.theme.presets.CottonCandy
@@ -58,7 +59,8 @@ val ThemeOptions = mapOf(
     VoiceInputTheme.key to VoiceInputTheme,
     HotDog.key to HotDog,
     DevTheme.key to DevTheme,
-    HighContrastYellow.key to HighContrastYellow
+    HighContrastYellow.key to HighContrastYellow,
+    CatppuccinMocha.key to CatppuccinMocha
 )
 
 val ThemeOptionKeys = ThemeOptions.keys
