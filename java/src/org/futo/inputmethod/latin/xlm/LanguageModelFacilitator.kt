@@ -64,7 +64,7 @@ private fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
                 Int.MAX_VALUE.toLong()
             ).toInt(),
         SuggestedWordInfo.KIND_WHITELIST or SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION,
-        null,
+        mSourceDict ?: other.mSourceDict,
         0,
         0
     )
@@ -81,7 +81,7 @@ internal fun SuggestedWordInfo.scoreAtLeast(other: SuggestedWordInfo): Suggested
         mPrevWordsContext,
         mScore.coerceAtLeast(other.mScore + 1),
         SuggestedWordInfo.KIND_WHITELIST or SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION,
-        null,
+        mSourceDict,
         0,
         0
     )
@@ -384,7 +384,8 @@ public class LanguageModelFacilitator(
             }
 
             val maxWordDict = suggestedWordsDictList?.maxByOrNull {
-                if(it == suggestedWordsDict.typedWordInfo) { Int.MIN_VALUE } else { it.mScore }
+                if(it == suggestedWordsDict.typedWordInfo
+                    || it.isKindOf(SuggestedWordInfo.KIND_EMOJI_SUGGESTION)) Int.MIN_VALUE else it.mScore
             }
 
             val bothAlgorithmsCameToSameConclusion = maxWordDict?.mWord == maxWord?.mWord
