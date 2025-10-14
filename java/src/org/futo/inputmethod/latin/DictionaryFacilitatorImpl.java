@@ -342,20 +342,16 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
 
         // Gather all dictionaries. We'll remove them from the list to clean up later.
-        final ArrayList<String> dictTypeForLocale = new ArrayList<>();
-        for(Locale newLocale : newLocales) {
-            existingDictionariesToCleanup.put(newLocale, dictTypeForLocale);
-            final DictionaryGroup currentDictionaryGroupForLocale =
-                    findDictionaryGroupWithLocale(mDictionaryGroups, newLocale);
-            if (currentDictionaryGroupForLocale != null) {
-                for (final String dictType : DYNAMIC_DICTIONARY_TYPES) {
-                    if (currentDictionaryGroupForLocale.hasDict(dictType, account)) {
-                        dictTypeForLocale.add(dictType);
-                    }
+        for(DictionaryGroup group : mDictionaryGroups) {
+            final ArrayList<String> dictTypeForLocale = new ArrayList<>();
+            existingDictionariesToCleanup.put(group.mLocale, dictTypeForLocale);
+            for (final String dictType : DYNAMIC_DICTIONARY_TYPES) {
+                if (group.hasDict(dictType, account)) {
+                    dictTypeForLocale.add(dictType);
                 }
-                if (currentDictionaryGroupForLocale.hasDict(Dictionary.TYPE_MAIN, account)) {
-                    dictTypeForLocale.add(Dictionary.TYPE_MAIN);
-                }
+            }
+            if (group.hasDict(Dictionary.TYPE_MAIN, account)) {
+                dictTypeForLocale.add(Dictionary.TYPE_MAIN);
             }
         }
 
@@ -364,7 +360,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             final DictionaryGroup dictionaryGroupForLocale =
                     findDictionaryGroupWithLocale(mDictionaryGroups, newLocale);
             final ArrayList<String> dictTypesToCleanupForLocale =
-                    existingDictionariesToCleanup.get(newLocale);
+                    existingDictionariesToCleanup.getOrDefault(newLocale, new ArrayList<>());
             final boolean noExistingDictsForThisLocale = (null == dictionaryGroupForLocale);
 
             final Dictionary mainDict;
