@@ -83,7 +83,9 @@ def to_kotlin_list(name: str, items: List[str]) -> str:
 def main() -> None:
     # 1. languageContribs
     repo_root = Path(__file__).resolve().parent.parent
-    langs_map = translation_contribs(repo_root / "translations")
+
+    # need to pull the private repo https://gitlab.futo.org/keyboard/keyboard-translations for email-based deduplication
+    langs_map = translation_contribs(repo_root / "keyboard-translations")
     lang_lines = [
         f"{n} ({', '.join(sorted(langs))})" for n, langs in sorted(langs_map.items())
     ]
