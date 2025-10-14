@@ -142,6 +142,7 @@
     <string name="theme_default_dark">Dark Mode</string>
     <string name="theme_default_light">Light Mode</string>
     <string name="theme_amoled_dark">AMOLED Dark Purple</string>
+    <string name="theme_catppuccin_mocha">Catppuccin Mocha</string>
     <string name="theme_classic_dark">AOSP Material Dark</string>
     <string name="theme_classic_light">AOSP Material Light</string>
     <string name="theme_vi">FUTO VI Theme</string>
