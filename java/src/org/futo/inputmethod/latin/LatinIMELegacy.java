@@ -330,10 +330,11 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public void onCurrentInputMethodSubtypeChanged(final InputMethodSubtype subtype) {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
+        mImeManager.onFinishInput();
         InputMethodSubtype oldSubtype = mRichImm.getCurrentSubtype().getRawSubtype();
         StatsUtils.onSubtypeChanged(oldSubtype, subtype);
         mRichImm.onSubtypeChanged(subtype);
-        mImeManager.onFinishInput();
+        loadSettings();
         mImeManager.onStartInput();
         loadKeyboard();
     }
