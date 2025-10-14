@@ -253,8 +253,9 @@ public final class Constants {
     public static final int CODE_TO_ALPHA_1_LAYOUT = -20;
     public static final int CODE_TO_ALPHA_2_LAYOUT = -21;
     public static final int CODE_TO_ALPHA_3_LAYOUT = -22;
+    public static final int CODE_OUTPUT_TEXT_WITH_SPACES = -23;
     // Code value representing the code is not specified.
-    public static final int CODE_UNSPECIFIED = -23;
+    public static final int CODE_UNSPECIFIED = -24;
 
     public static final int CODE_ACTION_0 = -1050;
     public static final int CODE_ACTION_MAX = CODE_ACTION_0 + 100;

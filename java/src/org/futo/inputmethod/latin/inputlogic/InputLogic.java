@@ -283,8 +283,16 @@ public final class InputLogic {
         if (SpaceState.PHANTOM == mSpaceState) {
             insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
         }
+
+        if(event.mKeyCode == Constants.CODE_OUTPUT_TEXT_WITH_SPACES) {
+            if(mConnection.cursorNotPrecededByWhitespace()) mConnection.commitText(" ", 1);
+        }
         mConnection.commitText(text, 1);
         StatsUtils.onWordCommitUserTyped(mEnteredText, mWordComposer.isBatchMode());
+
+        if(event.mKeyCode == Constants.CODE_OUTPUT_TEXT_WITH_SPACES) {
+            insertOrSetPhantomSpace(settingsValues);
+        }
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.NONE;
@@ -1157,7 +1165,7 @@ public final class InputLogic {
                     && (settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_ALL)
                     && !mConnection.digitPrecedesCursor();
 
-            boolean spacePrecedesCursor = mConnection.spacePrecedesCursor();
+            boolean spacePrecedesCursor = !mConnection.cursorNotPrecededByWhitespace();
 
             boolean codeShouldBePrecededBySpace = settingsValues.isUsuallyPrecededBySpace(codePoint);
             // Disabled: this behavior is annoying in some circumstances (e.g. coding) and other

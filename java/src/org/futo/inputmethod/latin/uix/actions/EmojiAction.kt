@@ -690,9 +690,14 @@ fun EmojiGrid(
     searchFilter: String
 ) {
     val context = LocalContext.current
+
+    val emojiCategoryMap = remember {
+        emojis.associate { it.emoji to it.category }
+    }
+
     val recentEmojis = remember {
         runBlocking { context.getRecentEmojis() }.map {
-            EmojiItem(it, description = "", category = "", skinTones = false)
+            EmojiItem(it, description = "", category = emojiCategoryMap[it] ?: "", skinTones = false)
         }
     }
 
@@ -971,7 +976,11 @@ val EmojiAction = Action(
                 val view = LocalView.current
                 PersistentEmojiState.emojis.value?.let { emojis ->
                     EmojiGrid(onClick = {
-                        manager.typeText(it.emoji)
+                        if(it.category == "ASCII") {
+                            manager.typeTextSurroundedByWhitespace(it.emoji)
+                        } else {
+                            manager.typeText(it.emoji)
+                        }
                         manager.getLifecycleScope().launch {
                             manager.getContext().useEmoji(it.emoji)
                         }

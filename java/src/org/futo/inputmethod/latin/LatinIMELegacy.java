@@ -723,6 +723,12 @@ public class LatinIMELegacy implements KeyboardActionListener,
         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState());
     }
 
+    public void onTextInputWithSpace(final String rawText) {
+        final Event event = Event.createSoftwareTextEvent(rawText, Constants.CODE_OUTPUT_TEXT_WITH_SPACES);
+        getActiveIME().onEvent(event);
+        mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState());
+    }
+
     private IMEInterface getActiveIME() {
         return mImeManager.getActiveIME(mSettings.getCurrent());
     }

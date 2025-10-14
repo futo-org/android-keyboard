@@ -1079,6 +1079,16 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     /**
+     * Returns true if we can confirm there is no whitespace preceding the cursor
+     */
+    public boolean cursorNotPrecededByWhitespace() {
+        final CharSequence s = getTextBeforeCursor(1, 0);
+        if(s == null) return false;
+        if(s.length() == 0) return false;
+        return !Character.isWhitespace(s.charAt(0));
+    }
+
+    /**
      * Returns true if there is a space immediately before the composing text
      */
     public boolean spacePrecedesComposingText() {
