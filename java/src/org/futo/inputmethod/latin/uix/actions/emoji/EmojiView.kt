@@ -23,6 +23,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Build
 import android.text.Layout
 import android.text.Spanned
@@ -34,11 +35,7 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.applyCanvas
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.futo.inputmethod.latin.LatinIME
+import androidx.core.graphics.createBitmap
 import org.futo.inputmethod.latin.R
 
 
@@ -58,6 +55,7 @@ class EmojiView @JvmOverloads constructor(
     }
 
     internal var willDrawVariantIndicator: Boolean = true
+    private var textScale: Float = 1.0f
 
     private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply {
         textSize = TypedValue.applyDimension(
@@ -73,28 +71,34 @@ class EmojiView @JvmOverloads constructor(
 
     private val offscreenCanvasBitmap: Bitmap = with(textPaint.fontMetricsInt) {
         val size = bottom - top
-        Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        createBitmap(size, size)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val size =
-            minOf(
-                MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec)
-            ) - context.resources.getDimensionPixelSize(R.dimen.emoji_picker_emoji_view_padding)
-        setMeasuredDimension(size, size)
+        setMeasuredDimension(
+            MeasureSpec.getSize(widthMeasureSpec) - context.resources.getDimensionPixelSize(R.dimen.emoji_picker_emoji_view_padding),
+            MeasureSpec.getSize(heightMeasureSpec) - context.resources.getDimensionPixelSize(R.dimen.emoji_picker_emoji_view_padding)
+        )
     }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
         canvas.run {
-            save()
-            scale(
-                width.toFloat() / offscreenCanvasBitmap.width,
-                height.toFloat() / offscreenCanvasBitmap.height
-            )
-            drawBitmap(offscreenCanvasBitmap, 0f, 0f, null)
-            restore()
+            val bmpW = offscreenCanvasBitmap.width.toFloat()
+            val bmpH = offscreenCanvasBitmap.height.toFloat()
+
+            val sX = width.toFloat() / bmpW
+            val sY = height.toFloat() / bmpH
+
+            val scale = minOf(sX, sY)
+
+            val scaledW = (bmpW * scale / textScale).coerceAtMost(width.toFloat())
+            val scaledH = (bmpH * scale).coerceAtMost(height.toFloat())
+
+            val left = (width  - scaledW) / 2f
+            val top  = (height - scaledH) / 2f
+
+            drawBitmap(offscreenCanvasBitmap, null, RectF(left, top, left + scaledW, top + scaledH), null)
         }
     }
 
@@ -128,10 +132,13 @@ class EmojiView @JvmOverloads constructor(
                 var textWidth = textPaint.measureText(emoji, 0, emoji.length)
                 if(textWidth > width) {
                     scale(width / textWidth, 1.0f)
+                    textScale = width / textWidth
                     textWidth = width.toFloat()
                 } else {
                     scale(1.0f, 1.0f)
+                    textScale = 1.0f
                 }
+
                 drawText(
                     emoji,
                     /* start = */ 0,

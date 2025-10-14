@@ -188,6 +188,8 @@ class EmojiItemItem(val emoji: EmojiItem) : EmojiViewItem() {
     override fun hashCode(): Int {
         return emoji.hashCode()
     }
+
+    fun isWide() = emoji.category == "ASCII"
 }
 
 const val VIEW_EMOJI = 0
@@ -209,7 +211,8 @@ class EmojiGridAdapter(
     private val onClick: (EmojiItem) -> Unit,
     private val onSelectSkinTone: (PopupInfo) -> Unit,
     private val emojiCellWidth: Int,
-    private val contentColor: Color
+    private val contentColor: Color,
+    var wideCellWidth: Float
 ) : ListAdapter<EmojiViewItem, RecyclerView.ViewHolder>(EmojiViewItemDiffCallback) {
 
     class EmojiViewHolder(
@@ -226,8 +229,11 @@ class EmojiGridAdapter(
             emoji: EmojiItem,
             onClick: (EmojiItem) -> Unit,
             onSelectSkinTone: (PopupInfo) -> Unit,
-            color: Int
+            color: Int,
+            width: Int
         ) {
+            emojiView.layoutParams.width = width
+
             emojiView.setTextColor(color)
             emojiView.emoji = emoji
             emojiView.setOnClickListener {
@@ -270,14 +276,16 @@ class EmojiGridAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         if(item is EmojiItemItem && holder is EmojiViewHolder) {
-            holder.bindEmoji(item.emoji, onClick, onSelectSkinTone, contentColor.toArgb())
+            holder.bindEmoji(item.emoji, onClick, onSelectSkinTone, contentColor.toArgb(),
+                if(item.isWide()) (emojiCellWidth * wideCellWidth).roundToInt() else emojiCellWidth)
         }else if(item is CategoryItem && holder is CategoryViewHolder) {
             holder.bind(item)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(getItem(position)) {
+        val item = getItem(position)
+        return when(item) {
             is CategoryItem -> VIEW_CATEGORY
             is EmojiItemItem -> VIEW_EMOJI
         }
@@ -334,6 +342,7 @@ fun Emojis(
 
     val color = LocalKeyboardScheme.current.onKeyboardContainer
 
+    var wideEmojiWidth by remember { mutableIntStateOf(100) }
     val emojiAdapter = remember {
         EmojiGridAdapter(
             onClick,
@@ -342,7 +351,8 @@ fun Emojis(
                 popupIsActive = true
             },
             emojiWidth,
-            color
+            color,
+            wideEmojiWidth / 100.0f
         )
     }
 
@@ -358,11 +368,12 @@ fun Emojis(
         AndroidView(
             factory = { context ->
                 RecyclerView(context).apply {
-                    layoutManager = GridLayoutManager(context, 8).apply {
+                    layoutManager = GridLayoutManager(context, 800).apply {
                         spanSizeLookup = object : SpanSizeLookup() {
                             override fun getSpanSize(position: Int): Int {
-                                return when(emojiAdapter.currentList[position]) {
-                                    is EmojiItemItem -> 1
+                                val item = emojiAdapter.currentList[position]
+                                return when(item) {
+                                    is EmojiItemItem -> if(item.isWide()) wideEmojiWidth else 100
                                     is CategoryItem -> spanCount
                                 }
                             }
@@ -397,7 +408,15 @@ fun Emojis(
             },
             update = {
                 if (viewWidth > 0) {
-                    (it.layoutManager as GridLayoutManager).spanCount = viewWidth / emojiWidth
+                    val spanCount = (viewWidth / emojiWidth)
+                    val wideSpanCount = (spanCount / 2 + 1).coerceAtLeast(2)
+                    val newWideCellWidth = ((spanCount.toFloat() / wideSpanCount.toFloat()) * 100.0f).toInt()
+                    (it.layoutManager as GridLayoutManager).spanCount = (viewWidth / emojiWidth) * 100
+                    if(wideEmojiWidth != newWideCellWidth) {
+                        wideEmojiWidth = newWideCellWidth
+                        emojiAdapter.wideCellWidth = newWideCellWidth / 100.0f
+                        emojiAdapter.notifyDataSetChanged()
+                    }
                 }
 
                 jumpCategory.value?.let { item ->
