@@ -170,7 +170,6 @@
     "unicode_version": "",
     "ios_version": ""
   },
-
   {
     "emoji": "(╯°□°）╯︵ ┻━┻",
     "description": "tableflip",
@@ -186,6 +185,339 @@
     "category": "ASCII",
     "aliases": ["shruggie", "idk"],
     "tags": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(˶˃ ᵕ ˂˶)",
+    "description": "cute happy face",
+    "category": "ASCII",
+    "tags": ["happy", "cute"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(˶ˆᗜˆ˵)",
+    "description": "excited face",
+    "category": "ASCII",
+    "tags": ["excited", "joy"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "⸜(｡˃ ᵕ ˂ )⸝♡",
+    "description": "happy with love",
+    "category": "ASCII",
+    "tags": ["love", "happy"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(╥﹏╥)",
+    "description": "crying face",
+    "category": "ASCII",
+    "tags": ["cry", "sad"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧",
+    "description": "sparkly happy face",
+    "category": "ASCII",
+    "tags": ["sparkle", "happy"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "ꉂ(˵˃ ᗜ ˂˵)",
+    "description": "laughing face",
+    "category": "ASCII",
+    "tags": ["laugh", "giggle"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "𐔌՞. .՞𐦯",
+    "description": "sleepy face",
+    "category": "ASCII",
+    "tags": ["sleepy", "tired"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": ">ᴗ<",
+    "description": "simple happy face",
+    "category": "ASCII",
+    "tags": ["happy", "simple"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(¬_¬\")",
+    "description": "annoyed face",
+    "category": "ASCII",
+    "tags": ["annoyed", "frustrated"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "( ˶°ㅁ°) !!",
+    "description": "shocked face",
+    "category": "ASCII",
+    "tags": ["shock", "surprise"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(◞‸ ◟)💧",
+    "description": "sweating nervously",
+    "category": "ASCII",
+    "tags": ["nervous", "sweat"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "◝(ᵔᗜᵔ)◜",
+    "description": "cheerful face",
+    "category": "ASCII",
+    "tags": ["cheerful", "happy"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "( ≧ᗜ≦)",
+    "description": "very happy face",
+    "category": "ASCII",
+    "tags": ["very happy", "excited"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(ᵕ—ᴗ—)",
+    "description": "content face",
+    "category": "ASCII",
+    "tags": ["content", "peaceful"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "( ꩜ ᯅ ꩜;)⁭ ⁭",
+    "description": "confused face",
+    "category": "ASCII",
+    "tags": ["confused", "puzzled"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(,,>﹏<,,)",
+    "description": "sad crying face",
+    "category": "ASCII",
+    "tags": ["sad", "cry"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "૮₍ ´ ꒳ `₎ა",
+    "description": "cute animal face",
+    "category": "ASCII",
+    "tags": ["cute", "animal"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(*ᴗ͈ˬᴗ͈)ꕤ*.ﾟ",
+    "description": "flower happy face",
+    "category": "ASCII",
+    "tags": ["flower", "happy"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "｡°(°¯᷄◠¯᷅°)°｡",
+    "description": "dizzy face",
+    "category": "ASCII",
+    "tags": ["dizzy", "confused"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "₍^. .^₎⟆",
+    "description": "cat sleeping",
+    "category": "ASCII",
+    "tags": ["cat", "sleep"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(๑>◡<๑)",
+    "description": "blushing happy",
+    "category": "ASCII",
+    "tags": ["blush", "happy"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(..◜ᴗ◝..)",
+    "description": "shy face",
+    "category": "ASCII",
+    "tags": ["shy", "bashful"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "٩(ˊᗜˋ*)و ♡",
+    "description": "cheering with love",
+    "category": "ASCII",
+    "tags": ["cheer", "love"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(¬`‸´¬)",
+    "description": "grumpy face",
+    "category": "ASCII",
+    "tags": ["grumpy", "annoyed"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(ó﹏ò｡)",
+    "description": "teary eyes",
+    "category": "ASCII",
+    "tags": ["tears", "sad"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "∘ ∘ ∘ ( °ヮ° ) ?",
+    "description": "thinking face",
+    "category": "ASCII",
+    "tags": ["thinking", "wonder"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "ᕙ( •̀ ᗜ •́ )ᕗ",
+    "description": "flexing arms",
+    "category": "ASCII",
+    "tags": ["flex", "strong"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "ᓚ₍ ^. .^₎",
+    "description": "cat face",
+    "category": "ASCII",
+    "tags": ["cat", "cute"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "ฅ^>⩊<^ ฅ",
+    "description": "cat paws up",
+    "category": "ASCII",
+    "tags": ["cat", "paws"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "≽^•⩊•^≼",
+    "description": "cat smiling",
+    "category": "ASCII",
+    "tags": ["cat", "smile"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "/ᐠ - ˕ -マ",
+    "description": "sleepy cat",
+    "category": "ASCII",
+    "tags": ["cat", "sleepy"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "૮꒰ ˶• ༝ •˶꒱ა ♡",
+    "description": "cute face with love",
+    "category": "ASCII",
+    "tags": ["cute", "love"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "૮₍ ˃ ⤙ ˂ ₎ა",
+    "description": "pouty face",
+    "category": "ASCII",
+    "tags": ["pout", "sulk"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "( ˶ˆᗜˆ˵ )",
+    "description": "joyful face",
+    "category": "ASCII",
+    "tags": ["joy", "happy"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "(づ ᴗ _ᴗ)づ♡",
+    "description": "hugging with love",
+    "category": "ASCII",
+    "tags": ["hug", "love"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "( ˘͈ ᵕ ˘͈♡)",
+    "description": "loving face",
+    "category": "ASCII",
+    "tags": ["love", "affection"],
+    "aliases": [],
+    "unicode_version": "",
+    "ios_version": ""
+  },
+  {
+    "emoji": "ε(´｡•᎑•`)っ 💕",
+    "description": "reaching for love",
+    "category": "ASCII",
+    "tags": ["reach", "love"],
+    "aliases": [],
     "unicode_version": "",
     "ios_version": ""
   }
