@@ -909,10 +909,12 @@ class PersistentEmojiState : PersistentActionState {
                             }
                         }
 
-                        (tags + aliases).forEach { x ->
-                            val v = x.split("_").first()
-                            if(!englishLooseShortcuts.containsKey(v)) {
-                                englishLooseShortcuts.put(v, emoji)
+                        if(category != "ASCII") {
+                            (tags + aliases).forEach { x ->
+                                val v = x.split("_").first()
+                                if (!englishLooseShortcuts.containsKey(v)) {
+                                    englishLooseShortcuts.put(v, emoji)
+                                }
                             }
                         }
 
