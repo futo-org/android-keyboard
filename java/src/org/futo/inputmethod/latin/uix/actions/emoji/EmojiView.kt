@@ -69,6 +69,14 @@ class EmojiView @JvmOverloads constructor(
         textPaint.color = color
     }
 
+    fun setTextSizeMultiplier(v: Float) {
+        textPaint.textSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            EMOJI_DRAW_TEXT_SIZE_DP.toFloat() * v,
+            context.resources.displayMetrics
+        )
+    }
+
     private val offscreenCanvasBitmap: Bitmap = with(textPaint.fontMetricsInt) {
         val size = bottom - top
         createBitmap(size, size)
@@ -139,12 +147,17 @@ class EmojiView @JvmOverloads constructor(
                     textScale = 1.0f
                 }
 
+                val fm = textPaint.fontMetrics
+                val textHeight = fm.descent - fm.ascent
+                val textCenterY = height / 2f
+                val baselineY = textCenterY - textHeight / 2f - fm.ascent
+
                 drawText(
                     emoji,
                     /* start = */ 0,
                     /* end = */ emoji.length,
                     /* x = */ (width - textWidth) / 2,
-                    /* y = */ -textPaint.fontMetrics.top,
+                    /* y = */ baselineY,
                     textPaint,
                 )
             }

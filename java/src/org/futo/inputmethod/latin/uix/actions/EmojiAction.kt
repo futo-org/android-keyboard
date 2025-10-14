@@ -230,11 +230,13 @@ class EmojiGridAdapter(
             onClick: (EmojiItem) -> Unit,
             onSelectSkinTone: (PopupInfo) -> Unit,
             color: Int,
-            width: Int
+            width: Int,
+            sizeMultiplier: Float
         ) {
             emojiView.layoutParams.width = width
 
             emojiView.setTextColor(color)
+            emojiView.setTextSizeMultiplier(sizeMultiplier)
             emojiView.emoji = emoji
             emojiView.setOnClickListener {
                 it.sendAccessibilityEvent(AccessibilityEvent.TYPE_ANNOUNCEMENT)
@@ -277,7 +279,9 @@ class EmojiGridAdapter(
         val item = getItem(position)
         if(item is EmojiItemItem && holder is EmojiViewHolder) {
             holder.bindEmoji(item.emoji, onClick, onSelectSkinTone, contentColor.toArgb(),
-                if(item.isWide()) (emojiCellWidth * wideCellWidth).roundToInt() else emojiCellWidth)
+                if(item.isWide()) (emojiCellWidth * wideCellWidth).roundToInt() else emojiCellWidth,
+                if(item.isWide()) 0.8f else 1.0f
+            )
         }else if(item is CategoryItem && holder is CategoryViewHolder) {
             holder.bind(item)
         }
