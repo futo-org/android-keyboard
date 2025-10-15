@@ -141,7 +141,7 @@ private class VoiceInputActionWindow(
                 languageSpecificModels = languageSpecificModels
             ),
             decodingConfiguration = DecodingConfiguration(
-                glossary = state.userDictionaryObserver.getWords().map { it.word },
+                glossary = state.userDictionaryObserver.getWords().filter { it.shortcut.isNullOrEmpty() }.map { it.word },
                 languages = allowedLanguages,
                 suppressSymbols = disallowSymbols
             ),

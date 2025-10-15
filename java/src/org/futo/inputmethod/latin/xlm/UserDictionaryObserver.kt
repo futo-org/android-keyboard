@@ -9,7 +9,7 @@ import android.provider.UserDictionary
 import android.database.Cursor
 import android.util.Log
 
-data class Word(val word: String, val frequency: Int)
+data class Word(val word: String, val frequency: Int, val shortcut: String?)
 
 class UserDictionaryObserver(context: Context) {
     private val contentResolver = context.applicationContext.contentResolver
@@ -34,7 +34,8 @@ class UserDictionaryObserver(context: Context) {
     fun getWords(): List<Word> = words
 
     internal fun updateWords() {
-        val projection = arrayOf(UserDictionary.Words.WORD, UserDictionary.Words.FREQUENCY)
+        val projection = arrayOf(UserDictionary.Words.WORD, UserDictionary.Words.FREQUENCY,
+            UserDictionary.Words.SHORTCUT)
         val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
 
         words.clear()
@@ -42,13 +43,15 @@ class UserDictionaryObserver(context: Context) {
         cursor?.use {
             val wordColumn = it.getColumnIndex(UserDictionary.Words.WORD)
             val frequencyColumn = it.getColumnIndex(UserDictionary.Words.FREQUENCY)
+            val shortcutColumn = it.getColumnIndex(UserDictionary.Words.SHORTCUT)
 
             while (it.moveToNext()) {
                 val word = it.getString(wordColumn)
                 val frequency = it.getInt(frequencyColumn)
+                val shortcut = it.getString(shortcutColumn)
 
                 if(word.length < 64) {
-                    words.add(Word(word, frequency))
+                    words.add(Word(word, frequency, shortcut))
                 }
             }
         }
