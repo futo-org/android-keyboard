@@ -65,6 +65,8 @@ public class Event {
     // Keypress events that did not necessarily come from the user tapping a key on the keyboard.
     // Used mainly within GeneralIME (e.g. passed to combiners when a word was reselected)
     final public static int EVENT_TYPE_INPUT_KEYPRESS_RESUMED = 9;
+    // An event corresponding to a composition stop requested by combiner (due to unhandled character)
+    final public static int EVENT_TYPE_STOP_COMPOSING = 10;
 
     // 0 is a valid code point, so we use -1 here.
     final public static int NOT_A_CODE_POINT = -1;
@@ -270,6 +272,14 @@ public class Event {
                 source.mNextEvent);
     }
 
+    /** Should be used by combiners to force composition to finish, because they cannot handle an event */
+    @Nonnull
+    public static Event createResetEvent(final Event source) {
+        return new Event(EVENT_TYPE_STOP_COMPOSING, null, NOT_A_CODE_POINT, NOT_A_KEY_CODE,
+                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
+                null, FLAG_NONE, source);
+    }
+
     @Nonnull
     public static Event createNotHandledEvent() {
         return new Event(EVENT_TYPE_NOT_HANDLED, null /* text */, NOT_A_CODE_POINT, NOT_A_KEY_CODE,
@@ -320,6 +330,7 @@ public class Event {
         case EVENT_TYPE_NOT_HANDLED:
         case EVENT_TYPE_TOGGLE:
         case EVENT_TYPE_CURSOR_MOVE:
+        case EVENT_TYPE_STOP_COMPOSING:
             return "";
         case EVENT_TYPE_INPUT_KEYPRESS:
         case EVENT_TYPE_INPUT_KEYPRESS_RESUMED:

@@ -246,7 +246,8 @@ class KoreanCombiner(private val combineInitials: Boolean = false): Combiner {
                     return Event.createConsumedEvent(event)
                 }
             }
-            return event
+
+            return Event.createResetEvent(event)
         }
 
         buffer.append(keypress)

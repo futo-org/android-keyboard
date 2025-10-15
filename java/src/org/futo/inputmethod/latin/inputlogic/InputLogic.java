@@ -785,6 +785,12 @@ public final class InputLogic {
     private void handleFunctionalEvent(final Event event, final InputTransaction inputTransaction,
             final int currentKeyboardScriptId) {
 
+        if(event.getEventType() == Event.EVENT_TYPE_STOP_COMPOSING) {
+            commitTyped(inputTransaction.mSettingsValues, "");
+            inputTransaction.setRequiresUpdateSuggestions();
+            return;
+        }
+
         if(event.mKeyCode <= Constants.CODE_ACTION_MAX && event.mKeyCode >= Constants.CODE_ACTION_0) {
             final int actionId = event.mKeyCode - Constants.CODE_ACTION_0;
             mImeHelper.triggerAction(actionId, false);
@@ -1936,8 +1942,10 @@ public final class InputLogic {
         final String typedWordString = range.mWord.toString();
 
         final int[] codePoints = StringUtils.toCodePointArray(typedWordString);
-        mWordComposer.setComposingWord(codePoints,
-                mImeHelper.getCodepointCoordinates(codePoints));
+        if(!mWordComposer.setComposingWord(codePoints,
+                mImeHelper.getCodepointCoordinates(codePoints))) {
+            return false;
+        }
         mWordComposer.setCursorPositionWithinWord(
                 typedWordString.codePointCount(0, numberOfCharsInWordBeforeCursor));
         //if (forStartInput) {

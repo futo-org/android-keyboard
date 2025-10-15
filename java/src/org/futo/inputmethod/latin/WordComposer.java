@@ -299,8 +299,9 @@ public final class WordComposer {
      * Set the currently composing word to the one passed as an argument.
      * @param codePoints the code points to set as the composing word.
      * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
+     * @return Returns false if the combiner chain has refused to set composing word
      */
-    public void setComposingWord(final int[] codePoints, final int[] coordinates) {
+    public boolean setComposingWord(final int[] codePoints, final int[] coordinates) {
         reset(true);
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
@@ -308,9 +309,16 @@ public final class WordComposer {
                     processEvent(Event.createEventForCodePointFromAlreadyTypedText(codePoints[i],
                     CoordinateUtils.xFromArray(coordinates, i),
                     CoordinateUtils.yFromArray(coordinates, i)));
+
+            if(processedEvent.getEventType() == Event.EVENT_TYPE_STOP_COMPOSING) {
+                reset(true);
+                return false;
+            }
+
             applyProcessedEvent(processedEvent);
         }
         mIsResumed = true;
+        return true;
     }
 
     /**
