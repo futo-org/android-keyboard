@@ -543,8 +543,8 @@ data class LayoutEngine(
             hasExplicitHint -> data.hint
 
             // If we have no explicit hint, and show hints setting is disabled,
-            // then in alphabet menu, either show a number or nothing
-            !showAllHintsSetting && params.mId.mElement.kind.isAlphabet ->
+            // then either show a number or nothing
+            !showAllHintsSetting -> //&& params.mId.mElement.kind.isAlphabet ->
                 data.moreKeys.mapNotNull { it.mLabel }.firstOrNull { validNumbersForHint.contains(it) && it != data.label } ?: ""
 
             // In the situation that this is a number, only show a hint if it's not a tiny little
