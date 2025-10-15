@@ -870,9 +870,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             consideredCodePoint = 0 == indexOfCodePointInJavaChars ? Constants.NOT_A_CODE
                     : textBeforeCursor.codePointBefore(indexOfCodePointInJavaChars);
         }
-        return !(Constants.NOT_A_CODE == consideredCodePoint
-                || spacingAndPunctuations.isWordSeparator(consideredCodePoint)
-                || spacingAndPunctuations.isWordConnector(consideredCodePoint));
+
+        if(consideredCodePoint == Constants.NOT_A_CODE) return false;
+        if(spacingAndPunctuations.isWordSeparator(consideredCodePoint)) return false;
+
+        return spacingAndPunctuations.isWordCodePoint(consideredCodePoint);
     }
 
     public boolean isCursorFollowedByWordCharacter(

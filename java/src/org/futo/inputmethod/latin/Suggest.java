@@ -311,7 +311,11 @@ public final class Suggest {
         // Dash will never autocorrect because the autocorrect currently doesn't take the dash
         // suffix into account, this leads to it miscorrecting prefixes like "un-" to "in-"
         // because in most cases, "un" is a typo of "in"
-        return codePoint != '-';
+        return codePoint != '-' &&
+                // Email addresses should not be corrected
+                codePoint != '@' &&
+                // Code, etc
+                codePoint != '`' && codePoint != '_';
     }
 
 
