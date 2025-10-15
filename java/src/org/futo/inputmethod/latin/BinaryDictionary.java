@@ -310,7 +310,7 @@ public final class BinaryDictionary extends Dictionary {
             inputSize =
                     composedData.copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
                         session.mInputCodePoints);
-            if (inputSize < 0) {
+            if (inputSize < 0 || inputSize >= 48) {
                 return null;
             }
         } else {
