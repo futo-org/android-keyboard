@@ -211,18 +211,13 @@ class InputConnectionInternalComposingWrapper(
             if(extracted != null) {
                 cursor = extracted
             } else {
-                Log.e(TAG, "Could not extract cursor position")
-                ic?.requestCursorUpdates(CURSOR_UPDATE_IMMEDIATE)
+                // In case we have absolutely no idea where the cursor is, our best hope is to just decide it's at 0
+                Log.e(TAG, "Could not extract cursor position! Falling back to 0")
+                super.setSelection(0, 0)
+                cursor = 0
                 return
             }
         }
-        // :c
-        /*if(extracted != null && extracted.selectionStart != selStart) {
-            Log.e(TAG, "Expected selStart $selStart does not match reported selStart ${extracted.selectionStart}. Updating it...")
-            cursor = extracted.selectionStart
-            selStart = cursor
-            isAddition = false
-        }*/
         if(composingStart != -1) {
             var located = false
             if(cursor >= composingStart && cursor < composingEnd) {
