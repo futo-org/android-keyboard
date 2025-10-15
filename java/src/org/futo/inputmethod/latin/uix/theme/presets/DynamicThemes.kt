@@ -21,18 +21,12 @@ val DynamicSystemTheme = ThemeOption(
             throw IllegalStateException("DynamicSystemTheme obtainColors called when available() == false")
         }
 
-        val uiModeManager = it.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        when (uiModeManager.nightMode) {
-            UiModeManager.MODE_NIGHT_YES -> wrapDarkColorScheme(dynamicDarkColorScheme(it))
-            UiModeManager.MODE_NIGHT_NO -> wrapLightColorScheme(dynamicLightColorScheme(it))
-            else -> {
-                val currentNightMode = it.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                if(currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
-                    wrapLightColorScheme(dynamicLightColorScheme(it))
-                } else {
-                    wrapDarkColorScheme(dynamicDarkColorScheme(it))
-                }
-            }
+        val isLight = (it.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                Configuration.UI_MODE_NIGHT_NO
+
+        when {
+            isLight -> wrapLightColorScheme(dynamicLightColorScheme(it))
+            else -> wrapDarkColorScheme(dynamicDarkColorScheme(it))
         }
     }
 )
