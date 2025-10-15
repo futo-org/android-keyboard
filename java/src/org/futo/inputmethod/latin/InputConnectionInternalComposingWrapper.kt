@@ -149,6 +149,14 @@ class InputConnectionInternalComposingWrapper(
         return i
     }
 
+    private fun getCommonLengthOnlyLetters(aS: CharSequence, bS: CharSequence): Int {
+        val a = aS.filter { it.isLetterOrDigit() }
+        val b = bS.filter { it.isLetterOrDigit() }
+        var i = 0
+        while(i < a.length && i < b.length && a[i] == b[i]) i++
+        return i
+    }
+
     private fun backspace(amount: Int) {
         if(BuildConfig.DEBUG) Log.d(TAG, "    backspace($amount)")
         super.deleteSurroundingText(amount, 0)
@@ -252,20 +260,37 @@ class InputConnectionInternalComposingWrapper(
                 // Try to get past text. Some frameworks might filter out characters or do other
                 // wonky stuff, so we can't trust that pastText is actually previous composingText.
                 // If we did, we might accidentally delete too many characters trying to recover.
-                // When editor doesn't keep track of text (e.g. vnc client), just fallback to
-                // composingText.
-                val pastText = super.getTextBeforeCursor(cursor - composingStart, 1)?.toString()
-                    ?: composingText
+                val lengthAccordingToCursor = cursor - composingStart
+                val lengthAccordingToHistory = composingText.length
+                val lengthToFetch = maxOf(lengthAccordingToHistory, lengthAccordingToCursor)
+                var pastText = super.getTextBeforeCursor(lengthToFetch, 1)
+                if(pastText != null) {
+                    // There are multiple cases we need to account for:
+                    // 1. The framework is filtering out specific characters (e.g. spaces), in which case we must trust cursor position instead of composingText which contains spaces
+                    // 2. The framework has shifted our cursor where the word is located, in which case we cannot trust cursor position and have to rely on composingText
+                    // This tries to deduce which pastText we should trust based on which one best matches our composingText.
+                    val pastTextAccordingToCursor = pastText.takeLast(lengthAccordingToCursor)
+                    val pastTextAccordingToHistory = pastText.takeLast(lengthAccordingToHistory)
+
+                    // Ignores spaces and symbols for this check
+                    if(getCommonLengthOnlyLetters(pastTextAccordingToCursor, composingText) >= getCommonLengthOnlyLetters(pastTextAccordingToHistory, composingText)) {
+                        pastText = pastTextAccordingToCursor
+                    } else {
+                        pastText = pastTextAccordingToHistory
+                    }
+                } else {
+                    // When editor doesn't keep track of text (e.g. vnc client), just fallback to
+                    // composingText.
+                    pastText = composingText
+                }
 
                 // Backtrack by getting the common starting length between the two strings, then
                 // backspacing until there, and re-typing everything from there.
                 val commonLength = getCommonLength(pastText, text)
-                //Log.d(TAG, "pastText [$pastText], text [$text], common = $commonLength")
-                //Log.d(TAG, "cursor is at $cursor, composingStart $composingStart. Deleting ${cursor - composingStart - commonLength}")
 
                 if(BuildConfig.DEBUG) Log.d(TAG, " Case Complex: pastText=[$pastText] commonLength[$text]=$commonLength, therefore backspace $cursor - $composingStart - $commonLength = ${cursor - composingStart - commonLength} and type ${text.substring(commonLength)}.")
 
-                backspace(cursor - composingStart - commonLength)
+                backspace(pastText.length - commonLength)
                 typeChars(text.substring(commonLength))
                 if(setComposing) super.setComposingRegion(composingStart, selStart)
             } else {
