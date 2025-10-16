@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
+import org.futo.inputmethod.latin.uix.wrapAMOLEDDarkColorScheme
 import org.futo.inputmethod.latin.uix.wrapDarkColorScheme
 import org.futo.inputmethod.latin.uix.wrapLightColorScheme
 
@@ -56,5 +57,19 @@ val DynamicLightTheme = ThemeOption(
         }
 
         wrapLightColorScheme(dynamicLightColorScheme(it))
+    }
+)
+
+val AMOLEDDynamicDarkTheme = ThemeOption(
+    dynamic = true,
+    key = "AMOLEDDynamicDark",
+    name = R.string.amoled_theme_dynamic_dark,
+    available = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
+    obtainColors = {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            throw IllegalStateException("AMOLEDDynamicDarkTheme obtainColors called when available() == false")
+        }
+
+        wrapAMOLEDDarkColorScheme(dynamicDarkColorScheme(it))
     }
 )

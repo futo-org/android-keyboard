@@ -162,6 +162,7 @@
     <string name="theme_dynamic_system">Dynamic Auto</string>
     <string name="theme_dynamic_dark">Dynamic Dark</string>
     <string name="theme_dynamic_light">Dynamic Light</string>
+    <string name="amoled_theme_dynamic_dark">AMOLED Dynamic Dark</string>
 
     <!-- Auto update strings (note: the auto updater is currently inactive) -->
     <string name="autoupdater_service_title">Update Checking service</string>
