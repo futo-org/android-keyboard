@@ -270,7 +270,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun isGestureHandlingAvailable(): Boolean =
         dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()
 
-    override fun onEvent(event: Event) {
+    private fun onEventInternal(event: Event, ignoreSuggestionUpdate: Boolean = false) {
         helper.requestCursorUpdate()
 
         val inputTransaction = when (event.eventType) {
@@ -335,7 +335,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
         }
 
-        if(inputTransaction?.requiresUpdateSuggestions() == true) {
+        if(inputTransaction?.requiresUpdateSuggestions() == true && !ignoreSuggestionUpdate) {
             val inputStyle = if(inputTransaction.mEvent.isSuggestionStripPress) {
                 SuggestedWords.INPUT_STYLE_NONE
             } else if(inputTransaction.mEvent.isGesture) {
@@ -347,6 +347,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             updateSuggestions(inputStyle)
         }
     }
+
+    override fun onEvent(event: Event) = onEventInternal(event)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val dictionaryScope = Dispatchers.Default.limitedParallelism(1)
@@ -505,6 +507,18 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun onUpWithDeletePointerActive() {
         if (inputLogic.mConnection.hasSelection()) {
             val selection: CharSequence? = inputLogic.mConnection.getSelectedText(0)
+
+            onEventInternal(
+                Event.createSoftwareKeypressEvent(
+                    Event.NOT_A_CODE_POINT,
+                    Constants.CODE_DELETE,
+                    Constants.NOT_A_COORDINATE,
+                    Constants.NOT_A_COORDINATE,
+                    false
+                ),
+                ignoreSuggestionUpdate = true
+            )
+
             if (selection != null) {
                 val info = ArrayList<SuggestedWordInfo?>()
                 info.add(
@@ -530,18 +544,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                         0
                     )
                 )
-                languageModelFacilitator.ignoreNextUpdate()
             }
-
-            onEvent(
-                Event.createSoftwareKeypressEvent(
-                    Event.NOT_A_CODE_POINT,
-                    Constants.CODE_DELETE,
-                    Constants.NOT_A_COORDINATE,
-                    Constants.NOT_A_COORDINATE,
-                    false
-                )
-            )
         } else {
             onUpWithPointerActive()
         }
@@ -549,7 +552,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun onUpWithPointerActive() {
         inputLogic.restartSuggestionsOnWordTouchedByCursor(
-            settings.current,
+            settings.current, null,
             false,
             helper.currentKeyboardScriptId
         )
