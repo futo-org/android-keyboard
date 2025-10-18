@@ -497,6 +497,8 @@
     <string name="voice_input_settings_indication_sounds_subtitle">Play a short sound on start and cancel</string>
     <string name="voice_input_settings_verbose_progress">Verbose progress</string>
     <string name="voice_input_settings_verbose_progress_subtitle">Display additional information, such as mic being used</string>
+    <string name="voice_input_settings_use_personal_dict">Personal Dictionary for Voice</string>
+    <string name="voice_input_settings_use_personal_dict_subtitle">Whether or not to use the personal dictionary for voice input</string>
     <string name="voice_input_settings_use_bluetooth_mic">Prefer Bluetooth Mic</string>
     <string name="voice_input_settings_use_bluetooth_mic_subtitle">There may be extra delay to recording starting as Bluetooth SCO connection must be negotiated</string>
     <string name="voice_input_settings_audio_focus">Audio Focus</string>

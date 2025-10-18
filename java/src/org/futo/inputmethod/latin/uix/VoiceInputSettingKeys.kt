@@ -63,3 +63,8 @@ val LANGUAGE_TOGGLES = SettingsKey(
     key = stringSetPreferencesKey("enabled_languages"),
     default = setOf()
 )
+
+val USE_PERSONAL_DICT = SettingsKey(
+    key = booleanPreferencesKey("use_personal_dict_voice_input"),
+    default = true
+)

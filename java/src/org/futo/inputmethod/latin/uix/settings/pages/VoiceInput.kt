@@ -8,6 +8,7 @@ import org.futo.inputmethod.latin.uix.CAN_EXPAND_SPACE
 import org.futo.inputmethod.latin.uix.DISALLOW_SYMBOLS
 import org.futo.inputmethod.latin.uix.ENABLE_SOUND
 import org.futo.inputmethod.latin.uix.PREFER_BLUETOOTH
+import org.futo.inputmethod.latin.uix.USE_PERSONAL_DICT
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.USE_VAD_AUTOSTOP
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
@@ -38,10 +39,18 @@ val VoiceInputMenu = UserSettingsMenu(
             setting = ENABLE_SOUND
         ).copy(visibilityCheck = visibilityCheckNotSystemVoiceInput),
 
+        /*
         userSettingToggleDataStore(
             title = R.string.voice_input_settings_verbose_progress,
             subtitle = R.string.voice_input_settings_verbose_progress_subtitle,
             setting = VERBOSE_PROGRESS
+        ).copy(visibilityCheck = visibilityCheckNotSystemVoiceInput),
+         */
+
+        userSettingToggleDataStore(
+            title = R.string.voice_input_settings_use_personal_dict,
+            subtitle = R.string.voice_input_settings_use_personal_dict_subtitle,
+            setting = USE_PERSONAL_DICT
         ).copy(visibilityCheck = visibilityCheckNotSystemVoiceInput),
 
         userSettingToggleDataStore(
