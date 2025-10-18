@@ -197,13 +197,16 @@ public class LatinIMELegacy implements KeyboardActionListener,
         refreshPersonalizationDictionarySession(currentSettingsValues);
     }
 
+    private boolean mLastPersonalizedDicts = true;
     private void refreshPersonalizationDictionarySession(
             final SettingsValues currentSettingsValues) {
-        if (!currentSettingsValues.mUsePersonalizedDicts) {
+        if (!currentSettingsValues.mUsePersonalizedDicts && mLastPersonalizedDicts) {
             // Remove user history dictionaries.
             PersonalizationHelper.removeAllUserHistoryDictionaries(mInputMethodService);
             mImeManager.clearUserHistoryDictionaries();
         }
+
+        mLastPersonalizedDicts = currentSettingsValues.mUsePersonalizedDicts;
     }
 
     public void onDestroy() {
