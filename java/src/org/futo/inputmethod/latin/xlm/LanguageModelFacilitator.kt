@@ -236,7 +236,7 @@ public class LanguageModelFacilitator(
                 values.ngramContext,
                 proximityInfoHandle,
                 autocorrectThreshold,
-                userDictionary.getWords().map { it.word },
+                userDictionary.getWords(listOf(locale)).map { it.word },
                 suggestionBlacklist.currentBlacklist.toTypedArray<String>()
             )
         }catch (e: ModelLoadingException) {
@@ -312,7 +312,7 @@ public class LanguageModelFacilitator(
                             results,
                             values.composedData,
                             values.ngramContext,
-                            userDictionary.getWords().map { it.word }
+                            userDictionary.getWords(listOf(languageModel!!.locale)).map { it.word }
                         )
 
                         if(rescored != null) {
