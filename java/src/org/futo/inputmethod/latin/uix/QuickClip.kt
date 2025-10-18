@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +35,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.R
@@ -291,5 +293,23 @@ object QuickClip {
             cachedPreviousItem = firstItem
             cachedPreviousState = it
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewQuickClips() {
+    Row(Modifier.height(ActionBarHeight)) {
+        QuickClipView(QuickClipState(
+            texts = listOf(QuickClipItem(
+                kind = QuickClipKind.FullString,
+                text = "Some text goes here!",
+                occurrenceIndex = 0
+            )),
+            image = null,
+            imageMimeTypes = emptyList(),
+            validUntil = 0L,
+            isSensitive = false
+        )) { }
     }
 }
