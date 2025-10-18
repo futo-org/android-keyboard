@@ -604,7 +604,12 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
         val words = suggestedWords?.let { blacklist.filterBlacklistedSuggestions(it) } ?: SuggestedWords.getEmptyInstance()
         inputLogic.setSuggestedWords(words)
-        helper.showSuggestionStrip(words, useExpandableUi)
+
+        if(settings.current.isSuggestionsEnabledPerUserSettings) {
+            helper.showSuggestionStrip(words, useExpandableUi)
+        } else {
+            helper.setNeutralSuggestionStrip(useExpandableUi)
+        }
     }
 
     fun debugInfo(): List<String> = listOf(
