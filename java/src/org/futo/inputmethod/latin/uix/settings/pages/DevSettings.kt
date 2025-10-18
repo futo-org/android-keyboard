@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.engine.general.UseExpandableSuggestionsForGeneralIME
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.TextInputAlternativeIC
@@ -181,6 +182,11 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
 
 
         ScreenTitle(title = "Here be dragons")
+        SettingToggleDataStore(
+            "Use expandable suggestions UI for all languages",
+            UseExpandableSuggestionsForGeneralIME,
+        )
+
         NavigationItem(
             title = "Crash the app",
             style = NavigationItemStyle.MiscNoArrow,

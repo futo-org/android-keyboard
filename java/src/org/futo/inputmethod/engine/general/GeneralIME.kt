@@ -1,5 +1,6 @@
 package org.futo.inputmethod.engine.general
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -29,6 +30,8 @@ import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
+import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
@@ -54,6 +57,11 @@ interface WordLearner {
 interface OnGetSuggestedWordsCallbackWithInputStyle {
     fun onGetSuggestedWords(suggestedWords: SuggestedWords, inputStyle: Int, sequenceNumber: Int)
 }
+
+val UseExpandableSuggestionsForGeneralIME = SettingsKey(
+    booleanPreferencesKey("use_expandable_suggestions_for_generalime"),
+    false
+)
 
 /**
  * General IME implementation that works for Latin-based languages and some
@@ -210,6 +218,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun onStartInput() {
+        useExpandableUi = helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)
+
         resetDictionaryFacilitator()
         setNeutralSuggestionStrip()
         dictionaryFacilitator.onStartInput()
@@ -584,7 +594,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
     }
 
-    private val useExpandableUi = false
+    private var useExpandableUi = false
     override fun setNeutralSuggestionStrip() {
         inputLogic.setSuggestedWords(SuggestedWords.getEmptyInstance())
         helper.setNeutralSuggestionStrip(useExpandableUi)
