@@ -1,6 +1,7 @@
 package org.futo.inputmethod.keyboard.internal
 
 import android.icu.util.ULocale
+import android.util.Log
 import java.util.Currency
 import java.util.Locale
 
