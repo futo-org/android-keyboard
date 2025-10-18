@@ -184,7 +184,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     )
 
     val uixManager = UixManager(this)
-    lateinit var suggestionBlacklist: SuggestionBlacklist
 
     val sizingCalculator = KeyboardSizingCalculator(this, uixManager)
 
@@ -379,8 +378,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         val filter = IntentFilter(Intent.ACTION_USER_UNLOCKED)
         registerReceiver(unlockReceiver, filter)
 
-        suggestionBlacklist = SuggestionBlacklist(latinIMELegacy.mSettings, this, lifecycleScope)
-
         Subtypes.addDefaultSubtypesIfNecessary(this)
 
         getSettingBlocking(THEME_KEY).let {
@@ -395,8 +392,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         scheduleUpdateCheckingJob(this)
         launchJob { uixManager.showUpdateNoticeIfNeeded() }
-
-        suggestionBlacklist.init()
 
         launchJob {
             dataStore.data.collect {
@@ -746,12 +741,11 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         rtlSubtype: Boolean,
         useExpandableUi: Boolean
     ) {
-        val words = suggestionBlacklist.filterBlacklistedSuggestions(suggestedWords)
-        uixManager.setSuggestions(words, rtlSubtype, useExpandableUi)
+        uixManager.setSuggestions(suggestedWords, rtlSubtype, useExpandableUi)
 
         // Cache the auto-correction in accessibility code so we can speak it if the user
         // touches a key that will insert it.
-        AccessibilityUtils.getInstance().setAutoCorrection(words)
+        AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords)
     }
 
     override fun onLowMemory() {

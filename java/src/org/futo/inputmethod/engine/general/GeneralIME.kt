@@ -191,6 +191,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 }
             }
         }
+
+        blacklist.init()
     }
 
     override fun onDestroy() {
@@ -588,9 +590,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         helper.setNeutralSuggestionStrip(useExpandableUi)
     }
 
+    val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
     override fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
-        inputLogic.setSuggestedWords(suggestedWords ?: SuggestedWords.getEmptyInstance())
-        helper.showSuggestionStrip(suggestedWords, useExpandableUi)
+        val words = suggestedWords?.let { blacklist.filterBlacklistedSuggestions(it) } ?: SuggestedWords.getEmptyInstance()
+        inputLogic.setSuggestedWords(words)
+        helper.showSuggestionStrip(words, useExpandableUi)
     }
 
     fun debugInfo(): List<String> = listOf(
