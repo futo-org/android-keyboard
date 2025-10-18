@@ -432,3 +432,25 @@ fun wrapLightColorScheme(scheme: ColorScheme): KeyboardColorScheme {
         )
     )
 }
+
+fun wrapAMOLEDDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
+    return KeyboardColorScheme(
+        scheme,
+        ExtraColors(
+            keyboardSurface = Color(0xFF000000),
+            keyboardSurfaceDim = Color(0xFF000000),
+            keyboardContainer = scheme.secondaryContainer.copy(alpha = 0.3f),
+            keyboardContainerVariant = scheme.surfaceContainerLow.copy(alpha = 0.3f),
+            onKeyboardContainer = scheme.onSurface.copy(alpha = 0.8f),
+            keyboardPress = scheme.inversePrimary,
+            keyboardBackgroundGradient = null,
+            primaryTransparent = scheme.primary.copy(alpha = 0.3f),
+            onSurfaceTransparent = scheme.onSurface.copy(alpha = 0.1f),
+            keyboardContainerPressed = Color(0xFF000000),
+            //keyboardContainerPressed = scheme.outline.copy(alpha = 0.1f),
+            onKeyboardContainerPressed = Color.Transparent,
+            hintColor = null,
+            hintHiVis = false
+        )
+    )
+}
