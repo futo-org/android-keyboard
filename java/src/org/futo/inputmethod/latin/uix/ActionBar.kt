@@ -426,11 +426,7 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
 fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
     val layout = makeSuggestionLayout(
         words,
-        if(!LocalInspectionMode.current) {
-            LocalManager.current.getSuggestionBlacklist()
-        } else {
-            null
-        }
+        null
     )
 
     val suggestionItem = @Composable { suggestion: SuggestedWordInfo? ->
