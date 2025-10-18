@@ -194,7 +194,7 @@ public final class InputLogic {
         }
 
         restartSuggestionsOnWordTouchedByCursor(
-                settingsValues,
+                settingsValues, null,
                 true,
                 mImeHelper.getCurrentKeyboardScriptId()
         );
@@ -517,7 +517,7 @@ public final class InputLogic {
         //mIme.updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING);
 
         // TODO: Fairly sure some of the above is redundant with this
-        restartSuggestionsOnWordTouchedByCursor(settingsValues, true, mImeHelper.getCurrentKeyboardScriptId());
+        restartSuggestionsOnWordTouchedByCursor(settingsValues, null, true, mImeHelper.getCurrentKeyboardScriptId());
         // Stop the last recapitalization, if started.
         mRecapitalizeStatus.stop();
         mWordBeingCorrectedByCursor = null;
@@ -1317,6 +1317,7 @@ public final class InputLogic {
                                 inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
                     final int spaceState = mSpaceState; // Need to preserve space state, which restart resets
                     restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
+                            inputTransaction,
                             false /* forStartInput */, currentKeyboardScriptId);
                     mSpaceState = spaceState;
                 }
@@ -1495,7 +1496,7 @@ public final class InputLogic {
                                     || nowHasWordCharacter
                     )
             ) {
-                restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
+                restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues, inputTransaction,
                         false /* forStartInput */, currentKeyboardScriptId);
             }
         }
@@ -1968,6 +1969,7 @@ public final class InputLogic {
      *   around only when we come here at input start time.
      */
     public void restartSuggestionsOnWordTouchedByCursor(final SettingsValues settingsValues,
+            final InputTransaction inputTransaction,
             final boolean forStartInput,
             // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
@@ -1995,12 +1997,12 @@ public final class InputLogic {
         }
 
         resetComposingWord(settingsValues, true);
-        mInputLogicHandler.getSuggestedWords(SuggestedWords.INPUT_STYLE_TYPING,
-            SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
-                @Override
-                public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                    doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
-                }});
+
+        if(inputTransaction != null) {
+            inputTransaction.setRequiresUpdateSuggestions();
+        } else {
+            mIme.updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING);
+        }
     }
 
     void doShowSuggestionsAndClearAutoCorrectionIndicator(final SuggestedWords suggestedWords) {

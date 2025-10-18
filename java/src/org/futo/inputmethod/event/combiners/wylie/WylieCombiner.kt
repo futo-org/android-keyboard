@@ -33,7 +33,8 @@ class WylieCombiner: Combiner {
                 }
             }
 
-            return Event.createResetEvent(event)
+            if(!event.isFunctionalKeyEvent) return Event.createResetEvent(event)
+            return event
         }
 
         buffer.append(keypress)

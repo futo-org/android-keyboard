@@ -39,6 +39,8 @@ public final class KeyboardTextsTable {
     private static final HashMap<String[], String> sTextsTableToLocaleMap = new HashMap<>();
 
     public static String getText(final String name, final String[] textsTable, final boolean allowFallbackToDefault) {
+        if(textsTable == TEXTS_DEFAULT && !allowFallbackToDefault) return null;
+
         final Integer indexObj = sNameToIndexesMap.get(name);
         if (indexObj == null) {
             if(name.startsWith("actions_") || name.startsWith("qwertysyms_")

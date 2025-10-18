@@ -599,11 +599,6 @@ public class LanguageModelFacilitator(
 
         if(!inputLogic.mConnection.isConnected) return
 
-        if(ignoringNextUpdate) {
-            ignoringNextUpdate = false
-            return
-        }
-
         try {
             val wordComposer = inputLogic.mWordComposer
             val ngramContext = inputLogic.getNgramContextFromNthPreviousWordForSuggestion(
@@ -739,13 +734,7 @@ public class LanguageModelFacilitator(
     public fun onStartInput() {
         transformerDisabled = false
         numConsecutiveTimeouts = 0
-        ignoringNextUpdate = false
     }
 
     public fun isTransformerDisabled(): Boolean = transformerDisabled
-
-    var ignoringNextUpdate = false
-    fun ignoreNextUpdate() {
-        ignoringNextUpdate = true
-    }
 }

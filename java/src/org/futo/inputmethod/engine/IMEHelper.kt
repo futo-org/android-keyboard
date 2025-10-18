@@ -104,4 +104,7 @@ class IMEHelper(
     fun requestCursorUpdate() {
         latinIME.imeManager.ensureUpdateSelectionFinished()
     }
+
+    fun isImeActive(ime: IMEInterface) =
+        latinIME.imeManager.getActiveIME(Settings.getInstance().current) == ime
 }

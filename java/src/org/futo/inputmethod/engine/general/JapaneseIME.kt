@@ -36,6 +36,7 @@ import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
+import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.common.StringUtils
@@ -466,6 +467,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 }
             }
         }
+
+        blacklist.init()
     }
 
     override fun onDestroy() {
@@ -989,8 +992,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                         suggestedWordList,
                         suggestedWordList,
                         null,
-                        true,
-                        true,
+                        false,
+                        false,
                         false,
                         0,
                         0,
@@ -1175,7 +1178,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
         layoutHint = layout.mainLayout.imeHint
-        updateConfig()
+        if(helper.isImeActive(this)) updateConfig()
     }
 
     private val useExpandableUi = true
@@ -1184,8 +1187,13 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         helper.setNeutralSuggestionStrip(useExpandableUi)
     }
 
+    val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
     fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
-        prevSuggestions = suggestedWords
-        helper.showSuggestionStrip(suggestedWords, useExpandableUi)
+        // TODO: Blacklisting in Japanese is not properly implemented
+        //  1. Filtering out suggestions is easy, just uncomment below
+        //  2. During conversion, we need some more complicated logic to skip blacklisted entries mozc has given us, and to recalculate the focused index properly
+        val words = suggestedWords//?.let { blacklist.filterBlacklistedSuggestions(it) }
+        prevSuggestions = words
+        helper.showSuggestionStrip(words, useExpandableUi)
     }
 }

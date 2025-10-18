@@ -91,7 +91,6 @@ interface KeyboardManagerForAction {
     fun activateAction(action: Action)
     fun showActionEditor()
 
-    fun getSuggestionBlacklist(): SuggestionBlacklist
     fun getLatinIMEForDebug(): LatinIME
     fun isDeviceLocked(): Boolean
 

@@ -459,8 +459,6 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         latinIME.sizingCalculator
 
     override fun getLatinIMEForDebug(): LatinIME = latinIME
-
-    override fun getSuggestionBlacklist(): SuggestionBlacklist = latinIME.suggestionBlacklist
 }
 
 data class ActiveDialogRequest(

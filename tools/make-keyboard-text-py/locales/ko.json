@@ -1,0 +1,18 @@
+{
+  "locale": "ko",
+  "morekeys": {
+    "star": [
+      "※"
+    ]
+  },
+  "keyspec": {
+    "currency": "₩"
+  },
+  "label": {},
+  "keylabel": {
+    "to_alpha": "가나다"
+  },
+  "keyhintlabel": {},
+  "additional_morekeys": {},
+  "other": {}
+}
