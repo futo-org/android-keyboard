@@ -122,8 +122,8 @@ fun createInlineSuggestionsRequest(
                     fromDp(4.0f),
                     fromDp(0.0f),
                 )
-                .setTextColor(activeColorScheme.onSurfaceVariant.toArgb())
-                .setTextSize(14.0f)
+                .setTextColor((activeColorScheme.hintColor ?: activeColorScheme.onSurfaceVariant).toArgb())
+                .setTextSize(12.0f)
                 .build()
         )
         .setEndIconStyle(
