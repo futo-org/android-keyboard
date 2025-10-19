@@ -618,13 +618,15 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
     }
 
-    fun debugInfo(): List<String> = listOf(
-        "composingText = ${inputLogic.mConnection.composingTextForDebug}",
-        "committedTextBeforeComposingText = ${inputLogic.mConnection.committedTextBeforeComposingTextForDebug}",
-        "LM.shouldPassThroughToLegacy = ${languageModelFacilitator.shouldPassThroughToLegacy()}",
-        "LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}",
-        "expected cursor = ${inputLogic.mConnection.mExpectedSelStart}:${inputLogic.mConnection.mExpectedSelEnd}"
-    )
+    fun debugInfo(): List<String> = buildList {
+        if(!settings.current.mInputAttributes.mIsPasswordField) {
+            add("composingText = ${inputLogic.mConnection.composingTextForDebug}")
+            add("committedTextBeforeComposingText = ${inputLogic.mConnection.committedTextBeforeComposingTextForDebug}")
+        }
+        add("LM.shouldPassThroughToLegacy = ${languageModelFacilitator.shouldPassThroughToLegacy()}")
+        add("LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}")
+        add("expected cursor = ${inputLogic.mConnection.mExpectedSelStart}:${inputLogic.mConnection.mExpectedSelEnd}")
+    }
 
     fun debugInfoS() = debugInfo().joinToString("\n")
 
