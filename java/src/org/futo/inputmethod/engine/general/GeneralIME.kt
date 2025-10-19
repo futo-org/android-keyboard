@@ -406,6 +406,12 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     fun updateSuggestions(inputStyle: Int) {
+        if(!settings.current.needsToLookupSuggestions()) {
+            updateSuggestionJob?.cancel()
+            setNeutralSuggestionStrip()
+            return
+        }
+
         if(!languageModelFacilitator.shouldPassThroughToLegacy()) {
             languageModelFacilitator.updateSuggestionStripAsync(inputStyle)
         } else {

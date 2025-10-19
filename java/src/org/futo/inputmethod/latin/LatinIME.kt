@@ -570,7 +570,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         super.onStartInput(attribute, restarting)
         latinIMELegacy.onStartInput(attribute, restarting)
         uixManager.inputStarted(attribute)
-        imeManager.onStartInput()
+        //imeManager.onStartInput() // TODO: Is this call needed or not?
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
