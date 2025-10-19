@@ -1,5 +1,5 @@
 default:
-  image: "gitlab.futo.org:5050/keyboard/latinime/gradle:35"
+  image: "gitlab.futo.org:5050/keyboard/latinime/gradle:35-1"
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -88,7 +88,6 @@ buildStable:
     - echo $VERSION_CODE $VERSION_NAME
     - ./setUpPropertiesCI.sh
   script:
-    - python3 -m pip install requests
     - gradle updateBundleResources -s
     - gradle bundlePlaystoreRelease -s
     - gradle assembleStableRelease -s
