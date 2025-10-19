@@ -16,13 +16,11 @@
 
 package org.futo.inputmethod.latin;
 
-import android.content.ContentProviderClient;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
 import org.futo.inputmethod.latin.uix.ResourceHelper;
-import org.futo.inputmethod.latin.utils.DictionaryInfoUtils;
+import org.futo.inputmethod.latin.utils.Dictionaries;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,8 +46,7 @@ public final class DictionaryFactory {
             final Locale locale) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
-            return new DictionaryCollection(Dictionary.TYPE_MAIN, locale,
-                    createReadOnlyBinaryDictionary(context, locale));
+            return new DictionaryCollection(Dictionary.TYPE_MAIN, locale);
         }
 
         final LinkedList<Dictionary> dictList = new LinkedList<>();
@@ -102,36 +99,17 @@ public final class DictionaryFactory {
      */
     private static ReadOnlyBinaryDictionary createReadOnlyBinaryDictionary(final Context context,
             final Locale locale) {
-        AssetFileDescriptor afd = null;
-        try {
-            final int resId = DictionaryInfoUtils.getMainDictionaryResourceIdIfAvailableForLocale(
-                    context.getResources(), locale);
-            if (0 == resId) return null;
-            afd = context.getResources().openRawResourceFd(resId);
-            if (afd == null) {
-                Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);
-                return null;
-            }
-            final String sourceDir = context.getApplicationInfo().sourceDir;
-            final File packagePath = new File(sourceDir);
-            // TODO: Come up with a way to handle a directory.
-            if (!packagePath.isFile()) {
-                Log.e(TAG, "sourceDir is not a file: " + sourceDir);
-                return null;
-            }
-            return new ReadOnlyBinaryDictionary(sourceDir, afd.getStartOffset(), afd.getLength(),
-                    false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN);
-        } catch (android.content.res.Resources.NotFoundException e) {
-            Log.e(TAG, "Could not find the resource");
+        AssetFileAddress afa = Dictionaries.INSTANCE.getDictionaryIfExists(context, locale, Dictionaries.DictionaryKind.BinaryDictionary);
+        if (afa == null) return null;
+
+        final String sourceDir = afa.mFilename;
+        final File packagePath = new File(sourceDir);
+
+        if (!packagePath.isFile()) {
+            Log.e(TAG, "sourceDir is not a file: " + sourceDir);
             return null;
-        } finally {
-            if (null != afd) {
-                try {
-                    afd.close();
-                } catch (java.io.IOException e) {
-                    /* IOException on close ? What am I supposed to do ? */
-                }
-            }
         }
+        return new ReadOnlyBinaryDictionary(sourceDir, afa.mOffset, afa.mLength,
+                false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN);
     }
 }

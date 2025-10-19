@@ -18,7 +18,6 @@ package org.futo.inputmethod.latin;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
 import org.futo.inputmethod.latin.common.LocaleUtils;
@@ -26,10 +25,10 @@ import org.futo.inputmethod.latin.define.DecoderSpecificConstants;
 import org.futo.inputmethod.latin.makedict.DictionaryHeader;
 import org.futo.inputmethod.latin.makedict.UnsupportedFormatException;
 import org.futo.inputmethod.latin.utils.BinaryDictionaryUtils;
+import org.futo.inputmethod.latin.utils.Dictionaries;
 import org.futo.inputmethod.latin.utils.DictionaryInfoUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,51 +66,6 @@ final public class BinaryDictionaryGetter {
 
     // Prevents this from being instantiated
     private BinaryDictionaryGetter() {}
-
-    /**
-     * Generates a unique temporary file name in the app cache directory.
-     */
-    public static String getTempFileName(final String id, final Context context)
-            throws IOException {
-        final String safeId = DictionaryInfoUtils.replaceFileNameDangerousCharacters(id);
-        final File directory = new File(DictionaryInfoUtils.getWordListTempDirectory(context));
-        if (!directory.exists()) {
-            if (!directory.mkdirs()) {
-                Log.e(TAG, "Could not create the temporary directory");
-            }
-        }
-        // If the first argument is less than three chars, createTempFile throws a
-        // RuntimeException. We don't really care about what name we get, so just
-        // put a three-chars prefix makes us safe.
-        return File.createTempFile("xxx" + safeId, null, directory).getAbsolutePath();
-    }
-
-    /**
-     * Returns a file address from a resource, or null if it cannot be opened.
-     */
-    public static AssetFileAddress loadFallbackResource(final Context context,
-            final int fallbackResId) {
-        AssetFileDescriptor afd = null;
-        try {
-            afd = context.getResources().openRawResourceFd(fallbackResId);
-        } catch (RuntimeException e) {
-            Log.e(TAG, "Resource not found: " + fallbackResId);
-            return null;
-        }
-        if (afd == null) {
-            Log.e(TAG, "Resource cannot be opened: " + fallbackResId);
-            return null;
-        }
-        try {
-            return AssetFileAddress.makeFromFileNameAndOffset(
-                    context.getApplicationInfo().sourceDir, afd.getStartOffset(), afd.getLength());
-        } finally {
-            try {
-                afd.close();
-            } catch (IOException ignored) {
-            }
-        }
-    }
 
     private static final class DictPackSettings {
         final SharedPreferences mDictPreferences;
@@ -265,14 +219,13 @@ final public class BinaryDictionaryGetter {
         }
 
         if (!foundMainDict && dictPackSettings.isWordListActive(mainDictId)) {
-            final int fallbackResId =
-                    DictionaryInfoUtils.getMainDictionaryResourceId(context.getResources(), locale);
+            AssetFileAddress asset = Dictionaries.INSTANCE.getDictionaryIfExists(context, locale, Dictionaries.DictionaryKind.BinaryDictionary);
+            if(asset == null && fallback) {
+                asset = Dictionaries.INSTANCE.getFallbackDictionary(context);
+            }
 
-            if(fallback || fallbackResId != R.raw.main) {
-                final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId);
-                if (null != fallbackAsset) {
-                    fileList.add(fallbackAsset);
-                }
+            if (null != asset) {
+                fileList.add(asset);
             }
         }
 

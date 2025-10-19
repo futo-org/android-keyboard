@@ -26,6 +26,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
+import org.futo.inputmethod.latin.BuildConfig;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.SubtypesKt;
@@ -45,8 +46,7 @@ import javax.annotation.Nullable;
 public final class SubtypeLocaleUtils {
     static final String TAG = SubtypeLocaleUtils.class.getSimpleName();
 
-    // This reference class {@link R} must be located in the same package as LatinIME.java.
-    private static final String RESOURCE_PACKAGE_NAME = R.class.getPackage().getName();
+    private static final String RESOURCE_PACKAGE_NAME = BuildConfig.APPLICATION_ID;
 
     // Special language code to represent "no language".
     public static final String NO_LANGUAGE = "zz";

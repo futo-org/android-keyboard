@@ -122,6 +122,15 @@ tasks.register('updateLocales', Exec) {
     ]
 }
 
+tasks.register('updateBundleResources', Exec) {
+    workingDir = file('java/res-bundle')
+    commandLine = [
+            System.getProperty("os.name").toLowerCase().contains("windows") ? "python" : "python3",
+            "download-bundles.py",
+            file('java/res-bundle').absolutePath
+    ]
+}
+
 tasks.register('updateContributors') {
     def script = file('tools/contributors.py')
     def outputFile = file('java/src/org/futo/inputmethod/latin/uix/settings/pages/credits/Contributors.kt')
@@ -145,6 +154,7 @@ tasks.register('updateContributors') {
 }
 
 preBuild.dependsOn updateLocales
+preBuild.dependsOn updateBundleResources
 
 android {
     namespace 'org.futo.inputmethod.latin'
@@ -170,6 +180,12 @@ android {
         testApplicationId 'org.futo.inputmethod.latin.tests'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = false
+    }
+
+    bundle {
+        language {
+            enableSplit = true
+        }
     }
 
     signingConfigs {
@@ -294,6 +310,7 @@ android {
 
         playstore {
             java.srcDirs = ['common/src', 'java/src', 'java/playstore/java']
+            res.srcDirs = ['java/res-bundle']
             manifest.srcFile 'java/playstore/AndroidManifest.xml'
         }
 

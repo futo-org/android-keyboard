@@ -1,37 +1,70 @@
 package org.futo.inputmethod.latin.utils
 
-import androidx.annotation.RawRes
+import android.content.Context
+import android.content.res.AssetFileDescriptor
+import android.content.res.Resources.NotFoundException
+import android.util.Log
+import org.futo.inputmethod.latin.AssetFileAddress
+import org.futo.inputmethod.latin.BundleHelper
 import org.futo.inputmethod.latin.R
+import java.io.File
+import java.io.IOException
 import java.util.Locale
 
 object Dictionaries {
-    private val dictionaries = mapOf(
-        "" to R.raw.main,
-        "de" to R.raw.main_de,
-        "en" to R.raw.main_en,
-        "es" to R.raw.main_es,
-        "fr" to R.raw.main_fr,
-        "it" to R.raw.main_it,
-        "pt_br" to R.raw.main_pt_br,
-        "ru" to R.raw.main_ru
-    )
+    enum class DictionaryKind(val candidateNameGenerator: (Locale) -> List<String>) {
+        BinaryDictionary({ listOf(
+            "main_" + it.toString().lowercase(),
+            "main_" + it.language.lowercase())
+        }),
 
-    @RawRes
-    public fun getDictionaryId(locale: Locale): Int {
-        var resId = 0
+        Mozc({
+            if(it.language == "ja") listOf("builtin_mozc_data") else emptyList()
+        }),
 
-        // Try to find main_language_country dictionary.
-        if (locale.country.isNotEmpty()) {
-            val dictLanguageCountry = locale.toString().lowercase()
-            resId = dictionaries[dictLanguageCountry] ?: 0
+        Any({ locale ->
+            DictionaryKind.entries.filter { it != Any }.flatMap { it.candidateNameGenerator(locale) }
+        })
+    }
+
+    fun getDictionaryIfExists(context: Context, locale: Locale?, kind: DictionaryKind): AssetFileAddress? {
+        if(locale == null) return null
+
+        return kind.candidateNameGenerator(locale).firstNotNullOfOrNull {
+            BundleHelper.obtainSplitAssetFileDescriptor(context, it, locale)
         }
+    }
 
-        // Try to find main_language dictionary.
-        if(resId == 0) {
-            val dictLanguage = locale.language
-            resId = dictionaries[dictLanguage] ?: 0
+    fun getFallbackDictionary(context: Context): AssetFileAddress? {
+        var afd: AssetFileDescriptor? = null
+        try {
+            val resId: Int = R.raw.main
+            if (0 == resId) return null
+            afd = context.resources.openRawResourceFd(resId)
+            if (afd == null) {
+                Log.e("Dictionaries", "Found the resource but it is compressed. resId=" + resId)
+                return null
+            }
+            val sourceDir = context.getApplicationInfo().sourceDir
+
+            val packagePath = File(sourceDir)
+            if (!packagePath.isFile()) {
+                Log.e("Dictionaries", "sourceDir is not a file: " + sourceDir)
+                return null
+            }
+
+            return AssetFileAddress(sourceDir, afd.startOffset, afd.length)
+        } catch (e: NotFoundException) {
+            Log.e("Dictionaries", "Could not find the resource")
+            return null
+        } finally {
+            if (afd != null) {
+                try {
+                    afd.close()
+                } catch (e: IOException) {
+                    /* IOException on close ? What am I supposed to do ? */
+                }
+            }
         }
-
-        return resId
     }
 }

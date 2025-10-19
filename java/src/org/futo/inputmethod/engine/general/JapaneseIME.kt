@@ -58,6 +58,7 @@ import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.pdict.decodeJapanesePersonalWord
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
+import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.utils.InputTypeUtils
 import org.futo.inputmethod.nativelib.mozc.KeycodeConverter
 import org.futo.inputmethod.nativelib.mozc.KeycodeConverter.KeyEventInterface
@@ -150,7 +151,7 @@ fun initJniDictLocations(context: Context) {
         tmpDir.mkdirs()
         MozcJNI.load(
             tmpDir.absolutePath,
-            ""
+            "", 0, 0
         )
     }
 
@@ -186,15 +187,38 @@ fun initJniDictLocations(context: Context) {
         }
     }
 
-    if(BuildConfig.DEBUG) {
-        Log.d(TAG, "userProfileDirectory path = ${userProfileDirectory.absolutePath}")
-        Log.d(TAG, "dictFile path = ${dictFile?.absolutePath}")
+    val fallbackFile = if(dictFile != null) null else run {
+        Dictionaries.getDictionaryIfExists(context, Locale("ja"), Dictionaries.DictionaryKind.Mozc)
     }
 
-    MozcJNI.load(
-        userProfileDirectory.absolutePath,
-        dictFile?.absolutePath ?: ""
-    )
+    if(BuildConfig.DEBUG) {
+        Log.d(TAG, "userProfileDirectory path = ${userProfileDirectory.absolutePath}")
+        Log.d(TAG, "dictFile path = ${dictFile?.absolutePath} OR $fallbackFile")
+    }
+
+    when {
+        dictFile != null -> {
+            MozcJNI.load(
+                userProfileDirectory.absolutePath,
+                dictFile.absolutePath,
+                0, 0
+            )
+        }
+        fallbackFile != null -> {
+            MozcJNI.load(
+                userProfileDirectory.absolutePath,
+                fallbackFile.mFilename,
+                fallbackFile.mOffset,
+                fallbackFile.mLength
+            )
+        }
+        else -> {
+            MozcJNI.load(
+                userProfileDirectory.absolutePath,
+                "", 0, 0
+            )
+        }
+    }
 }
 
 private const val MOZC_DICT_NAME = "FUTO_UserDict"
