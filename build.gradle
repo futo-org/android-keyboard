@@ -154,7 +154,6 @@ tasks.register('updateContributors') {
 }
 
 preBuild.dependsOn updateLocales
-preBuild.dependsOn updateBundleResources
 
 android {
     namespace 'org.futo.inputmethod.latin'

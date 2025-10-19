@@ -88,6 +88,8 @@ buildStable:
     - echo $VERSION_CODE $VERSION_NAME
     - ./setUpPropertiesCI.sh
   script:
+    - python3 -m pip install requests
+    - gradle updateBundleResources -s
     - gradle bundlePlaystoreRelease -s
     - gradle assembleStableRelease -s
     - if grep -q "android.permission.INTERNET" build/intermediates/bundle_manifest/playstoreRelease/processApplicationManifestPlaystoreReleaseForBundle/AndroidManifest.xml; then echo "Internet permission check failed for play store"; exit 1; fi
