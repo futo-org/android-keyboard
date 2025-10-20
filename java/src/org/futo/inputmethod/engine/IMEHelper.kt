@@ -107,4 +107,8 @@ class IMEHelper(
 
     fun isImeActive(ime: IMEInterface) =
         latinIME.imeManager.getActiveIME(Settings.getInstance().current) == ime
+
+    fun onWordFinalized(word: String) {
+        latinIME.onWordFinalized(word)
+    }
 }

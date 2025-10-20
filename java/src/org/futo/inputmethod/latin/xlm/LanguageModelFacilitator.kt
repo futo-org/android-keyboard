@@ -737,4 +737,13 @@ public class LanguageModelFacilitator(
     }
 
     public fun isTransformerDisabled(): Boolean = transformerDisabled
+
+    suspend fun rewriteText(originalText: String, tone: String): String? {
+        if (languageModel == null) {
+            return null
+        }
+
+        val prompt = "Rewrite the following text in a $tone tone:\n\n$originalText"
+        return languageModel?.getRewrittenText(prompt)
+    }
 }

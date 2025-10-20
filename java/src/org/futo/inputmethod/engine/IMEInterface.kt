@@ -85,4 +85,8 @@ interface IMEInterface {
 
     @UsedForTesting
     fun recycle() { }
+
+    suspend fun rewriteText(originalText: String, tone: String): String? {
+        return null
+    }
 }

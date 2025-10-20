@@ -634,4 +634,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun recycle() {
         inputLogic.recycle()
     }
+
+    override suspend fun rewriteText(originalText: String, tone: String): String? {
+        return languageModelFacilitator.rewriteText(originalText, tone)
+    }
 }

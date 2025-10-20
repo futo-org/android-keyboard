@@ -57,6 +57,8 @@ import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
 
 
+import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
+
 @Composable
 fun ActionItem(action: Action, modifier: Modifier = Modifier, dragIcon: Boolean = false, dragIconModifier: Modifier = Modifier) {
     Surface(color = LocalKeyboardScheme.current.keyboardContainer,
@@ -94,7 +96,6 @@ fun ActionItem(action: Action, modifier: Modifier = Modifier, dragIcon: Boolean 
                 Text(stringResource(id = action.name), modifier = Modifier.align(
                     CenterHorizontally), style = Typography.Small.copy(lineHeight = 12.sp), textAlign = TextAlign.Center)
             }
-
         }
     }
 }

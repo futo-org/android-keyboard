@@ -2484,6 +2484,7 @@ public final class InputLogic {
             commitChosenWord(settingsValues, typedWord,
                     LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString, -1);
             StatsUtils.onWordCommitUserTyped(typedWord, isBatchMode);
+            mImeHelper.onWordFinalized(typedWord);
         }
     }
 
@@ -2589,6 +2590,7 @@ public final class InputLogic {
                     + "Connection.commitText");
             startTimeMillis = System.currentTimeMillis();
         }
+        mImeHelper.onWordFinalized(chosenWord);
         // Add the word to the user history dictionary
         mDictionaryFacilitator.onWordCommitted(chosenWord);
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, ngramContext, importance);

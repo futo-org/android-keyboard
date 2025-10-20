@@ -798,6 +798,23 @@ struct LanguageModelState {
         return outputs;
     }
 
+    std::string generateText(const std::string &prompt) {
+        token_sequence tokens = model->tokenize(prompt);
+        tokens.insert(tokens.begin(), 1); // BOS
+
+        DecodeResult decoding_result = DecodePromptAndMixes(tokens, {});
+        if (decoding_result.logits_head == -1) {
+            return "";
+        }
+
+        std::vector<std::pair<float, token_sequence>> results = Sample(decoding_result, 1, WordCapitalizeMode::IgnoredCapitals, {});
+        if (results.empty()) {
+            return "";
+        }
+
+        return model->decode(results[0].second);
+    }
+
     std::vector<std::pair<float, std::string>> PredictNextWord(const std::string &context, const std::vector<std::string> &banned_words) {
         std::vector<banned_sequence> banned_sequences;
         for(const std::string &bw : banned_words) {
@@ -1263,6 +1280,14 @@ namespace latinime {
         env->ReleaseFloatArrayElements(outProbabilities, probsArray, 0);
     }
 
+    static jstring xlm_LanguageModel_getRewrittenText(JNIEnv *env, jclass clazz, jlong dict, jstring prompt) {
+        GGML_UNUSED(clazz);
+        auto *state = reinterpret_cast<LanguageModelState *>(dict);
+        std::string promptString = jstring2string(env, prompt);
+        std::string result = state->generateText(promptString);
+        return string2jstring(env, result.c_str());
+    }
+
     static const JNINativeMethod sMethods[] = {
             {
                     const_cast<char *>("openNative"),
@@ -1283,6 +1308,11 @@ namespace latinime {
                     const_cast<char *>("rescoreSuggestionsNative"),
                     const_cast<char *>("(JLjava/lang/String;[Ljava/lang/String;[I[I)V"),
                     reinterpret_cast<void *>(xlm_LanguageModel_rescoreSuggestions)
+            },
+            {
+                    const_cast<char *>("getRewrittenTextNative"),
+                    const_cast<char *>("(JLjava/lang/String;)Ljava/lang/String;"),
+                    reinterpret_cast<void *>(xlm_LanguageModel_getRewrittenText)
             }
     };
 

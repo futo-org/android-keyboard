@@ -363,4 +363,14 @@ class LanguageModel(
 
         outSuggestedScores: IntArray
     )
+
+    private external fun getRewrittenTextNative(state: Long, prompt: String): String?
+
+    suspend fun getRewrittenText(prompt: String): String? = withContext(LanguageModelScope) {
+        if (mNativeState == 0L) {
+            loadModel()
+            return@withContext null
+        }
+        return@withContext getRewrittenTextNative(mNativeState, prompt)
+    }
 }

@@ -40,7 +40,8 @@ val AllActionsMap = mapOf(
     "down" to ArrowDownAction,
     "left" to ArrowLeftAction,
     "right" to ArrowRightAction,
-    "font_typer" to FontTyperAction
+    "font_typer" to FontTyperAction,
+    "text_rewriting" to TextRewritingAction
 )
 
 val ActionToId = AllActionsMap.entries.associate { it.value to it.key }
