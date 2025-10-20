@@ -12,6 +12,7 @@ import org.acra.config.dialog
 import org.acra.config.mailSender
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
+import androidx.core.content.edit
 
 class CrashLoggingApplication : Application() /*, Configuration.Provider*/ {
     //override val workManagerConfiguration: Configuration
@@ -19,6 +20,15 @@ class CrashLoggingApplication : Application() /*, Configuration.Provider*/ {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+
+        if (getSharedPreferences("migrate", MODE_PRIVATE).getBoolean("wiped_work", false) == false) {
+            deleteDatabase("androidx.work.workdb")
+            getSharedPreferences("androidx.work.util.preferences", MODE_PRIVATE)
+                .edit { clear() }
+            getSharedPreferences("migrate", MODE_PRIVATE)
+                .edit { putBoolean("wiped_work", true) }
+        }
+
         if(BuildConfig.DEBUG) return
 
         val userManager = getSystemService(Context.USER_SERVICE) as UserManager
