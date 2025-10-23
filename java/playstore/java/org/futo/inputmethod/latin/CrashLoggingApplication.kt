@@ -15,6 +15,10 @@ class CrashLoggingApplication : Application() /*, Configuration.Provider*/ {
         fun logPreferences(preferences: Preferences) {
 
         }
+
+        fun CopyLogsOption() {
+
+        }
     }
 
     override fun attachBaseContext(base: Context?) {

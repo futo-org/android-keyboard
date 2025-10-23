@@ -24,7 +24,7 @@ import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.updates.openURI
 
-private fun Context.copyToClipboard(text: CharSequence, label: String = "Copied Text") {
+internal fun Context.copyToClipboard(text: CharSequence, label: String = "Copied Text") {
     val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clipData = ClipData.newPlainText(label, text)
     clipboardManager.setPrimaryClip(clipData)
