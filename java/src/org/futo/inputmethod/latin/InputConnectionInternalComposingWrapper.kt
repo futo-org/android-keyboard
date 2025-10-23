@@ -255,8 +255,8 @@ class InputConnectionInternalComposingWrapper(
                 // Try to get past text. Some frameworks might filter out characters or do other
                 // wonky stuff, so we can't trust that pastText is actually previous composingText.
                 // If we did, we might accidentally delete too many characters trying to recover.
-                val lengthAccordingToCursor = cursor - composingStart
-                val lengthAccordingToHistory = composingText.length
+                val lengthAccordingToCursor = (cursor - composingStart).coerceAtLeast(0) // Cursor position may have changed due to extractPosition, leading to a negative invalid value
+                val lengthAccordingToHistory = (composingText.length)
                 val lengthToFetch = maxOf(lengthAccordingToHistory, lengthAccordingToCursor)
                 var pastText = super.getTextBeforeCursor(lengthToFetch, 1)
                 if(pastText != null) {
