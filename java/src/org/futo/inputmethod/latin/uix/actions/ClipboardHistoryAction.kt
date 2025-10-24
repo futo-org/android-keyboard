@@ -276,9 +276,19 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
             override fun onPrimaryClipChanged() {
                 if (!context.getSettingBlocking(ClipboardHistoryEnabled)) return
 
-                val clip = clipboardManager.primaryClip
+                val clip = try {
+                    clipboardManager.primaryClip
+                } catch(_: Exception) {
+                    null
+                }
 
-                val text = clip?.getItemAt(0)?.coerceToText(context)?.toString()
+                // Ignore massive entries
+                val textChrSeq = clip?.getItemAt(0)?.coerceToText(context)
+                if(textChrSeq != null && textChrSeq.length > 500_000) {
+                    return
+                }
+
+                val text = textChrSeq?.toString()
                 val uri = clip?.getItemAt(0)?.uri
 
                 val timestamp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

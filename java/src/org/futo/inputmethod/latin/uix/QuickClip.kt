@@ -220,6 +220,20 @@ object QuickClip {
             regexes
         }
 
+        val text = item.text
+        if(text != null && text.length > 32_000) {
+            if(text.length > 500_000) return null
+
+            // Skip any processing for huge strings
+            return QuickClipState(
+                texts = listOf(QuickClipItem(QuickClipKind.FullString, text.toString(), 0)),
+                image = item.uri,
+                imageMimeTypes = mimeTypes,
+                validUntil = validUntil,
+                isSensitive = isSensitive
+            )
+        }
+
         item.text?.toString()?.let { text ->
             regexesToUse.forEach { entry ->
                 entry.value.findAll(text).forEach {
@@ -260,7 +274,11 @@ object QuickClip {
         val clipboardManager =
             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        val clip = clipboardManager.primaryClip
+        val clip = try {
+            clipboardManager.primaryClip
+        } catch(_: Exception) {
+            null
+        }
         if(clip == null) return null
 
         val firstItem = clip.getItemAt(0)
