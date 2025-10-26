@@ -576,8 +576,14 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
         // Clear the clipboard if the item being removed is the current one
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // TODO: URI
-            if((item.text != null) && item.text == clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context)?.toString()) {
-                clipboardManager.clearPrimaryClip()
+            try {
+                if ((item.text != null) && item.text == clipboardManager.primaryClip?.getItemAt(0)
+                        ?.coerceToText(context)?.toString()
+                ) {
+                    clipboardManager.clearPrimaryClip()
+                }
+            } catch(e: Exception) {
+                e.printStackTrace()
             }
         }
         clipboardHistory.removeAll { it == item }
