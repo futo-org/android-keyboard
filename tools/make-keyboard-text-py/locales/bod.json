@@ -1,0 +1,33 @@
+{
+  "locale": "bod",
+  "morekeys": {},
+  "keyspec": {
+    "symbols_0": "༠",
+    "symbols_1": "༡",
+    "symbols_2": "༢",
+    "symbols_3": "༣",
+    "symbols_4": "༤",
+    "symbols_5": "༥",
+    "symbols_6": "༦",
+    "symbols_7": "༧",
+    "symbols_8": "༨",
+    "symbols_9": "༩"
+  },
+  "label": {},
+  "keylabel": {},
+  "keyhintlabel": {},
+  "additional_morekeys": {
+    "symbols_0": "0",
+    "symbols_1": "1",
+    "symbols_2": "2",
+    "symbols_3": "3",
+    "symbols_4": "4",
+    "symbols_5": "5",
+    "symbols_6": "6",
+    "symbols_7": "7",
+    "symbols_8": "8",
+    "symbols_9": "9"
+  },
+  "other": {}
+}
+

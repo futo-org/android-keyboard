@@ -5808,6 +5808,50 @@ public final class KeyboardTextsTable {
         "',\u203a,\u2039"
     };
 
+    private static final String[] TEXTS_bod = {
+        "bod",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "\u0f21",
+        "\u0f22",
+        "\u0f23",
+        "\u0f24",
+        "\u0f25",
+        "\u0f26",
+        "\u0f27",
+        "\u0f28",
+        "\u0f29",
+        "\u0f20",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "0"
+    };
+
 
     private static final Object[] LOCALES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
@@ -5885,7 +5929,8 @@ public final class KeyboardTextsTable {
         "it", TEXTS_it,
         "ja", TEXTS_ja,
         "ko", TEXTS_ko,
-        "ru", TEXTS_ru
+        "ru", TEXTS_ru,
+        "bod", TEXTS_bod
     };
 
     static {
