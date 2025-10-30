@@ -626,6 +626,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         add("LM.shouldPassThroughToLegacy = ${languageModelFacilitator.shouldPassThroughToLegacy()}")
         add("LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}")
         add("expected cursor = ${inputLogic.mConnection.mExpectedSelStart}:${inputLogic.mConnection.mExpectedSelEnd}")
+        add("autoCapsFlags = ${getCurrentAutoCapsState()}")
     }
 
     fun debugInfoS() = debugInfo().joinToString("\n")
