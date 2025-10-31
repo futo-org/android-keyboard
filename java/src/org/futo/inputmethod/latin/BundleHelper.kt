@@ -126,6 +126,9 @@ object BundleHelper {
             }?.let {
                 if (DEBUG) Log.d(TAG, "Found asset: [$it] [$offset] [$length]")
                 AssetFileAddress(it, offset, length)
+            } ?: run {
+                throwIfDebug(Exception("Was not able to find asset address [$name] [$locale], tried $filesToTry"))
+                return@obtainSplitAssetFileDescriptor null
             }
         }.also {
             cache.locations[key] = it
