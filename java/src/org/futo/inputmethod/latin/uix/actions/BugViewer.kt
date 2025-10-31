@@ -35,8 +35,10 @@ public object BugViewerState {
 private val Throwable.rootCause: Throwable?
     get() = generateSequence(this) { it.cause }.lastOrNull()?.takeIf { it !== this }
 
+var CanThrowIfDebug = false
+
 fun throwIfDebug(ex: Exception) {
-    if(BuildConfig.DEBUG || BuildConfig.FLAVOR == "unstable") {
+    if(BuildConfig.DEBUG || (BuildConfig.FLAVOR == "unstable" && CanThrowIfDebug)) {
         throw ex
     } else {
         val sw = java.io.StringWriter()

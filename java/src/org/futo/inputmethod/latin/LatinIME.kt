@@ -67,6 +67,7 @@ import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
+import org.futo.inputmethod.latin.uix.actions.CanThrowIfDebug
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.latin.uix.deferSetSetting
@@ -74,6 +75,7 @@ import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.forceUnlockDatastore
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -368,6 +370,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onCreate() {
         super.onCreate()
+
+        CanThrowIfDebug = isDirectBootUnlocked
 
         JniUtils.loadNativeLibrary()
 
@@ -866,6 +870,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         uixManager.onPersistentStatesUnlocked()
 
         updateTheme(ThemeOptions[getSettingBlocking(THEME_KEY)].orDefault(this))
+        CanThrowIfDebug = true
 
         // TODO: Spell checker service
     }
