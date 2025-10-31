@@ -152,6 +152,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
 
     fun resetDictionaryFacilitator(force: Boolean = false, reloadMainDictionary: Boolean = false) {
+        if(!context.isDirectBootUnlocked) return
+
         val settings = settings.current
 
         val locales = settings.mInputAttributes.mLocaleOverride?.let {
@@ -626,6 +628,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         add("LM.shouldPassThroughToLegacy = ${languageModelFacilitator.shouldPassThroughToLegacy()}")
         add("LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}")
         add("expected cursor = ${inputLogic.mConnection.mExpectedSelStart}:${inputLogic.mConnection.mExpectedSelEnd}")
+        add("dictionary loaded = ${dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()}, ${!dictionaryFacilitator.hasAtLeastOneUninitializedMainDictionary()}")
         add("autoCapsFlags = ${getCurrentAutoCapsState()}")
     }
 
