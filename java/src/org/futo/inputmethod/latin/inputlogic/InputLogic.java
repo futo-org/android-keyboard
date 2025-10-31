@@ -2138,6 +2138,7 @@ public final class InputLogic {
         return WordComposer.CAPS_MODE_OFF;
     }
 
+    public static String reasonForLastAutoCapsState = "";
     /**
      * Gets the current auto-caps state, factoring in the space state.
      *
@@ -2150,17 +2151,25 @@ public final class InputLogic {
      * @return a caps mode from TextUtils.CAP_MODE_* or Constants.TextUtils.CAP_MODE_OFF.
      */
     public int getCurrentAutoCapsState(final SettingsValues settingsValues) {
-        if (!settingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
+        if (!settingsValues.mAutoCap) {
+            InputLogic.reasonForLastAutoCapsState = "autocap turned off";
+            return Constants.TextUtils.CAP_MODE_OFF;
+        }
 
         final EditorInfo ei = getCurrentInputEditorInfo();
-        if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;
+        if (ei == null) {
+            InputLogic.reasonForLastAutoCapsState = "editorinfo null";
+            return Constants.TextUtils.CAP_MODE_OFF;
+        }
         final int inputType = ei.inputType;
         // Warning: this depends on mSpaceState, which may not be the most current value. If
         // mSpaceState gets updated later, whoever called this may need to be told about it.
         try {
+            InputLogic.reasonForLastAutoCapsState = "by getCursorCapsMode";
             return mConnection.getCursorCapsMode(inputType, settingsValues.mSpacingAndPunctuations,
                     SpaceState.PHANTOM == mSpaceState);
         } catch(StringIndexOutOfBoundsException ex) {
+            InputLogic.reasonForLastAutoCapsState = "exception: " + ex;
             BugViewerKt.throwIfDebug(ex);
             return Constants.TextUtils.CAP_MODE_OFF;
         }

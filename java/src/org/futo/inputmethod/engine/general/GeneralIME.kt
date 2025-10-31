@@ -629,7 +629,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         add("LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}")
         add("expected cursor = ${inputLogic.mConnection.mExpectedSelStart}:${inputLogic.mConnection.mExpectedSelEnd}")
         add("dictionary loaded = ${dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()}, ${!dictionaryFacilitator.hasAtLeastOneUninitializedMainDictionary()}")
-        add("autoCapsFlags = ${getCurrentAutoCapsState()}")
+        add("autoCapsFlags = ${getCurrentAutoCapsState()} (${InputLogic.reasonForLastAutoCapsState})")
     }
 
     fun debugInfoS() = debugInfo().joinToString("\n")
