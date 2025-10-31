@@ -1404,12 +1404,18 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
-    fun onCreate() {
+    private fun initKeyboardLoadActions() {
+        if(!latinIME.isDirectBootUnlocked) return
         AllActions.forEach { action ->
-            if(action.persistentStateInitialization == PersistentStateInitialization.OnKeyboardLoad) {
-                persistentStates[action] = action.persistentState?.let { it(keyboardManagerForAction) }
+            if (action.persistentStateInitialization == PersistentStateInitialization.OnKeyboardLoad) {
+                persistentStates[action] = persistentStates[action] ?:
+                    action.persistentState?.let { it(keyboardManagerForAction) }
             }
         }
+    }
+
+    fun onCreate() {
+        initKeyboardLoadActions()
 
         isActionsExpanded.value = latinIME.getSettingBlocking(ActionBarExpanded)
 
@@ -1424,6 +1430,8 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     fun onPersistentStatesUnlocked() {
+        initKeyboardLoadActions()
+
         persistentStates.forEach {
             latinIME.lifecycleScope.launch {
                 it.value?.onDeviceUnlocked()
