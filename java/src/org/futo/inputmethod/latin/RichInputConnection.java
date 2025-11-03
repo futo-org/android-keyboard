@@ -404,11 +404,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             final SpacingAndPunctuations spacingAndPunctuations, final boolean hasSpaceBefore) {
         updateConnection();
         if (!isConnected()) {
-            InputLogic.reasonForLastAutoCapsState = "not connected";
             return Constants.TextUtils.CAP_MODE_OFF;
         }
         if (!TextUtils.isEmpty(mComposingText)) {
-            InputLogic.reasonForLastAutoCapsState = "composing text";
             if (hasSpaceBefore) {
                 // If we have some composing text and a space before, then we should have
                 // MODE_CHARACTERS and MODE_WORDS on.
@@ -433,7 +431,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // TODO: don't call #toString() here. Instead, all accesses to
         // mCommittedTextBeforeComposingText should be done on the main thread.
         String txt = mCommittedTextBeforeComposingText.toString();
-        InputLogic.reasonForLastAutoCapsState = "capsmodeutils [" + txt + "] " + inputType;
         return CapsModeUtils.getCapsMode(txt, inputType,
                 spacingAndPunctuations, hasSpaceBefore);
     }
