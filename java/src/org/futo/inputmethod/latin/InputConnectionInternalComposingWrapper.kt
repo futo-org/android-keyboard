@@ -66,6 +66,8 @@ class InputConnectionInternalComposingWrapper(
         @JvmStatic
         fun createWithSettingsFromContext(context: Context, target: InputConnection): InputConnection {
             if(context.getSetting(TextInputAlternativeIC) == false) return target
+            if(!SupportsNonComposing) return target
+
             return InputConnectionInternalComposingWrapper(
                 context.getSetting(TextInputAlternativeICComposing),
                 context.getSetting(TextInputBufferedIC),
