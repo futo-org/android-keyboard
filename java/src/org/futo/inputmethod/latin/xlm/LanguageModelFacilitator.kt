@@ -305,7 +305,7 @@ public class LanguageModelFacilitator(
                 holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())?.let { results ->
                     job.cancel()
 
-                    val useRescoring = false
+                    val useRescoring = true
 
                     val finalResults = if(useRescoring && values.composedData.mIsBatchMode) {
                         val rescored = languageModel?.rescoreSuggestions(
@@ -316,18 +316,37 @@ public class LanguageModelFacilitator(
                         )
 
                         if(rescored != null) {
+                            // FIXED: Preserve typed word at index 0 for swapping rejection mechanism
+                            val typedWord = results.typedWordInfo
+                            val rescoredList = ArrayList(rescored)
+
+                            // Remove typed word from rescored list if present
+                            if(typedWord != null) {
+                                rescoredList.removeAll { it.mWord == typedWord.mWord }
+                                // Insert typed word at index 0 to preserve rejection mechanism
+                                rescoredList.add(0, typedWord)
+                            }
+
+                            // Determine if we should auto-correct based on score difference
+                            val willAutoCorrect = if(rescoredList.size > 1 && typedWord != null) {
+                                val topSuggestionScore = rescoredList[1].mScore
+                                val typedWordScore = typedWord.mScore
+                                // Auto-correct if suggestion is significantly better
+                                topSuggestionScore > typedWordScore + 10
+                            } else {
+                                false
+                            }
+
                             SuggestedWords(
-                                ArrayList(rescored),
-                                // TODO: These should ideally not be null/false
-                                null,
-                                null,
-                                false,
-                                false,
+                                rescoredList,
+                                ArrayList(rescored), // Keep original rescored as raw suggestions
+                                typedWord,
+                                typedWord != null,
+                                willAutoCorrect,
                                 false,
                                 results.mInputStyle,
                                 results.mSequenceNumber
                             )
-                            // TODO: We need the swapping rejection thing, the rescored array is resorted without the swapping
                         } else {
                             results
                         }
