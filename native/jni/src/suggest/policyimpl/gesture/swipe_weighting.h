@@ -149,8 +149,11 @@ namespace util {
 
                 const float dotDirection = swipedx * linedx + swipedy * linedy;
 
+                // IMPROVED: Reduced backtracking penalty from 24.0f to 8.0f
+                // This allows more natural curved swipe paths while still penalizing
+                // severe backtracking. The original 24x multiplier was too aggressive.
                 if (dotDirection < 0.0) {
-                    totalDistance += 24.0f * swipelen * -dotDirection;
+                    totalDistance += 8.0f * swipelen * -dotDirection;
                 }
             }
 
@@ -179,7 +182,9 @@ public:
         const float distance = util::getDistanceBetweenPoints(traverseSession, codePoint,
                 traverseSession->getInputSize() - 1);
 
-        if(distance > (distanceThreshold * 128.0f)) {
+        // IMPROVED: Increased terminal distance threshold from 128.0f to 160.0f
+        // This allows more tolerance for swipes that don't end exactly on target key
+        if(distance > (distanceThreshold * 160.0f)) {
 #if(DEBUG_SWIPE)
             AKLOGI("Terminal spatial for %c:%c fails due to exceeding distance", (parentDicNode != nullptr) ? (char)(parentDicNode->getNodeCodePoint()) : '?', (char)codePoint);
             dicNode->dump("TERMINAL");
@@ -204,7 +209,9 @@ public:
                 const int lowerLimit = dicNode->getInputIndex(0);
                 const int upperLimit = traverseSession->getInputSize();
 
-                const float threshold = (distanceThreshold * 86.0f);
+                // IMPROVED: Increased line deviation threshold from 86.0f to 110.0f
+                // This allows more tolerance for swipe paths that deviate from straight lines
+                const float threshold = (distanceThreshold * 110.0f);
 
                 const float extraDistance = 8.0f * util::calcLineDeviationPunishment(
                         traverseSession, codePoint0, codePoint1, lowerLimit, upperLimit, threshold);
