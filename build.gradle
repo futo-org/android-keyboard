@@ -243,6 +243,12 @@ android {
                 it.buildConfigField "String", "ACRA_USER", "\"\""
                 it.buildConfigField "String", "ACRA_PASSWORD", "\"\""
             }
+
+            it.buildConfigField "String", "FUTOPAY_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
+            it.buildConfigField "String", "FUTOPAY_PRICE", "\"~\$6.99\""
+
+            it.buildConfigField "String", "GOOGLEPAY_URL", "\"https://play.google.com/store/apps/details?id=org.futo.keyboardpayment\""
+            it.buildConfigField "String", "GOOGLEPAY_PRICE", "\"~\$11.99\""
         }
     }
 
@@ -260,8 +266,7 @@ android {
             buildConfigField "String", "BRANCH", "\"${getBranch()}\""
             getIsDefault().set(true)
 
-            buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
-            buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
+            buildConfigField "String", "PAYMENT_PRICE", "FUTOPAY_PRICE"
         }
 
         stable {
@@ -271,8 +276,7 @@ android {
             buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
             buildConfigField "String", "BRANCH", "\"${getBranch()}\""
 
-            buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
-            buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
+            buildConfigField "String", "PAYMENT_PRICE", "FUTOPAY_PRICE"
         }
 
         playstore {
@@ -285,8 +289,7 @@ android {
             buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
             buildConfigField "String", "BRANCH", "\"${getBranch()}\""
 
-            buildConfigField "String", "PAYMENT_URL", "\"https://play.google.com/store/apps/details?id=org.futo.keyboardpayment\""
-            buildConfigField "String", "PAYMENT_PRICE", "\"~\$11.99\""
+            buildConfigField "String", "PAYMENT_PRICE", "GOOGLEPAY_PRICE"
         }
     }
 

@@ -48,8 +48,6 @@ import kotlin.system.exitProcess
 
 val IS_DEVELOPER = SettingsKey(booleanPreferencesKey("isDeveloperMode"), false)
 
-val TMP_PAYMENT_URL = SettingsKey(stringPreferencesKey("temporaryPaymentUrl"), BuildConfig.PAYMENT_URL)
-
 @OptIn(DebugOnly::class)
 @Composable
 fun DevKeyboardScreen(navController: NavHostController = rememberNavController()) {
@@ -180,9 +178,6 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             licenseKey.value == EXT_LICENSE_KEY.default,
             { }
         )
-
-        SettingTextField("Payment URL", "https://example.com", TMP_PAYMENT_URL)
-
 
         ScreenTitle(title = "Here be dragons")
         SettingToggleDataStore(
