@@ -408,7 +408,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     fun updateSuggestions(inputStyle: Int) {
-        if(!settings.current.needsToLookupSuggestions()) {
+        if(!settings.current.needsToLookupSuggestions()
+            && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH
+            && inputStyle != SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+        ) {
             updateSuggestionJob?.cancel()
             setNeutralSuggestionStrip()
             return
