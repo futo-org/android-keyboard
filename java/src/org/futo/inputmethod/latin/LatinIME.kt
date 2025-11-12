@@ -353,6 +353,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         if(pendingRecreateKeyboard) {
             pendingRecreateKeyboard = false
             recreateKeyboard()
+        } else {
+            latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.invalidateAllKeys()
         }
     }
 
