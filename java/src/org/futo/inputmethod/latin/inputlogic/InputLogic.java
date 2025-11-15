@@ -440,19 +440,22 @@ public final class InputLogic {
             int newSelStart, int newSelEnd,
             final int composingStart, final int composingEnd,
             final SettingsValues settingsValues) {
-        numCursorUpdatesSinceInputStarted++;
+        // TODO: Not sure this is necessary anymore
+        /*numCursorUpdatesSinceInputStarted++;
         if(numCursorUpdatesSinceInputStarted <= 1) {
             if(mConnection.tryFixLyingCursorPosition()) {
                 newSelStart = mConnection.mExpectedSelStart;
                 newSelEnd = mConnection.mExpectedSelEnd;
             }
-        }
+        }*/
 
         mConnection.updateICCursor(oldSelStart, newSelStart, oldSelEnd, newSelEnd);
 
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd, composingStart, composingEnd)) {
+            Log.d(TAG, "It's belated");
             return false;
         }
+        Log.d(TAG, "It's not belated");
 
         // TODO: the following is probably better done in resetEntireInputState().
         // it should only happen when the cursor moved, and the very purpose of the
