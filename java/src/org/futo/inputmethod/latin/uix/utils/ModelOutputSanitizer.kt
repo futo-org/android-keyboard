@@ -77,12 +77,16 @@ object ModelOutputSanitizer {
         // Leading and trailing spaces
         val needsLeadingSpace = before.isNotEmpty() && !before.endsWithWhitespaceOrNewline() &&
                 !before.last().isOpeningBracket() &&
-                before.last() != '—'
+                before.last() != '—' &&
+                before.last() != '"' &&
+                before.last() != '*'
         val needsTrailingSpace = after.isNotEmpty() &&
                 !after.startsWithWhitespaceOrNewline() &&
                 !after.first().isPunctuation() &&
                 !after.first().isClosingBracket() &&
-                after.first() != '—'
+                after.first() != '—' &&
+                after.first() != '"' &&
+                after.first() != '*'
 
         val prefix = if (needsLeadingSpace) " " else ""
         val suffix = if (needsTrailingSpace) " " else ""
