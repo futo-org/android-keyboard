@@ -2,8 +2,14 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.Color
+import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.serialization.json.Json
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
+import org.futo.inputmethod.latin.uix.actions.BugInfo
+import org.futo.inputmethod.latin.uix.actions.BugViewerState
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.CatppuccinMocha
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
@@ -75,6 +81,38 @@ fun defaultThemeOption(context: Context): ThemeOption =
             DefaultDarkScheme
         }
     }
+
+fun getThemeOption(context: Context, key: String): ThemeOption? {
+    return ThemeOptions[key] ?: run {
+        if(key.startsWith("custom")) {
+            val settingKey = stringPreferencesKey("theme-" + key.trimEnd('_'))
+            val data = context.getSetting(settingKey, "")
+            if (data.isNotEmpty()) {
+                return ThemeOption(
+                    dynamic = true,
+                    key = key,
+                    name = 0,
+                    available = { true },
+                    obtainColors = {
+                        try {
+                            Json.decodeFromString<SerializableCustomTheme>(
+                                it.getSetting(settingKey, "")
+                            ).toKeyboardScheme(it)
+                        } catch(e: Exception) {
+                            BugViewerState.pushBug(BugInfo(
+                                name = "Custom theme",
+                                details = e.toString(),
+                            ))
+                            DevTheme.obtainColors(it)
+                        }
+                    }
+                )
+            }
+        }
+
+        return null
+    }
+}
 
 fun ThemeOption?.orDefault(context: Context): ThemeOption {
     val themeOptionFromSettings = this

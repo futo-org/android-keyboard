@@ -59,6 +59,7 @@ import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
@@ -752,7 +753,7 @@ class ImportResourceActivity : ComponentActivity() {
         setContent {
             themeOption.value?.let { themeOption ->
                 val themeIdx = useDataStore(key = THEME_KEY.key, default = themeOption.key)
-                val theme: ThemeOption = ThemeOptions[themeIdx.value] ?: themeOption
+                val theme: ThemeOption = getThemeOption(this, themeIdx.value) ?: themeOption
                 UixThemeWrapper(theme.obtainColors(LocalContext.current)) {
                     StatusBarColorSetter()
                     Surface(
@@ -846,7 +847,7 @@ class ImportResourceActivity : ComponentActivity() {
         }
 
         val key = getSetting(THEME_KEY)
-        this.themeOption.value = ThemeOptions[key].orDefault(this)
+        this.themeOption.value = getThemeOption(this, key).orDefault(this)
     }
 }
 

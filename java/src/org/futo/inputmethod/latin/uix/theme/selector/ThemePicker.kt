@@ -51,6 +51,7 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOptionKeys
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
@@ -218,7 +219,7 @@ fun AddCustomThemeButton(onClick: () -> Unit = { }) {
 }
 
 @Composable
-fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
+fun ThemePicker(onSelected: (ThemeOption) -> Unit, onCustomTheme: () -> Unit) {
     val context = LocalContext.current
 
     val currentTheme = useDataStore(THEME_KEY.key, "").value
@@ -226,7 +227,7 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
     val isInspecting = LocalInspectionMode.current
     val availableThemeOptions = remember {
         ThemeOptionKeys.mapNotNull { key ->
-            ThemeOptions[key]?.let { Pair(key, it) }
+            getThemeOption(context, key)?.let { Pair(key, it) }
         }.filter {
             it.second.available(context)
         }.filter {
@@ -261,13 +262,7 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit) {
 
                 item {
                     AddCustomThemeButton {
-                        // TODO: Custom themes
-                        val toast = Toast.makeText(
-                            context,
-                            "Custom themes coming eventually",
-                            Toast.LENGTH_SHORT
-                        )
-                        toast.show()
+                        onCustomTheme()
                     }
                 }
 
@@ -295,21 +290,21 @@ private fun ThemePickerPreview() {
             Surface(
                 color = MaterialTheme.colorScheme.background
             ) {
-                ThemePicker {}
+                ThemePicker({},{})
             }
         }
         UixThemeWrapper(ClassicMaterialDark.obtainColors(LocalContext.current)) {
             Surface(
                 color = MaterialTheme.colorScheme.background
             ) {
-                ThemePicker {}
+                ThemePicker({},{})
             }
         }
         UixThemeWrapper(AMOLEDDarkPurple.obtainColors(LocalContext.current)) {
             Surface(
                 color = MaterialTheme.colorScheme.background
             ) {
-                ThemePicker {}
+                ThemePicker({},{})
             }
         }
     }

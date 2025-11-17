@@ -46,6 +46,7 @@ import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
+import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.checkForUpdateAndSaveToPreferences
@@ -197,7 +198,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
 
         lifecycleScope.launch {
             getSettingFlow(THEME_KEY).collect {
-                val themeOption = ThemeOptions[it].orDefault(this@SettingsActivity)
+                val themeOption = getThemeOption(this@SettingsActivity, it).orDefault(this@SettingsActivity)
 
                 this@SettingsActivity.themeOption.value = themeOption
                 this@SettingsActivity.themeProvider = BasicThemeProvider(
@@ -210,7 +211,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
         }
 
         getSettingBlocking(THEME_KEY).let {
-            val themeOption = ThemeOptions[it].orDefault(this@SettingsActivity)
+            val themeOption = getThemeOption(this, it).orDefault(this@SettingsActivity)
 
             this.themeOption.value = themeOption
             this.themeProvider = BasicThemeProvider(

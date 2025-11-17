@@ -75,12 +75,14 @@ import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.forceUnlockDatastore
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
+import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.utils.JniUtils
@@ -281,7 +283,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     private fun updateColorsIfDynamicChanged() {
         val key = getSetting(THEME_KEY)
         if(key != activeThemeOption?.key) {
-            ThemeOptions[key]?.let { if(it.available(this)) updateTheme(it) }
+            getThemeOption(this, key)?.let { if(it.available(this)) updateTheme(it) }
             return
         }
 
@@ -389,7 +391,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         Subtypes.addDefaultSubtypesIfNecessary(this)
 
         getSettingBlocking(THEME_KEY).let {
-            val themeOption = ThemeOptions[it].orDefault(this@LatinIME)
+            val themeOption = getThemeOption(this, it).orDefault(this@LatinIME)
 
             activeThemeOption = themeOption
             activeColorScheme.value = themeOption.obtainColors(this@LatinIME)
@@ -410,6 +412,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                                 updateDrawableProvider(f(this@LatinIME))
                                 invalidateKeyboard()
                             }
+                        } else {
+                            if(currentInputEditorInfo?.privateImeOptions?.contains("org.futo.inputmethod.latin.ThemeMode") == true) updateColorsIfDynamicChanged()
                         }
                     }
                 }
@@ -873,7 +877,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         uixManager.onPersistentStatesUnlocked()
 
-        updateTheme(ThemeOptions[getSettingBlocking(THEME_KEY)].orDefault(this))
+        updateTheme(getThemeOption(this, getSettingBlocking(THEME_KEY)).orDefault(this))
         CanThrowIfDebug = true
 
         // TODO: Spell checker service

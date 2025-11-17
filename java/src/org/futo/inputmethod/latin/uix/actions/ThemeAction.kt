@@ -21,7 +21,7 @@ val ThemeAction = Action(
 
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
-                ThemePicker { manager.updateTheme(it) }
+                ThemePicker({ manager.updateTheme(it) }, {})
             }
         }
     }

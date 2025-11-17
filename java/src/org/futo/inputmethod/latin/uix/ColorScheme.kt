@@ -7,6 +7,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.core.math.MathUtils
 import kotlin.math.pow
@@ -34,6 +35,8 @@ data class ExtraColors(
 
     val navigationBarColor: Color? = null,
     val keyboardBackgroundShader: String? = null,
+    val keyboardBackgroundBitmap: ImageBitmap? = null,
+    val keyRoundness: Float = 1.0f
 )
 
 data class KeyboardColorScheme(

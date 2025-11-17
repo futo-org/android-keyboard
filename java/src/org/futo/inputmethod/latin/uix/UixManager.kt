@@ -25,6 +25,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -67,12 +68,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
@@ -83,6 +87,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -895,6 +901,7 @@ class UixManager(private val latinIME: LatinIME) {
         content: @Composable BoxScope.() -> Unit
     ) = with(LocalDensity.current) {
         val backgroundBrush = LocalKeyboardScheme.current.keyboardBackgroundGradient ?: SolidColor(backgroundColor)
+        val backgroundImage = LocalKeyboardScheme.current.extended.keyboardBackgroundBitmap
 
         Box(modifier
             .onSizeChanged { measuredTouchableHeight = it.height }
@@ -919,6 +926,16 @@ class UixManager(private val latinIME: LatinIME) {
         ) {
             LocalKeyboardScheme.current.keyboardBackgroundShader?.let { source ->
                 KeyboardSurfaceShaderBackground(source, modifier = Modifier.matchParentSize())
+            }
+            backgroundImage?.let {
+                Image(
+                    bitmap = it,
+                    contentDescription = null,
+                    modifier = Modifier.matchParentSize().clearAndSetSemantics{},
+                    contentScale = ContentScale.Crop
+                )
+
+                Box(Modifier.matchParentSize().background(backgroundBrush))
             }
             CompositionLocalProvider(LocalKeyboardPadding provides KeyboardPadding(
                     left = padding.left.toDp().coerceAtLeast(0.dp),

@@ -404,29 +404,32 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         keyboardBackground = coloredRectangle(0x00000000)
 
-        val keyCornerRadius = 9.dp
+        val roundness = colorScheme.extended.keyRoundness
+        val keyCornerRadius = 9.dp * roundness
 
         val spaceCornerRadius = if(keyBorders) {
             keyCornerRadius
         } else {
-            48.dp
+            48.dp * roundness
         }
+
+        val actionKeyRadius = 128.dp * roundness
 
         keyStyles = mapOf(
             KeyVisualStyle.Action to if(expertMode) {
                 VisualStyleDescriptor(
-                    backgroundDrawable = coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.1f).toArgb(), dp(128.dp)),
+                    backgroundDrawable = coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.1f).toArgb(), dp(actionKeyRadius)),
                     foregroundColor    = colorScheme.onSurface.copy(alpha = 0.6f).toArgb(),
 
-                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.6f).toArgb(), dp(128.dp)),
+                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.6f).toArgb(), dp(actionKeyRadius)),
                     foregroundColorPressed    = colorScheme.onSurface.toArgb()
                 )
             } else {
                 VisualStyleDescriptor(
-                    backgroundDrawable = coloredRoundedRectangle(colorScheme.primary.toArgb(), dp(128.dp)),
+                    backgroundDrawable = coloredRoundedRectangle(colorScheme.primary.toArgb(), dp(actionKeyRadius)),
                     foregroundColor    = colorScheme.onPrimary.toArgb(),
 
-                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.secondaryContainer.toArgb(), dp(128.dp)),
+                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.secondaryContainer.toArgb(), dp(actionKeyRadius)),
                     foregroundColorPressed    = colorScheme.onSecondaryContainer.toArgb()
                 )
             },
