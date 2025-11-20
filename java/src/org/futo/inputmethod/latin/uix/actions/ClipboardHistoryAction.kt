@@ -113,6 +113,11 @@ val ClipboardShowPinnedOnTop = SettingsKey(
     false
 )
 
+val ClipboardSingleColumn = SettingsKey(
+    booleanPreferencesKey("clipboard_history_single_column"),
+    false
+)
+
 val ClipboardQuickClipsEnabled = SettingsKey(
     booleanPreferencesKey("clipboard_quick_clips_enabled"),
     true
@@ -782,9 +787,16 @@ val ClipboardHistoryAction = Action(
                         else -> clipboardHistoryManager.clipboardHistory
                     }
 
+                    val useSingleColumn = useDataStoreValue(ClipboardSingleColumn)
+                    val columns = if(useSingleColumn) {
+                        StaggeredGridCells.Fixed(1)
+                    } else {
+                        StaggeredGridCells.Adaptive(140.dp)
+                    }
+
                     LazyVerticalStaggeredGrid(
                         modifier = Modifier.fillMaxWidth(),
-                        columns = StaggeredGridCells.Adaptive(140.dp),
+                        columns = columns,
                         verticalItemSpacing = 4.dp,
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
@@ -902,6 +914,11 @@ val ClipboardHistoryAction = Action(
             userSettingToggleDataStore(
                 title = R.string.action_clipboard_manager_settings_show_pinned_above_others,
                 setting = ClipboardShowPinnedOnTop
+            ).copy(visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }),
+
+            userSettingToggleDataStore(
+                title = R.string.action_clipboard_manager_settings_list_layout,
+                setting = ClipboardSingleColumn
             ).copy(visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }),
         )
     )
