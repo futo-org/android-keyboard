@@ -452,10 +452,8 @@ public final class InputLogic {
         mConnection.updateICCursor(oldSelStart, newSelStart, oldSelEnd, newSelEnd);
 
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd, composingStart, composingEnd)) {
-            Log.d(TAG, "It's belated");
             return false;
         }
-        Log.d(TAG, "It's not belated");
 
         // TODO: the following is probably better done in resetEntireInputState().
         // it should only happen when the cursor moved, and the very purpose of the
