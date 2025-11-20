@@ -48,12 +48,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.runBlocking
-import org.futo.inputmethod.latin.BinaryDictionaryGetter
 import org.futo.inputmethod.latin.MultilingualBucketSetting
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
-import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.getSetting
@@ -375,7 +373,7 @@ fun ConfirmResourceActionDialog(
     val hasBuiltInFallback = if (resourceKind == FileKind.VoiceInput) {
         ResourceHelper.BuiltInVoiceInputFallbacks[locale.language] != null
     } else if (resourceKind == FileKind.Dictionary) {
-        Dictionaries.getDictionaryId(locale) != 0
+        Dictionaries.getDictionaryIfExists(LocalContext.current, locale, Dictionaries.DictionaryKind.Any) != null
     } else {
         true
     }
@@ -672,7 +670,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 } + " " + context.getString(
                     R.string.language_settings_resource_imported_indicator
                 )
-             } ?: if (BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false).isNotEmpty()) {
+             } ?: if (Dictionaries.getDictionaryIfExists(context, locale, Dictionaries.DictionaryKind.Any) != null) {
                 context.getString(R.string.language_settings_resource_builtin_dictionary_name)
             } else {
                 null

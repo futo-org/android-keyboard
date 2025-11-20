@@ -36,6 +36,7 @@ import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
 import org.futo.inputmethod.latin.uix.PREFER_BLUETOOTH
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.ResourceHelper
+import org.futo.inputmethod.latin.uix.USE_PERSONAL_DICT
 import org.futo.inputmethod.latin.uix.USE_VAD_AUTOSTOP
 import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
@@ -119,17 +120,22 @@ private class VoiceInputActionWindow(
     private var shouldPlaySounds: Boolean = false
     private fun loadSettings(): RecognizerViewSettings {
         val enableSound = context.getSetting(ENABLE_SOUND)
-        val verboseFeedback = context.getSetting(VERBOSE_PROGRESS)
+        val verboseFeedback = false//context.getSetting(VERBOSE_PROGRESS)
         val disallowSymbols = context.getSetting(DISALLOW_SYMBOLS)
         val useBluetoothAudio = context.getSetting(PREFER_BLUETOOTH)
         val requestAudioFocus = context.getSetting(AUDIO_FOCUS)
         val canExpandSpace = context.getSetting(CAN_EXPAND_SPACE)
         val useVAD = context.getSetting(USE_VAD_AUTOSTOP)
+        val usePersonalDict = context.getSetting(USE_PERSONAL_DICT)
 
         val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
-        val allowedLanguages = locales.map { getLanguageFromWhisperString(it.language) }
-            .filterNotNull().toSet()
+        val allowedLanguages = locales.mapNotNull { getLanguageFromWhisperString(it.language) }.toSet()
+        val glossary = if(usePersonalDict) {
+            state.userDictionaryObserver.getWords(locales).filter { it.shortcut.isNullOrEmpty() }.map { it.word }
+        } else {
+            emptyList()
+        }
 
         shouldPlaySounds = enableSound
 
@@ -141,7 +147,7 @@ private class VoiceInputActionWindow(
                 languageSpecificModels = languageSpecificModels
             ),
             decodingConfiguration = DecodingConfiguration(
-                glossary = state.userDictionaryObserver.getWords().filter { it.shortcut.isNullOrEmpty() }.map { it.word },
+                glossary = glossary,
                 languages = allowedLanguages,
                 suppressSymbols = disallowSymbols
             ),

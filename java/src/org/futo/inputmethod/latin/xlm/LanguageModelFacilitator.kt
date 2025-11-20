@@ -21,6 +21,7 @@ import kotlinx.coroutines.withTimeout
 import org.futo.inputmethod.engine.general.OnGetSuggestedWordsCallbackWithInputStyle
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.BinaryDictionary
+import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.DictionaryFacilitator
 import org.futo.inputmethod.latin.NgramContext
@@ -89,6 +90,20 @@ internal fun SuggestedWordInfo.scoreAtLeast(other: SuggestedWordInfo): Suggested
     return result
 }
 
+internal fun SuggestedWordInfo.scoreAtMost(other: SuggestedWordInfo): SuggestedWordInfo {
+    val result = SuggestedWordInfo(
+        mWord,
+        mPrevWordsContext,
+        mScore.coerceAtMost(other.mScore - 1),
+        mKindAndFlags,
+        mSourceDict,
+        0,
+        0
+    )
+
+    return result
+}
+
 private fun levenshteinDistance(s1: String, s2: String): Int {
     val len1 = s1.length
     val len2 = s2.length
@@ -133,6 +148,7 @@ public class LanguageModelFacilitator(
     val suggestionBlacklist: SuggestionBlacklist,
     val suggestedWordsCallback: OnGetSuggestedWordsCallbackWithInputStyle
 ) {
+    private val TAG = "LanguageModelFacilitator"
     private val userDictionary = UserDictionaryObserver(context)
 
     private var shouldSuggestEmojis = SHOW_EMOJI_SUGGESTIONS.default
@@ -179,11 +195,11 @@ public class LanguageModelFacilitator(
                 }
                 numConsecutiveTimeouts = 0
             } catch(e: TimeoutCancellationException) {
-                Log.d("LanguageModelFacilitator", "Failed to complete prediction within the time!")
+                if(BuildConfig.DEBUG) Log.d(TAG, "Failed to complete prediction within the time!")
                 numConsecutiveTimeouts += 1
                 if(numConsecutiveTimeouts > 5) {
                     transformerDisabled = true
-                    Log.w("LanguageModelFacilitator", "Temporarily disabling transformer due to continuous timeouts")
+                    if(BuildConfig.DEBUG) Log.w(TAG, "Temporarily disabling transformer due to continuous timeouts")
                 }
                 return@runBlocking false
             }
@@ -198,10 +214,7 @@ public class LanguageModelFacilitator(
         val locale = dictionaryFacilitator.primaryLocale ?: return null
         if ((languageModel == null && locale.language != skipLanguage) || (languageModel != null && languageModel?.locale?.language != locale.language)) {
             skipLanguage = null
-            Log.d(
-                "LanguageModelFacilitator",
-                "Calling closeInternalLocked on model due to seeming locale change"
-            )
+            if(BuildConfig.DEBUG) Log.d(TAG, "Calling closeInternalLocked on model due to seeming locale change")
             languageModel?.closeInternalLocked()
             languageModel = null
 
@@ -211,7 +224,7 @@ public class LanguageModelFacilitator(
             if (model != null) {
                 languageModel = LanguageModel(context, lifecycleScope, model, locale)
             } else {
-                Log.d("LanguageModelFacilitator", "no model for ${locale.language}")
+                if(BuildConfig.DEBUG) Log.d(TAG, "no model for ${locale.language}")
                 skipLanguage = locale.language
                 return null
             }
@@ -236,7 +249,7 @@ public class LanguageModelFacilitator(
                 values.ngramContext,
                 proximityInfoHandle,
                 autocorrectThreshold,
-                userDictionary.getWords().map { it.word },
+                userDictionary.getWords(listOf(locale)).map { it.word },
                 suggestionBlacklist.currentBlacklist.toTypedArray<String>()
             )
         }catch (e: ModelLoadingException) {
@@ -312,7 +325,7 @@ public class LanguageModelFacilitator(
                             results,
                             values.composedData,
                             values.ngramContext,
-                            userDictionary.getWords().map { it.word }
+                            userDictionary.getWords(listOf(languageModel!!.locale)).map { it.word }
                         )
 
                         if(rescored != null) {
@@ -379,20 +392,40 @@ public class LanguageModelFacilitator(
 
             val suggestedWordsDict = holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())
 
+
             val suggestedWordsDictList = suggestedWordsDict?.mSuggestedWordInfoList?.filter {
                 suggestionBlacklist.isSuggestedWordOk(it)
-            }
+            }?.toMutableList()
 
-            val maxWordDict = suggestedWordsDictList?.maxByOrNull {
+            var maxWordDict = suggestedWordsDictList?.maxByOrNull {
                 if(it == suggestedWordsDict.typedWordInfo
                     || it.isKindOf(SuggestedWordInfo.KIND_EMOJI_SUGGESTION)) Int.MIN_VALUE else it.mScore
             }
 
-            val bothAlgorithmsCameToSameConclusion = maxWordDict?.mWord == maxWord?.mWord
+            val maxNonWhitelistWordDict = suggestedWordsDictList?.maxByOrNull {
+                if(it == suggestedWordsDict.typedWordInfo
+                    || it.isKindOf(SuggestedWordInfo.KIND_EMOJI_SUGGESTION)
+                    || (it.isKindOf(SuggestedWordInfo.KIND_WHITELIST) && it.mSourceDict?.mDictType == "main")) Int.MIN_VALUE else it.mScore
+            }
 
+            // English language has some shortcuts, e.g. "bot" -> "not",    "hid" -> "his"
+            // These are common misspellings and usually useful corrections, but if the language model
+            // believes the original word fits better in the context we should skip the shortcut,
+            // else it's impossible to type these words without manually skipping correction in
+            // suggestion bar
+            if(maxWordDict != null && maxNonWhitelistWordDict != null && maxNonWhitelistWordDict != maxWordDict && maxNonWhitelistWordDict.mWord == maxWord?.mWord) {
+                val idx = suggestedWordsDictList.indexOf(maxWordDict)
+                suggestedWordsDictList.remove(maxWordDict)
+                suggestedWordsDictList.add(idx, maxWordDict.scoreAtMost(maxNonWhitelistWordDict))
+                maxWordDict = maxNonWhitelistWordDict
+            }
+
+            val bothAlgorithmsCameToSameConclusion = maxWordDict?.mWord == maxWord?.mWord
+            
             var autocorrectWord: SuggestedWordInfo? = null
             val filtered = mutableListOf<SuggestedWordInfo>()
             if(bothAlgorithmsCameToSameConclusion && maxWord != null && maxWordDict != null){
+                if(BuildConfig.DEBUG) Log.d(TAG, "both algorithms came to same conclusion, autocorrect to ${maxWord.mWord}")
                 // We can be pretty confident about autocorrecting this
                 val clone = maxWord.add(maxWordDict)
                 autocorrectWord = clone
@@ -406,6 +439,7 @@ public class LanguageModelFacilitator(
             // annoying
             val bothAlgorithmsCameToSameConclusionButLowerCased = maxWordDict?.mWord == maxWord?.mWord?.lowercase()
             if(bothAlgorithmsCameToSameConclusionButLowerCased && maxWord != null && maxWordDict != null) {
+                if(BuildConfig.DEBUG) Log.d(TAG, "both algorithms came to same conclusion but lowercased, autocorrect to ${maxWord.mWord}")
                 val clone = maxWordDict.scoreAtLeast(maxWord)
                 autocorrectWord = clone
                 suggestionResults.add(clone)
@@ -449,6 +483,7 @@ public class LanguageModelFacilitator(
                 && maxWordDict.mScore > 100
                 && maxWord != null
             ) {
+                if(BuildConfig.DEBUG) Log.d(TAG, "type user history found")
                 val clone = maxWordDict.scoreAtLeast(maxWord)
                 suggestionResults.add(clone)
             }
@@ -482,6 +517,21 @@ public class LanguageModelFacilitator(
                 settingsValues.mIsNumberRowEnabled
             )
 
+
+            if(BuildConfig.DEBUG) {
+                val dmpw: (SuggestedWordInfo?) -> String = { v -> v?.let { "${it.mWord}:${it.mScore}:${it.mKindAndFlags}:${it.mSourceDict?.mDictType}" } ?: "[null]" }
+                val dmp: (List<SuggestedWordInfo>?) -> String = { v -> v?.joinToString { dmpw(it) } ?: "[null]" }
+                Log.d(TAG, "process update suggestion strip:\n" +
+                            "raw lm results: ${dmp(lmSuggestions)}\n" +
+                            "reweighted lm results: ${dmp(reweightedSuggestions)}\n" +
+                            "raw dict results: ${dmp(suggestedWordsDict?.mSuggestedWordInfoList)}}\n" +
+                            "filtered dict results: ${dmp(suggestedWordsDictList)}}\n" +
+                            "------------\n" +
+                            "max word lm: ${dmpw(maxWord)}}\n" +
+                            "max word dict: ${dmpw(maxWordDict)}}\n"
+                )
+            }
+
             job.cancel()
 
             // TODO
@@ -506,7 +556,7 @@ public class LanguageModelFacilitator(
     }
 
     public suspend fun destroyModel() {
-        Log.d("LanguageModelFacilitator", "destroyModel called")
+        if(BuildConfig.DEBUG) Log.d(TAG, "destroyModel called")
         languageModel?.closeInternalLocked()
         languageModel = null
     }
@@ -518,12 +568,12 @@ public class LanguageModelFacilitator(
     private var trainingEnabled = false
 
     public fun launchProcessor() = lifecycleScope.launch {
-        Log.d("LanguageModelFacilitator", "Starting processor")
+        if(BuildConfig.DEBUG) Log.d(TAG, "Starting processor")
         launch {
             withContext(Dispatchers.Default) {
                 TrainingWorkerStatus.lmRequest.collect {
                     if (it == LanguageModelFacilitatorRequest.ResetModel) {
-                        Log.d("LanguageModelFacilitator", "ResetModel event received, destroying model")
+                        Log.d(TAG, "ResetModel event received, destroying model")
                         destroyModel()
                     }else if(it == LanguageModelFacilitatorRequest.ClearTrainingLog) {
                         historyLog.clear()
@@ -536,7 +586,7 @@ public class LanguageModelFacilitator(
         launch {
             withContext(Dispatchers.Default) {
                 ModelPaths.modelOptionsUpdated.collect {
-                    Log.d("LanguageModelFacilitator", "ModelPaths options updated, destroying model")
+                    Log.d(TAG, "ModelPaths options updated, destroying model")
                     skipLanguage = null
                     destroyModel()
                 }
@@ -546,7 +596,7 @@ public class LanguageModelFacilitator(
         launch {
             withContext(Dispatchers.Default) {
                 sharedFlow.conflate().collect { value ->
-                    //Log.d("LanguageModelFacilitator", "Collecting")
+                    //Log.d(TAG, "Collecting")
                     processUpdateSuggestionStrip(value)
                 }
             }
@@ -614,11 +664,11 @@ public class LanguageModelFacilitator(
             )
 
             lifecycleScope.launch {
-                //Log.d("LanguageModelFacilitator", "Emitting values")
+                //Log.d(TAG, "Emitting values")
                 sharedFlow.emit(values)
             }
         } catch(e: Exception) {
-            Log.d("LanguageModelFacilitator", "Failed to get context, composed data snapshot, etc: $e")
+            if(BuildConfig.DEBUG) Log.d(TAG, "Failed to get context, composed data snapshot, etc: $e")
             e.printStackTrace()
         }
     }

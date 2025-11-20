@@ -12,6 +12,8 @@ object InputConnectionUtil {
      * both.
      */
     fun extractSelection(ic: InputConnection, minValue: Int = 0): Pair<Int, Int> {
+        if(!SupportsNonComposing) return -1 to -1
+
         var selStart = -1
         var selEnd = -1
 

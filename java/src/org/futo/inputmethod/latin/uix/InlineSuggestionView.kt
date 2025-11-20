@@ -77,14 +77,13 @@ fun createInlineSuggestionsRequest(
     }
 
     val drawable = R.drawable.inline_suggestion_chip
-    val bgColor = activeColorScheme.secondaryContainer.toArgb()
 
     val stylesBuilder = UiVersions.newStylesBuilder()
     val suggestionStyle = InlineSuggestionUi.newStyleBuilder()
         .setSingleIconChipStyle(
             ViewStyle.Builder()
                 .setBackground(
-                    Icon.createWithResource(context, drawable).setTint(bgColor)
+                    Icon.createWithResource(context, drawable).setTint(activeColorScheme.keyboardContainer.toArgb())
                 )
                 .setPadding(0, 0, 0, 0)
                 .build()
@@ -92,12 +91,12 @@ fun createInlineSuggestionsRequest(
         .setChipStyle(
             ViewStyle.Builder()
                 .setBackground(
-                    Icon.createWithResource(context, drawable).setTint(bgColor)
+                    Icon.createWithResource(context, drawable).setTint(activeColorScheme.keyboardContainer.toArgb())
                 )
                 .setPadding(
-                    fromDp(8.0f),
+                    fromDp(6.0f),
                     fromDp(0.0f),
-                    fromDp(8.0f),
+                    fromDp(6.0f),
                     fromDp(0.0f),
                 )
                 .build()
@@ -111,7 +110,7 @@ fun createInlineSuggestionsRequest(
                     fromDp(4.0f),
                     fromDp(0.0f),
                 )
-                .setTextColor(activeColorScheme.onSecondaryContainer.toArgb())
+                .setTextColor(activeColorScheme.onKeyboardContainer.toArgb())
                 .setTextSize(14.0f)
                 .build()
         )
@@ -123,7 +122,7 @@ fun createInlineSuggestionsRequest(
                     fromDp(4.0f),
                     fromDp(0.0f),
                 )
-                .setTextColor(activeColorScheme.onSecondaryContainer.copy(alpha = 0.5f).toArgb())
+                .setTextColor((activeColorScheme.hintColor ?: activeColorScheme.onSurfaceVariant).toArgb())
                 .setTextSize(12.0f)
                 .build()
         )

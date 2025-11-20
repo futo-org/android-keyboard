@@ -122,6 +122,15 @@ tasks.register('updateLocales', Exec) {
     ]
 }
 
+tasks.register('updateBundleResources', Exec) {
+    workingDir = file('java/res-bundle')
+    commandLine = [
+            System.getProperty("os.name").toLowerCase().contains("windows") ? "python" : "python3",
+            "download-bundles.py",
+            file('java/res-bundle').absolutePath
+    ]
+}
+
 tasks.register('updateContributors') {
     def script = file('tools/contributors.py')
     def outputFile = file('java/src/org/futo/inputmethod/latin/uix/settings/pages/credits/Contributors.kt')
@@ -170,6 +179,12 @@ android {
         testApplicationId 'org.futo.inputmethod.latin.tests'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = false
+    }
+
+    bundle {
+        language {
+            enableSplit = true
+        }
     }
 
     signingConfigs {
@@ -228,6 +243,12 @@ android {
                 it.buildConfigField "String", "ACRA_USER", "\"\""
                 it.buildConfigField "String", "ACRA_PASSWORD", "\"\""
             }
+
+            it.buildConfigField "String", "FUTOPAY_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
+            it.buildConfigField "String", "FUTOPAY_PRICE", "\"~\$6.99\""
+
+            it.buildConfigField "String", "GOOGLEPAY_URL", "\"https://play.google.com/store/apps/details?id=org.futo.keyboardpayment\""
+            it.buildConfigField "String", "GOOGLEPAY_PRICE", "\"~\$11.99\""
         }
     }
 
@@ -245,8 +266,7 @@ android {
             buildConfigField "String", "BRANCH", "\"${getBranch()}\""
             getIsDefault().set(true)
 
-            buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
-            buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
+            buildConfigField "String", "PAYMENT_PRICE", "FUTOPAY_PRICE"
         }
 
         stable {
@@ -256,8 +276,7 @@ android {
             buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
             buildConfigField "String", "BRANCH", "\"${getBranch()}\""
 
-            buildConfigField "String", "PAYMENT_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
-            buildConfigField "String", "PAYMENT_PRICE", "\"~\$6.99\""
+            buildConfigField "String", "PAYMENT_PRICE", "FUTOPAY_PRICE"
         }
 
         playstore {
@@ -270,8 +289,7 @@ android {
             buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
             buildConfigField "String", "BRANCH", "\"${getBranch()}\""
 
-            buildConfigField "String", "PAYMENT_URL", "\"https://play.google.com/store/apps/details?id=org.futo.keyboardpayment\""
-            buildConfigField "String", "PAYMENT_PRICE", "\"~\$11.99\""
+            buildConfigField "String", "PAYMENT_PRICE", "GOOGLEPAY_PRICE"
         }
     }
 
@@ -294,6 +312,7 @@ android {
 
         playstore {
             java.srcDirs = ['common/src', 'java/src', 'java/playstore/java']
+            res.srcDirs = ['java/res-bundle']
             manifest.srcFile 'java/playstore/AndroidManifest.xml'
         }
 

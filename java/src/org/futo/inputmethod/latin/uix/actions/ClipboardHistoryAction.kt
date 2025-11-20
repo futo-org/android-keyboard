@@ -28,11 +28,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -111,6 +113,11 @@ val ClipboardShowPinnedOnTop = SettingsKey(
     false
 )
 
+val ClipboardSingleColumn = SettingsKey(
+    booleanPreferencesKey("clipboard_history_single_column"),
+    false
+)
+
 val ClipboardQuickClipsEnabled = SettingsKey(
     booleanPreferencesKey("clipboard_quick_clips_enabled"),
     true
@@ -141,12 +148,24 @@ data class ClipboardEntry(
     val mimeTypes: List<String>
 )
 
+private fun sanitizeClipboardText(text: String, maxLength: Int = 64): String {
+    var result = text.replace("\n", " ")
+    if(result.length > maxLength) {
+        result = result.substring(0, maxLength) + "..."
+    }
+    return result
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPaste: (ClipboardEntry) -> Unit, onRemove: (ClipboardEntry) -> Unit, onPin: (ClipboardEntry) -> Unit) {
+    val color = if(clipboardEntry.pinned) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.surfaceContainer
+    }
     Surface(
-        color = MaterialTheme.colorScheme.secondaryContainer,
+        color = color,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = modifier
             .padding(2.dp)
@@ -172,11 +191,13 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
                             stringResource(R.string.action_clipboard_manager_pin_item)
                         },
                         tint = if(clipboardEntry.pinned) {
-                            MaterialTheme.colorScheme.onSecondaryContainer
+                            contentColorFor(color)
                         } else {
-                            MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.2f)
+                            contentColorFor(color).copy(alpha = 0.5f)
                         },
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(16.dp).rotate(
+                            if(clipboardEntry.pinned) { 0f } else { 45f }
+                        )
                     )
                 }
 
@@ -184,27 +205,17 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
 
                 IconButton(onClick = {
                     onRemove(clipboardEntry)
-                }, modifier = Modifier.size(32.dp), enabled = !clipboardEntry.pinned) {
+                }, modifier = Modifier.size(32.dp)) {
                     Icon(
                         painterResource(id = R.drawable.close),
                         contentDescription = stringResource(R.string.action_clipboard_manager_remove_item),
-                        tint = if(clipboardEntry.pinned) {
-                            MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.2f)
-                        } else {
-                            MaterialTheme.colorScheme.onSecondaryContainer
-                        },
+                        tint = contentColorFor(color),
                         modifier = Modifier.size(16.dp)
                     )
                 }
             }
 
-            val text = (clipboardEntry.text ?: "").let {
-                if(it.length > 256) {
-                    it.substring(0, 256) + "..."
-                } else {
-                    it
-                }
-            }
+            val text = (clipboardEntry.text ?: "").let { sanitizeClipboardText(it) }
 
             Text(text, modifier = Modifier.padding(8.dp, 2.dp), style = Typography.SmallMl)
 
@@ -276,9 +287,19 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
             override fun onPrimaryClipChanged() {
                 if (!context.getSettingBlocking(ClipboardHistoryEnabled)) return
 
-                val clip = clipboardManager.primaryClip
+                val clip = try {
+                    clipboardManager.primaryClip
+                } catch(_: Exception) {
+                    null
+                }
 
-                val text = clip?.getItemAt(0)?.coerceToText(context)?.toString()
+                // Ignore massive entries
+                val textChrSeq = clip?.getItemAt(0)?.coerceToText(context)
+                if(textChrSeq != null && textChrSeq.length > 500_000) {
+                    return
+                }
+
+                val text = textChrSeq?.toString()
                 val uri = clip?.getItemAt(0)?.uri
 
                 val timestamp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -566,8 +587,14 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
         // Clear the clipboard if the item being removed is the current one
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // TODO: URI
-            if((item.text != null) && item.text == clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context)?.toString()) {
-                clipboardManager.clearPrimaryClip()
+            try {
+                if ((item.text != null) && item.text == clipboardManager.primaryClip?.getItemAt(0)
+                        ?.coerceToText(context)?.toString()
+                ) {
+                    clipboardManager.clearPrimaryClip()
+                }
+            } catch(e: Exception) {
+                e.printStackTrace()
             }
         }
         clipboardHistory.removeAll { it == item }
@@ -605,6 +632,7 @@ val ClipboardHistoryAction = Action(
     persistentState = { manager ->
         ClipboardHistoryManager(manager.getContext(), manager.getLifecycleScope())
     },
+    altPressImpl = PasteAction.simplePressImpl,
     persistentStateInitialization = PersistentStateInitialization.OnKeyboardLoad,
     windowImpl = { manager, persistent ->
         val unlocked = !manager.isDeviceLocked()
@@ -760,9 +788,16 @@ val ClipboardHistoryAction = Action(
                         else -> clipboardHistoryManager.clipboardHistory
                     }
 
+                    val useSingleColumn = useDataStoreValue(ClipboardSingleColumn)
+                    val columns = if(useSingleColumn) {
+                        StaggeredGridCells.Fixed(1)
+                    } else {
+                        StaggeredGridCells.Adaptive(140.dp)
+                    }
+
                     LazyVerticalStaggeredGrid(
                         modifier = Modifier.fillMaxWidth(),
-                        columns = StaggeredGridCells.Adaptive(140.dp),
+                        columns = columns,
                         verticalItemSpacing = 4.dp,
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
@@ -794,8 +829,22 @@ val ClipboardHistoryAction = Action(
                                     clipboardHistoryManager.onPaste(it)
                                     manager.performHapticAndAudioFeedback(Constants.CODE_OUTPUT_TEXT, view)
                                 }, onRemove = {
-                                    clipboardHistoryManager.onRemove(it)
-                                    manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                                    manager.requestDialog(
+                                        context.getString(R.string.action_clipboard_manager_remove_item_confirm_dialog, run {
+                                            sanitizeClipboardText(it.text ?: "", 24)
+                                        }),
+                                        listOf(
+                                            DialogRequestItem(
+                                                context.getString(R.string.action_clipboard_manager_cancel_action_button)
+                                            ) { },
+                                            DialogRequestItem(
+                                                context.getString(R.string.action_clipboard_manager_remove_item)
+                                            ) {
+                                                clipboardHistoryManager.onRemove(it)
+                                                manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                                            }
+                                        )
+                                    ) { }
                                 }, onPin = {
                                     clipboardHistoryManager.onTogglePin(it)
                                     manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
@@ -866,6 +915,11 @@ val ClipboardHistoryAction = Action(
             userSettingToggleDataStore(
                 title = R.string.action_clipboard_manager_settings_show_pinned_above_others,
                 setting = ClipboardShowPinnedOnTop
+            ).copy(visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }),
+
+            userSettingToggleDataStore(
+                title = R.string.action_clipboard_manager_settings_list_layout,
+                setting = ClipboardSingleColumn
             ).copy(visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }),
         )
     )

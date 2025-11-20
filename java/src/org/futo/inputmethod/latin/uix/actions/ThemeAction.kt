@@ -14,6 +14,8 @@ val ThemeAction = Action(
     canShowKeyboard = true,
     windowImpl = { manager, _ ->
         object : ActionWindow() {
+            override val onlyShowAboveKeyboard: Boolean = true
+
             @Composable
             override fun windowName(): String {
                 return stringResource(R.string.action_theme_switcher_title)

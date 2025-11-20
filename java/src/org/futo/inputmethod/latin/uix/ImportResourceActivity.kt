@@ -42,7 +42,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
-import org.futo.inputmethod.latin.BinaryDictionaryGetter
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
@@ -61,6 +60,7 @@ import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.orDefault
+import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.openURI
@@ -865,7 +865,7 @@ object MissingDictionaryHelper {
             locale,
             FileKind.Dictionary
         ) != null
-        val hasBuiltInDict = BinaryDictionaryGetter.getDictionaryFiles(locale, context, false, false).isNotEmpty()
+        val hasBuiltInDict = Dictionaries.getDictionaryIfExists(context, locale, Dictionaries.DictionaryKind.Any) != null
 
         // These languages have an automatic prompt to download the right file on keyboard.futo.org
         val langsWithDownloadableDictionaries = setOf(

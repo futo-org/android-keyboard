@@ -1,5 +1,7 @@
 package org.futo.inputmethod.engine
 
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,7 +17,11 @@ import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValues
 import org.futo.inputmethod.latin.uix.ActionInputTransaction
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.throwIfDebug
+import org.futo.inputmethod.latin.uix.dataStore
+import org.futo.inputmethod.latin.uix.deferSetSetting
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
@@ -23,11 +29,16 @@ enum class IMEMessage {
     ReloadResources,
     ReloadPersonalDict,
 }
+
 val GlobalIMEMessage = MutableSharedFlow<IMEMessage>(
     replay = 0,
     extraBufferCapacity = 8
 )
 
+private val ImesEverUsedWithDictionaryPersonalization = SettingsKey(
+    stringSetPreferencesKey("ImesEverUsedWithDictionaryPersonalization"),
+    emptySet()
+)
 
 enum class IMEKind(val factory: (IMEHelper) -> IMEInterface) {
     General({ GeneralIME(it) }),
@@ -64,6 +75,19 @@ class IMEManager(
         currentActionInputTransactionIME?.let { return it }
 
         val kind = getActiveIMEKind(settingsValues)
+
+        if(
+            settingsValues.isPersonalizationEnabled
+                && !service.getSetting(ImesEverUsedWithDictionaryPersonalization).contains(kind.name)
+        ) {
+            service.lifecycleScope.launch(Dispatchers.IO) {
+                service.dataStore.edit {
+                    it[ImesEverUsedWithDictionaryPersonalization.key] =
+                        (it[ImesEverUsedWithDictionaryPersonalization.key] ?: emptySet()) +
+                                setOf(kind.name)
+                }
+            }
+        }
 
         return imes.getOrPut(kind) {
             kind.factory(helper).also {
@@ -116,13 +140,17 @@ class IMEManager(
 
         if(!helper.context.isDirectBootUnlocked) return
 
+        val imesToClear = service.getSetting(ImesEverUsedWithDictionaryPersonalization)
         IMEKind.entries.forEach { kind ->
-            imes.getOrPut(kind) {
-                kind.factory(helper).also {
-                    if(created) it.onCreate()
-                }
-            }.clearUserHistoryDictionaries()
+            if(imesToClear.contains(kind.name)) {
+                imes.getOrPut(kind) {
+                    kind.factory(helper).also {
+                        if (created) it.onCreate()
+                    }
+                }.clearUserHistoryDictionaries()
+            }
         }
+        service.deferSetSetting(service, ImesEverUsedWithDictionaryPersonalization.key, emptySet())
     }
 
     private var currentActionInputTransactionIME: ActionInputTransactionIME? = null

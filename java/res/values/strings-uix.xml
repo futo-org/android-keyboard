@@ -56,6 +56,7 @@
     <string name="action_clipboard_manager_unpin_item">Unpin item</string>
     <string name="action_clipboard_manager_pin_item">Pin item</string>
     <string name="action_clipboard_manager_remove_item">Remove item</string>
+    <string name="action_clipboard_manager_remove_item_confirm_dialog">Confirm remove:\n\"%s\"</string>
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_cancel_action_button">Cancel</string>
     <string name="action_clipboard_manager_disable_text">There are no items to clear. Disable clipboard history?</string>
@@ -237,6 +238,7 @@
 
     <string name="payment_screen_pay_via_google">Pay via Google Play (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
     <string name="payment_screen_pay_via_futopay">Pay (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
+    <string name="payment_screen_pay_via_futopay2">Pay via FUTO Pay (<xliff:g name="price" example="~$2.99">%s</xliff:g> + tax)</string>
     <string name="payment_screen_more_options">More options</string>
 
     <string name="payment_screen_payment_complete_title">Payment Complete</string>
@@ -498,6 +500,8 @@
     <string name="voice_input_settings_indication_sounds_subtitle">Play a short sound on start and cancel</string>
     <string name="voice_input_settings_verbose_progress">Verbose progress</string>
     <string name="voice_input_settings_verbose_progress_subtitle">Display additional information, such as mic being used</string>
+    <string name="voice_input_settings_use_personal_dict">Personal Dictionary for Voice</string>
+    <string name="voice_input_settings_use_personal_dict_subtitle">Whether or not to use the personal dictionary for voice input</string>
     <string name="voice_input_settings_use_bluetooth_mic">Prefer Bluetooth Mic</string>
     <string name="voice_input_settings_use_bluetooth_mic_subtitle">There may be extra delay to recording starting as Bluetooth SCO connection must be negotiated</string>
     <string name="voice_input_settings_audio_focus">Audio Focus</string>

@@ -36,6 +36,7 @@ import org.futo.inputmethod.engine.InputMethodConnectionProvider;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.UnicodeSurrogate;
 import org.futo.inputmethod.latin.common.StringUtils;
+import org.futo.inputmethod.latin.inputlogic.InputLogic;
 import org.futo.inputmethod.latin.inputlogic.PrivateCommandPerformer;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -429,7 +430,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // never blocks or initiates IPC.
         // TODO: don't call #toString() here. Instead, all accesses to
         // mCommittedTextBeforeComposingText should be done on the main thread.
-        return CapsModeUtils.getCapsMode(mCommittedTextBeforeComposingText.toString(), inputType,
+        String txt = mCommittedTextBeforeComposingText.toString();
+        return CapsModeUtils.getCapsMode(txt, inputType,
                 spacingAndPunctuations, hasSpaceBefore);
     }
 

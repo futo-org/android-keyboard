@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +35,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.R
@@ -218,6 +220,20 @@ object QuickClip {
             regexes
         }
 
+        val text = item.text
+        if(text != null && text.length > 32_000) {
+            if(text.length > 500_000) return null
+
+            // Skip any processing for huge strings
+            return QuickClipState(
+                texts = listOf(QuickClipItem(QuickClipKind.FullString, text.toString(), 0)),
+                image = item.uri,
+                imageMimeTypes = mimeTypes,
+                validUntil = validUntil,
+                isSensitive = isSensitive
+            )
+        }
+
         item.text?.toString()?.let { text ->
             regexesToUse.forEach { entry ->
                 entry.value.findAll(text).forEach {
@@ -258,7 +274,11 @@ object QuickClip {
         val clipboardManager =
             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        val clip = clipboardManager.primaryClip
+        val clip = try {
+            clipboardManager.primaryClip
+        } catch(_: Exception) {
+            null
+        }
         if(clip == null) return null
 
         val firstItem = clip.getItemAt(0)
@@ -291,5 +311,23 @@ object QuickClip {
             cachedPreviousItem = firstItem
             cachedPreviousState = it
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewQuickClips() {
+    Row(Modifier.height(ActionBarHeight)) {
+        QuickClipView(QuickClipState(
+            texts = listOf(QuickClipItem(
+                kind = QuickClipKind.FullString,
+                text = "Some text goes here!",
+                occurrenceIndex = 0
+            )),
+            image = null,
+            imageMimeTypes = emptyList(),
+            validUntil = 0L,
+            isSensitive = false
+        )) { }
     }
 }

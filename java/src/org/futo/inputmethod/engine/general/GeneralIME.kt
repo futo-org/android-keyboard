@@ -1,5 +1,6 @@
 package org.futo.inputmethod.engine.general
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -29,6 +30,8 @@ import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
+import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
@@ -54,6 +57,11 @@ interface WordLearner {
 interface OnGetSuggestedWordsCallbackWithInputStyle {
     fun onGetSuggestedWords(suggestedWords: SuggestedWords, inputStyle: Int, sequenceNumber: Int)
 }
+
+val UseExpandableSuggestionsForGeneralIME = SettingsKey(
+    booleanPreferencesKey("use_expandable_suggestions_for_generalime"),
+    false
+)
 
 /**
  * General IME implementation that works for Latin-based languages and some
@@ -144,6 +152,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
 
     fun resetDictionaryFacilitator(force: Boolean = false, reloadMainDictionary: Boolean = false) {
+        if(!context.isDirectBootUnlocked) return
+
         val settings = settings.current
 
         val locales = settings.mInputAttributes.mLocaleOverride?.let {
@@ -210,6 +220,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun onStartInput() {
+        useExpandableUi = helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)
+
         resetDictionaryFacilitator()
         setNeutralSuggestionStrip()
         dictionaryFacilitator.onStartInput()
@@ -396,6 +408,15 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     fun updateSuggestions(inputStyle: Int) {
+        if(!settings.current.needsToLookupSuggestions()
+            && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH
+            && inputStyle != SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+        ) {
+            updateSuggestionJob?.cancel()
+            setNeutralSuggestionStrip()
+            return
+        }
+
         if(!languageModelFacilitator.shouldPassThroughToLegacy()) {
             languageModelFacilitator.updateSuggestionStripAsync(inputStyle)
         } else {
@@ -584,7 +605,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
     }
 
-    private val useExpandableUi = false
+    private var useExpandableUi = false
     override fun setNeutralSuggestionStrip() {
         inputLogic.setSuggestedWords(SuggestedWords.getEmptyInstance())
         helper.setNeutralSuggestionStrip(useExpandableUi)
@@ -594,16 +615,25 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
         val words = suggestedWords?.let { blacklist.filterBlacklistedSuggestions(it) } ?: SuggestedWords.getEmptyInstance()
         inputLogic.setSuggestedWords(words)
-        helper.showSuggestionStrip(words, useExpandableUi)
+
+        if(settings.current.isSuggestionsEnabledPerUserSettings) {
+            helper.showSuggestionStrip(words, useExpandableUi)
+        } else {
+            helper.setNeutralSuggestionStrip(useExpandableUi)
+        }
     }
 
-    fun debugInfo(): List<String> = listOf(
-        "composingText = ${inputLogic.mConnection.composingTextForDebug}",
-        "committedTextBeforeComposingText = ${inputLogic.mConnection.committedTextBeforeComposingTextForDebug}",
-        "LM.shouldPassThroughToLegacy = ${languageModelFacilitator.shouldPassThroughToLegacy()}",
-        "LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}",
-        "expected cursor = ${inputLogic.mConnection.mExpectedSelStart}:${inputLogic.mConnection.mExpectedSelEnd}"
-    )
+    fun debugInfo(): List<String> = buildList {
+        if(!settings.current.mInputAttributes.mIsPasswordField) {
+            add("composingText = ${inputLogic.mConnection.composingTextForDebug}")
+            add("committedTextBeforeComposingText = ${inputLogic.mConnection.committedTextBeforeComposingTextForDebug}")
+        }
+        add("LM.shouldPassThroughToLegacy = ${languageModelFacilitator.shouldPassThroughToLegacy()}")
+        add("LM.isTransformerDisabledDueToTimeout = ${languageModelFacilitator.isTransformerDisabled()}")
+        add("expected cursor = ${inputLogic.mConnection.mExpectedSelStart}:${inputLogic.mConnection.mExpectedSelEnd}")
+        add("dictionary loaded = ${dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()}, ${!dictionaryFacilitator.hasAtLeastOneUninitializedMainDictionary()}")
+        add("autoCapsFlags = ${getCurrentAutoCapsState()}")
+    }
 
     fun debugInfoS() = debugInfo().joinToString("\n")
 

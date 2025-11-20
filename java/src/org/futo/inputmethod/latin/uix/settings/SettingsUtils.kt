@@ -31,6 +31,8 @@ fun SetupOrMain(inputMethodEnabled: Boolean, inputMethodSelected: Boolean, doubl
 
     if (!inputMethodEnabled) {
         SetupEnableIME()
+    } else if (needsToShowDirectBootWarning()) {
+        SetupDirectBootWarning()
     } else if (!inputMethodSelected) {
         SetupChangeDefaultIME(doublePackage)
     } else {

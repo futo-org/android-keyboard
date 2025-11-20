@@ -217,9 +217,6 @@ fun UnpaidNoticeCondition(
     force: Boolean = LocalInspectionMode.current,
     inner: @Composable () -> Unit
 ) {
-    val paymentUrl = useDataStoreValue(TMP_PAYMENT_URL)
-    if(paymentUrl.isBlank()) return
-
     val numDaysInstalled = useNumberOfDaysInstalled()
     val forceShowNotice = useDataStoreValue(FORCE_SHOW_NOTICE)
     val isAlreadyPaid = useDataStoreValue(IS_ALREADY_PAID)
@@ -239,8 +236,6 @@ fun UnpaidNoticeCondition(
                 && (!isAlreadyPaid)
                 // and not overridden by migration notice
                 && !isDisplayingMigrationNotice
-                // and you can pay to begin with
-                && BuildConfig.PAYMENT_URL.isNotBlank()
 
     if (force || displayCondition) {
         inner()
@@ -479,28 +474,51 @@ fun PaymentScreen(
                     PaymentBulletPointList()
                 }
 
-                Button(
-                    onClick = {
-                        val url = runBlocking { context.getSetting(TMP_PAYMENT_URL) }
-                        if (url.isNotBlank()) {
-                            context.openURI(url)
-                        } else {
-                            val toast = Toast.makeText(
-                                context,
-                                context.getString(R.string.payment_screen_error_build_unsupported_payment),
-                                Toast.LENGTH_SHORT
-                            )
-                            toast.show()
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 44.dp),
-                ) {
-                    if (BuildConfig.IS_PLAYSTORE_BUILD) {
-                        Text(stringResource(R.string.payment_screen_pay_via_google, BuildConfig.PAYMENT_PRICE), style = Typography.Body.Medium)
-                    } else {
-                        Text(stringResource(R.string.payment_screen_pay_via_futopay, BuildConfig.PAYMENT_PRICE), style = Typography.Body.Medium)
+
+                if(BuildConfig.IS_PLAYSTORE_BUILD) {
+                    Button(
+                        onClick = { context.openURI(BuildConfig.GOOGLEPAY_URL) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 44.dp)
+                    ) {
+
+                        Text(
+                            stringResource(
+                                R.string.payment_screen_pay_via_google,
+                                BuildConfig.GOOGLEPAY_PRICE
+                            ), style = Typography.Body.Medium
+                        )
+                    }
+
+                    Button(
+                        onClick = { context.openURI(BuildConfig.FUTOPAY_URL) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 44.dp)
+                    ) {
+
+                        Text(
+                            stringResource(
+                                R.string.payment_screen_pay_via_futopay2,
+                                BuildConfig.FUTOPAY_PRICE
+                            ), style = Typography.Body.Medium
+                        )
+                    }
+                } else {
+                    Button(
+                        onClick = { context.openURI(BuildConfig.FUTOPAY_URL) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 44.dp)
+                    ) {
+
+                        Text(
+                            stringResource(
+                                R.string.payment_screen_pay_via_futopay,
+                                BuildConfig.FUTOPAY_PRICE
+                            ), style = Typography.Body.Medium
+                        )
                     }
                 }
             }

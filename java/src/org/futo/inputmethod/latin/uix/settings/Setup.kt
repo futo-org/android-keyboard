@@ -1,13 +1,11 @@
 package org.futo.inputmethod.latin.uix.settings
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,10 +19,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,11 +32,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import kotlinx.coroutines.runBlocking
+import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.KeyboardLayoutPreview
-import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
+import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.Typography
-import org.futo.inputmethod.v2keyboard.LayoutManager
+import org.futo.inputmethod.updates.openURI
 
 @Composable
 fun SetupContainer(inner: @Composable () -> Unit) {
@@ -96,7 +95,7 @@ fun Step(fraction: Float, text: String) {
 
 // TODO: May wish to have a skip option
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun SetupEnableIME() {
     val context = LocalContext.current
 
@@ -131,7 +130,7 @@ fun SetupEnableIME() {
 
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun SetupChangeDefaultIME(doublePackage: Boolean = true) {
     val context = LocalContext.current
 
@@ -165,6 +164,70 @@ fun SetupChangeDefaultIME(doublePackage: Boolean = true) {
                     .padding(16.dp)
             ) {
                 Text(stringResource(R.string.setup_switch_input_methods))
+            }
+        }
+    }
+}
+
+
+
+
+val DirectBootWarningDismissed = SettingsKey(
+    booleanPreferencesKey("nightly_setup_direct_boot_warning_dismissed"),
+    false
+)
+
+@Composable
+fun needsToShowDirectBootWarning(): Boolean {
+    if(BuildConfig.FLAVOR != "unstable") return false
+
+    val context = LocalContext.current
+    val isGraphene = remember {
+        context.packageManager.systemAvailableFeatures.any { it.name?.contains("grapheneos") == true }
+                || Build.HOST == "r-0123456789abcdef-0123"
+    } || BuildConfig.DEBUG // show it on debug build for testing
+    if(!isGraphene) return false
+
+    return !useDataStoreValue(DirectBootWarningDismissed)
+}
+
+@Composable
+@Preview(showBackground = true)
+fun SetupDirectBootWarning() {
+    val context = LocalContext.current
+
+    SetupContainer {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                "Warning: You're running the unstable nightly version of the keyboard, on an operating system that lets you disable the USB port. You should not rely on unstable software as your only way of unlocking your phone.",
+                textAlign = TextAlign.Left,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Text(
+                "We strongly advise you to either use a PIN screen lock instead of a Password screen lock, or keep the USB-C port system setting set to either \"On\" or \"Charging-only when locked, except before first unlock\"",
+                textAlign = TextAlign.Left,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {
+                    context.openURI("https://docs.keyboard.futo.org/improvements/nightly#risk-of-using-nightly-with-password-screen-lock-type")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text("Read more information")
+            }
+
+            Button(
+                onClick = {
+                    runBlocking { context.setSetting(DirectBootWarningDismissed, true) }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text("Acknowledge (will not be shown again)")
             }
         }
     }

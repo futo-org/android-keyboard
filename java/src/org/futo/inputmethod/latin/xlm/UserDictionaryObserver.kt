@@ -8,8 +8,10 @@ import android.os.Looper
 import android.provider.UserDictionary
 import android.database.Cursor
 import android.util.Log
+import org.futo.inputmethod.latin.Subtypes
+import java.util.Locale
 
-data class Word(val word: String, val frequency: Int, val shortcut: String?)
+data class Word(val word: String, val frequency: Int, val locale: String?, val shortcut: String?)
 
 class UserDictionaryObserver(context: Context) {
     private val contentResolver = context.applicationContext.contentResolver
@@ -31,10 +33,20 @@ class UserDictionaryObserver(context: Context) {
         updateWords()
     }
 
-    fun getWords(): List<Word> = words
+    fun getWords(locales: List<Locale>): List<Word> = words.filter {
+        if(it.locale == null) {
+            true
+        } else {
+            val locale = Subtypes.getLocale(it.locale)
+            locales.any { it.language == locale.language }
+        }
+    }
 
     internal fun updateWords() {
-        val projection = arrayOf(UserDictionary.Words.WORD, UserDictionary.Words.FREQUENCY,
+        val projection = arrayOf(
+            UserDictionary.Words.WORD,
+            UserDictionary.Words.FREQUENCY,
+            UserDictionary.Words.LOCALE,
             UserDictionary.Words.SHORTCUT)
         val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
 
@@ -43,15 +55,17 @@ class UserDictionaryObserver(context: Context) {
         cursor?.use {
             val wordColumn = it.getColumnIndex(UserDictionary.Words.WORD)
             val frequencyColumn = it.getColumnIndex(UserDictionary.Words.FREQUENCY)
+            val localeColumn = it.getColumnIndex(UserDictionary.Words.LOCALE)
             val shortcutColumn = it.getColumnIndex(UserDictionary.Words.SHORTCUT)
 
             while (it.moveToNext()) {
                 val word = it.getString(wordColumn)
                 val frequency = it.getInt(frequencyColumn)
+                val locale = it.getString(localeColumn)
                 val shortcut = it.getString(shortcutColumn)
 
                 if(word.length < 64) {
-                    words.add(Word(word, frequency, shortcut))
+                    words.add(Word(word, frequency, locale, shortcut))
                 }
             }
         }

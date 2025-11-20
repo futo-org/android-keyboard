@@ -26,7 +26,7 @@ RUN sdkmanager --install "platforms;android-${ANDROID_VERSION}"
 RUN sdkmanager --install "platform-tools"
 RUN sdkmanager --install "ndk;28.2.13676358"
 
-RUN apt update && apt install -y build-essential file apt-utils
+RUN apt update && apt install -y build-essential file apt-utils python3-requests
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.27.55.zip" -o "/tmp/awscliv2.zip" \
         && (echo "06c43658b5fd71a729455de9a1c09b011d565036513f5c7096af699f4eec755a  /tmp/awscliv2.zip" | sha256sum -c -) \

@@ -67,6 +67,7 @@ import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
+import org.futo.inputmethod.latin.uix.actions.CanThrowIfDebug
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.dataStore
 import org.futo.inputmethod.latin.uix.deferSetSetting
@@ -74,6 +75,7 @@ import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.forceUnlockDatastore
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
@@ -97,6 +99,8 @@ import kotlin.math.roundToInt
 
 /** Whether or not we can render into the navbar */
 val SupportsNavbarExtension = Build.VERSION.SDK_INT >= 28
+
+val SupportsNonComposing = Build.VERSION.SDK_INT >= 31
 
 val UseTransparentNavbar =
     // https://github.com/futo-org/android-keyboard/issues/772
@@ -349,6 +353,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         if(pendingRecreateKeyboard) {
             pendingRecreateKeyboard = false
             recreateKeyboard()
+        } else {
+            latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.invalidateAllKeys()
         }
     }
 
@@ -368,6 +374,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onCreate() {
         super.onCreate()
+
+        CanThrowIfDebug = isDirectBootUnlocked
 
         JniUtils.loadNativeLibrary()
 
@@ -570,15 +578,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         super.onStartInput(attribute, restarting)
         latinIMELegacy.onStartInput(attribute, restarting)
         uixManager.inputStarted(attribute)
-        imeManager.onStartInput()
+        //imeManager.onStartInput() // TODO: Is this call needed or not?
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
+        imeManager.onStartInput()
         latinIMELegacy.onStartInputView(info, restarting)
         lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
         updateColorsIfDynamicChanged()
-        imeManager.onStartInput()
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
@@ -866,6 +874,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         uixManager.onPersistentStatesUnlocked()
 
         updateTheme(ThemeOptions[getSettingBlocking(THEME_KEY)].orDefault(this))
+        CanThrowIfDebug = true
 
         // TODO: Spell checker service
     }

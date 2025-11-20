@@ -440,13 +440,14 @@ public final class InputLogic {
             int newSelStart, int newSelEnd,
             final int composingStart, final int composingEnd,
             final SettingsValues settingsValues) {
-        numCursorUpdatesSinceInputStarted++;
+        // TODO: Not sure this is necessary anymore
+        /*numCursorUpdatesSinceInputStarted++;
         if(numCursorUpdatesSinceInputStarted <= 1) {
             if(mConnection.tryFixLyingCursorPosition()) {
                 newSelStart = mConnection.mExpectedSelStart;
                 newSelEnd = mConnection.mExpectedSelEnd;
             }
-        }
+        }*/
 
         mConnection.updateICCursor(oldSelStart, newSelStart, oldSelEnd, newSelEnd);
 
@@ -1692,12 +1693,10 @@ public final class InputLogic {
             ) && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM;
         }
 
-        // If this codepoint can be preceded by space optionally, only perform the swap if the
-        // preceding space was automatically added. If I type "hello", space, and ":)", it should
-        // type "hello :)"
+        // Don't swap space for : or ; ever, see #1436
         if(characterFitForSwapping
                 && inputTransaction.mSettingsValues.isOptionallyPrecededBySpace(codePoint)) {
-            characterFitForSwapping = inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM;
+            characterFitForSwapping = false;
         }
 
         return settingsPermitSwapping && textFieldFitForSwapping && characterFitForSwapping;
@@ -2150,10 +2149,14 @@ public final class InputLogic {
      * @return a caps mode from TextUtils.CAP_MODE_* or Constants.TextUtils.CAP_MODE_OFF.
      */
     public int getCurrentAutoCapsState(final SettingsValues settingsValues) {
-        if (!settingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
+        if (!settingsValues.mAutoCap) {
+            return Constants.TextUtils.CAP_MODE_OFF;
+        }
 
         final EditorInfo ei = getCurrentInputEditorInfo();
-        if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;
+        if (ei == null) {
+            return Constants.TextUtils.CAP_MODE_OFF;
+        }
         final int inputType = ei.inputType;
         // Warning: this depends on mSpaceState, which may not be the most current value. If
         // mSpaceState gets updated later, whoever called this may need to be told about it.

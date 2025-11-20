@@ -448,7 +448,9 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
             },
 
             KeyVisualStyle.MoreKey to VisualStyleDescriptor(
-                backgroundDrawable = coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius)),
+                // was previously coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius)),
+                // but it doesn't seem necessary anymore, because MoreKeysKeyboardView draws the same background
+                backgroundDrawable = null,
                 foregroundColor = colorScheme.onKeyboardContainer.toArgb(),
 
                 backgroundDrawablePressed = coloredRoundedRectangle(primary, dp(keyCornerRadius)),

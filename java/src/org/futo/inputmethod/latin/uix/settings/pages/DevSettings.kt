@@ -15,7 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.engine.general.UseExpandableSuggestionsForGeneralIME
 import org.futo.inputmethod.latin.BuildConfig
+import org.futo.inputmethod.latin.CrashLoggingApplication
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.TextInputAlternativeIC
 import org.futo.inputmethod.latin.TextInputAlternativeICComposing
@@ -46,8 +48,6 @@ import kotlin.system.exitProcess
 
 val IS_DEVELOPER = SettingsKey(booleanPreferencesKey("isDeveloperMode"), false)
 
-val TMP_PAYMENT_URL = SettingsKey(stringPreferencesKey("temporaryPaymentUrl"), BuildConfig.PAYMENT_URL)
-
 @OptIn(DebugOnly::class)
 @Composable
 fun DevKeyboardScreen(navController: NavHostController = rememberNavController()) {
@@ -71,6 +71,8 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
         ScreenTitle("Developer", showBack = true, navController)
 
         SettingToggleDataStore(title = "Developer mode", setting = IS_DEVELOPER)
+
+        CrashLoggingApplication.CopyLogsOption()
 
         SettingToggleDataStore(title = "Disable all update reminders", setting = DISABLE_UPDATE_REMINDER)
         
@@ -177,10 +179,12 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             { }
         )
 
-        SettingTextField("Payment URL", "https://example.com", TMP_PAYMENT_URL)
-
-
         ScreenTitle(title = "Here be dragons")
+        SettingToggleDataStore(
+            "Use expandable suggestions UI for all languages",
+            UseExpandableSuggestionsForGeneralIME,
+        )
+
         NavigationItem(
             title = "Crash the app",
             style = NavigationItemStyle.MiscNoArrow,
