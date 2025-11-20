@@ -1695,12 +1695,10 @@ public final class InputLogic {
             ) && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM;
         }
 
-        // If this codepoint can be preceded by space optionally, only perform the swap if the
-        // preceding space was automatically added. If I type "hello", space, and ":)", it should
-        // type "hello :)"
+        // Don't swap space for : or ; ever, see #1436
         if(characterFitForSwapping
                 && inputTransaction.mSettingsValues.isOptionallyPrecededBySpace(codePoint)) {
-            characterFitForSwapping = inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM;
+            characterFitForSwapping = false;
         }
 
         return settingsPermitSwapping && textFieldFitForSwapping && characterFitForSwapping;
