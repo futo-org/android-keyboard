@@ -1,7 +1,5 @@
 package org.futo.inputmethod.latin.uix.theme.presets
 
-import android.app.UiModeManager
-import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -63,7 +61,7 @@ val DynamicLightTheme = ThemeOption(
 val AMOLEDDynamicDarkTheme = ThemeOption(
     dynamic = true,
     key = "AMOLEDDynamicDark",
-    name = R.string.amoled_theme_dynamic_dark,
+    name = R.string.theme_amoled_dynamic_dark,
     available = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
     obtainColors = {
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
