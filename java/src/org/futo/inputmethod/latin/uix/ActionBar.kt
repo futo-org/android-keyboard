@@ -374,6 +374,8 @@ fun SuggestedWords.getInfoOrNull(idx: Int): SuggestedWordInfo? = try {
 }
 
 fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?): SuggestionLayout {
+    val isGestureBatch = words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+
     val typedWord = words.getInfoOrNull(SuggestedWords.INDEX_OF_TYPED_WORD)?.let {
         if(it.kind == KIND_TYPED) { it } else { null }
     }?.let {
@@ -396,13 +398,14 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
 
     val sortedMatches = words.mSuggestedWordInfoList.filter {
         it != typedWord && it.kind != KIND_TYPED && it != autocorrectMatch && !emojiMatches.contains(it)
+            // Do not include the verbatim word when autocorrecting to avoid such duplicate word situation:
+            // [ hid | **his** | "hid" ]
+            && (isGestureBatch || autocorrectMatch == null || typedWord == null || it.mWord != typedWord.mWord)
     }
 
     val areSuggestionsClueless = (autocorrectMatch ?: sortedMatches.getOrNull(0))?.let {
         it.mOriginatesFromTransformerLM && it.mScore < -50
     } ?: false
-
-    val isGestureBatch = words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
 
     val presentableSuggestions = (
             listOf(
