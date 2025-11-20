@@ -110,7 +110,6 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
-import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.SupportsNavbarExtension
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.settings.Settings
@@ -719,7 +718,6 @@ class UixManager(private val latinIME: LatinIME) {
                 ) {
                     windowImpl.WindowContents(keyboardShown = !mainKeyboardHidden.value)
                 }
-                Spacer(Modifier.height(5.dp))
             }
 
             if((!mainKeyboardHidden.value && !latinIME.isInputConnectionOverridden)
@@ -740,7 +738,7 @@ class UixManager(private val latinIME: LatinIME) {
                         suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
                     )
                 }
-            } else if(showingAboveKeyboard) {
+            } else if(showingAboveKeyboard && !needToUseExpandableSuggestionUi) {
                 ActionSep()
                 Spacer(Modifier.height(1.dp))
             }
@@ -1210,6 +1208,7 @@ class UixManager(private val latinIME: LatinIME) {
                                 latinIME.latinIMELegacy as SuggestionStripViewListener,
                                 isActionsExpanded = isActionsExpanded.value,
                                 toggleActionsExpanded = { toggleActionsExpanded() },
+                                closeActionWindow = currWindowActionWindow.value?.let {{ closeActionWindow() }},
                                 keyboardOffset = keyboardViewOffset,
                                 keyboardHeight = (latinIME.size.value?.height ?: kbHeight.intValue) + with(LocalDensity.current) { navBarHeight().toPx().toInt() }
                             )
