@@ -632,6 +632,7 @@ val ClipboardHistoryAction = Action(
     persistentState = { manager ->
         ClipboardHistoryManager(manager.getContext(), manager.getLifecycleScope())
     },
+    altPressImpl = PasteAction.simplePressImpl,
     persistentStateInitialization = PersistentStateInitialization.OnKeyboardLoad,
     windowImpl = { manager, persistent ->
         val unlocked = !manager.isDeviceLocked()
