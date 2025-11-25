@@ -33,8 +33,8 @@
         ]
     },
     "keyspec": {
-        "comma": "՝",
-        "tablet_comma": "՝",
+        "comma": ",",
+        "tablet_comma": ",",
         "period": "։",
         "tablet_period": "։",
         "currency": "֏"

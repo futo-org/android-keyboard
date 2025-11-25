@@ -533,8 +533,8 @@
         "6": "^",
         "7": "&",
         "8": "*",
-        "9": "(",
-        "0": ")",
+        "9": "!text/keyspec_left_parenthesis",
+        "0": "!text/keyspec_right_parenthesis",
 
         "q": "_",
         "w": "\\\\",
@@ -557,16 +557,16 @@
         "g": ["&", "|"],
         "h": ["-", "–", "—", "_"],
         "j": ["+", "="],
-        "k": ["(", "[", "{", "<"],
-        "l": [")", "]", "}", ">"],
+        "k": ["!text/keyspec_left_parenthesis", "!text/keyspec_left_square_bracket", "!text/keyspec_left_curly_bracket", "!text/keyspec_less_than"],
+        "l": ["!text/keyspec_right_parenthesis", "!text/keyspec_right_square_bracket", "!text/keyspec_right_curly_bracket", "!text/keyspec_greater_than"],
 
         "z": "*",
         "x": "\"",
         "c": "'",
         "v": ":",
-        "b": ";",
+        "b": "!text/keyspec_symbols_semicolon",
         "n": "!",
-        "m": ["?", "/"],
+        "m": ["!text/keyspec_symbols_question", "/"],
 
         "r2_e1": "/"
     }

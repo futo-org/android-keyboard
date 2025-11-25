@@ -56,6 +56,7 @@
     <string name="action_clipboard_manager_unpin_item">Unpin item</string>
     <string name="action_clipboard_manager_pin_item">Pin item</string>
     <string name="action_clipboard_manager_remove_item">Remove item</string>
+    <string name="action_clipboard_manager_remove_item_confirm_dialog">Confirm remove:\n\"%s\"</string>
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_cancel_action_button">Cancel</string>
     <string name="action_clipboard_manager_disable_text">There are no items to clear. Disable clipboard history?</string>

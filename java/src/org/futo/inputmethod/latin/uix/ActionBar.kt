@@ -374,6 +374,8 @@ fun SuggestedWords.getInfoOrNull(idx: Int): SuggestedWordInfo? = try {
 }
 
 fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?): SuggestionLayout {
+    val isGestureBatch = words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+
     val typedWord = words.getInfoOrNull(SuggestedWords.INDEX_OF_TYPED_WORD)?.let {
         if(it.kind == KIND_TYPED) { it } else { null }
     }?.let {
@@ -396,13 +398,14 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
 
     val sortedMatches = words.mSuggestedWordInfoList.filter {
         it != typedWord && it.kind != KIND_TYPED && it != autocorrectMatch && !emojiMatches.contains(it)
+            // Do not include the verbatim word when autocorrecting to avoid such duplicate word situation:
+            // [ hid | **his** | "hid" ]
+            && (isGestureBatch || autocorrectMatch == null || typedWord == null || it.mWord != typedWord.mWord)
     }
 
     val areSuggestionsClueless = (autocorrectMatch ?: sortedMatches.getOrNull(0))?.let {
         it.mOriginatesFromTransformerLM && it.mScore < -50
     } ?: false
-
-    val isGestureBatch = words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
 
     val presentableSuggestions = (
             listOf(
@@ -910,6 +913,27 @@ fun ActionWindowBar(
 }
 
 @Composable
+private fun CloseActionWindowButton(onClose: () -> Unit) {
+    val color = MaterialTheme.colorScheme.primary
+    IconButton(
+        onClick = onClose,
+        modifier = Modifier
+            .width(42.dp)
+            .fillMaxHeight()
+            .drawBehind {
+                drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
+            },
+
+        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.close),
+            contentDescription = stringResource(R.string.keyboard_actionbar_close_docked_action_window_talkback)
+        )
+    }
+}
+
+@Composable
 fun CollapsibleSuggestionsBar(
     onClose: () -> Unit,
     onCollapse: () -> Unit,
@@ -927,25 +951,8 @@ fun CollapsibleSuggestionsBar(
         )
         {
             Row(Modifier.safeKeyboardPadding()) {
-                val color = MaterialTheme.colorScheme.primary
-
                 if(showClose) {
-                    IconButton(
-                        onClick = onClose,
-                        modifier = Modifier
-                            .width(42.dp)
-                            .fillMaxHeight()
-                            .drawBehind {
-                                drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
-                            },
-
-                        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.close),
-                            contentDescription = stringResource(R.string.keyboard_actionbar_close_docked_action_window_talkback)
-                        )
-                    }
+                    CloseActionWindowButton(onClose)
                 } else {
                     Spacer(Modifier.width(42.dp))
                 }
@@ -1156,6 +1163,7 @@ private fun RowScope.InlineCandidates(
     lazyListState: LazyListState,
     isActionsExpanded: Boolean,
     toggleActionsExpanded: () -> Unit,
+    closeActionWindow: (() -> Unit)?,
     suggestionStripListener: SuggestionStripViewListener,
     wordList: List<SuggestedWordInfo>,
     widths: CachedCharacterWidthValues
@@ -1192,13 +1200,17 @@ private fun RowScope.InlineCandidates(
         ) {
             item {
                 val manager = LocalManager.current
-                ExpandActionsButton(isActionsExpanded) {
-                    toggleActionsExpanded()
+                if(closeActionWindow != null) {
+                    CloseActionWindowButton(closeActionWindow)
+                } else {
+                    ExpandActionsButton(isActionsExpanded) {
+                        toggleActionsExpanded()
 
-                    manager.performHapticAndAudioFeedback(
-                        Constants.CODE_TAB,
-                        view
-                    )
+                        manager.performHapticAndAudioFeedback(
+                            Constants.CODE_TAB,
+                            view
+                        )
+                    }
                 }
             }
             itemsIndexed(wordList) { i, it ->
@@ -1256,8 +1268,9 @@ fun BoxScope.ActionBarWithExpandableCandidates(
     suggestionStripListener: SuggestionStripViewListener,
     isActionsExpanded: Boolean,
     toggleActionsExpanded: () -> Unit,
+    closeActionWindow: (() -> Unit)?,
     keyboardOffset: MutableIntState? = null,
-    keyboardHeight: Int = 1000
+    keyboardHeight: Int = 1000,
 ) {
     val wordList = remember(words) {
         words?.mSuggestedWordInfoList?.toList()?.filter {
@@ -1354,6 +1367,7 @@ fun BoxScope.ActionBarWithExpandableCandidates(
                         lazyListState,
                         isActionsExpanded,
                         toggleActionsExpanded,
+                        closeActionWindow,
                         suggestionStripListener,
                         wordList,
                         widths
@@ -1554,6 +1568,7 @@ fun PreviewActionBarWithExpandableCandidates(colorScheme: ThemeOption = DefaultD
                 suggestionStripListener = ExampleListener(),
                 isActionsExpanded = false,
                 toggleActionsExpanded = { },
+                closeActionWindow = null
             )
         }
     }
