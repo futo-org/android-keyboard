@@ -61,6 +61,7 @@ buildUnstable:
     - echo $VERSION_CODE $VERSION_NAME
     - ./setUpPropertiesCI.sh
   script:
+    - gradle signingReport
     - gradle assembleUnstableRelease -s
     - mv build/outputs/apk/unstable/release/latinime-unstable-release.apk ./keyboard-unstable-$VERSION_NAME.apk
     - touch VERSION_CODE_$VERSION_CODE.txt
