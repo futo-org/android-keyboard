@@ -20,12 +20,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.Parcel;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
@@ -35,6 +37,7 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.futo.inputmethod.engine.InputMethodConnectionProvider;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -43,6 +46,8 @@ import org.futo.inputmethod.latin.utils.RunInLocale;
 import org.futo.inputmethod.latin.utils.ScriptUtils;
 import org.futo.inputmethod.latin.utils.TextRange;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -146,7 +151,7 @@ public class RichInputConnectionAndTextRangeTests {
         }
     }
 
-    static class MockInputMethodService extends InputMethodService {
+    static class MockInputMethodService extends InputMethodService implements InputMethodConnectionProvider {
         private MockConnection mMockConnection;
         public void setInputConnection(final MockConnection mockConnection) {
             mMockConnection = mockConnection;
@@ -157,6 +162,16 @@ public class RichInputConnectionAndTextRangeTests {
         @Override
         public InputConnection getCurrentInputConnection() {
             return mMockConnection;
+        }
+
+        @Override
+        public @Nullable EditorInfo getCurrentEditorInfo() {
+            return null;
+        }
+
+        @Override
+        public @NotNull Context getContextForSettings() {
+            return null;
         }
     }
 
@@ -255,13 +270,13 @@ public class RichInputConnectionAndTextRangeTests {
 
         ic.beginBatchEdit();
         // basic case
-        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN, true);
         assertTrue(TextUtils.equals("word", r.mWord));
 
         // tab character instead of space
         mockInputMethodService.setInputConnection(new MockConnection("one\tword\two", "rd", et));
         ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(TAB, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(TAB, ScriptUtils.SCRIPT_LATIN, true);
         ic.endBatchEdit();
         assertTrue(TextUtils.equals("word", r.mWord));
 
@@ -269,7 +284,7 @@ public class RichInputConnectionAndTextRangeTests {
         mockInputMethodService.setInputConnection(
                 new MockConnection("one word" + SUPPLEMENTARY_CHAR_STRING + "wo", "rd", et));
         ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_LATIN, true);
         ic.endBatchEdit();
         assertTrue(TextUtils.equals("word", r.mWord));
 
@@ -277,7 +292,7 @@ public class RichInputConnectionAndTextRangeTests {
         mockInputMethodService.setInputConnection(
                 new MockConnection(HIRAGANA_WORD + "wo", "rd" + GREEK_WORD, et));
         ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_LATIN, true);
         ic.endBatchEdit();
         assertTrue(TextUtils.equals("word", r.mWord));
 
@@ -285,7 +300,7 @@ public class RichInputConnectionAndTextRangeTests {
         mockInputMethodService.setInputConnection(
                 new MockConnection("text" + GREEK_WORD, "text", et));
         ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_GREEK);
+        r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_GREEK, true);
         ic.endBatchEdit();
         assertTrue(TextUtils.equals(GREEK_WORD, r.mWord));
     }
@@ -318,7 +333,7 @@ public class RichInputConnectionAndTextRangeTests {
         TextRange r;
         SuggestionSpan[] suggestions;
 
-        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN, true);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
         assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -330,7 +345,7 @@ public class RichInputConnectionAndTextRangeTests {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 10 /* start */, 16 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN, true);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 2);
         assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -343,7 +358,7 @@ public class RichInputConnectionAndTextRangeTests {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 5 /* start */, 16 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN, true);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
         assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -355,7 +370,7 @@ public class RichInputConnectionAndTextRangeTests {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 10 /* start */, 20 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN, true);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
         assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -367,7 +382,7 @@ public class RichInputConnectionAndTextRangeTests {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 5 /* start */, 20 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN, true);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
         assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -379,7 +394,7 @@ public class RichInputConnectionAndTextRangeTests {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 5 /* start */, 20 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN);
+        r = ic.getWordRangeAtCursor(SPACE, ScriptUtils.SCRIPT_LATIN, true);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 0);
     }

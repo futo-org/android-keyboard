@@ -71,7 +71,7 @@ public class WordComposerTests {
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(15));
         // Do what LatinIME does when the cursor is moved outside of the word,
         // and check the behavior is correct.
-        wc.reset();
+        wc.reset(true);
 
         // \uD861\uDED7 is 𨛗, a character outside the BMP
         final String STR_WITH_SUPPLEMENTARY_CHAR = "abcde\uD861\uDED7fgh";

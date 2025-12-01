@@ -243,7 +243,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         mLatinIMELegacy.onFinishInputView(true);
         mLatinIMELegacy.onFinishInput();
         runMessages();
-        mLatinIMELegacy.mHandler.removeAllMessages();
         setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, mPreviousBigramPredictionSettings,
                 true /* defaultValue */);
         setBooleanPreference(Settings.PREF_AUTO_CORRECTION, mPreviousAutoCorrectSetting,
@@ -267,12 +266,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         // Empty class
     }
     protected void runMessages() {
-        mLatinIMELegacy.mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    throw new InterruptRunMessagesException();
-                }
-            });
         try {
             Looper.loop();
         } catch (InterruptRunMessagesException e) {

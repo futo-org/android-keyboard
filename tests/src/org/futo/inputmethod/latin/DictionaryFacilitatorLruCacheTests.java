@@ -26,6 +26,8 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 
 @LargeTest
@@ -37,16 +39,20 @@ public class DictionaryFacilitatorLruCacheTests {
         final DictionaryFacilitatorLruCache cache =
                 new DictionaryFacilitatorLruCache(InstrumentationRegistry.getTargetContext(), "");
 
-        final DictionaryFacilitator dictionaryFacilitatorEnUs = cache.get(Locale.US);
+        final DictionaryFacilitator dictionaryFacilitatorEnUs = cache.get(Collections.singletonList(Locale.US));
         assertNotNull(dictionaryFacilitatorEnUs);
-        assertTrue(dictionaryFacilitatorEnUs.isForLocale(Locale.US));
+        assertTrue(dictionaryFacilitatorEnUs.isForLocales(Collections.singletonList(Locale.US)));
 
-        final DictionaryFacilitator dictionaryFacilitatorFr = cache.get(Locale.FRENCH);
+        final DictionaryFacilitator dictionaryFacilitatorFr = cache.get(Collections.singletonList(Locale.FRENCH));
         assertNotNull(dictionaryFacilitatorEnUs);
-        assertTrue(dictionaryFacilitatorFr.isForLocale(Locale.FRENCH));
+        assertTrue(dictionaryFacilitatorFr.isForLocales(Collections.singletonList(Locale.FRENCH)));
 
-        final DictionaryFacilitator dictionaryFacilitatorDe = cache.get(Locale.GERMANY);
+        final DictionaryFacilitator dictionaryFacilitatorDe = cache.get(Collections.singletonList(Locale.GERMANY));
         assertNotNull(dictionaryFacilitatorDe);
-        assertTrue(dictionaryFacilitatorDe.isForLocale(Locale.GERMANY));
+        assertTrue(dictionaryFacilitatorDe.isForLocales(Collections.singletonList(Locale.GERMANY)));
+
+        final DictionaryFacilitator dictionaryFacilitatorDeEn = cache.get(Arrays.asList(Locale.GERMANY, Locale.US));
+        assertNotNull(dictionaryFacilitatorDeEn);
+        assertTrue(dictionaryFacilitatorDeEn.isForLocales(Arrays.asList(Locale.GERMANY, Locale.US)));
     }
 }
