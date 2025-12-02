@@ -28,7 +28,7 @@ public class LxxActionSendTests extends LxxActionTestsBase {
     public void testActionSend() {
         final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
                 KeyboardIconsSet.NAME_SEND_KEY);
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : getSubtypeListForActionTests()) {
             final String tag = "send " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_SEND, expectedKey);
         }

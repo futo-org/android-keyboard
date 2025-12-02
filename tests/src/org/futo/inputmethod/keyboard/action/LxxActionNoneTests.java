@@ -28,7 +28,7 @@ public class LxxActionNoneTests extends LxxActionTestsBase {
     public void testActionNone() {
         final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
                 KeyboardIconsSet.NAME_ENTER_KEY);
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : getSubtypeListForActionTests()) {
             final String tag = "none " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_NONE, expectedKey);
         }

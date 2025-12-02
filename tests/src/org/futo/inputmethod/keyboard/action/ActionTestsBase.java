@@ -34,6 +34,7 @@ import org.futo.inputmethod.latin.utils.RunInLocale;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 
+import java.util.List;
 import java.util.Locale;
 
 abstract class ActionTestsBase extends KeyboardLayoutSetTestsBase {
@@ -110,5 +111,10 @@ abstract class ActionTestsBase extends KeyboardLayoutSetTestsBase {
                 InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD;
         final KeyboardLayoutSetV2 passwordSet = createKeyboardLayoutSet(subtype, editorInfo);
         assertActionKey(tag, passwordSet, KeyboardId.ELEMENT_NUMBER, expectedKey);
+    }
+
+    // Using reduced here because full one takes ages
+    protected final List<InputMethodSubtype> getSubtypeListForActionTests() {
+        return getReducedSubtypesList();
     }
 }

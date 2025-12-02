@@ -26,7 +26,7 @@ import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 @LargeTest
 public class LxxActionCustomTests extends LxxActionTestsBase {
     public void testActionCustom() {
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : getSubtypeListForActionTests()) {
             final String tag = "custom " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             final EditorInfo editorInfo = new EditorInfo();
             editorInfo.imeOptions = EditorInfo.IME_ACTION_UNSPECIFIED;

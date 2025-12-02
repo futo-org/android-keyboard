@@ -28,7 +28,7 @@ public class LxxActionPreviousTests extends LxxActionTestsBase {
     public void testActionPrevious() {
         final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
                 KeyboardIconsSet.NAME_PREVIOUS_KEY);
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : getSubtypeListForActionTests()) {
             final String tag = "previous " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_PREVIOUS, expectedKey);
         }

@@ -41,6 +41,7 @@ import org.futo.inputmethod.v2keyboard.LayoutManager;
 import org.futo.inputmethod.v2keyboard.RegularKeyboardSize;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -48,6 +49,7 @@ import java.util.Map;
 public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     // All input method subtypes of LatinIME.
     private final ArrayList<InputMethodSubtype> mAllSubtypesList = new ArrayList<>();
+    private final ArrayList<InputMethodSubtype> mReducedSubtypesList = new ArrayList<>();
 
     public interface SubtypeFilter {
         public boolean accept(final InputMethodSubtype subtype);
@@ -100,7 +102,26 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         for(Map.Entry<Locale, List<String>> entry : mapping.entrySet()) {
             String locale = entry.getKey().toString();
             for(String layout : entry.getValue()) {
-                mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(locale, layout));
+                InputMethodSubtype subtype = Subtypes.INSTANCE.makeSubtype(locale, layout);
+                mAllSubtypesList.add(subtype);
+            }
+        }
+
+        // Reduced: add each unique layout only once, unless it's the top choice for language
+        HashSet<String> reducedLayoutsAdded = new HashSet<>();
+        for(Map.Entry<Locale, List<String>> entry : mapping.entrySet()) {
+            String locale = entry.getKey().toString();
+            int i = 0;
+            for(String layout : entry.getValue()) {
+                InputMethodSubtype subtype = Subtypes.INSTANCE.makeSubtype(locale, layout);
+
+                if(!reducedLayoutsAdded.contains(layout)) {
+                    reducedLayoutsAdded.add(layout);
+                    mReducedSubtypesList.add(subtype);
+                } else if(i == 0) {
+                    mReducedSubtypesList.add(subtype);
+                }
+                i++;
             }
         }
     }
@@ -114,6 +135,10 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
 
     protected final ArrayList<InputMethodSubtype> getAllSubtypesList() {
         return mAllSubtypesList;
+    }
+
+    protected final ArrayList<InputMethodSubtype> getReducedSubtypesList() {
+        return mReducedSubtypesList;
     }
 
     protected final ArrayList<InputMethodSubtype> getSubtypesFilteredBy(
