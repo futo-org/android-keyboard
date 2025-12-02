@@ -93,7 +93,7 @@ public final class Arabic extends LayoutBase {
 
         @Override
         public ExpectedKey[] getPunctuationMoreKeys(final boolean isPhone) {
-            return ARABIC_DIACRITICS;
+            return ARABIC_PERIOD_MOREKEYS;
         }
 
         // U+0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
@@ -111,7 +111,8 @@ public final class Arabic extends LayoutBase {
         private static final ExpectedKey ARABIC_BACK_TO_SYMBOLS_KEY = key(
                 "\u0663\u0662\u0661\u061F", Constants.CODE_SHIFT);
 
-        private static final ExpectedKey[] ARABIC_DIACRITICS = {
+        private static final ExpectedKey[] ARABIC_PERIOD_MOREKEYS = {
+                // U+25CC: "◌" DOTTED CIRCLE
                 // U+0655: "ٕ" ARABIC HAMZA BELOW
                 // U+0654: "ٔ" ARABIC HAMZA ABOVE
                 // U+0652: "ْ" ARABIC SUKUN
@@ -126,13 +127,16 @@ public final class Arabic extends LayoutBase {
                 // U+064F: "ُ" ARABIC DAMMA
                 // U+064E: "َ" ARABIC FATHA
                 // U+0640: "ـ" ARABIC TATWEEL
-                moreKey(" \u0655", "\u0655"), moreKey(" \u0654", "\u0654"),
-                moreKey(" \u0652", "\u0652"), moreKey(" \u064D", "\u064D"),
-                moreKey(" \u064C", "\u064C"), moreKey(" \u064B", "\u064B"),
-                moreKey(" \u0651", "\u0651"), moreKey(" \u0656", "\u0656"),
-                moreKey(" \u0670", "\u0670"), moreKey(" \u0653", "\u0653"),
-                moreKey(" \u0650", "\u0650"), moreKey(" \u064F", "\u064F"),
-                moreKey(" \u064E", "\u064E"), moreKey("\u0640\u0640\u0640", "\u0640")
+                // U+061F: "؟" ARABIC QUESTION MARK
+                moreKey(" \u0654\u25CC", "\u0654"),
+                moreKey(" \u0652\u25CC", "\u0652"), moreKey(" \u064D\u25CC", "\u064D"),
+                moreKey(" \u064C\u25CC", "\u064C"), moreKey(" \u0651\u25CC", "\u0651"),
+                moreKey(" \u064B\u25CC", "\u064B"), moreKey("\u061F"), moreKey("!"),
+                moreKey(" \u0656\u25CC", "\u0656"),
+                moreKey(" \u0670\u25CC", "\u0670"), moreKey(" \u0653\u25CC", "\u0653"),
+                moreKey(" \u0650\u25CC", "\u0650"), moreKey(" \u064F\u25CC", "\u064F"),
+                moreKey("\u0640", "\u0640"),
+                moreKey(" \u0655\u25CC", "\u0655"), moreKey(" \u064E\u25CC", "\u064E")
         };
     }
 
@@ -156,40 +160,42 @@ public final class Arabic extends LayoutBase {
             .setKeysOfRow(1,
                     // U+0636: "ض" ARABIC LETTER DAD
                     // U+0661: "١" ARABIC-INDIC DIGIT ONE
-                    key("\u0636", joinMoreKeys("1", "\u0661")),
+                    key("\u0636", joinMoreKeys("\u0661", "1")),
                     // U+0635: "ص" ARABIC LETTER SAD
                     // U+0662: "٢" ARABIC-INDIC DIGIT TWO
-                    key("\u0635", joinMoreKeys("2", "\u0662")),
+                    key("\u0635", joinMoreKeys("\u0662", "2")),
                     // U+062B: "ث" ARABIC LETTER THEH
                     // U+0663: "٣" ARABIC-INDIC DIGIT THREE
-                    key("\u062B", joinMoreKeys("3", "\u0663")),
+                    key("\u062B", joinMoreKeys("\u0663", "3")),
                     // U+0642: "ق" ARABIC LETTER QAF
                     // U+0664: "٤" ARABIC-INDIC DIGIT FOUR
                     // U+06A8: "ڨ" ARABIC LETTER QAF WITH THREE DOTS ABOVE
-                    key("\u0642", joinMoreKeys("4", "\u0664", "\u06A8")),
+                    key("\u0642", joinMoreKeys("\u0664", "4", "\u06A8")),
                     // U+0641: "ف" ARABIC LETTER FEH
-                    // U+0665: "٥" ARABIC-INDIC DIGIT FIVE
                     // U+06A4: "ڤ" ARABIC LETTER VEH
+                    // U+0665: "٥" ARABIC-INDIC DIGIT FIVE
                     // U+06A2: "ڢ" ARABIC LETTER FEH WITH DOT MOVED BELOW
                     // U+06A5: "ڥ" ARABIC LETTER FEH WITH THREE DOTS BELOW
-                    key("\u0641", joinMoreKeys("5", "\u0665", "\u06A4", "\u06A2", "\u06A5")),
+                    key("\u0641", joinMoreKeys("\u06A4", "\u0665", "5", "\u06A2", "\u06A5")),
                     // U+063A: "غ" ARABIC LETTER GHAIN
                     // U+0666: "٦" ARABIC-INDIC DIGIT SIX
-                    key("\u063A", joinMoreKeys("6", "\u0666")),
+                    key("\u063A", joinMoreKeys("\u0666", "6")),
                     // U+0639: "ع" ARABIC LETTER AIN
                     // U+0667: "٧" ARABIC-INDIC DIGIT SEVEN
-                    key("\u0639", joinMoreKeys("7", "\u0667")),
+                    key("\u0639", joinMoreKeys("\u0667", "7")),
                     // U+0647: "ه" ARABIC LETTER HEH
                     // U+0668: "٨" ARABIC-INDIC DIGIT EIGHT
                     // U+FEEB: "ﻫ" ARABIC LETTER HEH INITIAL FORM
                     // U+0647 U+200D: ARABIC LETTER HEH + ZERO WIDTH JOINER
-                    key("\u0647", joinMoreKeys("8", "\u0668", moreKey("\uFEEB", "\u0647\u200D"))),
+                    key("\u0647", joinMoreKeys("\u0668", "8", moreKey("\uFEEB", "\u0647\u200D"))),
                     // U+062E: "خ" ARABIC LETTER KHAH
                     // U+0669: "٩" ARABIC-INDIC DIGIT NINE
-                    key("\u062E", joinMoreKeys("9", "\u0669")),
+                    key("\u062E", joinMoreKeys("\u0669", "9")),
                     // U+062D: "ح" ARABIC LETTER HAH
                     // U+0660: "٠" ARABIC-INDIC DIGIT ZERO
-                    key("\u062D", joinMoreKeys("0", "\u0660")),
+                    // U+066B: "٫" ARABIC DECIMAL SEPARATOR
+                    // U+066C: "٬" ARABIC THOUSANDTHS SEPARATOR
+                    key("\u062D", joinMoreKeys("\u0660", "0", "\u066B", "\u066C")),
                     // U+062C: "ج" ARABIC LETTER JEEM
                     // U+0686: "چ" ARABIC LETTER TCHEH
                     key("\u062C", moreKey("\u0686")))
@@ -264,45 +270,37 @@ public final class Arabic extends LayoutBase {
         public ExpectedKey[][] getLayout(final boolean isPhone) {
             return new ExpectedKeyboardBuilder(super.getLayout(isPhone))
                     // U+0661: "١" ARABIC-INDIC DIGIT ONE
-                    // U+00B9: "¹" SUPERSCRIPT ONE
-                    // U+00BD: "½" VULGAR FRACTION ONE HALF
-                    // U+2153: "⅓" VULGAR FRACTION ONE THIRD
-                    // U+00BC: "¼" VULGAR FRACTION ONE QUARTER
-                    // U+215B: "⅛" VULGAR FRACTION ONE EIGHTH
                     .replaceKeyOfLabel("1", key("\u0661",
-                            joinMoreKeys("1", "\u00B9", "\u00BD", "\u2153", "\u00BC", "\u215B")))
+                            joinMoreKeys("1", "¹", "₁", "½", "⅓", "¼", "⅛")))
                     // U+0662: "٢" ARABIC-INDIC DIGIT TWO
-                    // U+00B2: "²" SUPERSCRIPT TWO
-                    // U+2154: "⅔" VULGAR FRACTION TWO THIRDS
-                    .replaceKeyOfLabel("2", key("\u0662", joinMoreKeys("2", "\u00B2", "\u2154")))
+                    .replaceKeyOfLabel("2", key("\u0662",
+                            joinMoreKeys("2", "²", "₂", "⅔")))
                     // U+0663: "٣" ARABIC-INDIC DIGIT THREE
-                    // U+00B3: "³" SUPERSCRIPT THREE
-                    // U+00BE: "¾" VULGAR FRACTION THREE QUARTERS
-                    // U+215C: "⅜" VULGAR FRACTION THREE EIGHTHS
                     .replaceKeyOfLabel("3", key("\u0663",
-                            joinMoreKeys("3", "\u00B3", "\u00BE", "\u215C")))
+                            joinMoreKeys("3", "³", "₃", "¾", "⅜")))
                     // U+0664: "٤" ARABIC-INDIC DIGIT FOUR
-                    // U+2074: "⁴" SUPERSCRIPT FOUR
-                    .replaceKeyOfLabel("4", key("\u0664", joinMoreKeys("4", "\u2074")))
+                    .replaceKeyOfLabel("4", key("\u0664",
+                            joinMoreKeys("4", "⁴", "₄")))
                     // U+0665: "٥" ARABIC-INDIC DIGIT FIVE
-                    // U+215D: "⅝" VULGAR FRACTION FIVE EIGHTHS
-                    .replaceKeyOfLabel("5", key("\u0665", joinMoreKeys("5", "\u215D")))
+                    .replaceKeyOfLabel("5", key("\u0665",
+                            joinMoreKeys("5", "⁵", "₅", "⅝")))
                     // U+0666: "٦" ARABIC-INDIC DIGIT SIX
-                    .replaceKeyOfLabel("6", key("\u0666", moreKey("6")))
+                    .replaceKeyOfLabel("6", key("\u0666",
+                            joinMoreKeys("6", "⁶", "₆")))
                     // U+0667: "٧" ARABIC-INDIC DIGIT SEVEN
-                    // U+215E: "⅞" VULGAR FRACTION SEVEN EIGHTHS
-                    .replaceKeyOfLabel("7", key("\u0667", joinMoreKeys("7", "\u215E")))
+                    .replaceKeyOfLabel("7", key("\u0667",
+                            joinMoreKeys("7", "⁷", "₇", "⅞")))
                     // U+0668: "٨" ARABIC-INDIC DIGIT EIGHT
-                    .replaceKeyOfLabel("8", key("\u0668", moreKey("8")))
+                    .replaceKeyOfLabel("8", key("\u0668",
+                            joinMoreKeys("8", "⁸", "₈")))
                     // U+0669: "٩" ARABIC-INDIC DIGIT NINE
-                    .replaceKeyOfLabel("9", key("\u0669", moreKey("9")))
+                    .replaceKeyOfLabel("9", key("\u0669",
+                            joinMoreKeys("9", "⁹", "₉")))
                     // U+0660: "٠" ARABIC-INDIC DIGIT ZERO
                     // U+066B: "٫" ARABIC DECIMAL SEPARATOR
                     // U+066C: "٬" ARABIC THOUSANDS SEPARATOR
-                    // U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N
-                    // U+2205: "∅" EMPTY SET
                     .replaceKeyOfLabel("0", key("\u0660",
-                            joinMoreKeys("0", "\u066B", "\u066C", "\u207F", "\u2205")))
+                            joinMoreKeys("0", "\u066B", "\u066C", "⁰", "₀", "ⁿ", "∅")))
                     // U+066A: "٪" ARABIC PERCENT SIGN
                     // U+2030: "‰" PER MILLE SIGN
                     .replaceKeyOfLabel("%", key("\u066A", joinMoreKeys("%", "\u2030")))

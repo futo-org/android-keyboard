@@ -184,7 +184,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
                         new RegularKeyboardSize(keyboardHeight, keyboardWidth, new Rect(), keyboardHeight / 4),
                         richInputMethodSubtype.getKeyboardLayoutSetName(),
                         richInputMethodSubtype.getLocale(), null,
-                        editorInfo, false, 0, false, false, false,
+                        editorInfo, false, 0, true, false, false,
                         4.0f,
                         languageSwitchKeyEnabled ? ActionRegistry.INSTANCE.actionStringIdToIdx("switch_language") : null,
                         LongPressKeySettings.forTest()
