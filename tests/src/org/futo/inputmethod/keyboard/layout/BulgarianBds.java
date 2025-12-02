@@ -36,6 +36,14 @@ public final class BulgarianBds extends LayoutBase {
         BulgarianBdsCustomizer(final Locale locale) { super(locale); }
 
         @Override
+        public final ExpectedKey getCurrencyKey() { return Symbols.CURRENCY_EURO; }
+
+        @Override
+        public final ExpectedKey[] getOtherCurrencyKeys() {
+            return SymbolsShifted.CURRENCIES_OTHER_THAN_EURO;
+        }
+
+        @Override
         public ExpectedKey[] getDoubleQuoteMoreKeys() { return Symbols.DOUBLE_QUOTES_R9L; }
     }
 

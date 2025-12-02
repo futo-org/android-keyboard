@@ -73,7 +73,7 @@ public class Symbols extends AbstractLayoutBase {
     public static final ExpectedKey CURRENCY_DOLLAR = key("$",
             CENT_SIGN, POUND_SIGN, EURO_SIGN, YEN_SIGN, PESO_SIGN);
     public static final ExpectedKey CURRENCY_EURO = key("\u20AC",
-            CENT_SIGN, POUND_SIGN, DOLLAR_SIGN, YEN_SIGN, PESO_SIGN);
+            DOLLAR_SIGN, CENT_SIGN, POUND_SIGN, YEN_SIGN, PESO_SIGN);
     public static final ExpectedKey[] CURRENCY_GENERIC_MORE_KEYS = joinMoreKeys(
             Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.POUND_SIGN,
             Symbols.YEN_SIGN, Symbols.PESO_SIGN);

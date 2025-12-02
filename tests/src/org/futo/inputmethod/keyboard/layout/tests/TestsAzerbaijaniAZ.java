@@ -20,7 +20,10 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import org.futo.inputmethod.keyboard.layout.LayoutBase;
 import org.futo.inputmethod.keyboard.layout.Qwerty;
+import org.futo.inputmethod.keyboard.layout.Symbols;
+import org.futo.inputmethod.keyboard.layout.SymbolsShifted;
 import org.futo.inputmethod.keyboard.layout.customizer.TurkicCustomizer;
+import org.futo.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
 
@@ -30,8 +33,24 @@ import java.util.Locale;
 @SmallTest
 public final class TestsAzerbaijaniAZ extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("az", "AZ");
-    private static final LayoutBase LAYOUT = new Qwerty(new TurkicCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Qwerty(new AzerbaijaniCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
+
+    private static class AzerbaijaniCustomizer extends TurkicCustomizer {
+        public AzerbaijaniCustomizer(Locale locale) { super(locale); }
+
+        private static final ExpectedKey CURRENCY_MANAT = key("₼", Symbols.CURRENCY_GENERIC_MORE_KEYS);
+
+        @Override
+        public ExpectedKey getCurrencyKey() {
+            return CURRENCY_MANAT;
+        }
+
+        @Override
+        public ExpectedKey[] getOtherCurrencyKeys() {
+            return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
+        }
+    }
 }

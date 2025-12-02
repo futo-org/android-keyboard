@@ -184,8 +184,6 @@ public final class ArmenianPhonetic extends LayoutBase {
         public ExpectedKey[][] getLayout(final boolean isPhone) {
             final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(
                     super.getLayout(isPhone));
-            // U+055D: "՝" ARMENIAN COMMA
-            builder.replaceKeyOfLabel(",", "\u055D");
             // U+055C: "՜" ARMENIAN EXCLAMATION MARK
             // U+00A1: "¡" INVERTED EXCLAMATION MARK
             // U+055E: "՞" ARMENIAN QUESTION MARK
