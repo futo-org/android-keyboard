@@ -37,10 +37,13 @@ import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params;
+import org.futo.inputmethod.v2keyboard.LayoutManager;
 import org.futo.inputmethod.v2keyboard.RegularKeyboardSize;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     // All input method subtypes of LatinIME.
@@ -92,14 +95,14 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
 
         mScreenMetrics = Settings.readScreenMetrics(res);
 
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "qwerty"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "pcqwerty"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "azerty"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "colemak"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.GERMANY.toString(), "qwertz"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.GERMANY.toString(), "german"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.GERMANY.toString(), "swiss"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(new Locale("ar").toString(), "arabic"));
+        LayoutManager.INSTANCE.init(context);
+        Map<Locale, List<String>> mapping = LayoutManager.INSTANCE.getLayoutMapping(context);
+        for(Map.Entry<Locale, List<String>> entry : mapping.entrySet()) {
+            String locale = entry.getKey().toString();
+            for(String layout : entry.getValue()) {
+                mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(locale, layout));
+            }
+        }
     }
 
     @Override
@@ -143,6 +146,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
             final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
             final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
         final Context context = getContext();
+        LayoutManager.INSTANCE.init(context);
         final Resources res = context.getResources();
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(null, res);
         final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
