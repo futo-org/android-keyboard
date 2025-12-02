@@ -71,6 +71,6 @@ data class LongPressKeySettings(val currentOrder: List<LongPressKey>, val showHi
 
         @JvmStatic
         fun forTest(): LongPressKeySettings =
-            LongPressKeySettings(listOf(LongPressKey.Numbers, LongPressKey.LanguageKeys, LongPressKey.MiscLetters), false)
+            LongPressKeySettings(listOf(LongPressKey.Numbers, LongPressKey.LanguageKeys), false)
     }
 }

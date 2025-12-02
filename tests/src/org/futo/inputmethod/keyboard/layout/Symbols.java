@@ -130,17 +130,24 @@ public class Symbols extends AbstractLayoutBase {
                     key("9", joinMoreKeys("⁹", "₉")),
                     key("0", joinMoreKeys("⁰", "₀", "ⁿ", "∅")))
             .setKeysOfRow(2,
-                    key("@"), key("#"), key(CURRENCY),
+                    key("@"),
+                    // U+2116: "№" NUMERO SIGN
+                    key("#", moreKey("\u2116")),
+                    key(CURRENCY),
                     "_",
                     // U+2030: "‰" PER MILLE SIGN
                     key("%", moreKey("\u2030")),
                     "&",
                     // U+2013: "–" EN DASH
                     // U+2014: "—" EM DASH
+                    // U+207B: "⁻" SUPERSCRIPT MINUS
+                    // U+208B: "₋" SUBSCRIPT MINUS
                     // U+00B7: "·" MIDDLE DOT
-                    key("-", joinMoreKeys("_", "\u2013", "\u2014", "\u00B7")),
+                    key("-", joinMoreKeys("_", "\u2013", "\u2014", "\u207B", "\u208B", "\u00B7")),
+                    // U+207A: "⁺" SUPERSCRIPT PLUS SIGN
+                    // U+208A: "₊" SUBSCRIPT PLUS SIGN
                     // U+00B1: "±" PLUS-MINUS SIGN
-                    key("+", moreKey("\u00B1")),
+                    key("+", joinMoreKeys("\u207A", "\u208A", "\u00B1")),
                     key("(", joinMoreKeys("<", "{", "[")),
                     key(")", joinMoreKeys(">", "}", "]")))
             .setKeysOfRow(3,
