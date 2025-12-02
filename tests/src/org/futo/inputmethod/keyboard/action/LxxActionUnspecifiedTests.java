@@ -28,7 +28,7 @@ public class LxxActionUnspecifiedTests extends LxxActionTestsBase {
     public void testActionUnspecified() {
         final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
                 KeyboardIconsSet.NAME_ENTER_KEY);
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : getSubtypeListForActionTests()) {
             final String tag = "unspecifiled "
                     + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_UNSPECIFIED, expectedKey);

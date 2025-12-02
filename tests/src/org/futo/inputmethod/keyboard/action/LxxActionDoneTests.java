@@ -28,7 +28,7 @@ public class LxxActionDoneTests extends LxxActionTestsBase {
     public void testActionDone() {
         final ExpectedActionKey expectedKey = ExpectedActionKey.newIconKey(
                 KeyboardIconsSet.NAME_DONE_KEY);
-        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+        for (final InputMethodSubtype subtype : getSubtypeListForActionTests()) {
             final String tag = "done " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             doTestActionKey(tag, subtype, EditorInfo.IME_ACTION_DONE, expectedKey);
         }

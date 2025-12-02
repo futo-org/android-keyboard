@@ -242,7 +242,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
             window.window?.let { window ->
                 if(UseTransparentNavbar) {
-                    applyWindowColors(window, color.copy(alpha = 0.0f).toArgb(), statusBar = false)
+                    applyWindowColors(window, (colorScheme.navigationBarColorForTransparency ?: color).copy(alpha = 0.0f).toArgb(), statusBar = false)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         window.setNavigationBarContrastEnforced(shouldMaintainContrast)
                     }

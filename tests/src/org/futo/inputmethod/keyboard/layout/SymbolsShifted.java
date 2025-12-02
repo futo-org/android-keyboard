@@ -85,7 +85,9 @@ public class SymbolsShifted extends AbstractLayoutBase {
                     "\u221A",
                     // U+03C0: "π" GREEK SMALL LETTER PI
                     // U+03A0: "Π" GREEK CAPITAL LETTER PI
-                    key("\u03C0", moreKey("\u03A0")),
+                    // U+03BC: "μ" GREEK SMALL LETTER MU
+                    // U+03A9: "Ω" GREEK CAPITAL LETTER OMEGA
+                    key("\u03C0", joinMoreKeys("\u03A0", "\u03BC", "\u03A9")),
                     // U+00F7: "÷" DIVISION SIGN
                     // U+00D7: "×" MULTIPLICATION SIGN
                     "\u00F7", "\u00D7",

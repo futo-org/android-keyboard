@@ -1,9 +1,11 @@
 package org.futo.inputmethod.latin
 
+import android.os.Build
 import android.util.Log
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnectionWrapper
 import android.view.inputmethod.TextAttribute
+import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 
 interface IBufferedInputConnection {
@@ -28,7 +30,29 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
 
     val commandQueue = mutableListOf<InputCommand>()
 
+    private val blacklistForSamsung = setOf("(", ")", "[", "]", "<", ">", "{", "}")
+    private fun canMerge(commands: List<InputCommand>): Boolean {
+        // Samsung OneUI framework seems to have special behavior for RTL languages and parentheses
+        // when calling commitText
+        // | requested commit | actual text committed |
+        // | "(", ")"         | "(", ")"              |
+        // | "( ", ") "       | ") ", "( "            |
+        // In practice what's used is commit("(") and commit(") "), both of which commit the same
+        // parenthesis which is broken. This stops merging to prevent that case
+        if(Build.MANUFACTURER.equals("samsung", ignoreCase = true)) {
+            if(Settings.getInstance().current.mIsRTL && commands.any {
+                it is InputCommand.Commit && blacklistForSamsung.contains(it.text)
+            }) {
+                return false
+            }
+        }
+
+        return true
+    }
+
     private fun merge(commands: List<InputCommand>): List<InputCommand> {
+        if(!canMerge(commands)) return commands.toList() // copy
+
         var text = ""
         var deletedAmount = 0
         var deletedAfterAmount = 0

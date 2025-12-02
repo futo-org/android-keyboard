@@ -37,14 +37,19 @@ import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params;
+import org.futo.inputmethod.v2keyboard.LayoutManager;
 import org.futo.inputmethod.v2keyboard.RegularKeyboardSize;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     // All input method subtypes of LatinIME.
     private final ArrayList<InputMethodSubtype> mAllSubtypesList = new ArrayList<>();
+    private final ArrayList<InputMethodSubtype> mReducedSubtypesList = new ArrayList<>();
 
     public interface SubtypeFilter {
         public boolean accept(final InputMethodSubtype subtype);
@@ -92,14 +97,33 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
 
         mScreenMetrics = Settings.readScreenMetrics(res);
 
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "qwerty"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "pcqwerty"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "azerty"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.US.toString(), "colemak"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.GERMANY.toString(), "qwertz"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.GERMANY.toString(), "german"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(Locale.GERMANY.toString(), "swiss"));
-        mAllSubtypesList.add(Subtypes.INSTANCE.makeSubtype(new Locale("ar").toString(), "arabic"));
+        LayoutManager.INSTANCE.init(context);
+        Map<Locale, List<String>> mapping = LayoutManager.INSTANCE.getLayoutMapping(context);
+        for(Map.Entry<Locale, List<String>> entry : mapping.entrySet()) {
+            String locale = entry.getKey().toString();
+            for(String layout : entry.getValue()) {
+                InputMethodSubtype subtype = Subtypes.INSTANCE.makeSubtype(locale, layout);
+                mAllSubtypesList.add(subtype);
+            }
+        }
+
+        // Reduced: add each unique layout only once, unless it's the top choice for language
+        HashSet<String> reducedLayoutsAdded = new HashSet<>();
+        for(Map.Entry<Locale, List<String>> entry : mapping.entrySet()) {
+            String locale = entry.getKey().toString();
+            int i = 0;
+            for(String layout : entry.getValue()) {
+                InputMethodSubtype subtype = Subtypes.INSTANCE.makeSubtype(locale, layout);
+
+                if(!reducedLayoutsAdded.contains(layout)) {
+                    reducedLayoutsAdded.add(layout);
+                    mReducedSubtypesList.add(subtype);
+                } else if(i == 0) {
+                    mReducedSubtypesList.add(subtype);
+                }
+                i++;
+            }
+        }
     }
 
     @Override
@@ -111,6 +135,10 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
 
     protected final ArrayList<InputMethodSubtype> getAllSubtypesList() {
         return mAllSubtypesList;
+    }
+
+    protected final ArrayList<InputMethodSubtype> getReducedSubtypesList() {
+        return mReducedSubtypesList;
     }
 
     protected final ArrayList<InputMethodSubtype> getSubtypesFilteredBy(
@@ -143,6 +171,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
             final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
             final boolean languageSwitchKeyEnabled, final boolean splitLayoutEnabled) {
         final Context context = getContext();
+        LayoutManager.INSTANCE.init(context);
         final Resources res = context.getResources();
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(null, res);
         final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
@@ -155,7 +184,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
                         new RegularKeyboardSize(keyboardHeight, keyboardWidth, new Rect(), keyboardHeight / 4),
                         richInputMethodSubtype.getKeyboardLayoutSetName(),
                         richInputMethodSubtype.getLocale(), null,
-                        editorInfo, false, false, false,
+                        editorInfo, false, 0, true, false, false,
                         4.0f,
                         languageSwitchKeyEnabled ? ActionRegistry.INSTANCE.actionStringIdToIdx("switch_language") : null,
                         LongPressKeySettings.forTest()

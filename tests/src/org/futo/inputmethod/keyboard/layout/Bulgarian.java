@@ -42,6 +42,14 @@ public final class Bulgarian extends LayoutBase {
         }
 
         @Override
+        public final ExpectedKey getCurrencyKey() { return Symbols.CURRENCY_EURO; }
+
+        @Override
+        public final ExpectedKey[] getOtherCurrencyKeys() {
+            return SymbolsShifted.CURRENCIES_OTHER_THAN_EURO;
+        }
+
+        @Override
         public ExpectedKey getAlphabetKey() {
             return mEastSlavicCustomizer.getAlphabetKey();
         }

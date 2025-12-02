@@ -44,7 +44,8 @@ private val gradientScheme1 = extendedDarkColorScheme(
         0.0f to Color(0xFF123A87),
         1.0f to Color(0xFF852D80)
     ),
-    navigationBarColor = Color(0xFF852D80)
+    navigationBarColor = Color(0xFF852D80),
+    navigationBarColorForTransparency = Color(0xFF000000),
 )
 
 
