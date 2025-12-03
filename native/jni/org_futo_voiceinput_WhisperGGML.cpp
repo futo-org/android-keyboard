@@ -87,8 +87,8 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
     size_t num_samples = env->GetArrayLength(samples_array);
     jfloat *samples = env->GetFloatArrayElements(samples_array, nullptr);
 
-    long num_procs = sysconf(_SC_NPROCESSORS_ONLN);
-    if(num_procs < 2 || num_procs > 16) num_procs = 6; // Make sure the number is sane
+    long num_procs = sysconf(_SC_NPROCESSORS_CONF) / 2;
+    if(num_procs < 2 || num_procs > 16) num_procs = 4; // Make sure the number is sane
 
     whisper_full_params wparams = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
     wparams.print_progress = false;
