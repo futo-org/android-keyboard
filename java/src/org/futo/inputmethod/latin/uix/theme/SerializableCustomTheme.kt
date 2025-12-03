@@ -1,27 +1,13 @@
 package org.futo.inputmethod.latin.uix.theme
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.BitmapFactory
+import android.graphics.Rect
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.ImageShader
-import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
-import com.google.android.material.color.utilities.DislikeAnalyzer
-import com.google.android.material.color.utilities.DynamicColor
 import com.google.android.material.color.utilities.DynamicScheme
-import com.google.android.material.color.utilities.Hct
 import com.google.android.material.color.utilities.MaterialDynamicColors
-import com.google.android.material.color.utilities.MathUtils
-import com.google.android.material.color.utilities.TemperatureCache
-import com.google.android.material.color.utilities.TonalPalette
-import com.google.android.material.color.utilities.Variant
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -31,9 +17,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import org.futo.inputmethod.latin.uix.ExtraColors
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
-import org.futo.inputmethod.latin.uix.wrapDarkColorScheme
-import org.futo.inputmethod.latin.uix.wrapLightColorScheme
-import java.io.File
+import kotlin.math.roundToInt
 
 private object ColorAsStringSerializer : KSerializer<SerializableColor> {
     override val descriptor: SerialDescriptor =
@@ -135,11 +119,29 @@ data class SerializableCustomTheme(
     val navigationBarColor: SerializableColor? = null,
     val keyboardBackgroundShader: String? = null,
 
-    val backgroundImage: String? = null, // or inline base64?
-    val backgroundImageOpacity: Float = 1.0f, // and cropping etc
+    val thumbnailImage: String? = null,
+    val thumbnailScale: Float = 1.0f,
+    val backgroundImage: String? = null,
+    val backgroundImageOpacity: Float = 1.0f,
+    val backgroundImageCropping: List<Float> = emptyList(),
+
     val keyRoundness: Float = 1.0f,
+    val keyBorders: Boolean = true,
+
+    val keysFont: String? = null,
+
+    // keys can be:
+    //  "normal",
+    //  "functional",
+    //  "label q"
+    //  "label Q"
+    //  "code -5"
+    //  "layout qwerty code -5"
+    //  "layout qwerty code -5"
+    val keyBackgrounds: Map<String, String> = mapOf(),
+    val keyIcons: Map<String, String> = mapOf()
 ) {
-    fun toKeyboardScheme(context: Context): KeyboardColorScheme {
+    fun toKeyboardScheme(ctx: ThemeDecodingContext): KeyboardColorScheme {
         return KeyboardColorScheme(
             base = ColorScheme(
                 primary                 = primary.toColor(),
@@ -195,28 +197,36 @@ data class SerializableCustomTheme(
                 navigationBarColor = navigationBarColor?.toColor(),
 
                 hintHiVis = hintHiVis,
-                keyboardBackgroundShader = keyboardBackgroundShader,
-
-                keyboardBackgroundBitmap = backgroundImage?.let {
-                    val file = File(it)
-                    if(file.isFile) {
-                        BitmapFactory.decodeFile(file.absolutePath).asImageBitmap()
-                    } else {
-                        null
-                    }
-                },
 
                 keyboardBackgroundGradient = backgroundImage?.let {
                     SolidColor(keyboardSurface.toColor().copy(alpha = 1.0f - backgroundImageOpacity))
                 },
+                advancedThemeOptions = AdvancedThemeOptions(
+                    keyRoundness = keyRoundness,
+                    keyBorders = keyBorders,
+                    backgroundShader = keyboardBackgroundShader,
 
-                keyRoundness = keyRoundness
+                    thumbnailImage = decodeOptionalImage(ctx, thumbnailImage),
+                    thumbnailScale = thumbnailScale,
+                    backgroundImage = decodeOptionalImage(ctx, backgroundImage),
+                    backgroundImageVisibleArea = run {
+                        if(backgroundImageCropping.size == 4) {
+                            Rect(backgroundImageCropping[0].roundToInt(), backgroundImageCropping[1].roundToInt(), backgroundImageCropping[2].roundToInt(), backgroundImageCropping[3].roundToInt())
+                        } else {
+                            null
+                        }
+                    },
+                    keyBackgrounds = decodeKeyedBitmaps(ctx, keyBackgrounds),
+                    keyIcons = decodeKeyedBitmaps(ctx, keyIcons),
+                    font = decodeOptionalFont(ctx, keysFont)
+                ),
             )
         )
     }
 }
 
-fun fromKeyboardScheme(scheme: KeyboardColorScheme): SerializableCustomTheme {
+
+fun initBasicSerializableThemeFromKeyboardScheme(scheme: KeyboardColorScheme): SerializableCustomTheme {
     return SerializableCustomTheme(
         primary                    = scheme.primary.toSColor(),
         onPrimary                  = scheme.onPrimary.toSColor(),
@@ -268,8 +278,6 @@ fun fromKeyboardScheme(scheme: KeyboardColorScheme): SerializableCustomTheme {
         hintColor                  = scheme.hintColor?.toSColor(),
         navigationBarColor         = scheme.navigationBarColor?.toSColor(),
         hintHiVis                  = scheme.hintHiVis,
-        keyboardBackgroundShader   = scheme.keyboardBackgroundShader,
-        keyRoundness               = scheme.extended.keyRoundness
     )
 }
 
@@ -317,38 +325,3 @@ internal fun getColorSchemeFromDynamicScheme(s: DynamicScheme): ColorScheme {
     )
 }
 
-
-@SuppressLint("RestrictedApi")
-data class CustomThemeBuilderConfiguration(
-    val hue: Double,
-    val chroma: Double,
-    val tone: Double,
-    val darkMode: Boolean,
-    val amoledDark: Boolean,
-    val contrast: Float
-) {
-    val variant = Variant.VIBRANT
-    val col = Hct.from(hue, chroma, tone)
-    val palette = TonalPalette.fromHueAndChroma(hue, chroma)
-    fun getTone(tone: Double): Color = Color(palette.getHct(tone).toInt())
-    fun buildScheme(): KeyboardColorScheme {
-        val dynamicScheme = DynamicScheme(
-            col,
-            variant,
-            darkMode,
-            contrast.toDouble(),
-            TonalPalette.fromHueAndChroma(col.hue, col.chroma),
-            TonalPalette.fromHueAndChroma(MathUtils.sanitizeDegreesDouble(col.hue + 15.0), maxOf(col.chroma - 32.0, col.chroma * 0.5)),
-            TonalPalette.fromHct(DislikeAnalyzer.fixIfDisliked(TemperatureCache(col).getAnalogousColors(3, 6).get(2))),
-            TonalPalette.fromHueAndChroma(col.hue, col.chroma / 1.0),
-            TonalPalette.fromHueAndChroma(col.hue, col.chroma / 1.0 + 4.0),
-        )
-
-        val scheme = getColorSchemeFromDynamicScheme(dynamicScheme)
-
-        return when {
-            darkMode -> wrapDarkColorScheme(scheme)
-            else -> wrapLightColorScheme(scheme)
-        }
-    }
-}

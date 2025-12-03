@@ -10,12 +10,15 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.NinePatchDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
@@ -27,6 +30,7 @@ import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
+import org.futo.inputmethod.latin.uix.utils.toNinePatchDrawable
 import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
@@ -160,7 +164,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     override val hintHiVis: Boolean
 
     override var typefaceOverride: Typeface? = null
-    override val themeTypeface: Typeface? = null
+    override val themeTypeface: Typeface?
 
     private val colors: HashMap<Int, Int> = HashMap()
     override fun getColor(i: Int): Int? {
@@ -258,13 +262,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     val expertMode: Boolean
     val showKeyHints: Boolean
 
-    fun hasUpdated(np: Preferences): Boolean {
-        return np.get(HiddenKeysSetting) != expertMode
-                || np.get(KeyBordersSetting) != keyBorders
-                || np.get(KeyHintsSetting) != showKeyHints
-    }
-
-
     private fun addIcon(iconName: String, drawableIntResId: Int, tint: Int) {
         addIcon(iconName, AppCompatResources.getDrawable(
             context,
@@ -274,15 +271,21 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
     private fun addIcon(iconName: String, drawable: Drawable?, tint: Int) {
         icons[iconName] = drawable?.apply {
-            setTint(tint)
+            //setTint(tint) // breaks some stuff, its set anyway before drawing in KeyboardView now ?
         }
     }
 
+    private fun makeNineSlice(image: ImageBitmap): NinePatchDrawable? =
+        image.asAndroidBitmap().toNinePatchDrawable(context.resources)
+
     init {
+        val advanced = colorScheme.extended.advancedThemeOptions
         displayDpi = context.resources.displayMetrics.densityDpi
 
+        themeTypeface = advanced.font
+
         expertMode = context.getSettingBlocking(HiddenKeysSetting)
-        keyBorders = context.getSettingBlocking(KeyBordersSetting)
+        keyBorders = advanced.keyBorders ?: context.getSettingBlocking(KeyBordersSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
 
         hintColor = colorScheme.hintColor?.toArgb() ?: colorScheme.onSurfaceVariant.toArgb()
@@ -404,7 +407,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         keyboardBackground = coloredRectangle(0x00000000)
 
-        val roundness = colorScheme.extended.keyRoundness
+        val roundness = advanced.keyRoundness
         val keyCornerRadius = 9.dp * roundness
 
         val spaceCornerRadius = if(keyBorders) {

@@ -222,6 +222,8 @@ val suggestionStyleCandidateDescription = TextStyle(
 fun actionBarColor(): Color =
     if(LocalInspectionMode.current) {
         LocalKeyboardScheme.current.keyboardSurface
+    } else if(LocalKeyboardScheme.current.extended.advancedThemeOptions.backgroundImage != null) {
+        LocalKeyboardScheme.current.keyboardSurface.copy(alpha = 0.5f)
     } else if(LocalKeyboardScheme.current.keyboardBackgroundGradient != null) {
         Color.Transparent
     } else {
@@ -339,7 +341,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         modifier = Modifier
             .fillMaxHeight(0.66f)
             .align(CenterVertically)
-            .background(color = MaterialTheme.colorScheme.outline)
+            .background(color = LocalKeyboardScheme.current.outline)
             .width(1.dp)
     )
 }
@@ -494,7 +496,7 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
         .width(width)
         .fillMaxHeight()
 
-    val contentCol = MaterialTheme.colorScheme.onBackground
+    val contentCol = LocalKeyboardScheme.current.onBackground
 
     Box(modifier = modifier
         .clip(CircleShape)
@@ -700,13 +702,13 @@ fun ImportantNoticeView(
                 .weight(1.0f)
                 .fillMaxHeight(),
             shape = RectangleShape,
-            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
+            colors = ButtonDefaults.textButtonColors(contentColor = LocalKeyboardScheme.current.onBackground),
             enabled = true
         ) {
-            AutoFitText(importantNotice.getText(), style = suggestionStylePrimary.copy(color = MaterialTheme.colorScheme.onBackground))
+            AutoFitText(importantNotice.getText(), style = suggestionStylePrimary.copy(color = LocalKeyboardScheme.current.onBackground))
         }
 
-        val color = MaterialTheme.colorScheme.primary
+        val color = LocalKeyboardScheme.current.primary
         IconButton(
             onClick = { importantNotice.onDismiss(context) },
             modifier = Modifier
@@ -716,7 +718,7 @@ fun ImportantNoticeView(
                     drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
                 },
 
-            colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+            colors = IconButtonDefaults.iconButtonColors(contentColor = LocalKeyboardScheme.current.onPrimary)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.close),
@@ -914,7 +916,7 @@ fun ActionWindowBar(
 
 @Composable
 private fun CloseActionWindowButton(onClose: () -> Unit) {
-    val color = MaterialTheme.colorScheme.primary
+    val color = LocalKeyboardScheme.current.primary
     IconButton(
         onClick = onClose,
         modifier = Modifier
@@ -924,7 +926,7 @@ private fun CloseActionWindowButton(onClose: () -> Unit) {
                 drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
             },
 
-        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+        colors = IconButtonDefaults.iconButtonColors(contentColor = LocalKeyboardScheme.current.onPrimary)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.close),
@@ -976,7 +978,7 @@ fun CollapsibleSuggestionsBar(
                         modifier = Modifier
                             .width(42.dp)
                             .fillMaxHeight(),
-                        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
+                        colors = IconButtonDefaults.iconButtonColors(contentColor = LocalKeyboardScheme.current.onBackground)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_down),

@@ -163,6 +163,7 @@
     <string name="theme_dynamic_system">Dynamic Auto</string>
     <string name="theme_dynamic_dark">Dynamic Dark</string>
     <string name="theme_dynamic_light">Dynamic Light</string>
+    <string name="theme_custom_named">Custom: %s</string>
 
     <!-- Auto update strings (note: the auto updater is currently inactive) -->
     <string name="autoupdater_service_title">Update Checking service</string>
@@ -485,9 +486,28 @@
 
     <!-- misc titles -->
     <string name="settings_keyboard_typing_title">Keyboard &amp; Typing</string>
+
     <!-- Theme, as in visual style -->
     <string name="theme_settings_title">Theme</string>
     <string name="theme_settings_key_borders">Key borders</string>
+    <string name="theme_settings_default_themes">Built-in</string>
+    <string name="theme_settings_custom_themes">Custom</string>
+    <string name="theme_settings_custom_theme_delete_title">Delete custom theme?</string>
+    <string name="theme_settings_custom_theme_delete_body">Theme: %s</string>
+    <string name="theme_settings_custom_theme_delete_confirm">Delete</string>
+    <string name="theme_settings_custom_theme_delete_cancel">Cancel</string>
+
+    <!-- Theme customizer -->
+    <string name="theme_customizer_select_background_image_button">Select image</string>
+    <string name="theme_customizer_adjust_background_image_hint">Drag or pinch to adjust image</string>
+    <string name="theme_customizer_transparency_slider_name">Transparency</string>
+    <string name="theme_customizer_blur_slider_name">Blur</string>
+    <string name="theme_customizer_color_sliders_name">Color</string>
+    <string name="theme_customizer_dark_mode_toggle">Dark mode</string>
+    <string name="theme_customizer_light_mode_toggle">Light mode</string>
+    <string name="theme_customizer_finish_theme_adjustment">Finish</string>
+    <string name="theme_customizer_load_custom_theme_file">Load from ZIP</string>
+
     <string name="dev_settings_title">Developer Settings</string>
 
     <!-- Voice input settings menu -->

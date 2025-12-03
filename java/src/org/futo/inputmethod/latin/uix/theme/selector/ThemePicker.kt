@@ -1,9 +1,10 @@
 package org.futo.inputmethod.latin.uix.theme.selector
 
-import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,34 +27,45 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyBordersSetting
+import org.futo.inputmethod.latin.uix.KeyboardBackground
+import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.theme.CustomThemes
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptionKeys
-import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
+import org.futo.inputmethod.latin.uix.theme.presets.DefaultLightScheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
@@ -64,8 +76,21 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
     if(theme == DynamicSystemTheme) return DynamicThemePreview(isSelected, onClick)
 
     val context = LocalContext.current
-    val colors = remember { theme.obtainColors(context) }
+    val colors = remember(theme) { theme.obtainColors(context) }
 
+    return ThemePreview(
+        colors = colors,
+        name = overrideName ?: stringResource(theme.name),
+        loading = false,
+        isSelected = isSelected,
+        modifier = modifier,
+        onClick = onClick
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ThemePreview(colors: KeyboardColorScheme, name: String, loading: Boolean, isSelected: Boolean = false, modifier: Modifier = Modifier, onLongClick: (() -> Unit)? = null, onClick: () -> Unit = { }) {
     val currColors = MaterialTheme.colorScheme
 
     val borderWidth = if (isSelected) {
@@ -97,22 +122,28 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
         modifier = previewModifier
             .padding(12.dp)
             .height(128.dp)
-            .background(
-                colors.keyboardBackgroundGradient ?: SolidColor(colors.keyboardSurface),
-                keyboardShape
-            )
             .border(borderWidth, borderColor, keyboardShape)
-            .clickable { onClick() }
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
             .clip(keyboardShape),
     ) {
+        KeyboardBackground(colors, useThumbnail = true)
         Box(modifier = Modifier.fillMaxSize()) {
             // Theme name and action bar
             Text(
-                text = overrideName ?: stringResource(theme.name),
+                text = name,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .background(colors.keyboardSurfaceDim)
+                    .background(colors.keyboardSurfaceDim.copy(
+                        alpha = if(colors.extended.advancedThemeOptions.thumbnailImage == null) {
+                            1.0f
+                        } else {
+                            0.4f
+                        }
+                    ))
                     .fillMaxWidth()
                     .padding(4.dp),
                 color = textColor,
@@ -148,6 +179,34 @@ fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: 
             }
         }
     }
+}
+
+
+@Composable
+fun CustomThemePreview(customThemeName: String, isSelected: Boolean, modifier: Modifier, onLongClick: (() -> Unit)? = null, onClick: () -> Unit) {
+    val context = LocalContext.current
+
+    val loading = remember { mutableStateOf(true) }
+    val scheme = remember { mutableStateOf<KeyboardColorScheme>(DefaultLightScheme.obtainColors(context)) }
+
+    LaunchedEffect(customThemeName) {
+        loading.value = true
+        scheme.value = DefaultLightScheme.obtainColors(context)
+        withContext(Dispatchers.Default) {
+            scheme.value = CustomThemes.loadSchemeThumb(context, customThemeName)
+        }
+        loading.value = false
+    }
+
+    ThemePreview(
+        colors = scheme.value,
+        name = stringResource(R.string.theme_custom_named, customThemeName),
+        loading = loading.value,
+        isSelected = isSelected,
+        modifier = modifier,
+        onLongClick = onLongClick,
+        onClick = onClick,
+    )
 }
 
 // Special case to demonstrate the light and dark mode
@@ -191,8 +250,7 @@ fun DynamicThemePreview(isSelected: Boolean = false, onClick: () -> Unit = { }) 
 }
 
 @Composable
-fun AddCustomThemeButton(onClick: () -> Unit = { }) {
-    val context = LocalContext.current
+fun AddCustomThemeButton(short: Boolean = false, onClick: () -> Unit = { }) {
     val currColors = MaterialTheme.colorScheme
 
     val keyboardShape = RoundedCornerShape(8.dp)
@@ -201,7 +259,7 @@ fun AddCustomThemeButton(onClick: () -> Unit = { }) {
         modifier = Modifier
             .padding(12.dp)
             .width(172.dp)
-            .height(128.dp)
+            .height(if(short) 64.dp else 128.dp )
             .clickable { onClick() },
         color = currColors.surfaceVariant,
         shape = keyboardShape
@@ -209,7 +267,7 @@ fun AddCustomThemeButton(onClick: () -> Unit = { }) {
         Box(modifier = Modifier.fillMaxSize()) {
             Icon(
                 Icons.Default.Add, contentDescription = null, modifier = Modifier
-                    .size(48.dp)
+                    .size(if(short) 32.dp else 48.dp)
                     .align(
                         Alignment.Center
                     )
@@ -219,7 +277,7 @@ fun AddCustomThemeButton(onClick: () -> Unit = { }) {
 }
 
 @Composable
-fun ThemePicker(onSelected: (ThemeOption) -> Unit, onCustomTheme: () -> Unit) {
+fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit) {
     val context = LocalContext.current
 
     val currentTheme = useDataStore(THEME_KEY.key, "").value
@@ -238,9 +296,13 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit, onCustomTheme: () -> Unit) {
         }
     }
 
-
     val originalDirection = LocalLayoutDirection.current
 
+    val customThemes = remember(CustomThemes.updateCount.intValue) {
+        CustomThemes.list(context)
+    }
+
+    val lifecycle = LocalLifecycleOwner.current
     Column {
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             LazyVerticalGrid(
@@ -252,19 +314,41 @@ fun ThemePicker(onSelected: (ThemeOption) -> Unit, onCustomTheme: () -> Unit) {
                     Arrangement.Start
                 }
             ) {
-                items(availableThemeOptions.count()) {
-                    val themeOption = availableThemeOptions[it].second
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                    ScreenTitle(stringResource(R.string.theme_settings_custom_themes))
+                }
 
-                    ThemePreview(themeOption, isSelected = themeOption.key == currentTheme) {
-                        onSelected(themeOption)
+                items(customThemes.size) {
+                    val name = customThemes[it]
+                    CustomThemePreview(name, isSelected = currentTheme == "custom$name", modifier = Modifier, onLongClick = {
+                        onDeleteCustomTheme(name)
+                    }) {
+                        lifecycle.lifecycleScope.launch {
+                            context.setSetting(THEME_KEY, "custom$name")
+                        }
                     }
                 }
 
                 item {
-                    AddCustomThemeButton {
+                    AddCustomThemeButton(customThemes.isEmpty()) {
                         onCustomTheme()
                     }
                 }
+
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) { }
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                    ScreenTitle(stringResource(R.string.theme_settings_default_themes))
+                }
+                items(availableThemeOptions.size) {
+                    val themeOption = availableThemeOptions[it].second
+
+                    ThemePreview(themeOption, isSelected = themeOption.key == currentTheme) {
+                        lifecycle.lifecycleScope.launch {
+                            context.setSetting(THEME_KEY, themeOption.key)
+                        }
+                    }
+                }
+
 
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) { }
 

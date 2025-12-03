@@ -50,6 +50,7 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.accessibility.AccessibilityUtils
@@ -63,6 +64,9 @@ import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
+import org.futo.inputmethod.latin.uix.HiddenKeysSetting
+import org.futo.inputmethod.latin.uix.KeyBordersSetting
+import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
@@ -281,12 +285,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     private fun updateColorsIfDynamicChanged() {
-        val key = getSetting(THEME_KEY)
-        if(key != activeThemeOption?.key) {
-            getThemeOption(this, key)?.let { if(it.available(this)) updateTheme(it) }
-            return
-        }
-
         if(activeThemeOption?.dynamic == true) {
             val currColors = colorScheme
             val nextColors = activeThemeOption!!.obtainColors(this)
@@ -335,17 +333,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             recreateKeyboard()
         } else {
             pendingRecreateKeyboard = true
-        }
-    }
-
-    fun updateTheme(newTheme: ThemeOption) {
-        assert(newTheme.available(this))
-
-        if (activeThemeOption != newTheme) {
-            activeThemeOption = newTheme
-            updateDrawableProvider(newTheme.obtainColors(this))
-            deferSetSetting(this, THEME_KEY, newTheme.key)
-            invalidateKeyboard()
         }
     }
 
@@ -404,20 +391,31 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         launchJob { uixManager.showUpdateNoticeIfNeeded() }
 
         launchJob {
-            dataStore.data.collect {
-                drawableProvider?.let { provider ->
-                    if(provider is BasicThemeProvider) {
-                        if (provider.hasUpdated(it)) {
+            getSettingFlow(THEME_KEY).collect {
+                val themeOption = getThemeOption(this@LatinIME, it).orDefault(this@LatinIME)
+
+                activeThemeOption = themeOption
+                activeColorScheme.value = themeOption.obtainColors(this@LatinIME)
+
+                updateDrawableProvider(activeColorScheme.value)
+                invalidateKeyboard()
+            }
+        }
+
+        launchJob {
+            getSettingFlow(HiddenKeysSetting)
+                    .zip(getSettingFlow(KeyBordersSetting)) { a, b -> Pair(a, b) }
+                    .zip(getSettingFlow(KeyHintsSetting)) { a, b -> Pair(a, b) }
+                .collect {
+                    drawableProvider?.let { provider ->
+                        if(provider is BasicThemeProvider) {
                             activeThemeOption?.obtainColors?.let { f ->
                                 updateDrawableProvider(f(this@LatinIME))
                                 invalidateKeyboard()
                             }
-                        } else {
-                            if(currentInputEditorInfo?.privateImeOptions?.contains("org.futo.inputmethod.latin.ThemeMode") == true) updateColorsIfDynamicChanged()
                         }
                     }
                 }
-            }
         }
 
         launchJob {
@@ -877,7 +875,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         uixManager.onPersistentStatesUnlocked()
 
-        updateTheme(getThemeOption(this, getSettingBlocking(THEME_KEY)).orDefault(this))
         CanThrowIfDebug = true
 
         // TODO: Spell checker service

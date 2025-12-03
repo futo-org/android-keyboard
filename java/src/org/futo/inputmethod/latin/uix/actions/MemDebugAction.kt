@@ -294,12 +294,6 @@ val MemoryDebugAction = Action(
                     }) {
                         Text("Test action input transaction")
                     }
-
-                    Button(onClick = {
-                        manager.updateTheme(ThemeOptions.values.random())
-                    }) {
-                        Text("Randomize Theme")
-                    }
                 }
             }
         }

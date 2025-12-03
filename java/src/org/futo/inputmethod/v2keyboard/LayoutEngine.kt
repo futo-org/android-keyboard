@@ -2,6 +2,7 @@ package org.futo.inputmethod.v2keyboard
 
 import android.content.Context
 import android.graphics.Rect
+import android.util.Log
 import androidx.compose.ui.unit.Dp
 import org.futo.inputmethod.keyboard.KeyConsts
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement
@@ -700,7 +701,7 @@ data class LayoutEngine(
             val provider = DynamicThemeProvider.obtainFromContext(context)
             params.mIconsSet.loadIcons(null, provider)
         } catch(_: IllegalArgumentException) {
-            // May fail during test because provider is unavailable
+            Log.w("LayoutEngine", "Unable to load icons, this may cause an exception if it's used later")
         }
 
         params.mThemeId = 3
