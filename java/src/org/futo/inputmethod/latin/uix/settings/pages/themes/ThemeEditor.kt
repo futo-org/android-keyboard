@@ -170,7 +170,7 @@ internal fun ThemeEditor(
 
     var borders by remember { mutableStateOf(false) }
 
-    var color by remember { mutableStateOf(Hct2(startingColor.hue, startingColor.chroma, 100f)) }
+    var color by remember { mutableStateOf(Hct2(startingColor.hue, startingColor.chroma, 0f)) }
 
     val themeCtx = remember {
         object : ThemeDecodingContext {
