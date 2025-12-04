@@ -42,6 +42,7 @@ import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.CustomThemes
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.uix.theme.selector.CustomThemePreview
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePicker
 import org.futo.inputmethod.latin.uix.urlEncode
 
@@ -50,18 +51,14 @@ import org.futo.inputmethod.latin.uix.urlEncode
 fun DeleteCustomThemeDialog(name: String, navController: NavHostController) {
     val context = LocalContext.current
     AlertDialog(
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
         icon = {
         },
         title = {
             Text(stringResource(R.string.theme_settings_custom_theme_delete_title), style = org.futo.inputmethod.latin.uix.theme.Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onPrimaryContainer)
         },
         text = {
-            Text(
-                stringResource(R.string.theme_settings_custom_theme_delete_body, name),
-                style = Typography.SmallMl,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
+            CustomThemePreview(name, true, Modifier, null) { }
         },
         onDismissRequest = {
             navController.navigateUp()

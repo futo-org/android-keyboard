@@ -675,7 +675,7 @@ fun PaymentScreenSwitch(
 fun AlreadyPaidDialog(navController: NavHostController) {
     val context = LocalContext.current
     AlertDialog(
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
         icon = {
         },
         title = {
@@ -685,7 +685,7 @@ fun AlreadyPaidDialog(navController: NavHostController) {
             Text(
                 stringResource(R.string.payment_screen_already_paid_confirmation_body),
                 style = Typography.SmallMl,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         },
         onDismissRequest = {
