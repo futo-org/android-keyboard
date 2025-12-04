@@ -87,16 +87,13 @@ static jstring WhisperGGML_infer(JNIEnv *env, jobject instance, jlong handle, jf
     size_t num_samples = env->GetArrayLength(samples_array);
     jfloat *samples = env->GetFloatArrayElements(samples_array, nullptr);
 
-    long num_procs = sysconf(_SC_NPROCESSORS_CONF) / 2;
-    if(num_procs < 2 || num_procs > 16) num_procs = 4; // Make sure the number is sane
-
     whisper_full_params wparams = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
     wparams.print_progress = false;
     wparams.print_realtime = false;
     wparams.print_special = false;
     wparams.print_timestamps = false;
     wparams.max_tokens = 256;
-    wparams.n_threads = (int)num_procs;
+    wparams.n_threads = 1;
 
     wparams.audio_ctx = std::max(160, std::min(1500, (int)ceil((double)num_samples / (double)(320.0)) + 32));
     wparams.temperature_inc = 0.0f;
