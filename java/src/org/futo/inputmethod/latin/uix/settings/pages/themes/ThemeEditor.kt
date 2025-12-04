@@ -23,10 +23,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -56,6 +59,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
@@ -93,14 +97,16 @@ import kotlin.math.roundToInt
 
 private data class Tool(
     val name: Int,
+    val icon: Int,
+    val isActive: (() -> Boolean)? = null,
     val tool: (@Composable () -> Unit)? = null,
-    val press: (() -> Unit)? = null
+    val press: (() -> Unit)? = null,
+
 )
 
 const val fixedAspectRatio = 1.2f / 1.0f
 
 // TODO: Break this up into smaller composables
-// TODO: Replace tool names with icons
 @OptIn(ExperimentalLayoutApi::class)
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -302,7 +308,7 @@ internal fun ThemeEditor(
     val tools = remember {
         listOf(
             Tool(
-                R.string.theme_customizer_transparency_slider_name,
+                R.string.theme_customizer_transparency_slider_name, R.drawable.transparency,
                 tool = @Composable {
                     SettingSliderForDataStoreItem(
                         stringResource(R.string.theme_customizer_transparency_slider_name),
@@ -321,7 +327,7 @@ internal fun ThemeEditor(
                 }),
 
             Tool(
-                R.string.theme_customizer_blur_slider_name,
+                R.string.theme_customizer_blur_slider_name, R.drawable.blur,
                 tool = @Composable {
                     SettingSliderForDataStoreItem(
                         stringResource(R.string.theme_customizer_blur_slider_name),
@@ -341,7 +347,7 @@ internal fun ThemeEditor(
             ),
 
             Tool(
-                R.string.theme_customizer_color_sliders_name,
+                R.string.theme_customizer_color_sliders_name, R.drawable.themes,
                 tool = @Composable {
                     HctSliderPicker(color) {
                         color = it
@@ -350,12 +356,14 @@ internal fun ThemeEditor(
             ),
 
             Tool(
-                R.string.theme_customizer_dark_mode_toggle,
+                R.string.theme_customizer_dark_mode_toggle, R.drawable.moon,
+                isActive = { darkMode },
                 press = { darkMode = !darkMode }
             ),
 
             Tool(
-                R.string.theme_settings_key_borders,
+                R.string.theme_settings_key_borders, R.drawable.key_border,
+                isActive = { borders },
                 press = { borders = !borders }
             )
         )
@@ -566,13 +574,20 @@ internal fun ThemeEditor(
 
                     activeTool?.tool?.invoke()
 
-                    FlowRow {
+                    FlowRow(Modifier.background(Color.Black, RoundedCornerShape(16.dp)).padding(8.dp).height(48.dp)) {
+                        var toolEndReached = false
                         tools.forEach {
-                            TextButton(onClick = {
+                            if(it.tool == null && !toolEndReached) {
+                                VerticalDivider(color = Color.DarkGray, modifier = Modifier.padding(8.dp))
+                                toolEndReached = true
+                            }
+
+                            val active = it.isActive?.invoke() == true || activeTool==it
+                            IconButton(onClick = {
                                 if (it.tool != null) activeTool = it
                                 else it.press?.invoke()
-                            }) {
-                                Text(stringResource(it.name))
+                            }, colors= IconButtonDefaults.iconButtonColors(Color.Black, if(active) Color.White else Color.Gray )) {
+                                Icon(painterResource(it.icon), contentDescription=stringResource(it.name))
                             }
                         }
                     }
