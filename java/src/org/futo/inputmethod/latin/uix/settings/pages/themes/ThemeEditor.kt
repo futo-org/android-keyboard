@@ -106,6 +106,8 @@ private data class Tool(
 
 const val fixedAspectRatio = 1.2f / 1.0f
 
+const val computeDelay = 0L //100L
+
 // TODO: Break this up into smaller composables
 @OptIn(ExperimentalLayoutApi::class)
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -131,7 +133,7 @@ internal fun ThemeEditor(
     }
 
     var blurLevel by remember { mutableFloatStateOf(0.0f) }
-    var bitmap by rememberDelayedRecomputed(blurLevel, originalBitmap) {
+    var bitmap by rememberDelayedRecomputed(blurLevel, originalBitmap, delay=computeDelay) {
         if(blurLevel == 0.0f) {
             originalBitmap.asImageBitmap()
         } else {
@@ -222,7 +224,7 @@ internal fun ThemeEditor(
         }
     }
 
-    val themeCfg by rememberDelayedRecomputed(color, opacity, darkMode, borders) {
+    val themeCfg by rememberDelayedRecomputed(color, opacity, darkMode, borders, delay=computeDelay) {
         CustomThemeBuilderConfiguration(
             hue = color.hue.toDouble(),
             chroma = color.chroma.toDouble(),
@@ -235,7 +237,7 @@ internal fun ThemeEditor(
         )
     }
 
-    val theme by rememberDelayedRecomputed(themeCfg) {
+    val theme by rememberDelayedRecomputed(themeCfg, delay=computeDelay) {
         themeCfg.build().toKeyboardScheme(themeCtx).let {
             // BackgroundImage is checked by ActionBar, we set it here
             it.copy(extended = it.extended.let {
