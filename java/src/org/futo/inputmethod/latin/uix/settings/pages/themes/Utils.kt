@@ -22,7 +22,7 @@ import androidx.core.graphics.scale
 
 @Suppress("DEPRECATION")
 fun applyBlur(context: Context, bitmap: Bitmap, blurLevel: Float): Bitmap {
-    var radius = blurLevel * bitmap.width * 0.05f
+    var radius = blurLevel * blurLevel * bitmap.width * 0.2f
     var scale = 1.0f
     if(radius > 25f) {
         scale = 25f/radius
