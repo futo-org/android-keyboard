@@ -629,5 +629,4 @@ data class Key(
         }
     }
 
-    fun hashCodeWithPressed(): Int = 31 * hashCode() + pressed.hashCode()
 }

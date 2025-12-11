@@ -2,7 +2,6 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.core.graphics.drawable.toDrawable
 import org.futo.inputmethod.keyboard.Key
@@ -27,7 +26,7 @@ data class CachedKeyedMatcher<T>(
     val matcher: (Keyboard, Key, T) -> Boolean
 ) {
     fun find(keyboard: Keyboard, key: Key): T? {
-        val hash = key.hashCodeWithPressed()
+        val hash = key.hashCodeForQualifiers()
         return if(cache.containsKey(hash)) {
             cache[hash]?.firstOrNull { matcher(keyboard, key, it) }
         } else {
