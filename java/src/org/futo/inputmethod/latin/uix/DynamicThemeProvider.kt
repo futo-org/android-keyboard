@@ -7,6 +7,10 @@ import android.graphics.drawable.Drawable
 import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
+import org.futo.inputmethod.keyboard.Key
+import org.futo.inputmethod.keyboard.Keyboard
+import org.futo.inputmethod.keyboard.internal.KeyDrawParams
+import org.futo.inputmethod.latin.uix.theme.KeyDrawingConfiguration
 import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
@@ -62,6 +66,8 @@ interface DynamicThemeProvider {
     val themeTypeface: Typeface?
     fun selectKeyTypeface(defaultTypeface: Typeface): Typeface =
         typefaceOverride ?: themeTypeface ?: defaultTypeface
+
+    fun selectKeyDrawingConfiguration(keyboard: Keyboard?, params: KeyDrawParams, key: Key): KeyDrawingConfiguration
 
     companion object {
         @ColorInt

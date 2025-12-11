@@ -29,6 +29,7 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
                 "icon" -> KeyQualifier.Icon(tokens.removeAt(0))
                 "outputtext" -> KeyQualifier.OutputText(tokens.removeAt(0))
                 "layout" -> KeyQualifier.Layout(tokens.removeAt(0))
+                "pressed" -> KeyQualifier.Pressed
 
                 else -> return emptySet()
             }

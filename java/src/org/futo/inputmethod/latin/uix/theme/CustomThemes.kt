@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.graphics.ImageBitmap
@@ -11,6 +12,7 @@ import okio.ByteString.Companion.encodeUtf8
 import org.futo.inputmethod.dictionarypack.MD5Calculator
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.utils.readAllBytesCompat
@@ -18,8 +20,13 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.util.Date
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 object CustomThemes {
@@ -32,6 +39,9 @@ object CustomThemes {
 
     fun list(context: Context): List<String> = getDirectory(context).listFiles()?.map { it.nameWithoutExtension } ?: emptyList()
 
+    private const val versionFileName = "FUTOKeyboardTheme_Version"
+    private const val configFileName = "config.json"
+    private const val currentVersion: Byte = 1
     fun save(ctx: ThemeDecodingContext, theme: SerializableCustomTheme, name: String) {
         val dir = getDirectory(ctx.context)
         dir.mkdirs()
@@ -53,11 +63,15 @@ object CustomThemes {
             zos.closeEntry()
         }
 
-        putEntry("version")
-        zos.write(1)
+        putEntry(versionFileName)
+        zos.write(ByteBuffer.allocate(9).also {
+            it.order(ByteOrder.LITTLE_ENDIAN)
+            it.put(currentVersion)
+            it.putLong(Date().time)
+        }.array())
         zos.closeEntry()
 
-        putEntry("config.json")
+        putEntry(configFileName)
         zos.write(Json.Default.encodeToString(theme).encodeUtf8().toByteArray())
         zos.closeEntry()
 
@@ -70,6 +84,88 @@ object CustomThemes {
         zos.close()
         themeCache.remove(name)
         updateCount.intValue += 1
+    }
+
+    data class ThemeMetadata(
+        val dateExported: Date,
+        val isNewer: Boolean,
+    )
+
+    data class ThemeMetadataResult(
+        val meta: ThemeMetadata,
+        val config: SerializableCustomTheme?,
+        val error: String?
+    )
+
+    fun getMetadata(inputStream: InputStream): ThemeMetadataResult? {
+        var metadata: ThemeMetadata? = null
+        var config: SerializableCustomTheme? = null
+        var error: String? = null
+
+        try {
+            ZipInputStream(inputStream).use { zipIn ->
+                var entry = zipIn.nextEntry
+                while (entry != null) {
+                    if(entry.isDirectory) continue
+                    if(entry.name == versionFileName) {
+                        val bytes = zipIn.readAllBytesCompat()
+
+                        val buff = ByteBuffer.wrap(bytes).apply { order(ByteOrder.LITTLE_ENDIAN) }
+                        val version = buff.get()
+                        val date = buff.getLong()
+
+                        metadata = ThemeMetadata(
+                            dateExported = Date(date),
+                            isNewer = version > currentVersion
+                        )
+                    }
+
+                    if(entry.name == configFileName) {
+                        try {
+                            val bytes = zipIn.readAllBytesCompat()
+                            val string = bytes.decodeToString()
+                            val cfg = Json.Default.decodeFromString<SerializableCustomTheme>(string)
+
+                            if(cfg.id == null || cfg.id.length < 3) throw Exception("ID must be at least 3 characters for a custom theme")
+                            if(cfg.id.endsWith('_')) throw Exception("ID must not end with underscores")
+
+                            config = cfg
+                        } catch(e: Exception) {
+                            error += "Cause: ${e.message}\n\nStack trace: ${e.stackTrace.map { it.toString() }}"
+                        }
+                    }
+
+                    zipIn.closeEntry()
+                    entry = zipIn.nextEntry
+                }
+            }
+        } catch (e: Exception) {
+            //e.printStackTrace()
+        }
+
+        return metadata?.let {
+            ThemeMetadataResult(metadata, config, error)
+        }
+    }
+
+    fun importTheme(context: Context, inputStream: InputStream, metadata: ThemeMetadataResult) {
+        if(metadata.config == null) {
+            throwIfDebug(IllegalArgumentException("Theme must parse successfully before being imported: ${metadata.error}"))
+            return
+        }
+
+        val id = metadata.config.id!!
+        val file = File(getDirectory(context), "${id}.zip")
+
+        file.outputStream().use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+
+        themeCache.remove(id)
+        val currTheme = context.getSetting(THEME_KEY)
+        if(currTheme.trimEnd('_') == "custom$id") {
+            runBlocking { context.setSetting(THEME_KEY, currTheme+'_') }
+        }
     }
 
     private fun load(context: Context, name: String): Pair<ThemeDecodingContext, SerializableCustomTheme> {
@@ -107,7 +203,7 @@ object CustomThemes {
         }
 
         val theme = Json.Default.decodeFromString<SerializableCustomTheme>(
-            ctx.getFileBytes("config.json")!!.decodeToString()
+            ctx.getFileBytes(configFileName)!!.decodeToString()
         )
 
         return Pair(ctx, theme)

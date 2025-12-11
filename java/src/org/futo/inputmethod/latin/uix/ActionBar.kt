@@ -271,6 +271,17 @@ fun AutoFitText(
     }
 }
 
+@Composable
+fun TextStyle.withCustomFont(): TextStyle {
+    val typeface = LocalKeyboardScheme.current.extended.advancedThemeOptions.font
+    if(typeface != null) {
+        val family = FontFamily(typeface)
+        return this.copy(fontFamily = family)
+    } else {
+        return this
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
@@ -307,7 +318,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
     val textStyle = when(isAutocorrect) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
-    }.copy(color = color)
+    }.copy(color = color).withCustomFont()
 
     Box(
         modifier = textButtonModifier
@@ -705,7 +716,7 @@ fun ImportantNoticeView(
             colors = ButtonDefaults.textButtonColors(contentColor = LocalKeyboardScheme.current.onBackground),
             enabled = true
         ) {
-            AutoFitText(importantNotice.getText(), style = suggestionStylePrimary.copy(color = LocalKeyboardScheme.current.onBackground))
+            AutoFitText(importantNotice.getText(), style = suggestionStylePrimary.copy(color = LocalKeyboardScheme.current.onBackground).withCustomFont())
         }
 
         val color = LocalKeyboardScheme.current.primary
@@ -1022,9 +1033,9 @@ private fun CandidateItem(modifier: Modifier, it: SuggestedWordInfo, listener: S
     val description = it.mCandidateDescription
     val color = LocalKeyboardScheme.current.onSurface
     val textStyle =
-        suggestionStylePrimary.copy(color = color)
+        suggestionStylePrimary.copy(color = color).withCustomFont()
     val descTextStyle =
-        suggestionStyleCandidateDescription.copy(color = color.copy(alpha = 0.5f)) // TODO: High contrast for high contrast theme
+        suggestionStyleCandidateDescription.copy(color = color.copy(alpha = 0.5f)).withCustomFont() // TODO: High contrast for high contrast theme
     Row(
         modifier
             .width(width)
@@ -1324,10 +1335,12 @@ fun BoxScope.ActionBarWithExpandableCandidates(
     val density = LocalDensity.current
 
     // True width measurement is too slow, estimate it by multiplying constant by number of characters
+    val styleNormal = suggestionStylePrimary.withCustomFont()
+    val styleDescription = suggestionStyleCandidateDescription.withCustomFont()
     val widths = remember(measurer) {
         CachedCharacterWidthValues(
-            normal = measurer.measure("あ", style=suggestionStylePrimary).size.width,
-            description = measurer.measure("あ", style=suggestionStyleCandidateDescription).size.width
+            normal = measurer.measure("あ", style=styleNormal).size.width,
+            description = measurer.measure("あ", style=styleDescription).size.width
         )
     }
 

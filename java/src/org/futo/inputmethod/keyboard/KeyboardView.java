@@ -37,6 +37,7 @@ import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
+import org.futo.inputmethod.latin.uix.theme.KeyDrawingConfiguration;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.HashSet;
@@ -351,11 +352,12 @@ public class KeyboardView extends View {
                 Math.min(key.getHeight(), key.getWidth()), attr);
         params.mAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
-        final Drawable background = key.selectBackground(mDrawableProvider);
+        final KeyDrawingConfiguration kdc = mDrawableProvider.selectKeyDrawingConfiguration(mKeyboard, params, key);
+        final Drawable background = kdc.getBackground();
         if (background != null) {
             onDrawKeyBackground(key, canvas, background);
         }
-        onDrawKeyTopVisuals(key, canvas, paint, params);
+        onDrawKeyTopVisuals(key, canvas, paint, params, kdc);
 
         canvas.translate(-keyDrawX, -keyDrawY);
     }
@@ -393,21 +395,18 @@ public class KeyboardView extends View {
 
     // Draw key top visuals.
     protected void onDrawKeyTopVisuals(@Nonnull final Key key, @Nonnull final Canvas canvas,
-            @Nonnull final Paint paint, @Nonnull final KeyDrawParams params) {
+            @Nonnull final Paint paint, @Nonnull final KeyDrawParams params, @Nonnull final KeyDrawingConfiguration kdc) {
         final int keyWidth = key.getDrawWidth();
         final int keyHeight = key.getHeight();
         final float centerX = keyWidth * 0.5f;
         final float centerY = keyHeight * 0.5f;
 
         // Draw key label.
-        final Keyboard keyboard = getKeyboard();
-        final Drawable icon = (keyboard == null) ? null
-                : key.getIconOverride(keyboard.mIconsSet, params.mAnimAlpha);
-        final Drawable hintIcon = (keyboard == null) ? null
-                : key.getHintIcon(keyboard.mIconsSet, params.mAnimAlpha);
+        final Drawable icon = kdc.getIcon();
+        final Drawable hintIcon = kdc.getHintIcon();
         float labelX = centerX;
         float labelBaseline = centerY;
-        final String label = key.getLabelOverride() == null ? key.getLabel() : key.getLabelOverride();
+        final String label = kdc.getLabel();
         if (label != null && icon == null) {
             paint.setTypeface(mDrawableProvider.selectKeyTypeface(key.selectTypeface(params)));
             paint.setTextSize(key.selectTextSize(params));
@@ -458,7 +457,7 @@ public class KeyboardView extends View {
         }
 
         // Draw hint label.
-        final String hintLabel = key.getEffectiveHintLabel();
+        final String hintLabel = kdc.getHintLabel();
         if (hintLabel != null) {
             paint.setTextSize(key.selectHintTextSize(mDrawableProvider, params));
             paint.setColor(key.selectHintTextColor(mDrawableProvider, params));
@@ -524,9 +523,11 @@ public class KeyboardView extends View {
             int iconHeight = icon.getIntrinsicHeight();
 
             if(iconWidth > size) {
-                iconHeight = (int)((float)iconHeight / (float)iconWidth * (float)size);
+                //iconHeight = (int)((float)iconHeight / (float)iconWidth * (float)size);
                 iconWidth = (int)size;
             }
+
+            iconHeight = iconWidth;
 
             final int iconY;
             if (key.isAlignIconToBottom()) {

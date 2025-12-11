@@ -32,6 +32,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.DevKeyboardScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutEdit
 import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutEditor
 import org.futo.inputmethod.latin.uix.settings.pages.DevLayoutList
+import org.futo.inputmethod.latin.uix.settings.pages.DevThemeImportScreen
 import org.futo.inputmethod.latin.uix.settings.pages.DeveloperScreen
 import org.futo.inputmethod.latin.uix.settings.pages.HelpMenu
 import org.futo.inputmethod.latin.uix.settings.pages.HomeScreen
@@ -149,6 +150,7 @@ fun SettingsNavigator(
             composable("devbuggytextedit") { BuggyTextEditVariations(navController) }
             composable("devlayouts") { DevLayoutList(navController) }
             composable("devlayouteditor") { DevLayoutEditor(navController) }
+            composable("devtheme") { DevThemeImportScreen(navController) }
             composable("devkeyboard") { DevKeyboardScreen(navController) }
             composable("devlayoutedit/{i}") {
                 DevLayoutEdit(

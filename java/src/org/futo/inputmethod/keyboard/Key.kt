@@ -380,15 +380,15 @@ data class Key(
     fun selectHintTypeface(provider: DynamicThemeProvider, params: KeyDrawParams): Typeface {
         return when {
             hasHintLabel || provider.hintHiVis -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                Typeface.create(Typeface.DEFAULT, 700, false)
+                Typeface.create(provider.selectKeyTypeface(Typeface.DEFAULT), 700, false)
             } else {
-                Typeface.DEFAULT_BOLD
+                provider.selectKeyTypeface(Typeface.DEFAULT_BOLD)
             }
 
             else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                Typeface.create(Typeface.DEFAULT, 500, false)
+                Typeface.create(provider.selectKeyTypeface(Typeface.DEFAULT), 500, false)
             } else {
-                Typeface.DEFAULT
+                provider.selectKeyTypeface(Typeface.DEFAULT)
             }
         }
     }
@@ -628,4 +628,6 @@ data class Key(
             )
         }
     }
+
+    fun hashCodeWithPressed(): Int = 31 * hashCode() + pressed.hashCode()
 }

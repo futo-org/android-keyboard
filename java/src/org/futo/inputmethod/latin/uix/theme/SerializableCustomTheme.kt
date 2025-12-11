@@ -130,6 +130,11 @@ data class SerializableCustomTheme(
 
     val keysFont: String? = null,
 
+    val name: String? = null,
+    val id: String? = null,
+    val author: String? = null,
+    val url: String? = null,
+
     // keys can be:
     //  "normal",
     //  "functional",

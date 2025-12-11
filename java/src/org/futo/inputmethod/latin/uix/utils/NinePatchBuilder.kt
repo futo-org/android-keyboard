@@ -64,7 +64,7 @@ class NinePatchBuilder {
     }
 
     fun buildChunk(): ByteArray? {
-        Log.d("NinePatchBuilder", "Building: ${xRegions.joinToString { it.toString() }} : ${yRegions.joinToString { it.toString() }}")
+        //Log.d("NinePatchBuilder", "Building: ${xRegions.joinToString { it.toString() }} : ${yRegions.joinToString { it.toString() }}")
         if (xRegions.isEmpty()) {
             xRegions.add(0)
             xRegions.add(width)

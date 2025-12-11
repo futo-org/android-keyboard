@@ -26,10 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withClip
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import org.futo.inputmethod.keyboard.Key
+import org.futo.inputmethod.keyboard.Keyboard
+import org.futo.inputmethod.keyboard.internal.KeyDrawParams
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
+import org.futo.inputmethod.latin.uix.theme.AdvancedThemeMatcher
+import org.futo.inputmethod.latin.uix.theme.KeyDrawingConfiguration
 import org.futo.inputmethod.latin.uix.utils.toNinePatchDrawable
 import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
@@ -165,6 +170,13 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
     override var typefaceOverride: Typeface? = null
     override val themeTypeface: Typeface?
+
+    val kdcMatcher = AdvancedThemeMatcher(context, this, colorScheme)
+    override fun selectKeyDrawingConfiguration(
+        keyboard: Keyboard?,
+        params: KeyDrawParams,
+        key: Key
+    ): KeyDrawingConfiguration = kdcMatcher.matchKeyDrawingConfiguration(keyboard, params, key)
 
     private val colors: HashMap<Int, Int> = HashMap()
     override fun getColor(i: Int): Int? {

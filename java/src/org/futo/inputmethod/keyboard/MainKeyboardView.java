@@ -55,6 +55,7 @@ import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.SuggestedWords;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.CoordinateUtils;
+import org.futo.inputmethod.latin.uix.theme.KeyDrawingConfiguration;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
@@ -792,11 +793,11 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     @Override
     protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
-            final KeyDrawParams params) {
+           final KeyDrawParams params, final KeyDrawingConfiguration kdc) {
         if (key.getAltCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
         }
-        super.onDrawKeyTopVisuals(key, canvas, paint, params);
+        super.onDrawKeyTopVisuals(key, canvas, paint, params, kdc);
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE && key.getIconId().equals("space_key")) {
             drawLanguageOnSpacebar(key, canvas, paint);
@@ -876,7 +877,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         final int width = key.getWidth();
         final int height = key.getHeight();
         paint.setTextAlign(Align.CENTER);
-        paint.setTypeface(Typeface.DEFAULT);
+        paint.setTypeface(mDrawableProvider.selectKeyTypeface(Typeface.DEFAULT));
         paint.setTextSize(mLanguageOnSpacebarTextSize);
         final String language = layoutLanguageOnSpacebar(paint, keyboard.mId.mLocale, width);
         // Draw language text with shadow

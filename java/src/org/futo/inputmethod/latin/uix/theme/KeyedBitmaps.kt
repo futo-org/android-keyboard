@@ -11,9 +11,9 @@ sealed class KeyQualifier {
     data class Icon(val icon: String) : KeyQualifier()
     data class Code(val code: Int) : KeyQualifier()
     data class OutputText(val outputText: String) : KeyQualifier()
+    data object Pressed: KeyQualifier()
 }
 
-// TODO: Need to use this on KeyboardView
 fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, key: Key) =
     qualifiers.all { when(it) {
         is KeyQualifier.Layout -> layout == it.name
@@ -22,6 +22,18 @@ fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, key: Key) =
         is KeyQualifier.Icon -> (key.iconOverride ?: key.iconId) == it.icon
         is KeyQualifier.OutputText -> key.outputText == it.outputText
         is KeyQualifier.VisualStyle -> key.visualStyle == it.visualStyle
+        is KeyQualifier.Pressed -> key.pressed
+    } }
+
+fun matchesHint(qualifiers: Set<KeyQualifier>, layout: String, hintLabel: String?, hintIcon: String?) =
+    qualifiers.all { when(it) {
+        is KeyQualifier.Layout -> layout == it.name
+        is KeyQualifier.Code -> false
+        is KeyQualifier.Label -> hintLabel == it.label
+        is KeyQualifier.Icon -> hintIcon == it.icon
+        is KeyQualifier.OutputText -> false
+        is KeyQualifier.VisualStyle -> false
+        is KeyQualifier.Pressed -> false
     } }
 
 data class KeyedBitmap(val qualifiers: Set<KeyQualifier>, val image: ImageBitmap)

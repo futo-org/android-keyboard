@@ -507,6 +507,9 @@
     <string name="theme_customizer_light_mode_toggle">Light mode</string>
     <string name="theme_customizer_finish_theme_adjustment">Finish</string>
     <string name="theme_customizer_load_custom_theme_file">Load from ZIP</string>
+    <string name="theme_customizer_import_custom_theme_menu_title">Import custom theme</string>
+    <string name="theme_customizer_import_custom_theme_name_text">Theme name: %s</string>
+    <string name="theme_customizer_import_custom_theme_author_text">Author: %s</string>
 
     <string name="dev_settings_title">Developer Settings</string>
 

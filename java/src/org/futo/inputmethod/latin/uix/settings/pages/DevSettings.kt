@@ -1,7 +1,13 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -27,6 +33,7 @@ import org.futo.inputmethod.latin.VoiceInputAlternativeICComposing
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.DebugOnly
 import org.futo.inputmethod.latin.uix.HiddenKeysSetting
+import org.futo.inputmethod.latin.uix.IMPORT_SETTINGS_REQUEST
 import org.futo.inputmethod.latin.uix.OldStyleActionsBar
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.UixManagerInstanceForDebug
@@ -58,6 +65,40 @@ fun DevKeyboardScreen(navController: NavHostController = rememberNavController()
             AndroidTextInput()
         }
         UixManagerInstanceForDebug?.Content()
+    }
+}
+
+
+
+private fun triggerImportTheme(context: Context) {
+    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+        addCategory(Intent.CATEGORY_OPENABLE)
+        type = "application/zip"
+    }
+    (context as Activity).startActivityForResult(intent, IMPORT_SETTINGS_REQUEST)
+}
+
+var DevAutoAcceptThemeImport = false
+
+@Composable
+fun DevThemeImportScreen(navController: NavHostController = rememberNavController()) {
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        DevAutoAcceptThemeImport = true
+        onDispose {
+            DevAutoAcceptThemeImport = false
+        }
+    }
+    Box {
+        ScrollableList {
+            ScreenTitle("Theme development", showBack = true, navController)
+            Text("Push the theme zip file via adb and tap button below to re-import it")
+            Button(onClick = {
+                triggerImportTheme(context)
+            }) { Text("Reimport") }
+
+            AndroidTextInput()
+        }
     }
 }
 
@@ -101,6 +142,12 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("devlayouteditor") }
         )
+        NavigationItem(
+            title = "Theme dev utility",
+            style = NavigationItemStyle.Misc,
+            navigate = { navController.navigate("devtheme") }
+        )
+
 
         ScreenTitle("Text input debug")
         SettingToggleDataStore(
