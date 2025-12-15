@@ -30,6 +30,17 @@ public object BugViewerState {
         Log.e("BugViewerState", "Bug pushed: $bug")
         bugs.add(0, bug)
     }
+
+    var isBugViewerPendingOpen = false
+        private set
+
+    fun triggerOpen() {
+        isBugViewerPendingOpen = true
+    }
+
+    fun clearPendingOpen() {
+        isBugViewerPendingOpen = false
+    }
 }
 
 private val Throwable.rootCause: Throwable?

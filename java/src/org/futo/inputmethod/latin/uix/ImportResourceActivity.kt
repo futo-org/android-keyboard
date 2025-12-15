@@ -49,6 +49,8 @@ import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.localeFromString
+import org.futo.inputmethod.latin.uix.actions.BugInfo
+import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -920,8 +922,16 @@ class ImportResourceActivity : ComponentActivity() {
 
         val item = itemBeingImported.value
         if(item is ItemBeingImported.CustomTheme && DevAutoAcceptThemeImport) {
-            getInputStream()?.use {
-                CustomThemes.importTheme(applicationContext, it, item.v)
+            if(item.v.config == null) {
+                BugViewerState.pushBug(BugInfo(
+                    name = "your custom theme (invalid metadata json)",
+                    details = item.v.error ?: "Unknown error",
+                ))
+                BugViewerState.triggerOpen()
+            } else {
+                getInputStream()?.use {
+                    CustomThemes.importTheme(applicationContext, it, item.v)
+                }
             }
             finish()
             return
