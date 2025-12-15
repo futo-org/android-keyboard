@@ -370,6 +370,7 @@
         "emoji_action_key": [
             "!fixedColumnOrder!4",
             "!needsDividers!",
+            "!hasLabels!",
             "!icon/action_switch_language|!code/action_switch_language",
             "!icon/action_text_edit|!code/action_text_edit",
             "!icon/action_clipboard_history|!code/action_clipboard_history",
@@ -380,6 +381,7 @@
         "emoji_action_key_shift_enter": [
             "!fixedColumnOrder!4",
             "!needsDividers!",
+            "!hasLabels!",
             "!icon/action_switch_language|!code/action_switch_language",
             "!icon/action_text_edit|!code/action_text_edit",
             "!icon/action_clipboard_history|!code/action_clipboard_history",
@@ -391,6 +393,7 @@
         "emoji_action_key_navigation": [
             "!fixedColumnOrder!4",
             "!needsDividers!",
+            "!hasLabels!",
             "!icon/action_switch_language|!code/action_switch_language",
             "!icon/action_text_edit|!code/action_text_edit",
             "!icon/action_clipboard_history|!code/action_clipboard_history",
