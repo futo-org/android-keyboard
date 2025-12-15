@@ -143,7 +143,8 @@ public class KeyboardView extends View {
 
         mKeyboardBackground = isMoreKeys ?  mDrawableProvider.getMoreKeysKeyboardBackground() :
                         mDrawableProvider.getKeyboardBackground();
-        setBackground(mKeyboardBackground);
+        setBackground(null);
+        setBackgroundColor(0);
 
         mSpacebarIconWidthRatio = keyboardViewAttr.getFloat(
                 R.styleable.KeyboardView_spacebarIconWidthRatio, 1.0f);
@@ -252,6 +253,10 @@ public class KeyboardView extends View {
     @Override
     protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
+
+        mKeyboardBackground.setBounds(0, 0, getWidth(), getHeight());
+        mKeyboardBackground.draw(canvas);
+
         if (canvas.isHardwareAccelerated()) {
             onDrawKeyboard(canvas);
             return;
