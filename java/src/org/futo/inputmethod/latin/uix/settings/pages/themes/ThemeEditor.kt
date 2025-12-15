@@ -65,6 +65,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.core.graphics.scale
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -108,6 +109,27 @@ const val fixedAspectRatio = 1.2f / 1.0f
 
 const val computeDelay = 0L //100L
 
+private fun limitBitmapSize(context: Context, bitmap: Bitmap): Bitmap {
+    val maxDimension = maxOf(
+        context.resources.displayMetrics.widthPixels,
+        context.resources.displayMetrics.heightPixels
+    ) * 3 / 2
+    
+    val imgMaxDimension = maxOf(
+        bitmap.width,
+        bitmap.height
+    )
+
+    val scale = maxDimension.toFloat() / imgMaxDimension.toFloat()
+    if(scale < 1.0f) {
+        return bitmap.scale(
+            (bitmap.width * scale).toInt().coerceAtLeast(1),
+            (bitmap.height * scale).toInt().coerceAtLeast(1))
+    } else {
+        return bitmap
+    }
+}
+
 // TODO: Break this up into smaller composables
 @OptIn(ExperimentalLayoutApi::class)
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -126,7 +148,9 @@ internal fun ThemeEditor(
     }
 
     val originalBitmap = remember {
-        startingBitmap ?: BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_keyboard)
+        (startingBitmap ?: BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_keyboard)).let {
+            limitBitmapSize(context, it)
+        }
     }
     val startingColor = remember {
         extractMainColor(originalBitmap)
