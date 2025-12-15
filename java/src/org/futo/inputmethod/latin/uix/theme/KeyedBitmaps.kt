@@ -53,5 +53,5 @@ fun matchesHint(qualifiers: Set<KeyQualifier>, layout: String, hintLabel: String
         is KeyQualifier.Pressed -> false
     } }
 
-data class KeyedBitmap(val qualifiers: Set<KeyQualifier>, val image: ImageBitmap)
-data class KeyedBitmaps(val v: List<KeyedBitmap>)
+data class KeyedBitmap<T>(val qualifiers: Set<KeyQualifier>, val bitmap: T)
+data class KeyedBitmaps<T>(val v: List<KeyedBitmap<T>>)

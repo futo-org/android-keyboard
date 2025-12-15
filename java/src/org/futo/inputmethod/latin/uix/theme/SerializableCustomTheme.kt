@@ -5,7 +5,10 @@ import android.graphics.Rect
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.get
 import com.google.android.material.color.utilities.DynamicScheme
 import com.google.android.material.color.utilities.MaterialDynamicColors
 import kotlinx.serialization.KSerializer
@@ -17,6 +20,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import org.futo.inputmethod.latin.uix.ExtraColors
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
+import org.futo.inputmethod.latin.uix.utils.toNinePatchDrawable
 import kotlin.math.roundToInt
 
 private object ColorAsStringSerializer : KSerializer<SerializableColor> {
@@ -62,6 +66,11 @@ data class SerializableColor(val c: Long) {
 }
 
 fun Color.toSColor() = SerializableColor(this.toArgb().toUInt().toLong())
+
+// Require this color not be invisible
+internal fun Int?.argbNotInvisible(): Int? = this?.let {
+    if((it shr 24) and 0xff == 0) null else it
+}
 
 @Serializable
 data class SerializableCustomTheme(
@@ -221,8 +230,15 @@ data class SerializableCustomTheme(
                             null
                         }
                     },
-                    keyBackgrounds = decodeKeyedBitmaps(ctx, keyBackgrounds),
-                    keyIcons = decodeKeyedBitmaps(ctx, keyIcons),
+                    keyBackgrounds = decodeKeyedBitmaps(ctx, keyBackgrounds) {
+                        val bitmap = it.asAndroidBitmap()
+                        val fgColor = bitmap[0, 0].argbNotInvisible()
+
+                        bitmap.toNinePatchDrawable(ctx.context.resources)?.let { KeyBackground(fgColor, it) }
+                    },
+                    keyIcons = decodeKeyedBitmaps(ctx, keyIcons) {
+                        KeyIcon(it.asAndroidBitmap().toDrawable(ctx.context.resources))
+                    },
                     font = decodeOptionalFont(ctx, keysFont)
                 ),
             )

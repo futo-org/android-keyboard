@@ -44,17 +44,9 @@ data class CachedKeyedMatcher<T>(
     }
 }
 
-private val KeyedBitmapMatcher = { keyboard: Keyboard, key: Key, entry: KeyedBitmap ->
+internal fun<T> keyedBitmapMatcher() = { keyboard: Keyboard, key: Key, entry: KeyedBitmap<T> ->
     matchesKey(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, key)
 }
-
-internal fun<A, B> Pair<A, B?>.requireSecond(): Pair<A, B>? = second?.let { first to it }
-
-// Require this color not be invisible
-internal fun Int?.argbNotInvisible(): Int? = this?.let {
-    if((it shr 24) and 0xff == 0) null else it
-}
-
 
 class AdvancedThemeMatcher(
     val context: Context,
@@ -66,44 +58,27 @@ class AdvancedThemeMatcher(
     val backgroundList = theme.keyBackgrounds?.v ?: emptyList()
     val iconList = theme.keyIcons?.v ?: emptyList()
 
-    val backgrounds = CachedKeyedMatcher(full = backgroundList, matcher = KeyedBitmapMatcher)
-    val icons = CachedKeyedMatcher(full = iconList, matcher = KeyedBitmapMatcher)
+    val backgrounds = CachedKeyedMatcher(full = backgroundList, matcher = keyedBitmapMatcher<KeyBackground>())
+    val icons = CachedKeyedMatcher(full = iconList, matcher = keyedBitmapMatcher<KeyIcon>())
 
-    val hintIcons = CachedKeyedMatcher(full = iconList, matcher = { keyboard: Keyboard, key: Key, entry: KeyedBitmap ->
+    val hintIcons = CachedKeyedMatcher(full = iconList, matcher = { keyboard: Keyboard, key: Key, entry: KeyedBitmap<KeyIcon> ->
         val hintLabel = key.effectiveHintLabel
         val hintIcon = key.effectiveHintIcon
         matchesHint(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, hintLabel, hintIcon)
     })
 
-    val backgroundDrawables = backgroundList.associate {
-        it to lazy {
-            val bitmap = it.image.asAndroidBitmap()
-            val fgColor = bitmap[0, 0]
-
-            fgColor to bitmap.toNinePatchDrawable(context.resources)
-        }
-    }
-
-    val foregroundDrawables = iconList.associate {
-        it to lazy {
-            val bitmap = it.image.asAndroidBitmap()
-
-            bitmap.toDrawable(context.resources)
-        }
-    }
-
-    fun findForeground(matcher: CachedKeyedMatcher<KeyedBitmap>, keyboard: Keyboard, key: Key): Drawable? {
+    fun findIcon(matcher: CachedKeyedMatcher<KeyedBitmap<KeyIcon>>, keyboard: Keyboard, key: Key): KeyIcon? {
         val bitmap = matcher.find(keyboard, key)
         if(bitmap == null) return null
 
-        return foregroundDrawables[bitmap]?.value
+        return bitmap.bitmap
     }
 
-    fun findBackground(matcher: CachedKeyedMatcher<KeyedBitmap>, keyboard: Keyboard, key: Key): Pair<Int, Drawable>? {
+    fun findBackground(matcher: CachedKeyedMatcher<KeyedBitmap<KeyBackground>>, keyboard: Keyboard, key: Key): KeyBackground? {
         val bitmap = matcher.find(keyboard, key)
         if(bitmap == null) return null
 
-        return backgroundDrawables[bitmap]?.value?.requireSecond()
+        return bitmap.bitmap
     }
 
     fun matchKeyDrawingConfiguration(keyboard: Keyboard?, params: KeyDrawParams, key: Key): KeyDrawingConfiguration {
@@ -120,15 +95,15 @@ class AdvancedThemeMatcher(
         )
 
         val foundBackground = findBackground(backgrounds, keyboard, key)
-        val background = foundBackground?.second ?: key.selectBackground(drawableProvider)
-        val textColor = foundBackground?.first.argbNotInvisible() ?: key.selectTextColor(drawableProvider, params)
+        val background = foundBackground?.background ?: key.selectBackground(drawableProvider)
+        val textColor = foundBackground?.foregroundColor ?: key.selectTextColor(drawableProvider, params)
 
-        val hintColor = foundBackground?.first.argbNotInvisible()?.let {
+        val hintColor = foundBackground?.foregroundColor?.let {
             Color(it).copy(alpha = 0.8f).toArgb()
         } ?: key.selectHintTextColor(drawableProvider, params)
 
-        val icon = findForeground(icons, keyboard, key) ?: key.getIconOverride(keyboard.mIconsSet, params.mAnimAlpha)
-        val hintIcon = findForeground(hintIcons, keyboard, key)
+        val icon = findIcon(icons, keyboard, key)?.drawable ?: key.getIconOverride(keyboard.mIconsSet, params.mAnimAlpha)
+        val hintIcon = findIcon(hintIcons, keyboard, key)?.drawable
 
         var label: String? = key.labelOverride ?: key.label
         var hintLabel: String? = if(hintIcon == null) key.effectiveHintLabel else null

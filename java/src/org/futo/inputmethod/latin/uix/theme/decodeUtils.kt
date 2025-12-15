@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
+import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
@@ -45,15 +46,17 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
     return result
 }
 
-internal fun decodeKeyedBitmaps(ctx: ThemeDecodingContext, defs: Map<String, String>): KeyedBitmaps {
-    val result = mutableListOf<KeyedBitmap>()
+internal fun<T> decodeKeyedBitmaps(ctx: ThemeDecodingContext, defs: Map<String, String>, transform: (ImageBitmap) -> T?): KeyedBitmaps<T> {
+    val cache = mutableMapOf<String, T?>()
+    val result = mutableListOf<KeyedBitmap<T>>()
     defs.forEach {
         val qualifiers = decodeKeyedBitmapKey(it.key)
         if(qualifiers.isNotEmpty()) {
-            val image = decodeOptionalImage(ctx, it.value)
-            if(image != null) {
-                result.add(KeyedBitmap(qualifiers, image))
+            val bitmap = cache.getOrPut(it.value) {
+                Log.d("CustomTheme", "Loading image ${it.value}")
+                decodeOptionalImage(ctx, it.value)?.let(transform)
             }
+            bitmap?.let { result.add(KeyedBitmap(qualifiers, it)) }
         }
     }
 
