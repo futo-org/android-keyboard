@@ -11,7 +11,9 @@ sealed class KeyQualifier {
     data class Icon(val icon: String) : KeyQualifier()
     data class Code(val code: Int) : KeyQualifier()
     data class OutputText(val outputText: String) : KeyQualifier()
-    data object Pressed: KeyQualifier()
+    data object Pressed : KeyQualifier()
+    data object MoreKeysKeyboardBackground : KeyQualifier()
+    data object Popup : KeyQualifier()
 }
 
 fun Key.hashCodeForQualifiers(): Int {
@@ -31,8 +33,8 @@ fun Key.hashCodeForQualifiers(): Int {
     return result
 }
 
-fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, key: Key) =
-    qualifiers.all { when(it) {
+fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, key: Key, popup: Boolean = false) =
+    (qualifiers.contains(KeyQualifier.Popup) == popup) && qualifiers.all { when(it) {
         is KeyQualifier.Layout -> layout == it.name
         is KeyQualifier.Code -> key.code == it.code
         is KeyQualifier.Label -> key.label == it.label
@@ -40,17 +42,23 @@ fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, key: Key) =
         is KeyQualifier.OutputText -> key.outputText == it.outputText
         is KeyQualifier.VisualStyle -> key.visualStyle == it.visualStyle
         is KeyQualifier.Pressed -> key.pressed
+        is KeyQualifier.MoreKeysKeyboardBackground -> false
+        is KeyQualifier.Popup -> popup
     } }
 
 fun matchesHint(qualifiers: Set<KeyQualifier>, layout: String, hintLabel: String?, hintIcon: String?) =
     qualifiers.all { when(it) {
         is KeyQualifier.Layout -> layout == it.name
-        is KeyQualifier.Code -> false
         is KeyQualifier.Label -> hintLabel == it.label
         is KeyQualifier.Icon -> hintIcon == it.icon
-        is KeyQualifier.OutputText -> false
-        is KeyQualifier.VisualStyle -> false
-        is KeyQualifier.Pressed -> false
+        else -> false
+    } }
+
+fun matchesMoreKeysKeyboardBackground(qualifiers: Set<KeyQualifier>, layout: String) =
+    qualifiers.contains(KeyQualifier.MoreKeysKeyboardBackground) && qualifiers.all { when(it) {
+        is KeyQualifier.Layout -> layout == it.name
+        is KeyQualifier.MoreKeysKeyboardBackground -> true
+        else -> false
     } }
 
 data class KeyedBitmap<T>(val qualifiers: Set<KeyQualifier>, val bitmap: T)

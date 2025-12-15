@@ -2,17 +2,16 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.graphics.Rect
 import android.graphics.Typeface
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.NinePatchDrawable
+import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.ImageBitmap
 
 data class KeyBackground(
     val foregroundColor: Int?,
-    val background: NinePatchDrawable
+    val background: Drawable
 )
 
 data class KeyIcon(
-    val drawable: BitmapDrawable
+    val drawable: Drawable
 )
 
 data class AdvancedThemeOptions(

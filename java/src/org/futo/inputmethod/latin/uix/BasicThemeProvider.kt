@@ -34,6 +34,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
 import org.futo.inputmethod.latin.uix.theme.AdvancedThemeMatcher
+import org.futo.inputmethod.latin.uix.theme.KeyBackground
 import org.futo.inputmethod.latin.uix.theme.KeyDrawingConfiguration
 import org.futo.inputmethod.latin.uix.utils.toNinePatchDrawable
 import org.futo.inputmethod.v2keyboard.Direction
@@ -158,7 +159,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     override val keyboardBackground: Drawable
     override val keyBackground: Drawable
 
-    override val keyFeedback: Drawable
+    val keyFeedback: KeyBackground
 
     override val moreKeysTextColor: Int
     override val moreKeysKeyboardBackground: Drawable
@@ -177,6 +178,13 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         params: KeyDrawParams,
         key: Key
     ): KeyDrawingConfiguration = kdcMatcher.matchKeyDrawingConfiguration(keyboard, params, key)
+
+    override fun getPreviewBackground(
+        keyboard: Keyboard?,
+        key: Key
+    ): KeyBackground = kdcMatcher.matchKeyPopup(keyboard, key)?.let {
+        if(it.foregroundColor == null) it.copy(foregroundColor = keyFeedback.foregroundColor) else it
+    } ?: keyFeedback
 
     private val colors: HashMap<Int, Int> = HashMap()
     override fun getColor(i: Int): Int? {
@@ -535,17 +543,20 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         keyBackground = keyStyles[KeyVisualStyle.Normal]!!.backgroundDrawable!!
 
-        keyFeedback = GradientDrawable(
-            GradientDrawable.Orientation.TOP_BOTTOM,
-            intArrayOf(colorScheme.keyboardPress.toArgb(), colorScheme.keyboardPress.toArgb()),
-        ).apply {
-            cornerRadius = dp(keyCornerRadius)
-        }
+        keyFeedback = KeyBackground(
+            foregroundColor = colorScheme.onKeyboardContainer.toArgb(),
+            background = GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(colorScheme.keyboardPress.toArgb(), colorScheme.keyboardPress.toArgb()),
+            ).apply {
+                cornerRadius = dp(keyCornerRadius)
+            }
+        )
 
         colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = colorScheme.onKeyboardContainer.toArgb()
 
         moreKeysTextColor = colorScheme.onKeyboardContainer.toArgb()
-        moreKeysKeyboardBackground = coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius))
+        moreKeysKeyboardBackground = kdcMatcher.matchMoreKeysKeyboardBackground("") ?: coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius))
 
         assert(icons.keys == KeyboardIconsSet.validIcons) {
             "Icons differ. Missing: ${KeyboardIconsSet.validIcons - icons.keys}, extraneous: ${icons.keys - KeyboardIconsSet.validIcons}"

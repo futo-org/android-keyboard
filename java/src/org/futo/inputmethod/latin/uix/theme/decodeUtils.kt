@@ -31,6 +31,8 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
                 "outputtext" -> KeyQualifier.OutputText(tokens.removeAt(0))
                 "layout" -> KeyQualifier.Layout(tokens.removeAt(0))
                 "pressed" -> KeyQualifier.Pressed
+                "morekeysbox" -> KeyQualifier.MoreKeysKeyboardBackground
+                "popup" -> KeyQualifier.Popup
 
                 else -> return emptySet()
             }
@@ -53,7 +55,6 @@ internal fun<T> decodeKeyedBitmaps(ctx: ThemeDecodingContext, defs: Map<String, 
         val qualifiers = decodeKeyedBitmapKey(it.key)
         if(qualifiers.isNotEmpty()) {
             val bitmap = cache.getOrPut(it.value) {
-                Log.d("CustomTheme", "Loading image ${it.value}")
                 decodeOptionalImage(ctx, it.value)?.let(transform)
             }
             bitmap?.let { result.add(KeyedBitmap(qualifiers, it)) }

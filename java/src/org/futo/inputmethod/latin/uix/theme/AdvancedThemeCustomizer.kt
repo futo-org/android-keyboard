@@ -3,16 +3,12 @@ package org.futo.inputmethod.latin.uix.theme
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.graphics.drawable.toDrawable
-import androidx.core.graphics.get
 import org.futo.inputmethod.keyboard.Key
 import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.keyboard.internal.KeyDrawParams
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
-import org.futo.inputmethod.latin.uix.utils.toNinePatchDrawable
 
 
 data class KeyDrawingConfiguration(
@@ -44,8 +40,8 @@ data class CachedKeyedMatcher<T>(
     }
 }
 
-internal fun<T> keyedBitmapMatcher() = { keyboard: Keyboard, key: Key, entry: KeyedBitmap<T> ->
-    matchesKey(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, key)
+internal fun<T> keyedBitmapMatcher(popup: Boolean = false) = { keyboard: Keyboard, key: Key, entry: KeyedBitmap<T> ->
+    matchesKey(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, key, popup)
 }
 
 class AdvancedThemeMatcher(
@@ -60,6 +56,8 @@ class AdvancedThemeMatcher(
 
     val backgrounds = CachedKeyedMatcher(full = backgroundList, matcher = keyedBitmapMatcher<KeyBackground>())
     val icons = CachedKeyedMatcher(full = iconList, matcher = keyedBitmapMatcher<KeyIcon>())
+
+    val popupBackgrounds = CachedKeyedMatcher(full = backgroundList, matcher = keyedBitmapMatcher<KeyBackground>(true))
 
     val hintIcons = CachedKeyedMatcher(full = iconList, matcher = { keyboard: Keyboard, key: Key, entry: KeyedBitmap<KeyIcon> ->
         val hintLabel = key.effectiveHintLabel
@@ -79,6 +77,16 @@ class AdvancedThemeMatcher(
         if(bitmap == null) return null
 
         return bitmap.bitmap
+    }
+
+    fun matchMoreKeysKeyboardBackground(layout: String): Drawable?
+        = theme.keyBackgrounds?.v?.firstOrNull {
+            matchesMoreKeysKeyboardBackground(it.qualifiers, layout)
+        }?.bitmap?.background
+
+    fun matchKeyPopup(keyboard: Keyboard?, key: Key): KeyBackground? {
+        if(keyboard == null) return null
+        return popupBackgrounds.find(keyboard, key)?.bitmap
     }
 
     fun matchKeyDrawingConfiguration(keyboard: Keyboard?, params: KeyDrawParams, key: Key): KeyDrawingConfiguration {

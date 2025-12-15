@@ -65,7 +65,7 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
 
     private Key currKey;
     public void setPreviewVisual(final Key key, final KeyboardIconsSet iconsSet,
-            final KeyDrawParams drawParams) {
+                                 final KeyDrawParams drawParams, int foregroundColor) {
         // What we show as preview should match what we show on a key top in onDraw().
         final String iconId = key.getIconId();
         if (!Objects.equals(iconId, KeyboardIconsSet.ICON_UNDEFINED)) {
@@ -75,7 +75,7 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         }
 
         setCompoundDrawables(null, null, null, null);
-        setTextColor(drawParams.mPreviewTextColor);
+        setTextColor(foregroundColor);
         setTextSize(TypedValue.COMPLEX_UNIT_PX, key.selectTextSize(drawParams));
         setTypeface(mDrawableProvider.selectKeyTypeface(key.selectPreviewTypeface(drawParams)));
         // TODO Should take care of temporaryShiftLabel here.
@@ -194,11 +194,11 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
     private static final int STATE_HAS_MOREKEYS = 1;
 
     public void setPreviewBackground(final boolean hasMoreKeys, final int position) {
-        final Drawable background = getBackground();
-        if (background == null) {
-            return;
-        }
-        final int hasMoreKeysState = hasMoreKeys ? STATE_HAS_MOREKEYS : STATE_NORMAL;
-        background.setState(KEY_PREVIEW_BACKGROUND_STATE_TABLE[position][hasMoreKeysState]);
+        //final Drawable background = getBackground();
+        //if (background == null) {
+        //    return;
+        //}
+        //final int hasMoreKeysState = hasMoreKeys ? STATE_HAS_MOREKEYS : STATE_NORMAL;
+        //background.setState(KEY_PREVIEW_BACKGROUND_STATE_TABLE[position][hasMoreKeysState]);
     }
 }

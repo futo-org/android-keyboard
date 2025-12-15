@@ -41,6 +41,10 @@ public object BugViewerState {
     fun clearPendingOpen() {
         isBugViewerPendingOpen = false
     }
+
+    fun clearBugs() {
+        bugs.clear()
+    }
 }
 
 private val Throwable.rootCause: Throwable?
