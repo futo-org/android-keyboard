@@ -2,8 +2,11 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.get
 import org.futo.inputmethod.keyboard.Key
 import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.keyboard.internal.KeyDrawParams
@@ -18,6 +21,10 @@ data class KeyDrawingConfiguration(
     val hintIcon: Drawable?,
     val label: String?,
     val hintLabel: String?,
+    val textColor: Int,
+    val hintColor: Int,
+    val textSize: Float,
+    val hintSize: Float,
 )
 
 data class CachedKeyedMatcher<T>(
@@ -41,6 +48,14 @@ private val KeyedBitmapMatcher = { keyboard: Keyboard, key: Key, entry: KeyedBit
     matchesKey(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, key)
 }
 
+internal fun<A, B> Pair<A, B?>.requireSecond(): Pair<A, B>? = second?.let { first to it }
+
+// Require this color not be invisible
+internal fun Int?.argbNotInvisible(): Int? = this?.let {
+    if((it shr 24) and 0xff == 0) null else it
+}
+
+
 class AdvancedThemeMatcher(
     val context: Context,
     val drawableProvider: DynamicThemeProvider,
@@ -60,44 +75,77 @@ class AdvancedThemeMatcher(
         matchesHint(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, hintLabel, hintIcon)
     })
 
-    val drawables =
-        backgroundList.associate {
-            it to lazy {
-                // TODO: We need to pick foreground color from image as well.
-                //  Probably the top left pixel
-                val bitmap = it.image.asAndroidBitmap()
-                bitmap.toNinePatchDrawable(context.resources)
-            }
-        } + iconList.associate {
-            it to lazy {
-                val bitmap = it.image.asAndroidBitmap()
-                bitmap.toDrawable(context.resources)
-            }
-        }
+    val backgroundDrawables = backgroundList.associate {
+        it to lazy {
+            val bitmap = it.image.asAndroidBitmap()
+            val fgColor = bitmap[0, 0]
 
-    fun findDrawable(matcher: CachedKeyedMatcher<KeyedBitmap>, keyboard: Keyboard, key: Key): Drawable? {
+            fgColor to bitmap.toNinePatchDrawable(context.resources)
+        }
+    }
+
+    val foregroundDrawables = iconList.associate {
+        it to lazy {
+            val bitmap = it.image.asAndroidBitmap()
+
+            bitmap.toDrawable(context.resources)
+        }
+    }
+
+    fun findForeground(matcher: CachedKeyedMatcher<KeyedBitmap>, keyboard: Keyboard, key: Key): Drawable? {
         val bitmap = matcher.find(keyboard, key)
         if(bitmap == null) return null
 
-        return drawables[bitmap]?.value
+        return foregroundDrawables[bitmap]?.value
+    }
+
+    fun findBackground(matcher: CachedKeyedMatcher<KeyedBitmap>, keyboard: Keyboard, key: Key): Pair<Int, Drawable>? {
+        val bitmap = matcher.find(keyboard, key)
+        if(bitmap == null) return null
+
+        return backgroundDrawables[bitmap]?.value?.requireSecond()
     }
 
     fun matchKeyDrawingConfiguration(keyboard: Keyboard?, params: KeyDrawParams, key: Key): KeyDrawingConfiguration {
-        if(keyboard == null) return KeyDrawingConfiguration(null, null, null, key.labelOverride ?: key.label, key.effectiveHintLabel)
+        if(keyboard == null) return KeyDrawingConfiguration(
+            background = null,
+            icon = null,
+            hintIcon = null,
+            label = key.labelOverride ?: key.label,
+            hintLabel = key.effectiveHintLabel,
+            textColor = key.selectTextColor(drawableProvider, params),
+            hintColor = key.selectHintTextColor(drawableProvider, params),
+            textSize = key.selectTextSize(params).toFloat(),
+            hintSize = key.selectHintTextSize(drawableProvider, params).toFloat()
+        )
 
-        val background = findDrawable(backgrounds, keyboard, key) ?: key.selectBackground(drawableProvider)
-        val icon = findDrawable(icons, keyboard, key) ?: key.getIconOverride(keyboard.mIconsSet, params.mAnimAlpha)
-        val hintIcon = findDrawable(hintIcons, keyboard, key)
+        val foundBackground = findBackground(backgrounds, keyboard, key)
+        val background = foundBackground?.second ?: key.selectBackground(drawableProvider)
+        val textColor = foundBackground?.first.argbNotInvisible() ?: key.selectTextColor(drawableProvider, params)
+
+        val hintColor = foundBackground?.first.argbNotInvisible()?.let {
+            Color(it).copy(alpha = 0.8f).toArgb()
+        } ?: key.selectHintTextColor(drawableProvider, params)
+
+        val icon = findForeground(icons, keyboard, key) ?: key.getIconOverride(keyboard.mIconsSet, params.mAnimAlpha)
+        val hintIcon = findForeground(hintIcons, keyboard, key)
 
         var label: String? = key.labelOverride ?: key.label
         var hintLabel: String? = if(hintIcon == null) key.effectiveHintLabel else null
+
+        val textSize = key.selectTextSize(params).toFloat()
+        val hintSize = key.selectHintTextSize(drawableProvider, params).toFloat()
 
         return KeyDrawingConfiguration(
             background = background,
             icon = icon,
             hintIcon = hintIcon ?: key.getHintIcon(keyboard.mIconsSet, params.mAnimAlpha),
             label = label,
-            hintLabel = hintLabel
+            hintLabel = hintLabel,
+            textColor = textColor,
+            hintColor = hintColor,
+            textSize = textSize,
+            hintSize = hintSize,
         )
     }
 }

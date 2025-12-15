@@ -409,7 +409,7 @@ public class KeyboardView extends View {
         final String label = kdc.getLabel();
         if (label != null && icon == null) {
             paint.setTypeface(mDrawableProvider.selectKeyTypeface(key.selectTypeface(params)));
-            paint.setTextSize(key.selectTextSize(params));
+            paint.setTextSize(kdc.getTextSize());
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
 
@@ -437,7 +437,7 @@ public class KeyboardView extends View {
             }
 
             if (key.isEnabled()) {
-                paint.setColor(key.selectTextColor(mDrawableProvider, params));
+                paint.setColor(kdc.getTextColor());
                 // Set a drop shadow for the text if the shadow radius is positive value.
                 if (mKeyTextShadowRadius > 0.0f) {
                     paint.setShadowLayer(mKeyTextShadowRadius, 0.0f, 0.0f, params.mTextShadowColor);
@@ -459,8 +459,8 @@ public class KeyboardView extends View {
         // Draw hint label.
         final String hintLabel = kdc.getHintLabel();
         if (hintLabel != null) {
-            paint.setTextSize(key.selectHintTextSize(mDrawableProvider, params));
-            paint.setColor(key.selectHintTextColor(mDrawableProvider, params));
+            paint.setTextSize(kdc.getHintSize());
+            paint.setColor(kdc.getHintColor());
 
             // Bold explicit hints
             paint.setTypeface(key.selectHintTypeface(mDrawableProvider, params));
@@ -498,7 +498,7 @@ public class KeyboardView extends View {
             canvas.drawText(
                     hintLabel, 0, hintLabel.length(), hintX, hintBaseline + adjustmentY, paint);
         } else if(hintIcon != null) {
-            final float size = key.selectHintTextSize(mDrawableProvider, params);
+            final float size = kdc.getHintSize();
 
             int iconWidth = (int)size;
             int iconHeight = (int)size;
@@ -506,13 +506,13 @@ public class KeyboardView extends View {
             int hintX = keyWidth - iconWidth - (int)mKeyHintLetterPadding;
             int hintY = (int)mKeyHintLetterPadding;
 
-            hintIcon.setTint(key.selectHintTextColor(mDrawableProvider, params));
+            hintIcon.setTint(kdc.getHintColor());
             drawIcon(canvas, hintIcon, hintX, hintY, iconWidth, iconHeight);
         }
 
         // Draw key icon.
         if (icon != null) {
-            final float size = key.selectTextSize(params) * 1.75f;
+            final float size = kdc.getTextSize() * 1.75f;
 
             int iconWidth;
             if (key.getCode() == Constants.CODE_SPACE && icon instanceof NinePatchDrawable) {
@@ -537,7 +537,7 @@ public class KeyboardView extends View {
             }
             final int iconX = (keyWidth - iconWidth) / 2; // Align horizontally center.
 
-            icon.setTint(key.selectTextColor(mDrawableProvider, params));
+            icon.setTint(kdc.getTextColor());
             drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
         }
 
