@@ -130,10 +130,21 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         return true;
     }
 
+
+    private Drawable mBackground = null;
+    @Override
+    public void setBackground(Drawable background) {
+        mBackground = background;
+        background.getPadding(mBackgroundPadding);
+    }
+
     @Override
     protected void onDraw(final Canvas canvas) {
-        if(!drawFlickKeys(canvas)) super.onDraw(canvas);
-
+        if(!drawFlickKeys(canvas)) {
+            mBackground.setBounds(0, 0, getWidth(), getHeight());
+            mBackground.draw(canvas);
+            super.onDraw(canvas);
+        }
     }
 
     private void setTextAndScaleX(int maxWidth, final String text) {
@@ -142,13 +153,7 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         if (sNoScaleXTextSet.contains(text)) {
             return;
         }
-        // TODO: Override {@link #setBackground(Drawable)} that is supported from API 16 and
-        // calculate maximum text width.
-        final Drawable background = getBackground();
-        if (background == null) {
-            return;
-        }
-        background.getPadding(mBackgroundPadding);
+
         final float width = getTextWidth(text, getPaint());
         if (width <= maxWidth) {
             sNoScaleXTextSet.add(text);
