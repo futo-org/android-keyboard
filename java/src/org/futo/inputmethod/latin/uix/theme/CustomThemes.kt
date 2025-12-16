@@ -1,11 +1,11 @@
 package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.graphics.ImageBitmap
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okio.ByteString.Companion.encodeUtf8
@@ -34,6 +34,14 @@ object CustomThemes {
     val themeCache: MutableMap<String, KeyboardColorScheme> = mutableMapOf()
     val thumbThemeCache: MutableMap<String, KeyboardColorScheme> = mutableMapOf()
     val updateCount: MutableIntState = mutableIntStateOf(0)
+
+    @OptIn(ExperimentalSerializationApi::class)
+    private val json = Json {
+        allowComments = true
+        allowTrailingComma = true
+        prettyPrint = true
+        encodeDefaults = true
+    }
 
     fun getDirectory(context: Context) = File(context.filesDir, "themes")
 
@@ -72,7 +80,7 @@ object CustomThemes {
         zos.closeEntry()
 
         putEntry(configFileName)
-        zos.write(Json.Default.encodeToString(theme).encodeUtf8().toByteArray())
+        zos.write(json.encodeToString(theme).encodeUtf8().toByteArray())
         zos.closeEntry()
 
         theme.thumbnailImage?.let(putFile)
@@ -124,7 +132,7 @@ object CustomThemes {
                         try {
                             val bytes = zipIn.readAllBytesCompat()
                             val string = bytes.decodeToString()
-                            val cfg = Json.Default.decodeFromString<SerializableCustomTheme>(string)
+                            val cfg = json.decodeFromString<SerializableCustomTheme>(string)
 
                             if(cfg.id == null || cfg.id.length < 3) throw Exception("ID must be at least 3 characters for a custom theme")
                             if(cfg.id.endsWith('_')) throw Exception("ID must not end with underscores")
@@ -202,7 +210,7 @@ object CustomThemes {
             }
         }
 
-        val theme = Json.Default.decodeFromString<SerializableCustomTheme>(
+        val theme = json.decodeFromString<SerializableCustomTheme>(
             ctx.getFileBytes(configFileName)!!.decodeToString()
         )
 
