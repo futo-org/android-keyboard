@@ -15,6 +15,7 @@ import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.settings.pages.DevAutoAcceptThemeImport
 import org.futo.inputmethod.latin.utils.readAllBytesCompat
 import java.io.BufferedOutputStream
 import java.io.File
@@ -171,8 +172,13 @@ object CustomThemes {
 
         themeCache.remove(id)
         val currTheme = context.getSetting(THEME_KEY)
-        if(currTheme.trimEnd('_') == "custom$id") {
-            runBlocking { context.setSetting(THEME_KEY, currTheme+'_') }
+        if(currTheme.trimEnd('_') == "custom$id" || DevAutoAcceptThemeImport) {
+            runBlocking {
+                context.setSetting(
+                    THEME_KEY,
+                    "custom$id" + if(currTheme.endsWith('_')) "" else "_"
+                )
+            }
         }
     }
 
