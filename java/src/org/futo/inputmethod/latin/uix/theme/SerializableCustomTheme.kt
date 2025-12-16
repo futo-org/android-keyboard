@@ -121,7 +121,6 @@ data class SerializableCustomTheme(
     val keyboardContainerPressed: SerializableColor,
     val onKeyboardContainerPressed: SerializableColor,
 
-    //val keyboardBackgroundGradient: Brush?,
     val hintColor: SerializableColor?,
     val hintHiVis: Boolean,
 
@@ -144,14 +143,6 @@ data class SerializableCustomTheme(
     val author: String? = null,
     val url: String? = null,
 
-    // keys can be:
-    //  "normal",
-    //  "functional",
-    //  "label q"
-    //  "label Q"
-    //  "code -5"
-    //  "layout qwerty code -5"
-    //  "layout qwerty code -5"
     val keyBackgrounds: Map<String, String> = mapOf(),
     val keyIcons: Map<String, String> = mapOf()
 ) {
