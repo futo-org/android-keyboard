@@ -41,7 +41,7 @@ object CustomThemes {
         allowComments = true
         allowTrailingComma = true
         prettyPrint = true
-        encodeDefaults = true
+        //encodeDefaults = true
     }
 
     fun getDirectory(context: Context) = File(context.filesDir, "themes")
