@@ -2,9 +2,10 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
-import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import org.futo.inputmethod.latin.uix.actions.BugInfo
+import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 import java.io.File
 
@@ -39,13 +40,27 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
                 "rowmod" -> KeyQualifier.RowColSelector(RowColSelection.RowModN(tokens.removeAt(0).toInt(), tokens.removeAt(0).toInt()))
                 "colmod" -> KeyQualifier.RowColSelector(RowColSelection.ColModN(tokens.removeAt(0).toInt(), tokens.removeAt(0).toInt()))
 
-                else -> return emptySet()
+                else -> {
+                    BugViewerState.pushBug(BugInfo(
+                        "your custom theme",
+                        "Qualifier [$key] has an invalid entry: $next"
+                    ))
+                    return emptySet()
+                }
             }
 
             result.add(qualifier)
         }catch(e: IndexOutOfBoundsException) {
+            BugViewerState.pushBug(BugInfo(
+                "your custom theme",
+                "Qualifier [$key] is missing an argument for $next: $e"
+            ))
             return emptySet()
         } catch(e: NumberFormatException) {
+            BugViewerState.pushBug(BugInfo(
+                "your custom theme",
+                "Qualifier [$key] has an invalid number for $next: $e"
+            ))
             return emptySet()
         }
     }
