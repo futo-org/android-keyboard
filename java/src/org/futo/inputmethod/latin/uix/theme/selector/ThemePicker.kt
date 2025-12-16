@@ -353,11 +353,13 @@ fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) { }
 
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                    CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
-                        SettingToggleDataStore(
-                            title = stringResource(R.string.theme_settings_key_borders),
-                            setting = KeyBordersSetting
-                        )
+                    if(!currentTheme.startsWith("custom")) {
+                        CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
+                            SettingToggleDataStore(
+                                title = stringResource(R.string.theme_settings_key_borders),
+                                setting = KeyBordersSetting
+                            )
+                        }
                     }
                 }
             }
