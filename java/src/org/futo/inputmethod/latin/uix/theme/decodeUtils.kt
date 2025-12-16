@@ -40,6 +40,8 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
                 "rowmod" -> KeyQualifier.RowColSelector(RowColSelection.RowModN(tokens.removeAt(0).toInt(), tokens.removeAt(0).toInt()))
                 "colmod" -> KeyQualifier.RowColSelector(RowColSelection.ColModN(tokens.removeAt(0).toInt(), tokens.removeAt(0).toInt()))
 
+                "ratio" -> KeyQualifier.AspectRatio(KeyAspectRatio.valueOf(tokens.removeAt(0)))
+
                 else -> {
                     BugViewerState.pushBug(BugInfo(
                         "your custom theme",
@@ -50,16 +52,10 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
             }
 
             result.add(qualifier)
-        }catch(e: IndexOutOfBoundsException) {
+        }catch(e: Exception) {
             BugViewerState.pushBug(BugInfo(
                 "your custom theme",
-                "Qualifier [$key] is missing an argument for $next: $e"
-            ))
-            return emptySet()
-        } catch(e: NumberFormatException) {
-            BugViewerState.pushBug(BugInfo(
-                "your custom theme",
-                "Qualifier [$key] has an invalid number for $next: $e"
+                "Qualifier [$key] has run into an exception for $next: $e"
             ))
             return emptySet()
         }

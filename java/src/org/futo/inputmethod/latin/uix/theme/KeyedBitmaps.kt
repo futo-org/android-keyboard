@@ -27,6 +27,15 @@ private fun RowColSelection.match(keyboard: Keyboard, key: Key): Boolean = when(
     is RowColSelection.RowModN -> (key.row+a) % n == 0
 }
 
+enum class KeyAspectRatio(val range: ClosedFloatingPointRange<Float>) {
+    Tallest  (2.20f..Float.POSITIVE_INFINITY),
+    Tall     (1.35f..2.20f),
+    Squarish (0.85f..1.35f),
+    Wide     (0.50f..0.85f),
+    ExtraWide(0.33f..0.50f),
+    Widest   (0.00f..0.33f)
+}
+
 sealed class KeyQualifier {
     data class VisualStyle(val visualStyle: KeyVisualStyle) : KeyQualifier()
     data class Layout(val name: String) : KeyQualifier()
@@ -38,6 +47,8 @@ sealed class KeyQualifier {
     data object Pressed : KeyQualifier()
     data object MoreKeysKeyboardBackground : KeyQualifier()
     data object Popup : KeyQualifier()
+
+    data class AspectRatio(val target: KeyAspectRatio) : KeyQualifier()
 }
 
 fun Key.hashCodeForQualifiers(): Int {
@@ -52,6 +63,9 @@ fun Key.hashCodeForQualifiers(): Int {
 
     result = 31 * result + row.hashCode()
     result = 31 * result + column.hashCode()
+
+    result = 31 * result + width.hashCode()
+    result = 31 * result + height.hashCode()
 
     // Used in AdvancedThemeCustomizer.kt
     result = 31 * result + effectiveHintLabel.hashCode()
@@ -72,6 +86,7 @@ fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, keyboard: Keyboard
         is KeyQualifier.MoreKeysKeyboardBackground -> false
         is KeyQualifier.Popup -> popup
         is KeyQualifier.RowColSelector -> it.selection.match(keyboard, key)
+        is KeyQualifier.AspectRatio -> it.target.range.contains(key.height.toFloat() / key.width.toFloat())
     } }
 
 
