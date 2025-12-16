@@ -41,7 +41,7 @@ data class CachedKeyedMatcher<T>(
 }
 
 internal fun<T> keyedBitmapMatcher(popup: Boolean = false) = { keyboard: Keyboard, key: Key, entry: KeyedBitmap<T> ->
-    matchesKey(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, key, popup)
+    matchesKey(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, keyboard, key, popup)
 }
 
 class AdvancedThemeMatcher(

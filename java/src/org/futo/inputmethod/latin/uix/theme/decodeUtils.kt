@@ -34,6 +34,11 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
                 "morekeysbox" -> KeyQualifier.MoreKeysKeyboardBackground
                 "popup" -> KeyQualifier.Popup
 
+                "row" -> KeyQualifier.RowColSelector(RowColSelection.RowEq(tokens.removeAt(0).toInt()))
+                "col" -> KeyQualifier.RowColSelector(RowColSelection.ColEq(tokens.removeAt(0).toInt()))
+                "rowmod" -> KeyQualifier.RowColSelector(RowColSelection.RowModN(tokens.removeAt(0).toInt(), tokens.removeAt(0).toInt()))
+                "colmod" -> KeyQualifier.RowColSelector(RowColSelection.ColModN(tokens.removeAt(0).toInt(), tokens.removeAt(0).toInt()))
+
                 else -> return emptySet()
             }
 

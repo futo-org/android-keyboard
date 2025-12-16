@@ -7,7 +7,6 @@ import androidx.compose.ui.unit.Dp
 import org.futo.inputmethod.keyboard.KeyConsts
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement
 import org.futo.inputmethod.keyboard.internal.KeyboardParams
-import org.futo.inputmethod.keyboard.internal.isAlphabet
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
@@ -517,7 +516,7 @@ data class LayoutEngine(
     }.map { it.toString() }.toSet()
     private val showAllHintsSetting = params.mId.mLongPressKeySettings.showHints
 
-    private fun computedKeyToKey(data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int, leftGap: LayoutEntry.Gap?, rightGap: LayoutEntry.Gap?): org.futo.inputmethod.keyboard.Key? {
+    private fun computedKeyToKey(row: Int, col: Int, data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int, leftGap: LayoutEntry.Gap?, rightGap: LayoutEntry.Gap?): org.futo.inputmethod.keyboard.Key? {
         // These keys are empty keys and do not get added, leaving an empty gap in place of the key
         // The hitbox of other keys does not get expanded to include this gap though, unlike
         // gaps added for centering rows
@@ -609,23 +608,27 @@ data class LayoutEngine(
             // Add flick keys
             flickKeys = data.flick?.let {
                 it.directions
-                    .mapValues { computedKeyToKey(it.value, x, y, width, height, null, null) }
+                    .mapValues { computedKeyToKey(0, 0, it.value, x, y, width, height, null, null) }
                     .filterValues { it != null }
                     .mapValues { it.value!! }
             },
 
             labelOverride = data.flick?.label,
             iconOverride = data.flick?.icon,
+
+            row = row,
+            column = col
         )
     }
 
-    private fun addKey(data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int, leftGap: LayoutEntry.Gap?, rightGap: LayoutEntry.Gap?) {
-        val key = computedKeyToKey(data, x, y, width, height, leftGap, rightGap) ?: return
+    private fun addKey(row: Int, col: Int, data: ComputedKeyData, x: Int, y: Int, width: Int, height: Int, leftGap: LayoutEntry.Gap?, rightGap: LayoutEntry.Gap?) {
+        val key = computedKeyToKey(row, col, data, x, y, width, height, leftGap, rightGap) ?: return
         params.onAddKey(key)
     }
 
-    private fun addRow(row: List<LayoutEntry>, x: Float, y: Int, height: Int) {
+    private fun addRow(idx: Int, row: List<LayoutEntry>, x: Float, y: Int, height: Int) {
         var currentX = x
+        var colNum = 0
         row.forEachIndexed { i, entry ->
             when(entry) {
                 is LayoutEntry.Gap -> { }
@@ -634,7 +637,10 @@ data class LayoutEngine(
                     val leftGap = if(i < row.size / 2 && !entry.data.anchored) { row.getOrNull(i - 1) as? LayoutEntry.Gap } else { null }
                     val rightGap = if(i >= row.size / 2 && !entry.data.anchored) { row.getOrNull(i + 1) as? LayoutEntry.Gap } else { null }
 
-                    addKey(entry.data, currentX.roundToInt(), y, entry.widthPx.roundToInt(), height, leftGap, rightGap)
+                    addKey(idx, colNum, entry.data, currentX.roundToInt(), y, entry.widthPx.roundToInt(), height, leftGap, rightGap)
+
+                    // i != colNum because of Gap entries
+                    colNum += 1
                 }
             }
 
@@ -642,29 +648,29 @@ data class LayoutEngine(
         }
     }
 
-    private fun addRowAlignLeft(row: List<LayoutEntry>, y: Int, height: Int)
-            = addRow(row, 0.0f, y, height)
+    private fun addRowAlignLeft(idx: Int, row: List<LayoutEntry>, y: Int, height: Int)
+            = addRow(idx, row, 0.0f, y, height)
 
-    private fun addRowAlignRight(row: List<LayoutEntry>, y: Int, height: Int) {
+    private fun addRowAlignRight(idx: Int, row: List<LayoutEntry>, y: Int, height: Int) {
         val startingOffset = params.mId.mWidth - row.sumOf { it.widthPx.toDouble() }.toFloat()
-        addRow(row, startingOffset, y, height)
+        addRow(idx, row, startingOffset, y, height)
     }
 
-    private fun addRow(row: LayoutRow, y: Int) {
+    private fun addRow(idx: Int, row: LayoutRow, y: Int) {
         if(isSplitLayout && row.splittable) {
             val splitRows = row.entries.splitRow()
 
-            addRowAlignLeft(splitRows.first,   y, row.height.toInt())
-            addRowAlignRight(splitRows.second, y, row.height.toInt())
+            addRowAlignLeft(idx, splitRows.first,   y, row.height.toInt())
+            addRowAlignRight(idx, splitRows.second, y, row.height.toInt())
         } else {
-            addRowAlignLeft(row.entries, y, row.height.toInt())
+            addRowAlignLeft(idx, row.entries, y, row.height.toInt())
         }
     }
 
     private fun addKeys(rows: List<LayoutRow>): Int {
         var currentY = 0.0f
-        rows.forEach { row ->
-            addRow(row, currentY.toInt())
+        rows.forEachIndexed { i, row ->
+            addRow(i, row, currentY.toInt())
             currentY += row.height
         }
 
