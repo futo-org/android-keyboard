@@ -140,9 +140,10 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
 
     @Override
     protected void onDraw(final Canvas canvas) {
+        mBackground.setBounds(0, 0, getWidth(), getHeight());
+        mBackground.draw(canvas);
+
         if(!drawFlickKeys(canvas)) {
-            mBackground.setBounds(0, 0, getWidth(), getHeight());
-            mBackground.draw(canvas);
             super.onDraw(canvas);
         }
     }
