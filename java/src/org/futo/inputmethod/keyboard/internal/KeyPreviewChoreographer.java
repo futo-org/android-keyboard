@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.latin.common.CoordinateUtils;
+import org.futo.inputmethod.latin.uix.theme.KeyBackground;
 import org.futo.inputmethod.latin.utils.ViewLayoutUtils;
 
 import java.util.ArrayDeque;
@@ -61,7 +62,6 @@ public final class KeyPreviewChoreographer {
         }
         final Context context = placerView.getContext();
         keyPreviewView = new KeyPreviewView(context, null /* attrs */);
-        keyPreviewView.setBackground(mParams.mPreviewBackground);
         placerView.addView(keyPreviewView, ViewLayoutUtils.newLayoutParam(placerView, 0, 0));
         return keyPreviewView;
     }
@@ -97,11 +97,11 @@ public final class KeyPreviewChoreographer {
     }
 
     public void placeAndShowKeyPreview(final Key key, final KeyboardIconsSet iconsSet,
-            final KeyDrawParams drawParams, final int keyboardViewWidth, final int[] keyboardOrigin,
-            final ViewGroup placerView, final boolean withAnimation) {
+                                       final KeyDrawParams drawParams, final int keyboardViewWidth, final int[] keyboardOrigin,
+                                       final ViewGroup placerView, final boolean withAnimation, KeyBackground background) {
         final KeyPreviewView keyPreviewView = getKeyPreviewView(key, placerView);
-        placeKeyPreview(
-                key, keyPreviewView, iconsSet, drawParams, keyboardViewWidth, keyboardOrigin);
+        keyPreviewView.setBackground(background.getBackground());
+        placeKeyPreview(key, keyPreviewView, iconsSet, drawParams, keyboardViewWidth, keyboardOrigin, background.getForegroundColor());
         showKeyPreview(key, keyPreviewView, withAnimation);
     }
 
@@ -112,8 +112,8 @@ public final class KeyPreviewChoreographer {
 
     private void placeKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
             final KeyboardIconsSet iconsSet, final KeyDrawParams drawParams,
-            final int keyboardViewWidth, final int[] originCoords) {
-        keyPreviewView.setPreviewVisual(key, iconsSet, drawParams);
+            final int keyboardViewWidth, final int[] originCoords, int foregroundColor) {
+        keyPreviewView.setPreviewVisual(key, iconsSet, drawParams, foregroundColor);
         keyPreviewView.measure(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mParams.setGeometry(keyPreviewView);

@@ -82,7 +82,7 @@ fun UixThemeAuto(content: @Composable () -> Unit) {
 
     val themeIdx = useDataStoreValue(THEME_KEY)
 
-    val theme: ThemeOption = ThemeOptions[themeIdx].orDefault(context)
+    val theme: ThemeOption = getThemeOption(context, themeIdx).orDefault(context)
 
     val colors = remember(theme.key) { theme.obtainColors(context) }
 

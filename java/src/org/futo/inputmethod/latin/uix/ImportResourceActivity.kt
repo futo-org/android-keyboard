@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -48,17 +49,22 @@ import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.localeFromString
+import org.futo.inputmethod.latin.uix.actions.BugInfo
+import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitleWithIcon
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
+import org.futo.inputmethod.latin.uix.settings.pages.DevAutoAcceptThemeImport
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.theme.CustomThemes
 import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
@@ -156,7 +162,7 @@ fun SettingsImportScreen(
 }
 
 @Composable
-fun ImportScreen(fileKind: FileKindAndInfo, file: String?, onApply: (FileKindAndInfo, InputMethodSubtype) -> Unit, onCancel: () -> Unit) {
+fun ImportScreen(fileKind: FileKindAndInfo, onApply: (FileKindAndInfo, InputMethodSubtype) -> Unit, onCancel: () -> Unit) {
     val context = LocalContext.current
     val importing = remember { mutableStateOf(false) }
     val importingLanguage = remember { mutableStateOf("") }
@@ -621,19 +627,21 @@ suspend fun removeImportedUserDictFile(context: Context, value: Pair<File, Strin
     GlobalIMEMessage.tryEmit(IMEMessage.ReloadResources)
 }
 
+sealed class ItemBeingImported {
+    data class LanguageResource(val v: FileKindAndInfo) : ItemBeingImported()
+    data class SettingsBackup(val v: SettingsExporter.CfgFileMetadata) : ItemBeingImported()
+    data class UserDictFile(val v: DetectedUserDictFile) : ItemBeingImported()
+    data class CustomTheme(val v: CustomThemes.ThemeMetadataResult) : ItemBeingImported()
+}
+
 class ImportResourceActivity : ComponentActivity() {
     private val themeOption: MutableState<ThemeOption?> = mutableStateOf(null)
-    private val fileBeingImported: MutableState<String?> = mutableStateOf(null)
-    private val fileKind: MutableState<FileKindAndInfo> = mutableStateOf(FileKindAndInfo(FileKind.Invalid, null, null))
-    private val settingsCfgImportMetadata: MutableState<SettingsExporter.CfgFileMetadata?> = mutableStateOf(null)
-    private val userDictFileMetadata: MutableState<DetectedUserDictFile?> = mutableStateOf(null)
+    private val itemBeingImported: MutableState<ItemBeingImported?> = mutableStateOf(null)
     private var uri: Uri? = null
 
     private fun normalizeFilename(name: String) = name.replace("/", "_").replace(":", "_").replace(" ", "_")
 
-    private fun applyUserDictSetting(inputMethodSubtype: InputMethodSubtype) {
-        if(fileKind.value.kind != FileKind.Dictionary) throw IllegalStateException("Should only be called on dictionary")
-        val data = userDictFileMetadata.value!!
+    private fun applyUserDictSetting(data: DetectedUserDictFile, inputMethodSubtype: InputMethodSubtype) {
         val locale = inputMethodSubtype.locale
 
         val contentResolver = applicationContext.contentResolver
@@ -689,9 +697,12 @@ class ImportResourceActivity : ComponentActivity() {
     }
 
     private fun applySetting(fileKind: FileKindAndInfo, inputMethodSubtype: InputMethodSubtype) {
-        if(userDictFileMetadata.value != null) {
-            return applyUserDictSetting(inputMethodSubtype)
+        val item = itemBeingImported.value
+        if(item is ItemBeingImported.UserDictFile) {
+            return applyUserDictSetting(item.v, inputMethodSubtype)
         }
+
+        if(item == null) return
 
         val sanitizedLocaleForFilename = inputMethodSubtype.locale.replace("#", "H")
         val outputFileName = "${fileKind.kind.name.lowercase()}_$sanitizedLocaleForFilename${fileKind.kind.extension()}"
@@ -748,11 +759,123 @@ class ImportResourceActivity : ComponentActivity() {
         }
     }
 
+
+    @Composable
+    private fun InnerScreen() = itemBeingImported.value.let { item -> when(item) {
+        is ItemBeingImported.CustomTheme -> {
+            ScrollableList {
+                ScreenTitleWithIcon(
+                    stringResource(R.string.theme_customizer_import_custom_theme_menu_title),
+                    painterResource(R.drawable.themes)
+                )
+
+                if(item.v.meta.isNewer) {
+                    Tip("⚠\uFE0F " + stringResource(R.string.resource_importer_warning_cfg_backup_newer_version))
+                }
+
+                if(item.v.config == null) {
+                    Text("Error parsing theme:\n" + (item.v.error ?: "?"))
+
+                    Button(onClick = {
+                        finish()
+                    }) {
+                        Text("Close")
+                    }
+                } else {
+                    Text(
+                        stringResource(
+                            R.string.theme_customizer_import_custom_theme_name_text,
+                            item.v.config.id ?: "?"
+                        )
+                    )
+
+                    Text(
+                        stringResource(
+                            R.string.theme_customizer_import_custom_theme_author_text,
+                            item.v.config.author ?: "?"
+                        )
+                    )
+
+                    Button(onClick = {
+                        getInputStream()?.use {
+                            CustomThemes.importTheme(applicationContext, it, item.v)
+                        }
+                        finish()
+                    }) {
+                        Text(stringResource(R.string.resource_importer_import_button))
+                    }
+                }
+            }
+        }
+        is ItemBeingImported.LanguageResource -> {
+            ImportScreen(
+                fileKind = item.v,
+                onApply = { fileKind, inputMethodSubtype ->
+                    applySetting(
+                        fileKind,
+                        inputMethodSubtype
+                    )
+                },
+                onCancel = { finish() }
+            )
+        }
+        is ItemBeingImported.SettingsBackup -> {
+            SettingsImportScreen(
+                metadata = item.v,
+                onApply = {
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            contentResolver.openInputStream(uri!!)!!.use {
+                                SettingsExporter.loadSettings(
+                                    this@ImportResourceActivity,
+                                    it,
+                                    true
+                                )
+                            }
+                        }
+                        withContext(Dispatchers.Main) {
+                            finish()
+                        }
+                    }
+                },
+                onCancel = {
+                    finish()
+                }
+            )
+        }
+        is ItemBeingImported.UserDictFile -> {
+            val pseudoKind = FileKindAndInfo(FileKind.Dictionary, name = item.v.name, locale = item.v.locale.toString())
+            ImportScreen(
+                fileKind = pseudoKind,
+                onApply = { fileKind, inputMethodSubtype ->
+                    applySetting(
+                        fileKind,
+                        inputMethodSubtype
+                    )
+                },
+                onCancel = { finish() }
+            )
+        }
+        null -> {
+            val pseudoKind = FileKindAndInfo(FileKind.Invalid, null, null)
+            ImportScreen(
+                fileKind = pseudoKind,
+                onApply = { fileKind, inputMethodSubtype ->
+                    applySetting(
+                        fileKind,
+                        inputMethodSubtype
+                    )
+                },
+                onCancel = { finish() }
+            )
+        }
+    } }
+
     private fun updateContent() {
         setContent {
             themeOption.value?.let { themeOption ->
                 val themeIdx = useDataStore(key = THEME_KEY.key, default = themeOption.key)
-                val theme: ThemeOption = ThemeOptions[themeIdx.value] ?: themeOption
+                val theme: ThemeOption = getThemeOption(this, themeIdx.value) ?: themeOption
                 UixThemeWrapper(theme.obtainColors(LocalContext.current)) {
                     StatusBarColorSetter()
                     Surface(
@@ -760,43 +883,7 @@ class ImportResourceActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background
                     ) {
                         Box(Modifier.safeDrawingPadding()) {
-                            settingsCfgImportMetadata.value?.let {
-                                SettingsImportScreen(
-                                    metadata = it,
-                                    onApply = {
-                                        lifecycleScope.launch {
-                                            withContext(Dispatchers.IO) {
-                                                contentResolver.openInputStream(uri!!)!!.use {
-                                                    SettingsExporter.loadSettings(
-                                                        this@ImportResourceActivity,
-                                                        it,
-                                                        true
-                                                    )
-                                                }
-                                            }
-                                            withContext(Dispatchers.Main) {
-                                                finish()
-                                            }
-                                        }
-                                    },
-                                    onCancel = {
-                                        finish()
-                                    }
-                                )
-                                it
-                            } ?: run {
-                                ImportScreen(
-                                    fileKind = fileKind.value,
-                                    file = fileBeingImported.value,
-                                    onApply = { fileKind, inputMethodSubtype ->
-                                        applySetting(
-                                            fileKind,
-                                            inputMethodSubtype
-                                        )
-                                    },
-                                    onCancel = { finish() }
-                                )
-                            }
+                            InnerScreen()
                         }
                     }
                 }
@@ -810,33 +897,44 @@ class ImportResourceActivity : ComponentActivity() {
         null
     }
 
+    private fun detectItemBeingImported(): ItemBeingImported? {
+        val languageResource = getInputStream()?.use { determineFileKind(it) }
+        if(languageResource != null && languageResource.kind != FileKind.Invalid) return ItemBeingImported.LanguageResource(languageResource)
+
+        val settingsBackup = getInputStream()?.use { SettingsExporter.getCfgFileMetadata(it) }
+        if(settingsBackup != null) return ItemBeingImported.SettingsBackup(settingsBackup)
+
+        val userDictFile = getInputStream()?.use { detectJapaneseUserDict(it) }
+        if(userDictFile != null) return ItemBeingImported.UserDictFile(userDictFile)
+
+        val customTheme = getInputStream()?.use { CustomThemes.getMetadata(it) }
+        if(customTheme != null) return ItemBeingImported.CustomTheme(customTheme)
+
+        return null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         this.uri = intent?.data!!
 
-        val filePath = intent?.data?.path
-        fileBeingImported.value = filePath
-        fileKind.value = getInputStream()?.use { determineFileKind(it) } ?: FileKindAndInfo(FileKind.Invalid, null, null)
-        settingsCfgImportMetadata.value = if(fileKind.value.kind == FileKind.Invalid) {
-            getInputStream()?.use {
-                SettingsExporter.getCfgFileMetadata(it)
+        itemBeingImported.value = detectItemBeingImported()
+
+        val item = itemBeingImported.value
+        if(item is ItemBeingImported.CustomTheme && DevAutoAcceptThemeImport) {
+            if(item.v.config == null) {
+                BugViewerState.pushBug(BugInfo(
+                    name = "your custom theme (invalid metadata json)",
+                    details = item.v.error ?: "Unknown error",
+                ))
+                BugViewerState.triggerOpen()
+            } else {
+                getInputStream()?.use {
+                    CustomThemes.importTheme(applicationContext, it, item.v)
+                }
             }
-        } else {
-            null
-        }
-        userDictFileMetadata.value = if(fileKind.value.kind == FileKind.Invalid && settingsCfgImportMetadata.value == null) {
-            val x = getInputStream()?.use { detectJapaneseUserDict(it) }
-            if(x != null) {
-                fileKind.value = FileKindAndInfo(
-                    FileKind.Dictionary,
-                    name = x.name,
-                    locale = x.locale.toString()
-                )
-            }
-            x
-        } else {
-            null
+            finish()
+            return
         }
 
         lifecycleScope.launch {
@@ -846,7 +944,7 @@ class ImportResourceActivity : ComponentActivity() {
         }
 
         val key = getSetting(THEME_KEY)
-        this.themeOption.value = ThemeOptions[key].orDefault(this)
+        this.themeOption.value = getThemeOption(this, key).orDefault(this)
     }
 }
 

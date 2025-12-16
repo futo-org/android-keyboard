@@ -26,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
@@ -287,7 +288,7 @@ fun <T> Context.getSetting(key: Preferences.Key<T>, default: T): T {
 }
 
 fun <T> Context.getSettingFlow(key: Preferences.Key<T>, default: T): Flow<T> {
-    return dataStore.data.map { preferences -> preferences[key] ?: default }
+    return dataStore.data.map { preferences -> preferences[key] ?: default }.distinctUntilChanged()
 }
 
 suspend fun <T> Context.setSetting(key: Preferences.Key<T>, value: T) {

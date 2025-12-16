@@ -135,7 +135,11 @@ data class Key(
     val hintLabel: String? = null,
 
     /** Hint icon to display instead of hint label. Icon takes precedence over a label  */
-    val hintIconId: String? = if(hintLabel?.isNotEmpty() == true) { "" } else { null },
+    val hintIconId: String? = if (hintLabel?.isNotEmpty() == true) {
+        ""
+    } else {
+        null
+    },
 
     /** Flags of the label  */
     val labelFlags: Int,
@@ -207,6 +211,10 @@ data class Key(
 
     /** Affects the key itself but not the popup */
     val iconOverride: String? = null,
+
+    /** Row/column indices */
+    val row: Int,
+    val column: Int,
 ) {
     /** Validation */
     init {
@@ -380,15 +388,15 @@ data class Key(
     fun selectHintTypeface(provider: DynamicThemeProvider, params: KeyDrawParams): Typeface {
         return when {
             hasHintLabel || provider.hintHiVis -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                Typeface.create(Typeface.DEFAULT, 700, false)
+                Typeface.create(provider.selectKeyTypeface(Typeface.DEFAULT), 700, false)
             } else {
-                Typeface.DEFAULT_BOLD
+                provider.selectKeyTypeface(Typeface.DEFAULT_BOLD)
             }
 
             else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                Typeface.create(Typeface.DEFAULT, 500, false)
+                Typeface.create(provider.selectKeyTypeface(Typeface.DEFAULT), 500, false)
             } else {
-                Typeface.DEFAULT
+                provider.selectKeyTypeface(Typeface.DEFAULT)
             }
         }
     }
@@ -608,24 +616,23 @@ data class Key(
         ): Key {
             return Key(
                 code = moreKeySpec.mCode,
-                outputText = moreKeySpec.mOutputText,
                 label = moreKeySpec.mLabel ?: "",
                 iconId = moreKeySpec.mIconId ?: "",
-                hintLabel = null,
                 labelFlags = labelFlags,
-                visualStyle = KeyVisualStyle.MoreKey,
-                x = x,
-                y = y,
                 width = params.mDefaultKeyWidth,
                 height = params.mDefaultRowHeight,
                 horizontalGap = params.mHorizontalGap,
                 verticalGap = params.mVerticalGap,
+                x = x,
+                y = y,
+                visualStyle = KeyVisualStyle.MoreKey,
                 actionFlags = KeyConsts.ACTION_FLAGS_NO_KEY_PREVIEW,
+                outputText = moreKeySpec.mOutputText,
+                isFastLongPress = false,
 
-                moreKeys = listOf(),
-                moreKeysColumnAndFlags = 0,
-                isFastLongPress = false
+                row = x / params.mDefaultKeyWidth, column = y / params.mDefaultRowHeight
             )
         }
     }
+
 }

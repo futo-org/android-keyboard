@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.annotation.StringRes
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
+import org.futo.inputmethod.latin.uix.actions.BugInfo
+import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.CatppuccinMocha
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
@@ -75,6 +77,34 @@ fun defaultThemeOption(context: Context): ThemeOption =
             DefaultDarkScheme
         }
     }
+
+fun getThemeOption(context: Context, key: String): ThemeOption? {
+    return ThemeOptions[key] ?: run {
+        if(key.startsWith("custom")) {
+            val themeName = key.substring(6).trimEnd('_')
+
+            return ThemeOption(
+                dynamic = false,
+                key = key,
+                name = 0,
+                available = { true },
+                obtainColors = {
+                    try {
+                        CustomThemes.loadScheme(context, themeName)
+                    } catch(e: Exception) {
+                        BugViewerState.pushBug(BugInfo(
+                            name = "Custom theme",
+                            details = e.toString(),
+                        ))
+                        DevTheme.obtainColors(it)
+                    }
+                }
+            )
+        }
+
+        return null
+    }
+}
 
 fun ThemeOption?.orDefault(context: Context): ThemeOption {
     val themeOptionFromSettings = this

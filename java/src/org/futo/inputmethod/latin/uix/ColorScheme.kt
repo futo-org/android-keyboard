@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.core.math.MathUtils
+import org.futo.inputmethod.latin.uix.theme.AdvancedThemeOptions
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -34,7 +35,7 @@ data class ExtraColors(
 
     val navigationBarColor: Color? = null,
     val navigationBarColorForTransparency: Color? = null,
-    val keyboardBackgroundShader: String? = null,
+    val advancedThemeOptions: AdvancedThemeOptions
 )
 
 data class KeyboardColorScheme(
@@ -149,8 +150,6 @@ data class KeyboardColorScheme(
         get() = extended.hintColor
     val hintHiVis: Boolean
         get() = extended.hintHiVis
-    val keyboardBackgroundShader: String?
-        get() = extended.keyboardBackgroundShader
 }
 
 fun extendedDarkColorScheme(
@@ -239,8 +238,8 @@ fun extendedDarkColorScheme(
             onKeyboardContainerPressed = onKeyboardContainerPressed,
             hintColor = hintColor,
             hintHiVis = hintHiVis,
-            keyboardBackgroundShader = keyboardBackgroundShader,
             navigationBarColorForTransparency = navigationBarColorForTransparency,
+            advancedThemeOptions = AdvancedThemeOptions()
         )
     )
 
@@ -331,8 +330,8 @@ fun extendedLightColorScheme(
             onKeyboardContainerPressed = onKeyboardContainerPressed,
             hintColor = hintColor,
             hintHiVis = hintHiVis,
-            keyboardBackgroundShader = keyboardBackgroundShader,
             navigationBarColorForTransparency = navigationBarColorForTransparency,
+            advancedThemeOptions = AdvancedThemeOptions()
         )
     )
 
@@ -414,7 +413,8 @@ fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
             keyboardContainerPressed = scheme.outline.copy(alpha = 0.33f),
             onKeyboardContainerPressed = Color.Transparent,
             hintColor = null,
-            hintHiVis = false
+            hintHiVis = false,
+            advancedThemeOptions = AdvancedThemeOptions()
         )
     )
 }
@@ -435,7 +435,8 @@ fun wrapLightColorScheme(scheme: ColorScheme): KeyboardColorScheme {
             keyboardContainerPressed = scheme.outline.copy(alpha = 0.33f),
             onKeyboardContainerPressed = Color.Transparent,
             hintColor = null,
-            hintHiVis = false
+            hintHiVis = false,
+            advancedThemeOptions = AdvancedThemeOptions()
         )
     )
 }

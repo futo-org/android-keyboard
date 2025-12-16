@@ -35,6 +35,7 @@ import okio.sink
 import okio.source
 import org.futo.inputmethod.engine.general.mozcUserProfileDir
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.utils.readAllBytesCompat
 import org.futo.inputmethod.latin.uix.PreferenceUtils.getDefaultSharedPreferences
 import org.futo.inputmethod.latin.uix.actions.ClipboardFileName
 import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryManager.Companion.onClipboardImportedFlow
@@ -43,6 +44,7 @@ import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.findSettingsActivity
+import org.futo.inputmethod.latin.uix.theme.CustomThemes
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.json.JSONArray
 import org.json.JSONObject
@@ -70,18 +72,9 @@ data class PersonalWord(
     val shortcut: String?
 )
 
+
 @Suppress("HardCodedStringLiteral")
 object SettingsExporter {
-    private fun InputStream.readAllBytesCompat(): ByteArray {
-        val buffer = ByteArrayOutputStream()
-        val data = ByteArray(4096)
-        var nRead: Int
-        while (this.read(data, 0, data.size).also { nRead = it } != -1) {
-            buffer.write(data, 0, nRead)
-        }
-        return buffer.toByteArray()
-    }
-
     @Suppress("HardCodedStringLiteral")
     @Throws(Exception::class)
     private fun writeSharedPrefs(
@@ -281,6 +274,13 @@ object SettingsExporter {
             subfile.inputStream().use { it.copyTo(zipOut) }
             zipOut.closeEntry()
         }
+
+        // Collect themes
+        CustomThemes.getDirectory(context).listFiles()?.forEach { themeFile ->
+            zipOut.putNextEntry(ZipEntry("themes/${themeFile.name}"))
+            themeFile.inputStream().use { it.copyTo(zipOut) }
+            zipOut.closeEntry()
+        }
     }
 
     private fun String.splitSlash(): String = split("/", limit = 2)[1]
@@ -295,6 +295,7 @@ object SettingsExporter {
         val clipboardFile = context.clipboardFile
         val transformersDir = ModelPaths.getModelDirectory(context)
         val extFilesDir = context.getExternalFilesDir(null)!!
+        val themesDir = CustomThemes.getDirectory(context)
         if (destructive) {
             // delete old clipboard
             if (clipboardFile.exists()) {
@@ -319,6 +320,9 @@ object SettingsExporter {
             }
 
             mozcUserProfileDir(context).deleteRecursively()
+
+            // delete all themes
+            CustomThemes.getDirectory(context).listFiles()?.forEach { it.delete() }
         }
         while (entry != null) {
             when {
@@ -384,6 +388,14 @@ object SettingsExporter {
                     val userProfileDir = mozcUserProfileDir(context)
                     userProfileDir.mkdirs()
                     File(userProfileDir, relDir).outputStream().use {
+                        zipIn.copyTo(it)
+                    }
+                }
+
+                entry.name.startsWith("themes/") -> {
+                    themesDir.mkdirs()
+
+                    File(themesDir, entry.name.splitSlash()).outputStream().use {
                         zipIn.copyTo(it)
                     }
                 }

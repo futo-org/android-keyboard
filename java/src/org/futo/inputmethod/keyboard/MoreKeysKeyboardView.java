@@ -37,6 +37,7 @@ import org.futo.inputmethod.keyboard.internal.KeyDrawParams;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.CoordinateUtils;
+import org.futo.inputmethod.latin.uix.theme.KeyDrawingConfiguration;
 
 /**
  * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and
@@ -94,9 +95,9 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     @Override
     protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
-            final KeyDrawParams params) {
+           final KeyDrawParams params, final KeyDrawingConfiguration kdc) {
         if (!key.isSpacer() || mDivider == null) {
-            super.onDrawKeyTopVisuals(key, canvas, paint, params);
+            super.onDrawKeyTopVisuals(key, canvas, paint, params, kdc);
             return;
         }
         final int keyWidth = key.getDrawWidth();

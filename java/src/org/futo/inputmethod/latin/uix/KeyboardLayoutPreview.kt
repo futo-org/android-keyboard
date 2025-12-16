@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix
 
+import android.content.Context
 import android.graphics.Rect
 import android.view.ContextThemeWrapper
 import android.view.inputmethod.EditorInfo
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,7 +36,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 @Composable
-fun KeyboardViewCompose(keyboard: Keyboard?, width: Dp) {
+fun KeyboardViewCompose(keyboard: Keyboard?, width: Dp, customThemeCtx: Context?) {
     if(keyboard == null) {
         val presumedHeight = width * 0.61f
 
@@ -52,23 +54,31 @@ fun KeyboardViewCompose(keyboard: Keyboard?, width: Dp) {
         (keyboard.mOccupiedHeight.toFloat() * scale).toDp()
     }
 
-    Box(modifier = Modifier.size(width, height)) {
-        AndroidView(
-            factory = { context ->
-                val ctx = ContextThemeWrapper(context, R.style.KeyboardTheme_LXX_Light)
-
-                KeyboardView(ctx, null).apply {
-                    setKeyboard(keyboard)
-                }
-            },
-            modifier = Modifier.scale(scale).size(width, height)
+    val context = LocalContext.current
+    val ctx = remember(customThemeCtx) {
+        customThemeCtx ?: ContextThemeWrapper(
+            context,
+            R.style.KeyboardTheme_LXX_Light
         )
+    }
+
+    Box(modifier = Modifier.size(width, height)) {
+        key(DynamicThemeProvider.obtainFromContext(ctx)) {
+            AndroidView(
+                factory = { context ->
+                    KeyboardView(ctx, null).apply {
+                        setKeyboard(keyboard)
+                    }
+                },
+                modifier = Modifier.scale(scale).size(width, height)
+            )
+        }
     }
 }
 
 @Composable
-fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null) {
-    val context = LocalContext.current
+fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null, customThemeCtx: Context? = null) {
+    val context = customThemeCtx ?: LocalContext.current
 
     val loc = remember(id) {
         locale ?: LayoutManager.getLayout(context, id).languages.firstOrNull()?.let {
@@ -81,7 +91,7 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
 
     val keyboard = remember { mutableStateOf<Keyboard?>(null) }
 
-    KeyboardViewCompose(keyboard.value, width)
+    KeyboardViewCompose(keyboard.value, width, customThemeCtx)
 
     LaunchedEffect(id) {
         withContext(Dispatchers.Default) {

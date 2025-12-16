@@ -25,6 +25,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -72,6 +73,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -117,6 +120,8 @@ import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
 import org.futo.inputmethod.latin.uix.actions.ActionEditor
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry
 import org.futo.inputmethod.latin.uix.actions.AllActions
+import org.futo.inputmethod.latin.uix.actions.BugViewerAction
+import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.latin.uix.actions.KeyboardModeAction
 import org.futo.inputmethod.latin.uix.actions.PersistentEmojiState
 import org.futo.inputmethod.latin.uix.actions.keyCode
@@ -127,7 +132,6 @@ import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
 import org.futo.inputmethod.latin.uix.settings.pages.InlineAutofillSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.KeyboardSurfaceShaderBackground
-import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
@@ -194,6 +198,63 @@ fun Modifier.safeKeyboardPadding(): Modifier {
 @Composable
 fun Modifier.keyboardBottomPadding(size: ComputedKeyboardSize): Modifier = with(LocalDensity.current) {
     this@keyboardBottomPadding.absolutePadding(bottom = size.padding.bottom.toDp())
+}
+
+@Composable
+fun BoxScope.KeyboardBackground(
+    colorScheme: KeyboardColorScheme,
+    computedSize: ComputedKeyboardSize? = null,
+    useThumbnail: Boolean = false,
+) {
+    val backgroundBrush = colorScheme.keyboardBackgroundGradient ?: SolidColor(colorScheme.keyboardSurface)
+    val advanced = colorScheme.extended.advancedThemeOptions
+
+    val shader = advanced.backgroundShader
+    val image = if(useThumbnail) advanced.thumbnailImage else advanced.backgroundImage
+    val rect = advanced.backgroundImageVisibleArea?.let {
+        if(useThumbnail) {
+            Rect(
+                (it.left * advanced.thumbnailScale).roundToInt(),
+                (it.top * advanced.thumbnailScale).roundToInt(),
+                (it.right * advanced.thumbnailScale).roundToInt(),
+                (it.bottom * advanced.thumbnailScale).roundToInt()
+            )
+        } else it
+    }
+
+    when {
+        shader != null -> KeyboardSurfaceShaderBackground(shader, modifier = Modifier.matchParentSize())
+        image != null && rect != null -> {
+            val navbarHeight = navBarHeight()
+            Canvas(Modifier.matchParentSize()) {
+                drawRect(colorScheme.keyboardSurface)
+
+                val fixedWidth = computedSize?.width?.toFloat() ?: size.width
+                val fixedHeight = when {
+                    (computedSize != null) -> computedSize.height + ActionBarHeight.toPx() + navbarHeight.toPx()
+                    else -> size.height
+                }
+
+                val canvasScale = maxOf(fixedWidth / rect.width(), fixedHeight / rect.height())
+
+                val offset = Offset(
+                    -rect.left*1f - rect.width()/2f + fixedWidth/2f/canvasScale,
+                    -rect.top*1f - rect.height()/2f + fixedHeight/2f/canvasScale
+                )
+
+                translate(0f, size.height - fixedHeight) {
+                    scale(canvasScale, pivot = Offset.Zero) {
+                        translate(offset.x, offset.y) {
+                            drawImage(image)
+                        }
+                    }
+                }
+            }
+
+            Box(Modifier.matchParentSize().background(backgroundBrush))
+        }
+        else -> Box(Modifier.background(backgroundBrush).matchParentSize())
+    }
 }
 
 class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIME) : KeyboardManagerForAction {
@@ -328,10 +389,6 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
             Constants.SUGGESTION_STRIP_COORDINATE,
             false
         )
-    }
-
-    override fun updateTheme(newTheme: ThemeOption) {
-        latinIME.updateTheme(newTheme)
     }
 
     override fun getThemeProvider(): DynamicThemeProvider {
@@ -892,19 +949,9 @@ class UixManager(private val latinIME: LatinIME) {
         padding: Rect = Rect(),
         content: @Composable BoxScope.() -> Unit
     ) = with(LocalDensity.current) {
-        val backgroundBrush = LocalKeyboardScheme.current.keyboardBackgroundGradient ?: SolidColor(backgroundColor)
 
         Box(modifier
             .onSizeChanged { measuredTouchableHeight = it.height }
-            .background(
-                backgroundBrush,
-                shape,
-                alpha = if (LocalKeyboardScheme.current.keyboardBackgroundShader != null) {
-                    0.0f
-                } else {
-                    1.0f
-                }
-            )
             .requiredWidth(requiredWidthPx.toDp())
             .absolutePadding(
                 //top = padding.top.toDp().coerceAtLeast(0.dp),
@@ -915,9 +962,8 @@ class UixManager(private val latinIME: LatinIME) {
             // Blocks any input to inputDarkener within the keyboard
             .pointerInput(Unit) {}
         ) {
-            LocalKeyboardScheme.current.keyboardBackgroundShader?.let { source ->
-                KeyboardSurfaceShaderBackground(source, modifier = Modifier.matchParentSize())
-            }
+            KeyboardBackground(LocalKeyboardScheme.current, latinIME.size.value)
+
             CompositionLocalProvider(LocalKeyboardPadding provides KeyboardPadding(
                     left = padding.left.toDp().coerceAtLeast(0.dp),
                     right = padding.right.toDp().coerceAtLeast(0.dp),
@@ -1131,24 +1177,23 @@ class UixManager(private val latinIME: LatinIME) {
     private fun ProvidersAndWrapper(content: @Composable () -> Unit) {
         UixThemeWrapper(latinIME.colorScheme) {
             DataStoreCacheProvider {
-                CompositionLocalProvider(LocalManager provides keyboardManagerForAction) {
-                    CompositionLocalProvider(LocalThemeProvider provides latinIME.getDrawableProvider()) {
-                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                            CompositionLocalProvider(LocalFoldingState provides foldingOptions.value) {
-                                Box(Modifier
-                                    .fillMaxSize()
-                                    .onSizeChanged {
-                                        // If the size changes, call the service to check if the size needs
-                                        // to be recalculated and keyboard recreated
-                                        if (it != prevSize) {
-                                            prevSize = it
-                                            latinIME.onSizeUpdated()
-                                        }
-                                    }) {
-                                    content()
-                                }
+                CompositionLocalProvider(
+                    LocalManager provides keyboardManagerForAction,
+                    LocalThemeProvider provides latinIME.getDrawableProvider(),
+                    LocalLayoutDirection provides LayoutDirection.Ltr,
+                    LocalFoldingState provides foldingOptions.value
+                ) {
+                    Box(Modifier
+                        .fillMaxSize()
+                        .onSizeChanged {
+                            // If the size changes, call the service to check if the size needs
+                            // to be recalculated and keyboard recreated
+                            if (it != prevSize) {
+                                prevSize = it
+                                latinIME.onSizeUpdated()
                             }
-                        }
+                        }) {
+                        content()
                     }
                 }
             }
@@ -1495,6 +1540,9 @@ class UixManager(private val latinIME: LatinIME) {
 
         if(tutorialMode == TutorialMode.ResizerTutorial) {
             onActionActivated(KeyboardModeAction)
+        }else if(BugViewerState.isBugViewerPendingOpen) {
+            BugViewerState.clearPendingOpen()
+            onActionActivated(BugViewerAction)
         }
 
         quickClipState.value = QuickClip.getCurrentState(latinIME)

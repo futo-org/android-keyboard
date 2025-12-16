@@ -55,6 +55,7 @@ import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.SuggestedWords;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.CoordinateUtils;
+import org.futo.inputmethod.latin.uix.theme.KeyDrawingConfiguration;
 import org.futo.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
@@ -484,7 +485,8 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         locatePreviewPlacerView();
         getLocationInWindow(mOriginCoords);
         mKeyPreviewChoreographer.placeAndShowKeyPreview(key, keyboard.mIconsSet, getKeyDrawParams(),
-                getWidth(), mOriginCoords, mDrawingPreviewPlacerView, isHardwareAccelerated());
+                getWidth(), mOriginCoords, mDrawingPreviewPlacerView, isHardwareAccelerated(),
+                mDrawableProvider.getPreviewBackground(keyboard, key));
     }
 
     private void dismissKeyPreviewWithoutDelay(@Nonnull final Key key) {
@@ -792,14 +794,14 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     @Override
     protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
-            final KeyDrawParams params) {
+           final KeyDrawParams params, final KeyDrawingConfiguration kdc) {
         if (key.getAltCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
         }
-        super.onDrawKeyTopVisuals(key, canvas, paint, params);
+        super.onDrawKeyTopVisuals(key, canvas, paint, params, kdc);
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE && key.getIconId().equals("space_key")) {
-            drawLanguageOnSpacebar(key, canvas, paint);
+            drawLanguageOnSpacebar(key, canvas, paint, kdc.getHintColor());
             // Whether space key needs to show the "..." popup hint for special purposes
             if (key.isLongPressEnabled() && mHasMultipleEnabledIMEsOrSubtypes) {
                 drawKeyPopupHint(key, canvas, paint, params);
@@ -868,7 +870,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         return "";
     }
 
-    private void drawLanguageOnSpacebar(final Key key, final Canvas canvas, final Paint paint) {
+    private void drawLanguageOnSpacebar(final Key key, final Canvas canvas, final Paint paint, final int color) {
         final Keyboard keyboard = getKeyboard();
         if (keyboard == null) {
             return;
@@ -876,7 +878,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         final int width = key.getWidth();
         final int height = key.getHeight();
         paint.setTextAlign(Align.CENTER);
-        paint.setTypeface(Typeface.DEFAULT);
+        paint.setTypeface(mDrawableProvider.selectKeyTypeface(Typeface.DEFAULT));
         paint.setTextSize(mLanguageOnSpacebarTextSize);
         final String language = layoutLanguageOnSpacebar(paint, keyboard.mId.mLocale, width);
         // Draw language text with shadow
@@ -889,7 +891,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         } else {
             paint.clearShadowLayer();
         }
-        paint.setColor(mLanguageOnSpacebarTextColor);
+        paint.setColor(color);
         paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
         canvas.drawText(language, width / 2, baseline - descent, paint);
         paint.clearShadowLayer();

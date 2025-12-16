@@ -10,12 +10,15 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.NinePatchDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
@@ -23,10 +26,17 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withClip
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import org.futo.inputmethod.keyboard.Key
+import org.futo.inputmethod.keyboard.Keyboard
+import org.futo.inputmethod.keyboard.internal.KeyDrawParams
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
+import org.futo.inputmethod.latin.uix.theme.AdvancedThemeMatcher
+import org.futo.inputmethod.latin.uix.theme.KeyBackground
+import org.futo.inputmethod.latin.uix.theme.KeyDrawingConfiguration
+import org.futo.inputmethod.latin.uix.utils.toNinePatchDrawable
 import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
@@ -149,7 +159,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     override val keyboardBackground: Drawable
     override val keyBackground: Drawable
 
-    override val keyFeedback: Drawable
+    val keyFeedback: KeyBackground
 
     override val moreKeysTextColor: Int
     override val moreKeysKeyboardBackground: Drawable
@@ -160,7 +170,21 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     override val hintHiVis: Boolean
 
     override var typefaceOverride: Typeface? = null
-    override val themeTypeface: Typeface? = null
+    override val themeTypeface: Typeface?
+
+    val kdcMatcher = AdvancedThemeMatcher(context, this, colorScheme)
+    override fun selectKeyDrawingConfiguration(
+        keyboard: Keyboard?,
+        params: KeyDrawParams,
+        key: Key
+    ): KeyDrawingConfiguration = kdcMatcher.matchKeyDrawingConfiguration(keyboard, params, key)
+
+    override fun getPreviewBackground(
+        keyboard: Keyboard?,
+        key: Key
+    ): KeyBackground = kdcMatcher.matchKeyPopup(keyboard, key)?.let {
+        if(it.foregroundColor == null) it.copy(foregroundColor = keyFeedback.foregroundColor) else it
+    } ?: keyFeedback
 
     private val colors: HashMap<Int, Int> = HashMap()
     override fun getColor(i: Int): Int? {
@@ -258,13 +282,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     val expertMode: Boolean
     val showKeyHints: Boolean
 
-    fun hasUpdated(np: Preferences): Boolean {
-        return np.get(HiddenKeysSetting) != expertMode
-                || np.get(KeyBordersSetting) != keyBorders
-                || np.get(KeyHintsSetting) != showKeyHints
-    }
-
-
     private fun addIcon(iconName: String, drawableIntResId: Int, tint: Int) {
         addIcon(iconName, AppCompatResources.getDrawable(
             context,
@@ -274,15 +291,21 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
     private fun addIcon(iconName: String, drawable: Drawable?, tint: Int) {
         icons[iconName] = drawable?.apply {
-            setTint(tint)
+            //setTint(tint) // breaks some stuff, its set anyway before drawing in KeyboardView now ?
         }
     }
 
+    private fun makeNineSlice(image: ImageBitmap): NinePatchDrawable? =
+        image.asAndroidBitmap().toNinePatchDrawable(context.resources)
+
     init {
+        val advanced = colorScheme.extended.advancedThemeOptions
         displayDpi = context.resources.displayMetrics.densityDpi
 
+        themeTypeface = advanced.font
+
         expertMode = context.getSettingBlocking(HiddenKeysSetting)
-        keyBorders = context.getSettingBlocking(KeyBordersSetting)
+        keyBorders = advanced.keyBorders ?: context.getSettingBlocking(KeyBordersSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
 
         hintColor = colorScheme.hintColor?.toArgb() ?: colorScheme.onSurfaceVariant.toArgb()
@@ -404,29 +427,32 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         keyboardBackground = coloredRectangle(0x00000000)
 
-        val keyCornerRadius = 9.dp
+        val roundness = advanced.keyRoundness
+        val keyCornerRadius = 9.dp * roundness
 
         val spaceCornerRadius = if(keyBorders) {
             keyCornerRadius
         } else {
-            48.dp
+            48.dp * roundness
         }
+
+        val actionKeyRadius = 128.dp * roundness
 
         keyStyles = mapOf(
             KeyVisualStyle.Action to if(expertMode) {
                 VisualStyleDescriptor(
-                    backgroundDrawable = coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.1f).toArgb(), dp(128.dp)),
+                    backgroundDrawable = coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.1f).toArgb(), dp(actionKeyRadius)),
                     foregroundColor    = colorScheme.onSurface.copy(alpha = 0.6f).toArgb(),
 
-                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.6f).toArgb(), dp(128.dp)),
+                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.outline.copy(alpha = 0.6f).toArgb(), dp(actionKeyRadius)),
                     foregroundColorPressed    = colorScheme.onSurface.toArgb()
                 )
             } else {
                 VisualStyleDescriptor(
-                    backgroundDrawable = coloredRoundedRectangle(colorScheme.primary.toArgb(), dp(128.dp)),
+                    backgroundDrawable = coloredRoundedRectangle(colorScheme.primary.toArgb(), dp(actionKeyRadius)),
                     foregroundColor    = colorScheme.onPrimary.toArgb(),
 
-                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.secondaryContainer.toArgb(), dp(128.dp)),
+                    backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.secondaryContainer.toArgb(), dp(actionKeyRadius)),
                     foregroundColorPressed    = colorScheme.onSecondaryContainer.toArgb()
                 )
             },
@@ -517,17 +543,20 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         keyBackground = keyStyles[KeyVisualStyle.Normal]!!.backgroundDrawable!!
 
-        keyFeedback = GradientDrawable(
-            GradientDrawable.Orientation.TOP_BOTTOM,
-            intArrayOf(colorScheme.keyboardPress.toArgb(), colorScheme.keyboardPress.toArgb()),
-        ).apply {
-            cornerRadius = dp(keyCornerRadius)
-        }
+        keyFeedback = KeyBackground(
+            foregroundColor = colorScheme.onKeyboardContainer.toArgb(),
+            background = GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(colorScheme.keyboardPress.toArgb(), colorScheme.keyboardPress.toArgb()),
+            ).apply {
+                cornerRadius = dp(keyCornerRadius)
+            }
+        )
 
         colors[R.styleable.Keyboard_Key_keyPreviewTextColor] = colorScheme.onKeyboardContainer.toArgb()
 
         moreKeysTextColor = colorScheme.onKeyboardContainer.toArgb()
-        moreKeysKeyboardBackground = coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius))
+        moreKeysKeyboardBackground = kdcMatcher.matchMoreKeysKeyboardBackground("") ?: coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius))
 
         assert(icons.keys == KeyboardIconsSet.validIcons) {
             "Icons differ. Missing: ${KeyboardIconsSet.validIcons - icons.keys}, extraneous: ${icons.keys - KeyboardIconsSet.validIcons}"

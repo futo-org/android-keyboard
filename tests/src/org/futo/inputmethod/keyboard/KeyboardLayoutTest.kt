@@ -45,36 +45,40 @@ class KeyboardLayoutTest {
             code = 102,
             label = "label1",
             hintLabel = "101hint",
-            actionFlags = 102,
             labelFlags = 103,
-            visualStyle = KeyVisualStyle.Normal,
-            x = 105,
-            y = 106,
-
-            // Note: The old Key constructor subtracted width automatically, the new one
-            // requires the caller to provide dimensions with gap subtracted
             width = 1100 - 10,
             height = 1101 - 10,
             horizontalGap = 10,
             verticalGap = 10,
+
+            // Note: The old Key constructor subtracted width automatically, the new one
+            // requires the caller to provide dimensions with gap subtracted
+            x = 105,
+            y = 106,
+            visualStyle = KeyVisualStyle.Normal,
+            actionFlags = 102,
             isFastLongPress = false,
+            row = 0,
+            column = 0
         )
 
         val key2 = Key(
             code = 103,
             label = "label2",
             hintLabel = "201hint",
-            actionFlags = 202,
             labelFlags = 203,
-            visualStyle = KeyVisualStyle.Normal,
-            x = 205,
-            y = 206,
-
             width = 2100 - 10,
             height = 2101 - 10,
             horizontalGap = 10,
             verticalGap = 10,
+
+            x = 205,
+            y = 206,
+            visualStyle = KeyVisualStyle.Normal,
+            actionFlags = 202,
             isFastLongPress = false,
+            row = 0,
+            column = 0
         )
 
         val sortedKeys = ArrayList<Key>(2)

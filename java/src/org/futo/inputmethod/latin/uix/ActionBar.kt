@@ -222,6 +222,8 @@ val suggestionStyleCandidateDescription = TextStyle(
 fun actionBarColor(): Color =
     if(LocalInspectionMode.current) {
         LocalKeyboardScheme.current.keyboardSurface
+    } else if(LocalKeyboardScheme.current.extended.advancedThemeOptions.backgroundImage != null) {
+        LocalKeyboardScheme.current.keyboardSurface.copy(alpha = 0.5f)
     } else if(LocalKeyboardScheme.current.keyboardBackgroundGradient != null) {
         Color.Transparent
     } else {
@@ -269,6 +271,17 @@ fun AutoFitText(
     }
 }
 
+@Composable
+fun TextStyle.withCustomFont(): TextStyle {
+    val typeface = LocalKeyboardScheme.current.extended.advancedThemeOptions.font
+    if(typeface != null) {
+        val family = FontFamily(typeface)
+        return this.copy(fontFamily = family)
+    } else {
+        return this
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
@@ -305,7 +318,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
     val textStyle = when(isAutocorrect) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
-    }.copy(color = color)
+    }.copy(color = color).withCustomFont()
 
     Box(
         modifier = textButtonModifier
@@ -339,7 +352,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         modifier = Modifier
             .fillMaxHeight(0.66f)
             .align(CenterVertically)
-            .background(color = MaterialTheme.colorScheme.outline)
+            .background(color = LocalKeyboardScheme.current.outline)
             .width(1.dp)
     )
 }
@@ -494,7 +507,7 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
         .width(width)
         .fillMaxHeight()
 
-    val contentCol = MaterialTheme.colorScheme.onBackground
+    val contentCol = LocalKeyboardScheme.current.onBackground
 
     Box(modifier = modifier
         .clip(CircleShape)
@@ -700,13 +713,13 @@ fun ImportantNoticeView(
                 .weight(1.0f)
                 .fillMaxHeight(),
             shape = RectangleShape,
-            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
+            colors = ButtonDefaults.textButtonColors(contentColor = LocalKeyboardScheme.current.onBackground),
             enabled = true
         ) {
-            AutoFitText(importantNotice.getText(), style = suggestionStylePrimary.copy(color = MaterialTheme.colorScheme.onBackground))
+            AutoFitText(importantNotice.getText(), style = suggestionStylePrimary.copy(color = LocalKeyboardScheme.current.onBackground).withCustomFont())
         }
 
-        val color = MaterialTheme.colorScheme.primary
+        val color = LocalKeyboardScheme.current.primary
         IconButton(
             onClick = { importantNotice.onDismiss(context) },
             modifier = Modifier
@@ -716,7 +729,7 @@ fun ImportantNoticeView(
                     drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
                 },
 
-            colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+            colors = IconButtonDefaults.iconButtonColors(contentColor = LocalKeyboardScheme.current.onPrimary)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.close),
@@ -914,7 +927,7 @@ fun ActionWindowBar(
 
 @Composable
 private fun CloseActionWindowButton(onClose: () -> Unit) {
-    val color = MaterialTheme.colorScheme.primary
+    val color = LocalKeyboardScheme.current.primary
     IconButton(
         onClick = onClose,
         modifier = Modifier
@@ -924,7 +937,7 @@ private fun CloseActionWindowButton(onClose: () -> Unit) {
                 drawCircle(color = color, radius = size.width / 3.0f + 1.0f)
             },
 
-        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)
+        colors = IconButtonDefaults.iconButtonColors(contentColor = LocalKeyboardScheme.current.onPrimary)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.close),
@@ -976,7 +989,7 @@ fun CollapsibleSuggestionsBar(
                         modifier = Modifier
                             .width(42.dp)
                             .fillMaxHeight(),
-                        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
+                        colors = IconButtonDefaults.iconButtonColors(contentColor = LocalKeyboardScheme.current.onBackground)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_down),
@@ -1020,9 +1033,9 @@ private fun CandidateItem(modifier: Modifier, it: SuggestedWordInfo, listener: S
     val description = it.mCandidateDescription
     val color = LocalKeyboardScheme.current.onSurface
     val textStyle =
-        suggestionStylePrimary.copy(color = color)
+        suggestionStylePrimary.copy(color = color).withCustomFont()
     val descTextStyle =
-        suggestionStyleCandidateDescription.copy(color = color.copy(alpha = 0.5f)) // TODO: High contrast for high contrast theme
+        suggestionStyleCandidateDescription.copy(color = color.copy(alpha = 0.5f)).withCustomFont() // TODO: High contrast for high contrast theme
     Row(
         modifier
             .width(width)
@@ -1322,10 +1335,12 @@ fun BoxScope.ActionBarWithExpandableCandidates(
     val density = LocalDensity.current
 
     // True width measurement is too slow, estimate it by multiplying constant by number of characters
+    val styleNormal = suggestionStylePrimary.withCustomFont()
+    val styleDescription = suggestionStyleCandidateDescription.withCustomFont()
     val widths = remember(measurer) {
         CachedCharacterWidthValues(
-            normal = measurer.measure("あ", style=suggestionStylePrimary).size.width,
-            description = measurer.measure("あ", style=suggestionStyleCandidateDescription).size.width
+            normal = measurer.measure("あ", style=styleNormal).size.width,
+            description = measurer.measure("あ", style=styleDescription).size.width
         )
     }
 

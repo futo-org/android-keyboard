@@ -37,6 +37,7 @@ import org.futo.inputmethod.keyboard.internal.KeyVisualAttributes;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
+import org.futo.inputmethod.latin.uix.theme.KeyDrawingConfiguration;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.HashSet;
@@ -142,7 +143,8 @@ public class KeyboardView extends View {
 
         mKeyboardBackground = isMoreKeys ?  mDrawableProvider.getMoreKeysKeyboardBackground() :
                         mDrawableProvider.getKeyboardBackground();
-        setBackground(mKeyboardBackground);
+        setBackground(null);
+        setBackgroundColor(0);
 
         mSpacebarIconWidthRatio = keyboardViewAttr.getFloat(
                 R.styleable.KeyboardView_spacebarIconWidthRatio, 1.0f);
@@ -251,6 +253,10 @@ public class KeyboardView extends View {
     @Override
     protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
+
+        mKeyboardBackground.setBounds(0, 0, getWidth(), getHeight());
+        mKeyboardBackground.draw(canvas);
+
         if (canvas.isHardwareAccelerated()) {
             onDrawKeyboard(canvas);
             return;
@@ -351,11 +357,12 @@ public class KeyboardView extends View {
                 Math.min(key.getHeight(), key.getWidth()), attr);
         params.mAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
-        final Drawable background = key.selectBackground(mDrawableProvider);
+        final KeyDrawingConfiguration kdc = mDrawableProvider.selectKeyDrawingConfiguration(mKeyboard, params, key);
+        final Drawable background = kdc.getBackground();
         if (background != null) {
             onDrawKeyBackground(key, canvas, background);
         }
-        onDrawKeyTopVisuals(key, canvas, paint, params);
+        onDrawKeyTopVisuals(key, canvas, paint, params, kdc);
 
         canvas.translate(-keyDrawX, -keyDrawY);
     }
@@ -393,24 +400,21 @@ public class KeyboardView extends View {
 
     // Draw key top visuals.
     protected void onDrawKeyTopVisuals(@Nonnull final Key key, @Nonnull final Canvas canvas,
-            @Nonnull final Paint paint, @Nonnull final KeyDrawParams params) {
+            @Nonnull final Paint paint, @Nonnull final KeyDrawParams params, @Nonnull final KeyDrawingConfiguration kdc) {
         final int keyWidth = key.getDrawWidth();
         final int keyHeight = key.getHeight();
         final float centerX = keyWidth * 0.5f;
         final float centerY = keyHeight * 0.5f;
 
         // Draw key label.
-        final Keyboard keyboard = getKeyboard();
-        final Drawable icon = (keyboard == null) ? null
-                : key.getIconOverride(keyboard.mIconsSet, params.mAnimAlpha);
-        final Drawable hintIcon = (keyboard == null) ? null
-                : key.getHintIcon(keyboard.mIconsSet, params.mAnimAlpha);
+        final Drawable icon = kdc.getIcon();
+        final Drawable hintIcon = kdc.getHintIcon();
         float labelX = centerX;
         float labelBaseline = centerY;
-        final String label = key.getLabelOverride() == null ? key.getLabel() : key.getLabelOverride();
+        final String label = kdc.getLabel();
         if (label != null && icon == null) {
             paint.setTypeface(mDrawableProvider.selectKeyTypeface(key.selectTypeface(params)));
-            paint.setTextSize(key.selectTextSize(params));
+            paint.setTextSize(kdc.getTextSize());
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
 
@@ -438,7 +442,7 @@ public class KeyboardView extends View {
             }
 
             if (key.isEnabled()) {
-                paint.setColor(key.selectTextColor(mDrawableProvider, params));
+                paint.setColor(kdc.getTextColor());
                 // Set a drop shadow for the text if the shadow radius is positive value.
                 if (mKeyTextShadowRadius > 0.0f) {
                     paint.setShadowLayer(mKeyTextShadowRadius, 0.0f, 0.0f, params.mTextShadowColor);
@@ -458,10 +462,10 @@ public class KeyboardView extends View {
         }
 
         // Draw hint label.
-        final String hintLabel = key.getEffectiveHintLabel();
+        final String hintLabel = kdc.getHintLabel();
         if (hintLabel != null) {
-            paint.setTextSize(key.selectHintTextSize(mDrawableProvider, params));
-            paint.setColor(key.selectHintTextColor(mDrawableProvider, params));
+            paint.setTextSize(kdc.getHintSize());
+            paint.setColor(kdc.getHintColor());
 
             // Bold explicit hints
             paint.setTypeface(key.selectHintTypeface(mDrawableProvider, params));
@@ -499,7 +503,7 @@ public class KeyboardView extends View {
             canvas.drawText(
                     hintLabel, 0, hintLabel.length(), hintX, hintBaseline + adjustmentY, paint);
         } else if(hintIcon != null) {
-            final float size = key.selectHintTextSize(mDrawableProvider, params);
+            final float size = kdc.getHintSize();
 
             int iconWidth = (int)size;
             int iconHeight = (int)size;
@@ -507,13 +511,13 @@ public class KeyboardView extends View {
             int hintX = keyWidth - iconWidth - (int)mKeyHintLetterPadding;
             int hintY = (int)mKeyHintLetterPadding;
 
-            hintIcon.setTint(key.selectHintTextColor(mDrawableProvider, params));
+            hintIcon.setTint(kdc.getHintColor());
             drawIcon(canvas, hintIcon, hintX, hintY, iconWidth, iconHeight);
         }
 
         // Draw key icon.
         if (icon != null) {
-            final float size = key.selectTextSize(params) * 1.75f;
+            final float size = kdc.getTextSize() * 1.75f;
 
             int iconWidth;
             if (key.getCode() == Constants.CODE_SPACE && icon instanceof NinePatchDrawable) {
@@ -524,9 +528,11 @@ public class KeyboardView extends View {
             int iconHeight = icon.getIntrinsicHeight();
 
             if(iconWidth > size) {
-                iconHeight = (int)((float)iconHeight / (float)iconWidth * (float)size);
+                //iconHeight = (int)((float)iconHeight / (float)iconWidth * (float)size);
                 iconWidth = (int)size;
             }
+
+            iconHeight = iconWidth;
 
             final int iconY;
             if (key.isAlignIconToBottom()) {
@@ -536,7 +542,7 @@ public class KeyboardView extends View {
             }
             final int iconX = (keyWidth - iconWidth) / 2; // Align horizontally center.
 
-            icon.setTint(key.selectTextColor(mDrawableProvider, params));
+            icon.setTint(kdc.getTextColor());
             drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
         }
 

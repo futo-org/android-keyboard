@@ -23,7 +23,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.NonSkippableComposable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -50,6 +49,7 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.accessibility.AccessibilityUtils
@@ -63,6 +63,9 @@ import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
+import org.futo.inputmethod.latin.uix.HiddenKeysSetting
+import org.futo.inputmethod.latin.uix.KeyBordersSetting
+import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
@@ -70,17 +73,17 @@ import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.actions.CanThrowIfDebug
 import org.futo.inputmethod.latin.uix.createInlineSuggestionsRequest
 import org.futo.inputmethod.latin.uix.dataStore
-import org.futo.inputmethod.latin.uix.deferSetSetting
 import org.futo.inputmethod.latin.uix.differsFrom
 import org.futo.inputmethod.latin.uix.forceUnlockDatastore
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
+import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
-import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
+import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.utils.JniUtils
@@ -279,12 +282,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     private fun updateColorsIfDynamicChanged() {
-        val key = getSetting(THEME_KEY)
-        if(key != activeThemeOption?.key) {
-            ThemeOptions[key]?.let { if(it.available(this)) updateTheme(it) }
-            return
-        }
-
         if(activeThemeOption?.dynamic == true) {
             val currColors = colorScheme
             val nextColors = activeThemeOption!!.obtainColors(this)
@@ -336,17 +333,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         }
     }
 
-    fun updateTheme(newTheme: ThemeOption) {
-        assert(newTheme.available(this))
-
-        if (activeThemeOption != newTheme) {
-            activeThemeOption = newTheme
-            updateDrawableProvider(newTheme.obtainColors(this))
-            deferSetSetting(this, THEME_KEY, newTheme.key)
-            invalidateKeyboard()
-        }
-    }
-
     // Called by UixManager when the intention is to subsequently call LegacyKeyboardView with hidden=false
     // Maybe this can be changed to LaunchedEffect
     fun onKeyboardShown() {
@@ -389,7 +375,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         Subtypes.addDefaultSubtypesIfNecessary(this)
 
         getSettingBlocking(THEME_KEY).let {
-            val themeOption = ThemeOptions[it].orDefault(this@LatinIME)
+            val themeOption = getThemeOption(this, it).orDefault(this@LatinIME)
 
             activeThemeOption = themeOption
             activeColorScheme.value = themeOption.obtainColors(this@LatinIME)
@@ -402,10 +388,25 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         launchJob { uixManager.showUpdateNoticeIfNeeded() }
 
         launchJob {
-            dataStore.data.collect {
-                drawableProvider?.let { provider ->
-                    if(provider is BasicThemeProvider) {
-                        if (provider.hasUpdated(it)) {
+            getSettingFlow(THEME_KEY).collect {
+                val themeOption = getThemeOption(this@LatinIME, it).orDefault(this@LatinIME)
+
+                activeThemeOption = themeOption
+                activeColorScheme.value = themeOption.obtainColors(this@LatinIME)
+
+                updateDrawableProvider(activeColorScheme.value)
+                invalidateKeyboard()
+            }
+        }
+
+        launchJob {
+            combine(
+                getSettingFlow(HiddenKeysSetting),
+                getSettingFlow(KeyBordersSetting),
+                getSettingFlow(KeyHintsSetting)
+            ) { a, b, c -> Triple(a, b, c) }.collect {
+                    drawableProvider?.let { provider ->
+                        if(provider is BasicThemeProvider) {
                             activeThemeOption?.obtainColors?.let { f ->
                                 updateDrawableProvider(f(this@LatinIME))
                                 invalidateKeyboard()
@@ -413,7 +414,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                         }
                     }
                 }
-            }
         }
 
         launchJob {
@@ -873,7 +873,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         uixManager.onPersistentStatesUnlocked()
 
-        updateTheme(ThemeOptions[getSettingBlocking(THEME_KEY)].orDefault(this))
         CanThrowIfDebug = true
 
         // TODO: Spell checker service

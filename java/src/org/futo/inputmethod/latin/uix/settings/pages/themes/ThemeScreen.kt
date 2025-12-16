@@ -1,13 +1,21 @@
-package org.futo.inputmethod.latin.uix.settings.pages
+package org.futo.inputmethod.latin.uix.settings.pages.themes
 
 import android.app.Activity
+import android.net.Uri
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -27,17 +35,56 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.settings.RotatingChevronIcon
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.theme.CustomThemes
+import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.uix.theme.selector.CustomThemePreview
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePicker
-import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.settings.RotatingChevronIcon
+import org.futo.inputmethod.latin.uix.urlEncode
+
+
+@Composable
+fun DeleteCustomThemeDialog(name: String, navController: NavHostController) {
+    val context = LocalContext.current
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        icon = {
+        },
+        title = {
+            Text(stringResource(R.string.theme_settings_custom_theme_delete_title), style = org.futo.inputmethod.latin.uix.theme.Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        },
+        text = {
+            CustomThemePreview(name, true, Modifier, null) { }
+        },
+        onDismissRequest = {
+            navController.navigateUp()
+        },
+        confirmButton = {
+            OutlinedButton(onClick = {
+                CustomThemes.delete(context, name)
+                navController.navigateUp()
+            }) {
+                Text(stringResource(R.string.theme_settings_custom_theme_delete_confirm), color = MaterialTheme.colorScheme.primary, style = org.futo.inputmethod.latin.uix.theme.Typography.Body.Medium)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = {
+                navController.navigateUp()
+            }) {
+                Text(stringResource(R.string.theme_settings_custom_theme_delete_cancel), color = MaterialTheme.colorScheme.primary, style = Typography.Body.Medium)
+            }
+        }
+    )
+}
 
 @Preview
 @Composable
 fun ThemeScreen(navController: NavHostController = rememberNavController()) {
-    val (theme, setTheme) = useDataStore(THEME_KEY.key, THEME_KEY.default)
+    val (theme, _) = useDataStore(THEME_KEY.key, THEME_KEY.default)
 
     val context = LocalContext.current
     val enableKeyboardPreview = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
@@ -87,6 +134,14 @@ fun ThemeScreen(navController: NavHostController = rememberNavController()) {
         }
     }
 
+    val pickLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            uri ?: return@rememberLauncherForActivityResult
+            navController.navigate("customTheme/${uri.toString().urlEncode()}")
+        }
+    )
+
     Scaffold(
         floatingActionButton = {
             if (enableKeyboardPreview) {
@@ -103,9 +158,12 @@ fun ThemeScreen(navController: NavHostController = rememberNavController()) {
     ) { innerPadding ->
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             ScreenTitle(stringResource(R.string.theme_settings_title), showBack = true, navController)
-            ThemePicker {
-                setTheme(it.key)
-            }
+            ThemePicker({
+                navController.navigate("deleteTheme/${it.urlEncode()}")
+            }, {
+                pickLauncher.launch("image/*")
+                //navController.navigate("customTheme")
+            })
         }
     }
 }

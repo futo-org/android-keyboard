@@ -91,7 +91,7 @@ fun SharedPrefsCacheProvider(content: @Composable () -> Unit) {
     }
 }
 
-data class DataStoreItem<T>(val value: T, val setValue: (T) -> Job)
+data class DataStoreItem<T>(val value: T, val setValue: (T) -> Unit)
 
 @Composable
 fun <T> useDataStore(key: Preferences.Key<T>, default: T, blocking: Boolean = false): DataStoreItem<T> {
@@ -107,6 +107,7 @@ fun <T> useDataStore(key: Preferences.Key<T>, default: T, blocking: Boolean = fa
                 preferences[key] = newValue
             }
         }
+        Unit
     }
 
     return DataStoreItem(value, setValue)
@@ -152,6 +153,7 @@ fun<T> useSharedPrefsGeneric(key: String, default: T, get: (SharedPreferences, S
                     put(sharedPrefs!!.currSharedPrefs, key, newValue)
                 }
             }
+            Unit
         }
     }
 
