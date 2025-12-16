@@ -801,7 +801,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         super.onDrawKeyTopVisuals(key, canvas, paint, params, kdc);
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE && key.getIconId().equals("space_key")) {
-            drawLanguageOnSpacebar(key, canvas, paint);
+            drawLanguageOnSpacebar(key, canvas, paint, kdc.getHintColor());
             // Whether space key needs to show the "..." popup hint for special purposes
             if (key.isLongPressEnabled() && mHasMultipleEnabledIMEsOrSubtypes) {
                 drawKeyPopupHint(key, canvas, paint, params);
@@ -870,7 +870,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         return "";
     }
 
-    private void drawLanguageOnSpacebar(final Key key, final Canvas canvas, final Paint paint) {
+    private void drawLanguageOnSpacebar(final Key key, final Canvas canvas, final Paint paint, final int color) {
         final Keyboard keyboard = getKeyboard();
         if (keyboard == null) {
             return;
@@ -891,7 +891,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         } else {
             paint.clearShadowLayer();
         }
-        paint.setColor(mLanguageOnSpacebarTextColor);
+        paint.setColor(color);
         paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
         canvas.drawText(language, width / 2, baseline - descent, paint);
         paint.clearShadowLayer();
