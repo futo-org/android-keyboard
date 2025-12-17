@@ -295,9 +295,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         }
     }
 
-    private fun makeNineSlice(image: ImageBitmap): NinePatchDrawable? =
-        image.asAndroidBitmap().toNinePatchDrawable(context.resources)
-
     init {
         val advanced = colorScheme.extended.advancedThemeOptions
         displayDpi = context.resources.displayMetrics.densityDpi

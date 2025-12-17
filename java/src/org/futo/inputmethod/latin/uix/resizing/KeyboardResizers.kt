@@ -308,6 +308,10 @@ class SplitKeyboardResizeHelper(
 class KeyboardResizers(val latinIME: LatinIME) {
     private val resizing = mutableStateOf(false)
 
+    private fun finishResizer() {
+        resizing.value = false
+    }
+
     @Composable
     private fun BoxScope.FloatingKeyboardResizer(size: FloatingKeyboardSize, shape: RoundedCornerShape) = with(LocalDensity.current) {
         ResizerRect({ delta ->
@@ -332,7 +336,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
 
             result
         }, true, {
-            resizing.value = false
+            finishResizer()
         }, {
             latinIME.sizingCalculator.resetCurrentMode()
         }, shape)
@@ -359,7 +363,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
             }
             result
         }, true, {
-            resizing.value = false
+            finishResizer()
         }, {
             latinIME.sizingCalculator.resetCurrentMode()
         }, shape)
@@ -388,7 +392,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
             }
             result
         }, true, {
-            resizing.value = false
+            finishResizer()
         }, {
             latinIME.sizingCalculator.resetCurrentMode()
         }, shape)
@@ -422,7 +426,7 @@ class KeyboardResizers(val latinIME: LatinIME) {
 
                 result
             }, true, {
-                resizing.value = false
+                finishResizer()
             }, {
                 latinIME.sizingCalculator.resetCurrentMode()
             }, shape)
@@ -458,6 +462,6 @@ class KeyboardResizers(val latinIME: LatinIME) {
     }
 
     fun hideResizer() {
-        resizing.value = false
+        if(resizing.value) finishResizer()
     }
 }

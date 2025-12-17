@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import org.futo.inputmethod.keyboard.Key
@@ -24,19 +25,15 @@ data class KeyDrawingConfiguration(
 )
 
 data class CachedKeyedMatcher<T>(
+    val cacheId: Int,
     val full: List<T>,
-    val cache: MutableMap<Int, List<T>> = mutableMapOf(),
     val matcher: (Keyboard, Key, T) -> Boolean
 ) {
     fun find(keyboard: Keyboard, key: Key): T? {
-        val hash = key.hashCodeForQualifiers()
-        return if(cache.containsKey(hash)) {
-            cache[hash]?.firstOrNull { matcher(keyboard, key, it) }
-        } else {
-            full.firstOrNull { matcher(keyboard, key, it) }.also {
-                cache.put(hash, listOfNotNull(it))
-            }
+        val idx = key.themeCache.getOrPut(cacheId) {
+            full.indexOfFirst { matcher(keyboard, key, it) }
         }
+        return if(idx == -1) null else full[idx]
     }
 }
 
@@ -44,6 +41,7 @@ internal fun<T> keyedBitmapMatcher(popup: Boolean = false) = { keyboard: Keyboar
     matchesKey(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, keyboard, key, popup)
 }
 
+private var globalId = 0
 class AdvancedThemeMatcher(
     val context: Context,
     val drawableProvider: DynamicThemeProvider,
@@ -54,18 +52,19 @@ class AdvancedThemeMatcher(
     val backgroundList = theme.keyBackgrounds?.v ?: emptyList()
     val iconList = theme.keyIcons?.v ?: emptyList()
 
-    val backgrounds = CachedKeyedMatcher(full = backgroundList, matcher = keyedBitmapMatcher<KeyBackground>())
-    val icons = CachedKeyedMatcher(full = iconList, matcher = keyedBitmapMatcher<KeyIcon>())
-
-    val popupBackgrounds = CachedKeyedMatcher(full = backgroundList, matcher = keyedBitmapMatcher<KeyBackground>(true))
-
-    val hintIcons = CachedKeyedMatcher(full = iconList, matcher = { keyboard: Keyboard, key: Key, entry: KeyedBitmap<KeyIcon> ->
+    val id = (globalId++)*10
+    val backgrounds = CachedKeyedMatcher(cacheId = id+0, full = backgroundList, matcher = keyedBitmapMatcher<KeyBackground>())
+    val icons = CachedKeyedMatcher(cacheId = id+1, full = iconList, matcher = keyedBitmapMatcher<KeyIcon>())
+    val popupBackgrounds = CachedKeyedMatcher(cacheId = id+2, full = backgroundList, matcher = keyedBitmapMatcher<KeyBackground>(true))
+    val hintIcons = CachedKeyedMatcher(cacheId = id+3, full = iconList, matcher = { keyboard: Keyboard, key: Key, entry: KeyedBitmap<KeyIcon> ->
         val hintLabel = key.effectiveHintLabel
         val hintIcon = key.effectiveHintIcon
         matchesHint(entry.qualifiers, keyboard.mId.mKeyboardLayoutSetName, hintLabel, hintIcon)
     })
 
     fun findIcon(matcher: CachedKeyedMatcher<KeyedBitmap<KeyIcon>>, keyboard: Keyboard, key: Key): KeyIcon? {
+        if(matcher.full.isEmpty()) return null
+
         val bitmap = matcher.find(keyboard, key)
         if(bitmap == null) return null
 
@@ -73,6 +72,8 @@ class AdvancedThemeMatcher(
     }
 
     fun findBackground(matcher: CachedKeyedMatcher<KeyedBitmap<KeyBackground>>, keyboard: Keyboard, key: Key): KeyBackground? {
+        if(matcher.full.isEmpty()) return null
+
         val bitmap = matcher.find(keyboard, key)
         if(bitmap == null) return null
 
@@ -85,6 +86,7 @@ class AdvancedThemeMatcher(
         }?.bitmap?.background
 
     fun matchKeyPopup(keyboard: Keyboard?, key: Key): KeyBackground? {
+        if(popupBackgrounds.full.isEmpty()) return null
         if(keyboard == null) return null
         return popupBackgrounds.find(keyboard, key)?.bitmap
     }

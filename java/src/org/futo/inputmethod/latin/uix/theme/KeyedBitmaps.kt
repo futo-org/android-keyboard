@@ -51,29 +51,6 @@ sealed class KeyQualifier {
     data class AspectRatio(val target: KeyAspectRatio) : KeyQualifier()
 }
 
-fun Key.hashCodeForQualifiers(): Int {
-    var result = code.hashCode()
-
-    // Whenever a new qualifier type is added, this must be updated
-    result = 31 * result + label.hashCode()
-    result = 31 * result + (iconOverride ?: iconId).hashCode()
-    result = 31 * result + outputText.hashCode()
-    result = 31 * result + visualStyle.hashCode()
-    result = 31 * result + pressed.hashCode()
-
-    result = 31 * result + row.hashCode()
-    result = 31 * result + column.hashCode()
-
-    result = 31 * result + width.hashCode()
-    result = 31 * result + height.hashCode()
-
-    // Used in AdvancedThemeCustomizer.kt
-    result = 31 * result + effectiveHintLabel.hashCode()
-    result = 31 * result + effectiveHintIcon.hashCode()
-
-    return result
-}
-
 fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, keyboard: Keyboard, key: Key, popup: Boolean = false) =
     (qualifiers.contains(KeyQualifier.Popup) == popup) && qualifiers.all { when(it) {
         is KeyQualifier.Layout -> layout == it.name
