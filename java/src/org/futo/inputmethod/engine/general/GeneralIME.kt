@@ -364,8 +364,6 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun onEvent(event: Event) = onEventInternal(event)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val dictionaryScope = Dispatchers.Default.limitedParallelism(1)
 
 
     override fun onGetSuggestedWords(
@@ -640,5 +638,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     @UsedForTesting
     override fun recycle() {
         inputLogic.recycle()
+    }
+
+    companion object {
+        @OptIn(ExperimentalCoroutinesApi::class)
+        val dictionaryScope = Dispatchers.Default.limitedParallelism(1)
     }
 }

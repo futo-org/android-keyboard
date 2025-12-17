@@ -18,6 +18,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.OnGetSuggestedWordsCallbackWithInputStyle
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.BinaryDictionary
@@ -272,6 +273,7 @@ public class LanguageModelFacilitator(
         computationSemaphore.acquire()
 
         val suggestedWords = try {
+            val job = Job()
             inputLogic.mWordComposer.setAutoCorrection(null)
 
             if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH-1) {
@@ -288,17 +290,18 @@ public class LanguageModelFacilitator(
 
             val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
 
-            inputLogic.getSuggestedWords(
-                settings.current,
-                keyboardSwitcher.keyboard ?: return,
-                keyboardSwitcher.keyboardShiftMode,
-                values.inputStyle,
-                SuggestedWords.NOT_A_SEQUENCE_NUMBER
-            ) { suggestedWords ->
-                holder.set(suggestedWords)
+            CoroutineScope(GeneralIME.dictionaryScope).launch {
+                inputLogic.getSuggestedWords(
+                    settings.current,
+                    keyboardSwitcher.keyboard ?: return@launch,
+                    keyboardSwitcher.keyboardShiftMode,
+                    values.inputStyle,
+                    SuggestedWords.NOT_A_SEQUENCE_NUMBER
+                ) { suggestedWords ->
+                    holder.set(suggestedWords)
+                }
             }
 
-            val job = Job()
             CoroutineScope(Dispatchers.Default + job).launch {
                 delay(500L)
                 suggestedWordsCallback.onGetSuggestedWords(
