@@ -392,6 +392,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         addIcon(KeyboardIconsSet.NAME_ZWNJ_KEY, R.drawable.sym_keyboard_zwnj_lxx_dark, onKeyColor)
         addIcon(KeyboardIconsSet.NAME_ZWJ_KEY, R.drawable.sym_keyboard_zwj_lxx_dark, onPrimary)
         addIcon(KeyboardIconsSet.NAME_NUMPAD, R.drawable.numpad, onKeyColor)
+        addIcon(KeyboardIconsSet.NAME_JAPANESE_KEY, R.drawable.japanesekey, onKeyColor)
 
         addIcon(KeyboardIconsSet.NAME_EMOJI_ACTION_KEY, R.drawable.smile, onPrimary)
         addIcon(KeyboardIconsSet.NAME_EMOJI_NORMAL_KEY, R.drawable.smile, onKeyColor)

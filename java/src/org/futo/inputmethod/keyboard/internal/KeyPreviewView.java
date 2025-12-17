@@ -63,13 +63,16 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         mDrawableProvider = DynamicThemeProvider.obtainFromContext(context);
     }
 
+    private Drawable mIcon;
     private Key currKey;
     public void setPreviewVisual(final Key key, final KeyboardIconsSet iconsSet,
                                  final KeyDrawParams drawParams, int foregroundColor) {
         // What we show as preview should match what we show on a key top in onDraw().
         final String iconId = key.getIconId();
-        if (!Objects.equals(iconId, KeyboardIconsSet.ICON_UNDEFINED)) {
+        if (!Objects.equals(iconId, KeyboardIconsSet.ICON_UNDEFINED) && key.getFlickDirection() == null) {
             setCompoundDrawables(null, null, null, key.getPreviewIcon(iconsSet));
+            mIcon = key.getPreviewIcon(iconsSet);
+            currKey = key;
             setText(null);
             return;
         }
@@ -80,6 +83,7 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         setTypeface(mDrawableProvider.selectKeyTypeface(key.selectPreviewTypeface(drawParams)));
         // TODO Should take care of temporaryShiftLabel here.
         setTextAndScaleX(key.getWidth(), key.getPreviewLabel());
+
         currKey = key;
     }
 
@@ -120,12 +124,26 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
 
         paint.setTextSize(dim * 0.485f);
 
-        canvas.drawText(
-                currKey.getPreviewLabel(),
-                cx,
-                (int)(height / 2 + paint.getTextSize() / yp),
-                paint
-        );
+        if(mIcon != null) {
+            /*int iconWidth = mIcon.getIntrinsicWidth();
+            if(iconWidth > width) iconWidth = width;
+            iconWidth = iconWidth * 8 / 10;
+
+            mIcon.setBounds(
+                    cx - iconWidth / 2,
+                    height / 2 - iconWidth / 2,
+                    cx + iconWidth / 2,
+                    height / 2 + iconWidth / 2
+            );
+            mIcon.draw(canvas);*/
+        } else {
+            canvas.drawText(
+                    currKey.getPreviewLabel(),
+                    cx,
+                    (int) (height / 2 + paint.getTextSize() / yp),
+                    paint
+            );
+        }
 
         return true;
     }

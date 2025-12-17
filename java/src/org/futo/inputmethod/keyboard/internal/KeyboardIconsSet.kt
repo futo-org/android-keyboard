@@ -56,6 +56,7 @@ class KeyboardIconsSet {
         const val NAME_EMOJI_ACTION_KEY: String = "emoji_action_key"
         const val NAME_EMOJI_NORMAL_KEY: String = "emoji_normal_key"
         const val NAME_NUMPAD: String = "numpad"
+        const val NAME_JAPANESE_KEY: String = "japanese_key"
 
         val validIcons = mutableListOf(
             NAME_SHIFT_KEY,
@@ -76,7 +77,8 @@ class KeyboardIconsSet {
             NAME_ZWJ_KEY,
             NAME_EMOJI_ACTION_KEY,
             NAME_EMOJI_NORMAL_KEY,
-            NAME_NUMPAD
+            NAME_NUMPAD,
+            NAME_JAPANESE_KEY
         ).apply {
             AllActionsMap.keys.forEachIndexed { i, it ->
                 // by number (action_0)
