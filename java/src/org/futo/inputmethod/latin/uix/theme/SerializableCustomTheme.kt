@@ -225,7 +225,9 @@ data class SerializableCustomTheme(
                         val bitmap = it.asAndroidBitmap()
                         val fgColor = bitmap[0, 0].argbNotInvisible()
 
-                        bitmap.toNinePatchDrawable(ctx.context.resources)?.let { KeyBackground(fgColor, it) }
+                        bitmap.toNinePatchDrawable(ctx.context.resources)?.let {
+                            KeyBackground(fgColor, it.first, it.second)
+                        }
                     },
                     keyIcons = decodeKeyedBitmaps(ctx, keyIcons) {
                         KeyIcon(it.asAndroidBitmap().toDrawable(ctx.context.resources))

@@ -23,7 +23,7 @@ class NinePatchBuilder {
     private val xRegions = ArrayList<Int>()
     private val yRegions = ArrayList<Int>()
 
-    var padding: Rect? = null
+    val padding = Rect(0, 0, 0, 0)
 
     constructor(resources: Resources?, bitmap: Bitmap) {
         width = bitmap.getWidth()
@@ -63,6 +63,16 @@ class NinePatchBuilder {
         return this
     }
 
+    fun setXPadding(startX: Int, endX: Int) {
+        padding.left = startX
+        padding.right = width - endX
+    }
+
+    fun setYPadding(startY: Int, endY: Int) {
+        padding.top = startY
+        padding.bottom = height - endY
+    }
+
     fun buildChunk(): ByteArray? {
         //Log.d("NinePatchBuilder", "Building: ${xRegions.joinToString { it.toString() }} : ${yRegions.joinToString { it.toString() }}")
         if (xRegions.isEmpty()) {
@@ -86,18 +96,12 @@ class NinePatchBuilder {
         byteBuffer.putInt(0)
         byteBuffer.putInt(0)
 
-        //padding -- always 0 -- left right top bottom
-        if(padding == null) {
-            byteBuffer.putInt(0)
-            byteBuffer.putInt(0)
-            byteBuffer.putInt(0)
-            byteBuffer.putInt(0)
-        } else {
-            byteBuffer.putInt(padding!!.left)
-            byteBuffer.putInt(padding!!.right)
-            byteBuffer.putInt(padding!!.top)
-            byteBuffer.putInt(padding!!.bottom)
-        }
+        //padding -- left right top bottom
+        Log.d("NinePatchBuilder", "Placing padding ${padding.left} ${padding.right} ${padding.top} ${padding.bottom}")
+        byteBuffer.putInt(padding.left)
+        byteBuffer.putInt(padding.right)
+        byteBuffer.putInt(padding.top)
+        byteBuffer.putInt(padding.bottom)
 
         //skip
         byteBuffer.putInt(0)
@@ -132,7 +136,7 @@ class NinePatchBuilder {
  * The supplied bitmap must still contain the 1-pixel frame.
  * Input bitmap is assumed to be 640dp and gets scaled according to resources screen density
  */
-fun Bitmap.toNinePatchDrawable(res: Resources): NinePatchDrawable? {
+fun Bitmap.toNinePatchDrawable(res: Resources): Pair<Rect, NinePatchDrawable>? {
     val w = width
     val h = height
 
@@ -171,7 +175,31 @@ fun Bitmap.toNinePatchDrawable(res: Resources): NinePatchDrawable? {
     }
     if (stretchStart != -1) builder.addYRegionPoints(sc(stretchStart), sc(h - 2))
 
-    // bottom and right lines define padding but unused right now
+    var paddingStart = -1
+    for (x in 1 until w) {
+        val c = this[x, h - 1]
+        val isBlack = c == black
+        if (isBlack && paddingStart == -1) paddingStart = x - 1
+        if (!isBlack && paddingStart != -1) {
+            builder.setXPadding(sc(paddingStart), sc(x - 1))
+            paddingStart = -1
+            break
+        }
+    }
+    if (paddingStart != -1) builder.setXPadding(sc(paddingStart), sc(w - 1))
 
-    return builder.build()
+    paddingStart = -1
+    for (y in 1 until h) {
+        val c = this[w - 1, y]
+        val isBlack = c == black
+        if (isBlack && paddingStart == -1) paddingStart = y - 1
+        if (!isBlack && paddingStart != -1) {
+            builder.setYPadding(sc(paddingStart), sc(y - 1))
+            paddingStart = -1
+            break
+        }
+    }
+    if (paddingStart != -1) builder.setYPadding(sc(paddingStart), sc(h - 1))
+
+    return builder.build()?.let { builder.padding to it }
 }

@@ -542,6 +542,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         keyFeedback = KeyBackground(
             foregroundColor = colorScheme.onKeyboardContainer.toArgb(),
+            padding = Rect(0,0,0,0),
             background = GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
                 intArrayOf(colorScheme.keyboardPress.toArgb(), colorScheme.keyboardPress.toArgb()),

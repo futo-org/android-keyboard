@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 
 data class KeyBackground(
     val foregroundColor: Int?,
+    val padding: Rect,
     val background: Drawable
 )
 

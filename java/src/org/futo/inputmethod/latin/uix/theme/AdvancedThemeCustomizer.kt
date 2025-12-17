@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.theme
 
 import android.content.Context
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.compose.ui.graphics.Color
@@ -14,6 +15,7 @@ import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 
 data class KeyDrawingConfiguration(
     val background: Drawable?,
+    val backgroundPadding: Rect?,
     val icon: Drawable?,
     val hintIcon: Drawable?,
     val label: String?,
@@ -91,9 +93,12 @@ class AdvancedThemeMatcher(
         return popupBackgrounds.find(keyboard, key)?.bitmap
     }
 
+    val identityRect = Rect(0,0,0,0)
+
     fun matchKeyDrawingConfiguration(keyboard: Keyboard?, params: KeyDrawParams, key: Key): KeyDrawingConfiguration {
         if(keyboard == null) return KeyDrawingConfiguration(
             background = null,
+            backgroundPadding = identityRect,
             icon = null,
             hintIcon = null,
             label = key.labelOverride ?: key.label,
@@ -105,6 +110,7 @@ class AdvancedThemeMatcher(
         )
 
         val foundBackground = findBackground(backgrounds, keyboard, key)
+        val backgroundPadding = foundBackground?.padding ?: identityRect
         val background = foundBackground?.background ?: key.selectBackground(drawableProvider)
         val textColor = foundBackground?.foregroundColor ?: key.selectTextColor(drawableProvider, params)
 
@@ -123,6 +129,7 @@ class AdvancedThemeMatcher(
 
         return KeyDrawingConfiguration(
             background = background,
+            backgroundPadding = backgroundPadding,
             icon = icon,
             hintIcon = hintIcon ?: key.getHintIcon(keyboard.mIconsSet, params.mAnimAlpha),
             label = label,

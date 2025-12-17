@@ -412,6 +412,15 @@ public class KeyboardView extends View {
         float labelX = centerX;
         float labelBaseline = centerY;
         final String label = kdc.getLabel();
+        final Rect bgPadding = kdc.getBackgroundPadding();
+
+        float keyHintPaddingX = mKeyHintLetterPadding;
+        float keyHintPaddingY = mKeyHintLetterPadding;
+        if((bgPadding.left | bgPadding.right | bgPadding.top | bgPadding.bottom) != 0) {
+            keyHintPaddingX = bgPadding.right;
+            keyHintPaddingY = bgPadding.top;
+        }
+
         if (label != null && icon == null) {
             paint.setTypeface(mDrawableProvider.selectKeyTypeface(key.selectTypeface(params)));
             paint.setTextSize(kdc.getTextSize());
@@ -494,9 +503,8 @@ public class KeyboardView extends View {
                 // The hint letter is placed at top-right corner of the key. Used mainly on phone.
                 final float hintDigitWidth = TypefaceUtils.getReferenceDigitWidth(paint);
                 final float hintLabelWidth = TypefaceUtils.getStringWidth(hintLabel, paint);
-                hintX = keyWidth - mKeyHintLetterPadding
-                        - Math.max(hintDigitWidth, hintLabelWidth) / 2.0f;
-                hintBaseline = -paint.ascent() + mKeyHintLetterPadding;
+                hintX = keyWidth - keyHintPaddingX - Math.max(hintDigitWidth, hintLabelWidth) / 2.0f;
+                hintBaseline = -paint.ascent() + keyHintPaddingY;
                 paint.setTextAlign(Align.CENTER);
             }
             final float adjustmentY = params.mHintLabelVerticalAdjustment * labelCharHeight;
@@ -508,8 +516,8 @@ public class KeyboardView extends View {
             int iconWidth = (int)size;
             int iconHeight = (int)size;
 
-            int hintX = keyWidth - iconWidth - (int)mKeyHintLetterPadding;
-            int hintY = (int)mKeyHintLetterPadding;
+            int hintX = keyWidth - iconWidth - (int)keyHintPaddingX;
+            int hintY = (int)keyHintPaddingY;
 
             hintIcon.setTint(kdc.getHintColor());
             drawIcon(canvas, hintIcon, hintX, hintY, iconWidth, iconHeight);
