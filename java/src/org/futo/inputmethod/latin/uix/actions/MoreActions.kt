@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
@@ -65,36 +66,50 @@ fun ActionItem(action: Action, modifier: Modifier = Modifier, dragIcon: Boolean 
             .height(92.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp)) {
+        CompositionLocalProvider(LocalContentColor provides LocalKeyboardScheme.current.onKeyboardContainer) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+            ) {
 
-            if(dragIcon) {
-                Icon(
-                    painterResource(id = R.drawable.move),
-                    contentDescription = null,
-                    modifier = dragIconModifier
-                        .size(16.dp)
-                        .align(Alignment.TopEnd),
-                    tint = LocalContentColor.current.copy(alpha = 0.6f)
-                )
+                if (dragIcon) {
+                    Icon(
+                        painterResource(id = R.drawable.move),
+                        contentDescription = null,
+                        modifier = dragIconModifier
+                            .size(16.dp)
+                            .align(Alignment.TopEnd),
+                        tint = LocalContentColor.current.copy(alpha = 0.6f)
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .align(Center)
+                        .padding(6.dp)
+                ) {
+                    Spacer(modifier = Modifier.weight(1.0f))
+                    Icon(
+                        painterResource(id = action.icon),
+                        contentDescription = null,
+                        modifier = Modifier.align(
+                            CenterHorizontally
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.weight(1.0f))
+
+                    Text(
+                        stringResource(id = action.name),
+                        modifier = Modifier.align(
+                            CenterHorizontally
+                        ),
+                        style = Typography.Small.copy(lineHeight = 12.sp),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
-
-            Column(modifier = Modifier
-                .align(Center)
-                .padding(6.dp)) {
-                Spacer(modifier = Modifier.weight(1.0f))
-                Icon(
-                    painterResource(id = action.icon), contentDescription = null, modifier = Modifier.align(
-                        CenterHorizontally
-                    ))
-
-                Spacer(modifier = Modifier.weight(1.0f))
-
-                Text(stringResource(id = action.name), modifier = Modifier.align(
-                    CenterHorizontally), style = Typography.Small.copy(lineHeight = 12.sp), textAlign = TextAlign.Center)
-            }
-
         }
     }
 }
