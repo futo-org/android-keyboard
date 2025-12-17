@@ -9,7 +9,8 @@ enum class License {
     BSD3,
     NAIST_2003,
     CC_BY_SA_4_0,
-    GPL_V2
+    GPL_V2,
+    Proprietary
 }
 
 @Suppress("HardCodedStringLiteral")
@@ -1140,4 +1141,6 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 """
+
+    License.Proprietary -> "All rights reserved. Used with authorization"
 }

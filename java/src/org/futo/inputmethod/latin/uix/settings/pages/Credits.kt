@@ -269,7 +269,7 @@ fun CreditsScreen(navController: NavHostController = rememberNavController()) {
 
             CreditCategorySection(
                 icon = R.drawable.cpu,
-                title = stringResource(R.string.credits_menu_team_third_party_libraries_title),
+                title = stringResource(R.string.credits_menu_team_third_party_libraries_title2),
                 columns = 1,
                 names = ThirdPartyList.map { it.description },
                 thirdPartyInformation = ThirdPartyList,
