@@ -10,3 +10,6 @@
 [submodule "translations"]
 	path = translations
 	url = https://gitlab.futo.org/keyboard/keyboard-translations-public.git
+[submodule "java/assets/themes"]
+	path = java/assets/themes
+	url = https://gitlab.futo.org/keyboard/seasonal-themes.git

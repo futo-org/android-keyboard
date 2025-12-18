@@ -155,4 +155,18 @@ MITA Yuusuke <clefs@mail.goo.ne.jp>
 SKK Development Team <skk@ring.gr.jp>""",
         License.GPL_V2
     ),
+    TP(
+        "Sour Gummy font",
+        "Sour Gummy font - used in Christmas 2025 theme, modified so that the j doesn't look like an i",
+        "https://github.com/eifetx/Sour-Gummy-Fonts",
+        "Copyright 2018 The Sour Gummy Project Authors",
+        License.OFL1_1
+    ),
+    TP(
+        "Christmas 2025 theme",
+        "Seasonal theme for Christmas 2025 (Gingerbread)",
+        "https://zilluzion.art/",
+        "Copyright (c) 2025 zilluzion",
+        License.Proprietary
+    )
 )
