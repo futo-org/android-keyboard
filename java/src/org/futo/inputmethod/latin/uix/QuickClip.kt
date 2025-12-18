@@ -19,9 +19,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -107,16 +109,19 @@ private fun QuickClipPill(icon: Painter, contentDescription: String, text: Strin
             color = LocalKeyboardScheme.current.keyboardContainer,
             shape = RoundedCornerShape(8.dp)
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = CenterVertically,
-                modifier = Modifier.padding(6.dp).fillMaxHeight()
-            ) {
-                Icon(icon, contentDescription = null)
+            CompositionLocalProvider(LocalContentColor provides LocalKeyboardScheme.current.onKeyboardContainer) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = CenterVertically,
+                    modifier = Modifier.padding(6.dp).fillMaxHeight()
+                ) {
+                    Icon(icon, contentDescription = null)
 
-                if(text != null) {
-                    Text(text.replace("\n", " "), style = Typography.Small)
-                }else if(uri != null) {
-                    Icon(painterResource(R.drawable.image), contentDescription = null)
+                    if (text != null) {
+                        Text(text.replace("\n", " "), style = Typography.Small)
+                    } else if (uri != null) {
+                        Icon(painterResource(R.drawable.image), contentDescription = null)
+                    }
                 }
             }
         }
