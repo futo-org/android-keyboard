@@ -59,10 +59,9 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.pages.DevAutoAcceptThemeImport
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.theme.CustomThemes
+import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
-import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
@@ -631,7 +630,7 @@ sealed class ItemBeingImported {
     data class LanguageResource(val v: FileKindAndInfo) : ItemBeingImported()
     data class SettingsBackup(val v: SettingsExporter.CfgFileMetadata) : ItemBeingImported()
     data class UserDictFile(val v: DetectedUserDictFile) : ItemBeingImported()
-    data class CustomTheme(val v: CustomThemes.ThemeMetadataResult) : ItemBeingImported()
+    data class CustomTheme(val v: ZipThemes.ThemeMetadataResult) : ItemBeingImported()
 }
 
 class ImportResourceActivity : ComponentActivity() {
@@ -798,7 +797,7 @@ class ImportResourceActivity : ComponentActivity() {
 
                     Button(onClick = {
                         getInputStream()?.use {
-                            CustomThemes.importTheme(applicationContext, it, item.v)
+                            ZipThemes.importTheme(applicationContext, it, item.v)
                         }
                         finish()
                     }) {
@@ -907,7 +906,7 @@ class ImportResourceActivity : ComponentActivity() {
         val userDictFile = getInputStream()?.use { detectJapaneseUserDict(it) }
         if(userDictFile != null) return ItemBeingImported.UserDictFile(userDictFile)
 
-        val customTheme = getInputStream()?.use { CustomThemes.getMetadata(it) }
+        val customTheme = getInputStream()?.use { ZipThemes.getMetadata(it) }
         if(customTheme != null) return ItemBeingImported.CustomTheme(customTheme)
 
         return null
@@ -930,7 +929,7 @@ class ImportResourceActivity : ComponentActivity() {
                 BugViewerState.triggerOpen()
             } else {
                 getInputStream()?.use {
-                    CustomThemes.importTheme(applicationContext, it, item.v)
+                    ZipThemes.importTheme(applicationContext, it, item.v)
                 }
             }
             finish()

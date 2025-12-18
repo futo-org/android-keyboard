@@ -89,7 +89,7 @@ import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.SettingSliderForDataStoreItem
 import org.futo.inputmethod.latin.uix.theme.CustomThemeBuilderConfiguration
-import org.futo.inputmethod.latin.uix.theme.CustomThemes
+import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.ThemeDecodingContext
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.v2keyboard.LayoutManager
@@ -404,7 +404,7 @@ internal fun ThemeEditor(
         lifecycle.lifecycleScope.launch {
             withContext(Dispatchers.Default) {
                 val bitmapScale = originalBitmap.width.toFloat() / bitmap.width.toFloat()
-                CustomThemes.save(
+                ZipThemes.save(
                     themeCtx,
                     themeCfg.copy(
                         backgroundImagePath = "background.jpg",
@@ -417,7 +417,7 @@ internal fun ThemeEditor(
                         thumbnailImagePath = "thumbnail.jpg",
                         thumbnailImageScale = thumbnailScale()
                     ).build(),
-                    name
+                    ZipThemes.custom(name)
                 )
             }
             withContext(Dispatchers.Main) {

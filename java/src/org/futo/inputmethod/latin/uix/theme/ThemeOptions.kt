@@ -80,29 +80,25 @@ fun defaultThemeOption(context: Context): ThemeOption =
 
 fun getThemeOption(context: Context, key: String): ThemeOption? {
     return ThemeOptions[key] ?: run {
-        if(key.startsWith("custom")) {
-            val themeName = key.substring(6).trimEnd('_')
-
-            return ThemeOption(
+        return ZipThemes.ThemeFileName.fromSetting(key)?.let { name ->
+            ThemeOption(
                 dynamic = false,
                 key = key,
                 name = 0,
                 available = { true },
                 obtainColors = {
                     try {
-                        CustomThemes.loadScheme(context, themeName)
+                        ZipThemes.loadScheme(context, name)
                     } catch(e: Exception) {
                         BugViewerState.pushBug(BugInfo(
-                            name = "Custom theme",
+                            name = "Theme $name",
                             details = e.toString(),
                         ))
-                        DevTheme.obtainColors(it)
+                        defaultThemeOption(context).obtainColors(it)
                     }
                 }
             )
         }
-
-        return null
     }
 }
 

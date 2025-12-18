@@ -40,10 +40,10 @@ import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.settings.RotatingChevronIcon
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.theme.CustomThemes
+import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.Typography
-import org.futo.inputmethod.latin.uix.theme.selector.CustomThemePreview
 import org.futo.inputmethod.latin.uix.theme.selector.ThemePicker
+import org.futo.inputmethod.latin.uix.theme.selector.ZipThemePreview
 import org.futo.inputmethod.latin.uix.urlEncode
 
 
@@ -55,20 +55,20 @@ fun DeleteCustomThemeDialog(name: String, navController: NavHostController) {
         icon = {
         },
         title = {
-            Text(stringResource(R.string.theme_settings_custom_theme_delete_title), style = org.futo.inputmethod.latin.uix.theme.Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(stringResource(R.string.theme_settings_custom_theme_delete_title), style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onPrimaryContainer)
         },
         text = {
-            CustomThemePreview(name, true, Modifier, null) { }
+            ZipThemePreview(ZipThemes.custom(name), true, Modifier, null) { }
         },
         onDismissRequest = {
             navController.navigateUp()
         },
         confirmButton = {
             OutlinedButton(onClick = {
-                CustomThemes.delete(context, name)
+                ZipThemes.delete(context, ZipThemes.custom(name))
                 navController.navigateUp()
             }) {
-                Text(stringResource(R.string.theme_settings_custom_theme_delete_confirm), color = MaterialTheme.colorScheme.primary, style = org.futo.inputmethod.latin.uix.theme.Typography.Body.Medium)
+                Text(stringResource(R.string.theme_settings_custom_theme_delete_confirm), color = MaterialTheme.colorScheme.primary, style = Typography.Body.Medium)
             }
         },
         dismissButton = {

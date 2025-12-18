@@ -491,7 +491,8 @@
     <string name="theme_settings_title">Theme</string>
     <string name="theme_settings_key_borders">Key borders</string>
     <string name="theme_settings_default_themes">Built-in</string>
-    <string name="theme_settings_custom_themes">Custom</string>
+    <string name="theme_settings_seasonal_themes">Seasonal</string>
+    <string name="theme_settings_custom_themes">Your themes</string>
     <string name="theme_settings_custom_theme_delete_title">Delete custom theme?</string>
     <string name="theme_settings_custom_theme_delete_body">Theme: %s</string>
     <string name="theme_settings_custom_theme_delete_confirm">Delete</string>

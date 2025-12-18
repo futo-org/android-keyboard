@@ -26,4 +26,6 @@ data class AdvancedThemeOptions(
     val keyBackgrounds: KeyedBitmaps<KeyBackground>? = null,
     val keyIcons: KeyedBitmaps<KeyIcon>? = null,
     val font: Typeface? = null,
+    val themeName: String? = null,
+    val themeAuthor: String? = null,
 )

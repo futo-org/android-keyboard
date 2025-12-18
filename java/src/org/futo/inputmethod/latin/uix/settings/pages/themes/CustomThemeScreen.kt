@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import org.futo.inputmethod.latin.uix.theme.CustomThemes
+import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.urlDecode
 
 @Composable
@@ -26,7 +26,7 @@ fun CustomThemeScreen(imgUri: String, navController: NavHostController = remembe
 
     val nextAvailableName = remember {
         var i = 0
-        val themes = CustomThemes.list(context)
+        val themes = ZipThemes.listCustom(context).map { it.name }
         while(themes.contains("$i")) i++
         "$i"
     }

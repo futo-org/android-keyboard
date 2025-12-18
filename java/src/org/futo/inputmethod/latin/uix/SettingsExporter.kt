@@ -44,7 +44,7 @@ import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.findSettingsActivity
-import org.futo.inputmethod.latin.uix.theme.CustomThemes
+import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.json.JSONArray
 import org.json.JSONObject
@@ -276,7 +276,7 @@ object SettingsExporter {
         }
 
         // Collect themes
-        CustomThemes.getDirectory(context).listFiles()?.forEach { themeFile ->
+        ZipThemes.customThemesDir(context).listFiles()?.forEach { themeFile ->
             zipOut.putNextEntry(ZipEntry("themes/${themeFile.name}"))
             themeFile.inputStream().use { it.copyTo(zipOut) }
             zipOut.closeEntry()
@@ -295,7 +295,7 @@ object SettingsExporter {
         val clipboardFile = context.clipboardFile
         val transformersDir = ModelPaths.getModelDirectory(context)
         val extFilesDir = context.getExternalFilesDir(null)!!
-        val themesDir = CustomThemes.getDirectory(context)
+        val themesDir = ZipThemes.customThemesDir(context)
         if (destructive) {
             // delete old clipboard
             if (clipboardFile.exists()) {
@@ -322,7 +322,7 @@ object SettingsExporter {
             mozcUserProfileDir(context).deleteRecursively()
 
             // delete all themes
-            CustomThemes.getDirectory(context).listFiles()?.forEach { it.delete() }
+            ZipThemes.customThemesDir(context).listFiles()?.forEach { it.delete() }
         }
         while (entry != null) {
             when {

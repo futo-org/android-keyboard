@@ -84,13 +84,13 @@ internal fun decodeOptionalImage(ctx: ThemeDecodingContext, src: String?): Image
     if(src == null) return null
     val hash = ctx.getFileHashOrBase64(src)
     if(hash == null) return null
-    var bitmap = CustomThemes.bitmapCache[hash]
+    var bitmap = ZipThemes.bitmapCache[hash]
     if(bitmap == null) {
         bitmap = ctx.getFileBytesOrBase64(src)?.let {
             BitmapFactory.decodeByteArray(it, 0, it.size)?.asImageBitmap()
         }
         if(bitmap == null) return null
-        CustomThemes.bitmapCache[hash] = bitmap
+        ZipThemes.bitmapCache[hash] = bitmap
     }
 
     return bitmap

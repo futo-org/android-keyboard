@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -53,15 +54,18 @@ import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.KeyboardBackground
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.actions.BugInfo
+import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.theme.CustomThemes
+import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.ThemeOptionKeys
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.defaultThemeOption
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.presets.AMOLEDDarkPurple
 import org.futo.inputmethod.latin.uix.theme.presets.ClassicMaterialDark
@@ -183,24 +187,31 @@ fun ThemePreview(colors: KeyboardColorScheme, name: String, loading: Boolean, is
 
 
 @Composable
-fun CustomThemePreview(customThemeName: String, isSelected: Boolean, modifier: Modifier, onLongClick: (() -> Unit)? = null, onClick: () -> Unit) {
+fun ZipThemePreview(name: ZipThemes.ThemeFileName, isSelected: Boolean, modifier: Modifier, onLongClick: (() -> Unit)? = null, onClick: () -> Unit) {
     val context = LocalContext.current
 
     val loading = remember { mutableStateOf(true) }
-    val scheme = remember { mutableStateOf<KeyboardColorScheme>(DefaultLightScheme.obtainColors(context)) }
+    val scheme = remember { mutableStateOf<KeyboardColorScheme>(defaultThemeOption(context).obtainColors(context)) }
 
-    LaunchedEffect(customThemeName) {
+    LaunchedEffect(name) {
         loading.value = true
-        scheme.value = DefaultLightScheme.obtainColors(context)
+        scheme.value = defaultThemeOption(context).obtainColors(context)
         withContext(Dispatchers.Default) {
-            scheme.value = CustomThemes.loadSchemeThumb(context, customThemeName)
+            try {
+                scheme.value = ZipThemes.loadSchemeThumb(context, name)
+            }catch(e: Exception) {
+                BugViewerState.pushBug(BugInfo(
+                    name = "Unable to load thumbnail for $name",
+                    details = e.toString(),
+                ))
+            }
         }
         loading.value = false
     }
 
     ThemePreview(
         colors = scheme.value,
-        name = stringResource(R.string.theme_custom_named, customThemeName),
+        name = scheme.value.extended.advancedThemeOptions.themeName ?: stringResource(R.string.theme_custom_named, name.name),
         loading = loading.value,
         isSelected = isSelected,
         modifier = modifier,
@@ -280,7 +291,7 @@ fun AddCustomThemeButton(short: Boolean = false, onClick: () -> Unit = { }) {
 fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit) {
     val context = LocalContext.current
 
-    val currentTheme = useDataStore(THEME_KEY.key, "").value
+    val currentTheme = useDataStore(THEME_KEY.key, "").value.trimEnd('_')
 
     val isInspecting = LocalInspectionMode.current
     val availableThemeOptions = remember {
@@ -298,9 +309,11 @@ fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit
 
     val originalDirection = LocalLayoutDirection.current
 
-    val customThemes = remember(CustomThemes.updateCount.intValue) {
-        CustomThemes.list(context)
+    val customThemes = remember(ZipThemes.updateCount.intValue) {
+        ZipThemes.listCustom(context)
     }
+
+    val assetThemes = remember { ZipThemes.listAssets(context) }
 
     val lifecycle = LocalLifecycleOwner.current
     Column {
@@ -320,11 +333,11 @@ fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit
 
                 items(customThemes.size) {
                     val name = customThemes[it]
-                    CustomThemePreview(name, isSelected = currentTheme == "custom$name", modifier = Modifier, onLongClick = {
-                        onDeleteCustomTheme(name)
+                    ZipThemePreview(name, isSelected = currentTheme == name.toSetting(), modifier = Modifier, onLongClick = {
+                        onDeleteCustomTheme(name.name)
                     }) {
                         lifecycle.lifecycleScope.launch {
-                            context.setSetting(THEME_KEY, "custom$name")
+                            context.setSetting(THEME_KEY, name.toSetting())
                         }
                     }
                 }
@@ -339,6 +352,14 @@ fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                     ScreenTitle(stringResource(R.string.theme_settings_default_themes))
                 }
+                items(assetThemes) { name ->
+                    ZipThemePreview(name, isSelected = currentTheme == name.toSetting(), modifier = Modifier, onLongClick = {}) {
+                        lifecycle.lifecycleScope.launch {
+                            context.setSetting(THEME_KEY, name.toSetting())
+                        }
+                    }
+                }
+
                 items(availableThemeOptions.size) {
                     val themeOption = availableThemeOptions[it].second
 
@@ -353,7 +374,7 @@ fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) { }
 
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                    if(!currentTheme.startsWith("custom")) {
+                    if(ZipThemes.ThemeFileName.fromSetting(currentTheme) == null) {
                         CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
                             SettingToggleDataStore(
                                 title = stringResource(R.string.theme_settings_key_borders),

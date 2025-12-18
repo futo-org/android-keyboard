@@ -232,7 +232,10 @@ data class SerializableCustomTheme(
                     keyIcons = decodeKeyedBitmaps(ctx, keyIcons) {
                         KeyIcon(it.asAndroidBitmap().toDrawable(ctx.context.resources))
                     },
-                    font = decodeOptionalFont(ctx, keysFont)
+                    font = decodeOptionalFont(ctx, keysFont),
+
+                    themeName = name,
+                    themeAuthor = author
                 ),
             )
         )

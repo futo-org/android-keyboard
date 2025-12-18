@@ -30,11 +30,30 @@ import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
-object CustomThemes {
+object ZipThemes {
     val bitmapCache: MutableMap<String, ImageBitmap> = mutableMapOf()
-    val themeCache: MutableMap<String, KeyboardColorScheme> = mutableMapOf()
-    val thumbThemeCache: MutableMap<String, KeyboardColorScheme> = mutableMapOf()
     val updateCount: MutableIntState = mutableIntStateOf(0)
+
+    enum class ThemeLocation(val settingQualifier: String) {
+        Assets("asset"),
+        Custom("custom")
+    }
+
+    data class ThemeFileName(val name: String, val location: ThemeLocation) {
+        fun toSetting(): String = "${location.settingQualifier}$name"
+
+        companion object {
+            fun fromSetting(s: String): ThemeFileName? =
+                ThemeLocation.entries.firstOrNull { s.startsWith(it.settingQualifier) }?.let {
+                    ThemeFileName(s.substring(it.settingQualifier.length).trimEnd('_'), it)
+                }
+        }
+    }
+
+    fun custom(name: String) = ThemeFileName(name, ThemeLocation.Custom)
+
+    val themeCache: MutableMap<ThemeFileName, KeyboardColorScheme> = mutableMapOf()
+    val thumbThemeCache: MutableMap<ThemeFileName, KeyboardColorScheme> = mutableMapOf()
 
     @OptIn(ExperimentalSerializationApi::class)
     private val json = Json {
@@ -44,31 +63,39 @@ object CustomThemes {
         //encodeDefaults = true
     }
 
-    fun getDirectory(context: Context) = File(context.filesDir, "themes")
+    fun customThemesDir(context: Context) = File(context.filesDir, "themes").also { it.mkdirs() }
 
-    fun list(context: Context): List<String> = getDirectory(context).listFiles()?.map { it.nameWithoutExtension } ?: emptyList()
+    fun listCustom(context: Context): List<ThemeFileName> = customThemesDir(context).listFiles()?.map { custom(it.nameWithoutExtension) } ?: emptyList()
+    fun listAssets(context: Context): List<ThemeFileName> =
+        context.assets.list("themes/")?.filter {
+            it != null && it.endsWith(".zip")
+        }?.map {
+            ThemeFileName(it.substring(0, it.length - 4), ThemeLocation.Assets)
+        } ?: emptyList()
 
     private const val versionFileName = "FUTOKeyboardTheme_Version"
     private const val configFileName = "config.json"
     private const val currentVersion: Byte = 1
-    fun save(ctx: ThemeDecodingContext, theme: SerializableCustomTheme, name: String) {
-        val dir = getDirectory(ctx.context)
+    fun save(ctx: ThemeDecodingContext, theme: SerializableCustomTheme, name: ThemeFileName) {
+        if(name.location != ThemeLocation.Custom) throw IllegalArgumentException("Can only save custom themes.")
+
+        val dir = customThemesDir(ctx.context)
         dir.mkdirs()
 
-        val file = File(dir, "$name.zip")
+        val file = File(dir, "${name.name}.zip")
 
         val zos = ZipOutputStream(BufferedOutputStream(FileOutputStream(file)))
         zos.setLevel(0)
 
-        val putEntry = { name: String ->
-            zos.putNextEntry(ZipEntry(name).apply {
+        val putEntry = { filename: String ->
+            zos.putNextEntry(ZipEntry(filename).apply {
                 //method = ZipEntry.STORED
             })
         }
 
-        val putFile = { name: String ->
-            putEntry(name)
-            zos.write(ctx.getFileBytes(name)!!)
+        val putFile = { filename: String ->
+            putEntry(filename)
+            zos.write(ctx.getFileBytes(filename)!!)
             zos.closeEntry()
         }
 
@@ -164,28 +191,27 @@ object CustomThemes {
         }
 
         val id = metadata.config.id!!
-        val file = File(getDirectory(context), "${id}.zip")
+        val file = File(customThemesDir(context), "${id}.zip")
 
         file.outputStream().use { outputStream ->
             inputStream.copyTo(outputStream)
         }
 
-        themeCache.remove(id)
+        themeCache.remove(custom(id))
+
+        val setting = custom(id).toSetting()
         val currTheme = context.getSetting(THEME_KEY)
-        if(currTheme.trimEnd('_') == "custom$id" || DevAutoAcceptThemeImport) {
+        if(currTheme.trimEnd('_') == setting || DevAutoAcceptThemeImport) {
             runBlocking {
                 context.setSetting(
                     THEME_KEY,
-                    "custom$id" + if(currTheme.endsWith('_')) "" else "_"
+                    setting + if(currTheme.endsWith('_')) "" else "_"
                 )
             }
         }
     }
 
-    private fun load(context: Context, name: String): Pair<ThemeDecodingContext, SerializableCustomTheme> {
-        val file = File(getDirectory(context), "${name}.zip")
-        if(!file.isFile) throw FileNotFoundException()
-
+    private fun loadFile(androidContext: Context, file: File): Pair<ThemeDecodingContext, SerializableCustomTheme> {
         val hash = file.inputStream().use {
             MD5Calculator.checksum(it)
         }
@@ -194,7 +220,7 @@ object CustomThemes {
 
         val ctx = object : ThemeDecodingContext {
             override val context: Context
-                get() = context
+                get() = androidContext
 
             override fun getFileBytes(path: String): ByteArray? {
                 val entry = zipFile.getEntry(path)
@@ -223,7 +249,41 @@ object CustomThemes {
         return Pair(ctx, theme)
     }
 
-    fun loadSchemeThumb(context: Context, name: String): KeyboardColorScheme {
+    private fun load(context: Context, name: ThemeFileName): Pair<ThemeDecodingContext, SerializableCustomTheme> {
+        val file = when(name.location) {
+            ThemeLocation.Custom -> {
+                val fileName = "${name.name}.zip"
+
+                val file = File(customThemesDir(context), fileName)
+                if(!file.isFile) throw FileNotFoundException()
+                file
+            }
+
+            ThemeLocation.Assets -> {
+                val cacheFile = File(context.codeCacheDir, "${name.name}.zip")
+
+                if(cacheFile.isFile) {
+                    cacheFile
+                } else {
+
+                    val fileName = "themes/${name.name}.zip"
+                    val assets = context.assets
+
+                    assets.open(fileName).use { inputStream ->
+                        cacheFile.outputStream().use { outputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
+                    }
+
+                    cacheFile
+                }
+            }
+        }
+
+        return loadFile(context, file)
+    }
+
+    fun loadSchemeThumb(context: Context, name: ThemeFileName): KeyboardColorScheme {
         return themeCache[name] ?: thumbThemeCache.getOrPut(name) {
             val i = load(context, name)
 
@@ -246,7 +306,7 @@ object CustomThemes {
         }
     }
 
-    fun loadScheme(context: Context, name: String): KeyboardColorScheme =
+    fun loadScheme(context: Context, name: ThemeFileName): KeyboardColorScheme =
         themeCache.getOrPut(name) {
             val i = load(context, name)
             val r = i.second.toKeyboardScheme(i.first)
@@ -254,13 +314,14 @@ object CustomThemes {
             r
         }
 
-    fun delete(context: Context, name: String) {
-        val file = File(getDirectory(context), "${name}.zip")
+    fun delete(context: Context, name: ThemeFileName) {
+        if(name.location != ThemeLocation.Custom) throw IllegalArgumentException("Cannot delete non-custom themes")
+        val file = File(customThemesDir(context), "${name.name}.zip")
         if(!file.isFile) return
 
-        // Don't stay on a theme we're deleting!
+        // Don't stay on a theme being deleted!
         val currTheme = context.getSetting(THEME_KEY)
-        if(currTheme.trimEnd('_') == "custom$name") {
+        if(currTheme.trimEnd('_') == "custom${name.name}") {
             runBlocking { context.setSetting(THEME_KEY, defaultThemeOption(context).key) }
         }
 
