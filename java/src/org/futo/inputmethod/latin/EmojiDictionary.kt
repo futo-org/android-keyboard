@@ -26,6 +26,9 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
 
         val typedWord = composedData?.mTypedWord ?: ""
 
+        // Usually for short texts like "it", we really mean the word "it" and not the flag of Italy
+        if(typedWord.length <= 2 && typedWord.any { it.isLowerCase() }) return arrayListOf()
+
         var emoji: String? = null
         if(!typedWord.isEmpty()) {
             emoji = PersistentEmojiState.getShortcut(mLocale, typedWord.lowercase(mLocale))
