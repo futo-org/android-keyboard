@@ -34,7 +34,7 @@ EXCLUDED_NAMES=$(find translations-repo/core-ign/values/ -name "strings*.xml")
 rm translations-repo/core-ign/values/strings*
 
 for f in $EXCLUDED_NAMES; do
-  mv translations-repo/core/values/"$(basename "$f")" translations-repo/core-ign/values;
+  mv translations-repo/core/values/"$(basename "$f")" translations-repo/core-ign/values ||:;
 done
 
 # Commit and push
