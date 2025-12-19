@@ -96,11 +96,12 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
 
     private fun applyBefore(beforeTxt: String): String {
         var result = beforeTxt
-        commandQueue.forEach { cmd ->
+        commandQueue.toList().forEach { cmd ->
             when(cmd) {
                 is InputCommand.Commit -> result += cmd.text
                 is InputCommand.Delete -> {
-                    result = result.substring(0, (result.length - cmd.before).coerceAtLeast(0))
+                    val deleteChars = cmd.before.coerceAtLeast(0).coerceAtMost(result.length)
+                    result = result.dropLast(deleteChars)
                 }
                 else -> {}
             }
@@ -110,11 +111,12 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
 
     private fun applyAfter(afterTxt: String): String {
         var result = afterTxt
-        commandQueue.forEach { cmd ->
+        commandQueue.toList().forEach { cmd ->
             when(cmd) {
                 is InputCommand.Commit -> { }
                 is InputCommand.Delete -> {
-                    result = result.substring((cmd.after).coerceAtMost(result.length))
+                    val skipChars = cmd.after.coerceAtLeast(0).coerceAtMost(result.length)
+                    result = result.substring(skipChars)
                 }
                 else -> {}
             }
@@ -144,6 +146,10 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
     }
 
     override fun deleteSurroundingText(beforeLength: Int, afterLength: Int): Boolean {
+        if(beforeLength < 0 || afterLength < 0) {
+            throwIfDebug(IllegalArgumentException("Cannot delete text negatively!"))
+            return false
+        }
         commandQueue.add(InputCommand.Delete(beforeLength, afterLength))
         return true
     }
