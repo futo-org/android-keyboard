@@ -22,6 +22,7 @@ import org.futo.inputmethod.engine.IMEMessage
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.event.InputTransaction
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
+import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.DictionaryFacilitator
 import org.futo.inputmethod.latin.DictionaryFacilitatorProvider
 import org.futo.inputmethod.latin.NgramContext
@@ -37,12 +38,13 @@ import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
+import org.futo.inputmethod.latin.utils.AsyncResultHolder
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.atomic.AtomicLong
 
 interface WordLearner {
     fun addToHistory(
@@ -403,10 +405,34 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     var updateSuggestionJob: Job? = null
-    private suspend fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
-        if(!languageModelFacilitator.shouldPassThroughToLegacy()) {
-            val result = languageModelFacilitator.updateSuggestionStripSync(inputStyle)
-            onGetSuggestedWords(result ?: SuggestedWords.getEmptyInstance(), inputStyle, sequenceNumber)
+    var lmUpdateJob: Job? = null
+    private fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
+        // This method returns null for us if LM is disabled
+        val predictionInputValues = languageModelFacilitator.makePredictionInputValues(inputStyle)
+
+        var dictResult: SuggestedWords? = null
+        var lmResult: ArrayList<SuggestedWordInfo>? = null
+        if(predictionInputValues != null) {
+            // This runs asynchronously
+            val lmResultHolder = AsyncResultHolder<ArrayList<SuggestedWordInfo>?>("LMSuggest")
+            lmUpdateJob?.cancel()
+            lmUpdateJob = helper.lifecycleScope.launch(languageModelFacilitator.languageModelScope) {
+                val result = languageModelFacilitator.getLanguageModelSuggestions(predictionInputValues)
+                lmResultHolder.set(result)
+            }
+
+            // This runs synchronously
+            inputLogic.getSuggestedWords(
+                settings.current,
+                helper.keyboardSwitcher.keyboard ?: return,
+                helper.keyboardShiftMode,
+                inputStyle,
+                sequenceNumber
+            ) { suggestedWords -> dictResult = suggestedWords }
+
+            // Wait for LM to report result
+            lmResult = lmResultHolder.get(null, 350L)
+            if(lmResult == null) languageModelFacilitator.reportTimeout()
         } else {
             inputLogic.getSuggestedWords(
                 settings.current,
@@ -414,8 +440,34 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 helper.keyboardShiftMode,
                 inputStyle,
                 sequenceNumber
-            ) { suggestedWords ->
-                onGetSuggestedWords(suggestedWords, inputStyle, sequenceNumber)
+            ) { suggestedWords -> dictResult = suggestedWords }
+        }
+
+        @Suppress("KotlinConstantConditions")
+        when {
+            lmResult != null && dictResult != null && predictionInputValues != null -> {
+                val processed = languageModelFacilitator.processAndMergeSuggestions(
+                    predictionInputValues,
+                    dictResult,
+                    lmResult
+                )
+                if(processed != null) {
+                    onGetSuggestedWords(processed, inputStyle, sequenceNumber)
+                } else {
+                    throwIfDebug(IllegalStateException(
+                        "The processAndMergeSuggestions method should not typically return null"
+                    ))
+
+                    onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
+                }
+            }
+            lmResult == null && dictResult != null -> {
+                onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
+            }
+
+            // Note: we don't support LM results but not dict
+            else -> {
+                setNeutralSuggestionStrip()
             }
         }
     }
@@ -460,6 +512,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     val t1 = System.currentTimeMillis()
                     timeTakenToUpdate = (timeTakenToUpdate + (t1 - t0)) / 2
 
+                    if(BuildConfig.DEBUG) Log.d(TAG, "Time taken for suggestions update = ${t1-t0} ms (avg $timeTakenToUpdate ms)")
+
                     sequenceIdCompleted.set(seqId)
                 }
             }
@@ -487,8 +541,6 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     newJob.join()
                     true
                 } == true)
-            }.also {
-                if(!it) languageModelFacilitator.reportTimeout()
             }
         }
         return true

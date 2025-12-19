@@ -49,7 +49,7 @@ val BinaryDictTransformerWeightSetting = SettingsKey(
     3.4f
 )
 
-private fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
+internal fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
     assert(mWord == other.mWord)
 
     val result = SuggestedWordInfo(
@@ -152,7 +152,7 @@ public class LanguageModelFacilitator(
     private val sequenceIdFinishedFlow = MutableSharedFlow<Pair<PredictionInputValues, SuggestedWords?>>(replay = 1, extraBufferCapacity = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val languageModelScope = Dispatchers.Default.limitedParallelism(1)
+    val languageModelScope = LanguageModelScope
 
     private var numConsecutiveTimeouts = 0
     private var transformerDisabled = false
@@ -222,231 +222,182 @@ public class LanguageModelFacilitator(
         }
     }
 
-    private suspend fun processUpdateSuggestionStrip(values: PredictionInputValues): SuggestedWords? = withContext(languageModelScope) {
-        if(keyboardSwitcher.keyboard == null) return@withContext null
+    suspend fun getLanguageModelSuggestions(values: PredictionInputValues): ArrayList<SuggestedWordInfo>? {
+        if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH-1)
+            return null
 
-        val suggestedWords = try {
-            val job = Job()
-            inputLogic.mWordComposer.setAutoCorrection(null)
+        val lmSuggestions = runLanguageModel(values)
+        return lmSuggestions
+    }
 
-            if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH-1) {
-                return@withContext SuggestedWords.getEmptyInstance()
-            }
+    fun processAndMergeSuggestions(
+        values: PredictionInputValues,
+        suggestedWordsDict: SuggestedWords,
+        lmSuggestions: ArrayList<SuggestedWordInfo>
+    ): SuggestedWords? {
+        var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
+        if(dictionaryFacilitator.locales.size > 1) transformerWeight = 1.0f
 
-            var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
-            if(dictionaryFacilitator.locales.size > 1) transformerWeight = 1.0f
+        val suggestionResults = SuggestionResults(
+            14, values.ngramContext.isBeginningOfSentenceContext, false)
 
-            val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
 
-            lifecycleScope.launch(GeneralIME.dictionaryScope) {
-                inputLogic.getSuggestedWords(
-                    settings.current,
-                    keyboardSwitcher.keyboard ?: return@launch,
-                    keyboardSwitcher.keyboardShiftMode,
-                    values.inputStyle,
-                    SuggestedWords.NOT_A_SEQUENCE_NUMBER
-                ) { suggestedWords ->
-                    holder.set(suggestedWords)
+        val reweightedSuggestions = lmSuggestions.mapIndexedNotNull { i, it ->
+            if(transformerWeight == Float.NEGATIVE_INFINITY) { null } else {
+                SuggestedWordInfo(
+                    it.mWord,
+                    it.mPrevWordsContext,
+                    (it.mScore.toFloat() * transformerWeight).toLong().coerceAtMost(Int.MAX_VALUE.toLong() - lmSuggestions.size)
+                        .toInt() - i + (lmSuggestions.size - 1),
+                    it.mKindAndFlags,
+                    it.mSourceDict,
+                    it.mIndexOfTouchPointOfSecondWord,
+                    it.mAutoCommitFirstWordConfidence
+                ).apply {
+                    this.mOriginatesFromTransformerLM = true
                 }
             }
-
-            lifecycleScope.launch(Dispatchers.Default + job) {
-                delay(500L)
-                suggestedWordsCallback.onGetSuggestedWords(
-                    SuggestedWords.getEmptyInstance(),
-                    values.inputStyle,
-                    values.sequenceId
-                )
-            }
-
-
-            val suggestionResults = SuggestionResults(
-                14, values.ngramContext.isBeginningOfSentenceContext, false)
-
-            val lmSuggestions = runLanguageModel(values)
-            if(lmSuggestions == null) {
-                val suggestedWordsDict = holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())
-                if(suggestedWordsDict == null) return@withContext null
-
-                job.cancel()
-
-                val finalResults = suggestedWordsDict
-
-                finalResults.mSuggestedWordInfoList.removeAll {
-                    !suggestionBlacklist.isSuggestedWordOk(it)
-                }
-
-                finalResults.mRawSuggestions?.removeAll {
-                    !suggestionBlacklist.isSuggestedWordOk(it)
-                }
-
-                return@withContext finalResults
-            }
-
-            val reweightedSuggestions = lmSuggestions.mapIndexedNotNull { i, it ->
-                if(transformerWeight == Float.NEGATIVE_INFINITY) { null } else {
-                    SuggestedWordInfo(
-                        it.mWord,
-                        it.mPrevWordsContext,
-                        (it.mScore.toFloat() * transformerWeight).toLong().coerceAtMost(Int.MAX_VALUE.toLong() - lmSuggestions.size)
-                            .toInt() - i + (lmSuggestions.size - 1),
-                        it.mKindAndFlags,
-                        it.mSourceDict,
-                        it.mIndexOfTouchPointOfSecondWord,
-                        it.mAutoCommitFirstWordConfidence
-                    ).apply {
-                        this.mOriginatesFromTransformerLM = true
-                    }
-                }
-            }
-
-            val maxWord = reweightedSuggestions.maxByOrNull { it.mScore }
-
-            val suggestedWordsDict = holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())
-
-            val suggestedWordsDictList = suggestedWordsDict?.mSuggestedWordInfoList?.filter {
-                suggestionBlacklist.isSuggestedWordOk(it)
-            }?.toMutableList()
-
-            var maxWordDict = suggestedWordsDictList?.maxByOrNull {
-                if(it == suggestedWordsDict.typedWordInfo
-                    || it.isKindOf(SuggestedWordInfo.KIND_EMOJI_SUGGESTION)) Int.MIN_VALUE else it.mScore
-            }
-
-            val maxNonWhitelistWordDict = suggestedWordsDictList?.maxByOrNull {
-                if(it == suggestedWordsDict.typedWordInfo
-                    || it.isKindOf(SuggestedWordInfo.KIND_EMOJI_SUGGESTION)
-                    || (it.isKindOf(SuggestedWordInfo.KIND_WHITELIST) && it.mSourceDict?.mDictType == "main")) Int.MIN_VALUE else it.mScore
-            }
-
-            // English language has some shortcuts, e.g. "bot" -> "not",    "hid" -> "his"
-            // These are common misspellings and usually useful corrections, but if the language model
-            // believes the original word fits better in the context we should skip the shortcut,
-            // else it's impossible to type these words without manually skipping correction in
-            // suggestion bar
-            if(maxWordDict != null && maxNonWhitelistWordDict != null && maxNonWhitelistWordDict != maxWordDict && maxNonWhitelistWordDict.mWord == maxWord?.mWord) {
-                val idx = suggestedWordsDictList.indexOf(maxWordDict)
-                suggestedWordsDictList.remove(maxWordDict)
-                suggestedWordsDictList.add(idx, maxWordDict.scoreAtMost(maxNonWhitelistWordDict))
-                maxWordDict = maxNonWhitelistWordDict
-            }
-
-            val bothAlgorithmsCameToSameConclusion = maxWordDict?.mWord == maxWord?.mWord
-            
-            var autocorrectWord: SuggestedWordInfo? = null
-            val filtered = mutableListOf<SuggestedWordInfo>()
-            if(bothAlgorithmsCameToSameConclusion && maxWord != null && maxWordDict != null){
-                if(BuildConfig.DEBUG) Log.d(TAG, "both algorithms came to same conclusion, autocorrect to ${maxWord.mWord}")
-                // We can be pretty confident about autocorrecting this
-                val clone = maxWord.add(maxWordDict)
-                autocorrectWord = clone
-                suggestionResults.add(clone)
-                filtered.add(maxWordDict)
-                filtered.add(maxWord)
-            }
-            // In some cases the LM will predict an uppercased word but dictionary predicts lowercased,
-            // we should prefer the lowercase version to reduce automatically capitalizing which can be
-            // annoying
-            val bothAlgorithmsCameToSameConclusionButLowerCased = maxWordDict?.mWord == maxWord?.mWord?.lowercase()
-            if(bothAlgorithmsCameToSameConclusionButLowerCased && maxWord != null && maxWordDict != null) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "both algorithms came to same conclusion but lowercased, autocorrect to ${maxWord.mWord}")
-                val clone = maxWordDict.scoreAtLeast(maxWord)
-                autocorrectWord = clone
-                suggestionResults.add(clone)
-                filtered.add(maxWordDict)
-            }
-
-            if(transformerWeight <= 0.0f) {
-                if(suggestedWordsDictList.isNullOrEmpty()) {
-                    transformerWeight = 1.0f
-                }
-            }
-
-            // Add reweightedSuggestions, with space replacement logic. It can replace one of the LM
-            // suggestions if the top dictionary result has a space, based on heuristics about the
-            // relative quality of the LM suggestion
-            val spaceReplacementPossible = maxWordDict != null && maxWordDict.word.count { it == ' ' } == 1
-            var spaceReplacementPerformed = false
-            for(i in 0 until reweightedSuggestions.size) {
-                val word = reweightedSuggestions[i]
-                if(filtered.contains(word)) continue
-
-                if(!spaceReplacementPerformed && spaceReplacementPossible && (
-                            // If the dict score is high enough, allow the space suggestion
-                            ((maxWordDict.mScore) > (word.mScore / 3))
-                                    // Most LM-generated dashed suggestions are distractions, so accept the space suggestion
-                                    || (word.word.contains('-'))
-                                    // If the typed word is much longer than the transformer word, just accept the space suggestion
-                                    || (values.composedData.mTypedWord.length > ceil(word.word.length * 3.0 / 2.0))
-                            )
-                ) {
-                    val clone = maxWordDict.scoreAtLeast(word)
-                    suggestionResults.add(clone)
-                    spaceReplacementPerformed = true
-                    continue
-                }
-
-                suggestionResults.add(word)
-            }
-
-            if(maxWordDict?.mSourceDict?.mDictType == Dictionary.TYPE_USER_HISTORY
-                && maxWordDict.mScore > 100
-                && maxWord != null
-            ) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "type user history found")
-                val clone = maxWordDict.scoreAtLeast(maxWord)
-                suggestionResults.add(clone)
-            }
-
-            suggestionResults.mRawSuggestions?.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
-            if(transformerWeight != Float.POSITIVE_INFINITY) {
-                suggestedWordsDictList?.let { words ->
-                    suggestionResults.addAll(words.filter {
-                        it != suggestedWordsDict.typedWordInfo && !filtered.contains(
-                            it
-                        )
-                    }.take(10))
-                }
-            }
-
-            val settingsValues = settings.current ?: return@withContext null
-            val locale = dictionaryFacilitator.primaryLocale ?: return@withContext null
-            val wordComposer = inputLogic.mWordComposer ?: return@withContext null
-
-            val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
-                wordComposer,
-                values.inputStyle,
-                settingsValues.mAutoCorrectionEnabledPerUserSettings,
-                -1,
-                locale,
-                suggestionResults,
-                settingsValues.mAutoCorrectionThreshold,
-                settingsValues.mIsNumberRowEnabled
-            )
-
-
-            if(BuildConfig.DEBUG) {
-                val dmpw: (SuggestedWordInfo?) -> String = { v -> v?.let { "${it.mWord}:${it.mScore}:${it.mKindAndFlags}:${it.mSourceDict?.mDictType}" } ?: "[null]" }
-                val dmp: (List<SuggestedWordInfo>?) -> String = { v -> v?.joinToString { dmpw(it) } ?: "[null]" }
-                Log.d(TAG, "process update suggestion strip:\n" +
-                            "raw lm results: ${dmp(lmSuggestions)}\n" +
-                            "reweighted lm results: ${dmp(reweightedSuggestions)}\n" +
-                            "raw dict results: ${dmp(suggestedWordsDict?.mSuggestedWordInfoList)}}\n" +
-                            "filtered dict results: ${dmp(suggestedWordsDictList)}}\n" +
-                            "------------\n" +
-                            "max word lm: ${dmpw(maxWord)}}\n" +
-                            "max word dict: ${dmpw(maxWordDict)}}\n"
-                )
-            }
-
-            job.cancel()
-
-            suggestedWords
-        } finally {
-
         }
 
-        return@withContext suggestedWords
+        val maxWord = reweightedSuggestions.maxByOrNull { it.mScore }
+
+        val suggestedWordsDictList = suggestedWordsDict.mSuggestedWordInfoList.filter {
+            suggestionBlacklist.isSuggestedWordOk(it)
+        }.toMutableList()
+
+        var maxWordDict = suggestedWordsDictList.maxByOrNull {
+            if(it == suggestedWordsDict.typedWordInfo
+                || it.isKindOf(SuggestedWordInfo.KIND_EMOJI_SUGGESTION)) Int.MIN_VALUE else it.mScore
+        }
+
+        val maxNonWhitelistWordDict = suggestedWordsDictList.maxByOrNull {
+            if(it == suggestedWordsDict.typedWordInfo
+                || it.isKindOf(SuggestedWordInfo.KIND_EMOJI_SUGGESTION)
+                || (it.isKindOf(SuggestedWordInfo.KIND_WHITELIST) && it.mSourceDict?.mDictType == "main")) Int.MIN_VALUE else it.mScore
+        }
+
+        // English language has some shortcuts, e.g. "bot" -> "not",    "hid" -> "his"
+        // These are common misspellings and usually useful corrections, but if the language model
+        // believes the original word fits better in the context we should skip the shortcut,
+        // else it's impossible to type these words without manually skipping correction in
+        // suggestion bar
+        if(maxWordDict != null && maxNonWhitelistWordDict != null && maxNonWhitelistWordDict != maxWordDict && maxNonWhitelistWordDict.mWord == maxWord?.mWord) {
+            val idx = suggestedWordsDictList.indexOf(maxWordDict)
+            suggestedWordsDictList.remove(maxWordDict)
+            suggestedWordsDictList.add(idx, maxWordDict.scoreAtMost(maxNonWhitelistWordDict))
+            maxWordDict = maxNonWhitelistWordDict
+        }
+
+        val bothAlgorithmsCameToSameConclusion = maxWordDict?.mWord == maxWord?.mWord
+
+        var autocorrectWord: SuggestedWordInfo? = null
+        val filtered = mutableListOf<SuggestedWordInfo>()
+        if(bothAlgorithmsCameToSameConclusion && maxWord != null && maxWordDict != null){
+            if(BuildConfig.DEBUG) Log.d(TAG, "both algorithms came to same conclusion, autocorrect to ${maxWord.mWord}")
+            // We can be pretty confident about autocorrecting this
+            val clone = maxWord.add(maxWordDict)
+            autocorrectWord = clone
+            suggestionResults.add(clone)
+            filtered.add(maxWordDict)
+            filtered.add(maxWord)
+        }
+        // In some cases the LM will predict an uppercased word but dictionary predicts lowercased,
+        // we should prefer the lowercase version to reduce automatically capitalizing which can be
+        // annoying
+        val bothAlgorithmsCameToSameConclusionButLowerCased = maxWordDict?.mWord == maxWord?.mWord?.lowercase()
+        if(bothAlgorithmsCameToSameConclusionButLowerCased && maxWord != null && maxWordDict != null) {
+            if(BuildConfig.DEBUG) Log.d(TAG, "both algorithms came to same conclusion but lowercased, autocorrect to ${maxWord.mWord}")
+            val clone = maxWordDict.scoreAtLeast(maxWord)
+            autocorrectWord = clone
+            suggestionResults.add(clone)
+            filtered.add(maxWordDict)
+        }
+
+        if(transformerWeight <= 0.0f) {
+            if(suggestedWordsDictList.isEmpty()) {
+                transformerWeight = 1.0f
+            }
+        }
+
+        // Add reweightedSuggestions, with space replacement logic. It can replace one of the LM
+        // suggestions if the top dictionary result has a space, based on heuristics about the
+        // relative quality of the LM suggestion
+        val spaceReplacementPossible = maxWordDict != null && maxWordDict.word.count { it == ' ' } == 1
+        var spaceReplacementPerformed = false
+        for(i in 0 until reweightedSuggestions.size) {
+            val word = reweightedSuggestions[i]
+            if(filtered.contains(word)) continue
+
+            if(!spaceReplacementPerformed && spaceReplacementPossible && (
+                        // If the dict score is high enough, allow the space suggestion
+                        ((maxWordDict.mScore) > (word.mScore / 3))
+                                // Most LM-generated dashed suggestions are distractions, so accept the space suggestion
+                                || (word.word.contains('-'))
+                                // If the typed word is much longer than the transformer word, just accept the space suggestion
+                                || (values.composedData.mTypedWord.length > ceil(word.word.length * 3.0 / 2.0))
+                        )
+            ) {
+                val clone = maxWordDict.scoreAtLeast(word)
+                suggestionResults.add(clone)
+                spaceReplacementPerformed = true
+                continue
+            }
+
+            suggestionResults.add(word)
+        }
+
+        if(maxWordDict?.mSourceDict?.mDictType == Dictionary.TYPE_USER_HISTORY
+            && maxWordDict.mScore > 100
+            && maxWord != null
+        ) {
+            if(BuildConfig.DEBUG) Log.d(TAG, "type user history found")
+            val clone = maxWordDict.scoreAtLeast(maxWord)
+            suggestionResults.add(clone)
+        }
+
+        suggestionResults.mRawSuggestions?.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
+        if(transformerWeight != Float.POSITIVE_INFINITY) {
+            suggestedWordsDictList?.let { words ->
+                suggestionResults.addAll(words.filter {
+                    it != suggestedWordsDict.typedWordInfo && !filtered.contains(
+                        it
+                    )
+                }.take(10))
+            }
+        }
+
+        val settingsValues = settings.current ?: return null
+        val locale = dictionaryFacilitator.primaryLocale ?: return null
+        val wordComposer = inputLogic.mWordComposer ?: return null
+
+        val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
+            wordComposer,
+            values.inputStyle,
+            settingsValues.mAutoCorrectionEnabledPerUserSettings,
+            -1,
+            locale,
+            suggestionResults,
+            settingsValues.mAutoCorrectionThreshold,
+            settingsValues.mIsNumberRowEnabled
+        )
+
+
+        if(BuildConfig.DEBUG) {
+            val dmpw: (SuggestedWordInfo?) -> String = { v -> v?.let { "${it.mWord}:${it.mScore}:${it.mKindAndFlags}:${it.mSourceDict?.mDictType}" } ?: "[null]" }
+            val dmp: (List<SuggestedWordInfo>?) -> String = { v -> v?.joinToString { dmpw(it) } ?: "[null]" }
+            Log.d(TAG, "process update suggestion strip:\n" +
+                    "raw lm results: ${dmp(lmSuggestions)}\n" +
+                    "reweighted lm results: ${dmp(reweightedSuggestions)}\n" +
+                    "raw dict results: ${dmp(suggestedWordsDict?.mSuggestedWordInfoList)}}\n" +
+                    "filtered dict results: ${dmp(suggestedWordsDictList)}}\n" +
+                    "------------\n" +
+                    "max word lm: ${dmpw(maxWord)}}\n" +
+                    "max word dict: ${dmpw(maxWordDict)}}\n"
+            )
+        }
+
+
+        return suggestedWords
     }
 
     public suspend fun destroyModel() {
@@ -491,14 +442,17 @@ public class LanguageModelFacilitator(
     public fun shouldPassThroughToLegacy(): Boolean = when {
         (!settings.current.mTransformerPredictionEnabled) -> true
         (dictionaryFacilitator.primaryLocale.language == skipLanguage) -> true
-        //(transformerDisabled) -> true
+        (transformerDisabled) -> true
         else -> false
     }
 
-    suspend fun updateSuggestionStripSync(inputStyle: Int): SuggestedWords? {
+    // This method should return null if transformer is disabled by settings or locale
+    fun makePredictionInputValues(inputStyle: Int): PredictionInputValues? {
+        if(shouldPassThroughToLegacy()) return null
+
         val settingsValues = settings.current
         if (!settingsValues.needsToLookupSuggestions() && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH) {
-            return SuggestedWords.getEmptyInstance()
+            return null
         }
 
         if(!inputLogic.mConnection.isConnected) return null
@@ -517,7 +471,7 @@ public class LanguageModelFacilitator(
                 ++currentSequenceId
             )
 
-            return processUpdateSuggestionStrip(values)
+            return values
         } catch(e: Exception) {
             if(e is CancellationException) throw e
 
