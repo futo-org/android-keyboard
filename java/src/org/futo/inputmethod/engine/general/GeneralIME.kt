@@ -1,5 +1,6 @@
 package org.futo.inputmethod.engine.general
 
+import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -8,6 +9,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.yield
 import org.futo.inputmethod.annotations.UsedForTesting
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
@@ -35,6 +38,7 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
+import java.util.concurrent.atomic.AtomicBoolean
 
 interface WordLearner {
     fun addToHistory(
@@ -405,6 +409,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
     }
 
+
+    private val updateCompleted = AtomicBoolean(true)
     fun updateSuggestions(inputStyle: Int) {
         if(!settings.current.needsToLookupSuggestions()
             && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH
@@ -419,12 +425,14 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             languageModelFacilitator.updateSuggestionStripAsync(inputStyle)
         } else {
             updateSuggestionJob?.cancel()
+            updateCompleted.set(false)
             updateSuggestionJob = helper.lifecycleScope.launch {
                 when(inputStyle) {
                     SuggestedWords.INPUT_STYLE_TYPING -> delay(40L)
                 }
                 withContext(dictionaryScope) {
                     updateSuggestionsDictionaryInternal(inputStyle)
+                    updateCompleted.set(true)
                 }
             }
         }
@@ -439,10 +447,23 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 return true
             }
         } else {
-            if(updateSuggestionJob?.isActive == true) {
-                updateSuggestionJob?.cancel()
-                runBlocking(dictionaryScope) {
-                    updateSuggestionsDictionaryInternal(SuggestedWords.INPUT_STYLE_TYPING)
+            val currJob = updateSuggestionJob
+            if(currJob != null && currJob.isActive == true && updateCompleted.get() == false) {
+                currJob.cancel()
+                val newJob = helper.lifecycleScope.launch(dictionaryScope) {
+                    if(!updateCompleted.get()) {
+                        updateSuggestionsDictionaryInternal(SuggestedWords.INPUT_STYLE_TYPING)
+                        updateCompleted.set(true)
+                    }
+                }
+
+                updateSuggestionJob = newJob
+
+                return runBlocking {
+                    (withTimeoutOrNull(300L) {
+                        newJob.join()
+                        true
+                    } == true)
                 }
             }
             return true

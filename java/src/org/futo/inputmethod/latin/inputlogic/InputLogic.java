@@ -1092,7 +1092,6 @@ public final class InputLogic {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
                 commitCurrentAutoCorrection(settingsValues, separator);
-                inputTransaction.setDidAutoCorrect();
             } else {
                 commitTyped(settingsValues,
                         StringUtils.newSingleCodePointString(codePoint));
@@ -2506,10 +2505,14 @@ public final class InputLogic {
      * @param settingsValues the current value of the settings.
      * @param separator the separator that's causing the commit to happen.
      */
-    private void commitCurrentAutoCorrection(final SettingsValues settingsValues,
+    private boolean commitCurrentAutoCorrection(final SettingsValues settingsValues,
             final String separator) {
         // Complete any pending suggestions query first
-        if(!ensureSuggestionStripCompleted(settingsValues, separator)) return;
+        if(!ensureSuggestionStripCompleted(settingsValues, separator)) {
+            mConnection.finishComposingText();
+            mWordComposer.reset(true);
+            return false;
+        }
 
         final SuggestedWordInfo autoCorrectionOrNull = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();
@@ -2543,6 +2546,7 @@ public final class InputLogic {
                 StatsUtils.onWordCommitUserTyped(stringToCommit, isBatchMode);
             }
         }
+        return true;
     }
 
     /**
