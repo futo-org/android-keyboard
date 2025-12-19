@@ -28,6 +28,8 @@
 #define RETURNVAL_UNCERTAIN "uncertain"
 #define RETURNVAL_CLUELESS "clueless"
 
+#define NUM_RESULTS 3
+
 static std::string trim(const std::string &s) {
     auto start = s.begin();
     while (start != s.end() && std::isspace(*start)) {
@@ -812,7 +814,7 @@ struct LanguageModelState {
         next_context.insert(next_context.begin(), 1); // BOS
 
         auto decoding_result = DecodePromptAndMixes(next_context, { });
-        auto results = Sample(decoding_result, 3, WordCapitalizeMode::IgnoredCapitals, banned_sequences);
+        auto results = Sample(decoding_result, NUM_RESULTS, WordCapitalizeMode::IgnoredCapitals, banned_sequences);
 
         std::vector<std::pair<float, std::string>> str_results;
         str_results.reserve(results.size());
@@ -848,7 +850,7 @@ struct LanguageModelState {
         }
 
         auto decoding_result = DecodePromptAndMixes(next_context, mixes);
-        auto results = Sample(decoding_result, 3, capitals, banned_sequences);
+        auto results = Sample(decoding_result, NUM_RESULTS, capitals, banned_sequences);
 
         std::vector<std::pair<float, std::string>> str_results;
         str_results.reserve(results.size());
