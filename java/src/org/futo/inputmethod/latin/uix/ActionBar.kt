@@ -1094,16 +1094,6 @@ private fun CandidateItem(modifier: Modifier, it: SuggestedWordInfo, listener: S
     }
 }
 
-
-private fun<T> measureTime(label: String, operation: () -> T): T {
-    val t0 = System.currentTimeMillis()
-    val result = operation()
-    val t1 = System.currentTimeMillis()
-
-    println("Operation $label took ${t1-t0}ms")
-    return result
-}
-
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun <T> LazyFlowRow(
@@ -1118,13 +1108,11 @@ fun <T> LazyFlowRow(
 
         val rows: List<List<Pair<Int, T>>> by remember(items, maxWidthPx) {
             mutableStateOf(
-                measureTime("buildRows") {
-                    buildRows(
-                        items,
-                        itemMeasurer,
-                        maxWidthPx
-                    )
-                }
+                buildRows(
+                    items,
+                    itemMeasurer,
+                    maxWidthPx
+                )
             )
         }
 
