@@ -143,6 +143,10 @@ public final class KeyboardSwitcher implements SwitchActions {
 
         final KeyboardSizingCalculator sizingCalculator = mLatinIMELegacy.getLatinIME().getSizingCalculator();
         final ComputedKeyboardSize computedSize = sizingCalculator.calculate(layoutSetName, settingsValues);
+        if(computedSize == null) {
+            Log.e(TAG, "Unable to compute size right now.");
+            return;
+        }
 
         final KeyboardLayoutSetV2Params params = new KeyboardLayoutSetV2Params(
                 computedSize,

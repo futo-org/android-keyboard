@@ -406,9 +406,14 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         val effectiveRowCount = effectiveRows.size
 
         val displayMetrics = context.resources.displayMetrics
-        val displayWidth = displayMetrics.widthPixels
-        val displayHeight = displayMetrics.heightPixels
-        if(displayWidth == 0 || displayHeight == 0) return null // Unable to calculate yet
+        var displayWidth = displayMetrics.widthPixels
+        var displayHeight = displayMetrics.heightPixels
+        if(displayWidth == 0 || displayHeight == 0) {
+            // Just assume something so we don't have to return null
+            // TODO: Maybe better handling
+            displayWidth = 720
+            displayHeight = 1280
+        }
 
         val heightAddition = when(savedSettings.currentMode) {
             KeyboardMode.Regular -> dp(savedSettings.heightAdditionDp)
