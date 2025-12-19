@@ -27,6 +27,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 
+import androidx.annotation.Nullable;
+
 import org.futo.inputmethod.keyboard.Key;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
@@ -63,7 +65,9 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         mDrawableProvider = DynamicThemeProvider.obtainFromContext(context);
     }
 
+    @Nullable
     private Drawable mIcon;
+
     private Key currKey;
     public void setPreviewVisual(final Key key, final KeyboardIconsSet iconsSet,
                                  final KeyDrawParams drawParams, int foregroundColor) {
@@ -77,6 +81,7 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
             return;
         }
 
+        mIcon = null;
         setCompoundDrawables(null, null, null, null);
         setTextColor(foregroundColor);
         setTextSize(TypedValue.COMPLEX_UNIT_PX, key.selectTextSize(drawParams));
