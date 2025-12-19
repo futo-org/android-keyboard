@@ -17,8 +17,9 @@ import java.io.File
 import java.io.FileOutputStream
 
 
-val BASE_MODEL_RESOURCE = R.raw.ml4_1_f16_meta_fixed
-val BASE_MODEL_NAME = "ml4_1_f16_meta_fixed"
+val BASE_MODEL_RESOURCE = R.raw.ml4_q6_k
+val BASE_MODEL_NAME = "ml4_q6_k"
+val DEPRECATED_MODEL_NAME = "ml4_1_f16_meta_fixed"
 
 val MODEL_OPTION_KEY = SettingsKey(
     stringSetPreferencesKey("lmModelsByLanguage"),
@@ -193,7 +194,12 @@ object ModelPaths {
         options.forEach {
             val splits = it.split(":", limit = 2)
             val language = splits[0]
-            val modelName = splits[1]
+            var modelName = splits[1]
+
+            if(modelName == DEPRECATED_MODEL_NAME) {
+                modelName = BASE_MODEL_NAME
+                updateModelOption(context, language, File(modelDirectory, BASE_MODEL_NAME))
+            }
 
             // TODO: This assumes the extension is .gguf
             val modelFile = File(modelDirectory, "$modelName.gguf")
@@ -219,6 +225,10 @@ object ModelPaths {
 
     fun ensureDefaultModelExists(context: Context) {
         val directory = getModelDirectory(context)
+
+
+        val oldFile = File(directory, "$DEPRECATED_MODEL_NAME.gguf")
+        if(oldFile.isFile) oldFile.delete()
 
         val tgtFile = File(directory, "$BASE_MODEL_NAME.gguf")
         if(!tgtFile.isFile) {
