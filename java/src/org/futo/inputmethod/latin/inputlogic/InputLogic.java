@@ -1092,6 +1092,7 @@ public final class InputLogic {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
                 commitCurrentAutoCorrection(settingsValues, separator);
+                inputTransaction.setDidAutoCorrect();
             } else {
                 commitTyped(settingsValues,
                         StringUtils.newSingleCodePointString(codePoint));
