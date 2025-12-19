@@ -7,7 +7,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
-import org.futo.inputmethod.keyboard.KeyDetector
 import org.futo.inputmethod.latin.NgramContext
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -109,33 +108,54 @@ class LanguageModel(
         return resultingInfo
     }
 
+    private var prevSafeguardContextResult = ""
+    private fun findLongestMatch(needle: String, haystack: String): Int {
+        var result = -1 to 0
+        var ni = 0
+        for(i in 0 until haystack.length + 1) {
+            if(ni < needle.length && i < haystack.length && haystack[i] == needle[ni]) {
+                ni++
+            } else {
+                if(ni >= result.second && ni > 0) {
+                    result = i - ni to ni
+                }
+                ni = 0
+            }
+        }
+
+        return result.first
+    }
+
     private fun safeguardContext(ctx: String): String {
         var context = ctx
 
+        // Start with what we used previously
+        val matchStart = findLongestMatch(prevSafeguardContextResult, context)
+        if(matchStart != -1) context = context.substring(matchStart)
+
         // Trim the context
-        while (context.length > 128) {
-            context = if (context.contains(".") || context.contains("?") || context.contains("!")) {
-                val v = Arrays.stream(
-                    intArrayOf(
-                        context.indexOf("."),
-                        context.indexOf("?"),
-                        context.indexOf("!")
-                    )
-                ).filter { i: Int -> i != -1 }.min().orElse(-1)
-                if (v == -1) break // should be unreachable
-                context.substring(v + 1).trim { it <= ' ' }
-            } else if (context.contains(",")) {
-                context.substring(context.indexOf(",") + 1).trim { it <= ' ' }
-            } else if (context.contains(" ")) {
-                context.substring(context.indexOf(" ") + 1).trim { it <= ' ' }
-            } else {
-                break
+        val stillNeedTrimming = { context: String -> context.length > 70 || context.count { it == ' ' } > 16 }
+        if (stillNeedTrimming(context)) {
+            val v = context.indexOfLast { it == '.' || it == '?' || it == '!' }
+            if (v != -1) {
+                context = context.substring(v + 1).trim { it <= ' ' }
             }
         }
-        if (context.length > 400) {
+
+        while (stillNeedTrimming(context) && context.contains(",")) {
+            context = context.substring(context.indexOf(",") + 1).trim { it <= ' ' }
+        }
+
+        if (stillNeedTrimming(context) && context.contains(" ")) {
+            context = context.split(' ').takeLast(5).joinToString(separator = " ")
+        }
+
+        if (context.length > 144) {
             // This context probably contains some spam without adequate whitespace to trim, set it to blank
             context = ""
         }
+
+        prevSafeguardContextResult = context
 
         return context
     }
