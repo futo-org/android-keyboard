@@ -13,3 +13,6 @@
 [submodule "java/assets/themes"]
 	path = java/assets/themes
 	url = https://gitlab.futo.org/keyboard/seasonal-themes.git
+[submodule "java/res-large"]
+	path = java/res-large
+	url = https://gitlab.futo.org/keyboard/keyboard-large-resources.git

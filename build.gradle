@@ -303,7 +303,8 @@ android {
             res.srcDirs = [
                     'java/res',
                     translationsWithoutEngValues('translations/core'),
-                    translationsWithoutEngValues('translations/core-ign')
+                    translationsWithoutEngValues('translations/core-ign'),
+                    'java/res-large'
             ]
             java.srcDirs = ['common/src', 'java/src']
             manifest.srcFile 'java/AndroidManifest.xml'
