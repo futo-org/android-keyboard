@@ -5,12 +5,15 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlinx.coroutines.yield
+
 import org.futo.inputmethod.annotations.UsedForTesting
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
@@ -38,7 +41,8 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 
 interface WordLearner {
     fun addToHistory(
@@ -375,6 +379,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputStyle: Int,
         sequenceNumber: Int
     ) {
+        if(sequenceNumber < sequenceId.get() && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH) {
+            return
+        }
         val words = when {
             suggestedWords.isEmpty && (inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH ||
                     inputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
@@ -396,21 +403,28 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     var updateSuggestionJob: Job? = null
-    private fun updateSuggestionsDictionaryInternal(inputStyle: Int) {
-        val sequenceNumber = SuggestedWords.NOT_A_SEQUENCE_NUMBER
-        inputLogic.getSuggestedWords(
-            settings.current,
-            helper.keyboardSwitcher.keyboard ?: return,
-            helper.keyboardShiftMode,
-            inputStyle,
-            sequenceNumber
-        ) { suggestedWords ->
-            onGetSuggestedWords(suggestedWords, inputStyle, sequenceNumber)
+    private suspend fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
+        if(!languageModelFacilitator.shouldPassThroughToLegacy()) {
+            val result = languageModelFacilitator.updateSuggestionStripSync(inputStyle)
+            onGetSuggestedWords(result ?: SuggestedWords.getEmptyInstance(), inputStyle, sequenceNumber)
+        } else {
+            inputLogic.getSuggestedWords(
+                settings.current,
+                helper.keyboardSwitcher.keyboard ?: return,
+                helper.keyboardShiftMode,
+                inputStyle,
+                sequenceNumber
+            ) { suggestedWords ->
+                onGetSuggestedWords(suggestedWords, inputStyle, sequenceNumber)
+            }
         }
     }
 
 
-    private val updateCompleted = AtomicBoolean(true)
+    private var sequenceId = AtomicInteger(0)
+    private val sequenceIdCompleted = AtomicInteger(0)
+    private val computationMutex = Mutex()
+    private var timeTakenToUpdate = 40L
     fun updateSuggestions(inputStyle: Int) {
         if(!settings.current.needsToLookupSuggestions()
             && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH
@@ -421,53 +435,63 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             return
         }
 
-        if(!languageModelFacilitator.shouldPassThroughToLegacy()) {
-            languageModelFacilitator.updateSuggestionStripAsync(inputStyle)
-        } else {
-            updateSuggestionJob?.cancel()
-            updateCompleted.set(false)
-            updateSuggestionJob = helper.lifecycleScope.launch {
-                when(inputStyle) {
-                    SuggestedWords.INPUT_STYLE_TYPING -> delay(40L)
-                }
-                withContext(dictionaryScope) {
-                    updateSuggestionsDictionaryInternal(inputStyle)
-                    updateCompleted.set(true)
+        updateSuggestionJob?.cancel()
+        val seqId = sequenceId.incrementAndGet()
+
+        val delayTime = when {
+            // With transformer off keep 40ms static delay for legacy reasons (less battery use)
+            languageModelFacilitator.shouldPassThroughToLegacy() -> 40L
+
+            // On fast devices, prefer to wait less to improve responsiveness
+            else -> 40L.coerceAtMost(timeTakenToUpdate / 2).coerceAtLeast(16L)
+        }
+
+        updateSuggestionJob = helper.lifecycleScope.launch {
+            when(inputStyle) {
+                SuggestedWords.INPUT_STYLE_TYPING -> delay(delayTime)
+            }
+            withContext(NonCancellable + dictionaryScope) {
+                computationMutex.withLock {
+                    // double check in case sequence id incremented after we acquired scope
+                    if (sequenceId.get() > seqId) return@withContext
+
+                    val t0 = System.currentTimeMillis()
+                    updateSuggestionsDictionaryInternal(inputStyle, seqId)
+                    val t1 = System.currentTimeMillis()
+                    timeTakenToUpdate = (timeTakenToUpdate + (t1 - t0)) / 2
+
+                    sequenceIdCompleted.set(seqId)
                 }
             }
         }
     }
 
     fun ensureSuggestionsCompleted(): Boolean {
-        if(!languageModelFacilitator.shouldPassThroughToLegacy()) {
-            if(languageModelFacilitator.hasPendingUpdate()) {
-                return languageModelFacilitator.blockUntilComplete()
-            } else {
-                // no pending updates
-                return true
-            }
-        } else {
-            val currJob = updateSuggestionJob
-            if(currJob != null && currJob.isActive == true && updateCompleted.get() == false) {
-                currJob.cancel()
-                val newJob = helper.lifecycleScope.launch(dictionaryScope) {
-                    if(!updateCompleted.get()) {
-                        updateSuggestionsDictionaryInternal(SuggestedWords.INPUT_STYLE_TYPING)
-                        updateCompleted.set(true)
-                    }
-                }
+        val currJob = updateSuggestionJob
 
-                updateSuggestionJob = newJob
+        val seqId = sequenceId.get()
+        if(sequenceIdCompleted.get() < seqId) {
+            currJob?.cancel()
 
-                return runBlocking {
-                    (withTimeoutOrNull(300L) {
-                        newJob.join()
-                        true
-                    } == true)
+            val newJob = helper.lifecycleScope.launch(NonCancellable + dictionaryScope) {
+                if(sequenceIdCompleted.get() < seqId) {
+                    updateSuggestionsDictionaryInternal(SuggestedWords.INPUT_STYLE_TYPING, seqId)
+                    sequenceIdCompleted.set(seqId)
                 }
             }
-            return true
+
+            updateSuggestionJob = newJob
+
+            return runBlocking {
+                (withTimeoutOrNull(450L) {
+                    newJob.join()
+                    true
+                } == true)
+            }.also {
+                if(!it) languageModelFacilitator.reportTimeout()
+            }
         }
+        return true
     }
 
     override fun onStartBatchInput() {

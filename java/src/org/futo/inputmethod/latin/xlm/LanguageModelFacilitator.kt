@@ -5,19 +5,14 @@ import android.util.Log
 import android.widget.Toast
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.OnGetSuggestedWordsCallbackWithInputStyle
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
@@ -34,7 +29,6 @@ import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
-import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
@@ -132,13 +126,6 @@ private fun levenshteinDistance(s1: String, s2: String): Int {
     return dist[len1][len2]
 }
 
-private fun areWordsRoughlyEqual(word1: String, word2: String, threshold: Int): Boolean {
-    val distance = levenshteinDistance(word1, word2)
-    return distance <= threshold
-}
-
-
-
 public class LanguageModelFacilitator(
     val context: Context,
     val inputLogic: InputLogic,
@@ -152,7 +139,6 @@ public class LanguageModelFacilitator(
     private val TAG = "LanguageModelFacilitator"
     private val userDictionary = UserDictionaryObserver(context)
 
-    private var shouldSuggestEmojis = SHOW_EMOJI_SUGGESTIONS.default
     private var languageModel: LanguageModel? = null
     data class PredictionInputValues(
         val composedData: ComposedData,
@@ -165,47 +151,21 @@ public class LanguageModelFacilitator(
     private var currentSequenceId = 0
     private val sequenceIdFinishedFlow = MutableSharedFlow<Pair<PredictionInputValues, SuggestedWords?>>(replay = 1, extraBufferCapacity = 1)
 
-    private val computationSemaphore = Semaphore(1)
-    public fun hasPendingUpdate(): Boolean =
-        computationSemaphore.availablePermits == 0
-
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val languageModelScope = Dispatchers.Default.limitedParallelism(1)
 
     private var numConsecutiveTimeouts = 0
     private var transformerDisabled = false
-    public fun blockUntilComplete(): Boolean {
-        if(languageModel == null) return false
-        runBlocking {
-            try {
-                withTimeout(450L) {
-                    computationSemaphore.acquire()
-                    computationSemaphore.release()
-                    val result = try {
-                        sequenceIdFinishedFlow.first { it.first.sequenceId >= currentSequenceId }
-                    } catch (ignored: Exception) {
-                        null
-                    }
 
-                    // If it's non-null the processing thread is waiting on the main thread to send this to callback, so just send it ourselves
-                    if(result?.second != null) {
-                        suggestedWordsCallback.onGetSuggestedWords(
-                            result.second!!,
-                            result.first.inputStyle,
-                            result.first.sequenceId
-                        )
-                    }
-                }
-                numConsecutiveTimeouts = 0
-            } catch(e: TimeoutCancellationException) {
-                if(BuildConfig.DEBUG) Log.d(TAG, "Failed to complete prediction within the time!")
-                numConsecutiveTimeouts += 1
-                if(numConsecutiveTimeouts > 5) {
-                    transformerDisabled = true
-                    if(BuildConfig.DEBUG) Log.w(TAG, "Temporarily disabling transformer due to continuous timeouts")
-                }
-                return@runBlocking false
-            }
+    fun reportTimeout() {
+        if(shouldPassThroughToLegacy()) return
+
+        if(BuildConfig.DEBUG) Log.d(TAG, "Failed to complete prediction within the time!")
+        numConsecutiveTimeouts += 1
+        if(numConsecutiveTimeouts > 5) {
+            transformerDisabled = true
+            if(BuildConfig.DEBUG) Log.w(TAG, "Temporarily disabling transformer due to continuous timeouts")
         }
-        return true
     }
 
     private var skipLanguage: String? = null
@@ -233,13 +193,8 @@ public class LanguageModelFacilitator(
 
         if(dictionaryFacilitator.mostConfidentLocale != languageModel?.locale) return null
 
-        val settingsValues = settings.current ?: return null
-
         val keyboard = keyboardSwitcher.keyboard ?: return null
-        val settingsForPrediction = SettingsValuesForSuggestion(
-            settingsValues.mBlockPotentiallyOffensive,
-            settingsValues.mTransformerPredictionEnabled
-        )
+
         val proximityInfoHandle = keyboard.proximityInfo.nativeProximityInfo
 
         val autocorrectThreshold = context.getSetting(AutocorrectThresholdSetting)
@@ -267,22 +222,15 @@ public class LanguageModelFacilitator(
         }
     }
 
-    private suspend fun processUpdateSuggestionStrip(values: PredictionInputValues) {
-        if(keyboardSwitcher.keyboard == null) return
-
-        computationSemaphore.acquire()
+    private suspend fun processUpdateSuggestionStrip(values: PredictionInputValues): SuggestedWords? = withContext(languageModelScope) {
+        if(keyboardSwitcher.keyboard == null) return@withContext null
 
         val suggestedWords = try {
             val job = Job()
             inputLogic.mWordComposer.setAutoCorrection(null)
 
             if(values.composedData.mTypedWord.length > BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH-1) {
-                suggestedWordsCallback.onGetSuggestedWords(
-                    SuggestedWords.getEmptyInstance(),
-                    values.inputStyle,
-                    values.sequenceId
-                )
-                return
+                return@withContext SuggestedWords.getEmptyInstance()
             }
 
             var transformerWeight = context.getSetting(BinaryDictTransformerWeightSetting)
@@ -290,7 +238,7 @@ public class LanguageModelFacilitator(
 
             val holder = AsyncResultHolder<SuggestedWords?>("Suggest")
 
-            CoroutineScope(GeneralIME.dictionaryScope).launch {
+            lifecycleScope.launch(GeneralIME.dictionaryScope) {
                 inputLogic.getSuggestedWords(
                     settings.current,
                     keyboardSwitcher.keyboard ?: return@launch,
@@ -302,7 +250,7 @@ public class LanguageModelFacilitator(
                 }
             }
 
-            CoroutineScope(Dispatchers.Default + job).launch {
+            lifecycleScope.launch(Dispatchers.Default + job) {
                 delay(500L)
                 suggestedWordsCallback.onGetSuggestedWords(
                     SuggestedWords.getEmptyInstance(),
@@ -316,62 +264,23 @@ public class LanguageModelFacilitator(
                 14, values.ngramContext.isBeginningOfSentenceContext, false)
 
             val lmSuggestions = runLanguageModel(values)
-
             if(lmSuggestions == null) {
-                holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())?.let { results ->
-                    job.cancel()
+                val suggestedWordsDict = holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())
+                if(suggestedWordsDict == null) return@withContext null
 
-                    val useRescoring = false
+                job.cancel()
 
-                    val finalResults = if(useRescoring && values.composedData.mIsBatchMode) {
-                        val rescored = languageModel?.rescoreSuggestions(
-                            results,
-                            values.composedData,
-                            values.ngramContext,
-                            userDictionary.getWords(listOf(languageModel!!.locale)).map { it.word }
-                        )
+                val finalResults = suggestedWordsDict
 
-                        if(rescored != null) {
-                            SuggestedWords(
-                                ArrayList(rescored),
-                                // TODO: These should ideally not be null/false
-                                null,
-                                null,
-                                false,
-                                false,
-                                false,
-                                results.mInputStyle,
-                                results.mSequenceNumber
-                            )
-                            // TODO: We need the swapping rejection thing, the rescored array is resorted without the swapping
-                        } else {
-                            results
-                        }
-                    } else {
-                        results
-                    }
-
-                    finalResults.mSuggestedWordInfoList.removeAll {
-                        !suggestionBlacklist.isSuggestedWordOk(it)
-                    }
-
-                    finalResults.mRawSuggestions?.removeAll {
-                        !suggestionBlacklist.isSuggestedWordOk(it)
-                    }
-
-                    sequenceIdFinishedFlow.emit(Pair(values, finalResults))
-
-                    withContext(Dispatchers.Main) {
-                        suggestedWordsCallback.onGetSuggestedWords(
-                            finalResults,
-                            values.inputStyle,
-                            values.sequenceId
-                        )
-                    }
-
-                    sequenceIdFinishedFlow.emit(Pair(values, null))
+                finalResults.mSuggestedWordInfoList.removeAll {
+                    !suggestionBlacklist.isSuggestedWordOk(it)
                 }
-                return
+
+                finalResults.mRawSuggestions?.removeAll {
+                    !suggestionBlacklist.isSuggestedWordOk(it)
+                }
+
+                return@withContext finalResults
             }
 
             val reweightedSuggestions = lmSuggestions.mapIndexedNotNull { i, it ->
@@ -394,7 +303,6 @@ public class LanguageModelFacilitator(
             val maxWord = reweightedSuggestions.maxByOrNull { it.mScore }
 
             val suggestedWordsDict = holder.get(null, Constants.GET_SUGGESTED_WORDS_TIMEOUT.toLong())
-
 
             val suggestedWordsDictList = suggestedWordsDict?.mSuggestedWordInfoList?.filter {
                 suggestionBlacklist.isSuggestedWordOk(it)
@@ -436,7 +344,6 @@ public class LanguageModelFacilitator(
                 filtered.add(maxWordDict)
                 filtered.add(maxWord)
             }
-
             // In some cases the LM will predict an uppercased word but dictionary predicts lowercased,
             // we should prefer the lowercase version to reduce automatically capitalizing which can be
             // annoying
@@ -491,10 +398,7 @@ public class LanguageModelFacilitator(
                 suggestionResults.add(clone)
             }
 
-            if(suggestionResults.mRawSuggestions != null) {
-                suggestionResults.mRawSuggestions.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
-            }
-
+            suggestionResults.mRawSuggestions?.addAll(reweightedSuggestions.filter { !filtered.contains(it) })
             if(transformerWeight != Float.POSITIVE_INFINITY) {
                 suggestedWordsDictList?.let { words ->
                     suggestionResults.addAll(words.filter {
@@ -505,9 +409,9 @@ public class LanguageModelFacilitator(
                 }
             }
 
-            val settingsValues = settings.current ?: return
-            val locale = dictionaryFacilitator.primaryLocale ?: return
-            val wordComposer = inputLogic.mWordComposer ?: return
+            val settingsValues = settings.current ?: return@withContext null
+            val locale = dictionaryFacilitator.primaryLocale ?: return@withContext null
+            val wordComposer = inputLogic.mWordComposer ?: return@withContext null
 
             val suggestedWords = Suggest.obtainNonBatchedInputSuggestedWords(
                 wordComposer,
@@ -537,25 +441,12 @@ public class LanguageModelFacilitator(
 
             job.cancel()
 
-            // TODO
-            if(values.sequenceId < currentSequenceId) return
-
             suggestedWords
         } finally {
-            computationSemaphore.release()
+
         }
 
-        sequenceIdFinishedFlow.emit(Pair(values, suggestedWords))
-
-        withContext(Dispatchers.Main) {
-            suggestedWordsCallback.onGetSuggestedWords(
-                suggestedWords,
-                values.inputStyle,
-                values.sequenceId
-            )
-        }
-
-        sequenceIdFinishedFlow.emit(Pair(values, null))
+        return@withContext suggestedWords
     }
 
     public suspend fun destroyModel() {
@@ -576,7 +467,7 @@ public class LanguageModelFacilitator(
             withContext(Dispatchers.Default) {
                 TrainingWorkerStatus.lmRequest.collect {
                     if (it == LanguageModelFacilitatorRequest.ResetModel) {
-                        Log.d(TAG, "ResetModel event received, destroying model")
+                        if(BuildConfig.DEBUG) Log.d(TAG, "ResetModel event received, destroying model")
                         destroyModel()
                     }else if(it == LanguageModelFacilitatorRequest.ClearTrainingLog) {
                         historyLog.clear()
@@ -589,68 +480,28 @@ public class LanguageModelFacilitator(
         launch {
             withContext(Dispatchers.Default) {
                 ModelPaths.modelOptionsUpdated.collect {
-                    Log.d(TAG, "ModelPaths options updated, destroying model")
+                    if(BuildConfig.DEBUG) Log.d(TAG, "ModelPaths options updated, destroying model")
                     skipLanguage = null
                     destroyModel()
                 }
             }
         }
-
-        launch {
-            withContext(Dispatchers.Default) {
-                sharedFlow.conflate().collect { value ->
-                    //Log.d(TAG, "Collecting")
-                    processUpdateSuggestionStrip(value)
-                }
-            }
-        }
-
-        launch {
-            withContext(Dispatchers.Default) {
-                context.getSettingFlow(SHOW_EMOJI_SUGGESTIONS).collect { shouldSuggestEmojis = it }
-            }
-        }
-
-        /*
-        trainingEnabled = context.getSetting(USE_TRANSFORMER_FINETUNING)
-        launch {
-            withContext(Dispatchers.Default) {
-                val shouldTrain = context.getSettingFlow(USE_TRANSFORMER_FINETUNING)
-                shouldTrain.collect {
-
-                    if(!trainingEnabled && it) {
-                        scheduleTrainingWorkerBackground(context)
-                    }
-
-                    trainingEnabled = it
-                }
-            }
-        }
-
-        if(trainingEnabled) {
-            scheduleTrainingWorkerBackground(context)
-        }
-        */
     }
 
     public fun shouldPassThroughToLegacy(): Boolean = when {
         (!settings.current.mTransformerPredictionEnabled) -> true
         (dictionaryFacilitator.primaryLocale.language == skipLanguage) -> true
+        //(transformerDisabled) -> true
         else -> false
     }
 
-    public fun updateSuggestionStripAsync(inputStyle: Int) {
+    suspend fun updateSuggestionStripSync(inputStyle: Int): SuggestedWords? {
         val settingsValues = settings.current
         if (!settingsValues.needsToLookupSuggestions() && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH) {
-            suggestedWordsCallback.onGetSuggestedWords(
-                SuggestedWords.getEmptyInstance(),
-                inputStyle,
-                SuggestedWords.NOT_A_SEQUENCE_NUMBER
-            )
-            return
+            return SuggestedWords.getEmptyInstance()
         }
 
-        if(!inputLogic.mConnection.isConnected) return
+        if(!inputLogic.mConnection.isConnected) return null
 
         try {
             val wordComposer = inputLogic.mWordComposer
@@ -666,14 +517,15 @@ public class LanguageModelFacilitator(
                 ++currentSequenceId
             )
 
-            lifecycleScope.launch {
-                //Log.d(TAG, "Emitting values")
-                sharedFlow.emit(values)
-            }
+            return processUpdateSuggestionStrip(values)
         } catch(e: Exception) {
+            if(e is CancellationException) throw e
+
             if(BuildConfig.DEBUG) Log.d(TAG, "Failed to get context, composed data snapshot, etc: $e")
             e.printStackTrace()
         }
+
+        return null
     }
 
     private val historyLog: MutableList<HistoryLogForTraining> = mutableListOf()
