@@ -28,6 +28,7 @@ import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutPage
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2Params
 import org.futo.inputmethod.v2keyboard.LayoutManager
@@ -114,10 +115,16 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
                 )
             )
 
-            keyboard.value = layoutSet.getKeyboard(KeyboardLayoutElement(
-                kind = KeyboardLayoutKind.Alphabet0,
-                page = KeyboardLayoutPage.Base
-            ))
+            try {
+                keyboard.value = layoutSet.getKeyboard(
+                    KeyboardLayoutElement(
+                        kind = KeyboardLayoutKind.Alphabet0,
+                        page = KeyboardLayoutPage.Base
+                    )
+                )
+            }catch(e: Exception) {
+                BugViewerState.pushException("KeyboardLayoutPreview layout", e)
+            }
         }
     }
 }

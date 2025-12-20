@@ -26,9 +26,17 @@ data class BugInfo(val name: String, val details: String)
 public object BugViewerState {
     val bugs = mutableListOf<BugInfo>()
 
-    public fun pushBug(bug: BugInfo) {
+    fun pushBug(bug: BugInfo) {
         Log.e("BugViewerState", "Bug pushed: $bug")
         bugs.add(0, bug)
+    }
+
+    fun pushException(name: String, exception: Exception) {
+        pushBug(BugInfo(name, """
+Cause: ${exception.message}
+
+Stack trace: ${exception.stackTrace.map { it.toString() }}
+"""))
     }
 
     var isBugViewerPendingOpen = false
