@@ -479,16 +479,23 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     private val computationMutex = Mutex()
     private var timeTakenToUpdate = 40L
     fun updateSuggestions(inputStyle: Int) {
-        if(!settings.current.needsToLookupSuggestions()
-            && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH
-            && inputStyle != SuggestedWords.INPUT_STYLE_UPDATE_BATCH
-        ) {
-            updateSuggestionJob?.cancel()
-            setNeutralSuggestionStrip()
-            return
+        updateSuggestionJob?.cancel()
+
+        val isSwipe = inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
+                || inputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+
+        if(!isSwipe) {
+            if (!settings.current.needsToLookupSuggestions()) {
+                setNeutralSuggestionStrip()
+                return
+            }
+
+            if (!inputLogic.mWordComposer.isComposingWord && !settings.current.mBigramPredictionEnabled) {
+                setNeutralSuggestionStrip()
+                return
+            }
         }
 
-        updateSuggestionJob?.cancel()
         val seqId = sequenceId.incrementAndGet()
 
         val delayTime = when {
