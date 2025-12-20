@@ -461,7 +461,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
                 }
             }
-            lmResult == null && dictResult != null -> {
+
+            dictResult != null -> {
                 onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
             }
 
