@@ -790,7 +790,7 @@ val KeyboardSettingsMenu = UserSettingsMenu(
         ),
         userSettingToggleSharedPrefs(
             title = R.string.keyboard_settings_period_key,
-            subtitle = R.string.keyboard_settings_period_key_subtitle,
+            subtitle = R.string.keyboard_settings_period_key_subtitle2,
             key = Settings.PREF_ENABLE_ALT_PERIOD_KEY,
             default = {false},
         ),
