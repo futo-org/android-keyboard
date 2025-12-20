@@ -58,10 +58,11 @@ Stack trace: ${exception.stackTrace.map { it.toString() }}
 private val Throwable.rootCause: Throwable?
     get() = generateSequence(this) { it.cause }.lastOrNull()?.takeIf { it !== this }
 
-var CanThrowIfDebug = false
+var CanThrowIfDebug = true
 
+val IsDebug = BuildConfig.DEBUG || (BuildConfig.FLAVOR == "unstable" && CanThrowIfDebug)
 fun throwIfDebug(ex: Exception) {
-    if(BuildConfig.DEBUG || (BuildConfig.FLAVOR == "unstable" && CanThrowIfDebug)) {
+    if(IsDebug) {
         throw ex
     } else {
         val sw = java.io.StringWriter()
