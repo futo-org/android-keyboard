@@ -237,15 +237,20 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         if(visible != null) isNavigationBarVisible = visible
 
         if(SupportsNavbarExtension) {
-            val shouldMaintainContrast = size.value is FloatingKeyboardSize
+            val isFloating = size.value is FloatingKeyboardSize
 
             val color = (colorScheme.navigationBarColor ?: colorScheme.keyboardSurface)
 
+            val colorToUse = when {
+                isFloating -> Color.BLACK
+                else -> (colorScheme.navigationBarColorForTransparency ?: color).toArgb()
+            } and 0x00FFFFFF
+
             window.window?.let { window ->
                 if(UseTransparentNavbar) {
-                    applyWindowColors(window, (colorScheme.navigationBarColorForTransparency ?: color).copy(alpha = 0.0f).toArgb(), statusBar = false)
+                    applyWindowColors(window, colorToUse, statusBar = false)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        window.setNavigationBarContrastEnforced(shouldMaintainContrast)
+                        window.setNavigationBarContrastEnforced(isFloating)
                     }
 
                     WindowCompat.setDecorFitsSystemWindows(window, false)
