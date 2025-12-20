@@ -6,6 +6,7 @@ import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnectionWrapper
 import android.view.inputmethod.TextAttribute
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.actions.IsDebug
 import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 
 interface IBufferedInputConnection {
@@ -176,10 +177,34 @@ class InputConnectionWithBufferingWrapper(target: InputConnection) : InputConnec
         return setComposingRegion(start, end)
     }
 
+    // Workaround for Firefox space-swapping bug
+    private val pattern1 = listOf(InputCommand.Commit(text=" "), InputCommand.Delete(0, 1))
+    private fun alternativeApply(mergedList: List<InputCommand>): Boolean {
+        if(mergedList == pattern1) {
+            // TODO: Not sure this check is needed
+            if(!IsDebug || super.getTextAfterCursor(1, 0) == " ") {
+                val selection = InputConnectionUtil.extractSelection(this)
+                if(selection.first != -1 && selection.first == selection.second) {
+                    if(BuildConfig.DEBUG) {
+                        Log.d("BufferedInputConnection", "  alternative application applied")
+                    }
+                    super.finishComposingText()
+                    super.setSelection(selection.first+1, selection.first+1)
+                    return true
+                }
+            } else {
+                throwIfDebug(Exception("This pattern should never occur unless there is a space in front."))
+            }
+        }
+        return false
+    }
+
     override fun send() {
         val mergedList = merge(commandQueue)
         if(BuildConfig.DEBUG) Log.d("BufferedInputConnection", "Command queue: $commandQueue, merged: $mergedList")
         commandQueue.clear()
+
+        if(alternativeApply(mergedList)) return
 
         if(mergedList.size > 1) super.beginBatchEdit()
         mergedList.forEach { when(it) {
