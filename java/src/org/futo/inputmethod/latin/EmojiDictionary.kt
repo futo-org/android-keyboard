@@ -13,6 +13,10 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
         return arrayListOf()
     }
 
+    // Usually for short texts like "it", we really mean the word "it" and not the flag of Italy
+    private fun isWordValidForShortcut(word: String) =
+        word.length > 2 || word.all { it.isUpperCase() }
+
     override fun getSuggestions(
         composedData: ComposedData?,
         ngramContext: NgramContext?,
@@ -26,16 +30,15 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
 
         val typedWord = composedData?.mTypedWord ?: ""
 
-        // Usually for short texts like "it", we really mean the word "it" and not the flag of Italy
-        if(typedWord.length <= 2 && typedWord.any { it.isLowerCase() }) return arrayListOf()
-
         var emoji: String? = null
         if(!typedWord.isEmpty()) {
-            emoji = PersistentEmojiState.getShortcut(mLocale, typedWord.lowercase(mLocale))
+            if(isWordValidForShortcut((typedWord)))
+                emoji = PersistentEmojiState.getShortcut(mLocale, typedWord.lowercase(mLocale))
         } else if((ngramContext?.prevWordCount ?: 0) > 0 && composedData?.mIsBatchMode == false) {
             val prevWord = ngramContext?.getNthPrevWord(1)?.toString() ?: ""
             if(!prevWord.isEmpty()) {
-                emoji = PersistentEmojiState.getShortcut(mLocale, prevWord.lowercase(mLocale))
+                if(isWordValidForShortcut(prevWord))
+                     emoji = PersistentEmojiState.getShortcut(mLocale, prevWord.lowercase(mLocale))
             }
         }
 
