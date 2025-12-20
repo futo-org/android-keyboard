@@ -161,7 +161,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
 
-    fun resetDictionaryFacilitator(force: Boolean = false, reloadMainDictionary: Boolean = false) {
+    fun resetDictionaryFacilitator(force: Boolean = false, reloadAllDicts: Boolean = false) {
         if(!context.isDirectBootUnlocked) return
 
         val settings = settings.current
@@ -180,7 +180,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             context,
             locales, settings.mUseContactsDict,
             settings.mUsePersonalizedDicts,
-            reloadMainDictionary,
+            reloadAllDicts,
             settings.mAccount, "",  /* dictNamePrefix */
             availabilityListener /* DictionaryInitializationListener */
         )
@@ -205,7 +205,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             GlobalIMEMessage.collect { message ->
                 when(message) {
                     IMEMessage.ReloadResources -> withContext(Dispatchers.Main) {
-                        resetDictionaryFacilitator(force = true, reloadMainDictionary = true)
+                        resetDictionaryFacilitator(force = true, reloadAllDicts = true)
                     }
                     else -> {}
                 }

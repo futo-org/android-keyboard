@@ -33,6 +33,8 @@ import okio.ByteString.Companion.toByteString
 import okio.buffer
 import okio.sink
 import okio.source
+import org.futo.inputmethod.engine.GlobalIMEMessage
+import org.futo.inputmethod.engine.IMEMessage
 import org.futo.inputmethod.engine.general.mozcUserProfileDir
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.utils.readAllBytesCompat
@@ -410,6 +412,8 @@ object SettingsExporter {
             zipIn.closeEntry()
             entry = zipIn.nextEntry
         }
+
+        GlobalIMEMessage.tryEmit(IMEMessage.ReloadResources)
     }
 
     fun triggerExportSettings(context: Context) {

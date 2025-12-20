@@ -322,7 +322,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             final List<Locale> newLocales,
             final boolean useContactsDict,
             final boolean usePersonalizedDicts,
-            final boolean forceReloadMainDictionary,
+            final boolean forceReloadAllDictionaries,
             @Nullable final String account,
             final String dictNamePrefix,
             @Nullable final DictionaryInitializationListener listener) {
@@ -364,7 +364,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             final boolean noExistingDictsForThisLocale = (null == dictionaryGroupForLocale);
 
             final Dictionary mainDict;
-            if (forceReloadMainDictionary || noExistingDictsForThisLocale
+            if (forceReloadAllDictionaries || noExistingDictsForThisLocale
                     || !dictionaryGroupForLocale.hasDict(Dictionary.TYPE_MAIN, account)) {
                 mainDict = null;
             } else {
@@ -376,7 +376,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             for (final String subDictType : subDictTypesToUse) {
                 final ExpandableBinaryDictionary subDict;
                 if (noExistingDictsForThisLocale
-                        || !dictionaryGroupForLocale.hasDict(subDictType, account)) {
+                        || !dictionaryGroupForLocale.hasDict(subDictType, account)
+                        || forceReloadAllDictionaries) {
                     // Create a new dictionary.
                     subDict = getSubDict(subDictType, context, newLocale, null /* dictFile */,
                             dictNamePrefix, account);
@@ -393,32 +394,38 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             newDictionaryGroups.add(newDictionaryGroup);
         }
 
-        // Replace Dictionaries.
-        final List<DictionaryGroup> oldDictionaryGroups;
-        synchronized (mLock) {
-            oldDictionaryGroups = mDictionaryGroups;
-            mDictionaryGroups = newDictionaryGroups;
+        if(forceReloadAllDictionaries) UserHistoryDictionary.forceUncleanClose = true;
+        try {
+            // Replace Dictionaries.
+            final List<DictionaryGroup> oldDictionaryGroups;
+            synchronized (mLock) {
+                oldDictionaryGroups = mDictionaryGroups;
+                mDictionaryGroups = newDictionaryGroups;
 
-            for(DictionaryGroup dictionaryGroup : newDictionaryGroups) {
-                final Dictionary mainDict = dictionaryGroup.getDict(Dictionary.TYPE_MAIN);
-                if (mainDict == null || !mainDict.isInitialized()) {
-                    asyncReloadUninitializedMainDictionaries(context, dictionaryGroup.mLocale, listener);
+                for (DictionaryGroup dictionaryGroup : newDictionaryGroups) {
+                    final Dictionary mainDict = dictionaryGroup.getDict(Dictionary.TYPE_MAIN);
+                    if (mainDict == null || !mainDict.isInitialized()) {
+                        asyncReloadUninitializedMainDictionaries(context, dictionaryGroup.mLocale, listener);
+                    }
                 }
             }
-        }
-        if (listener != null) {
-            listener.onUpdateMainDictionaryAvailability(hasAtLeastOneInitializedMainDictionary());
-        }
 
-        // Clean up old dictionaries.
-        for (final Locale localeToCleanUp : existingDictionariesToCleanup.keySet()) {
-            final ArrayList<String> dictTypesToCleanUp =
-                    existingDictionariesToCleanup.get(localeToCleanUp);
-            final DictionaryGroup dictionarySetToCleanup =
-                    findDictionaryGroupWithLocale(oldDictionaryGroups, localeToCleanUp);
-            for (final String dictType : dictTypesToCleanUp) {
-                dictionarySetToCleanup.closeDict(dictType);
+            if (listener != null) {
+                listener.onUpdateMainDictionaryAvailability(hasAtLeastOneInitializedMainDictionary());
             }
+
+            // Clean up old dictionaries.
+            for (final Locale localeToCleanUp : existingDictionariesToCleanup.keySet()) {
+                final ArrayList<String> dictTypesToCleanUp =
+                        existingDictionariesToCleanup.get(localeToCleanUp);
+                final DictionaryGroup dictionarySetToCleanup =
+                        findDictionaryGroupWithLocale(oldDictionaryGroups, localeToCleanUp);
+                for (final String dictType : dictTypesToCleanUp) {
+                    dictionarySetToCleanup.closeDict(dictType);
+                }
+            }
+        } finally {
+            UserHistoryDictionary.forceUncleanClose = false;
         }
 
         if (mValidSpellingWordWriteCache != null) {

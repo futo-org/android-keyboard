@@ -105,10 +105,11 @@ public class UserHistoryDictionary extends ExpandableBinaryDictionary {
                 isValid, 1 /* count */, timestamp);
     }
 
+    public static boolean forceUncleanClose = false;
     @Override
     public void close() {
         // Flush pending writes.
-        asyncFlushBinaryDictionary();
+        if(!forceUncleanClose) asyncFlushBinaryDictionary();
         super.close();
     }
 

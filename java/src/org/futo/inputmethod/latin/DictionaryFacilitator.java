@@ -119,7 +119,7 @@ public interface DictionaryFacilitator {
             final List<Locale> newLocales,
             final boolean useContactsDict,
             final boolean usePersonalizedDicts,
-            final boolean forceReloadMainDictionary,
+            final boolean forceReloadAllDictionaries,
             @Nullable final String account,
             final String dictNamePrefix,
             @Nullable final DictionaryInitializationListener listener);
