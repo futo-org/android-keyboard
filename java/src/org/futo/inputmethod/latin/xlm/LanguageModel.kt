@@ -289,7 +289,7 @@ class LanguageModel(
                 }
             }
         }
-        if (composeInfo.partialWord.isNotEmpty() && canAutocorrect) {
+        if (canAutocorrect && composeInfo.partialWord.length > 1) {
             kind =
                 SuggestedWordInfo.KIND_WHITELIST or SuggestedWordInfo.KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION
         }

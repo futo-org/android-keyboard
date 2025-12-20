@@ -349,6 +349,7 @@ public class LanguageModelFacilitator(
         if(maxWordDict?.mSourceDict?.mDictType == Dictionary.TYPE_USER_HISTORY
             && maxWordDict.mScore > 100
             && maxWord != null
+            && (maxWordDict.mWord == values.composedData.mTypedWord || maxWordDict.mWord.length > 1)
         ) {
             if(BuildConfig.DEBUG) Log.d(TAG, "type user history found")
             val clone = maxWordDict.scoreAtLeast(maxWord)
