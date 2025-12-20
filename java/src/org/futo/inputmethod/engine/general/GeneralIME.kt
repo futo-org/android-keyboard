@@ -445,7 +445,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
         @Suppress("KotlinConstantConditions")
         when {
-            lmResult != null && dictResult != null && predictionInputValues != null -> {
+            !lmResult.isNullOrEmpty() && dictResult != null && predictionInputValues != null -> {
                 val processed = languageModelFacilitator.processAndMergeSuggestions(
                     predictionInputValues,
                     dictResult,
