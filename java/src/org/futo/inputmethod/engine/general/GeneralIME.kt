@@ -418,7 +418,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             lmUpdateJob?.cancel()
             lmUpdateJob = helper.lifecycleScope.launch(languageModelFacilitator.languageModelScope) {
                 val result = languageModelFacilitator.getLanguageModelSuggestions(predictionInputValues)
-                lmResultHolder.set(result)
+                lmResultHolder.set(result ?: arrayListOf())
             }
 
             // This runs synchronously
