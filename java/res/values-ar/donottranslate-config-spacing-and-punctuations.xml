@@ -25,4 +25,6 @@
          U+060C: "،" ARABIC COMMA
          U+061B: "؛" ARABIC SEMICOLON -->
     <string name="suggested_punctuations">!,&#x061F;,&#x060C;,:,&#x061B;,\",(|),)|(,\',-,/,@,_</string>
+
+    <string name="symbols_followed_by_space">.,;:!?)]}&#x061F;&#x060C;&#x061B;</string>
 </resources>
