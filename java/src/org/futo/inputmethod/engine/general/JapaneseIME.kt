@@ -375,12 +375,45 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     var layoutHint: String? = null
     var configId: KeyboardId? = null
+    var configSpec: Keyboard.KeyboardSpecification? = null
+
+    private fun getCurrentConfigSpec(): Keyboard.KeyboardSpecification {
+        val useFlickOnly = helper.context.getSetting(JapaneseIMESettings.FlickOnly)
+        val id = helper.keyboardSwitcher.keyboard?.mId
+
+        configId = id
+
+        val keyboardSpecification = when {
+            id?.mElement?.kind == KeyboardLayoutKind.Symbols ||
+                    id?.mElement?.kind == KeyboardLayoutKind.Number ||
+                    id?.mElement?.kind == KeyboardLayoutKind.NumberBasic ||
+                    id?.mElement?.kind == KeyboardLayoutKind.Phone ->
+                Keyboard.KeyboardSpecification.SYMBOL_NUMBER
+
+            id?.mElement?.kind == KeyboardLayoutKind.Alphabet0 && layoutHint == "qwerty" ->
+                Keyboard.KeyboardSpecification.QWERTY_KANA
+
+            id?.mElement?.kind == KeyboardLayoutKind.Alphabet1 && layoutHint == "qwerty" ->
+                Keyboard.KeyboardSpecification.QWERTY_ALPHABET
+
+            id?.mElement?.kind == KeyboardLayoutKind.Alphabet1 ||
+                    id?.mElement?.kind == KeyboardLayoutKind.Alphabet2 ||
+                    id?.mElement?.kind == KeyboardLayoutKind.Alphabet3 ->
+                if(!useFlickOnly)
+                    Keyboard.KeyboardSpecification.TWELVE_KEY_TOGGLE_FLICK_ALPHABET
+                else
+                    Keyboard.KeyboardSpecification.TWELVE_KEY_FLICK_ALPHABET
+
+            useFlickOnly -> Keyboard.KeyboardSpecification.TWELVE_KEY_FLICK_KANA
+            else -> Keyboard.KeyboardSpecification.TWELVE_KEY_TOGGLE_FLICK_KANA
+        }
+
+        return keyboardSpecification
+    }
+
     private fun updateConfig(resetSelectionTracker: Boolean = true) {
         val settings = Settings.getInstance().current
-        val useFlickOnly = helper.context.getSetting(JapaneseIMESettings.FlickOnly)
         val halfWidthOnly = helper.context.getSetting(JapaneseIMESettings.HalfWidthSpace)
-        val id = helper.keyboardSwitcher.keyboard?.mId
-        configId = id
 
         executor.config = ProtoConfig.Config.newBuilder().apply {
             sessionKeymap = ProtoConfig.Config.SessionKeymap.MOBILE
@@ -412,30 +445,9 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
             }.build()
         }.build()
 
-        val keyboardSpecification = when {
-            id?.mElement?.kind == KeyboardLayoutKind.Symbols ||
-            id?.mElement?.kind == KeyboardLayoutKind.Number ||
-            id?.mElement?.kind == KeyboardLayoutKind.NumberBasic ||
-            id?.mElement?.kind == KeyboardLayoutKind.Phone ->
-                Keyboard.KeyboardSpecification.SYMBOL_NUMBER
 
-            id?.mElement?.kind == KeyboardLayoutKind.Alphabet0 && layoutHint == "qwerty" ->
-                Keyboard.KeyboardSpecification.QWERTY_KANA
-
-            id?.mElement?.kind == KeyboardLayoutKind.Alphabet1 && layoutHint == "qwerty" ->
-                Keyboard.KeyboardSpecification.QWERTY_ALPHABET
-
-            id?.mElement?.kind == KeyboardLayoutKind.Alphabet1 ||
-            id?.mElement?.kind == KeyboardLayoutKind.Alphabet2 ||
-            id?.mElement?.kind == KeyboardLayoutKind.Alphabet3 ->
-                if(!useFlickOnly)
-                    Keyboard.KeyboardSpecification.TWELVE_KEY_TOGGLE_FLICK_ALPHABET
-                else
-                    Keyboard.KeyboardSpecification.TWELVE_KEY_FLICK_ALPHABET
-
-            useFlickOnly -> Keyboard.KeyboardSpecification.TWELVE_KEY_FLICK_KANA
-            else -> Keyboard.KeyboardSpecification.TWELVE_KEY_TOGGLE_FLICK_KANA
-        }
+        val keyboardSpecification = getCurrentConfigSpec()
+        configSpec = keyboardSpecification
 
         val keyboardRequest = MozcUtil.getRequestBuilder(keyboardSpecification, helper.context.resources.configuration, 3).build()
         executor.updateRequest(
@@ -1051,7 +1063,11 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         when (event.eventType) {
             Event.EVENT_TYPE_INPUT_KEYPRESS,
             Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
-                if(helper.keyboardSwitcher.keyboard?.mId != configId) updateConfig(false)
+                if((helper.keyboardSwitcher.keyboard?.mId != configId)
+                            && (getCurrentConfigSpec() != configSpec))
+                {
+                    updateConfig(false)
+                }
 
                 val triggeringKeyEvent = if (event.mKeyCode != Event.NOT_A_KEY_CODE) {
                     KeycodeConverter.getKeyEventInterface(
