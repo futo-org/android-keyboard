@@ -374,8 +374,6 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun onEvent(event: Event) = onEventInternal(event)
 
-
-
     override fun onGetSuggestedWords(
         suggestedWords: SuggestedWords,
         inputStyle: Int,
@@ -384,7 +382,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         if(sequenceNumber < sequenceId.get() && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH) {
             return
         }
-        val words = when {
+        val unfilteredWords = when {
             suggestedWords.isEmpty && (inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH ||
                     inputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
                     ) -> inputLogic.mSuggestedWords
@@ -392,8 +390,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             else -> suggestedWords
         }
 
+        val words = unfilteredWords?.let { blacklist.filterBlacklistedSuggestions(it) } ?: SuggestedWords.getEmptyInstance()
+
         showSuggestionStrip(words)
-        updateSuggestionJob = null
         when(inputStyle) {
             SuggestedWords.INPUT_STYLE_TAIL_BATCH ->
                 inputLogic.onUpdateTailBatchInputCompleted(
@@ -698,7 +697,13 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun requestSuggestionRefresh() {
-        updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING)
+        inputLogic.mSuggestedWords?.let {
+            onGetSuggestedWords(
+                it,
+                it.mInputStyle,
+                sequenceIdCompleted.get()
+            )
+        }
     }
 
     override fun getCurrentAutoCapsState(): Int =
@@ -715,8 +720,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
-    override fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
-        val words = suggestedWords?.let { blacklist.filterBlacklistedSuggestions(it) } ?: SuggestedWords.getEmptyInstance()
+    override fun showSuggestionStrip(words: SuggestedWords?) {
         inputLogic.setSuggestedWords(words)
 
         if(settings.current.isSuggestionsEnabledPerUserSettings) {

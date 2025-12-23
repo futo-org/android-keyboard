@@ -38,7 +38,14 @@ class SuggestionBlacklist(val settings: Settings, val context: Context, val life
             offensiveWordsAdded = false
         }
 
-        val filter: (SuggestedWordInfo) -> Boolean = { it -> isSuggestedWordOk(it) || (it == suggestions.mTypedWordInfo) }
+        val typedWord = when(suggestions.mInputStyle) {
+            SuggestedWords.INPUT_STYLE_UPDATE_BATCH,
+            SuggestedWords.INPUT_STYLE_TAIL_BATCH -> null
+
+            else -> suggestions.mTypedWordInfo
+        }
+
+        val filter: (SuggestedWordInfo) -> Boolean = { it -> isSuggestedWordOk(it) || (it == typedWord) }
 
         val shouldStillAutocorrect = suggestions.mWillAutoCorrect
                 && (suggestions.size() > SuggestedWords.INDEX_OF_AUTO_CORRECTION)

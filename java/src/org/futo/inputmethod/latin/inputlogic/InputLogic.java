@@ -2004,11 +2004,6 @@ public final class InputLogic {
         }
     }
 
-    void doShowSuggestionsAndClearAutoCorrectionIndicator(final SuggestedWords suggestedWords) {
-        mIsAutoCorrectionIndicatorOn = false;
-        mIme.showSuggestionStrip(suggestedWords);
-    }
-
     /**
      * Reverts a previous commit with auto-correction.
      *
@@ -2445,7 +2440,8 @@ public final class InputLogic {
         }
         mConnection.beginBatchEdit();
         if (SpaceState.PHANTOM == mSpaceState) {
-            insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
+            if(!mConnection.spacePrecedesComposingText())
+                insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
         }
         mWordComposer.setBatchInputWord(batchInputText);
         setComposingTextInternal(batchInputText, 1);
