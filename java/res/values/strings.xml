@@ -274,4 +274,11 @@ mobile devices. [CHAR LIMIT=25] -->
          This resource is copied from packages/apps/Settings/res/values/strings.xml -->
     <!-- This resource is corresponding to msgid="5433275485499039199" -->
     <string name="user_dict_fast_scroll_alphabet">\u0020ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+
+    <!-- Quick Settings tile for hiding keyboard -->
+    <string name="qs_tile_hide_keyboard_label">Keyboard</string>
+    <string name="qs_tile_keyboard_normal">Keyboard</string>
+    <string name="qs_tile_keyboard_suppressed">Keyboard Off</string>
+    <string name="qs_tile_keyboard_suppressed_toast">Keyboard will not appear automatically</string>
+    <string name="qs_tile_keyboard_enabled_toast">Keyboard will appear normally</string>
 </resources>

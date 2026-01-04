@@ -388,3 +388,8 @@ val SHOW_EMOJI_SUGGESTIONS = SettingsKey(
     key = booleanPreferencesKey("suggestEmojis"),
     default = true
 )
+
+val KEYBOARD_SUPPRESSED = SettingsKey(
+    key = booleanPreferencesKey("keyboardSuppressed"),
+    default = false
+)

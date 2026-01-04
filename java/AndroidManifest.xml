@@ -63,6 +63,18 @@
         </service>
         -->
 
+        <!-- Quick Settings Tile for hiding keyboard (API 24+) -->
+        <service
+            android:name=".qs.HideKeyboardTileService"
+            android:icon="@drawable/ic_keyboard_hide"
+            android:label="@string/qs_tile_hide_keyboard_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
         <!-- Activities -->
         <activity android:name=".uix.settings.SettingsActivity"
              android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"

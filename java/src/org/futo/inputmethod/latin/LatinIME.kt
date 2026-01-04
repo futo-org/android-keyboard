@@ -67,6 +67,7 @@ import org.futo.inputmethod.latin.uix.HiddenKeysSetting
 import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
+import org.futo.inputmethod.latin.uix.KEYBOARD_SUPPRESSED
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
@@ -717,6 +718,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     override fun onShowInputRequested(flags: Int, configChange: Boolean): Boolean {
+        if (isKeyboardSuppressed()) {
+            return false
+        }
         return latinIMELegacy.onShowInputRequested(
             flags,
             configChange
@@ -724,7 +728,14 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     override fun onEvaluateInputViewShown(): Boolean {
+        if (isKeyboardSuppressed()) {
+            return false
+        }
         return latinIMELegacy.onEvaluateInputViewShown() || super.onEvaluateInputViewShown()
+    }
+
+    private fun isKeyboardSuppressed(): Boolean {
+        return getSettingBlocking(KEYBOARD_SUPPRESSED)
     }
 
     override fun onEvaluateFullscreenMode(): Boolean {
