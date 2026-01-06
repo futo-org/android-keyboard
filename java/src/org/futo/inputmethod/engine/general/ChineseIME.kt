@@ -85,11 +85,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         }
     }}.launchIn(coroScope)
     private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped -> run {
-        Log.d(TAG, "Received preedit msg: \"$ped\"")
         connect?.setComposingText(ped, 1)
     }}.launchIn(coroScope)
     private fun subscribeToRimeCandidates() = rime.candidatesFlow.onEach { cdd -> run {
-        Log.d(TAG, "Received candidates msg: $cdd")
         val suggestWordList = cdd.mapIndexed{ index, candidate -> SuggestedWordInfo(
             candidate.text,
             "",
@@ -193,7 +191,6 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         when (event.eventType) {
             Event.EVENT_TYPE_INPUT_KEYPRESS,
             Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
-                Log.d(TAG, "[${event.mKeyCode} : ${event.mCodePoint}] keyDown")
                 if (triggerIfIsAction(event.mKeyCode))
                     return
                 val x11Code = when (event.mKeyCode) {
