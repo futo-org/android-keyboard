@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import org.futo.inputmethod.annotations.UsedForTesting
 import org.futo.inputmethod.engine.general.ActionInputTransactionIME
 import org.futo.inputmethod.engine.general.GeneralIME
+import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.settings.Settings
@@ -42,6 +43,7 @@ private val ImesEverUsedWithDictionaryPersonalization = SettingsKey(
 
 enum class IMEKind(val factory: (IMEHelper) -> IMEInterface) {
     General({ GeneralIME(it) }),
+    Chinese({ ChineseIME(it) }),
     Japanese({ JapaneseIME(it) })
 }
 
@@ -55,6 +57,7 @@ class IMEManager(
 
     private fun getActiveIMEKind(settingsValues: SettingsValues): IMEKind =
         when(settingsValues.mLocale.language) {
+            "zh" -> IMEKind.Chinese
             "ja" -> IMEKind.Japanese
             else -> IMEKind.General
         }

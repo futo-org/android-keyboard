@@ -409,6 +409,10 @@ dependencies {
     implementation(name:'mozc-release', ext:'aar')
     // End for MOZC
 
+    // For RIME
+    implementation files('libs/rime-release.aar')
+    // End for RIME
+
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
