@@ -607,8 +607,7 @@
     <!-- Specific to Chinese input method -->
     <string name="chinese_settings_title">Chinese Input Settings</string>
     <string name="chinese_setting_search_tags">chinese, rime</string>
-    <string name="chinese_settings_redeploy_rime">Redeploy Rime</string>
-
+    <string name="action_rime_dashboard">Rime Dashboard</string>
 
     <!-- Specific to Japanese input method -->
     <string name="japanese_settings_title">Japanese Input Settings</string>

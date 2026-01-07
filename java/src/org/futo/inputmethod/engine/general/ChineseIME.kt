@@ -36,6 +36,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 object ChineseIMESettings {
+    // TODO
     val menu = UserSettingsMenu(
         title = R.string.chinese_settings_title,
         searchTags = R.string.chinese_setting_search_tags,
@@ -53,11 +54,26 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     private val useExpandableUi = true
     private val maxBufferLength = 0x100000
 
+    init {
+        val rimeDir = helper.context.getExternalFilesDir("rime") ?:
+            throw IllegalStateException("Failed to access ExternalFilesDir!")
+        val shared = File(rimeDir, "shared")
+        val user = File(rimeDir, "user")
+        val defaultSchemaDeployed = rimeDir.exists() && shared.exists() && user.exists()
+        if (!defaultSchemaDeployed) {
+            rimeDir.mkdirs()
+            shared.mkdirs()
+            user.mkdirs()
+            DefaultDeployer.deploy(helper.context)
+        }
+        rime = Rime(shared.path, user.path, helper.context.packageName)
+    }
+
     private fun subscribeToRimeMessage() = rime.messageFlow.onEach { msg -> when (msg) {
         is RimeMessage.Deploy -> when (msg.value) {
             DeployStage.Unknown -> Log.e(TAG, "Deploy: Failed")
-//            DeployStage.Startup ->
-//            DeployStage.Success ->
+            DeployStage.Startup -> Log.i(TAG, "Deploy: Startup")
+            DeployStage.Success -> Log.i(TAG, "Deploy: Success")
             else -> {}
         }
         is RimeMessage.Sync -> when (msg.value) {
@@ -74,9 +90,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             Log.v(TAG, "Key ($x11Code | $mask) unused.")
             when (x11Code) {
                 XK_BackSpace -> sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
-                XK_Tab -> sendDownUpKeyEvent(KeyEvent.KEYCODE_TAB, 0)
-                XK_Linefeed -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
-                XK_Return -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
+                XK_Tab       -> sendDownUpKeyEvent(KeyEvent.KEYCODE_TAB, 0)
+                XK_Linefeed  -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
+                XK_Return    -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
                 else -> connect?.commitText(String(Character.toChars(x11Code)), 1)
             }
         }
@@ -88,7 +104,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         connect?.setComposingText(ped, 1)
     }}.launchIn(coroScope)
     private fun subscribeToRimeCandidates() = rime.candidatesFlow.onEach { cdd -> run {
-        val suggestWordList = cdd.mapIndexed{ index, candidate -> SuggestedWordInfo(
+        val suggestWordList = cdd.mapIndexed { index, candidate -> SuggestedWordInfo(
             candidate.text,
             "",
             Int.MAX_VALUE - index,
@@ -112,14 +128,6 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         ))
     }}.launchIn(coroScope)
 
-    init {
-        val rimeDir = helper.context.getExternalFilesDir("rime")!!.apply { mkdirs() }
-        val shared = File(rimeDir, "shared").apply { mkdirs() }
-        val user = File(rimeDir, "user").apply { mkdirs() }
-        DefaultDeployer.deploy(helper.context)
-        rime = Rime(shared.path, user.path, helper.context.packageName)
-    }
-
     override fun onCreate() {
         if (!rime.startup(false))
             Log.e(TAG, "Error occurred!")
@@ -137,10 +145,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     override fun onStartInput() {
     }
     override fun onFinishInput() {
-        coroScope.launch {
-            rime.clearComposition()
-            rime.getCommit()
-        }
+        coroScope.launch { rime.clearComposition() }
     }
 
     override fun onFinishSlidingInput() {
@@ -179,7 +184,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             helper.triggerAction(actionId, false)
             return true
         }
-        if (Constants.CODE_ALT_ACTION_0 <= keyCode &&  keyCode <= Constants.CODE_ALT_ACTION_MAX) {
+        if (Constants.CODE_ALT_ACTION_0 <= keyCode && keyCode <= Constants.CODE_ALT_ACTION_MAX) {
             val actionId: Int = keyCode - Constants.CODE_ALT_ACTION_0
             helper.triggerAction(actionId, true)
             return true
@@ -203,17 +208,16 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
                     '\n'.code -> XK_Return // Use return instead of linefeed here.
                     '\r'.code -> XK_Return
                     else -> it
-                }}
-                coroScope.launch {
-                    rime.processX11Code(x11Code)
-                }
+                } }
+                coroScope.launch { rime.processX11Code(x11Code) }
             }
 
             Event.EVENT_TYPE_SUGGESTION_PICKED -> {
                 val suggestion = event.mSuggestedWordInfo ?: return
-                coroScope.launch {
-                    rime.selectCandidate(suggestion.mCandidateIndex)
-                }
+                if (suggestion.isKindOf(SuggestedWordInfo.KIND_UNDO))
+                    connect?.commitText(suggestion.word, 1)
+                else
+                    coroScope.launch { rime.selectCandidate(suggestion.mCandidateIndex) }
             }
 
             Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> {
@@ -222,6 +226,16 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
             Event.EVENT_TYPE_DOWN_UP_KEYEVENT -> {
                 interruptInput()
+                if (event.mX == KeyEvent.META_CTRL_ON) when (event.mKeyCode) {
+                    KeyEvent.KEYCODE_F1 -> {
+                        
+                    }
+                    KeyEvent.KEYCODE_F2 -> {
+                        Log.d(TAG, "Redeploying...")
+                        coroScope.launch { rime.deploy() }
+                        return
+                    }
+                }
                 sendDownUpKeyEvent(event.mKeyCode, event.mX)
             }
 
@@ -261,34 +275,48 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     override fun onUpWithDeletePointerActive() {
         anchorOutOfDate = true
         val selection: CharSequence? = connect?.getSelectedText(0)
-        if (selection != null) {
-            sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
-            val info = ArrayList<SuggestedWordInfo?>()
-            info.add(
-                SuggestedWordInfo(
-                    selection.toString(),
-                    "",
-                    Int.MAX_VALUE,
-                    SuggestedWordInfo.KIND_UNDO,
-                    null,
-                    0,
-                    0
-                )
-            )
-            showSuggestionStrip(
-                SuggestedWords(
-                    info,
-                    null,
-                    null,
-                    false,
-                    false,
-                    false,
-                    0,
-                    0
-                )
-            )
-        } else {
+        if (selection == null) {
             onUpWithPointerActive()
+            return
+        }
+        coroScope.launch {
+            val preedit = rime.getPreedit()
+            var reserved: String
+            when {
+                preedit.endsWith(selection) -> {
+                    reserved = preedit.removeSuffix(selection).filterNot { it.isWhitespace() }
+                    connect?.commitText(reserved, 1)
+                }
+                selection.endsWith(preedit) -> {
+                    reserved = selection.removeSuffix(preedit) as String
+                    sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
+                }
+                else -> {
+                    sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
+                    Log.w(TAG, "Wrong preedit text fetched?")
+                    return@launch
+                }
+            }
+            rime.clearComposition()
+            val info = arrayListOf(SuggestedWordInfo(
+                reserved,
+                "",
+                Int.MAX_VALUE,
+                SuggestedWordInfo.KIND_UNDO,
+                null,
+                0,
+                0
+            ))
+            showSuggestionStrip(SuggestedWords(
+                info,
+                null,
+                null,
+                false,
+                false,
+                false,
+                0,
+                0
+            ))
         }
     }
 
@@ -350,7 +378,6 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
 /*TODO
     Support schema selection
-    Support user sync
 */
 
 /*TODO: Urgency descending
