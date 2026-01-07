@@ -103,7 +103,7 @@ fun SideKeys(modifier: Modifier, onEvent: (Int, Int) -> Unit) {
             color = MaterialTheme.colorScheme.primaryContainer,
             {
                 IconWithColor(
-                    iconId = R.drawable.clipboard,
+                    iconId = R.drawable.check_circle,
                     iconColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }

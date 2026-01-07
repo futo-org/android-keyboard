@@ -228,7 +228,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
                 interruptInput()
                 if (event.mX == KeyEvent.META_CTRL_ON) when (event.mKeyCode) {
                     KeyEvent.KEYCODE_F1 -> {
-                        
+
                     }
                     KeyEvent.KEYCODE_F2 -> {
                         Log.d(TAG, "Redeploying...")
