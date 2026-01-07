@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavHostController
+import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestionBlacklist
@@ -104,6 +105,10 @@ interface KeyboardManagerForAction {
 
     fun copyToClipboard(cut: Boolean = false)
     fun pasteFromClipboard()
+
+    // Returns null if the current IME is not of this kind.
+    // TODO: In the future make an IMEActionInterface for correctness
+    fun<T: IMEInterface> getIMEInterface(clazz: Class<T>): T?
 }
 
 enum class CloseResult {
