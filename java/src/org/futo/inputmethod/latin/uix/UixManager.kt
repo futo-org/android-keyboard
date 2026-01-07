@@ -103,6 +103,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
@@ -515,6 +516,13 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         latinIME.sizingCalculator
 
     override fun getLatinIMEForDebug(): LatinIME = latinIME
+
+    override fun <T : IMEInterface> getIMEInterface(clazz: Class<T>): T? {
+        if(clazz == IMEInterface::class.java) throw IllegalArgumentException("Please specify a specific IMEInterface")
+
+        val ime = latinIME.imeManager.getActiveIME(Settings.getInstance().current)
+        return if(clazz.isInstance(ime)) clazz.cast(ime) else null
+    }
 }
 
 data class ActiveDialogRequest(

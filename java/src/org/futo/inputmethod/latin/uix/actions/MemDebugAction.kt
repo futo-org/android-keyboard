@@ -257,6 +257,12 @@ val MemoryDebugAction = Action(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
+                    Text("IME as GeneralIME = ${manager.getIMEInterface(GeneralIME::class.java)}")
+                    Text("IME as JapaneseIME = ${manager.getIMEInterface(JapaneseIME::class.java)}")
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+
                     Text("Memory Use", style = DebugTitle)
                     state.value.forEach {
                         val value = it.value.toInt().toFloat() / 1000.0f
