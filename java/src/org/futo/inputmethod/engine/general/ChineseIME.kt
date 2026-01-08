@@ -8,6 +8,7 @@ import icu.astronot233.rime.DefaultDeployer
 import icu.astronot233.rime.DeployStage
 import icu.astronot233.rime.Rime
 import icu.astronot233.rime.RimeMessage
+import icu.astronot233.rime.RimeSchema
 import icu.astronot233.rime.SyncStage
 import icu.astronot233.rime.X11Keys.*
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +38,7 @@ import kotlin.math.min
 
 object ChineseIMESettings {
     // TODO
+    var schemaList: List<RimeSchema> = emptyList()
     val menu = UserSettingsMenu(
         title = R.string.chinese_settings_title,
         searchTags = R.string.chinese_setting_search_tags,
@@ -69,11 +71,20 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         rime = Rime(shared.path, user.path, helper.context.packageName)
     }
 
+    fun requestTakeOver(who: Any): Pair<Rime?, CoroutineScope?> {
+        return Pair(rime, coroScope)
+    }
+
     private fun subscribeToRimeMessage() = rime.messageFlow.onEach { msg -> when (msg) {
         is RimeMessage.Deploy -> when (msg.value) {
             DeployStage.Unknown -> Log.e(TAG, "Deploy: Failed")
             DeployStage.Startup -> Log.i(TAG, "Deploy: Startup")
-            DeployStage.Success -> Log.i(TAG, "Deploy: Success")
+            DeployStage.Success -> {
+                Log.i(TAG, "Deploy: Success")
+                coroScope.launch {
+                    ChineseIMESettings.schemaList = rime.getSchemata()
+                }
+            }
             else -> {}
         }
         is RimeMessage.Sync -> when (msg.value) {
@@ -100,10 +111,10 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             Log.e(TAG, "Unrecognized error occurred: ${msg.value}")
         }
     }}.launchIn(coroScope)
-    private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped -> run {
+    private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped ->
         connect?.setComposingText(ped, 1)
-    }}.launchIn(coroScope)
-    private fun subscribeToRimeCandidates() = rime.candidatesFlow.onEach { cdd -> run {
+    }.launchIn(coroScope)
+    private fun subscribeToRimeCandidates() = rime.candidatesFlow.onEach { cdd ->
         val suggestWordList = cdd.mapIndexed { index, candidate -> SuggestedWordInfo(
             candidate.text,
             "",
@@ -126,7 +137,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             0,
             0
         ))
-    }}.launchIn(coroScope)
+    }.launchIn(coroScope)
 
     override fun onCreate() {
         if (!rime.startup(false))

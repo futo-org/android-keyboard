@@ -108,7 +108,7 @@ interface KeyboardManagerForAction {
 
     // Returns null if the current IME is not of this kind.
     // TODO: In the future make an IMEActionInterface for correctness
-    fun<T: IMEInterface> getIMEInterface(clazz: Class<T>): T?
+    fun getCurrentIME(): IMEInterface
 }
 
 enum class CloseResult {

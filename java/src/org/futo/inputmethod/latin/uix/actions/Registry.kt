@@ -13,7 +13,7 @@ import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.actions.fonttyper.FontTyperAction
-import org.futo.inputmethod.latin.uix.actions.langspecific.RimeDashboard
+import org.futo.inputmethod.latin.uix.actions.langspecific.chinese.RimeDashboard
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 

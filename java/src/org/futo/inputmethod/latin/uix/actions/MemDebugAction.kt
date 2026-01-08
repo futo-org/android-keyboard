@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.R
@@ -241,6 +242,10 @@ val MemoryDebugAction = Action(
                             }
                         }
 
+                        is ChineseIME -> {
+                            Text("ChineseIME [no debug info yet]", style = DebugLabel)
+                        }
+
                         is JapaneseIME -> {
                             Text("JapaneseIME [no debug info yet]", style = DebugLabel)
                         }
@@ -257,8 +262,11 @@ val MemoryDebugAction = Action(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text("IME as GeneralIME = ${manager.getIMEInterface(GeneralIME::class.java)}")
-                    Text("IME as JapaneseIME = ${manager.getIMEInterface(JapaneseIME::class.java)}")
+                    when (manager.getCurrentIME()) {
+                        is GeneralIME -> Text("IME is GeneralIME")
+                        is ChineseIME -> Text("IME is ChineseIME")
+                        is JapaneseIME -> Text("IME is JapaneseIME")
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 

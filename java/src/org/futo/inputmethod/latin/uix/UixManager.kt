@@ -517,11 +517,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun getLatinIMEForDebug(): LatinIME = latinIME
 
-    override fun <T : IMEInterface> getIMEInterface(clazz: Class<T>): T? {
-        if(clazz == IMEInterface::class.java) throw IllegalArgumentException("Please specify a specific IMEInterface")
-
-        val ime = latinIME.imeManager.getActiveIME(Settings.getInstance().current)
-        return if(clazz.isInstance(ime)) clazz.cast(ime) else null
+    override fun getCurrentIME(): IMEInterface {
+        return latinIME.imeManager.getActiveIME(Settings.getInstance().current)
     }
 }
 
