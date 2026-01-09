@@ -189,5 +189,10 @@ data class Action(
 
     val shownInEditor: Boolean = true,
 
-    val settingsMenu: UserSettingsMenu? = null
+    val settingsMenu: UserSettingsMenu? = null,
+)
+
+data class LangSpecAction(
+    val action: Action,
+    val langRequired: Set<String>
 )

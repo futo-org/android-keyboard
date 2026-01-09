@@ -14,6 +14,7 @@ import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.LangSpecAction
 
 @Composable
 private fun RimeDashboardScreen(
@@ -28,23 +29,26 @@ private fun RimeDashboardScreen(
     }
 }
 
-val RimeDashboard = Action(
-    icon = R.drawable.cpu, // TODO: draw RIME icon
-    name = R.string.action_rime_dashboard,
-    simplePressImpl = null,
-    persistentState = null,
-    canShowKeyboard = true,
-    windowImpl = { manager, _ -> object : ActionWindow() {
-        @Composable override fun windowName(): String = stringResource(R.string.action_rime_dashboard)
+val RimeDashboard = LangSpecAction(
+    action = Action(
+        icon = R.drawable.cpu, // TODO: draw RIME icon
+        name = R.string.action_rime_dashboard,
+        simplePressImpl = null,
+        persistentState = null,
+        canShowKeyboard = true,
+        windowImpl = { manager, _ -> object : ActionWindow() {
+            @Composable override fun windowName(): String = stringResource(R.string.action_rime_dashboard)
 
-        @Composable override fun WindowContents(keyboardShown: Boolean) {
-            val ime = manager.getCurrentIME()
-            if (ime !is ChineseIME)
-                return
-            val (rime, coroScope) = ime.requestTakeOver(this)
-            if (rime == null || coroScope == null)
-                return
-            RimeDashboardScreen(rime, coroScope)
-        }
-    } }
+            @Composable override fun WindowContents(keyboardShown: Boolean) {
+                val ime = manager.getCurrentIME()
+                if (ime !is ChineseIME)
+                    return
+                val (rime, coroScope) = ime.requestTakeOver(this)
+                if (rime == null || coroScope == null)
+                    return
+                RimeDashboardScreen(rime, coroScope)
+            }
+        } }
+    ),
+    langRequired = setOf("zh")
 )
