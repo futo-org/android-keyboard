@@ -1,53 +1,50 @@
 package org.futo.inputmethod.latin.uix.actions.langspecific.chinese
 
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.res.painterResource
+import icu.astronot233.rime.Rime
+import icu.astronot233.rime.RimeApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
-fun StatusButton(text: String, @DrawableRes iconId: Int, iconColor: Color, modifier: Modifier = Modifier) {
-    val icon = painterResource(iconId)
-    Row {
-        Text(text = text)
-        Canvas(modifier = modifier) {
-            translate(
-                left = this.size.width / 2.0f - icon.intrinsicSize.width / 2.0f,
-                top = this.size.height / 2.0f - icon.intrinsicSize.height / 2.0f
-            ) {
-                with(icon) {
-                    draw(
-                        icon.intrinsicSize,
-                        colorFilter = ColorFilter.tint(iconColor)
-                    )
-                }
+internal fun RimeStatusMenu(rime: Rime, coroScope: CoroutineScope) {
+    val status = remember { RimeApi.getStatus() }
+    var isFullShape by remember { mutableStateOf(status.fullShape) }
+    var isAsciiMode by remember { mutableStateOf(status.asciiMode) }
+    var isAsciiPunct by remember { mutableStateOf(status.asciiPunct) }
+    var isTraditional by remember { mutableStateOf(status.traditional) }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        EmojiButton(emoji = if (isFullShape) "🌕" else "🌓") {
+            isFullShape = !isFullShape
+            coroScope.launch { rime.setOption("full_shape", isFullShape) }
+        }
+        EmojiButton(emoji = if (isAsciiMode) "Ａ" else "文") {
+            isAsciiMode = !isAsciiMode
+            coroScope.launch { rime.setOption("ascii_mode", isAsciiMode) }
+        }
+        EmojiButton(emoji = if (isAsciiPunct) "＂＇" else "『」") {
+            isAsciiPunct = !isAsciiPunct
+            coroScope.launch { rime.setOption("ascii_punct", isAsciiPunct) }
+        }
+        EmojiButton(emoji = if (isTraditional) "傳" else "简" ) {
+            isTraditional = !isTraditional
+            coroScope.launch {
+                rime.setOption("traditional", isTraditional)
+                rime.setOption("simplification", !isTraditional)
             }
         }
-    }
-}
-
-@Composable
-fun RimeStatusMenu(modifier: Modifier = Modifier) {
-    Column(
-        modifier = Modifier.fillMaxWidth(0.8f),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Row {
-//            StatusButton()
-//            StatusButton()
-        }
-//        Row() { }
-//        Row() { }
     }
 }

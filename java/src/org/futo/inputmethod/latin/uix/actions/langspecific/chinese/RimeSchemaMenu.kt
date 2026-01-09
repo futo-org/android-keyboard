@@ -22,19 +22,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import icu.astronot233.rime.Rime
 import icu.astronot233.rime.RimeApi
 import icu.astronot233.rime.RimeSchema
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.actions.IconWithColor
 
 @Composable
-fun RimeSchemaMenu(
-    schemata: List<RimeSchema>,
-    onSchemaSelected: (String) -> Unit,
-) {
+internal fun RimeSchemaMenu(rime: Rime, coroScope: CoroutineScope, timestamp: Long) {
+    val schemata = RimeApi.getSchemata()
+    val timestamp = timestamp
     var expanded by remember { mutableStateOf(false) }
     var current by remember { mutableStateOf(RimeApi.getCurrentSchema()) }
     Box(modifier = Modifier
+        .fillMaxWidth(0.7f)
         .wrapContentSize(Alignment.TopStart)
-        .padding(horizontal = 16.dp, vertical = 8.dp),
+        .padding(vertical = 10.dp)
     ) {
         OutlinedCard(
             onClick = { expanded = true },
@@ -51,6 +56,10 @@ fun RimeSchemaMenu(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
+                    if (current.schemaId.isEmpty()) {
+                        EmptySchema()
+                        return@Column
+                    }
                     Text(
                         text = current.schemaName,
                         style = MaterialTheme.typography.bodyLarge,
@@ -68,13 +77,13 @@ fun RimeSchemaMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .fillMaxWidth(0.9f)
+                .fillMaxWidth(0.7f)
                 .heightIn(max = 320.dp),
         ) {
             if (schemata.isEmpty()) {
                 DropdownMenuItem(
-                    text = { Text(text = "¯\\_(ツ)_/¯", color = MaterialTheme.colorScheme.onSurfaceVariant) },
-                    onClick = { expanded = false }
+                    text = { EmptySchema() },
+                    onClick = {}
                 )
                 return@DropdownMenu
             }
@@ -85,24 +94,32 @@ fun RimeSchemaMenu(
                             Text(
                                 text = schema.schemaName,
                                 style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = schema.schemaId,
                                 style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                     },
                     onClick = {
-                        onSchemaSelected(schema.schemaId)
                         current = schema
-                        expanded = false
+                        coroScope.launch { rime.selectSchema(current.schemaId) }
                     },
                     trailingIcon = {
-//                            if (schema.schemaId == current.schemaId)
-//                                Icon
+                        if (schema.schemaId == current.schemaId) {
+                            IconWithColor(R.drawable.check_circle, MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
                 )
             }
         }
     }
+}
+
+@Composable
+private fun EmptySchema() {
+    Text(text = "¯\\_(ツ)_/¯", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
+    Text(text = "", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
 }

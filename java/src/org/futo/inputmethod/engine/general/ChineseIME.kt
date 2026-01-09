@@ -4,7 +4,6 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
-import icu.astronot233.rime.DefaultDeployer
 import icu.astronot233.rime.DeployStage
 import icu.astronot233.rime.Rime
 import icu.astronot233.rime.RimeMessage
@@ -66,12 +65,12 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             rimeDir.mkdirs()
             shared.mkdirs()
             user.mkdirs()
-            DefaultDeployer.deploy(helper.context)
         }
         rime = Rime(shared.path, user.path, helper.context.packageName)
     }
 
     fun requestTakeOver(who: Any): Pair<Rime?, CoroutineScope?> {
+        Log.d(TAG, "$who tries to take over")
         return Pair(rime, coroScope)
     }
 
@@ -112,7 +111,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         }
     }}.launchIn(coroScope)
     private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped ->
-        connect?.setComposingText(ped, 1)
+        connect?.setComposingText(ped.filterNot { it.isWhitespace() }, 1)
     }.launchIn(coroScope)
     private fun subscribeToRimeCandidates() = rime.candidatesFlow.onEach { cdd ->
         val suggestWordList = cdd.mapIndexed { index, candidate -> SuggestedWordInfo(
