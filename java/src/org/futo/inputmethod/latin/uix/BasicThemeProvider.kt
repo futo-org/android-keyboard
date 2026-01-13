@@ -9,9 +9,11 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.NinePatchDrawable
 import android.graphics.drawable.StateListDrawable
+import android.os.Build
 import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.ColorInt
@@ -170,7 +172,20 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     override val hintHiVis: Boolean
 
     override var typefaceOverride: Typeface? = null
-    override val themeTypeface: Typeface?
+
+    // Choose the font weight based on theme settings. If 'forceBold' is enabled, use a standard bold weight.
+    override val themeTypeface: Typeface? = colorScheme.extended.advancedThemeOptions.let { advanced ->
+        if (advanced.forceBold) {
+            // Use Weight 700 (Full Bold) for maximum thickness
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                Typeface.create(advanced.font ?: Typeface.DEFAULT, 700, false)
+            } else {
+                Typeface.create(advanced.font ?: Typeface.DEFAULT, Typeface.BOLD)
+            }
+        } else {
+            advanced.font
+        }
+    }
 
     val kdcMatcher = AdvancedThemeMatcher(context, this, colorScheme)
     override fun selectKeyDrawingConfiguration(
@@ -256,13 +271,27 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     }
 
     private fun makeVisualStyle(background: Int, foreground: Int, highlight: Int, foregroundPressed: Int, roundedness: Dp): VisualStyleDescriptor {
-        val bg = coloredRoundedRectangle(background, dp(roundedness))
-        val bgPressed = coloredRoundedRectangle(Color(highlight).compositeOver(Color(background)).toArgb(), dp(roundedness))
+        val advanced = colorScheme.extended.advancedThemeOptions
+        
+        var bg: Drawable = coloredRoundedRectangle(background, dp(roundedness))
+        var bgPressed: Drawable = coloredRoundedRectangle(Color(highlight).compositeOver(Color(background)).toArgb(), dp(roundedness))
+
+        // Calculate separate horizontal and vertical padding values to control the visible button size.
+        val ph = dp(advanced.keyPaddingHorizontal ?: 0.dp).toInt()
+        val pv = dp(advanced.keyPaddingVertical ?: 0.dp).toInt()
+
+        // If padding is set, shrink the button background to create distinct visual gaps between keys.
+        if (ph > 0 || pv > 0) {
+            bg = InsetDrawable(bg, ph, pv, ph, pv)
+            bgPressed = InsetDrawable(bgPressed, ph, pv, ph, pv)
+        }
+
         val fgPressed = Color(foregroundPressed).compositeOver(Color(foreground)).toArgb()
 
         val flickBg = Color(foreground).let {
             it.copy(alpha = it.alpha * 0.92f)
         }.toArgb()
+
         return VisualStyleDescriptor(
             backgroundDrawable = bg,
             foregroundColor    = foreground,
@@ -272,7 +301,9 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
             backgroundDrawableFlicking = buildMap {
                 Direction.entries.forEach {
-                    put(it, FlickClipDrawable(bgPressed, coloredRoundedRectangle(flickBg, dp(roundedness)), it))
+                    var flickDrawable: Drawable = coloredRoundedRectangle(flickBg, dp(roundedness))
+                    if (ph > 0 || pv > 0) flickDrawable = InsetDrawable(flickDrawable, ph, pv, ph, pv)
+                    put(it, FlickClipDrawable(bgPressed, flickDrawable, it))
                 }
                 put(null, bgPressed)
             }
@@ -298,8 +329,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     init {
         val advanced = colorScheme.extended.advancedThemeOptions
         displayDpi = context.resources.displayMetrics.densityDpi
-
-        themeTypeface = advanced.font
 
         expertMode = context.getSettingBlocking(HiddenKeysSetting)
         keyBorders = advanced.keyBorders ?: context.getSettingBlocking(KeyBordersSetting)
@@ -375,9 +404,10 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         colors[R.styleable.MainKeyboardView_gestureTrailColor] = primary
         colors[R.styleable.MainKeyboardView_slidingKeyInputPreviewColor] = primary
 
-        addIcon(KeyboardIconsSet.NAME_SHIFT_KEY, R.drawable.shift, onKeyColor)
-        addIcon(KeyboardIconsSet.NAME_SHIFT_KEY_SHIFTED, R.drawable.shiftshifted, onKeyColor)
-        addIcon(KeyboardIconsSet.NAME_DELETE_KEY, R.drawable.delete, onKeyColor)
+        // Set Shift and Delete icons to use the high-contrast action text color for better visibility on colored backgrounds.
+        addIcon(KeyboardIconsSet.NAME_SHIFT_KEY, R.drawable.shift, enterKeyForeground)
+        addIcon(KeyboardIconsSet.NAME_SHIFT_KEY_SHIFTED, R.drawable.shiftshifted, enterKeyForeground)
+        addIcon(KeyboardIconsSet.NAME_DELETE_KEY, R.drawable.delete, enterKeyForeground)
         addIcon(KeyboardIconsSet.NAME_SETTINGS_KEY, R.drawable.settings, onKeyColor)
         addIcon(KeyboardIconsSet.NAME_SPACE_KEY, null, onKeyColor)
         addIcon(KeyboardIconsSet.NAME_SPACE_KEY_FOR_NUMBER_LAYOUT, R.drawable.space, onKeyColor)
@@ -481,10 +511,11 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                 foregroundColorPressed = onPrimary
             ),
 
+            // Use the high-contrast action text color for keys like Shift and Delete so they remain readable on accent-colored backgrounds.
             KeyVisualStyle.Functional to if(keyBorders) {
                 makeVisualStyle(
                     functionalKeyColor,
-                    if(expertMode) Color(onKeyColor).copy(alpha = 0.2f).toArgb() else onKeyColor,
+                    if (expertMode) Color(onKeyColor).copy(alpha = 0.2f).toArgb() else colors[R.styleable.Keyboard_Key_actionKeyTextColor]!!,
                     highlight, highlightForeground,
                     keyCornerRadius
                 )
