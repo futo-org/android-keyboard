@@ -93,6 +93,9 @@
     <string name="action_clipboard_manager_settings_list_layout">Use vertical list layout instead of grid</string>
     <string name="action_clipboard_manager_settings_show_pinned_above_others">Keep pinned clips on top</string>
     <string name="action_clipboard_manager_settings_show_quick_clips">Show recently copied text in suggestion bar</string>
+    <!--  For cleaning URLs based on the JSON ruleset of clearURLs  -->
+    <string name="action_clipboard_manager_strip_url_tracking_title">Remove URL tracking parameters</string>
+    <string name="action_clipboard_manager_strip_url_tracking_subtitle">Automatically strip tracking parameters (utm_*, ?si=, etc.) from copied URLs</string>
 
     <!-- For keyboard modes action -->
     <string name="action_keyboard_modes_title">Keyboard Modes</string>
