@@ -307,19 +307,6 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                 }
 
                 val text = textChrSeq?.toString()
-                // Clean URL tracking params if enabled
-                if (text != null && context.getSettingBlocking(ClipboardStripUrlTracking)) {
-                    val cleanedText = UrlCleaner.cleanUrl(text);
-                    if(cleanedText != text) {
-                        // Update system clipboard with clean URL
-                        val newClip = ClipData.newPlainText(
-                            clip.description?.label ?: "text", cleanedText
-                        );
-
-                        clipboardManager.setPrimaryClip(newClip);
-                        return;     // Exit and trigger onPrimaryClipChanged again with clean text
-                    }
-                }
                 val uri = clip?.getItemAt(0)?.uri
 
                 val timestamp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -336,6 +323,20 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                 val isSensitive = clip?.description?.extras?.getBoolean(
                     ClipDescription.EXTRA_IS_SENSITIVE, false
                 ) == true
+
+                // Clean URL tracking params if enabled
+                if (text != null && !isSensitive && context.getSettingBlocking(ClipboardStripUrlTracking)) {
+                    val cleanedText = UrlCleaner.cleanUrl(text);
+                    if(cleanedText != text) {
+                        // Update system clipboard with clean URL
+                        val newClip = ClipData.newPlainText(
+                            clip.description?.label ?: "text", cleanedText
+                        );
+
+                        clipboardManager.setPrimaryClip(newClip);
+                        return;     // Exit and trigger onPrimaryClipChanged again with clean text
+                    }
+                }
 
                 // TODO: Support images and other non-text media
                 val passesUriCheck = when {

@@ -96,13 +96,13 @@ object UrlCleaner {
         // Early exit, not initialized
         if(compiledProviders == null) return text;
 
-        // We just find the URL in text, discarding the https:// part
+        // Only clean if the text is a single URL (with optional surrounding whitespaces)
+        val trimmed = text.trim();
         val urlRegex = """https?://\S+""".toRegex();
 
-        return urlRegex.replace(text) { matchResult ->
-            val url = matchResult.value
-            cleanSingleUrl(url)
-        };
+        if (!trimmed.matches(urlRegex)) return text;
+
+        return cleanSingleUrl(trimmed);
     }
 
     private fun cleanSingleUrl(url: String): String {
