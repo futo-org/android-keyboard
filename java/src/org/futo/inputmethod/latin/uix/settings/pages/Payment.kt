@@ -491,7 +491,7 @@ fun PaymentScreen(
                         )
                     }
 
-                    Button(
+                    /*Button(
                         onClick = { context.openURI(BuildConfig.FUTOPAY_URL) },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -504,7 +504,7 @@ fun PaymentScreen(
                                 BuildConfig.FUTOPAY_PRICE
                             ), style = Typography.Body.Medium
                         )
-                    }
+                    }*/
                 } else {
                     Button(
                         onClick = { context.openURI(BuildConfig.FUTOPAY_URL) },
