@@ -13,11 +13,16 @@ import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.actions.fonttyper.FontTyperAction
+import org.futo.inputmethod.latin.uix.actions.langspecific.chinese.RimeDashboard
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 
+val AllLangSpecActionsMap = mapOf(
+    "rime_dashboard" to RimeDashboard,
+)
+
 // Note: indices must stay stable
-val AllActionsMap = mapOf(
+val AllGeneralActionsMap = mapOf(
     "emoji" to EmojiAction,
     "settings" to SettingsAction,
     "paste" to PasteAction,
@@ -40,8 +45,10 @@ val AllActionsMap = mapOf(
     "down" to ArrowDownAction,
     "left" to ArrowLeftAction,
     "right" to ArrowRightAction,
-    "font_typer" to FontTyperAction
+    "font_typer" to FontTyperAction,
 )
+
+val AllActionsMap = AllGeneralActionsMap + AllLangSpecActionsMap.mapValues { it.value.action }
 
 val ActionToId = AllActionsMap.entries.associate { it.value to it.key }
 
@@ -214,7 +221,7 @@ fun Map<ActionCategory, List<Action>>.ensureAllActionsPresent(): Map<ActionCateg
     val actionsPresent = mutableSetOf<Action>()
     values.forEach { v -> actionsPresent.addAll(v) }
 
-    val actionsRequired = AllActions.toSet()
+    val actionsRequired = AllGeneralActionsMap.values.toList().verifyNamesAreUnique()
 
     val actionsMissing = actionsRequired.subtract(actionsPresent)
 

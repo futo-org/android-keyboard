@@ -29,6 +29,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -63,6 +64,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,6 +79,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInWindow
@@ -86,6 +89,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -517,11 +522,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun getLatinIMEForDebug(): LatinIME = latinIME
 
-    override fun <T : IMEInterface> getIMEInterface(clazz: Class<T>): T? {
-        if(clazz == IMEInterface::class.java) throw IllegalArgumentException("Please specify a specific IMEInterface")
-
-        val ime = latinIME.imeManager.getActiveIME(Settings.getInstance().current)
-        return if(clazz.isInstance(ime)) clazz.cast(ime) else null
+    override fun getCurrentIME(): IMEInterface {
+        return latinIME.imeManager.getActiveIME(Settings.getInstance().current)
     }
 }
 
@@ -537,6 +539,22 @@ annotation class DebugOnly
 
 @DebugOnly
 var UixManagerInstanceForDebug: UixManager? = null
+
+data class PreEditEntry(
+    val text: String,
+    val highlighted: Boolean
+)
+
+data class FloatingPreEdit(
+    val entries: List<PreEditEntry>
+) {
+    companion object {
+        @JvmStatic
+        fun build(text: String?) = FloatingPreEdit(
+            entries = text?.ifBlank { null }?.split(' ')?.map { PreEditEntry(it, true) } ?: emptyList()
+        )
+    }
+}
 
 class UixManager(private val latinIME: LatinIME) {
     init {
@@ -582,6 +600,8 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     val foldingOptions = mutableStateOf(FoldingOptions(null))
+    val floatingPreedit = mutableStateOf<FloatingPreEdit?>(null)
+    val floatingPreeditPosition = mutableStateOf<LayoutCoordinates?>(null)
 
     var isInputOverridden = mutableStateOf(false)
 
@@ -1220,6 +1240,7 @@ class UixManager(private val latinIME: LatinIME) {
 
             KeyboardWindowSelector { gap ->
                 Column {
+                    Box(Modifier.onGloballyPositioned { floatingPreeditPosition.value = it })
                     // TODO: Refactor how we handle expandable suggestions here to not be a mess
                     val needToUseExpandableSuggestionUi =
                         useExpandableSuggestionsUi.value && suggestedWords.value?.size()?.equals(0) != true
@@ -1288,6 +1309,12 @@ class UixManager(private val latinIME: LatinIME) {
             }
 
             ActionEditorHost()
+
+            floatingPreedit.value?.let {
+                if(it.entries.isNotEmpty()) {
+                    FloatingPreEditView(it, floatingPreeditPosition.value)
+                }
+            }
         }
     }
 
@@ -1621,4 +1648,31 @@ class UixManager(private val latinIME: LatinIME) {
             }
         }
     }
+
+    fun setPreedit(preedit: FloatingPreEdit) {
+        floatingPreedit.value = preedit
+    }
+}
+
+
+@Composable
+@Preview
+fun FloatingPreEditView(
+    preedit: FloatingPreEdit = FloatingPreEdit.build("Some text here"),
+    anchorCoords: LayoutCoordinates? = null
+) {
+    var height by remember { mutableIntStateOf(0) }
+    val pos = anchorCoords?.positionInWindow()
+    Box(Modifier.onSizeChanged { height = it.height }.offset {
+        pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) } ?: IntOffset.Zero
+    }.background(Color.Gray.copy(alpha = 0.7f)).padding(4.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            preedit.entries.forEach {
+                Text(it.text, style = Typography.SmallMl.copy(
+                    color = if(it.highlighted) Color.Black else Color.DarkGray
+                ), maxLines = 1, overflow = TextOverflow.Visible)
+            }
+        }
+    }
+
 }

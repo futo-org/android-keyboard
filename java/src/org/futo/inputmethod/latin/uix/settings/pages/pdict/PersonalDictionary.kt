@@ -54,15 +54,31 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.urlEncode
 import java.util.Locale
+import kotlin.collections.get
+
+private data class ExceptionalPersonalDictionaryViewConfiguration(
+    val supported: Boolean,
+    val wordPopupDialog: @Composable (PersonalWord?, Locale?) -> Unit = {_, _ ->},
+    val transformNavWord: (PersonalWord) -> PersonalWord = { it }
+)
+
+private val ExceptionalPersonalDictionaryLanguages = mapOf(
+    "ja" to ExceptionalPersonalDictionaryViewConfiguration(
+        supported = true,
+        wordPopupDialog = { a, b -> JapaneseWordPopupDialog(a?.let { decodeJapanesePersonalWord(it) }, b) },
+        transformNavWord = { word -> decodeJapanesePersonalWord(word)?.let {
+            word.copy(word = it.output, shortcut = it.furigana)
+        } ?: word }
+    ),
+    "zh" to ExceptionalPersonalDictionaryViewConfiguration(supported = false)
+)
 
 @Composable
 @Preview
 fun WordPopupDialog(selectedWord: PersonalWord? = null, locale: Locale? = null) {
-    if(locale?.language == "ja") {
-        return JapaneseWordPopupDialog(
-            selectedWord?.let { decodeJapanesePersonalWord(it) },
-            locale
-        )
+    val exception = ExceptionalPersonalDictionaryLanguages[locale?.language]
+    if(exception != null) {
+        return exception.wordPopupDialog(selectedWord, locale)
     }
 
     val navController = LocalNavController.current
@@ -251,10 +267,10 @@ fun PersonalDictionaryLanguageListForLocale(
             )
         }
         items(words) {
-            val jaWord = if(locale?.language == "ja") decodeJapanesePersonalWord(it) else null
+            val transformed = ExceptionalPersonalDictionaryLanguages[locale?.language]?.transformNavWord(it) ?: it
             NavigationItem(
-                title = jaWord?.output ?: it.word,
-                subtitle = jaWord?.furigana ?: it.shortcut,
+                title = transformed.word,
+                subtitle = transformed.shortcut,
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = {
                     navController.navigate("pdictword/${localeString}/${Json.encodeToString(it).urlEncode()}")
@@ -294,6 +310,9 @@ fun PersonalDictionaryLanguageList() {
             }
         )
         languages.forEach {
+            val exception = ExceptionalPersonalDictionaryLanguages[it.first.language]
+            if(exception?.supported == false) return@forEach
+
             NavigationItem(
                 title = it.first.getDisplayName(LocalConfiguration.current.locale),
                 subtitle = pluralStringResource(R.plurals.personal_dictionary_language_word_count, it.second, it.second),

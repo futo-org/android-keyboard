@@ -43,6 +43,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
+import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
@@ -67,6 +68,7 @@ import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
+import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.openURI
 import org.futo.voiceinput.shared.BUILTIN_ENGLISH_MODEL
@@ -896,9 +898,32 @@ class ImportResourceActivity : ComponentActivity() {
         null
     }
 
+    private fun detectChineseDict(input: InputStream): String? {
+        var name: String? = null
+        var version: Int? = null
+
+        val success = ZipFileHelper.parseSafe(input,
+            "FUTOKeyboard_ChineseDictionary_Name" to {
+                name = it.decodeToString().trim()
+            },
+            "FUTOKeyboard_ChineseDictionary_Version" to {
+                version = it.decodeToString().trim().toInt()
+            }
+        )
+
+        if(name == null || version == null || !success) return null
+
+        return name
+    }
+
     private fun detectItemBeingImported(): ItemBeingImported? {
         val languageResource = getInputStream()?.use { determineFileKind(it) }
         if(languageResource != null && languageResource.kind != FileKind.Invalid) return ItemBeingImported.LanguageResource(languageResource)
+
+        val chineseDictionary = getInputStream()?.use { detectChineseDict(it) }
+        if(chineseDictionary != null) return ItemBeingImported.LanguageResource(FileKindAndInfo(
+            FileKind.Dictionary, name=chineseDictionary, locale="zh"
+        ))
 
         val settingsBackup = getInputStream()?.use { SettingsExporter.getCfgFileMetadata(it) }
         if(settingsBackup != null) return ItemBeingImported.SettingsBackup(settingsBackup)
@@ -971,12 +996,12 @@ object MissingDictionaryHelper {
             "lt", "lb", "mai", "ml", "mr", "nb", "or", "pl", "pt", "pa", "ro", "ru", "sa", "sat", "sr",
             "sd", "sl", "es", "sv", "ta", "te", "tok", "tcy", "tr", "uk", "ur", "af", "ar", "bn", "bg",
             "cs", "fr", "de", "he", "id", "it", "kab", "kk", "pms", "ru", "sk", "es", "uk", "vi",
-            "ja"
+            "ja", "zh"
         )
 
-        // Typing is severely broken in Japanese without the dictionary, it is vital that this message
+        // Typing is severely broken in these languages without the dictionary, it is vital that this message
         // is shown every time until the user downloads the dictionary
-        val undismissableLanguages = setOf("ja")
+        val undismissableLanguages = setOf("ja", "zh")
 
         val dismissalSetting = SettingsKey(
             intPreferencesKey("dictionary_notice_dismiss_${locale.language}"),

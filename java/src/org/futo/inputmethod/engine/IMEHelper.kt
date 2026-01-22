@@ -11,6 +11,7 @@ import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.FloatingPreEdit
 
 interface InputMethodConnectionProvider {
     fun getCurrentInputConnection(): InputConnection?
@@ -107,4 +108,8 @@ class IMEHelper(
 
     fun isImeActive(ime: IMEInterface) =
         latinIME.imeManager.getActiveIME(Settings.getInstance().current) == ime
+
+    fun setPreedit(preEdit: FloatingPreEdit) {
+        latinIME.uixManager.setPreedit(preEdit)
+    }
 }
