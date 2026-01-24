@@ -36,7 +36,7 @@ import org.futo.inputmethod.latin.uix.FloatingPreEdit
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.preferenceKeyFor
-import org.futo.inputmethod.latin.uix.setSettingBlocking
+import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
@@ -80,8 +80,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             stringPreferencesKey("ChineseDictionaryExtractedValue"),
             ""
         )
+        var localPrevExtractedDictionaryName: String? = null
 
-        fun resetSharedFromResources(context: Context): Boolean {
+        fun resetSharedFromResources(context: Context, scope: CoroutineScope): Boolean {
             val pref = FileKind.Dictionary.preferenceKeyFor("zh")
             val filePath = context.getSetting(pref, "")
             val file = File(context.applicationContext.getExternalFilesDir(null), filePath)
@@ -90,7 +91,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
             // TODO: This doesn't actually work, because different 2 dictionaries
             //  will have same name (dictionary_zh)
-            if(context.getSetting(PreviouslyExtractedDictionaryName) == name) {
+            if((localPrevExtractedDictionaryName ?: context.getSetting(PreviouslyExtractedDictionaryName)) == name) {
                 return false
             }
 
@@ -109,7 +110,10 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
                 return true
             } finally {
-                context.setSettingBlocking(PreviouslyExtractedDictionaryName.key, name)
+                localPrevExtractedDictionaryName = name
+                scope.launch(Dispatchers.IO) {
+                    context.setSetting(PreviouslyExtractedDictionaryName.key, name)
+                }
             }
         }
     }
@@ -214,7 +218,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }
 
     override fun onStartInput() {
-        if(resetSharedFromResources(helper.context)) {
+        if(resetSharedFromResources(helper.context, helper.lifecycleScope)) {
             coroScope.launch { rime.deploy() }
         }
     }
