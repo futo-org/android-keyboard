@@ -290,6 +290,7 @@ data class FileKindAndInfo(
     val kind: FileKind,
     val name: String?,
     val locale: String?,
+    val forceLocale: String? = null,
     val invalidKindHint: InvalidFileHint? = null
 )
 
@@ -524,7 +525,7 @@ fun determineFileKind(inputStream: InputStream): FileKindAndInfo {
         }
 
         (magic == 0x1f8b0808.toUInt()) || (magic == 0x1f8b0800.toUInt()) || (magic == 0x64696374.toUInt()) ->
-            FileKindAndInfo(FileKind.Invalid, null, null, InvalidFileHint.ImportedWordListInsteadOfDict)
+            FileKindAndInfo(FileKind.Invalid, null, null, invalidKindHint = InvalidFileHint.ImportedWordListInsteadOfDict)
 
         else -> FileKindAndInfo(FileKind.Invalid, null, null)
     }
@@ -705,7 +706,9 @@ class ImportResourceActivity : ComponentActivity() {
 
         if(item == null) return
 
-        val sanitizedLocaleForFilename = inputMethodSubtype.locale.replace("#", "H")
+        var locale = fileKind.forceLocale ?: inputMethodSubtype.locale
+
+        val sanitizedLocaleForFilename = locale.replace("#", "H")
         val outputFileName = "${fileKind.kind.name.lowercase()}_$sanitizedLocaleForFilename${fileKind.kind.extension()}"
 
         lifecycleScope.launch {
@@ -727,7 +730,7 @@ class ImportResourceActivity : ComponentActivity() {
                     }
 
                     // 2. Update reference
-                    val language = inputMethodSubtype.locale.split("_").first()
+                    val language = locale.split("_").first()
                     ModelPaths.updateModelOption(applicationContext, language, outputFile)
                 } else {
                     // 1. Copy file
@@ -744,12 +747,12 @@ class ImportResourceActivity : ComponentActivity() {
 
                     // 2. Update reference
                     applicationContext.setSetting(
-                        fileKind.kind.preferenceKeyFor(inputMethodSubtype.locale),
+                        fileKind.kind.preferenceKeyFor(locale),
                         outputFileName
                     )
                     fileKind.name?.let {
                         applicationContext.setSetting(
-                            fileKind.kind.namePreferenceKeyFor(inputMethodSubtype.locale),
+                            fileKind.kind.namePreferenceKeyFor(locale),
                             it
                         )
                     }
@@ -922,7 +925,7 @@ class ImportResourceActivity : ComponentActivity() {
 
         val chineseDictionary = getInputStream()?.use { detectChineseDict(it) }
         if(chineseDictionary != null) return ItemBeingImported.LanguageResource(FileKindAndInfo(
-            FileKind.Dictionary, name=chineseDictionary, locale="zh"
+            FileKind.Dictionary, name=chineseDictionary, locale="zh", forceLocale = "zh"
         ))
 
         val settingsBackup = getInputStream()?.use { SettingsExporter.getCfgFileMetadata(it) }
