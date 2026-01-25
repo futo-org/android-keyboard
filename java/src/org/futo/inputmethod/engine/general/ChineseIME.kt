@@ -175,6 +175,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }}.launchIn(coroScope)
 
     private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped ->
+        helper.updateUiInputState(ped.isEmpty())
         helper.setPreedit(FloatingPreEdit.build(ped))
     }.launchIn(coroScope)
 
