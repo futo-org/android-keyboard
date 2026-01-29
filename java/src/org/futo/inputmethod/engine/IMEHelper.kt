@@ -19,6 +19,13 @@ interface InputMethodConnectionProvider {
     fun getContextForSettings(): Context
 }
 
+data class ExpandableSuggestionBarConfiguration(
+    val useExpandableUi: Boolean,
+    val addExtraSpaceForFirstEntry: Boolean
+)
+
+val NonExpandableSuggestionBar = ExpandableSuggestionBarConfiguration(false, false)
+
 class IMEHelper(
     private val latinIME: LatinIME
 ) : InputMethodConnectionProvider {
@@ -71,19 +78,19 @@ class IMEHelper(
 
     override fun getContextForSettings(): Context = context
 
-    fun setNeutralSuggestionStrip(useExpandableUi: Boolean) {
+    fun setNeutralSuggestionStrip(cfg: ExpandableSuggestionBarConfiguration = NonExpandableSuggestionBar) {
         latinIME.setSuggestions(
             suggestedWords = SuggestedWords.getEmptyInstance(),
             rtlSubtype = Settings.getInstance().current.mIsRTL,
-            useExpandableUi = useExpandableUi
+            cfg = cfg
         )
     }
 
-    fun showSuggestionStrip(suggestedWords: SuggestedWords?, useExpandableUi: Boolean) {
+    fun showSuggestionStrip(suggestedWords: SuggestedWords?, cfg: ExpandableSuggestionBarConfiguration = NonExpandableSuggestionBar) {
         latinIME.setSuggestions(
             suggestedWords = suggestedWords ?: SuggestedWords.getEmptyInstance(),
             rtlSubtype = Settings.getInstance().current.mIsRTL,
-            useExpandableUi = useExpandableUi
+            cfg = cfg
         )
     }
 

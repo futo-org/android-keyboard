@@ -43,7 +43,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -108,6 +107,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -1167,7 +1167,8 @@ private fun RowScope.InlineCandidates(
     closeActionWindow: (() -> Unit)?,
     suggestionStripListener: SuggestionStripViewListener,
     wordList: List<SuggestedWordInfo>,
-    widths: CachedCharacterWidthValues
+    widths: CachedCharacterWidthValues,
+    extraSpaceForFirstItem: Boolean,
 ) {
     val view = LocalView.current
     val expandHeight = with(LocalDensity.current) { 120.dp.toPx().coerceAtMost(keyboardHeight / 2.0f) }
@@ -1220,7 +1221,7 @@ private fun RowScope.InlineCandidates(
                     last = i == wordList.size-1,
                     width = with(LocalDensity.current) {
                         measureWord(this, widths, it).toDp()
-                    }.coerceAtLeast(if(i == 0) 120.dp else 48.dp)
+                    }.coerceAtLeast(if(i == 0 && extraSpaceForFirstItem) 120.dp else 48.dp)
                 )
             }
         }
@@ -1272,6 +1273,7 @@ fun BoxScope.ActionBarWithExpandableCandidates(
     closeActionWindow: (() -> Unit)?,
     keyboardOffset: MutableIntState? = null,
     keyboardHeight: Int = 1000,
+    expandableSuggestionCfg: ExpandableSuggestionBarConfiguration,
 ) {
     val wordList = remember(words) {
         words?.mSuggestedWordInfoList?.toList()?.filter {
@@ -1373,7 +1375,8 @@ fun BoxScope.ActionBarWithExpandableCandidates(
                         closeActionWindow,
                         suggestionStripListener,
                         wordList,
-                        widths
+                        widths,
+                        expandableSuggestionCfg.addExtraSpaceForFirstEntry
                     )
                 }
 
@@ -1413,6 +1416,7 @@ val exampleSuggestionsList = arrayListOf(
 )
 
 val japaneseSuggestionsList = arrayListOf(
+    SuggestedWordInfo("あ", "", 97, 1, null, 0, 0),
     SuggestedWordInfo("あいう", "", 97, 1, null, 0, 0, 0, "ＬＯＮＧ　ＡＮＤ　ＣＯＭＰＬＥＸ\nＷＩＴＨ　ＭＵＬＴＩＰＬＥ　ＬＩＮＥＳ\nｓｏｍｅ　ｔｅｘｔ　ｈｅｒｅ"),
     SuggestedWordInfo("アイウ", "", 96, 1, null, 0, 0, 0, "[あああ]"),
     SuggestedWordInfo("あいうえお", "", 95, 1, null, 0, 0),
@@ -1563,7 +1567,7 @@ fun PreviewActionBarWithSuggestions(colorScheme: ThemeOption = DefaultDarkScheme
 
 @Composable
 @Preview
-fun PreviewActionBarWithExpandableCandidates(colorScheme: ThemeOption = DefaultDarkScheme) {
+fun PreviewActionBarWithExpandableCandidatesExtraSpace(colorScheme: ThemeOption = DefaultDarkScheme) {
     UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
         Box(Modifier.fillMaxWidth().height(250.dp)) {
             ActionBarWithExpandableCandidates(
@@ -1571,7 +1575,25 @@ fun PreviewActionBarWithExpandableCandidates(colorScheme: ThemeOption = DefaultD
                 suggestionStripListener = ExampleListener(),
                 isActionsExpanded = false,
                 toggleActionsExpanded = { },
-                closeActionWindow = null
+                closeActionWindow = null,
+                expandableSuggestionCfg = ExpandableSuggestionBarConfiguration(true, true)
+            )
+        }
+    }
+}
+
+@Composable
+@Preview
+fun PreviewActionBarWithExpandableCandidatesNoExtraSpace(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
+        Box(Modifier.fillMaxWidth().height(250.dp)) {
+            ActionBarWithExpandableCandidates(
+                words = japaneseSuggestedWords,
+                suggestionStripListener = ExampleListener(),
+                isActionsExpanded = false,
+                toggleActionsExpanded = { },
+                closeActionWindow = null,
+                expandableSuggestionCfg = ExpandableSuggestionBarConfiguration(true, false)
             )
         }
     }

@@ -56,6 +56,7 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration;
 import org.futo.inputmethod.engine.IMEInterface;
 import org.futo.inputmethod.engine.IMEManager;
 import org.futo.inputmethod.event.Event;
@@ -103,7 +104,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     public interface SuggestionStripController {
         public void updateVisibility(boolean shouldShowSuggestionsStrip, boolean fullscreenMode);
-        public void setSuggestions(SuggestedWords suggestedWords, boolean rtlSubtype, boolean useExpandableUi);
+        public void setSuggestions(SuggestedWords suggestedWords, boolean rtlSubtype, ExpandableSuggestionBarConfiguration cfg);
     }
     
     private final InputMethodService mInputMethodService;

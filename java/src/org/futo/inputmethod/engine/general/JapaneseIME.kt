@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.google.android.apps.inputmethod.libs.mozc.session.MozcJNI
@@ -22,6 +21,7 @@ import com.google.common.base.Optional
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
@@ -1221,10 +1221,10 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         if(helper.isImeActive(this)) updateConfig()
     }
 
-    private val useExpandableUi = true
+    private val expandableUiCfg = ExpandableSuggestionBarConfiguration(true, true)
     fun setNeutralSuggestionStrip() {
         prevSuggestions = null
-        helper.setNeutralSuggestionStrip(useExpandableUi)
+        helper.setNeutralSuggestionStrip(expandableUiCfg)
     }
 
     val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
@@ -1234,6 +1234,6 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         //  2. During conversion, we need some more complicated logic to skip blacklisted entries mozc has given us, and to recalculate the focused index properly
         val words = suggestedWords//?.let { blacklist.filterBlacklistedSuggestions(it) }
         prevSuggestions = words
-        helper.showSuggestionStrip(words, useExpandableUi)
+        helper.showSuggestionStrip(words, expandableUiCfg)
     }
 }

@@ -53,6 +53,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEManager
 import org.futo.inputmethod.engine.general.WordLearner
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -752,9 +753,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun setSuggestions(
         suggestedWords: SuggestedWords,
         rtlSubtype: Boolean,
-        useExpandableUi: Boolean
+        cfg: ExpandableSuggestionBarConfiguration
     ) {
-        uixManager.setSuggestions(suggestedWords, rtlSubtype, useExpandableUi)
+        uixManager.setSuggestions(suggestedWords, rtlSubtype, cfg)
 
         // Cache the auto-correction in accessibility code so we can speak it if the user
         // touches a key that will insert it.

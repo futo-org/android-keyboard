@@ -82,7 +82,6 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInWindow
@@ -93,7 +92,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -111,7 +109,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEInterface
+import org.futo.inputmethod.engine.NonExpandableSuggestionBar
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
@@ -574,7 +574,9 @@ class UixManager(private val latinIME: LatinIME) {
 
     private val shouldShowSuggestionStrip = mutableStateOf(true)
     private val suggestedWords: MutableState<SuggestedWords?> = mutableStateOf(null)
-    private val useExpandableSuggestionsUi: MutableState<Boolean> = mutableStateOf(false)
+    private val expandableSuggestionCfg: MutableState<ExpandableSuggestionBarConfiguration> = mutableStateOf(
+        NonExpandableSuggestionBar
+    )
 
     var currWindowAction: MutableState<Action?> = mutableStateOf(null)
     private var persistentStates: HashMap<Action, PersistentActionState?> = hashMapOf()
@@ -1253,7 +1255,7 @@ class UixManager(private val latinIME: LatinIME) {
                     Box(Modifier.onGloballyPositioned { floatingPreeditPosition.value = it })
                     // TODO: Refactor how we handle expandable suggestions here to not be a mess
                     val needToUseExpandableSuggestionUi =
-                        useExpandableSuggestionsUi.value && suggestedWords.value?.size()?.equals(0) != true
+                        expandableSuggestionCfg.value.useExpandableUi && suggestedWords.value?.size()?.equals(0) != true
                                 && mainKeyboardHidden.value == false
                                 && (quickClipState.value == null || inlineStuffHiddenByTyping.value)
                                 && currentNotice.value == null
@@ -1294,7 +1296,8 @@ class UixManager(private val latinIME: LatinIME) {
                                 toggleActionsExpanded = { toggleActionsExpanded() },
                                 closeActionWindow = currWindowActionWindow.value?.let {{ closeActionWindow() }},
                                 keyboardOffset = keyboardViewOffset,
-                                keyboardHeight = (latinIME.size.value?.height ?: kbHeight.intValue) + with(LocalDensity.current) { navBarHeight().toPx().toInt() }
+                                keyboardHeight = (latinIME.size.value?.height ?: kbHeight.intValue) + with(LocalDensity.current) { navBarHeight().toPx().toInt() },
+                                expandableSuggestionCfg = expandableSuggestionCfg.value
                             )
                         }
                         latinIME.LegacyKeyboardView(modifier = Modifier.align(Alignment.BottomCenter).onSizeChanged {
@@ -1429,9 +1432,9 @@ class UixManager(private val latinIME: LatinIME) {
         this.shouldShowSuggestionStrip.value = shouldShowSuggestionsStrip
     }
 
-    fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean, useExpandableUi: Boolean) {
+    fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean, cfg: ExpandableSuggestionBarConfiguration) {
         this.suggestedWords.value = suggestedWords
-        this.useExpandableSuggestionsUi.value = useExpandableUi
+        this.expandableSuggestionCfg.value = cfg
 
         if(currentNotice.value != null && suggestedWords?.isEmpty != true) {
             if(numSuggestionsSinceNotice > 0) {

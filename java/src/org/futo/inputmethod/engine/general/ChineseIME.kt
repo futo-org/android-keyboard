@@ -19,6 +19,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.event.Event
@@ -63,7 +64,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     private val rime: Rime
     private val connect get() = helper.getCurrentInputConnection()
     private val coroScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private val useExpandableUi = true
+    private val expandableUiCfg = ExpandableSuggestionBarConfiguration(true, false)
     private val maxBufferLength = 0x100000
     private var layoutHint: String? = null
 
@@ -478,12 +479,12 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     private val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
     override fun setNeutralSuggestionStrip() {
         prevSuggest = null
-        helper.setNeutralSuggestionStrip(useExpandableUi)
+        helper.setNeutralSuggestionStrip(expandableUiCfg)
     }
     override fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
         val words = suggestedWords?.let { blacklist.filterBlacklistedSuggestions(it) }
         prevSuggest = words
-        helper.showSuggestionStrip(words, useExpandableUi)
+        helper.showSuggestionStrip(words, expandableUiCfg)
     }
 
     override fun requestSuggestionRefresh() {

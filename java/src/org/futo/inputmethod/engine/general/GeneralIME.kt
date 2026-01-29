@@ -230,7 +230,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun onStartInput() {
-        useExpandableUi = helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)
+        //useExpandableUi = helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)
 
         resetDictionaryFacilitator()
         setNeutralSuggestionStrip()
@@ -713,10 +713,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
     }
 
-    private var useExpandableUi = false
     override fun setNeutralSuggestionStrip() {
         inputLogic.setSuggestedWords(SuggestedWords.getEmptyInstance())
-        helper.setNeutralSuggestionStrip(useExpandableUi)
+        helper.setNeutralSuggestionStrip()
     }
 
     val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
@@ -724,9 +723,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.setSuggestedWords(words)
 
         if(settings.current.isSuggestionsEnabledPerUserSettings) {
-            helper.showSuggestionStrip(words, useExpandableUi)
+            helper.showSuggestionStrip(words)
         } else {
-            helper.setNeutralSuggestionStrip(useExpandableUi)
+            helper.setNeutralSuggestionStrip()
         }
     }
 
