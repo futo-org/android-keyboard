@@ -35,6 +35,7 @@ import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.FloatingPreEdit
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.preferenceKeyFor
 import org.futo.inputmethod.latin.uix.setSetting
@@ -263,6 +264,11 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
 
 
+    private data class Configuration(
+        val schema: String,
+        val simplification: Boolean
+    )
+    private var prevConfiguration: Configuration? = null
     private fun updateConfig() {
         coroScope.launch {
             if(inEditingState) return@launch
@@ -270,23 +276,30 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             val locale = Settings.getInstance().current.mLocale
 
             val simplified = isSimplifiedChinese(locale)
-            when(layoutHint) {
+            val schema = when(layoutHint) {
                 "qwerty" -> {
-
-                    rime.selectSchema(when {
+                    when {
                         simplified -> "luna_pinyin_simp"
                         else -> "luna_pinyin"
-                    })
+                    }
                 }
                 "stroke" -> {
-                    rime.selectSchema("stroke")
+                    "stroke"
+                }
+                null -> { return@launch }
+                else -> {
+                    throwIfDebug(IllegalStateException("Invalid layout hint '${layoutHint}'"))
+                    "luna_pinyin"
                 }
             }
-
-            rime.deploy()
-
-            rime.setOption("simplification", simplified)
-            rime.setOption("traditional", !simplified)
+            val config = Configuration(schema, simplified)
+            if(config != prevConfiguration) {
+                rime.selectSchema(config.schema)
+                rime.deploy() // TODO: Not sure this is necessary
+                rime.setOption("simplification", simplified)
+                rime.setOption("traditional", !simplified)
+                prevConfiguration = config
+            }
         }
     }
 
