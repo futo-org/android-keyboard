@@ -1,5 +1,8 @@
 package org.futo.inputmethod.latin.uix.actions
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Build
 import android.os.Debug
 import android.text.InputType
@@ -22,16 +25,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
+import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.LocalFoldingState
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
-import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
 
 val DebugLabel = Typography.Small.copy(fontFamily = FontFamily.Monospace)
@@ -174,6 +180,74 @@ private fun getImeOptionsString(imeOptions: Int): String {
 }
 
 
+@Serializable
+private data class SKey(
+    val code: Int,
+    val label: String,
+    val iconId: String,
+    val hintLabel: String?,
+    val hintIconId: String?,
+    val labelFlags: Int,
+    val actionFlags: Int,
+    val width: Int,
+    val height: Int,
+    val horizontalGap: Int,
+    val verticalGap: Int,
+    val x: Int,
+    val y: Int,
+    val visualStyle: KeyVisualStyle,
+    val outputText: String?,
+    val row: Int,
+    val column: Int,
+)
+
+@Serializable
+private data class SKeyboard(
+    val density: Int,
+    val width: Int,
+    val height: Int,
+    val name: String,
+    val keys: List<SKey>,
+
+    val screenWidth: Int,
+    val screenHeight: Int,
+)
+internal fun serializeKeyboard(ime: LatinIME): String {
+    val keyboard = ime.latinIMELegacy.mKeyboardSwitcher.keyboard!!
+    val list = keyboard.sortedKeys.toList().map {
+        SKey(
+            code = it.code,
+            label = it.label,
+            iconId = it.iconId,
+            hintLabel = it.effectiveHintLabel,
+            hintIconId = it.effectiveHintIcon,
+            labelFlags = it.labelFlags,
+            actionFlags = it.actionFlags,
+            width = it.width,
+            height = it.height,
+            horizontalGap = it.horizontalGap,
+            verticalGap = it.verticalGap,
+            x = it.x,
+            y = it.y,
+            visualStyle = it.visualStyle,
+            outputText = it.outputText,
+            row = it.row,
+            column = it.column
+        )
+    }
+
+    val kb = SKeyboard(
+        density = ime.resources.configuration.densityDpi,
+        width = keyboard.mBaseWidth,
+        height = keyboard.mBaseHeight,
+        name = keyboard.mId.mKeyboardLayoutSetName,
+        keys = list,
+        screenWidth = ime.resources.displayMetrics.widthPixels,
+        screenHeight = ime.resources.displayMetrics.heightPixels,
+    )
+    return Json.encodeToString(SKeyboard.serializer(), kb)
+}
+
 val MemoryDebugAction = Action(
     icon = R.drawable.code,
     name = R.string.action_debug_title,
@@ -257,8 +331,6 @@ val MemoryDebugAction = Action(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text("IME as GeneralIME = ${manager.getIMEInterface(GeneralIME::class.java)}")
-                    Text("IME as JapaneseIME = ${manager.getIMEInterface(JapaneseIME::class.java)}")
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -299,6 +371,22 @@ val MemoryDebugAction = Action(
 
                     }) {
                         Text("Test action input transaction")
+                    }
+
+
+                    Button(onClick = {
+                        val serialized = try {
+                            serializeKeyboard(manager.getLatinIMEForDebug())
+                        }catch(e: Exception) {
+                            throwIfDebug(e)
+                            ""
+                        }
+
+                        val clipboardManager = manager.getContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+                        clipboardManager.setPrimaryClip(ClipData.newPlainText("Clip", serialized))
+                    }) {
+                        Text("Copy keyboard layout JSON to clipboard")
                     }
                 }
             }
