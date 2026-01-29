@@ -37,6 +37,7 @@ import org.futo.inputmethod.latin.uix.FloatingPreEdit
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.namePreferenceKeyFor
 import org.futo.inputmethod.latin.uix.preferenceKeyFor
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
@@ -88,13 +89,14 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
         fun resetSharedFromResources(context: Context, scope: CoroutineScope): Boolean {
             val pref = FileKind.Dictionary.preferenceKeyFor("zh")
+            val namePref = FileKind.Dictionary.namePreferenceKeyFor("zh")
             val filePath = context.getSetting(pref, "")
             val file = File(context.applicationContext.getExternalFilesDir(null), filePath)
 
-            val name = if(filePath.isEmpty()) "<BLANK>" else file.nameWithoutExtension
+            val name = context.getSetting(namePref, "?")
 
-            // TODO: This doesn't actually work, because different 2 dictionaries
-            //  will have same name (dictionary_zh)
+
+
             if((localPrevExtractedDictionaryName ?: context.getSetting(PreviouslyExtractedDictionaryName)) == name) {
                 return false
             }
@@ -245,6 +247,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
     override fun onStartInput() {
         if(resetSharedFromResources(helper.context, helper.lifecycleScope)) {
+            prevConfiguration = null
             coroScope.launch { rime.deploy() }
         }
         updateConfig()
