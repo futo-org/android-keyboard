@@ -204,6 +204,7 @@ private fun GenericEditTextCompose(
             setTextChangeCallback { text.value = it }
 
             setText(text.value)
+            setSelection(text.value.length)
             setTextColor(color.toArgb())
             placeholder?.let { setHint(it) }
 
@@ -286,7 +287,10 @@ fun ActionTextEditor(
     multiline: Boolean = false,
     textSize: TextUnit = 16.sp,
     typeface: Typeface? = null,
-    autocorrect: Boolean = false
+    autocorrect: Boolean = false,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    afterOverride: (() -> Unit)? = null,
+    afterUnOverride: (() -> Unit)? = null,
 ) {
     val manager = if(!LocalInspectionMode.current) LocalManager.current else null
     GenericEditTextCompose(
@@ -296,12 +300,14 @@ fun ActionTextEditor(
         typeface = typeface,
         autocorrect = autocorrect,
         placeholder = null,
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         onOverride = { ic, ed ->
             manager!!.overrideInputConnection(ic, ed)
+            afterOverride?.invoke()
         },
         onUnoverride = {
             manager!!.unsetInputConnection()
+            afterUnOverride?.invoke()
         }
     )
 }

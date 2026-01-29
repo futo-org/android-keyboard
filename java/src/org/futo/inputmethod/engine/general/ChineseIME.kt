@@ -41,6 +41,7 @@ import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import java.io.File
+import java.util.Locale
 import kotlin.io.walkBottomUp
 import kotlin.math.max
 import kotlin.math.min
@@ -64,6 +65,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     private val coroScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val useExpandableUi = true
     private val maxBufferLength = 0x100000
+    private var layoutHint: String? = null
 
     companion object {
         @JvmStatic
@@ -176,8 +178,29 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
     private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped ->
         helper.updateUiInputState(ped.isEmpty())
-        helper.setPreedit(FloatingPreEdit.build(ped))
+        helper.setPreedit(FloatingPreEdit.build(ped,
+            { onStartEdit() },
+            { onFinishEdit(it) }
+        ))
     }.launchIn(coroScope)
+
+    var inEditingState = false
+    private fun onStartEdit() {
+        inEditingState = true
+        coroScope.launch {
+            inEditingState = true
+            rime.setOption("ascii_mode", true)
+        }
+    }
+
+    private fun onFinishEdit(string: String) {
+        coroScope.launch {
+            rime.setOption("ascii_mode", false)
+            rime.clearComposition()
+            rime.simulateKeySequence(string.filter { it in 'a'..'z' || it in 'A'..'Z' })
+            inEditingState = false
+        }
+    }
 
     private fun subscribeToRimeCandidates() = rime.candidatesFlow.onEach { cdd ->
         val suggestWordList = cdd.mapIndexed { index, candidate -> SuggestedWordInfo(
@@ -222,7 +245,55 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         if(resetSharedFromResources(helper.context, helper.lifecycleScope)) {
             coroScope.launch { rime.deploy() }
         }
+        updateConfig()
     }
+
+    private fun isSimplifiedChinese(locale: Locale): Boolean {
+        if (locale.language != "zh") return false
+        locale.script.takeIf { it.isNotEmpty() }?.let {
+            return it.equals("Hans", ignoreCase = true)
+        }
+
+        return when (locale.country.uppercase()) {
+            "TW", "HK", "MO" -> false
+            else             -> true
+        }
+    }
+
+
+
+    private fun updateConfig() {
+        coroScope.launch {
+            if(inEditingState) return@launch
+
+            val locale = Settings.getInstance().current.mLocale
+
+            val simplified = isSimplifiedChinese(locale)
+            when(layoutHint) {
+                "qwerty" -> {
+
+                    rime.selectSchema(when {
+                        simplified -> "luna_pinyin_simp"
+                        else -> "luna_pinyin"
+                    })
+                }
+                "stroke" -> {
+                    rime.selectSchema("stroke")
+                }
+            }
+
+            rime.deploy()
+
+            rime.setOption("simplification", simplified)
+            rime.setOption("traditional", !simplified)
+        }
+    }
+
+    override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
+        layoutHint = layout.mainLayout.imeHint
+        if(helper.isImeActive(this)) updateConfig()
+    }
+
     override fun onFinishInput() {
         coroScope.launch { rime.clearComposition() }
     }
@@ -422,10 +493,6 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     override fun isGestureHandlingAvailable() : Boolean {
         return false
         // TODO("To be supported")
-    }
-
-    override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
-//        TODO("Would be great if able to correspond schemas with layouts")
     }
 
     override fun onCustomRequest(requestCode: Int): Boolean {

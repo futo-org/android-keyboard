@@ -42,8 +42,8 @@ internal fun RimeStatusMenu(rime: Rime, coroScope: CoroutineScope) {
         EmojiButton(emoji = if (isTraditional) "傳" else "简" ) {
             isTraditional = !isTraditional
             coroScope.launch {
-                rime.setOption("traditional", false)
-                rime.setOption("simplification", true)
+                rime.setOption("traditional", isTraditional)
+                rime.setOption("simplification", !isTraditional)
             }
         }
     }

@@ -68,6 +68,8 @@ class IMEManager(
             startIme(new)
         }
 
+        helper.setPreedit(null)
+
         service.latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.setImeAllowsGestureInput(
             new.isGestureHandlingAvailable())
     }

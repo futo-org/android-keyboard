@@ -109,7 +109,7 @@ class IMEHelper(
     fun isImeActive(ime: IMEInterface) =
         latinIME.imeManager.getActiveIME(Settings.getInstance().current) == ime
 
-    fun setPreedit(preEdit: FloatingPreEdit) {
+    fun setPreedit(preEdit: FloatingPreEdit?) {
         latinIME.uixManager.setPreedit(preEdit)
     }
 }

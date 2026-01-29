@@ -27,6 +27,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +49,8 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -546,12 +549,16 @@ data class PreEditEntry(
 )
 
 data class FloatingPreEdit(
-    val entries: List<PreEditEntry>
+    val entries: List<PreEditEntry>,
+    val startEditing: () -> Unit,
+    val finishEditing: (String) -> Unit
 ) {
     companion object {
         @JvmStatic
-        fun build(text: String?) = FloatingPreEdit(
-            entries = text?.ifBlank { null }?.split(' ')?.map { PreEditEntry(it, true) } ?: emptyList()
+        fun build(text: String?, startEditing: () -> Unit, finishEditing: (String) -> Unit) = FloatingPreEdit(
+            entries = text?.ifBlank { null }?.split(' ')?.map { PreEditEntry(it, true) } ?: emptyList(),
+            startEditing = startEditing,
+            finishEditing = finishEditing
         )
     }
 }
@@ -602,6 +609,9 @@ class UixManager(private val latinIME: LatinIME) {
     val foldingOptions = mutableStateOf(FoldingOptions(null))
     val floatingPreedit = mutableStateOf<FloatingPreEdit?>(null)
     val floatingPreeditPosition = mutableStateOf<LayoutCoordinates?>(null)
+    val floatingPreeditHeight = mutableStateOf<Int>(0)
+    val floatingPreeditEditing = mutableStateOf(false)
+    val floatingPreeditText = mutableStateOf("")
 
     var isInputOverridden = mutableStateOf(false)
 
@@ -1310,12 +1320,18 @@ class UixManager(private val latinIME: LatinIME) {
 
             ActionEditorHost()
 
-            floatingPreedit.value?.let {
-                if(it.entries.isNotEmpty()) {
-                    FloatingPreEditView(it, floatingPreeditPosition.value)
-                }
+            val preedit = floatingPreedit.value
+            if(preedit != null && floatingPreeditShown) {
+                FloatingPreEditView(preedit, floatingPreeditPosition.value,
+                    { floatingPreeditHeight.value = it },
+                    floatingPreeditText, floatingPreeditEditing)
             }
         }
+    }
+
+    private val floatingPreeditShown: Boolean get() = run {
+        val preedit = floatingPreedit.value
+        return preedit != null && (preedit.entries.isNotEmpty() || floatingPreeditEditing.value)
     }
 
     fun setContent() {
@@ -1581,6 +1597,7 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         quickClipState.value = QuickClip.getCurrentState(latinIME)
+        floatingPreeditEditing.value = false
     }
 
     fun onInputFinishing() {
@@ -1589,6 +1606,7 @@ class UixManager(private val latinIME: LatinIME) {
         isShowingActionEditor.value = false
         resizers.hideResizer()
         inlineSuggestions.value = emptyList()
+        floatingPreeditText.value = ""
     }
 
     // Called by InputLogic on any event
@@ -1649,30 +1667,66 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
-    fun setPreedit(preedit: FloatingPreEdit) {
+    fun setPreedit(preedit: FloatingPreEdit?) {
         floatingPreedit.value = preedit
     }
+
+    val extraTopTouchHeight: Int
+        get() = if(floatingPreeditShown) floatingPreeditHeight.value else 0
 }
 
 
 @Composable
-@Preview
 fun FloatingPreEditView(
-    preedit: FloatingPreEdit = FloatingPreEdit.build("Some text here"),
-    anchorCoords: LayoutCoordinates? = null
+    preedit: FloatingPreEdit = FloatingPreEdit.build("Some text here", {}, {}),
+    anchorCoords: LayoutCoordinates? = null,
+    updateHeight: (Int) -> Unit = { },
+    editingText: MutableState<String>,
+    editing: MutableState<Boolean>
 ) {
     var height by remember { mutableIntStateOf(0) }
     val pos = anchorCoords?.positionInWindow()
-    Box(Modifier.onSizeChanged { height = it.height }.offset {
-        pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) } ?: IntOffset.Zero
-    }.background(Color.Gray.copy(alpha = 0.7f)).padding(4.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            preedit.entries.forEach {
-                Text(it.text, style = Typography.SmallMl.copy(
-                    color = if(it.highlighted) Color.Black else Color.DarkGray
-                ), maxLines = 1, overflow = TextOverflow.Visible)
+
+    if(editing.value) {
+        Box(Modifier.onSizeChanged {
+            height = it.height
+            updateHeight(it.height)
+        }.offset {
+            pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) } ?: IntOffset.Zero
+        }.background(LocalKeyboardScheme.current.surface).padding(4.dp)) {
+            CompositionLocalProvider(LocalContentColor provides LocalKeyboardScheme.current.onSurface) {
+                Row(Modifier.height(48.dp)) {
+                    ActionTextEditor(
+                        editingText, modifier = Modifier.fillMaxHeight().weight(1.0f),
+                        afterUnOverride = {
+                            preedit.finishEditing(editingText.value)
+                        })
+                    IconButton(onClick = {
+                        editing.value = false
+                    }, modifier = Modifier.size(48.dp)) {
+                        Icon(Icons.Default.Check, contentDescription = null)
+                    }
+                }
+            }
+        }
+    } else {
+        Box(Modifier.onSizeChanged {
+            height = it.height
+            updateHeight(it.height)
+        }.offset {
+            pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) } ?: IntOffset.Zero
+        }.background(Color.Gray.copy(alpha = 0.7f)).clickable {
+            preedit.startEditing()
+            editing.value = true
+            editingText.value = preedit.entries.joinToString(separator=" ") { it.text }
+        }.padding(4.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                preedit.entries.forEach {
+                    Text(it.text, style = Typography.SmallMl.copy(
+                        color = if(it.highlighted) Color.Black else Color.DarkGray
+                    ), maxLines = 1, overflow = TextOverflow.Visible)
+                }
             }
         }
     }
-
 }

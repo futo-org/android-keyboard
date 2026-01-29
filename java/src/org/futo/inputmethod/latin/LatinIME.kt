@@ -684,7 +684,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
                     val left   = uixManager.floatingPosition.x.toInt()
                     val right  = (uixManager.floatingPosition.x + size.width).roundToInt()
-                    val top    = uixManager.floatingPosition.y.toInt()
+                    val top    = uixManager.floatingPosition.y.toInt() - uixManager.extraTopTouchHeight
                     val bottom = (uixManager.floatingPosition.y + height).roundToInt()
 
                     touchableInsets = Insets.TOUCHABLE_INSETS_REGION
@@ -693,7 +693,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                     visibleTopInsets = viewHeight
                 }
                 else -> {
-                    touchableInsets = Insets.TOUCHABLE_INSETS_CONTENT
+                    touchableInsets = Insets.TOUCHABLE_INSETS_VISIBLE
 
                     val touchableHeight = uixManager.touchableHeight
                     val topInset = if(touchableHeight < 1 || touchableHeight >= viewHeight - 1) {
@@ -705,7 +705,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                     }
 
                     contentTopInsets = topInset
-                    visibleTopInsets = topInset
+                    visibleTopInsets = topInset - uixManager.extraTopTouchHeight
                 }
             }
 
