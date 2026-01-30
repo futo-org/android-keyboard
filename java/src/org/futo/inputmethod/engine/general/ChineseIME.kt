@@ -11,7 +11,10 @@ import icu.astronot233.rime.Rime
 import icu.astronot233.rime.RimeMessage
 import icu.astronot233.rime.RimeSchema
 import icu.astronot233.rime.SyncStage
-import icu.astronot233.rime.X11Keys.*
+import icu.astronot233.rime.X11Keys.XK_BackSpace
+import icu.astronot233.rime.X11Keys.XK_Linefeed
+import icu.astronot233.rime.X11Keys.XK_Return
+import icu.astronot233.rime.X11Keys.XK_Tab
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -45,7 +48,6 @@ import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import java.io.File
 import java.util.Locale
-import kotlin.io.walkBottomUp
 import kotlin.math.max
 import kotlin.math.min
 
@@ -424,7 +426,18 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }
     private var currentMovingCursor: Int = 0
     override fun onMovePointer(steps: Int, stepOverWords: Boolean, select: Boolean?) {
-        // TODO("Unsupported yet")
+        var meta = 0
+        if (stepOverWords) meta = meta or KeyEvent.META_CTRL_ON
+        if (select == true) meta = meta or KeyEvent.META_SHIFT_ON
+        if(steps < 0) {
+            for(i in 0 until -steps) {
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta)
+            }
+        } else {
+            for(i in 0 until steps) {
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta)
+            }
+        }
     }
     override fun onUpWithPointerActive() {
         // TODO("Unsupported yet")
