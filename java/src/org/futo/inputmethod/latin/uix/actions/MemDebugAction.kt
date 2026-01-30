@@ -243,7 +243,7 @@ val MemoryDebugAction = Action(
                         }
 
                         is ChineseIME -> {
-                            Text("ChineseIME [no debug info yet]", style = DebugLabel)
+                            Text("ChineseIME\n${ime.debugInfo}", style = DebugLabel)
                         }
 
                         is JapaneseIME -> {
