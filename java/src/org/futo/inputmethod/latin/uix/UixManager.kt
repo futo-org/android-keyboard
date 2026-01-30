@@ -260,9 +260,13 @@ fun BoxScope.KeyboardBackground(
                 }
             }
 
-            Box(Modifier.matchParentSize().background(backgroundBrush))
+            Box(Modifier
+                .matchParentSize()
+                .background(backgroundBrush))
         }
-        else -> Box(Modifier.background(backgroundBrush).matchParentSize())
+        else -> Box(Modifier
+            .background(backgroundBrush)
+            .matchParentSize())
     }
 }
 
@@ -448,9 +452,11 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         uixManager.isInputOverridden.value = true
     }
 
-    override fun unsetInputConnection() {
+    override fun unsetInputConnection(): Boolean {
+        val wasOverridden = uixManager.isInputOverridden.value
         latinIME.overrideInputConnection(null, null)
         uixManager.isInputOverridden.value = false
+        return wasOverridden
     }
 
     override fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit) {
@@ -548,17 +554,29 @@ data class PreEditEntry(
     val highlighted: Boolean
 )
 
+interface PreEditListener {
+    fun onStartEdit()
+    fun onUpdateEdit(value: String)
+    fun onFinishEdit(value: String, candidateWord: String?, candidateIndex: Int?)
+}
+
+val NoOpPreEditListener = object : PreEditListener {
+    override fun onStartEdit() { }
+
+    override fun onUpdateEdit(value: String) { }
+
+    override fun onFinishEdit(value: String, candidateWord: String?, candidateIndex: Int?) { }
+}
+
 data class FloatingPreEdit(
     val entries: List<PreEditEntry>,
-    val startEditing: () -> Unit,
-    val finishEditing: (String) -> Unit
+    val listener: PreEditListener
 ) {
     companion object {
         @JvmStatic
-        fun build(text: String?, startEditing: () -> Unit, finishEditing: (String) -> Unit) = FloatingPreEdit(
+        fun build(text: String?, listener: PreEditListener) = FloatingPreEdit(
             entries = text?.ifBlank { null }?.split(' ')?.map { PreEditEntry(it, true) } ?: emptyList(),
-            startEditing = startEditing,
-            finishEditing = finishEditing
+            listener = listener,
         )
     }
 }
@@ -571,6 +589,41 @@ class UixManager(private val latinIME: LatinIME) {
 
     internal val composeView: ComposeView?
         get() = latinIME.composeView
+
+    private val suggestionStripListener = object : SuggestionStripViewListener {
+        override fun showImportantNoticeContents() {
+            latinIME.latinIMELegacy.showImportantNoticeContents()
+        }
+
+        override fun pickSuggestionManually(word: SuggestedWordInfo?) {
+            if(floatingPreeditEditing.value && floatingPreedit.value != null) {
+                val text = floatingPreeditText.value
+
+                keyboardManagerForAction.unsetInputConnection()
+
+                floatingPreedit.value?.listener?.onFinishEdit(text, word?.word, word?.mCandidateIndex)
+
+                floatingPreeditEditing.value = false
+                floatingPreeditText.value = ""
+            } else {
+                latinIME.latinIMELegacy.pickSuggestionManually(word)
+            }
+        }
+
+        override fun requestForgetWord(word: SuggestedWordInfo?) {
+            latinIME.latinIMELegacy.requestForgetWord(word)
+        }
+
+        override fun onCodeInput(
+            primaryCode: Int,
+            x: Int,
+            y: Int,
+            isKeyRepeat: Boolean
+        ) {
+            latinIME.latinIMELegacy.onCodeInput(primaryCode, x, y, isKeyRepeat)
+        }
+
+    }
 
     private val shouldShowSuggestionStrip = mutableStateOf(true)
     private val suggestedWords: MutableState<SuggestedWords?> = mutableStateOf(null)
@@ -686,7 +739,7 @@ class UixManager(private val latinIME: LatinIME) {
             if(actionBarShown.value || inlineSuggestions.isNotEmpty()) {
                 ActionBar(
                     suggestedWordsOrNull,
-                    latinIME.latinIMELegacy as SuggestionStripViewListener,
+                    suggestionStripListener,
                     inlineSuggestions = inlineSuggestions,
                     onActionActivated = {
                         keyboardManagerForAction.performHapticAndAudioFeedback(
@@ -832,7 +885,7 @@ class UixManager(private val latinIME: LatinIME) {
                         words = suggestedWordsOrNull,
                         showClose = currWindowActionWindow.value?.showCloseButton == true,
                         showCollapse = currWindowActionWindow.value?.positionIsUserManagable == true,
-                        suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
+                        suggestionStripListener = suggestionStripListener
                     )
                 }
             } else if(showingAboveKeyboard && !needToUseExpandableSuggestionUi) {
@@ -1291,7 +1344,7 @@ class UixManager(private val latinIME: LatinIME) {
                         if(needToUseExpandableSuggestionUi) {
                             ActionBarWithExpandableCandidates(
                                 suggestedWords.value,
-                                latinIME.latinIMELegacy as SuggestionStripViewListener,
+                                suggestionStripListener,
                                 isActionsExpanded = isActionsExpanded.value,
                                 toggleActionsExpanded = { toggleActionsExpanded() },
                                 closeActionWindow = currWindowActionWindow.value?.let {{ closeActionWindow() }},
@@ -1300,16 +1353,19 @@ class UixManager(private val latinIME: LatinIME) {
                                 expandableSuggestionCfg = expandableSuggestionCfg.value
                             )
                         }
-                        latinIME.LegacyKeyboardView(modifier = Modifier.align(Alignment.BottomCenter).onSizeChanged {
+                        latinIME.LegacyKeyboardView(modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .onSizeChanged {
                                 // TODO: Is there a better way?
                                 kbHeight.intValue = it.height.let {
-                                    if(it > 0) {
+                                    if (it > 0) {
                                         it
                                     } else {
                                         latinIME.size.value!!.height
                                     }
                                 }
-                            }.absoluteOffset { IntOffset(0, keyboardViewOffset.intValue) },
+                            }
+                            .absoluteOffset { IntOffset(0, keyboardViewOffset.intValue) },
                             hidden = mainKeyboardHidden.value)
                     }
 
@@ -1681,7 +1737,7 @@ class UixManager(private val latinIME: LatinIME) {
 
 @Composable
 fun FloatingPreEditView(
-    preedit: FloatingPreEdit = FloatingPreEdit.build("Some text here", {}, {}),
+    preedit: FloatingPreEdit = FloatingPreEdit.build("Some text here", NoOpPreEditListener),
     anchorCoords: LayoutCoordinates? = null,
     updateHeight: (Int) -> Unit = { },
     editingText: MutableState<String>,
@@ -1691,19 +1747,31 @@ fun FloatingPreEditView(
     val pos = anchorCoords?.positionInWindow()
 
     if(editing.value) {
-        Box(Modifier.onSizeChanged {
-            height = it.height
-            updateHeight(it.height)
-        }.offset {
-            pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) } ?: IntOffset.Zero
-        }.background(LocalKeyboardScheme.current.surface).padding(4.dp)) {
+        LaunchedEffect(editingText.value) {
+            if(editing.value) preedit.listener.onUpdateEdit(editingText.value)
+        }
+        Box(Modifier
+            .onSizeChanged {
+                height = it.height
+                updateHeight(it.height)
+            }
+            .offset {
+                pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) }
+                    ?: IntOffset.Zero
+            }
+            .background(LocalKeyboardScheme.current.surface)
+            .padding(4.dp)) {
             CompositionLocalProvider(LocalContentColor provides LocalKeyboardScheme.current.onSurface) {
                 Row(Modifier.height(48.dp)) {
                     ActionTextEditor(
-                        editingText, modifier = Modifier.fillMaxHeight().weight(1.0f),
+                        editingText, modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1.0f),
                         afterUnOverride = {
-                            preedit.finishEditing(editingText.value)
-                        })
+                            if(it) preedit.listener.onFinishEdit(editingText.value, null, null)
+                        },
+                        autofocus = true,
+                        onEnter = { editing.value = false })
                     IconButton(onClick = {
                         editing.value = false
                     }, modifier = Modifier.size(48.dp)) {
@@ -1713,16 +1781,25 @@ fun FloatingPreEditView(
             }
         }
     } else {
-        Box(Modifier.onSizeChanged {
-            height = it.height
-            updateHeight(it.height)
-        }.offset {
-            pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) } ?: IntOffset.Zero
-        }.background(Color.Gray.copy(alpha = 0.7f)).clickable {
-            preedit.startEditing()
-            editing.value = true
-            editingText.value = preedit.entries.joinToString(separator=" ") { it.text }
-        }.padding(4.dp)) {
+        Box(Modifier
+            .onSizeChanged {
+                height = it.height
+                updateHeight(it.height)
+            }
+            .offset {
+                pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) }
+                    ?: IntOffset.Zero
+            }
+            .background(Color.Gray.copy(alpha = 0.7f))
+            .clickable {
+                // Reject editing if there are already any Chinese characters in here. Only Pinyin editing supported
+                if(preedit.entries.all { it.text.all { it in 'a'..'z' || it in 'A'..'Z' || it == ' ' } } ) {
+                    preedit.listener.onStartEdit()
+                    editing.value = true
+                    editingText.value = preedit.entries.joinToString(separator = " ") { it.text }
+                }
+            }
+            .padding(4.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 preedit.entries.forEach {
                     Text(it.text, style = Typography.SmallMl.copy(

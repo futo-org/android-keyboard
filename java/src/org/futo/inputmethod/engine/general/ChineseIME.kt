@@ -37,6 +37,7 @@ import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.FloatingPreEdit
+import org.futo.inputmethod.latin.uix.PreEditListener
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
@@ -62,7 +63,7 @@ object ChineseIMESettings {
     )
 }
 
-class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAccessor {
+class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAccessor, PreEditListener {
     private val TAG = "ChineseIME (rime)"
 
     private val rime: Rime
@@ -143,6 +144,16 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         return Pair(rime, coroScope)
     }
 
+    private fun handlePassByMessage(x11Code: Int, mask: Int) {
+        when (x11Code) {
+            XK_BackSpace -> sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
+            XK_Tab       -> sendDownUpKeyEvent(KeyEvent.KEYCODE_TAB, 0)
+            XK_Linefeed  -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
+            XK_Return    -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
+            else -> connect?.commitText(String(Character.toChars(x11Code)), 1)
+        }
+    }
+
     private fun subscribeToRimeMessage() = rime.messageFlow.onEach { msg -> when (msg) {
         is RimeMessage.Deploy -> when (msg.value) {
             DeployStage.Unknown -> Log.e(TAG, "Deploy: Failed")
@@ -168,14 +179,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         }
         is RimeMessage.Passby -> {
             val (x11Code, mask) = msg.value
-            //Log.v(TAG, "Key ($x11Code | $mask) unused.")
-            when (x11Code) {
-                XK_BackSpace -> sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
-                XK_Tab       -> sendDownUpKeyEvent(KeyEvent.KEYCODE_TAB, 0)
-                XK_Linefeed  -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
-                XK_Return    -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
-                else -> connect?.commitText(String(Character.toChars(x11Code)), 1)
-            }
+            handlePassByMessage(x11Code, mask)
         }
         is RimeMessage.Unknown -> {
             Log.e(TAG, "Unrecognized error occurred: ${msg.value}")
@@ -183,32 +187,69 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }}.launchIn(coroScope)
 
     private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped ->
-        helper.updateUiInputState(ped.isEmpty())
-        helper.setPreedit(FloatingPreEdit.build(ped,
-            { onStartEdit() },
-            { onFinishEdit(it) }
-        ))
+        helper.updateUiInputState(ped.isEmpty() && !inEditingState)
+        helper.setPreedit(FloatingPreEdit.build(ped, this))
     }.launchIn(coroScope)
 
     var inEditingState = false
-    private fun onStartEdit() {
+    override fun onStartEdit() {
         inEditingState = true
         coroScope.launch {
             inEditingState = true
-            rime.setOption("ascii_mode", true)
         }
     }
 
-    private fun onFinishEdit(string: String) {
+    override fun onUpdateEdit(string: String) {
         coroScope.launch {
-            rime.setOption("ascii_mode", false)
             rime.clearComposition()
             rime.simulateKeySequence(string.filter { it in 'a'..'z' || it in 'A'..'Z' })
-            inEditingState = false
+        }
+    }
+
+    private var waitingToSelect: Pair<String, Int>? = null
+    override fun onFinishEdit(string: String, candidateWord: String?, candidateIndex: Int?) {
+        if(!inEditingState) return
+        inEditingState = false
+
+        coroScope.launch {
+            rime.clearComposition()
+
+            if(candidateWord != null && candidateIndex != null) {
+                // TODO: This is kind of a buggy way of doing it
+                waitingToSelect = candidateWord to candidateIndex
+            }
+            rime.simulateKeySequence(string.filter { it in 'a'..'z' || it in 'A'..'Z' })
+
+            if(string.isEmpty()) {
+                showSuggestionStrip(
+                    SuggestedWords(
+                        ArrayList(emptyList()),
+                        ArrayList(emptyList()),
+                        null,
+                        false,
+                        false,
+                        false,
+                        0,
+                        0,
+                        0
+                    )
+                )
+            }
         }
     }
 
     private fun subscribeToRimeCandidates() = rime.candidatesFlow.onEach { cdd ->
+        waitingToSelect?.let { sel ->
+            if(cdd.getOrNull(sel.second)?.text == sel.first) {
+                if(rime.selectCandidate(sel.second)) {
+                    waitingToSelect = null
+                    return@onEach
+                } else {
+                    Log.e(TAG, "Error selecting candidate!")
+                }
+            }
+        }
+
         val suggestWordList = cdd.mapIndexed { index, candidate -> SuggestedWordInfo(
             candidate.text,
             "",
@@ -220,17 +261,24 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             index,
             candidate.comment
         ) }.let { ArrayList(it) }
-        showSuggestionStrip(SuggestedWords(
-            suggestWordList,
-            suggestWordList,
-            null,
-            false,
-            false,
-            false,
-            0,
-            0,
-            0
-        ))
+
+        if(inEditingState && suggestWordList.isEmpty()) {
+
+        } else {
+            showSuggestionStrip(
+                SuggestedWords(
+                    suggestWordList,
+                    suggestWordList,
+                    null,
+                    false,
+                    false,
+                    false,
+                    0,
+                    0,
+                    0
+                )
+            )
+        }
     }.launchIn(coroScope)
 
     override fun onCreate() {
@@ -314,7 +362,11 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }
 
     override fun onFinishInput() {
-        coroScope.launch { rime.clearComposition() }
+        if(inEditingState) return
+        coroScope.launch {
+            waitingToSelect = null
+            rime.clearComposition()
+        }
     }
 
     override fun onFinishSlidingInput() {
@@ -322,7 +374,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }
 
     private fun interruptInput(text: CharSequence? = null) {
-        coroScope.launch { rime.clearComposition() }
+        coroScope.launch {
+            rime.clearComposition()
+        }
         connect?.finishComposingText()
         if (text != null) {
             connect?.commitText(text, 1)
@@ -378,15 +432,25 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
                     '\r'.code -> XK_Return
                     else -> it
                 } }
-                coroScope.launch { rime.processX11Code(x11Code) }
+
+                if(!inEditingState) {
+                    coroScope.launch { rime.processX11Code(x11Code) }
+                } else {
+                    handlePassByMessage(x11Code, 0)
+                }
             }
 
             Event.EVENT_TYPE_SUGGESTION_PICKED -> {
                 val suggestion = event.mSuggestedWordInfo ?: return
-                if (suggestion.isKindOf(SuggestedWordInfo.KIND_UNDO))
+                if (suggestion.isKindOf(SuggestedWordInfo.KIND_UNDO)) {
                     connect?.commitText(suggestion.word, 1)
-                else
-                    coroScope.launch { rime.selectCandidate(suggestion.mCandidateIndex) }
+                } else {
+                    coroScope.launch {
+                        if(!rime.selectCandidate(suggestion.mCandidateIndex)) {
+                            Log.e(TAG, "Couldn't select candidate")
+                        }
+                    }
+                }
             }
 
             Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> {

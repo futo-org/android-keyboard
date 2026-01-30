@@ -84,7 +84,7 @@ interface KeyboardManagerForAction {
     fun getActiveLocales(): List<Locale>
 
     fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo)
-    fun unsetInputConnection()
+    fun unsetInputConnection(): Boolean
 
     fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit)
     fun openInputMethodPicker()

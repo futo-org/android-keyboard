@@ -174,6 +174,7 @@ private fun GenericEditTextCompose(
     modifier: Modifier = Modifier,
     onOverride: ((InputConnection, EditorInfo) -> Unit)? = null,
     onUnoverride: (() -> Unit)? = null,
+    onEnter: (() -> Unit)? = null,
     autofocus: Boolean = false,
     forceQwerty: Boolean = false,
 ) {
@@ -190,7 +191,7 @@ private fun GenericEditTextCompose(
     } or if(autocorrect) {
         EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
     } else {
-        0
+        EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS
     }
 
     val color = LocalContentColor.current
@@ -234,6 +235,13 @@ private fun GenericEditTextCompose(
             // Remove underline and padding
             background = null
             setPadding(0, 0, 0, 0)
+
+            if(!multiline) {
+                setOnEditorActionListener { view, actionId, ev ->
+                    onEnter?.invoke()
+                    return@setOnEditorActionListener true
+                }
+            }
 
             if(autofocus) requestFocus()
         }
@@ -290,7 +298,10 @@ fun ActionTextEditor(
     autocorrect: Boolean = false,
     modifier: Modifier = Modifier.fillMaxSize(),
     afterOverride: (() -> Unit)? = null,
-    afterUnOverride: (() -> Unit)? = null,
+    afterUnOverride: ((Boolean) -> Unit)? = null,
+    onEnter: (() -> Unit)? = null,
+    autofocus: Boolean = false,
+
 ) {
     val manager = if(!LocalInspectionMode.current) LocalManager.current else null
     GenericEditTextCompose(
@@ -301,13 +312,15 @@ fun ActionTextEditor(
         autocorrect = autocorrect,
         placeholder = null,
         modifier = modifier,
+        autofocus = autofocus,
+        onEnter = onEnter,
         onOverride = { ic, ed ->
             manager!!.overrideInputConnection(ic, ed)
             afterOverride?.invoke()
         },
         onUnoverride = {
-            manager!!.unsetInputConnection()
-            afterUnOverride?.invoke()
+            val result = manager!!.unsetInputConnection()
+            afterUnOverride?.invoke(result)
         }
     )
 }
