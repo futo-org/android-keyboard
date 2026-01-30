@@ -551,6 +551,7 @@ var UixManagerInstanceForDebug: UixManager? = null
 
 data class PreEditEntry(
     val text: String,
+    val normalized: String,
     val highlighted: Boolean
 )
 
@@ -574,8 +575,8 @@ data class FloatingPreEdit(
 ) {
     companion object {
         @JvmStatic
-        fun build(text: String?, listener: PreEditListener) = FloatingPreEdit(
-            entries = text?.ifBlank { null }?.split(' ')?.map { PreEditEntry(it, true) } ?: emptyList(),
+        fun build(text: String?, listener: PreEditListener, normalizer: (String) -> String = {it}) = FloatingPreEdit(
+            entries = text?.ifBlank { null }?.split(' ')?.map { PreEditEntry(it, normalizer(it), true) } ?: emptyList(),
             listener = listener,
         )
     }
@@ -1793,10 +1794,10 @@ fun FloatingPreEditView(
             .background(Color.Gray.copy(alpha = 0.7f))
             .clickable {
                 // Reject editing if there are already any Chinese characters in here. Only Pinyin editing supported
-                if(preedit.entries.all { it.text.all { it in 'a'..'z' || it in 'A'..'Z' || it == ' ' } } ) {
+                if(preedit.entries.all { it.normalized.all { it in 'a'..'z' || it in 'A'..'Z' || it == ' ' } } ) {
                     preedit.listener.onStartEdit()
                     editing.value = true
-                    editingText.value = preedit.entries.joinToString(separator = " ") { it.text }
+                    editingText.value = preedit.entries.joinToString(separator = " ") { it.normalized }
                 }
             }
             .padding(4.dp)) {

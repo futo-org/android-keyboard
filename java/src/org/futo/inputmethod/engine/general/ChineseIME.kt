@@ -84,6 +84,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         @JvmStatic
         fun getUser(context: Context) = File(getRimeDir(context), "user")
 
+        @JvmStatic
+        fun normalizeV(text: String) = text.replace('ü', 'v')
+
         val PreviouslyExtractedDictionaryName = SettingsKey(
             stringPreferencesKey("ChineseDictionaryExtractedValue"),
             ""
@@ -188,7 +191,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
     private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped ->
         helper.updateUiInputState(ped.isEmpty() && !inEditingState)
-        helper.setPreedit(FloatingPreEdit.build(ped, this))
+        helper.setPreedit(FloatingPreEdit.build(ped, this) { normalizeV(it) })
     }.launchIn(coroScope)
 
     var inEditingState = false
