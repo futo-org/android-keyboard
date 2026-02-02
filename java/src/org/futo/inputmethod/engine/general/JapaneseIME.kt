@@ -1217,8 +1217,9 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
     }
 
     override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
+        if(layoutHint == layout.mainLayout.imeHint) return
         layoutHint = layout.mainLayout.imeHint
-        if(helper.isImeActive(this)) updateConfig()
+        if(helper.isImeActive(this)) updateConfig(false)
     }
 
     private val useExpandableUi = true
