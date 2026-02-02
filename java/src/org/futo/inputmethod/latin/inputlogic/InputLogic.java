@@ -1010,7 +1010,7 @@ public final class InputLogic {
         // a letter or a word connector.
                 && settingsValues.isWordCodePoint(codePoint)
         // We never go into composing state if suggestions are not requested.
-                && settingsValues.needsToLookupSuggestions() &&
+                && settingsValues.needsToLookupSuggestions()
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
         // NOTE: If the InputConnection is slow, we skip the text-after-cursor check since it
@@ -1018,9 +1018,10 @@ public final class InputLogic {
         // keyboard UI slow and non-responsive.
         // TODO: Cache the text after the cursor so we don't need to go to the InputConnection
         // each time. We are already doing this for getTextBeforeCursor().
-                (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-                        || !mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
-                                InputLogic.COMPOSITION_TEXT_AFTER && !mConnection.hasSlowInputConnection() /* checkTextAfter */))) {
+                //&& (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                //        || !mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
+                //                InputLogic.COMPOSITION_TEXT_AFTER && !mConnection.hasSlowInputConnection() /* checkTextAfter */)))
+        ){
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a word connector. The idea here is, word connectors are not
             // separators and they should be treated as normal characters, except in the first

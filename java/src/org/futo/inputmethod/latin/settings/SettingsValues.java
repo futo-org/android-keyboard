@@ -33,6 +33,7 @@ import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
 import org.futo.inputmethod.latin.uix.actions.RegistryKt;
 import org.futo.inputmethod.latin.utils.AsyncResultHolder;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
+import org.futo.inputmethod.latin.utils.ScriptUtils2;
 import org.futo.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 
 import java.util.Arrays;
@@ -295,6 +296,8 @@ public class SettingsValues {
     }
 
     public boolean isWordCodePoint(final int code) {
+        if(ScriptUtils2.isLetterDefinitelyIncompatibleForLocale(code, mLocale)) return false;
+
         int type = Character.getType(code);
         return Character.isLetter(code) || isWordConnector(code)
                 || Character.NON_SPACING_MARK == type
