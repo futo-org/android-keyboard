@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix.actions
 
+import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
@@ -69,6 +70,7 @@ import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.PersistentStateInitialization
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.UrlCleaner
 import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.getSetting
@@ -121,6 +123,11 @@ val ClipboardSingleColumn = SettingsKey(
 val ClipboardQuickClipsEnabled = SettingsKey(
     booleanPreferencesKey("clipboard_quick_clips_enabled"),
     true
+)
+
+val ClipboardStripUrlTracking = SettingsKey(
+    booleanPreferencesKey("clipboard_strip_url_tracking"),
+    false
 )
 
 
@@ -317,6 +324,20 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                     ClipDescription.EXTRA_IS_SENSITIVE, false
                 ) == true
 
+                // Clean URL tracking params if enabled
+                if (text != null && !isSensitive && context.getSettingBlocking(ClipboardStripUrlTracking)) {
+                    val cleanedText = UrlCleaner.cleanUrl(text);
+                    if(cleanedText != text) {
+                        // Update system clipboard with clean URL
+                        val newClip = ClipData.newPlainText(
+                            clip.description?.label ?: "text", cleanedText
+                        );
+
+                        clipboardManager.setPrimaryClip(newClip);
+                        return;     // Exit and trigger onPrimaryClipChanged again with clean text
+                    }
+                }
+
                 // TODO: Support images and other non-text media
                 val passesUriCheck = when {
                     uri == null -> true
@@ -348,6 +369,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
     init {
         coroutineScope.launch {
+            UrlCleaner.init(context);
             loadClipboard()
 
             withContext(Dispatchers.Main) {
@@ -864,6 +886,12 @@ val ClipboardHistoryAction = Action(
             userSettingToggleDataStore(
                 title = R.string.action_clipboard_manager_settings_show_quick_clips,
                 setting = ClipboardQuickClipsEnabled
+            ),
+
+            userSettingToggleDataStore(
+                title = R.string.action_clipboard_manager_strip_url_tracking_title,
+                subtitle = R.string.action_clipboard_manager_strip_url_tracking_subtitle,
+                setting = ClipboardStripUrlTracking
             ),
 
             userSettingToggleDataStore(
