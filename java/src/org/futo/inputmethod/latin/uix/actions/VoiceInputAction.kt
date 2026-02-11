@@ -25,11 +25,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
 import org.futo.inputmethod.latin.uix.CAN_EXPAND_SPACE
 import org.futo.inputmethod.latin.uix.CloseResult
+import org.futo.inputmethod.latin.uix.DICTATION_CAPITALIZATION
+import org.futo.inputmethod.latin.uix.DICTATION_COMMANDS_ENABLED
+import org.futo.inputmethod.latin.uix.DICTATION_CURRENCY
+import org.futo.inputmethod.latin.uix.DICTATION_EMOTICONS
+import org.futo.inputmethod.latin.uix.DICTATION_FORMATTING
+import org.futo.inputmethod.latin.uix.DICTATION_IP_MARKS
+import org.futo.inputmethod.latin.uix.DICTATION_MATH
+import org.futo.inputmethod.latin.uix.DICTATION_PUNCTUATION
+import org.futo.inputmethod.latin.uix.DICTATION_SYMBOLS
 import org.futo.inputmethod.latin.uix.DISALLOW_SYMBOLS
 import org.futo.inputmethod.latin.uix.ENABLE_SOUND
 import org.futo.inputmethod.latin.uix.KeyboardManagerForAction
@@ -42,6 +51,8 @@ import org.futo.inputmethod.latin.uix.VERBOSE_PROGRESS
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
+import org.futo.inputmethod.latin.uix.utils.DictationCommandProcessor
+import org.futo.inputmethod.latin.uix.utils.DictationSettings
 import org.futo.inputmethod.latin.uix.utils.ModelOutputSanitizer
 import org.futo.inputmethod.latin.xlm.UserDictionaryObserver
 import org.futo.inputmethod.updates.openURI
@@ -118,6 +129,7 @@ private class VoiceInputActionWindow(
     val context = manager.getContext()
 
     private var shouldPlaySounds: Boolean = false
+    private var dictationSettings: DictationSettings = DictationSettings()
     private fun loadSettings(): RecognizerViewSettings {
         val enableSound = context.getSetting(ENABLE_SOUND)
         val verboseFeedback = false//context.getSetting(VERBOSE_PROGRESS)
@@ -138,6 +150,18 @@ private class VoiceInputActionWindow(
         }
 
         shouldPlaySounds = enableSound
+
+        dictationSettings = DictationSettings(
+            enabled = context.getSetting(DICTATION_COMMANDS_ENABLED),
+            formatting = context.getSetting(DICTATION_FORMATTING),
+            capitalization = context.getSetting(DICTATION_CAPITALIZATION),
+            punctuation = context.getSetting(DICTATION_PUNCTUATION),
+            symbols = context.getSetting(DICTATION_SYMBOLS),
+            math = context.getSetting(DICTATION_MATH),
+            currency = context.getSetting(DICTATION_CURRENCY),
+            emoticons = context.getSetting(DICTATION_EMOTICONS),
+            ipMarks = context.getSetting(DICTATION_IP_MARKS)
+        )
 
         return RecognizerViewSettings(
             shouldShowInlinePartialResult = false,
@@ -263,8 +287,10 @@ private class VoiceInputActionWindow(
         wasFinished = true
 
         manager.getLifecycleScope().launch(Dispatchers.Main) {
+            // Sanitize first so dictation formatting chars aren't mangled by trim()
             val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
-            inputTransaction.commit(sanitized)
+            val processed = DictationCommandProcessor.process(sanitized, dictationSettings)
+            inputTransaction.commit(processed)
             manager.announce(result)
             manager.closeActionWindow()
         }
@@ -273,7 +299,8 @@ private class VoiceInputActionWindow(
     override fun partialResult(result: String) {
         manager.getLifecycleScope().launch(Dispatchers.Main) {
             val sanitized = ModelOutputSanitizer.sanitize(result, inputTransaction.textContext)
-            inputTransaction.updatePartial(sanitized)
+            val processed = DictationCommandProcessor.process(sanitized, dictationSettings)
+            inputTransaction.updatePartial(processed)
         }
     }
 

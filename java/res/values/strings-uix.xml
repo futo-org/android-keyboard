@@ -538,6 +538,26 @@
     <string name="voice_input_settings_change_models">Models</string>
     <string name="voice_input_settings_change_models_subtitle">To change the models, visit Languages &amp; Models menu</string>
 
+    <!-- Dictation commands settings -->
+    <string name="dictation_commands_title">Dictation Commands</string>
+    <string name="dictation_commands_subtitle">Replace spoken phrases like \"new line\" or \"dollar sign\" with symbols and formatting</string>
+    <string name="dictation_formatting_title">Formatting</string>
+    <string name="dictation_formatting_subtitle">New line, new paragraph, tab, numeral, no space on/off</string>
+    <string name="dictation_capitalization_title">Capitalization</string>
+    <string name="dictation_capitalization_subtitle">Caps on/off, all caps</string>
+    <string name="dictation_punctuation_title">Punctuation &amp; Brackets</string>
+    <string name="dictation_punctuation_subtitle">Quotes, brackets, parentheses, dash, ellipsis</string>
+    <string name="dictation_symbols_title">Symbols</string>
+    <string name="dictation_symbols_subtitle">Ampersand, asterisk, at sign, hashtag, etc.</string>
+    <string name="dictation_math_title">Math Symbols</string>
+    <string name="dictation_math_subtitle">Equal, plus, minus, greater than, less than</string>
+    <string name="dictation_currency_title">Currency Symbols</string>
+    <string name="dictation_currency_subtitle">Dollar, euro, pound, yen, cent</string>
+    <string name="dictation_emoticons_title">Emoticons</string>
+    <string name="dictation_emoticons_subtitle">Smiley, frowny, winky face</string>
+    <string name="dictation_ip_marks_title">Intellectual Property Marks</string>
+    <string name="dictation_ip_marks_subtitle">Copyright, registered, trademark</string>
+
     <!-- Prediction menu -->
     <string name="prediction_settings_title">Text Prediction</string>
     <string name="prediction_settings_transformer">Transformer LM</string>
