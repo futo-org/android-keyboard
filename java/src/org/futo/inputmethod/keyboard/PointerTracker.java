@@ -1001,6 +1001,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                 if(settingsValues.mIsRTL) steps = -steps;
 
                 sListener.onMoveDeletePointer(steps);
+                final AudioAndHapticFeedbackManager feedbackManager =
+                        AudioAndHapticFeedbackManager.getInstance();
+                if (settingsValues.mVibrateOn) {
+                    feedbackManager.vibrate(CURSOR_MOVE_VIBRATION_DURATION);
+                }
             }
 
             mLastX = x;
