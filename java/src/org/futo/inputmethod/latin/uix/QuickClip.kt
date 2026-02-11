@@ -215,6 +215,13 @@ object QuickClip {
         timeOfDismissal = System.currentTimeMillis()
     }
 
+    // Invalidate the cached QuickClip state. This must be called when clipboard items
+    // are removed or pruned so that deleted items no longer appear as QuickClip suggestions.
+    fun invalidateCache() {
+        cachedPreviousItem = null
+        cachedPreviousState = null
+    }
+
     private fun getStateForItem(validUntil: Long, mimeTypes: List<String>, item: ClipData.Item, isSensitive: Boolean): QuickClipState? {
         val texts = mutableListOf<QuickClipItem>()
         val currTexts = mutableSetOf<String>()

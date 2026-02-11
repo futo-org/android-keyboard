@@ -65,6 +65,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
+import org.futo.inputmethod.latin.uix.QuickClip
 import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.PersistentStateInitialization
@@ -380,14 +381,15 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         val numHoursToKeep = context.getSetting(ClipboardHistoryTimeToKeep)
         val numItemsToKeep = context.getSetting(ClipboardHistoryItemsToKeep)
         val minimumTimestamp = System.currentTimeMillis() - (numHoursToKeep * 60L * 60L * 1000L)
-        clipboardHistory.removeAll {
+        val removedByTime = clipboardHistory.removeAll {
             (!it.pinned) && (it.timestamp < minimumTimestamp)
         }
 
         // Remove duplicates of entries, if any appeared
         // Duplicates will have same timestamp, same text, etc
         val set = clipboardHistory.toSet()
-        if(set.size < clipboardHistory.size) {
+        val hadDuplicates = set.size < clipboardHistory.size
+        if(hadDuplicates) {
             clipboardHistory.clear()
             clipboardHistory.addAll(set)
         }
@@ -395,13 +397,20 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         val maxItems = numItemsToKeep
         val numUnpinnedItems = clipboardHistory.filter { !it.pinned }.size
 
+        var removedByLimit = false
         val numItemsToRemove = numUnpinnedItems - maxItems
         if(numItemsToRemove > 0) {
             for(i in 0 until numItemsToRemove) {
                 val idx = clipboardHistory.indexOfFirst { !it.pinned }
                 if(idx == -1) break
                 clipboardHistory.removeAt(idx)
+                removedByLimit = true
             }
+        }
+
+        // Invalidate QuickClip cache if any items were removed during pruning
+        if(removedByTime || hadDuplicates || removedByLimit) {
+            QuickClip.invalidateCache()
         }
     }
 
@@ -598,6 +607,11 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
             }
         }
         clipboardHistory.removeAll { it == item }
+
+        // Invalidate QuickClip cache so removed items no longer appear as suggestions
+        QuickClip.invalidateCache()
+        QuickClip.markQuickClipDismissed()
+
         saveClipboard()
     }
 
@@ -695,6 +709,7 @@ val ClipboardHistoryAction = Action(
                                                 clipboardHistoryManager.onRemove(it)
                                             }
                                         }
+                                        manager.dismissQuickClips()
                                     },
                                 ),
                                 {}
@@ -841,6 +856,7 @@ val ClipboardHistoryAction = Action(
                                                 context.getString(R.string.action_clipboard_manager_remove_item)
                                             ) {
                                                 clipboardHistoryManager.onRemove(it)
+                                                manager.dismissQuickClips()
                                                 manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                                             }
                                         )

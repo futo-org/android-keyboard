@@ -512,6 +512,10 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         uixManager.dismissQuickClips()
     }
 
+    override fun dismissQuickClips() {
+        uixManager.dismissQuickClips()
+    }
+
     override fun getSizingCalculator(): KeyboardSizingCalculator =
         latinIME.sizingCalculator
 
