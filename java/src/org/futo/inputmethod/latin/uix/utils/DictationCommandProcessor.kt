@@ -59,6 +59,8 @@ object DictationCommandProcessor {
         "full stop" to Replacement(".", Spacing.NO_SPACE_BEFORE),
         "comma" to Replacement(",", Spacing.NO_SPACE_BEFORE),
         "exclamation mark" to Replacement("!", Spacing.NO_SPACE_BEFORE),
+        "exclamation point" to Replacement("!", Spacing.NO_SPACE_BEFORE),
+        "exclamation" to Replacement("!", Spacing.NO_SPACE_BEFORE),
         "question mark" to Replacement("?", Spacing.NO_SPACE_BEFORE),
         "colon" to Replacement(":", Spacing.NO_SPACE_BEFORE),
         "semicolon" to Replacement(";", Spacing.NO_SPACE_BEFORE)

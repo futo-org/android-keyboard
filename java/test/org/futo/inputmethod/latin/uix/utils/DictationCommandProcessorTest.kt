@@ -206,6 +206,28 @@ class DictationCommandProcessorTest {
     }
 
     @Test
+    fun testExclamationPoint() {
+        assertEquals("hello!", process("hello exclamation point"))
+    }
+
+    @Test
+    fun testExclamationAlone() {
+        assertEquals("hello!", process("hello exclamation"))
+    }
+
+    @Test
+    fun testWhisperExclamationWithPeriodAndCaps() {
+        // Whisper outputs "this is a sentence. Exclamation." for spoken "exclamation point"
+        assertEquals("this is a sentence!", process("this is a sentence. Exclamation."))
+    }
+
+    @Test
+    fun testWhisperExclamationTrailingPeriod() {
+        // Whisper outputs "another sentence spoken exclamation."
+        assertEquals("another sentence spoken!", process("another sentence spoken exclamation."))
+    }
+
+    @Test
     fun testColonFallback() {
         assertEquals("hello:", process("hello colon"))
     }
