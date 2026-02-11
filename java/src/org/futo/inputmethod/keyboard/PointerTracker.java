@@ -34,6 +34,7 @@ import org.futo.inputmethod.keyboard.internal.KeyboardState;
 import org.futo.inputmethod.keyboard.internal.PointerTrackerQueue;
 import org.futo.inputmethod.keyboard.internal.TimerProxy;
 import org.futo.inputmethod.keyboard.internal.TypingTimeRecorder;
+import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.CoordinateUtils;
@@ -161,6 +162,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private MoreKeysPanel mMoreKeysPanel;
 
     private static final int MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT = 3;
+    // Short vibration duration (ms) for each cursor step during spacebar swipe.
+    private static final int CURSOR_MOVE_VIBRATION_DURATION = 5;
     // true if this pointer is in the dragging finger mode.
     boolean mIsInDraggingFinger;
     // true if this pointer is sliding from a modifier key and in the sliding key input mode,
@@ -970,6 +973,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                     sListener.onSwipeLanguage(steps);
                 } else {
                     sListener.onMovePointer(steps);
+                    final AudioAndHapticFeedbackManager feedbackManager =
+                            AudioAndHapticFeedbackManager.getInstance();
+                    if (settingsValues.mVibrateOn) {
+                        feedbackManager.vibrate(CURSOR_MOVE_VIBRATION_DURATION);
+                    }
                 }
             }
 
