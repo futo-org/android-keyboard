@@ -709,6 +709,7 @@ val ClipboardHistoryAction = Action(
                                                 clipboardHistoryManager.onRemove(it)
                                             }
                                         }
+                                        manager.dismissQuickClips()
                                     },
                                 ),
                                 {}
@@ -855,6 +856,7 @@ val ClipboardHistoryAction = Action(
                                                 context.getString(R.string.action_clipboard_manager_remove_item)
                                             ) {
                                                 clipboardHistoryManager.onRemove(it)
+                                                manager.dismissQuickClips()
                                                 manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                                             }
                                         )
