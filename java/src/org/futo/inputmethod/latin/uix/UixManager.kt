@@ -130,6 +130,7 @@ import org.futo.inputmethod.latin.uix.actions.keyCodeAlt
 import org.futo.inputmethod.latin.uix.resizing.KeyboardResizers
 import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
+import org.futo.inputmethod.latin.uix.settings.pages.CodingBarDisplayedSetting
 import org.futo.inputmethod.latin.uix.settings.pages.InlineAutofillSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.KeyboardSurfaceShaderBackground
@@ -403,11 +404,50 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
     }
 
     override fun sendKeyEvent(keyCode: Int, metaState: Int) {
+        if (metaState != 0) {
+            // For modifier combinations, send proper modifier key down/up wrapping
+            // through the InputConnection directly. This is needed for Termux and
+            // other terminal emulators that track modifier state via separate key events.
+            val ic = latinIME.currentInputConnection
+            if (ic != null) {
+                val now = android.os.SystemClock.uptimeMillis()
+                val flags = KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE
+                val dev = android.view.KeyCharacterMap.VIRTUAL_KEYBOARD
+
+                // Send modifier key DOWN events
+                if (metaState and KeyEvent.META_CTRL_ON != 0) {
+                    ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_CTRL_LEFT, 0, metaState, dev, 0, flags))
+                }
+                if (metaState and KeyEvent.META_ALT_ON != 0) {
+                    ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ALT_LEFT, 0, metaState, dev, 0, flags))
+                }
+                if (metaState and KeyEvent.META_SHIFT_ON != 0) {
+                    ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, metaState, dev, 0, flags))
+                }
+
+                // Send the actual key DOWN + UP
+                ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_DOWN, keyCode, 0, metaState, dev, 0, flags))
+                ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_UP, keyCode, 0, metaState, dev, 0, flags))
+
+                // Send modifier key UP events (reverse order)
+                if (metaState and KeyEvent.META_SHIFT_ON != 0) {
+                    ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0, dev, 0, flags))
+                }
+                if (metaState and KeyEvent.META_ALT_ON != 0) {
+                    ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ALT_LEFT, 0, 0, dev, 0, flags))
+                }
+                if (metaState and KeyEvent.META_CTRL_ON != 0) {
+                    ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_CTRL_LEFT, 0, 0, dev, 0, flags))
+                }
+                return
+            }
+        }
+
+        // For non-modified keys or when InputConnection is unavailable, use the existing path
         val event = Event.createDownUpKeyEvent(keyCode, metaState)
         latinIME.imeManager.getActiveIME(
             Settings.getInstance().current
         ).onEvent(event)
-        //latinIME.inputLogic.sendDownUpKeyEvent(keyCode, metaState)
     }
 
     override fun isShifted(): Boolean = latinIME.latinIMELegacy.mKeyboardSwitcher.mState.shifted
@@ -638,6 +678,7 @@ class UixManager(private val latinIME: LatinIME) {
         val view = LocalView.current
 
         val actionBarShown = useDataStore(ActionBarDisplayedSetting)
+        val codingBarShown = useDataStore(CodingBarDisplayedSetting)
 
         Column {
             // Don't show suggested words when it's not meant to be shown
@@ -651,7 +692,30 @@ class UixManager(private val latinIME: LatinIME) {
                 if(!inlineStuffHiddenByTyping.value) inlineSuggestions.value else emptyList()
             }
 
-            if(actionBarShown.value || inlineSuggestions.isNotEmpty()) {
+            if(codingBarShown.value) {
+                // Coding bar replaces the action/suggestions bar when enabled
+                CodingBar(
+                    onActionActivated = {
+                        keyboardManagerForAction.performHapticAndAudioFeedback(
+                            Constants.CODE_TAB,
+                            view
+                        )
+                        onActionActivated(it)
+                    },
+                    onActionAltActivated = {
+                        if (it.altPressImpl != null) {
+                            keyboardManagerForAction.performHapticAndAudioFeedback(
+                                Constants.CODE_TAB,
+                                view
+                            )
+                        }
+                        onActionAltActivated(it)
+                    },
+                    isActionsExpanded = isActionsExpanded.value,
+                    toggleActionsExpanded = { toggleActionsExpanded() },
+                    keyboardManagerForAction = keyboardManagerForAction,
+                )
+            } else if(actionBarShown.value || inlineSuggestions.isNotEmpty()) {
                 ActionBar(
                     suggestedWordsOrNull,
                     latinIME.latinIMELegacy as SuggestionStripViewListener,

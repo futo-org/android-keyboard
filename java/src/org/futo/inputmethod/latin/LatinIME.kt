@@ -58,6 +58,7 @@ import org.futo.inputmethod.engine.general.WordLearner
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.actions.CodingModifierState
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
@@ -621,6 +622,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         super.onWindowHidden()
         latinIMELegacy.onWindowHidden()
         uixManager.onInputFinishing()
+        // Full reset of coding bar modifier state (including locked modifiers)
+        // so no buttons remain highlighted on reopen
+        CodingModifierState.resetAll()
     }
 
     override fun onUpdateSelection(

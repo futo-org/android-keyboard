@@ -82,6 +82,7 @@ import org.futo.inputmethod.latin.utils.ApplicationUtils;
 import org.futo.inputmethod.latin.utils.JniUtils;
 import org.futo.inputmethod.latin.utils.StatsUtils;
 import org.futo.inputmethod.latin.utils.ViewLayoutUtils;
+import org.futo.inputmethod.latin.uix.actions.CodingModifierState;
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2;
 import org.jetbrains.annotations.NotNull;
 
@@ -672,6 +673,52 @@ public class LatinIMELegacy implements KeyboardActionListener,
     @Override
     public void onCodeInput(final int codePoint, final int x, final int y,
             final boolean isKeyRepeat) {
+        final int codingMeta = CodingModifierState.INSTANCE.getMetaState();
+
+        // Coding bar modifier intercept: when CTRL/ALT/SHIFT sticky modifiers are active,
+        // convert the code point to a KeyEvent with proper modifier wrapping through
+        // InputConnection. This sends modifier key DOWN, then key DOWN+UP, then modifier UP,
+        // which is compatible with Termux and other terminal emulators.
+        if (codingMeta != 0) {
+            final int keyCode = codingCodePointToKeyCode(codePoint);
+            if (keyCode != KeyEvent.KEYCODE_UNKNOWN) {
+                final android.view.inputmethod.InputConnection ic = mInputMethodService.getCurrentInputConnection();
+                if (ic != null) {
+                    final long now = android.os.SystemClock.uptimeMillis();
+                    final int flags = KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE;
+                    final int dev = android.view.KeyCharacterMap.VIRTUAL_KEYBOARD;
+
+                    // Send modifier key DOWN events
+                    if ((codingMeta & KeyEvent.META_CTRL_ON) != 0) {
+                        ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_CTRL_LEFT, 0, codingMeta, dev, 0, flags));
+                    }
+                    if ((codingMeta & KeyEvent.META_ALT_ON) != 0) {
+                        ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ALT_LEFT, 0, codingMeta, dev, 0, flags));
+                    }
+                    if ((codingMeta & KeyEvent.META_SHIFT_ON) != 0) {
+                        ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, codingMeta, dev, 0, flags));
+                    }
+
+                    // Send the actual key DOWN + UP
+                    ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_DOWN, keyCode, 0, codingMeta, dev, 0, flags));
+                    ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_UP, keyCode, 0, codingMeta, dev, 0, flags));
+
+                    // Send modifier key UP events (reverse order)
+                    if ((codingMeta & KeyEvent.META_SHIFT_ON) != 0) {
+                        ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0, dev, 0, flags));
+                    }
+                    if ((codingMeta & KeyEvent.META_ALT_ON) != 0) {
+                        ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ALT_LEFT, 0, 0, dev, 0, flags));
+                    }
+                    if ((codingMeta & KeyEvent.META_CTRL_ON) != 0) {
+                        ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_CTRL_LEFT, 0, 0, dev, 0, flags));
+                    }
+                }
+                CodingModifierState.INSTANCE.consumeModifiers();
+                return;
+            }
+        }
+
         // TODO: this processing does not belong inside LatinIME, the caller should be doing this.
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         // x and y include some padding, but everything down the line (especially native
@@ -684,6 +731,32 @@ public class LatinIMELegacy implements KeyboardActionListener,
         final Event event = createSoftwareKeypressEvent(getCodePointForKeyboard(codePoint),
                 keyX, keyY, isKeyRepeat);
         onEvent(event);
+    }
+
+    /**
+     * Maps ASCII code points to Android KEYCODE_* for coding bar modifier intercept.
+     */
+    private static int codingCodePointToKeyCode(final int codePoint) {
+        if (codePoint >= 'a' && codePoint <= 'z') return KeyEvent.KEYCODE_A + (codePoint - 'a');
+        if (codePoint >= 'A' && codePoint <= 'Z') return KeyEvent.KEYCODE_A + (codePoint - 'A');
+        if (codePoint >= '0' && codePoint <= '9') return KeyEvent.KEYCODE_0 + (codePoint - '0');
+        switch (codePoint) {
+            case ' ':  return KeyEvent.KEYCODE_SPACE;
+            case '.':  return KeyEvent.KEYCODE_PERIOD;
+            case ',':  return KeyEvent.KEYCODE_COMMA;
+            case '/':  return KeyEvent.KEYCODE_SLASH;
+            case '\\': return KeyEvent.KEYCODE_BACKSLASH;
+            case '-':  return KeyEvent.KEYCODE_MINUS;
+            case '=':  return KeyEvent.KEYCODE_EQUALS;
+            case '[':  return KeyEvent.KEYCODE_LEFT_BRACKET;
+            case ']':  return KeyEvent.KEYCODE_RIGHT_BRACKET;
+            case ';':  return KeyEvent.KEYCODE_SEMICOLON;
+            case '\'': return KeyEvent.KEYCODE_APOSTROPHE;
+            case '`':  return KeyEvent.KEYCODE_GRAVE;
+            case '\t': return KeyEvent.KEYCODE_TAB;
+            case '\n': return KeyEvent.KEYCODE_ENTER;
+            default: return KeyEvent.KEYCODE_UNKNOWN;
+        }
     }
 
     // This method is public for testability of LatinIME, but also in the future it should

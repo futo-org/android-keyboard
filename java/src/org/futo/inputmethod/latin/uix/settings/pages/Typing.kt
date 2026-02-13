@@ -147,6 +147,11 @@ val ActionBarDisplayedSetting = SettingsKey(
     true
 )
 
+val CodingBarDisplayedSetting = SettingsKey(
+    booleanPreferencesKey("enable_coding_bar"),
+    false
+)
+
 val InlineAutofillSetting = SettingsKey(
     booleanPreferencesKey("inline_autofill"),
     true
@@ -781,6 +786,14 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             setting = ActionBarDisplayedSetting,
             icon = {
                 Icon(painterResource(id = R.drawable.more_horizontal), contentDescription = null)
+            }
+        ),
+        userSettingToggleDataStore(
+            title = R.string.keyboard_settings_show_coding_bar,
+            subtitle = R.string.keyboard_settings_show_coding_bar_subtitle,
+            setting = CodingBarDisplayedSetting,
+            icon = {
+                Icon(painterResource(id = R.drawable.ic_coding_bar), contentDescription = null)
             }
         ),
         userSettingToggleDataStore(

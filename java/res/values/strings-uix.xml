@@ -18,6 +18,16 @@
     <string name="action_cursor_left_title">Arrow Left</string>
     <string name="action_cursor_right_title">Arrow Right</string>
 
+    <!-- Coding bar actions -->
+    <string name="action_coding_tab_title">Tab</string>
+    <string name="action_coding_ctrl_title">Ctrl</string>
+    <string name="action_coding_alt_title">Alt</string>
+    <string name="action_coding_slash_title">Slash</string>
+    <string name="action_coding_dash_title">Dash</string>
+    <string name="action_coding_esc_title">Escape</string>
+    <string name="action_coding_shift_title">Shift</string>
+    <string name="action_coding_bar_title">Coding Bar</string>
+
     <!-- For emoji menu action -->
     <string name="action_emoji_title">Emojis</string>
     <!-- Refers to the most recently used emojis -->
@@ -470,6 +480,8 @@
     <string name="keyboard_settings_extra_layouts_subtitle">Configure additional layouts in the languages screen</string>
     <string name="keyboard_settings_show_suggestion_row">Show action/suggestions bar</string>
     <string name="keyboard_settings_show_suggestion_row_subtitle">Show the bar containing suggestions. Recommended to keep enabled</string>
+    <string name="keyboard_settings_show_coding_bar">Show coding bar</string>
+    <string name="keyboard_settings_show_coding_bar_subtitle">Replace the suggestion bar with shortcut keys for coding (TAB, CTRL, ALT, ESC, etc.)</string>
     <string name="keyboard_settings_inline_autofill">Inline autofill</string>
     <string name="keyboard_settings_inline_autofill_subtitle">Display password manager autofill and auto-reply suggestions (provided by app) in suggestion bar</string>
     <string name="keyboard_settings_period_key">Quick period key</string>
