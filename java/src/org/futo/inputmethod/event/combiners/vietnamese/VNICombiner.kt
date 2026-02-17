@@ -50,7 +50,11 @@ class VNICombiner: Combiner {
     }
 
     override fun getCombiningStateFeedback(): CharSequence? =
-        VNI.VNIToVietnamese(buffer.toString())
+        try{
+            VNI.VNIToVietnamese(buffer.toString())
+        } catch(e: Exception) {
+            buffer
+        }
 
     override fun reset() {
         buffer.clear()

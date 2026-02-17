@@ -35,7 +35,11 @@ class VietTelexCombiner: Combiner {
     }
 
     override fun getCombiningStateFeedback(): CharSequence? =
-        Telex.telexToVietnamese(buffer.toString())
+        try {
+            Telex.telexToVietnamese(buffer.toString())
+        } catch (e: Exception) {
+            buffer
+        }
 
     override fun reset() {
         buffer.clear()

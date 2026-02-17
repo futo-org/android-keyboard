@@ -17,7 +17,7 @@ object Telex {
     /** Convert a string that represents a Vietnamese syllable written in the Telex convention ([input])
      * to a syllable written in Vietnamese orthography.
      * Example: input = "vietej", output = "việt"
-    */
+     */
     public fun telexToVietnamese(input: String): String {
 
         // STAGE 1: calculate modifierIndices, firstVowelIndex, startedFinal and lowercaseVowel
@@ -90,7 +90,7 @@ object Telex {
         // and therefore the firstVowelIndex needs to be corrected to account for this
         if (modifierIndices['d']!!.size > 1 && modifierIndices['d']!!.last() < firstVowelIndex)
             firstVowelIndex--
-        
+
         // apply correction to lowercaseVowel:
         // "gi" (unless there is no other vowel letter) and "qu" should be considered consonants
         if (lowercaseVowel.length > 1 && (lowercaseInput.slice(0..<2) == "gi" || lowercaseInput.slice(0..<2) == "qu"))
@@ -136,7 +136,7 @@ object Telex {
                         } else if (lowercaseCh == 'o' && lowercaseVowel.contentEquals("oeo")) {
                             // handle "oeo" edge case (should output "oeo", not "ôe"):
                             // remove the second 'o''s index from modifierIndices so that it will be outputted
-                            modifierIndices['o']!!.removeAt(modifierIndices['o']!!.lastIndex)
+                            modifierIndices['o']!!.removeLast()
                             output.append(ch)
                         } else {
                             output.append(Common.CIRCUMFLEX_MAP[ch])
@@ -157,9 +157,9 @@ object Telex {
                     }
 
                     if (wIndices.size == 1 && lowercaseCh == 'o'
-                    && !lowercaseVowel.contentEquals("oa")
-                    // ↑ add edge case for "oaw" (should output "oă", not "ơă" or "ơa")
-                    && !(firstVowelIndex != 0 && lowercaseVowel.contentEquals("ou"))
+                        && !lowercaseVowel.contentEquals("oa")
+                        // ↑ add edge case for "oaw" (should output "oă", not "ơă" or "ơa")
+                        && !(firstVowelIndex != 0 && lowercaseVowel.contentEquals("ou"))
                     // ↑ add edge case: any initial consonant + vowel "ou" with modifier 'w' + no final
                     // should output "oư" and not "ơư"
                     ) {
@@ -199,7 +199,7 @@ object Telex {
                     var uowIsNotUwow = false
                     if ((firstVowelIndex > 0) && !startedFinal && !doNotOutputNextChar
                         && modifierIndices['w']!!.size == 1 && lowercaseVowel.contentEquals("uo")) {
-                         uowIsNotUwow = true
+                        uowIsNotUwow = true
                     }
 
                     if (modifierIndices['w']!!.size == 1 && !wHasBeenUsed && !(lowercaseInput[0] == 'q' && index == 1) && !uowIsNotUwow) {
@@ -235,8 +235,8 @@ object Telex {
         // but for the sake of better error/edge case handling the correction will only be applied
         // if there is another vowel letter.
         if (vowelCount > 1 && (lowercaseInput.slice(0..<2) == "gi" || lowercaseInput.slice(0..<2) == "qu")) {
-                vowelCount--
-                firstVowelIndex++
+            vowelCount--
+            firstVowelIndex++
         }
 
         // if there has been some error applying the correction, just output without the tone mark
@@ -245,8 +245,11 @@ object Telex {
 
         // add tone mark
         val toneMarkPosition = Common.getToneMarkPosition(output, firstVowelIndex, vowelCount)
+        // avoid index out of bounds error
+        if (toneMarkPosition !in 0..<output.length)
+            return output.toString()
         output[toneMarkPosition] = tone.map[output[toneMarkPosition]] ?:
-            output[toneMarkPosition]
+                output[toneMarkPosition]
 
         return output.toString()
     }
