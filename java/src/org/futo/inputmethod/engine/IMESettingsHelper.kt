@@ -23,7 +23,7 @@ private fun isVisible(language: String): Boolean {
 }
 
 val SettingsByLanguage = mapOf(
-//    "zh" to ChineseIMESettings.menu.copy(visibilityCheck = { isVisible("zh") }), // TODO
+    "zh" to ChineseIMESettings.menu.copy(visibilityCheck = { isVisible("zh") }),
     "ja" to JapaneseIMESettings.menu.copy(visibilityCheck = { isVisible("ja") })
 )
 

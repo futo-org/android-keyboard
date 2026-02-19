@@ -5,6 +5,9 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.datastore.preferences.core.stringPreferencesKey
 import icu.astronot233.rime.DeployStage
 import icu.astronot233.rime.Rime
@@ -46,8 +49,14 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.namePreferenceKeyFor
 import org.futo.inputmethod.latin.uix.preferenceKeyFor
 import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.settings.CollapsibleSection
+import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
+import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
+import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.utils.ZipFileHelper
+import org.futo.inputmethod.latin.utils.toEnumOrNull
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import java.io.File
 import java.util.Locale
@@ -55,13 +64,144 @@ import kotlin.math.max
 import kotlin.math.min
 
 object ChineseIMESettings {
-    // TODO
+    enum class ChineseSimplificationMode(val stringResource: Int) {
+        // These must not be renamed, or the existing setting value for users will break
+        ByLanguage(R.string.chinese_setting_simplification_simplify_by_language_country),
+        Simplified(R.string.chinese_setting_simplification_force_simplified),
+        Traditional(R.string.chinese_setting_simplification_force_traditional);
+    }
+
+    enum class PinyinScheme(
+        val displayNameZH: String,
+        val displayNameEN: String,
+        val rimeId: String
+    ) {
+        // These must not be renamed, or the existing setting value for users will break
+        FullPinyin("全拼", "Full Pinyin", "luna_pinyin"),
+        Natural("自然碼雙拼", "Double Pinyin", "double_pinyin"),
+        ABC("智能ABC雙拼", "Double Pinyin - ABC", "double_pinyin_abc"),
+        FlyPY("小鶴雙拼", "Double Pinyin - flyPY", "double_pinyin_flypy"),
+        MS("微軟雙拼", "Double Pinyin - MS", "double_pinyin_mspy"),
+        PYJJ("拼音加加雙拼", "Double Pinyin - PYJJ", "double_pinyin_pyjj"),
+        ST("四通雙拼", "Double Pinyin - ST", "double_pinyin_st");
+    }
+
+    internal fun initialPatch(pattern: String, substitution: String, twoWay: Boolean)
+            = buildList {
+        add("derive/^${pattern}/${substitution}/")
+        if(twoWay) add("derive/^${substitution}/${pattern}/")
+    }
+
+    internal fun finalPatch(pattern: String, substitution: String, twoWay: Boolean)
+            = buildList {
+        add("derive/${pattern}$/${substitution}/")
+        if(twoWay) add("derive/${substitution}$/${pattern}/")
+    }
+
+    enum class FuzzyPinyinModes(val schemePatch: List<String>, val displayName: String) {
+        // These must not be renamed, or the existing setting value for users will break
+        Z_ZH(initialPatch("z", "zh", true), "z = zh"),
+        C_CH(initialPatch("c", "ch", true), "c = ch"),
+        S_SH(initialPatch("s", "sh", true), "s = sh"),
+        L_N(initialPatch("l", "n", true), "l = n"),
+        F_H(initialPatch("f", "h", true), "f = h"),
+        R_L(initialPatch("r", "l", false), "r = l"),
+        K_G(initialPatch("k", "g", false), "k = g"),
+
+        AN_ANG(finalPatch("an", "ang", true), "an = ang"),
+        EN_ENG(finalPatch("en", "eng", true), "en = eng"),
+        IN_ING(finalPatch("in", "ing", true), "in = ing"),
+        IAN_IANG(finalPatch("ian", "iang", true), "ian = iang"),
+        UAN_UANG(finalPatch("uan", "uang", true), "uan = uang");
+
+        companion object {
+            @JvmStatic
+            fun fromCommaString(str: String) =
+                str.split(',').mapNotNull { it.toEnumOrNull<FuzzyPinyinModes>() }.toSet()
+
+            @JvmStatic
+            fun toCommaString(value: Set<FuzzyPinyinModes>) =
+                value.joinToString(",") { it.name }
+        }
+    }
+
+    val SimplificationSetting = SettingsKey(
+        stringPreferencesKey("ChineseIME_simplification"),
+        ChineseSimplificationMode.ByLanguage.name
+    )
+
+    val PinyinSchemeSetting = SettingsKey(
+        stringPreferencesKey("ChineseIME_pinyin_scheme"),
+        PinyinScheme.FullPinyin.name
+    )
+
+    val FuzzyPinyinSetting = SettingsKey(
+        stringPreferencesKey("ChineseIME_fuzzy_pinyin"),
+        ""
+    )
+
     var schemaList: List<RimeSchema> = emptyList()
     val menu = UserSettingsMenu(
         title = R.string.chinese_settings_title,
         searchTags = R.string.chinese_setting_search_tags,
         navPath = "ime/zh", registerNavPath = true,
-        settings = listOf()
+        settings = listOf(
+            UserSetting(R.string.chinese_setting_simplification) {
+                val context = LocalContext.current
+                val (setting, setSetting) = useDataStore(SimplificationSetting)
+                DropDownPickerSettingItem<ChineseSimplificationMode>(
+                    stringResource(R.string.chinese_setting_simplification),
+                    ChineseSimplificationMode.entries,
+                    setting.toEnumOrNull<ChineseSimplificationMode>() ?: ChineseSimplificationMode.ByLanguage,
+                    { setSetting(it.name) },
+                    { context.getString(it.stringResource) }
+                )
+            },
+
+            UserSetting(R.string.chinese_setting_pinyin_scheme) {
+                val context = LocalContext.current
+                val (setting, setSetting) = useDataStore(PinyinSchemeSetting)
+
+                val availableEntries = remember {
+                    val sharedDir = ChineseIME.getShared(context)
+                    val files = (sharedDir.listFiles() ?: emptyArray()).map { it.name.split('.').first() }.toSet()
+                    PinyinScheme.entries.filter {
+                        files.contains(it.rimeId) || it == PinyinScheme.FullPinyin
+                    }
+                }
+                DropDownPickerSettingItem<PinyinScheme>(
+                    stringResource(R.string.chinese_setting_pinyin_scheme),
+                    availableEntries,
+                    setting.toEnumOrNull<PinyinScheme>() ?: PinyinScheme.FullPinyin,
+                    { setSetting(it.name) },
+                    { when(context.resources.configuration.locale.language) {
+                        "zh" -> it.displayNameZH
+                        else -> it.displayNameEN
+                    } }
+                )
+            },
+
+            UserSetting(R.string.chinese_setting_fuzzy_pinyin) {
+                val (setting, setSetting) = useDataStore(FuzzyPinyinSetting)
+                val set = remember(setting) { FuzzyPinyinModes.fromCommaString(setting) }
+
+                CollapsibleSection(stringResource(R.string.chinese_setting_fuzzy_pinyin)) {
+                    FuzzyPinyinModes.entries.forEach { mode ->
+                        SettingToggleRaw(mode.displayName, set.contains(mode), { enabled ->
+                            val newSet = if (enabled) {
+                                set + setOf(mode)
+                            } else {
+                                set - setOf(mode)
+                            }
+
+                            setSetting(FuzzyPinyinModes.toCommaString(newSet))
+                        })
+                    }
+                }
+
+            },
+
+        )
     )
 }
 
@@ -380,13 +520,20 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
     private fun isSimplifiedChinese(locale: Locale): Boolean {
         if (locale.language != "zh") return false
-        locale.script.takeIf { it.isNotEmpty() }?.let {
-            return it.equals("Hans", ignoreCase = true)
-        }
+        val setting = helper.context.getSetting(ChineseIMESettings.SimplificationSetting).toEnumOrNull<ChineseIMESettings.ChineseSimplificationMode>()
+        return when(setting) {
+            ChineseIMESettings.ChineseSimplificationMode.Simplified -> true
+            ChineseIMESettings.ChineseSimplificationMode.Traditional -> false
+            else -> {
+                locale.script.takeIf { it.isNotEmpty() }?.let {
+                    return it.equals("Hans", ignoreCase = true)
+                }
 
-        return when (locale.country.uppercase()) {
-            "TW", "HK", "MO" -> false
-            else             -> true
+                return when (locale.country.uppercase()) {
+                    "TW", "HK", "MO" -> false
+                    else -> true
+                }
+            }
         }
     }
 
@@ -394,21 +541,60 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
     private data class Configuration(
         val schema: String,
-        val simplification: Boolean
+        val simplification: Boolean,
+        val autocorrect: Boolean,
+        val fuzzyMode: Set<ChineseIMESettings.FuzzyPinyinModes>
     )
     private var prevConfiguration: Configuration? = null
+
+    private fun writeCustomizationFile(cfg: Configuration) {
+        val schema = cfg.schema
+        val file = File(getUser(helper.context), "${schema}.custom.yaml")
+        val content = buildString {
+            appendLine("patch:")
+
+            appendLine("    translator/enable_correction: ${cfg.autocorrect}")
+
+            appendLine("    switches/+:")
+            appendLine("        - name: futo_zh_simp")
+            appendLine("          reset: ${if(cfg.simplification) 1 else 0}")
+            appendLine("          states: [ 漢字, 汉字 ]")
+            appendLine("    simplifier/option_name: futo_zh_simp")
+
+            // Fuzzy pinyin only added to pinyin layouts
+            if(schema.startsWith("luna_pinyin")) {
+                appendLine("    speller/algebra:")
+                cfg.fuzzyMode.forEach {
+                    it.schemePatch.forEach {
+                        appendLine("        - $it")
+                    }
+                }
+            }
+        }
+
+        file.writeText(content)
+    }
+
     private fun updateConfig() {
         coroScope.launch {
             if(editingState.active) return@launch
 
-            val locale = Settings.getInstance().current.mLocale
+            val settings = Settings.getInstance().current
+            val locale = settings.mLocale
 
             val simplified = isSimplifiedChinese(locale)
+
+            val pinyinScheme = helper.context.getSetting(ChineseIMESettings.PinyinSchemeSetting).toEnumOrNull<ChineseIMESettings.PinyinScheme>()
+                ?: ChineseIMESettings.PinyinScheme.FullPinyin
             val schema = when(layoutHint) {
                 "qwerty" -> {
                     when {
-                        simplified -> "luna_pinyin_simp"
-                        else -> "luna_pinyin"
+                        pinyinScheme == ChineseIMESettings.PinyinScheme.FullPinyin -> when {
+                            simplified -> "luna_pinyin_simp"
+                            else -> "luna_pinyin"
+                        }
+
+                        else -> pinyinScheme.rimeId
                     }
                 }
                 "stroke" -> {
@@ -420,10 +606,19 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
                     "luna_pinyin"
                 }
             }
-            val config = Configuration(schema, simplified)
+
+            val fuzzy = ChineseIMESettings.FuzzyPinyinModes.fromCommaString(
+                helper.context.getSetting(ChineseIMESettings.FuzzyPinyinSetting)
+            )
+
+            val autocorrect = settings.mAutoCorrectionEnabledPerUserSettings
+                    || settings.isSuggestionsEnabledPerUserSettings
+
+            val config = Configuration(schema, simplified, autocorrect, fuzzy)
             if(config != prevConfiguration) {
+                writeCustomizationFile(config)
                 rime.selectSchema(config.schema)
-                rime.deploy() // TODO: Not sure this is necessary
+                rime.deploy()
                 rime.setOption("simplification", simplified)
                 rime.setOption("traditional", !simplified)
                 prevConfiguration = config

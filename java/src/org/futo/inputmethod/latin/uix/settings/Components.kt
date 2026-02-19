@@ -3,6 +3,8 @@ package org.futo.inputmethod.latin.uix.settings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -804,6 +806,42 @@ fun<T> DropDownPicker(
     }
 }*/
 
+@Composable
+fun CollapsibleSection(title: String, modifier: Modifier = Modifier, section: @Composable ColumnScope.() -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
+
+    Column {
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 44.dp).clickable {
+                expanded = !expanded
+            }.padding(16.dp).semantics {
+                // TODO: Localization
+                stateDescription = if(expanded) "Expanded" else "Collapsed"
+                role = Role.DropdownList
+            }
+        ) {
+            RotatingChevronIcon(expanded, tint = LocalContentColor.current)
+
+            Spacer(Modifier.width(16.dp))
+
+            Text(
+                text = title,
+                style = Typography.Body.Regular,
+                color = LocalContentColor.current,
+                modifier = Modifier.weight(1.0f)
+            )
+        }
+
+        AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
+            Column {
+                section()
+            }
+        }
+    }
+}
+
+
 private val DropDownShape = RoundedCornerShape(12.dp)
 @Composable
 fun<T> DropDownPicker(
@@ -849,7 +887,7 @@ fun<T> DropDownPicker(
             RotatingChevronIcon(expanded, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
-        AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
+        AnimatedVisibility(expanded, enter = fadeIn(), exit = fadeOut()) {
             val scrollState = rememberScrollState()
             Column(Modifier.let {
                 if(scrollableOptions) {
