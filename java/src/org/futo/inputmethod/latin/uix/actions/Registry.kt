@@ -9,17 +9,15 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
+import org.futo.inputmethod.latin.uix.LangSpecAction
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.actions.fonttyper.FontTyperAction
-import org.futo.inputmethod.latin.uix.actions.langspecific.chinese.RimeDashboard
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 
-val AllLangSpecActionsMap = mapOf(
-    "rime_dashboard" to RimeDashboard,
-)
+val AllLangSpecActionsMap = mapOf<String, LangSpecAction>()
 
 // Note: indices must stay stable
 val AllGeneralActionsMap = mapOf(
