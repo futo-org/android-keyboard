@@ -17,8 +17,10 @@ import icu.astronot233.rime.X11Keys.XK_Return
 import icu.astronot233.rime.X11Keys.XK_Tab
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -63,6 +65,28 @@ object ChineseIMESettings {
     )
 }
 
+class InputKeeper() {
+    var text = ""
+        private set
+
+    fun clear() {
+        text = ""
+    }
+
+    fun append(codepoint: Int) {
+        text += Char(codepoint)
+    }
+
+    fun backspace() {
+        if(text.isNotEmpty()) text = text.take(text.length - 1)
+    }
+
+    fun replace(with: String) {
+        Log.d("ChineseIME", "InputKeeper: Replace [$text] to [$with]")
+        text = with
+    }
+}
+
 class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAccessor, PreEditListener {
     private val TAG = "ChineseIME (rime)"
 
@@ -72,8 +96,30 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     private val expandableUiCfg = ExpandableSuggestionBarConfiguration(true, false)
     private val maxBufferLength = 0x100000
     private var layoutHint: String? = null
+    private val rawInput = InputKeeper()
+
+    private val currentTransformation get() = when(layoutHint) {
+        "stroke" -> StrokeTransformation
+        else -> emptyMap()
+    }
+
+    private enum class EditingState(val active: Boolean) {
+        NotEditing(false),
+        Editing(true),
+        Finishing(false)
+    }
+    private var editingState = EditingState.NotEditing
 
     companion object {
+        @JvmStatic
+        private val StrokeTransformation = mapOf(
+            'h' to '⼀',
+            's' to '⼁',
+            'p' to '⼃',
+            'n' to '⼂',
+            'z' to '⼄',
+        )
+
         @JvmStatic
         fun getRimeDir(context: Context) = context.getExternalFilesDir("rime")
                 ?: throw IllegalStateException("Failed to access ExternalFilesDir!")
@@ -83,9 +129,6 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
         @JvmStatic
         fun getUser(context: Context) = File(getRimeDir(context), "user")
-
-        @JvmStatic
-        fun normalizeV(text: String) = text.replace('ü', 'v')
 
         val PreviouslyExtractedDictionaryName = SettingsKey(
             stringPreferencesKey("ChineseDictionaryExtractedValue"),
@@ -153,7 +196,16 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             XK_Tab       -> sendDownUpKeyEvent(KeyEvent.KEYCODE_TAB, 0)
             XK_Linefeed  -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
             XK_Return    -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
-            else -> connect?.commitText(String(Character.toChars(x11Code)), 1)
+            else -> {
+                if (rime.preeditFlow.value.isEmpty() || editingState.active) {
+                    connect?.commitText(String(Character.toChars(x11Code)), 1)
+                } else {
+                    coroScope.launch {
+                        rime.commitComposition()
+                        rime.processX11Code(x11Code, mask)
+                    }
+                }
+            }
         }
     }
 
@@ -190,29 +242,44 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }}.launchIn(coroScope)
 
     private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped ->
-        helper.updateUiInputState(ped.isEmpty() && !inEditingState)
-        helper.setPreedit(FloatingPreEdit.build(ped, this) { normalizeV(it) })
+        val notEditing = editingState == EditingState.NotEditing
+        if(ped.isEmpty() && notEditing) { rawInput.clear() }
+
+        helper.updateUiInputState(ped.isEmpty() && notEditing)
+        helper.setPreedit(FloatingPreEdit.build(ped, this, currentTransformation, rawInput.text))
     }.launchIn(coroScope)
 
-    var inEditingState = false
     override fun onStartEdit() {
-        inEditingState = true
-        coroScope.launch {
-            inEditingState = true
-        }
+        editingState = EditingState.Editing
     }
 
+    // This assumes that the only valid characters for input simulation are ASCII letters
+    // In particular, some characters like space will break the input by ending composition
+    // (Maybe there are other valid symbols potentially?)
+    private fun safeguardInputStringForSimulation(input: String): String {
+        var string = input
+        string = string.filter { it in 'a'..'z' || it in 'A'..'Z' }
+        return string
+    }
+
+    private var updateEditJob: Job? = null
     override fun onUpdateEdit(string: String) {
-        coroScope.launch {
+        updateEditJob?.cancel()
+        updateEditJob = coroScope.launch {
+            ensureActive()
             rime.clearComposition()
-            rime.simulateKeySequence(string.filter { it in 'a'..'z' || it in 'A'..'Z' })
+
+            val converted = safeguardInputStringForSimulation(string)
+            ensureActive()
+            rime.simulateKeySequence(converted)
+            rawInput.replace(converted)
         }
     }
 
     private var waitingToSelect: Pair<String, Int>? = null
     override fun onFinishEdit(string: String, candidateWord: String?, candidateIndex: Int?) {
-        if(!inEditingState) return
-        inEditingState = false
+        if(!editingState.active) return
+        editingState = EditingState.Finishing
 
         coroScope.launch {
             rime.clearComposition()
@@ -221,7 +288,12 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
                 // TODO: This is kind of a buggy way of doing it
                 waitingToSelect = candidateWord to candidateIndex
             }
-            rime.simulateKeySequence(string.filter { it in 'a'..'z' || it in 'A'..'Z' })
+
+            val converted = safeguardInputStringForSimulation(string)
+            rime.simulateKeySequence(converted)
+            rawInput.replace(converted)
+
+            editingState = EditingState.NotEditing
 
             if(string.isEmpty()) {
                 showSuggestionStrip(
@@ -265,23 +337,24 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             candidate.comment
         ) }.let { ArrayList(it) }
 
-        if(inEditingState && suggestWordList.isEmpty()) {
-
-        } else {
-            showSuggestionStrip(
-                SuggestedWords(
-                    suggestWordList,
-                    suggestWordList,
-                    null,
-                    false,
-                    false,
-                    false,
-                    0,
-                    0,
-                    0
-                )
-            )
+        // Don't flicker an empty suggest bar when editing
+        if(editingState != EditingState.NotEditing && suggestWordList.isEmpty()) {
+            return@onEach
         }
+
+        showSuggestionStrip(
+            SuggestedWords(
+                suggestWordList,
+                suggestWordList,
+                null,
+                false,
+                false,
+                false,
+                0,
+                0,
+                0
+            )
+        )
     }.launchIn(coroScope)
 
     override fun onCreate() {
@@ -327,7 +400,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     private var prevConfiguration: Configuration? = null
     private fun updateConfig() {
         coroScope.launch {
-            if(inEditingState) return@launch
+            if(editingState.active) return@launch
 
             val locale = Settings.getInstance().current.mLocale
 
@@ -365,9 +438,10 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }
 
     override fun onFinishInput() {
-        if(inEditingState) return
+        if(editingState.active) return
         coroScope.launch {
             waitingToSelect = null
+            rawInput.clear()
             rime.clearComposition()
         }
     }
@@ -378,6 +452,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
     private fun interruptInput(text: CharSequence? = null) {
         coroScope.launch {
+            rawInput.clear()
             rime.clearComposition()
         }
         connect?.finishComposingText()
@@ -436,7 +511,15 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
                     else -> it
                 } }
 
-                if(!inEditingState) {
+                if(!editingState.active) {
+                    // Only update outside editing state. We cannot update inside editing state,
+                    // because the cursor position is unknown and we assume it's always at the end
+                    if(x11Code == XK_BackSpace) {
+                        rawInput.backspace()
+                    } else if(event.mKeyCode == Event.NOT_A_KEY_CODE) {
+                        rawInput.append(event.mCodePoint)
+                    }
+
                     coroScope.launch { rime.processX11Code(x11Code) }
                 } else {
                     handlePassByMessage(x11Code, 0)
@@ -544,6 +627,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
                     return@launch
                 }
             }
+            rawInput.clear()
             rime.clearComposition()
             val info = arrayListOf(SuggestedWordInfo(
                 reserved,

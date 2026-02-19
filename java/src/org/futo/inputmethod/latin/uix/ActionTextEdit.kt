@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CancellationSignal
 import android.os.Handler
+import android.text.InputFilter
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.KeyEvent
@@ -177,6 +178,7 @@ private fun GenericEditTextCompose(
     onEnter: (() -> Unit)? = null,
     autofocus: Boolean = false,
     forceQwerty: Boolean = false,
+    inputFilters: Array<InputFilter>? = null,
 ) {
     val context = LocalContext.current
 
@@ -203,6 +205,8 @@ private fun GenericEditTextCompose(
             this.inputType = inputType
 
             setTextChangeCallback { text.value = it }
+
+            filters = inputFilters
 
             setText(text.value)
             setSelection(text.value.length)
@@ -301,7 +305,7 @@ fun ActionTextEditor(
     afterUnOverride: ((Boolean) -> Unit)? = null,
     onEnter: (() -> Unit)? = null,
     autofocus: Boolean = false,
-
+    inputFilters: Array<InputFilter>? = null,
 ) {
     val manager = if(!LocalInspectionMode.current) LocalManager.current else null
     GenericEditTextCompose(
@@ -321,7 +325,8 @@ fun ActionTextEditor(
         onUnoverride = {
             val result = manager!!.unsetInputConnection()
             afterUnOverride?.invoke(result)
-        }
+        },
+        inputFilters = inputFilters
     )
 }
 

@@ -10,6 +10,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.text.InputFilter
+import android.text.Spanned
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -571,15 +573,21 @@ val NoOpPreEditListener = object : PreEditListener {
 
 data class FloatingPreEdit(
     val entries: List<PreEditEntry>,
+    val transformation: Map<Char, Char>,
     val listener: PreEditListener
 ) {
     companion object {
         @JvmStatic
-        fun build(text: String?, listener: PreEditListener, normalizer: (String) -> String = {it}) = FloatingPreEdit(
-            entries = text?.ifBlank { null }?.split(' ')?.map { PreEditEntry(it, normalizer(it), true) } ?: emptyList(),
+        fun build(text: String, listener: PreEditListener, transformation: Map<Char, Char>, normalized: String) = FloatingPreEdit(
+            entries = listOfNotNull(text.ifBlank { null }?.let { PreEditEntry(it, normalized, true) }),
+            transformation = transformation,
             listener = listener,
         )
     }
+    private val reverseTransformation = transformation.toList().associate { it.second to it.first }
+
+    fun transform(string: CharSequence) = string.map { transformation[it] ?: it }.joinToString("")
+    fun untransform(string: CharSequence) = string.map { reverseTransformation[it] ?: it }.joinToString("")
 }
 
 class UixManager(private val latinIME: LatinIME) {
@@ -602,7 +610,9 @@ class UixManager(private val latinIME: LatinIME) {
 
                 keyboardManagerForAction.unsetInputConnection()
 
-                floatingPreedit.value?.listener?.onFinishEdit(text, word?.word, word?.mCandidateIndex)
+                floatingPreedit.value?.let { preedit ->
+                    preedit.listener.onFinishEdit(preedit.untransform(text), word?.word, word?.mCandidateIndex)
+                }
 
                 floatingPreeditEditing.value = false
                 floatingPreeditText.value = ""
@@ -1738,7 +1748,7 @@ class UixManager(private val latinIME: LatinIME) {
 
 @Composable
 fun FloatingPreEditView(
-    preedit: FloatingPreEdit = FloatingPreEdit.build("Some text here", NoOpPreEditListener),
+    preedit: FloatingPreEdit = FloatingPreEdit.build("Some text here", NoOpPreEditListener, emptyMap(), "sometexthere"),
     anchorCoords: LayoutCoordinates? = null,
     updateHeight: (Int) -> Unit = { },
     editingText: MutableState<String>,
@@ -1747,10 +1757,13 @@ fun FloatingPreEditView(
     var height by remember { mutableIntStateOf(0) }
     val pos = anchorCoords?.positionInWindow()
 
-    if(editing.value) {
-        LaunchedEffect(editingText.value) {
-            if(editing.value) preedit.listener.onUpdateEdit(editingText.value)
+    LaunchedEffect(editingText.value) {
+        if(editing.value) {
+            preedit.listener.onUpdateEdit(preedit.untransform(editingText.value))
         }
+    }
+
+    if(editing.value) {
         Box(Modifier
             .onSizeChanged {
                 height = it.height
@@ -1769,10 +1782,24 @@ fun FloatingPreEditView(
                             .fillMaxHeight()
                             .weight(1.0f),
                         afterUnOverride = {
-                            if(it) preedit.listener.onFinishEdit(editingText.value, null, null)
+                            if(it) {
+                                preedit.listener.onFinishEdit(preedit.untransform(editingText.value),
+                                    null, null)
+                            }
                         },
                         autofocus = true,
-                        onEnter = { editing.value = false })
+                        onEnter = { editing.value = false },
+                        inputFilters = arrayOf(object : InputFilter {
+                            override fun filter(
+                                source: CharSequence,
+                                start: Int,
+                                end: Int,
+                                dest: Spanned?,
+                                dstart: Int,
+                                dend: Int
+                            ): CharSequence = preedit.transform(source)
+                        })
+                    )
                     IconButton(onClick = {
                         editing.value = false
                     }, modifier = Modifier.size(48.dp)) {
