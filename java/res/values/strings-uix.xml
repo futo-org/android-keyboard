@@ -607,7 +607,12 @@
     <!-- Specific to Chinese input method -->
     <string name="chinese_settings_title">Chinese Input Settings</string>
     <string name="chinese_setting_search_tags">chinese, rime</string>
-    <string name="action_rime_dashboard">Rime Dashboard</string>
+    <string name="chinese_setting_simplification">Simplification</string>
+    <string name="chinese_setting_simplification_simplify_by_language_country">Default (by country)</string>
+    <string name="chinese_setting_simplification_force_simplified">Simplified</string>
+    <string name="chinese_setting_simplification_force_traditional">Traditional</string>
+    <string name="chinese_setting_pinyin_scheme">Pinyin Scheme</string>
+    <string name="chinese_setting_fuzzy_pinyin">Fuzzy Pinyin</string>
 
     <!-- Specific to Japanese input method -->
     <string name="japanese_settings_title">Japanese Input Settings</string>
