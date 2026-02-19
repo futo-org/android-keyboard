@@ -20,6 +20,7 @@ import static org.futo.inputmethod.latin.common.Constants.ImeOption.NO_FLOATING_
 import static org.futo.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
 import static org.futo.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
+import android.os.LocaleList;
 import android.text.InputType;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -56,6 +57,8 @@ public final class InputAttributes {
     final public Locale mLocaleOverride;
     @Nullable
     final public String mLayoutOverride;
+    @Nullable
+    final public LocaleList mHintLocales;
 
     /**
      * Whether the floating gesture preview should be disabled. If true, this should override the
@@ -111,6 +114,7 @@ public final class InputAttributes {
             mIsWebField = false;
             mLocaleOverride = null;
             mLayoutOverride = null;
+            mHintLocales = null;
             return;
         }
         // inputClass == InputType.TYPE_CLASS_TEXT
@@ -191,6 +195,7 @@ public final class InputAttributes {
         }
 
         mLayoutOverride = privateImeOptions.get("org.futo.inputmethod.latin.ForceLayout");
+        mHintLocales = editorInfo.hintLocales;
     }
 
     public boolean isTypeNull() {

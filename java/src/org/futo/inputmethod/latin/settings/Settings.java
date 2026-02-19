@@ -145,6 +145,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static final int DEFAULT_ALT_SPACES_MODE = SPACES_MODE_ALL;
 
+    public static final String PREF_AUTO_SWITCH_LANGUAGE = "pref_auto_switch_language";
+
     // Emoji
     public static final String PREF_EMOJI_RECENT_KEYS = "emoji_recent_keys";
     public static final String PREF_EMOJI_CATEGORY_LAST_TYPED_ID = "emoji_category_last_typed_id";
