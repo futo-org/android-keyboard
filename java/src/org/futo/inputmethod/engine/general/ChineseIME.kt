@@ -82,7 +82,6 @@ class InputKeeper() {
     }
 
     fun replace(with: String) {
-        Log.d("ChineseIME", "InputKeeper: Replace [$text] to [$with]")
         text = with
     }
 }
@@ -516,6 +515,8 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
                     // because the cursor position is unknown and we assume it's always at the end
                     if(x11Code == XK_BackSpace) {
                         rawInput.backspace()
+                    } else if(x11Code == XK_Return || x11Code == ' '.code) {
+                        rawInput.clear()
                     } else if(event.mKeyCode == Event.NOT_A_KEY_CODE) {
                         rawInput.append(event.mCodePoint)
                     }
@@ -703,7 +704,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 // Non-behavior methods }}
 
     val debugInfo: String
-        get() = "configuration=${prevConfiguration}\nlayoutHint=${layoutHint}\nlocale=${Settings.getInstance().current.mLocale}\nisSimplified=${isSimplifiedChinese(Settings.getInstance().current.mLocale)}"
+        get() = "configuration=${prevConfiguration}\nlayoutHint=${layoutHint}\nlocale=${Settings.getInstance().current.mLocale}\nisSimplified=${isSimplifiedChinese(Settings.getInstance().current.mLocale)}\nrawInput=${rawInput.text}"
 }
 
 /*TODO
