@@ -206,7 +206,7 @@ private fun GenericEditTextCompose(
 
             setTextChangeCallback { text.value = it }
 
-            filters = inputFilters
+            if(inputFilters != null) filters = inputFilters
 
             setText(text.value)
             setSelection(text.value.length)
