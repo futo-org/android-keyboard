@@ -46,7 +46,11 @@ sealed class ComputedKeyboardSize(
     val height: Int,
     val padding: Rect,
     val singleRowHeight: Int = height / 4
-)
+) {
+    override fun toString(): String {
+        return "${this.javaClass.simpleName}(width=$width height=$height padding=$padding singleRowHeight=$singleRowHeight)"
+    }
+}
 
 class RegularKeyboardSize(
     width: Int, height: Int, padding: Rect, singleRowHeight: Int = height / 4
