@@ -33,7 +33,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -669,6 +671,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     }
 
+    fun getNavigationBarBottomInset(view: View): Int {
+        val windowInsets: WindowInsetsCompat? = ViewCompat.getRootWindowInsets(view)
+        if (windowInsets != null) {
+            val navBarInsets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            return navBarInsets.bottom
+        }
+        return 0
+    }
+
     override fun onComputeInsets(outInsets: Insets?) {
         // This method may be called before {@link #setInputView(View)}.
         if (legacyInputView.value == null || composeView == null) {
@@ -680,6 +691,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.setInsets(outInsets!!.apply {
             when(size) {
                 is FloatingKeyboardSize -> {
+                    val bottomInset = getNavigationBarBottomInset(composeView!!)
                     val height = uixManager.touchableHeight
 
                     val left   = uixManager.floatingPosition.x.toInt()
@@ -689,8 +701,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
                     touchableInsets = Insets.TOUCHABLE_INSETS_REGION
                     touchableRegion.set(left, top, right, bottom)
-                    contentTopInsets = viewHeight
-                    visibleTopInsets = viewHeight
+                    contentTopInsets = viewHeight - bottomInset
+                    visibleTopInsets = viewHeight - bottomInset
                 }
                 else -> {
                     touchableInsets = Insets.TOUCHABLE_INSETS_CONTENT
