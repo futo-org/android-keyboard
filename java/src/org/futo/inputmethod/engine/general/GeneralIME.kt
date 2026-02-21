@@ -232,6 +232,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun onStartInput() {
         useExpandableUi = helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)
+        resetSwipeSuggestionSession()
 
         resetDictionaryFacilitator()
         setNeutralSuggestionStrip()
@@ -270,6 +271,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun onFinishInput() {
+        resetSwipeSuggestionSession()
         inputLogic.finishInput()
         dictionaryFacilitator.onFinishInput(context)
         updateSuggestionJob?.cancel()
@@ -297,6 +299,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     private fun onEventInternal(event: Event, ignoreSuggestionUpdate: Boolean = false) {
         helper.requestCursorUpdate()
+
+        if (event.eventType != Event.EVENT_TYPE_SUGGESTION_PICKED) {
+            resetSwipeSuggestionSession()
+        }
 
         val inputTransaction = when (event.eventType) {
             Event.EVENT_TYPE_INPUT_KEYPRESS,
@@ -480,6 +486,14 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     private var timeTakenToUpdate = 40L
     private var swipeSuggestionIndex = -1
     private var swipeSuggestionWord: String? = null
+    private var swipeSuggestionCandidates: List<SuggestedWordInfo>? = null
+
+    private fun resetSwipeSuggestionSession() {
+        swipeSuggestionIndex = -1
+        swipeSuggestionWord = null
+        swipeSuggestionCandidates = null
+    }
+
     fun updateSuggestions(inputStyle: Int) {
         updateSuggestionJob?.cancel()
 
@@ -693,8 +707,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun onSwipeAction(direction: Int) {
         when (direction) {
             KeyboardActionListener.SWIPE_ACTION_RIGHT -> {
-                swipeSuggestionIndex = -1
-                swipeSuggestionWord = null
+                resetSwipeSuggestionSession()
                 onEvent(
                     Event.createSoftwareKeypressEvent(
                         Constants.CODE_SPACE,
@@ -707,8 +720,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             }
 
             KeyboardActionListener.SWIPE_ACTION_LEFT -> {
-                swipeSuggestionIndex = -1
-                swipeSuggestionWord = null
+                resetSwipeSuggestionSession()
                 setNeutralSuggestionStrip()
 
                 val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
@@ -767,17 +779,22 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     return
                 }
 
-                val suggestions = inputLogic.mSuggestedWords
-                val candidates = ArrayList<SuggestedWordInfo>()
-                val seen = HashSet<String>()
-                for (index in 0 until suggestions.size()) {
-                    val info = suggestions.getInfo(index)
-                    if (!info.isKindOf(SuggestedWordInfo.KIND_UNDO) && seen.add(info.mWord)) {
-                        candidates.add(info)
+                val candidates = swipeSuggestionCandidates ?: run {
+                    val suggestions = inputLogic.mSuggestedWords
+                    val rebuiltCandidates = ArrayList<SuggestedWordInfo>()
+                    val seen = HashSet<String>()
+                    for (index in 0 until suggestions.size()) {
+                        val info = suggestions.getInfo(index)
+                        if (!info.isKindOf(SuggestedWordInfo.KIND_UNDO) && seen.add(info.mWord)) {
+                            rebuiltCandidates.add(info)
+                        }
                     }
+                    swipeSuggestionCandidates = rebuiltCandidates
+                    rebuiltCandidates
                 }
 
                 if (candidates.size < 2) {
+                    resetSwipeSuggestionSession()
                     if (movedCursorToLastWord) {
                         inputLogic.cursorRight(1, false, false)
                     }
