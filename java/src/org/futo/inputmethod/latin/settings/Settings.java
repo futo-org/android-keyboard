@@ -126,6 +126,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final int SPACEBAR_MODE_SWIPE_CURSOR = 0; // Long-Press switches language, swipe moves cursor
     public static final int SPACEBAR_MODE_SWIPE_LANGUAGE = 1; // Swipe switches language, long-press+drag moves cursor
     public static final int SPACEBAR_MODE_SWIPE_CURSOR_ONLY = 2; // Swipe and long-press+drag moves cursor
+    public static final int SPACEBAR_MODE_SWIPE_ACTIONS = 3; // Swipe actions mode (Fleksy-style)
 
     public static final String PREF_BACKSPACE_MODE = "pref_backspace_mode";
     public static final int BACKSPACE_MODE_CHARACTERS = 0; // Long-press backspace and swipe backspace removes just characters

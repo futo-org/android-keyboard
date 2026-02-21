@@ -649,6 +649,13 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     @Override
+    public void onSwipeAction(int direction) {
+        mImeManager.getActiveIME(
+                mSettings.getCurrent()
+        ).onSwipeAction(direction);
+    }
+
+    @Override
     public void onMovingCursorLockEvent(boolean canMoveCursor) {
         if(canMoveCursor) {
             hapticAndAudioFeedback(Constants.CODE_UNSPECIFIED, 0);

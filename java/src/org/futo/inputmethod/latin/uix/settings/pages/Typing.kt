@@ -591,7 +591,8 @@ val LongPressMenu = UserSettingsMenu(
             searchTagList = listOf(
                 R.string.morekey_settings_space_behavior_swipe_cursor,
                 R.string.morekey_settings_space_behavior_swipe_lang,
-                R.string.morekey_settings_space_behavior_only_cursor
+                R.string.morekey_settings_space_behavior_only_cursor,
+                R.string.morekey_settings_space_behavior_swipe_actions
             )
         ) {
             SettingRadio(
@@ -599,12 +600,14 @@ val LongPressMenu = UserSettingsMenu(
                 options = listOf(
                     Settings.SPACEBAR_MODE_SWIPE_CURSOR,
                     Settings.SPACEBAR_MODE_SWIPE_LANGUAGE,
-                    Settings.SPACEBAR_MODE_SWIPE_CURSOR_ONLY
+                    Settings.SPACEBAR_MODE_SWIPE_CURSOR_ONLY,
+                    Settings.SPACEBAR_MODE_SWIPE_ACTIONS
                 ),
                 optionNames = listOf(
                     stringResource(R.string.morekey_settings_space_behavior_swipe_cursor),
                     stringResource(R.string.morekey_settings_space_behavior_swipe_lang),
-                    stringResource(R.string.morekey_settings_space_behavior_only_cursor)
+                    stringResource(R.string.morekey_settings_space_behavior_only_cursor),
+                    stringResource(R.string.morekey_settings_space_behavior_swipe_actions)
                 ),
                 setting = useSharedPrefsInt(
                     key = Settings.PREF_SPACEBAR_MODE,

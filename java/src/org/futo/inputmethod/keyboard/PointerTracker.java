@@ -150,6 +150,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private boolean mStartedOnFastLongPress;
     private boolean mCursorMoved = false;
     private boolean mSpacebarLongPressed = false;
+    private boolean mSwipeActionTriggered = false;
 
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
@@ -745,8 +746,15 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mStartTime = System.currentTimeMillis();
             mStartedOnFastLongPress = key.isFastLongPress();
             mSpacebarLongPressed = false;
+            mSwipeActionTriggered = false;
 
-            mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
+            final boolean swipeActionsMode =
+                    Settings.getInstance().getCurrent().mSpacebarMode
+                            == Settings.SPACEBAR_MODE_SWIPE_ACTIONS;
+
+            mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE
+                    || key.getCode() == Constants.CODE_SPACE
+                    || swipeActionsMode;
             mIsFlickingKey = !mIsSlidingCursor && key.getHasFlick();
             mFlickDirection = key.flickDirection(0, 0);
             mCurrentKey = key;
@@ -953,6 +961,37 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final Key oldKey = mCurrentKey;
 
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
+
+        if (mIsSlidingCursor && oldKey != null
+                && settingsValues.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_ACTIONS) {
+            final int pointerStep = sPointerBigStep;
+            final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout
+                    / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
+            final int dx = x - mStartX;
+            final int dy = y - mStartY;
+
+            if (!mSwipeActionTriggered
+                    && mStartTime + swipeIgnoreTime < System.currentTimeMillis()
+                    && (Math.abs(dx) >= pointerStep || Math.abs(dy) >= pointerStep)) {
+                sTimerProxy.cancelKeyTimersOf(this);
+                mCursorMoved = true;
+                mSwipeActionTriggered = true;
+
+                if (Math.abs(dx) >= Math.abs(dy)) {
+                    sListener.onSwipeAction(dx > 0
+                            ? KeyboardActionListener.SWIPE_ACTION_RIGHT
+                            : KeyboardActionListener.SWIPE_ACTION_LEFT);
+                } else {
+                    sListener.onSwipeAction(dy < 0
+                            ? KeyboardActionListener.SWIPE_ACTION_UP
+                            : KeyboardActionListener.SWIPE_ACTION_DOWN);
+                }
+            }
+
+            mLastX = x;
+            mLastY = y;
+            return;
+        }
 
         if (mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_SPACE) {
             int pointerStep = sPointerStep;
