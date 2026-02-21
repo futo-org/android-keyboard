@@ -300,7 +300,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     private fun onEventInternal(event: Event, ignoreSuggestionUpdate: Boolean = false) {
         helper.requestCursorUpdate()
 
-        if (event.eventType != Event.EVENT_TYPE_SUGGESTION_PICKED) {
+        if (isSwipeActionsModeEnabled() && event.eventType != Event.EVENT_TYPE_SUGGESTION_PICKED) {
             resetSwipeSuggestionSession()
         }
 
@@ -492,6 +492,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         swipeSuggestionIndex = -1
         swipeSuggestionWord = null
         swipeSuggestionCandidates = null
+    }
+
+    private fun isSwipeActionsModeEnabled(): Boolean {
+        return settings.current.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_ACTIONS
     }
 
     fun updateSuggestions(inputStyle: Int) {
@@ -705,6 +709,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun onSwipeAction(direction: Int) {
+        if (!isSwipeActionsModeEnabled()) return
+
         when (direction) {
             KeyboardActionListener.SWIPE_ACTION_RIGHT -> {
                 resetSwipeSuggestionSession()
