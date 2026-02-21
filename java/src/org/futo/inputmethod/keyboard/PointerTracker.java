@@ -90,8 +90,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static PointerTrackerParams sParams;
     private static final int sPointerStep = (int)(16.0 * Resources.getSystem().getDisplayMetrics().density);
     private static final int sPointerBigStep = (int)(32.0 * Resources.getSystem().getDisplayMetrics().density);
-    private static final int sPointerSwipeActionStep = (int)(24.0 * Resources.getSystem().getDisplayMetrics().density);
-    private static final float SWIPE_ACTION_HORIZONTAL_DOMINANCE_RATIO = 1.2f;
+    private static final int sPointerSwipeActionStep = (int)(20.0 * Resources.getSystem().getDisplayMetrics().density);
+    private static final float SWIPE_ACTION_HORIZONTAL_DOMINANCE_RATIO = 1.3f;
     private static final int sPointerHugeStep = Integer.min(
             (int)(128.0 * Resources.getSystem().getDisplayMetrics().density),
             Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 2
