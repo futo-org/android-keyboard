@@ -809,7 +809,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     0
                 }
 
-                val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) -1 else 1
+                val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) 1 else -1
                 var nextIndex = (baseIndex + step + candidates.size) % candidates.size
                 if (currentWord != null && candidates[nextIndex].mWord == currentWord) {
                     nextIndex = (nextIndex + step + candidates.size) % candidates.size

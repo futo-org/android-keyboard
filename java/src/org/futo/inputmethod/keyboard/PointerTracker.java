@@ -90,6 +90,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static PointerTrackerParams sParams;
     private static final int sPointerStep = (int)(16.0 * Resources.getSystem().getDisplayMetrics().density);
     private static final int sPointerBigStep = (int)(32.0 * Resources.getSystem().getDisplayMetrics().density);
+    private static final int sPointerSwipeActionStep = (int)(24.0 * Resources.getSystem().getDisplayMetrics().density);
+    private static final float SWIPE_ACTION_HORIZONTAL_DOMINANCE_RATIO = 1.2f;
     private static final int sPointerHugeStep = Integer.min(
             (int)(128.0 * Resources.getSystem().getDisplayMetrics().density),
             Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 2
@@ -964,20 +966,24 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         if (mIsSlidingCursor && oldKey != null
                 && settingsValues.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_ACTIONS) {
-            final int pointerStep = sPointerBigStep;
+            final int pointerStep = sPointerSwipeActionStep;
             final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout
                     / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
             final int dx = x - mStartX;
             final int dy = y - mStartY;
+            final long swipeDistanceSquared = (long)dx * dx + (long)dy * dy;
+            final long swipeStepSquared = (long)pointerStep * pointerStep;
 
             if (!mSwipeActionTriggered
                     && mStartTime + swipeIgnoreTime < System.currentTimeMillis()
-                    && (Math.abs(dx) >= pointerStep || Math.abs(dy) >= pointerStep)) {
+                    && swipeDistanceSquared >= swipeStepSquared) {
                 sTimerProxy.cancelKeyTimersOf(this);
                 mCursorMoved = true;
                 mSwipeActionTriggered = true;
 
-                if (Math.abs(dx) >= Math.abs(dy)) {
+                final int absDx = Math.abs(dx);
+                final int absDy = Math.abs(dy);
+                if (absDx >= absDy * SWIPE_ACTION_HORIZONTAL_DOMINANCE_RATIO) {
                     sListener.onSwipeAction(dx > 0
                             ? KeyboardActionListener.SWIPE_ACTION_RIGHT
                             : KeyboardActionListener.SWIPE_ACTION_LEFT);
