@@ -697,7 +697,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 swipeSuggestionWord = null
                 onEvent(
                     Event.createSoftwareKeypressEvent(
-                        Event.NOT_A_CODE_POINT,
+                        Constants.CODE_SPACE,
                         Constants.CODE_SPACE,
                         Constants.NOT_A_COORDINATE,
                         Constants.NOT_A_COORDINATE,
@@ -743,6 +743,16 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
             KeyboardActionListener.SWIPE_ACTION_UP,
             KeyboardActionListener.SWIPE_ACTION_DOWN -> {
+                var movedCursorToLastWord = false
+                val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
+                if (!beforeCursor.isNullOrEmpty()
+                    && beforeCursor.last() == ' '
+                    && inputLogic.mConnection.hasCursorPosition()
+                    && !inputLogic.mConnection.hasSelection()) {
+                    inputLogic.cursorLeft(1, false, false)
+                    movedCursorToLastWord = true
+                }
+
                 inputLogic.restartSuggestionsOnWordTouchedByCursor(
                     settings.current,
                     null,
@@ -751,6 +761,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 )
 
                 if (!ensureSuggestionsCompleted()) {
+                    if (movedCursorToLastWord) {
+                        inputLogic.cursorRight(1, false, false)
+                    }
                     return
                 }
 
@@ -765,36 +778,58 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 }
 
                 if (candidates.size < 2) {
+                    if (movedCursorToLastWord) {
+                        inputLogic.cursorRight(1, false, false)
+                    }
                     return
                 }
 
-                val typedWord = inputLogic.mWordComposer.typedWord ?: return
-                val currentIndex = candidates.indexOfFirst { it.mWord == typedWord }
-                if (currentIndex == -1) {
-                    return
-                }
-
-                val baseIndex = if (swipeSuggestionWord == typedWord
-                    && swipeSuggestionIndex in candidates.indices) {
-                    swipeSuggestionIndex
+                val typedWord = inputLogic.mWordComposer.typedWord
+                val currentWord = swipeSuggestionWord ?: typedWord
+                val typedWordIndex = if (typedWord != null) {
+                    candidates.indexOfFirst { it.mWord == typedWord }
                 } else {
-                    currentIndex
+                    -1
+                }
+                val currentWordIndex = if (currentWord != null) {
+                    candidates.indexOfFirst { it.mWord == currentWord }
+                } else {
+                    -1
+                }
+
+                val baseIndex = if (swipeSuggestionWord != null
+                    && swipeSuggestionIndex in candidates.indices
+                    && candidates[swipeSuggestionIndex].mWord == swipeSuggestionWord) {
+                    swipeSuggestionIndex
+                } else if (currentWordIndex >= 0) {
+                    currentWordIndex
+                } else if (typedWordIndex >= 0) {
+                    typedWordIndex
+                } else {
+                    0
                 }
 
                 val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) -1 else 1
                 var nextIndex = (baseIndex + step + candidates.size) % candidates.size
-                if (candidates[nextIndex].mWord == typedWord) {
+                if (currentWord != null && candidates[nextIndex].mWord == currentWord) {
                     nextIndex = (nextIndex + step + candidates.size) % candidates.size
                 }
 
                 val selected = candidates[nextIndex]
-                if (selected.mWord == typedWord) {
+                if (currentWord != null && selected.mWord == currentWord) {
+                    if (movedCursorToLastWord) {
+                        inputLogic.cursorRight(1, false, false)
+                    }
                     return
                 }
 
                 onEvent(Event.createSuggestionPickedEvent(selected))
                 swipeSuggestionIndex = nextIndex
                 swipeSuggestionWord = selected.mWord
+
+                if (movedCursorToLastWord) {
+                    inputLogic.cursorRight(1, false, false)
+                }
             }
         }
     }

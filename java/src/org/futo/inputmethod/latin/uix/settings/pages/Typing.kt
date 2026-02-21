@@ -113,6 +113,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.SettingRadio
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
+import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.SyncDataStoreToPreferencesFloat
 import org.futo.inputmethod.latin.uix.settings.SyncDataStoreToPreferencesInt
 import org.futo.inputmethod.latin.uix.settings.Tip
@@ -591,8 +592,7 @@ val LongPressMenu = UserSettingsMenu(
             searchTagList = listOf(
                 R.string.morekey_settings_space_behavior_swipe_cursor,
                 R.string.morekey_settings_space_behavior_swipe_lang,
-                R.string.morekey_settings_space_behavior_only_cursor,
-                R.string.morekey_settings_space_behavior_swipe_actions
+                R.string.morekey_settings_space_behavior_only_cursor
             )
         ) {
             SettingRadio(
@@ -600,14 +600,12 @@ val LongPressMenu = UserSettingsMenu(
                 options = listOf(
                     Settings.SPACEBAR_MODE_SWIPE_CURSOR,
                     Settings.SPACEBAR_MODE_SWIPE_LANGUAGE,
-                    Settings.SPACEBAR_MODE_SWIPE_CURSOR_ONLY,
-                    Settings.SPACEBAR_MODE_SWIPE_ACTIONS
+                    Settings.SPACEBAR_MODE_SWIPE_CURSOR_ONLY
                 ),
                 optionNames = listOf(
                     stringResource(R.string.morekey_settings_space_behavior_swipe_cursor),
                     stringResource(R.string.morekey_settings_space_behavior_swipe_lang),
-                    stringResource(R.string.morekey_settings_space_behavior_only_cursor),
-                    stringResource(R.string.morekey_settings_space_behavior_swipe_actions)
+                    stringResource(R.string.morekey_settings_space_behavior_only_cursor)
                 ),
                 setting = useSharedPrefsInt(
                     key = Settings.PREF_SPACEBAR_MODE,
@@ -810,16 +808,9 @@ val TypingSettingsMenu = UserSettingsMenu(
                 AutoSpacesSetting()
             }
         ),
-        userSettingToggleSharedPrefs(
-            title = R.string.typing_settings_swipe,
-            subtitle = R.string.typing_settings_swipe_subtitle,
-            key = Settings.PREF_GESTURE_INPUT,
-            default = {true},
-            icon = {
-                Icon(painterResource(id = R.drawable.swipe_icon), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
-            }
-        ),
+        UserSetting(name = R.string.typing_settings_swipe) {
+            SwipeAlphaModesSetting()
+        },
         userSettingToggleDataStore(
             title = R.string.typing_settings_suggest_emojis,
             subtitle = R.string.typing_settings_suggest_emojis_subtitle,
@@ -973,6 +964,58 @@ val TypingSettingsMenu = UserSettingsMenu(
         ),
     )
 )
+
+@Composable
+private fun SwipeAlphaModesSetting() {
+    val gestureInput = useSharedPrefsBool(Settings.PREF_GESTURE_INPUT, true)
+    val spacebarMode = useSharedPrefsInt(Settings.PREF_SPACEBAR_MODE, Settings.SPACEBAR_MODE_SWIPE_CURSOR)
+
+    val swipeActionsEnabled = spacebarMode.value == Settings.SPACEBAR_MODE_SWIPE_ACTIONS
+    val swipeTypingEnabled = gestureInput.value && !swipeActionsEnabled
+
+    Column {
+        SettingToggleRaw(
+            title = stringResource(R.string.typing_settings_swipe),
+            subtitle = stringResource(R.string.typing_settings_swipe_subtitle),
+            enabled = swipeTypingEnabled,
+            setValue = { enabled ->
+                if (enabled) {
+                    gestureInput.setValue(true)
+                    if (swipeActionsEnabled) {
+                        spacebarMode.setValue(Settings.SPACEBAR_MODE_SWIPE_CURSOR)
+                    }
+                } else {
+                    gestureInput.setValue(false)
+                }
+            },
+            icon = {
+                Icon(
+                    painterResource(id = R.drawable.swipe_icon),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
+                )
+            }
+        )
+
+        SettingToggleRaw(
+            title = stringResource(R.string.typing_settings_swipe_actions_mode),
+            subtitle = stringResource(R.string.typing_settings_swipe_actions_mode_subtitle),
+            enabled = swipeActionsEnabled,
+            setValue = { enabled ->
+                if (enabled) {
+                    spacebarMode.setValue(Settings.SPACEBAR_MODE_SWIPE_ACTIONS)
+                    gestureInput.setValue(false)
+                } else {
+                    if (spacebarMode.value == Settings.SPACEBAR_MODE_SWIPE_ACTIONS) {
+                        spacebarMode.setValue(Settings.SPACEBAR_MODE_SWIPE_CURSOR)
+                    }
+                }
+            }
+        )
+
+        Tip(stringResource(R.string.typing_settings_swipe_modes_mutual_exclusive))
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
