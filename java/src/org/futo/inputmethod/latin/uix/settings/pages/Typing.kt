@@ -967,11 +967,10 @@ val TypingSettingsMenu = UserSettingsMenu(
 
 @Composable
 private fun SwipeAlphaModesSetting() {
-    val gestureInput = useSharedPrefsBool(Settings.PREF_GESTURE_INPUT, true)
-    val spacebarMode = useSharedPrefsInt(Settings.PREF_SPACEBAR_MODE, Settings.SPACEBAR_MODE_SWIPE_CURSOR)
+    val gestureMode = useSharedPrefsInt(Settings.PREF_GESTURE_INPUT_MODE, Settings.GESTURE_INPUT_MODE_TYPING)
 
-    val swipeActionsEnabled = spacebarMode.value == Settings.SPACEBAR_MODE_SWIPE_ACTIONS
-    val swipeTypingEnabled = gestureInput.value && !swipeActionsEnabled
+    val swipeTypingEnabled = gestureMode.value == Settings.GESTURE_INPUT_MODE_TYPING
+    val swipeActionsEnabled = gestureMode.value == Settings.GESTURE_INPUT_MODE_ACTIONS
 
     Column {
         SettingToggleRaw(
@@ -980,12 +979,7 @@ private fun SwipeAlphaModesSetting() {
             enabled = swipeTypingEnabled,
             setValue = { enabled ->
                 if (enabled) {
-                    gestureInput.setValue(true)
-                    if (swipeActionsEnabled) {
-                        spacebarMode.setValue(Settings.SPACEBAR_MODE_SWIPE_CURSOR)
-                    }
-                } else {
-                    gestureInput.setValue(false)
+                    gestureMode.setValue(Settings.GESTURE_INPUT_MODE_TYPING)
                 }
             },
             icon = {
@@ -1003,12 +997,7 @@ private fun SwipeAlphaModesSetting() {
             enabled = swipeActionsEnabled,
             setValue = { enabled ->
                 if (enabled) {
-                    spacebarMode.setValue(Settings.SPACEBAR_MODE_SWIPE_ACTIONS)
-                    gestureInput.setValue(false)
-                } else {
-                    if (spacebarMode.value == Settings.SPACEBAR_MODE_SWIPE_ACTIONS) {
-                        spacebarMode.setValue(Settings.SPACEBAR_MODE_SWIPE_CURSOR)
-                    }
+                    gestureMode.setValue(Settings.GESTURE_INPUT_MODE_ACTIONS)
                 }
             }
         )

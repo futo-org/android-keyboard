@@ -751,8 +751,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mSwipeActionTriggered = false;
 
             final boolean swipeActionsMode =
-                    Settings.getInstance().getCurrent().mSpacebarMode
-                            == Settings.SPACEBAR_MODE_SWIPE_ACTIONS;
+                    Settings.getInstance().getCurrent().mGestureInputMode
+                            == Settings.GESTURE_INPUT_MODE_ACTIONS;
 
             mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE
                     || key.getCode() == Constants.CODE_SPACE
@@ -965,7 +965,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
 
         if (mIsSlidingCursor && oldKey != null
-                && settingsValues.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_ACTIONS) {
+                && settingsValues.mGestureInputMode == Settings.GESTURE_INPUT_MODE_ACTIONS) {
             final int pointerStep = sPointerSwipeActionStep;
             final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout
                     / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;

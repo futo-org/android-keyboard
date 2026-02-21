@@ -85,7 +85,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
-    public static final String PREF_GESTURE_INPUT = "gesture_input";
+    public static final String PREF_GESTURE_INPUT_MODE = "pref_gesture_input_mode";
+    public static final int GESTURE_INPUT_MODE_TYPING = 0;
+    public static final int GESTURE_INPUT_MODE_ACTIONS = 1;
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME = "pref_keypress_sound_volume";
@@ -126,7 +128,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final int SPACEBAR_MODE_SWIPE_CURSOR = 0; // Long-Press switches language, swipe moves cursor
     public static final int SPACEBAR_MODE_SWIPE_LANGUAGE = 1; // Swipe switches language, long-press+drag moves cursor
     public static final int SPACEBAR_MODE_SWIPE_CURSOR_ONLY = 2; // Swipe and long-press+drag moves cursor
-    public static final int SPACEBAR_MODE_SWIPE_ACTIONS = 3; // Swipe actions mode (Fleksy-style)
 
     public static final String PREF_BACKSPACE_MODE = "pref_backspace_mode";
     public static final int BACKSPACE_MODE_CHARACTERS = 0; // Long-press backspace and swipe backspace removes just characters
@@ -287,10 +288,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return res.getBoolean(R.bool.config_gesture_input_enabled_by_build_config);
     }
 
-    public static boolean readGestureInputEnabled(final SharedPreferences prefs,
+    public static int readGestureInputMode(final SharedPreferences prefs,
             final Resources res) {
-        return readFromBuildConfigIfGestureInputEnabled(res)
-                && prefs.getBoolean(PREF_GESTURE_INPUT, true);
+        return prefs.getInt(PREF_GESTURE_INPUT_MODE, GESTURE_INPUT_MODE_TYPING);
     }
 
     public static boolean readFromBuildConfigIfToShowKeyPreviewPopupOption(final Resources res) {
