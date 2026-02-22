@@ -436,13 +436,15 @@
     <string name="morekey_settings_kind_misc_common_example">e.g. [ß] on [s] in all Latin script languages</string>
 
     <!-- typing settings -->
-    <string name="typing_settings_title">Typing preferences</string>
     <!-- When translating, rename it to gesture typing if it makes more sense for that language -->
-    <string name="typing_settings_swipe_group_label">Swipe input modes</string>
-    <string name="typing_settings_swipe">Swipe Typing (alpha)</string>
-    <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
-    <string name="typing_settings_swipe_actions_mode">Swipe Actions (alpha)</string>
-    <string name="typing_settings_swipe_actions_mode_subtitle">Fleksy-style directional swipes anywhere on the keyboard.</string>
+    <string name="swipe_input_settings_title">Swipe input modes</string>
+    <string name="swipe_input_settings_swipe">Swipe Typing (alpha)</string>
+    <string name="swipe_input_settings_swipe_disabled">Disabled</string>
+    <string name="swipe_input_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
+    <string name="swipe_input_settings_swipe_actions_mode">Swipe Actions (alpha)</string>
+    <string name="swipe_input_settings_swipe_actions_mode_subtitle">Fleksy-style directional action swipes.</string>
+    <string name="swipe_input_settings_swipe_disabled_subtitle">Turn off swipe typing and swipe actions.</string>
+    <string name="typing_settings_title">Typing preferences</string>
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
     <string name="typing_settings_suggest_emojis_subtitle">Suggest emojis while you\'re typing</string>
     <string name="typing_settings_vibration_strength">Vibration</string>
@@ -642,4 +644,3 @@ Default is %1$s</string>
     <!-- %1$s will be replaced with the custom dictionary name -->
     <string name="personal_dictionary_delete_additional_file_text">%1$s will be deleted</string>
 </resources>
-

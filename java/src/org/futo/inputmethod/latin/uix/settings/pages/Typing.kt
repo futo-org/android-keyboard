@@ -4,9 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -26,12 +24,10 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -117,7 +113,6 @@ import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.SettingRadio
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
-import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.SyncDataStoreToPreferencesFloat
 import org.futo.inputmethod.latin.uix.settings.SyncDataStoreToPreferencesInt
 import org.futo.inputmethod.latin.uix.settings.Tip
@@ -802,13 +797,19 @@ val KeyboardSettingsMenu = UserSettingsMenu(
     )
 )
 
+val SwipeInputSettingsMenu = UserSettingsMenu(
+    title = R.string.swipe_input_settings_title,
+    navPath = "swipe", registerNavPath = true,
+    settings = listOf(
+        UserSetting(name = R.string.swipe_input_settings_title) {
+            SwipeAlphaModesSetting()
+        }
+    )
+)
 val TypingSettingsMenu = UserSettingsMenu(
     title = R.string.typing_settings_title,
     navPath = "typing", registerNavPath = true,
     settings = listOf(
-        UserSetting(name = R.string.typing_settings_swipe) {
-            SwipeAlphaModesSetting()
-        },
         UserSetting(
             name = R.string.typing_settings_auto_space_mode,
             component = {
@@ -971,82 +972,28 @@ val TypingSettingsMenu = UserSettingsMenu(
 
 @Composable
 private fun SwipeAlphaModesSetting() {
-    val gestureMode = useSharedPrefsInt(Settings.PREF_GESTURE_INPUT_MODE, Settings.GESTURE_INPUT_MODE_TYPING)
-
-    val swipeTypingEnabled = gestureMode.value == Settings.GESTURE_INPUT_MODE_TYPING
-    val swipeActionsEnabled = gestureMode.value == Settings.GESTURE_INPUT_MODE_ACTIONS
-
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f)
+    SettingRadio(
+        title = stringResource(R.string.swipe_input_settings_title),
+        options = listOf(
+            Settings.GESTURE_INPUT_MODE_TYPING,
+            Settings.GESTURE_INPUT_MODE_ACTIONS,
+            Settings.GESTURE_INPUT_MODE_NONE
+        ),
+        optionNames = listOf(
+            stringResource(R.string.swipe_input_settings_swipe),
+            stringResource(R.string.swipe_input_settings_swipe_actions_mode),
+            stringResource(R.string.swipe_input_settings_swipe_disabled)
+        ),
+        optionSubtitles = listOf(
+            stringResource(R.string.swipe_input_settings_swipe_subtitle),
+            stringResource(R.string.swipe_input_settings_swipe_actions_mode_subtitle),
+            stringResource(R.string.swipe_input_settings_swipe_disabled_subtitle)
+        ),
+        setting = useSharedPrefsInt(
+            key = Settings.PREF_GESTURE_INPUT_MODE,
+            default = Settings.GESTURE_INPUT_MODE_TYPING
         )
-    ) {
-        Column(Modifier.fillMaxWidth()) {
-            Text(
-                text = stringResource(R.string.typing_settings_swipe_group_label),
-                style = Typography.Body.MediumMl,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 8.dp)
-            )
-
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.65f),
-                thickness = 0.75.dp
-            )
-
-            SettingToggleRaw(
-                title = stringResource(R.string.typing_settings_swipe),
-                subtitle = stringResource(R.string.typing_settings_swipe_subtitle),
-                enabled = swipeTypingEnabled,
-                setValue = { enabled ->
-                    if (enabled) {
-                        gestureMode.setValue(Settings.GESTURE_INPUT_MODE_TYPING)
-                    } else if (swipeTypingEnabled) {
-                        gestureMode.setValue(Settings.GESTURE_INPUT_MODE_NONE)
-                    }
-                },
-                icon = {
-                    Icon(
-                        painterResource(id = R.drawable.swipe_icon),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
-                    )
-                }
-            )
-
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
-                thickness = 0.75.dp,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-
-            SettingToggleRaw(
-                title = stringResource(R.string.typing_settings_swipe_actions_mode),
-                subtitle = stringResource(R.string.typing_settings_swipe_actions_mode_subtitle),
-                enabled = swipeActionsEnabled,
-                setValue = { enabled ->
-                    if (enabled) {
-                        gestureMode.setValue(Settings.GESTURE_INPUT_MODE_ACTIONS)
-                    } else if (swipeActionsEnabled) {
-                        gestureMode.setValue(Settings.GESTURE_INPUT_MODE_NONE)
-                    }
-                },
-                icon = {
-                    Icon(
-                        painterResource(id = R.drawable.swipe_icon),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
-                    )
-                }
-            )
-        }
-    }
+    )
 }
 
 @Preview(showBackground = true)
@@ -1074,6 +1021,7 @@ fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavContro
         }
 
         KeyboardSettingsMenu.render(showBack = false, showTitle = false)
+        SwipeInputSettingsMenu.render(showBack = false, showTitle = false)
         TypingSettingsMenu.render(showBack = false)
 
         BottomSpacer()

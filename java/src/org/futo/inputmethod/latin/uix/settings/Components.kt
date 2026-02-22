@@ -438,19 +438,25 @@ fun SettingToggleSharedPrefs(
 
 @Composable
 fun<T> SettingRadio(
-    title: String,
+    title: String? = null,
     options: List<T>,
     optionNames: List<String>,
     setting: DataStoreItem<T>,
+    optionSubtitles: List<String?>? = null,
     hints: List<@Composable () -> Unit>? = null,
 ) {
-    ScreenTitle(title, showBack = false)
+    if (!title.isNullOrBlank()) {
+        ScreenTitle(title, showBack = false)
+    }
     Column {
         options.zip(optionNames).forEachIndexed { i, it ->
-            SettingItem(title = it.second, onClick = { setting.setValue(it.first) }, icon = {
+            val subtitle = optionSubtitles?.getOrNull(i)
+            SettingItem(title = it.second, subtitle = subtitle, onClick = { setting.setValue(it.first) }, icon = {
                 RadioButton(selected = setting.value == it.first, onClick = null)
             }, modifier = Modifier.clearAndSetSemantics {
-                this.text = AnnotatedString(it.second)
+                this.text = AnnotatedString(
+                    if (subtitle.isNullOrBlank()) it.second else "${it.second}. $subtitle"
+                )
                 this.role = Role.RadioButton
                 this.selected = setting.value == it.first
             }) {
