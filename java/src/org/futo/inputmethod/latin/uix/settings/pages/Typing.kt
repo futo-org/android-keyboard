@@ -1002,7 +1002,6 @@ private fun SwipeAlphaModesSetting() {
             }
         )
 
-        Tip(stringResource(R.string.typing_settings_swipe_modes_mutual_exclusive))
     }
 }
 

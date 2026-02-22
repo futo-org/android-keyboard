@@ -443,7 +443,6 @@
     <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
     <string name="typing_settings_swipe_actions_mode">Swipe Actions Mode (alpha)</string>
     <string name="typing_settings_swipe_actions_mode_subtitle">Fleksy-style directional swipes anywhere on the keyboard. Disables Swipe Typing.</string>
-    <string name="typing_settings_swipe_modes_mutual_exclusive">Only one swipe mode can be active at a time.</string>
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
     <string name="typing_settings_suggest_emojis_subtitle">Suggest emojis while you\'re typing</string>
     <string name="typing_settings_vibration_strength">Vibration</string>
