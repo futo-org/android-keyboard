@@ -806,15 +806,15 @@ val TypingSettingsMenu = UserSettingsMenu(
     title = R.string.typing_settings_title,
     navPath = "typing", registerNavPath = true,
     settings = listOf(
+        UserSetting(name = R.string.typing_settings_swipe) {
+            SwipeAlphaModesSetting()
+        },
         UserSetting(
             name = R.string.typing_settings_auto_space_mode,
             component = {
                 AutoSpacesSetting()
             }
         ),
-        UserSetting(name = R.string.typing_settings_swipe) {
-            SwipeAlphaModesSetting()
-        },
         userSettingToggleDataStore(
             title = R.string.typing_settings_suggest_emojis,
             subtitle = R.string.typing_settings_suggest_emojis_subtitle,
