@@ -498,6 +498,37 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         return settings.current.mGestureActionsEnabled
     }
 
+    private fun sendDeleteKeypress() {
+        onEvent(
+            Event.createSoftwareKeypressEvent(
+                Event.NOT_A_CODE_POINT,
+                Constants.CODE_DELETE,
+                Constants.NOT_A_COORDINATE,
+                Constants.NOT_A_COORDINATE,
+                false
+            )
+        )
+    }
+
+    private fun moveCursorToLastWordIfTrailingSpace(): Boolean {
+        val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
+        if (!beforeCursor.isNullOrEmpty()
+            && beforeCursor.last() == ' '
+            && inputLogic.mConnection.hasCursorPosition()
+            && !inputLogic.mConnection.hasSelection()) {
+            inputLogic.cursorLeft(1, false, false)
+            return true
+        }
+
+        return false
+    }
+
+    private fun restoreCursorIfMoved(movedCursorToLastWord: Boolean) {
+        if (movedCursorToLastWord) {
+            inputLogic.cursorRight(1, false, false)
+        }
+    }
+
     fun updateSuggestions(inputStyle: Int) {
         updateSuggestionJob?.cancel()
 
@@ -731,15 +762,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
                 val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
                 if (!beforeCursor.isNullOrEmpty() && beforeCursor.last() == ' ') {
-                    onEvent(
-                        Event.createSoftwareKeypressEvent(
-                            Event.NOT_A_CODE_POINT,
-                            Constants.CODE_DELETE,
-                            Constants.NOT_A_COORDINATE,
-                            Constants.NOT_A_COORDINATE,
-                            false
-                        )
-                    )
+                    sendDeleteKeypress()
                     return
                 }
 
@@ -747,29 +770,13 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     inputLogic.cursorLeft(-1, true, true)
                     onUpWithDeletePointerActive()
                 } else {
-                    onEvent(
-                        Event.createSoftwareKeypressEvent(
-                            Event.NOT_A_CODE_POINT,
-                            Constants.CODE_DELETE,
-                            Constants.NOT_A_COORDINATE,
-                            Constants.NOT_A_COORDINATE,
-                            false
-                        )
-                    )
+                    sendDeleteKeypress()
                 }
             }
 
             KeyboardActionListener.SWIPE_ACTION_UP,
             KeyboardActionListener.SWIPE_ACTION_DOWN -> {
-                var movedCursorToLastWord = false
-                val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
-                if (!beforeCursor.isNullOrEmpty()
-                    && beforeCursor.last() == ' '
-                    && inputLogic.mConnection.hasCursorPosition()
-                    && !inputLogic.mConnection.hasSelection()) {
-                    inputLogic.cursorLeft(1, false, false)
-                    movedCursorToLastWord = true
-                }
+                val movedCursorToLastWord = moveCursorToLastWordIfTrailingSpace()
 
                 inputLogic.restartSuggestionsOnWordTouchedByCursor(
                     settings.current,
@@ -779,9 +786,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 )
 
                 if (!ensureSuggestionsCompleted()) {
-                    if (movedCursorToLastWord) {
-                        inputLogic.cursorRight(1, false, false)
-                    }
+                    restoreCursorIfMoved(movedCursorToLastWord)
                     return
                 }
 
@@ -801,9 +806,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
                 if (candidates.size < 2) {
                     resetSwipeSuggestionSession()
-                    if (movedCursorToLastWord) {
-                        inputLogic.cursorRight(1, false, false)
-                    }
+                    restoreCursorIfMoved(movedCursorToLastWord)
                     return
                 }
 
@@ -840,9 +843,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
                 val selected = candidates[nextIndex]
                 if (currentWord != null && selected.mWord == currentWord) {
-                    if (movedCursorToLastWord) {
-                        inputLogic.cursorRight(1, false, false)
-                    }
+                    restoreCursorIfMoved(movedCursorToLastWord)
                     return
                 }
 
@@ -850,9 +851,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 swipeSuggestionIndex = nextIndex
                 swipeSuggestionWord = selected.mWord
 
-                if (movedCursorToLastWord) {
-                    inputLogic.cursorRight(1, false, false)
-                }
+                restoreCursorIfMoved(movedCursorToLastWord)
             }
         }
     }
