@@ -439,7 +439,7 @@
     <!-- typing settings -->
     <string name="typing_settings_title">Typing preferences</string>
     <!-- When translating, rename it to gesture typing if it makes more sense for that language -->
-    <string name="typing_settings_swipe_group_label">Swipe input mode</string>
+    <string name="typing_settings_swipe_group_label">Swipe input modes</string>
     <string name="typing_settings_swipe">Swipe Typing (alpha)</string>
     <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
     <string name="typing_settings_swipe_actions_mode">Swipe Actions (alpha)</string>

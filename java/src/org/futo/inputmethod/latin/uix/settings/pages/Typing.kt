@@ -1007,6 +1007,8 @@ private fun SwipeAlphaModesSetting() {
                 setValue = { enabled ->
                     if (enabled) {
                         gestureMode.setValue(Settings.GESTURE_INPUT_MODE_TYPING)
+                    } else if (swipeTypingEnabled) {
+                        gestureMode.setValue(Settings.GESTURE_INPUT_MODE_NONE)
                     }
                 },
                 icon = {
@@ -1031,6 +1033,8 @@ private fun SwipeAlphaModesSetting() {
                 setValue = { enabled ->
                     if (enabled) {
                         gestureMode.setValue(Settings.GESTURE_INPUT_MODE_ACTIONS)
+                    } else if (swipeActionsEnabled) {
+                        gestureMode.setValue(Settings.GESTURE_INPUT_MODE_NONE)
                     }
                 },
                 icon = {

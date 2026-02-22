@@ -88,6 +88,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_GESTURE_INPUT_MODE = "pref_gesture_input_mode";
     public static final int GESTURE_INPUT_MODE_TYPING = 0;
     public static final int GESTURE_INPUT_MODE_ACTIONS = 1;
+    public static final int GESTURE_INPUT_MODE_NONE = 2;
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME = "pref_keypress_sound_volume";
@@ -290,7 +291,13 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static int readGestureInputMode(final SharedPreferences prefs,
             final Resources res) {
-        return prefs.getInt(PREF_GESTURE_INPUT_MODE, GESTURE_INPUT_MODE_TYPING);
+        final int mode = prefs.getInt(PREF_GESTURE_INPUT_MODE, GESTURE_INPUT_MODE_TYPING);
+        if (mode == GESTURE_INPUT_MODE_TYPING
+                || mode == GESTURE_INPUT_MODE_ACTIONS
+                || mode == GESTURE_INPUT_MODE_NONE) {
+            return mode;
+        }
+        return GESTURE_INPUT_MODE_TYPING;
     }
 
     public static boolean readFromBuildConfigIfToShowKeyPreviewPopupOption(final Resources res) {
