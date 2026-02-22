@@ -45,6 +45,7 @@ import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.utils.AsyncResultHolder
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
+import java.util.LinkedHashSet
 import java.util.concurrent.atomic.AtomicInteger
 
 interface WordLearner {
@@ -529,6 +530,89 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
     }
 
+    private fun getSwipePunctuationCycle(): List<String> {
+        val cycle = LinkedHashSet<String>()
+
+        val suggestedPunctuation = settings.current.mSpacingAndPunctuations.mSuggestPuncList
+        for (index in 0 until suggestedPunctuation.size()) {
+            val punctuation = suggestedPunctuation.getWord(index)
+            if (!punctuation.isNullOrEmpty() && punctuation.codePointCount(0, punctuation.length) == 1) {
+                cycle.add(punctuation)
+            }
+        }
+
+        if (cycle.isEmpty()) {
+            return emptyList()
+        }
+
+        val ordered = cycle.toMutableList()
+        val commaIndex = ordered.indexOf(",")
+        if (commaIndex > 0) {
+            ordered.removeAt(commaIndex)
+            ordered.add(0, ",")
+        }
+
+        return ordered
+    }
+
+    private fun replacePunctuationWith(replacement: String): Boolean {
+        if (replacement.codePointCount(0, replacement.length) != 1) {
+            return false
+        }
+
+        resetSwipeSuggestionSession()
+        sendDeleteKeypress()
+
+        val replacementCodePoint = replacement.codePointAt(0)
+        onEvent(
+            Event.createSoftwareKeypressEvent(
+                replacementCodePoint,
+                replacementCodePoint,
+                Constants.NOT_A_COORDINATE,
+                Constants.NOT_A_COORDINATE,
+                false
+            )
+        )
+
+        return true
+    }
+
+    private fun trySwipeCyclePunctuation(direction: Int): Boolean {
+        val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
+        if (beforeCursor.isNullOrEmpty()) {
+            return false
+        }
+
+        val currentPunctuation = beforeCursor.last().toString()
+        val cycle = getSwipePunctuationCycle()
+        if (cycle.size < 2) {
+            return false
+        }
+
+        val currentIndex = cycle.indexOf(currentPunctuation)
+        if (currentIndex < 0) {
+            if (currentPunctuation == ".") {
+                val replacement = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) {
+                    cycle.first()
+                } else {
+                    cycle.last()
+                }
+                return replacePunctuationWith(replacement)
+            }
+
+            return false
+        }
+
+        val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) 1 else -1
+        val nextIndex = (currentIndex + step + cycle.size) % cycle.size
+        val replacement = cycle[nextIndex]
+        if (replacement == currentPunctuation) {
+            return false
+        }
+
+        return replacePunctuationWith(replacement)
+    }
+
     fun updateSuggestions(inputStyle: Int) {
         updateSuggestionJob?.cancel()
 
@@ -777,6 +861,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             KeyboardActionListener.SWIPE_ACTION_UP,
             KeyboardActionListener.SWIPE_ACTION_DOWN -> {
                 val movedCursorToLastWord = moveCursorToLastWordIfTrailingSpace()
+
+                if (trySwipeCyclePunctuation(direction)) {
+                    restoreCursorIfMoved(movedCursorToLastWord)
+                    return
+                }
 
                 inputLogic.restartSuggestionsOnWordTouchedByCursor(
                     settings.current,
