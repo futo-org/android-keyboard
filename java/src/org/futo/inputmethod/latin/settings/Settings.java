@@ -86,6 +86,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
     public static final String PREF_GESTURE_INPUT_MODE = "pref_gesture_input_mode";
+    private static final String PREF_GESTURE_INPUT_LEGACY = "gesture_input";
     public static final int GESTURE_INPUT_MODE_TYPING = 0;
     public static final int GESTURE_INPUT_MODE_ACTIONS = 1;
     public static final int GESTURE_INPUT_MODE_NONE = 2;
@@ -291,12 +292,21 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static int readGestureInputMode(final SharedPreferences prefs,
             final Resources res) {
-        final int mode = prefs.getInt(PREF_GESTURE_INPUT_MODE, GESTURE_INPUT_MODE_TYPING);
-        if (mode == GESTURE_INPUT_MODE_TYPING
-                || mode == GESTURE_INPUT_MODE_ACTIONS
-                || mode == GESTURE_INPUT_MODE_NONE) {
-            return mode;
+        if (prefs.contains(PREF_GESTURE_INPUT_MODE)) {
+            final int mode = prefs.getInt(PREF_GESTURE_INPUT_MODE, GESTURE_INPUT_MODE_TYPING);
+            if (mode == GESTURE_INPUT_MODE_TYPING
+                    || mode == GESTURE_INPUT_MODE_ACTIONS
+                    || mode == GESTURE_INPUT_MODE_NONE) {
+                return mode;
+            }
         }
+
+        if (prefs.contains(PREF_GESTURE_INPUT_LEGACY)) {
+            return prefs.getBoolean(PREF_GESTURE_INPUT_LEGACY, true)
+                    ? GESTURE_INPUT_MODE_TYPING
+                    : GESTURE_INPUT_MODE_NONE;
+        }
+
         return GESTURE_INPUT_MODE_TYPING;
     }
 
