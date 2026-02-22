@@ -83,6 +83,7 @@ public class SettingsValues {
     public final boolean mTransformerPredictionEnabled;
     public final int mGestureInputMode;
     public final boolean mGestureInputEnabled;
+    public final boolean mGestureActionsEnabled;
     public final boolean mGestureTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
     public final boolean mSlidingKeyInputPreviewEnabled;
@@ -218,8 +219,12 @@ public class SettingsValues {
                 autoCorrectionThresholdRawValue);
         mPlausibilityThreshold = Settings.readPlausibilityThreshold(res);
         mGestureInputMode = Settings.readGestureInputMode(prefs, res);
-        mGestureInputEnabled = Settings.readFromBuildConfigIfGestureInputEnabled(res)
+        final boolean gestureInputAllowedByBuild =
+                Settings.readFromBuildConfigIfGestureInputEnabled(res);
+        mGestureInputEnabled = gestureInputAllowedByBuild
                 && mGestureInputMode == Settings.GESTURE_INPUT_MODE_TYPING;
+        mGestureActionsEnabled = gestureInputAllowedByBuild
+                && mGestureInputMode == Settings.GESTURE_INPUT_MODE_ACTIONS;
         mGestureTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mCloudSyncEnabled = prefs.getBoolean(LocalSettingsConstants.PREF_ENABLE_CLOUD_SYNC, false);
         mAccount = prefs.getString(LocalSettingsConstants.PREF_ACCOUNT_NAME,

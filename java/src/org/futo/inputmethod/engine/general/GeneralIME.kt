@@ -495,7 +495,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     private fun isSwipeActionsModeEnabled(): Boolean {
-        return settings.current.mGestureInputMode == Settings.GESTURE_INPUT_MODE_ACTIONS
+        return settings.current.mGestureActionsEnabled
     }
 
     fun updateSuggestions(inputStyle: Int) {
