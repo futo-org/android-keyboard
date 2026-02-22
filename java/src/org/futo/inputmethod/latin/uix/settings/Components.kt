@@ -123,7 +123,7 @@ fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHost
         }
         Text(title, style = Typography.Heading.Medium, modifier = Modifier
             .align(CenterVertically)
-            .padding(0.dp, 16.dp))
+            .padding(top = 16.dp, bottom = 10.dp))
     }
 }
 
@@ -136,7 +136,7 @@ fun ScreenTitleWithIcon(title: String, painter: Painter) {
         Spacer(modifier = Modifier.width(18.dp))
         Text(title, style = Typography.Heading.Medium, modifier = Modifier
             .align(CenterVertically)
-            .padding(0.dp, 16.dp))
+            .padding(top = 16.dp, bottom = 10.dp))
     }
 }
 
@@ -443,6 +443,7 @@ fun<T> SettingRadio(
     optionNames: List<String>,
     setting: DataStoreItem<T>,
     optionSubtitles: List<String?>? = null,
+    compact: Boolean = false,
     hints: List<@Composable () -> Unit>? = null,
 ) {
     if (!title.isNullOrBlank()) {
@@ -459,7 +460,7 @@ fun<T> SettingRadio(
                 )
                 this.role = Role.RadioButton
                 this.selected = setting.value == it.first
-            }) {
+            }, compact = compact) {
                 hints?.getOrNull(i)?.let { it() }
             }
         }

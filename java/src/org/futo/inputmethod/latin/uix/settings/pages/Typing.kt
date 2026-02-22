@@ -989,6 +989,7 @@ private fun SwipeAlphaModesSetting() {
             stringResource(R.string.swipe_input_settings_swipe_actions_mode_subtitle),
             stringResource(R.string.swipe_input_settings_swipe_disabled_subtitle)
         ),
+        compact = true,
         setting = useSharedPrefsInt(
             key = Settings.PREF_GESTURE_INPUT_MODE,
             default = Settings.GESTURE_INPUT_MODE_TYPING
