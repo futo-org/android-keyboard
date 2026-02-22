@@ -435,7 +435,7 @@
     <string name="morekey_settings_kind_misc_common">Misc. letters from common languages</string>
     <string name="morekey_settings_kind_misc_common_example">e.g. [ß] on [s] in all Latin script languages</string>
 
-    <!-- typing settings -->
+    <!-- swiping settings -->
     <!-- When translating, rename it to gesture typing if it makes more sense for that language -->
     <string name="swipe_input_settings_title">Swipe input modes</string>
     <string name="swipe_input_settings_swipe">Swipe Typing (alpha)</string>
@@ -444,6 +444,8 @@
     <string name="swipe_input_settings_swipe_actions_mode">Swipe Actions (alpha)</string>
     <string name="swipe_input_settings_swipe_actions_mode_subtitle">Fleksy-style directional action swipes.</string>
     <string name="swipe_input_settings_swipe_disabled_subtitle">Turn off swipe typing and swipe actions.</string>
+
+    <!-- typing settings -->
     <string name="typing_settings_title">Typing preferences</string>
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
     <string name="typing_settings_suggest_emojis_subtitle">Suggest emojis while you\'re typing</string>
