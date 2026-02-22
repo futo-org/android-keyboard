@@ -21,6 +21,7 @@ import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.engine.IMEMessage
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.event.InputTransaction
+import org.futo.inputmethod.keyboard.KeyboardActionListener
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.DictionaryFacilitator
@@ -231,6 +232,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun onStartInput() {
         useExpandableUi = helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)
+        resetSwipeSuggestionSession()
 
         resetDictionaryFacilitator()
         setNeutralSuggestionStrip()
@@ -269,6 +271,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     }
 
     override fun onFinishInput() {
+        resetSwipeSuggestionSession()
         inputLogic.finishInput()
         dictionaryFacilitator.onFinishInput(context)
         updateSuggestionJob?.cancel()
@@ -296,6 +299,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     private fun onEventInternal(event: Event, ignoreSuggestionUpdate: Boolean = false) {
         helper.requestCursorUpdate()
+
+        if (isSwipeActionsModeEnabled() && event.eventType != Event.EVENT_TYPE_SUGGESTION_PICKED) {
+            resetSwipeSuggestionSession()
+        }
 
         val inputTransaction = when (event.eventType) {
             Event.EVENT_TYPE_INPUT_KEYPRESS,
@@ -477,6 +484,51 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     private val sequenceIdCompleted = AtomicInteger(0)
     private val computationMutex = Mutex()
     private var timeTakenToUpdate = 40L
+    private var swipeSuggestionIndex = -1
+    private var swipeSuggestionWord: String? = null
+    private var swipeSuggestionCandidates: List<SuggestedWordInfo>? = null
+
+    private fun resetSwipeSuggestionSession() {
+        swipeSuggestionIndex = -1
+        swipeSuggestionWord = null
+        swipeSuggestionCandidates = null
+    }
+
+    private fun isSwipeActionsModeEnabled(): Boolean {
+        return settings.current.mGestureActionsEnabled
+    }
+
+    private fun sendDeleteKeypress() {
+        onEvent(
+            Event.createSoftwareKeypressEvent(
+                Event.NOT_A_CODE_POINT,
+                Constants.CODE_DELETE,
+                Constants.NOT_A_COORDINATE,
+                Constants.NOT_A_COORDINATE,
+                false
+            )
+        )
+    }
+
+    private fun moveCursorToLastWordIfTrailingSpace(): Boolean {
+        val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
+        if (!beforeCursor.isNullOrEmpty()
+            && beforeCursor.last() == ' '
+            && inputLogic.mConnection.hasCursorPosition()
+            && !inputLogic.mConnection.hasSelection()) {
+            inputLogic.cursorLeft(1, false, false)
+            return true
+        }
+
+        return false
+    }
+
+    private fun restoreCursorIfMoved(movedCursorToLastWord: Boolean) {
+        if (movedCursorToLastWord) {
+            inputLogic.cursorRight(1, false, false)
+        }
+    }
+
     fun updateSuggestions(inputStyle: Int) {
         updateSuggestionJob?.cancel()
 
@@ -685,6 +737,123 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun onSwipeLanguage(direction: Int) {
         switchToNextLanguage(context, direction)
+    }
+
+    override fun onSwipeAction(direction: Int) {
+        if (!isSwipeActionsModeEnabled()) return
+
+        when (direction) {
+            KeyboardActionListener.SWIPE_ACTION_RIGHT -> {
+                resetSwipeSuggestionSession()
+                onEvent(
+                    Event.createSoftwareKeypressEvent(
+                        Constants.CODE_SPACE,
+                        Constants.CODE_SPACE,
+                        Constants.NOT_A_COORDINATE,
+                        Constants.NOT_A_COORDINATE,
+                        false
+                    )
+                )
+            }
+
+            KeyboardActionListener.SWIPE_ACTION_LEFT -> {
+                resetSwipeSuggestionSession()
+                setNeutralSuggestionStrip()
+
+                val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
+                if (!beforeCursor.isNullOrEmpty() && beforeCursor.last() == ' ') {
+                    sendDeleteKeypress()
+                    return
+                }
+
+                if (inputLogic.mConnection.hasCursorPosition()) {
+                    inputLogic.cursorLeft(-1, true, true)
+                    onUpWithDeletePointerActive()
+                } else {
+                    sendDeleteKeypress()
+                }
+            }
+
+            KeyboardActionListener.SWIPE_ACTION_UP,
+            KeyboardActionListener.SWIPE_ACTION_DOWN -> {
+                val movedCursorToLastWord = moveCursorToLastWordIfTrailingSpace()
+
+                inputLogic.restartSuggestionsOnWordTouchedByCursor(
+                    settings.current,
+                    null,
+                    false,
+                    helper.currentKeyboardScriptId
+                )
+
+                if (!ensureSuggestionsCompleted()) {
+                    restoreCursorIfMoved(movedCursorToLastWord)
+                    return
+                }
+
+                val candidates = swipeSuggestionCandidates ?: run {
+                    val suggestions = inputLogic.mSuggestedWords
+                    val rebuiltCandidates = ArrayList<SuggestedWordInfo>()
+                    val seen = HashSet<String>()
+                    for (index in 0 until suggestions.size()) {
+                        val info = suggestions.getInfo(index)
+                        if (!info.isKindOf(SuggestedWordInfo.KIND_UNDO) && seen.add(info.mWord)) {
+                            rebuiltCandidates.add(info)
+                        }
+                    }
+                    swipeSuggestionCandidates = rebuiltCandidates
+                    rebuiltCandidates
+                }
+
+                if (candidates.size < 2) {
+                    resetSwipeSuggestionSession()
+                    restoreCursorIfMoved(movedCursorToLastWord)
+                    return
+                }
+
+                val typedWord = inputLogic.mWordComposer.typedWord
+                val currentWord = swipeSuggestionWord ?: typedWord
+                val typedWordIndex = if (typedWord != null) {
+                    candidates.indexOfFirst { it.mWord == typedWord }
+                } else {
+                    -1
+                }
+                val currentWordIndex = if (currentWord != null) {
+                    candidates.indexOfFirst { it.mWord == currentWord }
+                } else {
+                    -1
+                }
+
+                val baseIndex = if (swipeSuggestionWord != null
+                    && swipeSuggestionIndex in candidates.indices
+                    && candidates[swipeSuggestionIndex].mWord == swipeSuggestionWord) {
+                    swipeSuggestionIndex
+                } else if (currentWordIndex >= 0) {
+                    currentWordIndex
+                } else if (typedWordIndex >= 0) {
+                    typedWordIndex
+                } else {
+                    0
+                }
+
+                val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) 1 else -1
+                var nextIndex = (baseIndex + step + candidates.size) % candidates.size
+                if (currentWord != null && candidates[nextIndex].mWord == currentWord) {
+                    nextIndex = (nextIndex + step + candidates.size) % candidates.size
+                }
+
+                val selected = candidates[nextIndex]
+                if (currentWord != null && selected.mWord == currentWord) {
+                    restoreCursorIfMoved(movedCursorToLastWord)
+                    return
+                }
+
+                onEvent(Event.createSuggestionPickedEvent(selected))
+                swipeSuggestionIndex = nextIndex
+                swipeSuggestionWord = selected.mWord
+
+                restoreCursorIfMoved(movedCursorToLastWord)
+            }
+        }
     }
 
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {

@@ -1,9 +1,6 @@
 package org.futo.inputmethod.latin.uix.settings
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,6 +38,8 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -124,7 +123,7 @@ fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHost
         }
         Text(title, style = Typography.Heading.Medium, modifier = Modifier
             .align(CenterVertically)
-            .padding(0.dp, 16.dp))
+            .padding(top = 16.dp, bottom = 10.dp))
     }
 }
 
@@ -137,7 +136,7 @@ fun ScreenTitleWithIcon(title: String, painter: Painter) {
         Spacer(modifier = Modifier.width(18.dp))
         Text(title, style = Typography.Heading.Medium, modifier = Modifier
             .align(CenterVertically)
-            .padding(0.dp, 16.dp))
+            .padding(top = 16.dp, bottom = 10.dp))
     }
 }
 
@@ -439,22 +438,29 @@ fun SettingToggleSharedPrefs(
 
 @Composable
 fun<T> SettingRadio(
-    title: String,
+    title: String? = null,
     options: List<T>,
     optionNames: List<String>,
     setting: DataStoreItem<T>,
+    optionSubtitles: List<String?>? = null,
+    compact: Boolean = false,
     hints: List<@Composable () -> Unit>? = null,
 ) {
-    ScreenTitle(title, showBack = false)
+    if (!title.isNullOrBlank()) {
+        ScreenTitle(title, showBack = false)
+    }
     Column {
         options.zip(optionNames).forEachIndexed { i, it ->
-            SettingItem(title = it.second, onClick = { setting.setValue(it.first) }, icon = {
+            val subtitle = optionSubtitles?.getOrNull(i)
+            SettingItem(title = it.second, subtitle = subtitle, onClick = { setting.setValue(it.first) }, icon = {
                 RadioButton(selected = setting.value == it.first, onClick = null)
             }, modifier = Modifier.clearAndSetSemantics {
-                this.text = AnnotatedString(it.second)
+                this.text = AnnotatedString(
+                    if (subtitle.isNullOrBlank()) it.second else "${it.second}. $subtitle"
+                )
                 this.role = Role.RadioButton
                 this.selected = setting.value == it.first
-            }) {
+            }, compact = compact) {
                 hints?.getOrNull(i)?.let { it() }
             }
         }
@@ -816,26 +822,22 @@ fun<T> DropDownPicker(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-
-    SpacedColumn(4.dp, modifier = modifier.semantics {
-        role = Role.DropdownList
-    }) {
+    Box(modifier = modifier.semantics { role = Role.DropdownList }) {
         Row(
-            Modifier.fillMaxWidth().background(
-                MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape
-            ).border(
-                if(expanded) { 2.dp } else { 1.dp },
-                MaterialTheme.colorScheme.outline,
-                DropDownShape
-            ).heightIn(min = 44.dp).clip(DropDownShape).clickable {
-                expanded = !expanded
-            }.padding(16.dp).semantics {
-                // TODO: Localization
-                stateDescription = if(expanded) "Expanded" else "Collapsed"
-                role = Role.DropdownList
-            }
+            Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape)
+                .border(1.dp, MaterialTheme.colorScheme.outline, DropDownShape)
+                .heightIn(min = 44.dp)
+                .clip(DropDownShape)
+                .clickable { expanded = !expanded }
+                .padding(16.dp)
+                .semantics {
+                    stateDescription = if (expanded) "Expanded" else "Collapsed"
+                    role = Role.DropdownList
+                }
         ) {
-            if(selection != null) {
+            if (selection != null) {
                 Text(
                     text = getDisplayName(selection),
                     style = Typography.Body.Regular,
@@ -849,54 +851,46 @@ fun<T> DropDownPicker(
             RotatingChevronIcon(expanded, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
-        AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
-            val scrollState = rememberScrollState()
-            Column(Modifier.let {
-                if(scrollableOptions) {
-                    it.verticalScroll(scrollState)
-                } else {
-                    it
-                }
-            }) {
-                Spacer(Modifier.height(9.dp))
-                Column(
-                    Modifier.fillMaxWidth().background(
-                        MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape
-                    ).border(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline,
-                        DropDownShape
-                    ).clip(DropDownShape)
-                ) {
-                    options.forEach {
-                        Box(
-                            Modifier.fillMaxWidth().heightIn(min = 44.dp).background(
-                                if(selection == it) {
-                                    LocalKeyboardScheme.current.onSurfaceTransparent
-                                } else {
-                                    Color.Transparent
-                                }
-                            ).clickable {
-                                onSet(it)
-                                expanded = false
-                            }.padding(16.dp).semantics {
-                                selected = selection == it
-                                role = Role.DropdownList
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = if (scrollableOptions) {
+                Modifier.heightIn(max = 280.dp)
+            } else {
+                Modifier
+            }
+        ) {
+            val selectedBackground = LocalKeyboardScheme.current.onSurfaceTransparent
+            for (option in options) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            getDisplayName(option),
+                            style = Typography.Body.Regular,
+                            color = if (selection == option) {
+                                MaterialTheme.colorScheme.onSurface
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
                             }
-                        ) {
-                            Text(
-                                getDisplayName(it),
-                                style = Typography.Body.Regular,
-                                color = if(selection == it) {
-                                    MaterialTheme.colorScheme.onSurface
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                },
-                                modifier = Modifier.align(Alignment.CenterStart)
-                            )
+                        )
+                    },
+                    onClick = {
+                        onSet(option)
+                        expanded = false
+                    },
+                    modifier = Modifier
+                        .background(
+                            if (selection == option) {
+                                selectedBackground
+                            } else {
+                                Color.Transparent
+                            }
+                        )
+                        .semantics {
+                            selected = selection == option
+                            role = Role.DropdownList
                         }
-                    }
-                }
+                )
             }
         }
     }
