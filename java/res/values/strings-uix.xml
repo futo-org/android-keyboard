@@ -421,7 +421,6 @@
     <string name="morekey_settings_space_behavior_swipe_cursor">Swiping moves cursor, long-pressing switches language</string>
     <string name="morekey_settings_space_behavior_swipe_lang">Swiping changes language, long-pressing moves cursor</string>
     <string name="morekey_settings_space_behavior_only_cursor">Swiping and long-pressing only moves cursor</string>
-    <string name="morekey_settings_space_behavior_swipe_actions">Swipe actions (Fleksy-style)</string>
 
     <!-- Types of morekeys that can be configured, and examples of them -->
     <string name="morekey_settings_kind_numbers">Numbers</string>
@@ -643,3 +642,4 @@ Default is %1$s</string>
     <!-- %1$s will be replaced with the custom dictionary name -->
     <string name="personal_dictionary_delete_additional_file_text">%1$s will be deleted</string>
 </resources>
+
