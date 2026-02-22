@@ -1032,7 +1032,7 @@ private fun SwipeAlphaModesSetting() {
                     if (enabled) {
                         gestureMode.setValue(Settings.GESTURE_INPUT_MODE_ACTIONS)
                     }
-                }
+                },
                 icon = {
                     Icon(
                         painterResource(id = R.drawable.swipe_icon),
