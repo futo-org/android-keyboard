@@ -645,6 +645,12 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     @Override
     public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
+        // Haptic feedback on popup open
+        if (settingsValues.mVibrateOn) {
+            AudioAndHapticFeedbackManager.getInstance();
+            feedbackManager.vibrate(5);
+        }
+
         locatePreviewPlacerView();
         // Dismiss another {@link MoreKeysPanel} that may be being showed.
         onDismissMoreKeysPanel();
