@@ -4,7 +4,9 @@ import android.content.Context
 import android.media.AudioManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -24,10 +26,12 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -972,36 +976,72 @@ private fun SwipeAlphaModesSetting() {
     val swipeTypingEnabled = gestureMode.value == Settings.GESTURE_INPUT_MODE_TYPING
     val swipeActionsEnabled = gestureMode.value == Settings.GESTURE_INPUT_MODE_ACTIONS
 
-    Column {
-        SettingToggleRaw(
-            title = stringResource(R.string.typing_settings_swipe),
-            subtitle = stringResource(R.string.typing_settings_swipe_subtitle),
-            enabled = swipeTypingEnabled,
-            setValue = { enabled ->
-                if (enabled) {
-                    gestureMode.setValue(Settings.GESTURE_INPUT_MODE_TYPING)
-                }
-            },
-            icon = {
-                Icon(
-                    painterResource(id = R.drawable.swipe_icon),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
-                )
-            }
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f)
         )
+    ) {
+        Column(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(R.string.typing_settings_swipe_group_label),
+                style = Typography.Body.MediumMl,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 8.dp)
+            )
 
-        SettingToggleRaw(
-            title = stringResource(R.string.typing_settings_swipe_actions_mode),
-            subtitle = stringResource(R.string.typing_settings_swipe_actions_mode_subtitle),
-            enabled = swipeActionsEnabled,
-            setValue = { enabled ->
-                if (enabled) {
-                    gestureMode.setValue(Settings.GESTURE_INPUT_MODE_ACTIONS)
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.65f),
+                thickness = 0.75.dp
+            )
+
+            SettingToggleRaw(
+                title = stringResource(R.string.typing_settings_swipe),
+                subtitle = stringResource(R.string.typing_settings_swipe_subtitle),
+                enabled = swipeTypingEnabled,
+                setValue = { enabled ->
+                    if (enabled) {
+                        gestureMode.setValue(Settings.GESTURE_INPUT_MODE_TYPING)
+                    }
+                },
+                icon = {
+                    Icon(
+                        painterResource(id = R.drawable.swipe_icon),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
+                    )
                 }
-            }
-        )
+            )
 
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
+                thickness = 0.75.dp,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+
+            SettingToggleRaw(
+                title = stringResource(R.string.typing_settings_swipe_actions_mode),
+                subtitle = stringResource(R.string.typing_settings_swipe_actions_mode_subtitle),
+                enabled = swipeActionsEnabled,
+                setValue = { enabled ->
+                    if (enabled) {
+                        gestureMode.setValue(Settings.GESTURE_INPUT_MODE_ACTIONS)
+                    }
+                }
+                icon = {
+                    Icon(
+                        painterResource(id = R.drawable.swipe_icon),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
+                    )
+                }
+            )
+        }
     }
 }
 
