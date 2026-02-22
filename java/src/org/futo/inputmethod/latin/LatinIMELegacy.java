@@ -343,7 +343,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
-
+        // Refresh InputAttributes even when restarting in the same field. Some apps
+        // (e.g Translate) update hintLocales but not inputType, leading to out of date hintLocales
+        loadSettings();
     }
 
     public void updateMainKeyboardViewSettings() {

@@ -106,7 +106,8 @@ public class SettingsValues {
     public final int mBackspaceMode;
     public final int mNumberRowMode;
     public final int mAltSpacesMode;
-
+    public final boolean mAutoSwitchLanguage;
+ 
     // From the input box
     @Nonnull
     public final InputAttributes mInputAttributes;
@@ -201,9 +202,10 @@ public class SettingsValues {
                 prefs.getInt(Settings.PREF_NUMBER_ROW_MODE, Settings.NUMBER_ROW_MODE_DEFAULT)
                 : Settings.NUMBER_ROW_MODE_DEFAULT;
         mAltSpacesMode = prefs.getInt(Settings.PREF_ALT_SPACES_MODE, Settings.DEFAULT_ALT_SPACES_MODE);
+        mAutoSwitchLanguage = prefs.getBoolean(Settings.PREF_AUTO_SWITCH_LANGUAGE, false);
 
         mShouldShowLxxSuggestionUi = Settings.SHOULD_SHOW_LXX_SUGGESTION_UI
-                && prefs.getBoolean(DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI, true);
+               && prefs.getBoolean(DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI, true);
         // Compute other readable settings
         mKeyLongpressTimeout = Settings.readKeyLongpressTimeout(prefs, res);
         mKeypressVibrationDuration = Settings.readKeypressVibrationDuration(prefs, res);
