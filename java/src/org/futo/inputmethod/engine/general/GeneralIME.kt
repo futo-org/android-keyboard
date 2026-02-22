@@ -810,6 +810,31 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     return
                 }
 
+                if (direction == KeyboardActionListener.SWIPE_ACTION_UP
+                    && swipeSuggestionWord == null) {
+                    val touchedWord = inputLogic.mWordComposer.typedWord
+                    val lastComposedWord = inputLogic.mLastComposedWord
+                    val committedWord = lastComposedWord.mCommittedWord?.toString()
+                    val typedWordFromLastCommit = lastComposedWord.mTypedWord
+
+                    if (lastComposedWord.canRevertCommit()
+                        && !typedWordFromLastCommit.isNullOrEmpty()
+                        && !committedWord.isNullOrEmpty()
+                        && touchedWord == committedWord
+                        && typedWordFromLastCommit != committedWord) {
+                        val typedWordIndexFromLastCommit =
+                            candidates.indexOfFirst { it.mWord == typedWordFromLastCommit }
+                        if (typedWordIndexFromLastCommit >= 0) {
+                            val selected = candidates[typedWordIndexFromLastCommit]
+                            onEvent(Event.createSuggestionPickedEvent(selected))
+                            swipeSuggestionIndex = typedWordIndexFromLastCommit
+                            swipeSuggestionWord = selected.mWord
+                            restoreCursorIfMoved(movedCursorToLastWord)
+                            return
+                        }
+                    }
+                }
+
                 val typedWord = inputLogic.mWordComposer.typedWord
                 val currentWord = swipeSuggestionWord ?: typedWord
                 val typedWordIndex = if (typedWord != null) {
