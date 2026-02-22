@@ -24,6 +24,7 @@ import org.futo.inputmethod.event.InputTransaction
 import org.futo.inputmethod.keyboard.KeyboardActionListener
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.BuildConfig
+import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.DictionaryFacilitator
 import org.futo.inputmethod.latin.DictionaryFacilitatorProvider
 import org.futo.inputmethod.latin.NgramContext
@@ -593,9 +594,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         if (currentIndex < 0) {
             if (currentPunctuation == ".") {
                 val replacement = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) {
-                    cycle.first()
-                } else {
                     cycle.last()
+                } else {
+                    cycle.first()
                 }
                 return replacePunctuationWith(replacement)
             }
@@ -603,7 +604,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             return false
         }
 
-        val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) 1 else -1
+        val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) -1 else 1
         val nextIndex = (currentIndex + step + cycle.size) % cycle.size
         val replacement = cycle[nextIndex]
         if (replacement == currentPunctuation) {
@@ -860,6 +861,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
             KeyboardActionListener.SWIPE_ACTION_UP,
             KeyboardActionListener.SWIPE_ACTION_DOWN -> {
+                val lastComposedWordAtSwipeStart = inputLogic.mLastComposedWord
                 val movedCursorToLastWord = moveCursorToLastWordIfTrailingSpace()
 
                 if (trySwipeCyclePunctuation(direction)) {
@@ -893,35 +895,45 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     rebuiltCandidates
                 }
 
-                if (candidates.size < 2) {
-                    resetSwipeSuggestionSession()
-                    restoreCursorIfMoved(movedCursorToLastWord)
-                    return
-                }
-
                 if (direction == KeyboardActionListener.SWIPE_ACTION_UP
                     && swipeSuggestionWord == null) {
                     val touchedWord = inputLogic.mWordComposer.typedWord
-                    val lastComposedWord = inputLogic.mLastComposedWord
-                    val committedWord = lastComposedWord.mCommittedWord?.toString()
-                    val typedWordFromLastCommit = lastComposedWord.mTypedWord
+                    val committedWord = lastComposedWordAtSwipeStart.mCommittedWord?.toString()
+                    val typedWordFromLastCommit = lastComposedWordAtSwipeStart.mTypedWord
 
-                    if (lastComposedWord.canRevertCommit()
+                    if (lastComposedWordAtSwipeStart.canRevertCommit()
                         && !typedWordFromLastCommit.isNullOrEmpty()
                         && !committedWord.isNullOrEmpty()
                         && touchedWord == committedWord
                         && typedWordFromLastCommit != committedWord) {
                         val typedWordIndexFromLastCommit =
                             candidates.indexOfFirst { it.mWord == typedWordFromLastCommit }
-                        if (typedWordIndexFromLastCommit >= 0) {
-                            val selected = candidates[typedWordIndexFromLastCommit]
-                            onEvent(Event.createSuggestionPickedEvent(selected))
-                            swipeSuggestionIndex = typedWordIndexFromLastCommit
-                            swipeSuggestionWord = selected.mWord
-                            restoreCursorIfMoved(movedCursorToLastWord)
-                            return
+                        val selected = if (typedWordIndexFromLastCommit >= 0) {
+                            candidates[typedWordIndexFromLastCommit]
+                        } else {
+                            SuggestedWordInfo(
+                                typedWordFromLastCommit,
+                                "",
+                                SuggestedWordInfo.MAX_SCORE,
+                                SuggestedWordInfo.KIND_TYPED,
+                                Dictionary.DICTIONARY_USER_TYPED,
+                                SuggestedWordInfo.NOT_AN_INDEX,
+                                SuggestedWordInfo.NOT_A_CONFIDENCE
+                            )
                         }
+
+                        onEvent(Event.createSuggestionPickedEvent(selected))
+                        swipeSuggestionIndex = typedWordIndexFromLastCommit
+                        swipeSuggestionWord = selected.mWord
+                        restoreCursorIfMoved(movedCursorToLastWord)
+                        return
                     }
+                }
+
+                if (candidates.size < 2) {
+                    resetSwipeSuggestionSession()
+                    restoreCursorIfMoved(movedCursorToLastWord)
+                    return
                 }
 
                 val typedWord = inputLogic.mWordComposer.typedWord
@@ -949,7 +961,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     0
                 }
 
-                val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) 1 else -1
+                val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) -1 else 1
                 var nextIndex = (baseIndex + step + candidates.size) % candidates.size
                 if (currentWord != null && candidates[nextIndex].mWord == currentWord) {
                     nextIndex = (nextIndex + step + candidates.size) % candidates.size
