@@ -90,8 +90,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static PointerTrackerParams sParams;
     private static final int sPointerStep = (int)(16.0 * Resources.getSystem().getDisplayMetrics().density);
     private static final int sPointerBigStep = (int)(32.0 * Resources.getSystem().getDisplayMetrics().density);
-    private static final int sPointerSwipeActionStep = (int)(20.0 * Resources.getSystem().getDisplayMetrics().density);
-    private static final float SWIPE_ACTION_HORIZONTAL_DOMINANCE_RATIO = 1.3f;
+    private static final int sPointerSwipeActionStep = (int)(18.0 * Resources.getSystem().getDisplayMetrics().density);
+    private static final float SWIPE_ACTION_HORIZONTAL_DOMINANCE_RATIO = 1.0f;
+    private static final float SWIPE_ACTION_VERTICAL_DOMINANCE_RATIO = 0.70f;
     private static final int sPointerHugeStep = Integer.min(
             (int)(128.0 * Resources.getSystem().getDisplayMetrics().density),
             Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 2
@@ -982,7 +983,16 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
                 final int absDx = Math.abs(dx);
                 final int absDy = Math.abs(dy);
-                if (absDx >= absDy * SWIPE_ACTION_HORIZONTAL_DOMINANCE_RATIO) {
+                final float horizontalScore = absDx
+                        - absDy * SWIPE_ACTION_HORIZONTAL_DOMINANCE_RATIO;
+                final float verticalScore = absDy
+                        - absDx * SWIPE_ACTION_VERTICAL_DOMINANCE_RATIO;
+                final boolean isHorizontalSwipe = horizontalScore >= 0.0f;
+                final boolean isVerticalSwipe = verticalScore >= 0.0f;
+
+                if ((isHorizontalSwipe && !isVerticalSwipe)
+                        || (isHorizontalSwipe == isVerticalSwipe
+                        && horizontalScore >= verticalScore)) {
                     sListener.onSwipeAction(dx > 0
                             ? KeyboardActionListener.SWIPE_ACTION_RIGHT
                             : KeyboardActionListener.SWIPE_ACTION_LEFT);
