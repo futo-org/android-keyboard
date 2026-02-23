@@ -852,8 +852,25 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 }
 
                 if (inputLogic.mConnection.hasCursorPosition()) {
-                    inputLogic.cursorLeft(-1, true, true)
-                    onUpWithDeletePointerActive()
+                    val wordRangeAtCursor = inputLogic.mConnection.getWordRangeAtCursor(
+                        settings.current.mSpacingAndPunctuations,
+                        helper.currentKeyboardScriptId,
+                        true
+                    )
+
+                    if (wordRangeAtCursor != null && wordRangeAtCursor.length() > 0) {
+                        val selectionStart = inputLogic.mConnection.getExpectedSelectionStart()
+                        val selectionEnd = inputLogic.mConnection.getExpectedSelectionEnd()
+                        val startOfWord = (selectionStart - wordRangeAtCursor.numberOfCharsInWordBeforeCursor)
+                            .coerceAtLeast(0)
+                        val endOfWord = (selectionEnd + wordRangeAtCursor.numberOfCharsInWordAfterCursor)
+                            .coerceAtLeast(startOfWord)
+
+                        inputLogic.mConnection.setSelection(startOfWord, endOfWord)
+                        onUpWithDeletePointerActive()
+                    } else {
+                        sendDeleteKeypress()
+                    }
                 } else {
                     sendDeleteKeypress()
                 }
