@@ -23,7 +23,7 @@ val EPS = 1e-5.toFloat()
 // ___z x c v b n m___
 // ^^^ gap     gap ^^^
 sealed class LayoutEntry(val widthPx: Float) {
-    class Key(val data: ComputedKeyData, widthPx: Float) : LayoutEntry(widthPx)
+    class Key(val data: ComputedKeyData, widthPx: Float, val rowSpan: Int = 1, val heightOverride: Float? = null) : LayoutEntry(widthPx)
     class Gap(widthPx: Float): LayoutEntry(widthPx)
 }
 
@@ -335,7 +335,7 @@ data class LayoutEngine(
                             entry.widthPx + widthPerKey
                         } else {
                             widthPerKey
-                        })
+                        }, rowSpan = entry.rowSpan, heightOverride = entry.heightOverride)
                     } else {
                         entry
                     }
@@ -354,7 +354,7 @@ data class LayoutEngine(
         splittable: Boolean
     ): LayoutRow {
         val computedRow = computedRowWithoutWidths.map { key ->
-            LayoutEntry.Key(key.data, widths[key.data.width]!!)
+            LayoutEntry.Key(key.data, widths[key.data.width]!!, key.rowSpan)
         }
 
         val totalRowWidth = computedRow.sumOf { it.widthPx.toDouble() }.toFloat()
@@ -420,7 +420,7 @@ data class LayoutEngine(
                         regularColumn += 1
                     }
 
-                    LayoutEntry.Key(data, widthPx = -1.0f)
+                    LayoutEntry.Key(data, widthPx = -1.0f, rowSpan = data.rowSpan)
                 }
             }.let {
                 if (regularColumn > 0) {
@@ -474,7 +474,52 @@ data class LayoutEngine(
             )
         }
 
-        return alignForSplitLayout(computedRowWithWidths)
+        // Post-process rowSpan: set heightOverride on spanning keys and replace
+        // corresponding entries in subsequent rows with gaps
+        val rowSpanProcessed = computedRowWithWidths.toMutableList()
+        for (rowIdx in rowSpanProcessed.indices) {
+            val row = rowSpanProcessed[rowIdx]
+            val newEntries = row.entries.mapIndexed { entryIdx, entry ->
+                if (entry is LayoutEntry.Key && entry.rowSpan > 1) {
+                    // Accumulate height from this row and the next (rowSpan - 1) rows
+                    var totalHeight = row.height
+                    for (spanOffset in 1 until entry.rowSpan) {
+                        val targetRowIdx = rowIdx + spanOffset
+                        if (targetRowIdx < rowSpanProcessed.size) {
+                            totalHeight += rowSpanProcessed[targetRowIdx].height
+
+                            // Replace the matching entry in the subsequent row with a gap
+                            val targetRow = rowSpanProcessed[targetRowIdx]
+                            val targetEntries = targetRow.entries.toMutableList()
+
+                            // Find the entry at the same horizontal position
+                            var currentX = 0.0f
+                            var sourceX = 0.0f
+                            for (j in 0 until entryIdx) {
+                                sourceX += row.entries[j].widthPx
+                            }
+
+                            for (j in targetEntries.indices) {
+                                if (Math.abs(currentX - sourceX) < 1.0f &&
+                                    Math.abs(targetEntries[j].widthPx - entry.widthPx) < 1.0f) {
+                                    targetEntries[j] = LayoutEntry.Gap(targetEntries[j].widthPx)
+                                    break
+                                }
+                                currentX += targetEntries[j].widthPx
+                            }
+
+                            rowSpanProcessed[targetRowIdx] = targetRow.copy(entries = targetEntries)
+                        }
+                    }
+                    LayoutEntry.Key(entry.data, entry.widthPx, entry.rowSpan, heightOverride = totalHeight)
+                } else {
+                    entry
+                }
+            }
+            rowSpanProcessed[rowIdx] = row.copy(entries = newEntries)
+        }
+
+        return alignForSplitLayout(rowSpanProcessed)
     }
 
     private fun mergeDuplicates(row: List<LayoutEntry>): List<LayoutEntry> {
@@ -489,7 +534,8 @@ data class LayoutEngine(
                     val lastVal = acc.removeAt(acc.size - 1)
                     acc.add(LayoutEntry.Key(
                         data = curr.data,
-                        widthPx = last.widthPx + curr.widthPx
+                        widthPx = last.widthPx + curr.widthPx,
+                        rowSpan = curr.rowSpan
                     ))
                 } else {
                     acc.add(curr)
@@ -529,8 +575,8 @@ data class LayoutEngine(
                 if(data.repeatable) { KeyConsts.ACTION_FLAGS_IS_REPEATABLE } else { 0 }
 
         val verticalGapForKey = when {
-            keyboard.rowHeightMode.clampHeight && height > layoutParams.standardRowHeight ->
-                height - layoutParams.standardRowHeight
+            keyboard.rowHeightMode.clampHeight && height > data.rowSpan * layoutParams.standardRowHeight ->
+                height - data.rowSpan * layoutParams.standardRowHeight
 
             else ->
                 0.0
@@ -637,7 +683,8 @@ data class LayoutEngine(
                     val leftGap = if(i < row.size / 2 && !entry.data.anchored) { row.getOrNull(i - 1) as? LayoutEntry.Gap } else { null }
                     val rightGap = if(i >= row.size / 2 && !entry.data.anchored) { row.getOrNull(i + 1) as? LayoutEntry.Gap } else { null }
 
-                    addKey(idx, colNum, entry.data, currentX.roundToInt(), y, entry.widthPx.roundToInt(), height, leftGap, rightGap)
+                    val keyHeight = entry.heightOverride?.roundToInt() ?: height
+                    addKey(idx, colNum, entry.data, currentX.roundToInt(), y, entry.widthPx.roundToInt(), keyHeight, leftGap, rightGap)
 
                     // i != colNum because of Gap entries
                     colNum += 1

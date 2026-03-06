@@ -95,4 +95,5 @@ data class ComputedKeyData(
     val labelFlags: Int,
     val flick: ComputedFlickData? = null,
     val fastLongPress: Boolean = false,
+    val rowSpan: Int = 1
 )
