@@ -215,7 +215,13 @@ data class KeyAttributes(
      * flicking in all directions, rather it just triggers the morekey popup. Specifying this will
      * implicitly add the key as the first element in morekeys (may be broken with fixedColumnOrder)
      */
-    val fastMoreKeys: Boolean? = null
+    val fastMoreKeys: Boolean? = null,
+
+    /**
+     * Number of rows this key spans vertically. Defaults to 1.
+     * When set to a value > 1, the key will visually and functionally span multiple rows.
+     */
+    val rowSpan: Int? = null
 ) {
     fun getEffectiveAttributes(row: Row, keyboard: Keyboard, extraAttrs: List<KeyAttributes> = emptyList()): KeyAttributes {
         val attrs = if(row.isBottomRow) {
@@ -243,7 +249,8 @@ data class KeyAttributes(
             labelFlags          = resolve(attrs) { it.labelFlags         },
             repeatableEnabled   = resolve(attrs) { it.repeatableEnabled  },
             shiftable           = resolve(attrs) { it.shiftable          },
-            fastMoreKeys        = resolve(attrs) { it.fastMoreKeys       }
+            fastMoreKeys        = resolve(attrs) { it.fastMoreKeys       },
+            rowSpan             = resolve(attrs) { it.rowSpan            }
         )
     }
 
@@ -260,7 +267,8 @@ data class KeyAttributes(
             labelFlags          = resolve(attrs) { it.labelFlags         },
             repeatableEnabled   = resolve(attrs) { it.repeatableEnabled  },
             shiftable           = resolve(attrs) { it.shiftable          },
-            fastMoreKeys        = resolve(attrs) { it.fastMoreKeys       }
+            fastMoreKeys        = resolve(attrs) { it.fastMoreKeys       },
+            rowSpan             = resolve(attrs) { it.rowSpan            }
         )
     }
 }
@@ -280,7 +288,8 @@ val DefaultKeyAttributes = KeyAttributes(
     labelFlags          = LabelFlags(autoXScale = true),
     repeatableEnabled   = false,
     shiftable           = true,
-    fastMoreKeys        = false
+    fastMoreKeys        = false,
+    rowSpan             = 1
 )
 
 
@@ -437,7 +446,8 @@ data class BaseKey(
             countsToKeyCoordinate = moreKeyMode.autoNumFromCoord && moreKeyMode.autoSymFromCoord,
             hint = hint ?: "",
             labelFlags = attributes.labelFlags?.getValue() ?: 0,
-            fastLongPress = attributes.fastMoreKeys == true
+            fastLongPress = attributes.fastMoreKeys == true,
+            rowSpan = attributes.rowSpan ?: 1
         )
     }
 
@@ -625,7 +635,8 @@ class GapKey(val attributes: KeyAttributes = KeyAttributes()) : AbstractKey {
             moreKeyFlags = 0,
             countsToKeyCoordinate = moreKeyMode.autoNumFromCoord && moreKeyMode.autoSymFromCoord,
             hint = "",
-            labelFlags = 0
+            labelFlags = 0,
+            rowSpan = 1
         )
     }
 }
