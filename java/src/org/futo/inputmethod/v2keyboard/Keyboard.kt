@@ -293,7 +293,16 @@ data class Keyboard(
     val autoShift: Boolean = true,
 
     val subKeyboards: Map<KeyboardLayoutKind, SubKeyboard> = emptyMap(),
-    val imeHint: String? = null
+    val imeHint: String? = null,
+
+    /**
+     * (optional) Whether keyboard rows use staggered (center-gapped) alignment.
+     * When true (default), rows with fewer keys than the widest row are centered with
+     * gaps on either side, matching the traditional staggered keyboard layout.
+     * When false, rows are left-aligned with no centering gaps, producing an
+     * ortholinear/grid-style layout.
+     */
+    val staggered: Boolean = true
 
 
     //val element: KeyboardElement = KeyboardElement.Alphabet,
