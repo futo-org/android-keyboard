@@ -66,6 +66,7 @@ public final class KeyboardSwitcher implements SwitchActions {
     private LatinIMELegacy mLatinIMELegacy;
     private RichInputMethodManager mRichImm;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
+    private boolean mStickyAltPagesEnabled;
 
     public KeyboardState mState;
 
@@ -94,7 +95,15 @@ public final class KeyboardSwitcher implements SwitchActions {
         mLatinIMELegacy = latinImeLegacy;
         mRichImm = RichInputMethodManager.getInstance();
         mState = new KeyboardState(this);
+        mState.setStickyAltPagesEnabled(mStickyAltPagesEnabled);
         mIsHardwareAcceleratedDrawingEnabled = true;
+    }
+
+    public void setStickyAltPagesEnabled(final boolean enabled) {
+        mStickyAltPagesEnabled = enabled;
+        if (mState != null) {
+            mState.setStickyAltPagesEnabled(enabled);
+        }
     }
 
     public void updateKeyboardTheme(@NonNull Context displayContext) {

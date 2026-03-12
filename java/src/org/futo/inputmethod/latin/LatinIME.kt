@@ -83,6 +83,7 @@ import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.settings.pages.StickyAltPagesSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
@@ -390,6 +391,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         imeManager.onCreate()
         latinIMELegacy.onCreate()
+        latinIMELegacy.mKeyboardSwitcher.setStickyAltPagesEnabled(
+            getSettingBlocking(StickyAltPagesSetting)
+        )
 
         scheduleUpdateCheckingJob(this)
         launchJob { uixManager.showUpdateNoticeIfNeeded() }
@@ -421,6 +425,12 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                         }
                     }
                 }
+        }
+
+        launchJob {
+            getSettingFlow(StickyAltPagesSetting).collect {
+                latinIMELegacy.mKeyboardSwitcher.setStickyAltPagesEnabled(it)
+            }
         }
 
         launchJob {

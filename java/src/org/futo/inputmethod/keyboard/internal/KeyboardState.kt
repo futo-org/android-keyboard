@@ -199,9 +199,17 @@ class KeyboardState(private val switchActions: SwitchActions) {
     private var prefersNumberLayout = false
     private var currentLayoutSet = ""
     private var preferredAlphabetKind: Pair<String, Int> = "" to 0
+    private var stickyAltPagesEnabled = false
 
     private val debugState: String
         get() = "Layout $currentLayout, alphabetShiftState: $alphabetShiftState, shiftKeyState $shiftKeyState, symbolKeyState $symbolKeyState"
+
+    fun setStickyAltPagesEnabled(enabled: Boolean) {
+        stickyAltPagesEnabled = enabled
+    }
+
+    private fun isStickyAltPage(page: KeyboardLayoutPage = currentLayout.page): Boolean =
+        stickyAltPagesEnabled && page.altIdx != null
 
     private fun setLayout(layout: KeyboardLayoutElement) {
         currentLayout = layout
@@ -508,6 +516,9 @@ class KeyboardState(private val switchActions: SwitchActions) {
 
         // Otherwise, unshift the layout if it's not locked
         if(!currentLayout.page.locked) {
+            if(isStickyAltPage()) {
+                return
+            }
             toggleShift(false)
             return
         }

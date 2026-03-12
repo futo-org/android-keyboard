@@ -59,6 +59,7 @@ import kotlin.system.exitProcess
 
 
 val IS_DEVELOPER = SettingsKey(booleanPreferencesKey("isDeveloperMode"), false)
+val StickyAltPagesSetting = SettingsKey(booleanPreferencesKey("stickyAltPages"), false)
 
 @OptIn(DebugOnly::class)
 @Composable
@@ -154,6 +155,7 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("devlayouteditor") }
         )
+        SettingToggleDataStore(title = "Sticky altPages", setting = StickyAltPagesSetting)
         NavigationItem(
             title = "Theme dev utility",
             style = NavigationItemStyle.Misc,
