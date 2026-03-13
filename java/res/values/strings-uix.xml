@@ -440,6 +440,13 @@
     <!-- When translating, rename it to gesture typing if it makes more sense for that language -->
     <string name="typing_settings_swipe">Swipe Typing (alpha)</string>
     <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
+    <string name="swipe_gesture_left_delete">Swipe left to delete word</string>
+    <string name="swipe_gesture_right_space">Swipe right for space</string>
+    <string name="swipe_gesture_down_prediction">Swipe down to accept middle prediction</string>
+    <string name="swipe_gesture_down_lr_prediction">Swipe diagonal down to accept side predictions</string>
+    <string name="swipe_gesture_down_lr_prediction_subtitle">Swipe diagonal down right to accept right-side prediction, diagonal down left to accept left-side prediction</string>
+    <string name="swipe_gesture_up_undo">Swipe up to undo</string>
+    <string name="swipe_gestures_title">Swipe Gestures</string>
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
     <string name="typing_settings_suggest_emojis_subtitle">Suggest emojis while you\'re typing</string>
     <string name="typing_settings_vibration_strength">Vibration</string>
@@ -470,6 +477,8 @@
     <string name="keyboard_settings_extra_layouts_subtitle">Configure additional layouts in the languages screen</string>
     <string name="keyboard_settings_show_suggestion_row">Show action/suggestions bar</string>
     <string name="keyboard_settings_show_suggestion_row_subtitle">Show the bar containing suggestions. Recommended to keep enabled</string>
+    <string name="keyboard_settings_compact_suggestion_bar">Compact suggestion bar</string>
+    <string name="keyboard_settings_compact_suggestion_bar_subtitle">Reduce the height of the suggestion bar and remove buttons from it</string>
     <string name="keyboard_settings_inline_autofill">Inline autofill</string>
     <string name="keyboard_settings_inline_autofill_subtitle">Display password manager autofill and auto-reply suggestions (provided by app) in suggestion bar</string>
     <string name="keyboard_settings_period_key">Quick period key</string>

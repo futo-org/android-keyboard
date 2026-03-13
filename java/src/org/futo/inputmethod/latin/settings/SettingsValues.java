@@ -107,6 +107,12 @@ public class SettingsValues {
     public final int mNumberRowMode;
     public final int mAltSpacesMode;
 
+    public final boolean mSwipeLeftDelete;
+    public final boolean mSwipeRightSpace;
+    public final boolean mSwipeDownPrediction;
+    public final boolean mSwipeDownLRPrediction;
+    public final boolean mSwipeUpUndo;
+
     // From the input box
     @Nonnull
     public final InputAttributes mInputAttributes;
@@ -201,6 +207,12 @@ public class SettingsValues {
                 prefs.getInt(Settings.PREF_NUMBER_ROW_MODE, Settings.NUMBER_ROW_MODE_DEFAULT)
                 : Settings.NUMBER_ROW_MODE_DEFAULT;
         mAltSpacesMode = prefs.getInt(Settings.PREF_ALT_SPACES_MODE, Settings.DEFAULT_ALT_SPACES_MODE);
+
+        mSwipeLeftDelete = prefs.getBoolean(Settings.PREF_SWIPE_LEFT_DELETE, false);
+        mSwipeRightSpace = prefs.getBoolean(Settings.PREF_SWIPE_RIGHT_SPACE, false);
+        mSwipeDownPrediction = prefs.getBoolean(Settings.PREF_SWIPE_DOWN_PREDICTION, false);
+        mSwipeDownLRPrediction = prefs.getBoolean(Settings.PREF_SWIPE_DOWN_LR_PREDICTION, false);
+        mSwipeUpUndo = prefs.getBoolean(Settings.PREF_SWIPE_UP_UNDO, false);
 
         mShouldShowLxxSuggestionUi = Settings.SHOULD_SHOW_LXX_SUGGESTION_UI
                 && prefs.getBoolean(DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI, true);

@@ -132,6 +132,7 @@ import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
 import org.futo.inputmethod.latin.uix.settings.pages.InlineAutofillSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.KeyboardSurfaceShaderBackground
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
@@ -227,12 +228,13 @@ fun BoxScope.KeyboardBackground(
         shader != null -> KeyboardSurfaceShaderBackground(shader, modifier = Modifier.matchParentSize())
         image != null && rect != null -> {
             val navbarHeight = navBarHeight()
+            val actionBarHeightDp = currentActionBarHeight
             Canvas(Modifier.matchParentSize()) {
                 drawRect(colorScheme.keyboardSurface)
 
                 val fixedWidth = computedSize?.width?.toFloat() ?: size.width
                 val fixedHeight = when {
-                    (computedSize != null) -> computedSize.height + ActionBarHeight.toPx() + navbarHeight.toPx()
+                    (computedSize != null) -> computedSize.height + actionBarHeightDp.toPx() + navbarHeight.toPx()
                     else -> size.height
                 }
 
@@ -777,7 +779,7 @@ class UixManager(private val latinIME: LatinIME) {
                             currWindowActionWindow.value?.fixedWindowHeight ?: ((latinIME
                                 .getInputViewHeight()
                                 .toFloat() / heightDiv.toFloat()).toDp() +
-                                    if (actionsExpanded) ActionBarHeight else 0.dp)
+                                    if (actionsExpanded) currentActionBarHeight else 0.dp)
                         })
                         .safeKeyboardPadding()
                 ) {
@@ -1099,7 +1101,7 @@ class UixManager(private val latinIME: LatinIME) {
             Column(modifier = Modifier
                 .matchParentSize()
                 .absolutePadding(
-                    top = if (isActionsExpanded.value) ActionBarHeight else 0.dp
+                    top = if (isActionsExpanded.value) currentActionBarHeight else 0.dp
                 ), horizontalAlignment = when(size.direction) {
                 // Aligned opposite of the keyboard
                 OneHandedDirection.Left -> Alignment.End
@@ -1185,11 +1187,13 @@ class UixManager(private val latinIME: LatinIME) {
     private fun ProvidersAndWrapper(content: @Composable () -> Unit) {
         UixThemeWrapper(latinIME.colorScheme) {
             DataStoreCacheProvider {
+                val compactSuggestionBar = useDataStoreValue(SuggestionBarCompactSetting)
                 CompositionLocalProvider(
                     LocalManager provides keyboardManagerForAction,
                     LocalThemeProvider provides latinIME.getDrawableProvider(),
                     LocalLayoutDirection provides LayoutDirection.Ltr,
-                    LocalFoldingState provides foldingOptions.value
+                    LocalFoldingState provides foldingOptions.value,
+                    LocalSuggestionBarCompact provides compactSuggestionBar
                 ) {
                     Box(Modifier
                         .fillMaxSize()
@@ -1426,6 +1430,57 @@ class UixManager(private val latinIME: LatinIME) {
 
             onActionActivatedInternal(action)
         }
+    }
+
+    fun getSuggestionAtVisualPosition(position: Int): SuggestedWordInfo? {
+        val words = suggestedWords.value ?: return null
+        val layout = makeSuggestionLayout(words, null)
+
+        if (layout.isGestureBatch || (layout.emojiMatches.isEmpty() && layout.presentableSuggestions.size <= 1)) {
+            return if (position == 1) layout.presentableSuggestions.firstOrNull() else null
+        }
+
+        if (layout.autocorrectMatch != null) {
+            var supplementalIndex = 0
+            val left = if (layout.emojiMatches.isEmpty()) {
+                layout.sortedMatches.getOrNull(supplementalIndex++)
+            } else {
+                layout.emojiMatches.getOrNull(0)
+            }
+            val center = layout.autocorrectMatch
+            val right = if (layout.verbatimWord != null && layout.verbatimWord.mWord != layout.autocorrectMatch.mWord) {
+                layout.verbatimWord
+            } else {
+                layout.sortedMatches.getOrNull(supplementalIndex)
+            }
+            return when (position) {
+                0 -> left
+                1 -> center
+                2 -> right
+                else -> null
+            }
+        }
+
+        // No autocorrect
+        var supplementalIndex = 1
+        val left = if (layout.emojiMatches.isEmpty()) {
+            layout.sortedMatches.getOrNull(supplementalIndex++)
+        } else {
+            layout.emojiMatches.getOrNull(0)
+        }
+        val center = layout.sortedMatches.getOrNull(0)
+        val right = layout.sortedMatches.getOrNull(supplementalIndex)
+        return when (position) {
+            0 -> left
+            1 -> center
+            2 -> right
+            else -> null
+        }
+    }
+
+    fun pickSuggestionAtVisualPosition(position: Int) {
+        val suggestion = getSuggestionAtVisualPosition(position) ?: return
+        latinIME.latinIMELegacy.pickSuggestionManually(suggestion)
     }
 
     fun requestForgetWord(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {
