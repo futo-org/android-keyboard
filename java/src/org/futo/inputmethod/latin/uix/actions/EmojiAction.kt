@@ -100,6 +100,7 @@ import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.resetRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
+import org.futo.inputmethod.latin.uix.LocalSuggestionBarCompact
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
@@ -1011,6 +1012,11 @@ val EmojiAction = Action(
             @Composable
             override fun WindowTitleBar(rowScope: RowScope) {
                 val context = LocalContext.current
+                val compact = LocalSuggestionBarCompact.current
+                if(compact) {
+                    super.WindowTitleBar(rowScope)
+                    return
+                }
                 if(searching.value) {
                     with(rowScope) {
                         Surface(
