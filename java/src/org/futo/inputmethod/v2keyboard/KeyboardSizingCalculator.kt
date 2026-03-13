@@ -26,6 +26,7 @@ import org.futo.inputmethod.latin.FoldStateProvider
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.settings.SettingsValues
 import org.futo.inputmethod.latin.uix.OldStyleActionsBar
+import org.futo.inputmethod.latin.uix.SuggestionBarCompactSetting
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.getSetting
@@ -553,7 +554,8 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
     }
 
     fun calculateSuggestionBarHeightDp(): Float {
-        return 40.0f
+        val compact = context.getSetting(SuggestionBarCompactSetting) == true
+        return if (compact) 26.0f else 40.0f
     }
 
     fun calculateTotalActionBarHeightPx(): Int =

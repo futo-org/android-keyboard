@@ -49,6 +49,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
@@ -161,6 +162,17 @@ import kotlin.math.roundToInt
  */
 
 val ActionBarHeight = 40.dp
+val CompactActionBarHeight = 26.dp
+
+val SuggestionBarCompactSetting = SettingsKey(
+    booleanPreferencesKey("suggestion_bar_compact"),
+    false
+)
+
+val LocalSuggestionBarCompact = staticCompositionLocalOf { false }
+
+val currentActionBarHeight: Dp
+    @Composable get() = if (LocalSuggestionBarCompact.current) CompactActionBarHeight else ActionBarHeight
 
 val ActionBarScrollIndexSetting = SettingsKey(
     intPreferencesKey("action_bar_scroll_index"),
@@ -196,7 +208,6 @@ val suggestionStylePrimary = TextStyle(
     fontSize = 18.sp,
     lineHeight = 26.sp,
     letterSpacing = 0.5.sp,
-    //textAlign = TextAlign.Center
 )
 
 val suggestionStyleAlternative = TextStyle(
@@ -205,7 +216,22 @@ val suggestionStyleAlternative = TextStyle(
     fontSize = 18.sp,
     lineHeight = 26.sp,
     letterSpacing = 0.5.sp,
-    //textAlign = TextAlign.Center
+)
+
+val suggestionStylePrimaryCompact = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Medium,
+    fontSize = 14.sp,
+    lineHeight = 18.sp,
+    letterSpacing = 0.5.sp,
+)
+
+val suggestionStyleAlternativeCompact = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Normal,
+    fontSize = 14.sp,
+    lineHeight = 18.sp,
+    letterSpacing = 0.5.sp,
 )
 
 val suggestionStyleCandidateDescription = TextStyle(
@@ -315,9 +341,12 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         else -> Modifier
     }
 
-    val textStyle = when(isAutocorrect) {
-        true -> suggestionStylePrimary
-        false -> suggestionStyleAlternative
+    val compact = LocalSuggestionBarCompact.current
+    val textStyle = when {
+        isAutocorrect && compact -> suggestionStylePrimaryCompact
+        isAutocorrect -> suggestionStylePrimary
+        compact -> suggestionStyleAlternativeCompact
+        else -> suggestionStyleAlternative
     }.copy(color = color).withCustomFont()
 
     Box(
@@ -787,13 +816,15 @@ fun ActionBar(
     val view = LocalView.current
     val context = LocalContext.current
 
+    val compact = LocalSuggestionBarCompact.current
+    val barHeight = if (compact) CompactActionBarHeight else ActionBarHeight
     val oldActionBar = useDataStore(OldStyleActionsBar)
 
-    val useDoubleHeight = isActionsExpanded && oldActionBar.value == false
+    val useDoubleHeight = isActionsExpanded && oldActionBar.value == false && !compact
 
     Column(Modifier
         .height(
-            ActionBarHeight * (if (useDoubleHeight) 2 else 1).let {
+            barHeight * (if (useDoubleHeight) 2 else 1).let {
                 if(needToUseExpandableSuggestionUi) {
                     it - 1
                 } else {
@@ -805,7 +836,7 @@ fun ActionBar(
             testTag = "ActionBar"
             testTagsAsResourceId = true
         }) {
-        if(isActionsExpanded && !oldActionBar.value) {
+        if(isActionsExpanded && !oldActionBar.value && !compact) {
             ActionSep()
 
             Surface(
@@ -827,30 +858,33 @@ fun ActionBar(
                 .weight(1.0f), color = actionBarColor()
         ) {
             Row(Modifier.safeKeyboardPadding()) {
-                ExpandActionsButton(isActionsExpanded) {
-                    toggleActionsExpanded()
+                if (!compact) {
+                    ExpandActionsButton(isActionsExpanded) {
+                        toggleActionsExpanded()
 
-                    keyboardManagerForAction?.performHapticAndAudioFeedback(
-                        Constants.CODE_TAB,
-                        view
-                    )
+                        keyboardManagerForAction?.performHapticAndAudioFeedback(
+                            Constants.CODE_TAB,
+                            view
+                        )
+                    }
                 }
 
-                if(oldActionBar.value && isActionsExpanded) {
+                if(oldActionBar.value && isActionsExpanded && !compact) {
                     Box(modifier = Modifier
                         .weight(1.0f)
                         .fillMaxHeight()) {
                         ActionItems(onActionActivated, onActionAltActivated)
                     }
                 } else {
-                    if (importantNotice != null) {
+                    if (importantNotice != null && !compact) {
                         ImportantNoticeView(importantNotice)
                     } else {
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                             && inlineSuggestions.isNotEmpty()
+                            && !compact
                         ) {
                             InlineSuggestions(inlineSuggestions)
-                        } else if(quickClipState != null) {
+                        } else if(quickClipState != null && !compact) {
                             QuickClipView(quickClipState, onQuickClipDismiss)
                         } else if (words != null) {
                             SuggestionItems(
@@ -873,7 +907,7 @@ fun ActionBar(
                             Spacer(modifier = Modifier.weight(1.0f))
                         }
 
-                        if(inlineSuggestions.isEmpty()) {
+                        if(inlineSuggestions.isEmpty() && !compact) {
                             PinnedActionItems(onActionActivated, onActionAltActivated)
                         }
                     }
@@ -892,7 +926,7 @@ fun ActionWindowBar(
     onBack: () -> Unit,
     onExpand: () -> Unit
 ) {
-    Column(Modifier.height(ActionBarHeight)) {
+    Column(Modifier.height(currentActionBarHeight)) {
         ActionSep()
         Surface(
             modifier = Modifier
@@ -955,7 +989,7 @@ fun CollapsibleSuggestionsBar(
     words: SuggestedWords?,
     suggestionStripListener: SuggestionStripViewListener,
 ) {
-    Column(Modifier.height(ActionBarHeight)) {
+    Column(Modifier.height(currentActionBarHeight)) {
         ActionSep()
         Surface(
             modifier = Modifier
@@ -1215,7 +1249,7 @@ private fun RowScope.InlineCandidates(
                 }
             }
             itemsIndexed(wordList) { i, it ->
-                CandidateItem(Modifier.height(ActionBarHeight), it,
+                CandidateItem(Modifier.height(currentActionBarHeight), it,
                     listener = suggestionStripListener,
                     last = i == wordList.size-1,
                     width = with(LocalDensity.current) {
@@ -1335,7 +1369,7 @@ fun BoxScope.ActionBarWithExpandableCandidates(
 
     if(canShowSuggest) {
         Surface(
-            Modifier.fillMaxWidth().padding(0.dp, ActionBarHeight, 0.dp, 0.dp)
+            Modifier.fillMaxWidth().padding(0.dp, currentActionBarHeight, 0.dp, 0.dp)
                 .heightIn(max = with(density) { keyboardOffset?.intValue?.toDp() ?: 0.dp })
                 .safeKeyboardPadding()
         ) {
@@ -1343,7 +1377,7 @@ fun BoxScope.ActionBarWithExpandableCandidates(
                 listToRender ?: emptyList(),
                 itemMeasurer = { measureWord(density, widths, it) }
             ) { allocatedWidth, item, isLast ->
-                CandidateItem(Modifier.height(ActionBarHeight), item, listener = suggestionStripListener, width=with(density) { allocatedWidth.toDp()  }, last=isLast)
+                CandidateItem(Modifier.height(currentActionBarHeight), item, listener = suggestionStripListener, width=with(density) { allocatedWidth.toDp()  }, last=isLast)
             }
         }
     }
@@ -1353,7 +1387,7 @@ fun BoxScope.ActionBarWithExpandableCandidates(
                 testTag = "ActionBar"
                 testTagsAsResourceId = true
             }
-            .height(ActionBarHeight)
+            .height(currentActionBarHeight)
             .align(Alignment.TopCenter)
     ) {
         ActionSep()

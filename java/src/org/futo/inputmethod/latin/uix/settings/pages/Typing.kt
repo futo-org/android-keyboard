@@ -96,6 +96,7 @@ import org.futo.inputmethod.latin.settings.toLongPressKeyLayoutItems
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
+import org.futo.inputmethod.latin.uix.SuggestionBarCompactSetting
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
@@ -783,6 +784,13 @@ val KeyboardSettingsMenu = UserSettingsMenu(
                 Icon(painterResource(id = R.drawable.more_horizontal), contentDescription = null)
             }
         ),
+        userSettingToggleDataStore(
+            title = R.string.keyboard_settings_compact_suggestion_bar,
+            subtitle = R.string.keyboard_settings_compact_suggestion_bar_subtitle,
+            setting = SuggestionBarCompactSetting,
+        ).copy(visibilityCheck = {
+            useDataStore(ActionBarDisplayedSetting).value
+        }),
         userSettingToggleDataStore(
             title = R.string.keyboard_settings_inline_autofill,
             subtitle = R.string.keyboard_settings_inline_autofill_subtitle,
