@@ -66,6 +66,10 @@ public final class KeyboardCodesSet {
         "key_to_alt_0_layout",
         "key_to_alt_1_layout",
         "key_to_alt_2_layout",
+        "key_to_alpha_0_layout",
+        "key_to_alpha_1_layout",
+        "key_to_alpha_2_layout",
+        "key_to_alpha_3_layout",
         "key_unspecified",
     };
 
@@ -90,6 +94,10 @@ public final class KeyboardCodesSet {
         Constants.CODE_TO_ALT_0_LAYOUT,
         Constants.CODE_TO_ALT_1_LAYOUT,
         Constants.CODE_TO_ALT_2_LAYOUT,
+        Constants.CODE_TO_ALPHA_0_LAYOUT,
+        Constants.CODE_TO_ALPHA_1_LAYOUT,
+        Constants.CODE_TO_ALPHA_2_LAYOUT,
+        Constants.CODE_TO_ALPHA_3_LAYOUT,
         Constants.CODE_UNSPECIFIED,
     };
 
