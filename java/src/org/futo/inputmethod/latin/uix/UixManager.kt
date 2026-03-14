@@ -10,8 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.text.InputFilter
-import android.text.Spanned
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -29,10 +27,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -51,8 +47,6 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -69,7 +63,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -93,7 +86,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -550,45 +542,6 @@ annotation class DebugOnly
 
 @DebugOnly
 var UixManagerInstanceForDebug: UixManager? = null
-
-data class PreEditEntry(
-    val text: String,
-    val normalized: String,
-    val highlighted: Boolean
-)
-
-interface PreEditListener {
-    fun onStartEdit()
-    fun onUpdateEdit(value: String)
-    fun onFinishEdit(value: String, candidateWord: String?, candidateIndex: Int?)
-}
-
-val NoOpPreEditListener = object : PreEditListener {
-    override fun onStartEdit() { }
-
-    override fun onUpdateEdit(value: String) { }
-
-    override fun onFinishEdit(value: String, candidateWord: String?, candidateIndex: Int?) { }
-}
-
-data class FloatingPreEdit(
-    val entries: List<PreEditEntry>,
-    val transformation: Map<Char, Char>,
-    val listener: PreEditListener
-) {
-    companion object {
-        @JvmStatic
-        fun build(text: String, listener: PreEditListener, transformation: Map<Char, Char>, normalized: String) = FloatingPreEdit(
-            entries = listOfNotNull(text.ifBlank { null }?.let { PreEditEntry(it, normalized, true) }),
-            transformation = transformation,
-            listener = listener,
-        )
-    }
-    private val reverseTransformation = transformation.toList().associate { it.second to it.first }
-
-    fun transform(string: CharSequence) = string.map { transformation[it] ?: it }.joinToString("")
-    fun untransform(string: CharSequence) = string.map { reverseTransformation[it] ?: it }.joinToString("")
-}
 
 class UixManager(private val latinIME: LatinIME) {
     init {
@@ -1746,95 +1699,3 @@ class UixManager(private val latinIME: LatinIME) {
 }
 
 
-@Composable
-fun FloatingPreEditView(
-    preedit: FloatingPreEdit = FloatingPreEdit.build("Some text here", NoOpPreEditListener, emptyMap(), "sometexthere"),
-    anchorCoords: LayoutCoordinates? = null,
-    updateHeight: (Int) -> Unit = { },
-    editingText: MutableState<String>,
-    editing: MutableState<Boolean>
-) {
-    var height by remember { mutableIntStateOf(0) }
-    val pos = anchorCoords?.positionInWindow()
-
-    LaunchedEffect(editingText.value) {
-        if(editing.value) {
-            preedit.listener.onUpdateEdit(preedit.untransform(editingText.value))
-        }
-    }
-
-    if(editing.value) {
-        Box(Modifier
-            .onSizeChanged {
-                height = it.height
-                updateHeight(it.height)
-            }
-            .offset {
-                pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) }
-                    ?: IntOffset.Zero
-            }
-            .background(LocalKeyboardScheme.current.surface)
-            .padding(4.dp)) {
-            CompositionLocalProvider(LocalContentColor provides LocalKeyboardScheme.current.onSurface) {
-                Row(Modifier.height(48.dp)) {
-                    ActionTextEditor(
-                        editingText, modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1.0f),
-                        afterUnOverride = {
-                            if(it) {
-                                preedit.listener.onFinishEdit(preedit.untransform(editingText.value),
-                                    null, null)
-                            }
-                        },
-                        autofocus = true,
-                        onEnter = { editing.value = false },
-                        inputFilters = arrayOf(object : InputFilter {
-                            override fun filter(
-                                source: CharSequence,
-                                start: Int,
-                                end: Int,
-                                dest: Spanned?,
-                                dstart: Int,
-                                dend: Int
-                            ): CharSequence = preedit.transform(source)
-                        })
-                    )
-                    IconButton(onClick = {
-                        editing.value = false
-                    }, modifier = Modifier.size(48.dp)) {
-                        Icon(Icons.Default.Check, contentDescription = null)
-                    }
-                }
-            }
-        }
-    } else {
-        Box(Modifier
-            .onSizeChanged {
-                height = it.height
-                updateHeight(it.height)
-            }
-            .offset {
-                pos?.let { IntOffset(it.x.roundToInt(), it.y.roundToInt() - height) }
-                    ?: IntOffset.Zero
-            }
-            .background(Color.Gray.copy(alpha = 0.7f))
-            .clickable {
-                // Reject editing if there are already any Chinese characters in here. Only Pinyin editing supported
-                if(preedit.entries.all { it.normalized.all { it in 'a'..'z' || it in 'A'..'Z' || it == ' ' } } ) {
-                    preedit.listener.onStartEdit()
-                    editing.value = true
-                    editingText.value = preedit.entries.joinToString(separator = " ") { it.normalized }
-                }
-            }
-            .padding(4.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                preedit.entries.forEach {
-                    Text(it.text, style = Typography.SmallMl.copy(
-                        color = if(it.highlighted) Color.Black else Color.DarkGray
-                    ), maxLines = 1, overflow = TextOverflow.Visible)
-                }
-            }
-        }
-    }
-}
