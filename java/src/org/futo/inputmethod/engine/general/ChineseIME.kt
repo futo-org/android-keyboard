@@ -867,19 +867,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         showSuggestionStrip(null)
     }
 
-    override fun isGestureHandlingAvailable() : Boolean {
-        return false
-        // TODO("To be supported")
-    }
-
-    override fun onCustomRequest(requestCode: Int): Boolean {
-        return false
-        // TODO("Might never be supported")
-    }
-
-    override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {
-        // TODO("Might never be supported")
-    }
+    override fun isGestureHandlingAvailable() : Boolean = false
+    override fun onCustomRequest(requestCode: Int): Boolean = false
+    override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {}
 
     override fun clearUserHistoryDictionaries() {
         // TODO("Unsupported yet")
@@ -901,26 +891,3 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     val debugInfo: String
         get() = "configuration=${prevConfiguration}\nlayoutHint=${layoutHint}\nlocale=${Settings.getInstance().current.mLocale}\nisSimplified=${isSimplifiedChinese(Settings.getInstance().current.mLocale)}\nrawInput=${rawInput.text}"
 }
-
-/*TODO
-    Support schema selection
-*/
-
-/*TODO: Urgency descending
-    -- Developing --
-    onStartInput()
-    isGestureHandlingAvailable()
-    onFinishSlidingInput()
-    onUpWithPointerActive()
-    onLayoutUpdated(layout: KeyboardLayoutSetV2)
-    -- Considering --
-    onMovePointer(steps: Int, stepOverWords: Boolean, select: Boolean?)
-    onCustomRequest(requestCode: Int)
-    onMovingCursorLockEvent(canMoveCursor: Boolean)
-    clearUserHistoryDictionaries()
-    -- Unscheduled --
-    onStartBatchInput()
-    onUpdateBatchInput(batchPointers: InputPointers?)
-    onEndBatchInput(batchPointers: InputPointers?)
-    onCancelBatchInput()
-*/
