@@ -10,6 +10,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -35,6 +36,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
@@ -57,6 +59,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -378,7 +381,40 @@ data class SuggestionLayout(
     val isGestureBatch: Boolean,
 
     val presentableSuggestions: List<SuggestedWordInfo>
-)
+) {
+    /**
+     * Number of items from sortedMatches consumed on page 0.
+     * With autocorrect: 1 emoji or 1 sortedMatch on left + possibly 1 on right = up to 2
+     * Without autocorrect: index 0 in center + 1 on left + 1 on right = items at indices 0,1,2 but
+     * index 0 is always shown, so supplemental starts at 1, consuming indices 1 and 2 = 3 total
+     */
+    fun page0SortedMatchCount(): Int {
+        return when {
+            isGestureBatch || (emojiMatches.isEmpty() && presentableSuggestions.size <= 1) -> 0
+            autocorrectMatch != null -> {
+                var count = 0
+                if (emojiMatches.isEmpty()) count++ // left slot from sortedMatches
+                // right slot: verbatim or sortedMatch
+                if (verbatimWord == null || verbatimWord.mWord == autocorrectMatch.mWord) count++
+                count
+            }
+            else -> {
+                // indices 0, 1, and possibly 2 (if no emoji)
+                var count = 2 // index 0 (center) + index 1 or 2 (right)
+                if (emojiMatches.isEmpty()) count++ // left slot also from sortedMatches
+                count
+            }
+        }
+    }
+
+    fun totalPages(): Int {
+        // No paging when in gesture/clueless mode (single suggestion shown)
+        if (isGestureBatch || (emojiMatches.isEmpty() && presentableSuggestions.size <= 1)) return 1
+        val page0Count = page0SortedMatchCount()
+        val remaining = (sortedMatches.size - page0Count).coerceAtLeast(0)
+        return if (remaining == 0) 1 else 1 + ((remaining + 2) / 3)
+    }
+}
 
 fun SuggestedWords.getInfoOrNull(idx: Int): SuggestedWordInfo? = try {
     getInfo(idx)
@@ -439,19 +475,19 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
 }
 
 @Composable
-fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
+fun RowScope.SuggestionItems(words: SuggestedWords, page: Int = 0, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
     val layout = makeSuggestionLayout(
         words,
         null
     )
 
-    val suggestionItem = @Composable { suggestion: SuggestedWordInfo? ->
+    val suggestionItem = @Composable { suggestion: SuggestedWordInfo?, isPrimary: Boolean ->
         if(suggestion != null) {
             val idx = words.indexOf(suggestion)
             SuggestionItem(
                 words,
                 idx,
-                isPrimary = idx == SuggestedWords.INDEX_OF_AUTO_CORRECTION,
+                isPrimary = isPrimary,
                 onClick = { onClick(idx) },
                 onLongClick = { onLongClick(idx) }
             )
@@ -460,40 +496,52 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
         }
     }
 
+    if (page > 0) {
+        // Pages beyond the first show pure sortedMatches slices
+        val page0Count = layout.page0SortedMatchCount()
+        val baseIndex = page0Count + (page - 1) * 3
+        suggestionItem(layout.sortedMatches.getOrNull(baseIndex), false)
+        SuggestionSeparator()
+        suggestionItem(layout.sortedMatches.getOrNull(baseIndex + 1), false)
+        SuggestionSeparator()
+        suggestionItem(layout.sortedMatches.getOrNull(baseIndex + 2), false)
+        return
+    }
+
     when {
         layout.isGestureBatch ||
                 (layout.emojiMatches.isEmpty() && layout.presentableSuggestions.size <= 1) ->
-            suggestionItem(layout.presentableSuggestions.firstOrNull())
+            suggestionItem(layout.presentableSuggestions.firstOrNull(), false)
 
         layout.autocorrectMatch != null -> {
             var supplementalSuggestionIndex = 0
             if(layout.emojiMatches.isEmpty()) {
-                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex++))
+                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex++), false)
             } else {
-                suggestionItem(layout.emojiMatches[0])
+                suggestionItem(layout.emojiMatches[0], false)
             }
             SuggestionSeparator()
-            suggestionItem(layout.autocorrectMatch)
+            suggestionItem(layout.autocorrectMatch, true)
             SuggestionSeparator()
 
             if(layout.verbatimWord != null && layout.verbatimWord.mWord != layout.autocorrectMatch.mWord) {
-                suggestionItem(layout.verbatimWord)
+                suggestionItem(layout.verbatimWord, false)
             } else {
-                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex))
+                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex), false)
             }
         }
 
         else -> {
             var supplementalSuggestionIndex = 1
             if(layout.emojiMatches.isEmpty()) {
-                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex++))
+                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex++), false)
             } else {
-                suggestionItem(layout.emojiMatches[0])
+                suggestionItem(layout.emojiMatches[0], false)
             }
             SuggestionSeparator()
-            suggestionItem(layout.sortedMatches.getOrNull(0))
+            suggestionItem(layout.sortedMatches.getOrNull(0), false)
             SuggestionSeparator()
-            suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex))
+            suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex), false)
         }
     }
 }
@@ -853,22 +901,96 @@ fun ActionBar(
                         } else if(quickClipState != null) {
                             QuickClipView(quickClipState, onQuickClipDismiss)
                         } else if (words != null) {
-                            SuggestionItems(
-                                words,
-                                onClick = {
-                                    suggestionStripListener.pickSuggestionManually(
-                                        words.getInfo(it)
-                                    )
-                                    keyboardManagerForAction?.performHapticAndAudioFeedback(
-                                        Constants.CODE_TAB,
-                                        view
-                                    )
-                                },
-                                onLongClick = {
-                                    suggestionStripListener.requestForgetWord(
-                                        words.getInfo(it)
-                                    )
-                                })
+                            val suggestionLayout = remember(words) { makeSuggestionLayout(words, null) }
+                            val totalPages = remember(suggestionLayout) { suggestionLayout.totalPages() }
+                            val suggestionPage = remember { mutableIntStateOf(0) }
+                            LaunchedEffect(words) { suggestionPage.intValue = 0 }
+
+                            Box(
+                                modifier = Modifier
+                                    .weight(1.0f)
+                                    .fillMaxHeight()
+                                    .pointerInput(words) {
+                                        var accumulated = 0f
+                                        var changed = false
+                                        val threshold = 80f
+                                        detectHorizontalDragGestures(
+                                            onDragStart = {
+                                                accumulated = 0f
+                                                changed = false
+                                            },
+                                            onHorizontalDrag = { _, dragAmount ->
+                                                if (changed) return@detectHorizontalDragGestures
+                                                accumulated += dragAmount
+                                                if (accumulated < -threshold) {
+                                                    changed = true
+                                                    suggestionPage.intValue =
+                                                        (suggestionPage.intValue + 1).coerceAtMost(totalPages - 1)
+                                                } else if (accumulated > threshold) {
+                                                    changed = true
+                                                    suggestionPage.intValue =
+                                                        (suggestionPage.intValue - 1).coerceAtLeast(0)
+                                                }
+                                            }
+                                        )
+                                    }
+                            ) {
+                                Row(Modifier.fillMaxSize()) {
+                                    SuggestionItems(
+                                        words,
+                                        page = suggestionPage.intValue,
+                                        onClick = {
+                                            suggestionStripListener.pickSuggestionManually(
+                                                words.getInfo(it)
+                                            )
+                                            keyboardManagerForAction?.performHapticAndAudioFeedback(
+                                                Constants.CODE_TAB,
+                                                view
+                                            )
+                                        },
+                                        onLongClick = {
+                                            suggestionStripListener.requestForgetWord(
+                                                words.getInfo(it)
+                                            )
+                                        })
+                                }
+
+                                // Page indicators
+                                if (suggestionPage.intValue > 0) {
+                                    Box(
+                                        Modifier
+                                            .matchParentSize(),
+                                        contentAlignment = Alignment.CenterStart
+                                    ) {
+                                        Box(
+                                            Modifier
+                                                .padding(start = 2.dp)
+                                                .size(width = 4.dp, height = 12.dp)
+                                                .background(
+                                                    LocalKeyboardScheme.current.onBackground.copy(alpha = 0.3f),
+                                                    RoundedCornerShape(2.dp)
+                                                )
+                                        )
+                                    }
+                                }
+                                if (suggestionPage.intValue < totalPages - 1) {
+                                    Box(
+                                        Modifier
+                                            .matchParentSize(),
+                                        contentAlignment = Alignment.CenterEnd
+                                    ) {
+                                        Box(
+                                            Modifier
+                                                .padding(end = 2.dp)
+                                                .size(width = 4.dp, height = 12.dp)
+                                                .background(
+                                                    LocalKeyboardScheme.current.onBackground.copy(alpha = 0.3f),
+                                                    RoundedCornerShape(2.dp)
+                                                )
+                                        )
+                                    }
+                                }
+                            }
                         } else {
                             Spacer(modifier = Modifier.weight(1.0f))
                         }
