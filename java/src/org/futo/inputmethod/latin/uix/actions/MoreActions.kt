@@ -45,7 +45,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
@@ -134,13 +133,9 @@ fun MoreActionsView() {
 
     val actions = remember(actionList) {
         (map[ActionCategory.Favorites] ?: listOf()) +
-        (map[ActionCategory.ActionKey] ?: listOf()) +
-        (map[ActionCategory.PinnedKey] ?: listOf()) +
-        (map[ActionCategory.More]      ?: listOf())
-    }
-
-    val langSpecActions = remember {
-        AllLangSpecActionsMap.values.toList()
+                (map[ActionCategory.ActionKey] ?: listOf()) +
+                (map[ActionCategory.PinnedKey] ?: listOf()) +
+                (map[ActionCategory.More]      ?: listOf())
     }
 
     if(actions.isEmpty()) {
@@ -155,13 +150,6 @@ fun MoreActionsView() {
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val currentLang = Settings.getInstance().current.mLocale.language
-        val filteredLangSpecActions = langSpecActions.filter { it.langRequired.contains(currentLang) }
-        if (filteredLangSpecActions.isNotEmpty()) {
-            items(filteredLangSpecActions, key = { it.action.name }) {
-                ActionItem(it.action, Modifier.clickable { manager!!.activateAction(it.action) })
-            }
-        }
         items(actions, key = { it.name }) {
             ActionItem(it, Modifier.clickable {
                 manager!!.activateAction(it)
