@@ -993,11 +993,17 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                         }
 
                         onEvent(Event.createSuggestionPickedEvent(selected))
-                        swipeSuggestionIndex = typedWordIndexFromLastCommit
+                        swipeSuggestionIndex = -1
                         swipeSuggestionWord = selected.mWord
+                        swipeSuggestionCandidates = null
                         restoreCursorIfMoved(movedCursorToLastWord)
                         return
                     }
+                }
+
+                if (direction == KeyboardActionListener.SWIPE_ACTION_UP) {
+                    restoreCursorIfMoved(movedCursorToLastWord)
+                    return
                 }
 
                 if (candidates.size < 2) {
@@ -1031,7 +1037,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     0
                 }
 
-                val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) -1 else 1
+                val step = 1
                 var nextIndex = (baseIndex + step + candidates.size) % candidates.size
                 if (currentWord != null && candidates[nextIndex].mWord == currentWord) {
                     nextIndex = (nextIndex + step + candidates.size) % candidates.size
