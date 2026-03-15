@@ -292,6 +292,12 @@ data class Keyboard(
      */
     val autoShift: Boolean = true,
 
+    /**
+     * (optional) Whether the split keyboard mode should be offered for this layout. Set to false
+     * for layouts whose rows don't split well (e.g. due to rowSpan keys or unusual arrangements).
+     */
+    val supportsSplit: Boolean = true,
+
     val subKeyboards: Map<KeyboardLayoutKind, SubKeyboard> = emptyMap(),
     val imeHint: String? = null
 
