@@ -1391,6 +1391,12 @@ public final class InputLogic {
         final boolean deleteWholeWords = forceDeleteWholeWords || (event.isKeyRepeat()
                 && inputTransaction.mSettingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS);
 
+        if (deleteWholeWords && deleteWordAroundCursor && mWordComposer.isComposingWord()
+                && !mConnection.hasSelection()) {
+            mConnection.finishComposingText();
+            mWordComposer.reset(true);
+        }
+
         if (mWordComposer.isComposingWord() && !mConnection.hasSelection()) {
             if (mWordComposer.isBatchMode()) {
                 final String rejectedSuggestion = mWordComposer.getTypedWord();
@@ -1405,11 +1411,11 @@ public final class InputLogic {
                 final BackspaceDeletionTarget target = getDeletionTargetForWordAtCursor(
                         inputTransaction.mSettingsValues, currentKeyboardScriptId);
                 if (target != null) {
-                    mWordComposer.reset(true);
                     mLastBackspaceDeletedText = target.mDeletedText;
                     unlearnWord(target.mDeletedText, inputTransaction.mSettingsValues,
                             Constants.EVENT_BACKSPACE);
                     deleteUsingTarget(target);
+                    mWordComposer.reset(true);
                     StatsUtils.onBackspacePressed(target.getTotalCharsToDelete());
                 } else {
                     final String removedWord = mWordComposer.getTypedWord();
@@ -1439,7 +1445,7 @@ public final class InputLogic {
             }
             inputTransaction.setRequiresUpdateSuggestions();
         } else {
-            if (mLastComposedWord.canRevertCommit()
+            if (!deleteWordAroundCursor && mLastComposedWord.canRevertCommit()
                     && inputTransaction.mSettingsValues.mBackspaceUndoesAutocorrect) {
                 final String lastComposedWord = mLastComposedWord.mTypedWord;
                 revertCommit(inputTransaction, inputTransaction.mSettingsValues);
