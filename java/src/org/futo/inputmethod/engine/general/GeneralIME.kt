@@ -512,53 +512,29 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         )
     }
 
-    private fun getFirstCodePointLengthAfterCursor(): Int {
-        val afterCursor = inputLogic.mConnection.getTextAfterCursor(2, 0)?.toString()
-        if (afterCursor.isNullOrEmpty()) {
-            return 0
-        }
+    private fun performSwipeWordDelete() {
+        helper.requestCursorUpdate()
 
-        return Character.charCount(afterCursor.codePointAt(0))
-    }
-
-    private fun deleteWordBeforeTrailingSpace(): Boolean {
-        if (!inputLogic.mConnection.hasCursorPosition()) {
-            return false
-        }
-
-        inputLogic.cursorLeft(1, false, false)
-
-        val selectionStart = inputLogic.mConnection.getExpectedSelectionStart()
-        val selectionEnd = inputLogic.mConnection.getExpectedSelectionEnd()
-        val wordRangeAtCursor = inputLogic.mConnection.getWordRangeAtCursor(
-            settings.current.mSpacingAndPunctuations,
-            helper.currentKeyboardScriptId,
-            true
+        val result = inputLogic.onWordBackspace(
+            settings.current,
+            helper.keyboardShiftMode,
+            helper.currentKeyboardScriptId
         )
+        val inputTransaction = result.mInputTransaction
 
-        val charsAfterCursor = when {
-            wordRangeAtCursor != null && wordRangeAtCursor.numberOfCharsInWordAfterCursor > 0 -> {
-                wordRangeAtCursor.numberOfCharsInWordAfterCursor
-            }
-            else -> getFirstCodePointLengthAfterCursor()
+        inputLogic.mConnection.send()
+
+        when (inputTransaction.requiredShiftUpdate) {
+            InputTransaction.SHIFT_UPDATE_LATER,
+            InputTransaction.SHIFT_UPDATE_NOW ->
+                helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
         }
 
-        val startOfSelection = when {
-            wordRangeAtCursor != null && wordRangeAtCursor.numberOfCharsInWordBeforeCursor > 0 -> {
-                (selectionStart - wordRangeAtCursor.numberOfCharsInWordBeforeCursor)
-                    .coerceAtLeast(0)
-            }
-            else -> (selectionStart - 1).coerceAtLeast(0)
-        }
-        val endOfSelection = (selectionEnd + charsAfterCursor).coerceAtLeast(startOfSelection)
-        if (endOfSelection <= startOfSelection) {
-            inputLogic.cursorRight(1, false, false)
-            return false
+        if (inputTransaction.requiresUpdateSuggestions()) {
+            updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING)
         }
 
-        inputLogic.mConnection.setSelection(startOfSelection, endOfSelection)
-        onUpWithDeletePointerActive()
-        return true
+        showDeletedTextUndoSuggestion(result.mDeletedText)
     }
 
     private fun moveCursorToLastWordIfTrailingSpace(): Boolean {
@@ -830,35 +806,41 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 ignoreSuggestionUpdate = true
             )
 
-            if (selection != null) {
-                val info = ArrayList<SuggestedWordInfo?>()
-                info.add(
-                    SuggestedWordInfo(
-                        selection.toString(),
-                        "",
-                        0,
-                        SuggestedWordInfo.KIND_UNDO,
-                        null,
-                        0,
-                        0
-                    )
-                )
-                showSuggestionStrip(
-                    SuggestedWords(
-                        info,
-                        null,
-                        null,
-                        false,
-                        false,
-                        false,
-                        0,
-                        0
-                    )
-                )
-            }
+            showDeletedTextUndoSuggestion(selection?.toString())
         } else {
             onUpWithPointerActive()
         }
+    }
+
+    private fun showDeletedTextUndoSuggestion(deletedText: String?) {
+        if (deletedText == null) {
+            return
+        }
+
+        val info = ArrayList<SuggestedWordInfo?>()
+        info.add(
+            SuggestedWordInfo(
+                deletedText,
+                "",
+                0,
+                SuggestedWordInfo.KIND_UNDO,
+                null,
+                0,
+                0
+            )
+        )
+        showSuggestionStrip(
+            SuggestedWords(
+                info,
+                null,
+                null,
+                false,
+                false,
+                false,
+                0,
+                0
+            )
+        )
     }
 
     override fun onUpWithPointerActive() {
@@ -893,40 +875,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             KeyboardActionListener.SWIPE_ACTION_LEFT -> {
                 resetSwipeSuggestionSession()
                 setNeutralSuggestionStrip()
-
-                val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
-                if (!beforeCursor.isNullOrEmpty() && beforeCursor.last() == ' ') {
-                    if (deleteWordBeforeTrailingSpace()) {
-                        return
-                    }
-
-                    sendDeleteKeypress()
-                    return
-                }
-
-                if (inputLogic.mConnection.hasCursorPosition()) {
-                    val wordRangeAtCursor = inputLogic.mConnection.getWordRangeAtCursor(
-                        settings.current.mSpacingAndPunctuations,
-                        helper.currentKeyboardScriptId,
-                        true
-                    )
-
-                    if (wordRangeAtCursor != null && wordRangeAtCursor.length() > 0) {
-                        val selectionStart = inputLogic.mConnection.getExpectedSelectionStart()
-                        val selectionEnd = inputLogic.mConnection.getExpectedSelectionEnd()
-                        val startOfWord = (selectionStart - wordRangeAtCursor.numberOfCharsInWordBeforeCursor)
-                            .coerceAtLeast(0)
-                        val endOfWord = (selectionEnd + wordRangeAtCursor.numberOfCharsInWordAfterCursor)
-                            .coerceAtLeast(startOfWord)
-
-                        inputLogic.mConnection.setSelection(startOfWord, endOfWord)
-                        onUpWithDeletePointerActive()
-                    } else {
-                        sendDeleteKeypress()
-                    }
-                } else {
-                    sendDeleteKeypress()
-                }
+                performSwipeWordDelete()
             }
 
             KeyboardActionListener.SWIPE_ACTION_UP,

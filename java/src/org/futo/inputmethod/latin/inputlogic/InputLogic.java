@@ -105,6 +105,7 @@ public final class InputLogic {
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private String mEnteredText;
+    private String mLastBackspaceDeletedText;
 
     // TODO: This boolean is persistent state and causes large side effects at unexpected times.
     // Find a way to remove it for readability.
@@ -541,6 +542,41 @@ public final class InputLogic {
     public InputTransaction onCodeInput(final SettingsValues settingsValues,
             @Nonnull final Event event, final int keyboardShiftMode,
             final int currentKeyboardScriptId) {
+        return onCodeInputInternal(settingsValues, event, keyboardShiftMode,
+                currentKeyboardScriptId, false /* forceDeleteWholeWords */,
+                false /* deleteWordAroundCursor */);
+    }
+
+    public static final class WordBackspaceResult {
+        public final InputTransaction mInputTransaction;
+        public final String mDeletedText;
+
+        public WordBackspaceResult(final InputTransaction inputTransaction,
+                final String deletedText) {
+            mInputTransaction = inputTransaction;
+            mDeletedText = deletedText;
+        }
+    }
+
+    public WordBackspaceResult onWordBackspace(final SettingsValues settingsValues,
+            final int keyboardShiftMode, final int currentKeyboardScriptId) {
+        final Event event = Event.createSoftwareKeypressEvent(
+                Event.NOT_A_CODE_POINT,
+                Constants.CODE_DELETE,
+                Constants.NOT_A_COORDINATE,
+                Constants.NOT_A_COORDINATE,
+                true /* isKeyRepeat */);
+        final InputTransaction inputTransaction = onCodeInputInternal(settingsValues, event,
+                keyboardShiftMode, currentKeyboardScriptId,
+                true /* forceDeleteWholeWords */, true /* deleteWordAroundCursor */);
+        return new WordBackspaceResult(inputTransaction, mLastBackspaceDeletedText);
+    }
+
+    private InputTransaction onCodeInputInternal(final SettingsValues settingsValues,
+            @Nonnull final Event event, final int keyboardShiftMode,
+            final int currentKeyboardScriptId, final boolean forceDeleteWholeWords,
+            final boolean deleteWordAroundCursor) {
+        mLastBackspaceDeletedText = null;
         mWordBeingCorrectedByCursor = null;
 
         if(mWordComposer.isComposingWord() && mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
@@ -576,7 +612,8 @@ public final class InputLogic {
             if (currentEvent.isConsumed()) {
                 handleConsumedEvent(currentEvent, inputTransaction);
             } else if (currentEvent.isFunctionalKeyEvent()) {
-                handleFunctionalEvent(currentEvent, inputTransaction, currentKeyboardScriptId);
+                handleFunctionalEvent(currentEvent, inputTransaction, currentKeyboardScriptId,
+                        forceDeleteWholeWords, deleteWordAroundCursor);
             } else {
                 handleNonFunctionalEvent(currentEvent, inputTransaction);
             }
@@ -784,7 +821,8 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleFunctionalEvent(final Event event, final InputTransaction inputTransaction,
-            final int currentKeyboardScriptId) {
+            final int currentKeyboardScriptId, final boolean forceDeleteWholeWords,
+            final boolean deleteWordAroundCursor) {
 
         if(event.getEventType() == Event.EVENT_TYPE_STOP_COMPOSING) {
             commitTyped(inputTransaction.mSettingsValues, "");
@@ -806,7 +844,8 @@ public final class InputLogic {
 
         switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
-                handleBackspaceEvent(event, inputTransaction, currentKeyboardScriptId);
+                handleBackspaceEvent(event, inputTransaction, currentKeyboardScriptId,
+                        forceDeleteWholeWords, deleteWordAroundCursor);
                 // Backspace is a functional key, but it affects the contents of the editor.
                 inputTransaction.setDidAffectContents();
                 break;
@@ -1248,7 +1287,8 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleBackspaceEvent(final Event event, final InputTransaction inputTransaction,
-            final int currentKeyboardScriptId) {
+            final int currentKeyboardScriptId, final boolean forceDeleteWholeWords,
+            final boolean deleteWordAroundCursor) {
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
@@ -1273,8 +1313,8 @@ public final class InputLogic {
             resetComposingWord(inputTransaction.mSettingsValues, false);
         }
 
-        final boolean deleteWholeWords = event.isKeyRepeat()
-                && inputTransaction.mSettingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS;
+        final boolean deleteWholeWords = forceDeleteWholeWords || (event.isKeyRepeat()
+                && inputTransaction.mSettingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS);
 
         if (mWordComposer.isComposingWord() && !mConnection.hasSelection()) {
             if (mWordComposer.isBatchMode()) {
@@ -1289,6 +1329,7 @@ public final class InputLogic {
             } else if(deleteWholeWords) {
                 final String removedWord = mWordComposer.getTypedWord();
                 mWordComposer.reset(true);
+                mLastBackspaceDeletedText = removedWord;
                 if (!TextUtils.isEmpty(removedWord)) {
                     unlearnWord(removedWord, inputTransaction.mSettingsValues,
                             Constants.EVENT_BACKSPACE);
@@ -1377,6 +1418,7 @@ public final class InputLogic {
                 // We also need to unlearn the selected text.
                 final CharSequence selection = mConnection.getSelectedText(0 /* 0 for no styles */);
                 if (!TextUtils.isEmpty(selection)) {
+                    mLastBackspaceDeletedText = selection.toString();
                     unlearnWord(selection.toString(), inputTransaction.mSettingsValues,
                             Constants.EVENT_BACKSPACE);
                     hasUnlearnedWordBeingDeleted = true;
@@ -1388,6 +1430,42 @@ public final class InputLogic {
                 mConnection.deleteTextBeforeCursor(numCharsDeleted);
                 StatsUtils.onBackspaceSelectedText(numCharsDeleted);
             } else {
+                if (deleteWordAroundCursor) {
+                    final TextRange range = mConnection.getWordRangeAtCursor(
+                            inputTransaction.mSettingsValues.mSpacingAndPunctuations,
+                            currentKeyboardScriptId, true);
+                    if (range != null && range.length() > 0) {
+                        final int charsBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
+                        final int charsAfterCursor = range.getNumberOfCharsInWordAfterCursor();
+                        if (charsBeforeCursor > 0 || charsAfterCursor > 0) {
+                            final String removedWord = range.mWord.toString();
+                            mLastBackspaceDeletedText = removedWord;
+                            unlearnWord(removedWord, inputTransaction.mSettingsValues,
+                                    Constants.EVENT_BACKSPACE);
+                            hasUnlearnedWordBeingDeleted = true;
+                            mConnection.deleteTextAroundCursor(charsBeforeCursor, charsAfterCursor);
+                            StatsUtils.onBackspacePressed(range.length());
+                            if (!hasUnlearnedWordBeingDeleted) {
+                                unlearnWordBeingDeleted(
+                                        inputTransaction.mSettingsValues, currentKeyboardScriptId);
+                            }
+
+                            if (mConnection.hasSlowInputConnection()) {
+                                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+                            } else if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
+                                    && inputTransaction.mSettingsValues.mSpacingAndPunctuations
+                                            .mCurrentLanguageHasSpaces
+                                    && !mConnection.isCursorFollowedByWordCharacter(
+                                            inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
+                                restartSuggestionsOnWordTouchedByCursor(
+                                        inputTransaction.mSettingsValues, inputTransaction,
+                                        false /* forStartInput */, currentKeyboardScriptId);
+                            }
+                            return;
+                        }
+                    }
+                }
+
                 // There is no selection, just delete one character.
                 if (inputTransaction.mSettingsValues.isBeforeJellyBean()
                         || inputTransaction.mSettingsValues.mInputAttributes.isTypeNull()
@@ -1462,6 +1540,8 @@ public final class InputLogic {
                             textDeleted = textBeforeCursor.subSequence(start, end).toString();
                         }
                     }
+
+                    mLastBackspaceDeletedText = textDeleted;
 
                     mConnection.deleteTextBeforeCursor(lengthToDelete);
                     int totalDeletedLength = lengthToDelete;
