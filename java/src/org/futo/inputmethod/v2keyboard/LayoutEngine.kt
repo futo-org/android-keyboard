@@ -474,7 +474,39 @@ data class LayoutEngine(
             )
         }
 
-        return alignForSplitLayout(computedRowWithWidths)
+        return alignForSplitLayout(mirrorForOneHanded(computedRowWithWidths))
+    }
+
+    private fun mirrorForOneHanded(rows: List<LayoutRow>): List<LayoutRow> {
+        if(!isOneHandedLayout || !keyboard.mirrorInOneHanded) return rows
+
+        val direction = (layoutParams.size as OneHandedKeyboardSize).direction
+        if(direction != OneHandedDirection.Left) return rows
+
+        return rows.map { row ->
+            row.copy(entries = swapOuterKeys(row.entries))
+        }
+    }
+
+    // Swap the leading and trailing non-Regular-width entries (functional keys, gaps, grow keys)
+    // while keeping the inner letter keys in their original order.
+    private fun swapOuterKeys(entries: List<LayoutEntry>): List<LayoutEntry> {
+        fun isOuter(entry: LayoutEntry): Boolean = when(entry) {
+            is LayoutEntry.Gap -> true
+            is LayoutEntry.Key -> entry.data.width != KeyWidth.Regular
+        }
+
+        val leadingCount = entries.indexOfFirst { !isOuter(it) }.let { if(it == -1) entries.size else it }
+        val trailingCount = entries.asReversed().indexOfFirst { !isOuter(it) }.let { if(it == -1) entries.size else it }
+
+        if(leadingCount == 0 && trailingCount == 0) return entries
+        if(leadingCount + trailingCount >= entries.size) return entries
+
+        val leading = entries.subList(0, leadingCount)
+        val middle = entries.subList(leadingCount, entries.size - trailingCount)
+        val trailing = entries.subList(entries.size - trailingCount, entries.size)
+
+        return trailing + middle + leading
     }
 
     private fun mergeDuplicates(row: List<LayoutEntry>): List<LayoutEntry> {
