@@ -133,13 +133,15 @@ val KeyboardModeAction = Action(
                             currMode == KeyboardMode.OneHanded
                         )
 
-                        KeyboardMode(
-                            R.drawable.keyboard_split,
-                            R.drawable.keyboard_split_fill_check,
-                            stringResource(R.string.action_keyboard_modes_split),
-                            sizeCalculator, KeyboardMode.Split,
-                            currMode == KeyboardMode.Split
-                        )
+                        if(sizeCalculator.doesCurrentLayoutSupportSplit()) {
+                            KeyboardMode(
+                                R.drawable.keyboard_split,
+                                R.drawable.keyboard_split_fill_check,
+                                stringResource(R.string.action_keyboard_modes_split),
+                                sizeCalculator, KeyboardMode.Split,
+                                currMode == KeyboardMode.Split
+                            )
+                        }
 
                         KeyboardMode(
                             R.drawable.keyboard_float,
