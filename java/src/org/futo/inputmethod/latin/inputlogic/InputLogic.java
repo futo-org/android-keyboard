@@ -558,6 +558,23 @@ public final class InputLogic {
         }
     }
 
+    private static final class BackspaceDeletionTarget {
+        public final String mDeletedText;
+        public final int mCharsBeforeCursor;
+        public final int mCharsAfterCursor;
+
+        private BackspaceDeletionTarget(final String deletedText, final int charsBeforeCursor,
+                final int charsAfterCursor) {
+            mDeletedText = deletedText;
+            mCharsBeforeCursor = charsBeforeCursor;
+            mCharsAfterCursor = charsAfterCursor;
+        }
+
+        public int getTotalCharsToDelete() {
+            return mCharsBeforeCursor + mCharsAfterCursor;
+        }
+    }
+
     public WordBackspaceResult onWordBackspace(final SettingsValues settingsValues,
             final int keyboardShiftMode, final int currentKeyboardScriptId) {
         final Event event = Event.createSoftwareKeypressEvent(
@@ -646,6 +663,64 @@ public final class InputLogic {
 
 
         return inputTransaction;
+    }
+
+    private BackspaceDeletionTarget getDeletionTargetBeforeCursor(final boolean deleteWholeWords) {
+        final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+        if (codePointBeforeCursor == Constants.NOT_A_CODE) {
+            return null;
+        }
+
+        String textDeleted = new String(Character.toChars(codePointBeforeCursor));
+        int lengthToDelete = Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
+
+        final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(
+                deleteWholeWords ? 48 : 8, 0);
+        if (textBeforeCursor != null && textBeforeCursor.length() > 0) {
+            final BreakIterator breakIterator = deleteWholeWords
+                    ? BreakIterator.getWordInstance() : BreakIterator.getCharacterInstance();
+            breakIterator.setText(textBeforeCursor.toString());
+            final int end = breakIterator.last();
+            int start = breakIterator.previous();
+
+            if (deleteWholeWords && start != BreakIterator.DONE
+                    && textBeforeCursor.subSequence(start, end).toString().equals(" ")) {
+                start = breakIterator.previous();
+            }
+
+            if (start != BreakIterator.DONE) {
+                lengthToDelete = end - start;
+                textDeleted = textBeforeCursor.subSequence(start, end).toString();
+            }
+        }
+
+        return new BackspaceDeletionTarget(textDeleted, lengthToDelete, 0);
+    }
+
+    private BackspaceDeletionTarget getDeletionTargetForWordAtCursor(
+            final SettingsValues settingsValues, final int currentKeyboardScriptId) {
+        final TextRange range = mConnection.getWordRangeAtCursor(
+                settingsValues.mSpacingAndPunctuations, currentKeyboardScriptId, true);
+        if (range == null || range.length() <= 0) {
+            return null;
+        }
+
+        final int charsBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
+        final int charsAfterCursor = range.getNumberOfCharsInWordAfterCursor();
+        if (charsBeforeCursor <= 0 && charsAfterCursor <= 0) {
+            return null;
+        }
+
+        return new BackspaceDeletionTarget(range.mWord.toString(), charsBeforeCursor,
+                charsAfterCursor);
+    }
+
+    private void deleteUsingTarget(final BackspaceDeletionTarget target) {
+        if (target.mCharsAfterCursor > 0) {
+            mConnection.deleteTextAroundCursor(target.mCharsBeforeCursor, target.mCharsAfterCursor);
+        } else {
+            mConnection.deleteTextBeforeCursor(target.mCharsBeforeCursor);
+        }
     }
 
     /**
@@ -1326,6 +1401,25 @@ public final class InputLogic {
                             Constants.EVENT_REJECTION);
                 }
                 StatsUtils.onBackspaceWordDelete(rejectedSuggestion.length());
+            } else if (deleteWholeWords && deleteWordAroundCursor) {
+                final BackspaceDeletionTarget target = getDeletionTargetForWordAtCursor(
+                        inputTransaction.mSettingsValues, currentKeyboardScriptId);
+                if (target != null) {
+                    mWordComposer.reset(true);
+                    mLastBackspaceDeletedText = target.mDeletedText;
+                    unlearnWord(target.mDeletedText, inputTransaction.mSettingsValues,
+                            Constants.EVENT_BACKSPACE);
+                    deleteUsingTarget(target);
+                    StatsUtils.onBackspacePressed(target.getTotalCharsToDelete());
+                } else {
+                    final String removedWord = mWordComposer.getTypedWord();
+                    mWordComposer.reset(true);
+                    mLastBackspaceDeletedText = removedWord;
+                    if (!TextUtils.isEmpty(removedWord)) {
+                        unlearnWord(removedWord, inputTransaction.mSettingsValues,
+                                Constants.EVENT_BACKSPACE);
+                    }
+                }
             } else if(deleteWholeWords) {
                 final String removedWord = mWordComposer.getTypedWord();
                 mWordComposer.reset(true);
@@ -1431,38 +1525,28 @@ public final class InputLogic {
                 StatsUtils.onBackspaceSelectedText(numCharsDeleted);
             } else {
                 if (deleteWordAroundCursor) {
-                    final TextRange range = mConnection.getWordRangeAtCursor(
-                            inputTransaction.mSettingsValues.mSpacingAndPunctuations,
-                            currentKeyboardScriptId, true);
-                    if (range != null && range.length() > 0) {
-                        final int charsBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
-                        final int charsAfterCursor = range.getNumberOfCharsInWordAfterCursor();
-                        if (charsBeforeCursor > 0 || charsAfterCursor > 0) {
-                            final String removedWord = range.mWord.toString();
-                            mLastBackspaceDeletedText = removedWord;
-                            unlearnWord(removedWord, inputTransaction.mSettingsValues,
-                                    Constants.EVENT_BACKSPACE);
-                            hasUnlearnedWordBeingDeleted = true;
-                            mConnection.deleteTextAroundCursor(charsBeforeCursor, charsAfterCursor);
-                            StatsUtils.onBackspacePressed(range.length());
-                            if (!hasUnlearnedWordBeingDeleted) {
-                                unlearnWordBeingDeleted(
-                                        inputTransaction.mSettingsValues, currentKeyboardScriptId);
-                            }
+                    final BackspaceDeletionTarget target = getDeletionTargetForWordAtCursor(
+                            inputTransaction.mSettingsValues, currentKeyboardScriptId);
+                    if (target != null) {
+                        mLastBackspaceDeletedText = target.mDeletedText;
+                        unlearnWord(target.mDeletedText, inputTransaction.mSettingsValues,
+                                Constants.EVENT_BACKSPACE);
+                        hasUnlearnedWordBeingDeleted = true;
+                        deleteUsingTarget(target);
+                        StatsUtils.onBackspacePressed(target.getTotalCharsToDelete());
 
-                            if (mConnection.hasSlowInputConnection()) {
-                                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-                            } else if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
-                                    && inputTransaction.mSettingsValues.mSpacingAndPunctuations
-                                            .mCurrentLanguageHasSpaces
-                                    && !mConnection.isCursorFollowedByWordCharacter(
-                                            inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
-                                restartSuggestionsOnWordTouchedByCursor(
-                                        inputTransaction.mSettingsValues, inputTransaction,
-                                        false /* forStartInput */, currentKeyboardScriptId);
-                            }
-                            return;
+                        if (mConnection.hasSlowInputConnection()) {
+                            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+                        } else if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
+                                && inputTransaction.mSettingsValues.mSpacingAndPunctuations
+                                        .mCurrentLanguageHasSpaces
+                                && !mConnection.isCursorFollowedByWordCharacter(
+                                        inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
+                            restartSuggestionsOnWordTouchedByCursor(
+                                    inputTransaction.mSettingsValues, inputTransaction,
+                                    false /* forStartInput */, currentKeyboardScriptId);
                         }
+                        return;
                     }
                 }
 
@@ -1513,38 +1597,12 @@ public final class InputLogic {
                         nowHasWordCharacter = true;
                     }
 
-                    String textDeleted = new String(Character.toChars(codePointBeforeCursor));
-                    int lengthToDelete =
-                            Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
+                    final BackspaceDeletionTarget target = getDeletionTargetBeforeCursor(
+                            deleteWholeWords);
+                    mLastBackspaceDeletedText = target.mDeletedText;
 
-                    // Handle emoji sequences (flags, etc)
-                    CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(deleteWholeWords ? 48 : 8, 0);
-                    if (textBeforeCursor != null && textBeforeCursor.length() > 0) {
-                        BreakIterator breakIterator;
-
-                        if(deleteWholeWords) {
-                            breakIterator = BreakIterator.getWordInstance();
-                        } else {
-                            breakIterator = BreakIterator.getCharacterInstance();
-                        }
-                        breakIterator.setText(textBeforeCursor.toString());
-                        int end = breakIterator.last();
-                        int start = breakIterator.previous();
-
-                        if(deleteWholeWords && textBeforeCursor.subSequence(start, end).toString().equals(" ")) {
-                            start = breakIterator.previous();
-                        }
-
-                        if (start != BreakIterator.DONE) {
-                            lengthToDelete = end - start;
-                            textDeleted = textBeforeCursor.subSequence(start, end).toString();
-                        }
-                    }
-
-                    mLastBackspaceDeletedText = textDeleted;
-
-                    mConnection.deleteTextBeforeCursor(lengthToDelete);
-                    int totalDeletedLength = lengthToDelete;
+                    deleteUsingTarget(target);
+                    int totalDeletedLength = target.getTotalCharsToDelete();
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
                         // If this is an accelerated (i.e., double) deletion, then we need to
                         // consider unlearning here because we may have already reached
