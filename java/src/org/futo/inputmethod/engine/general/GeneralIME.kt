@@ -512,6 +512,55 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         )
     }
 
+    private fun getFirstCodePointLengthAfterCursor(): Int {
+        val afterCursor = inputLogic.mConnection.getTextAfterCursor(2, 0)?.toString()
+        if (afterCursor.isNullOrEmpty()) {
+            return 0
+        }
+
+        return Character.charCount(afterCursor.codePointAt(0))
+    }
+
+    private fun deleteWordBeforeTrailingSpace(): Boolean {
+        if (!inputLogic.mConnection.hasCursorPosition()) {
+            return false
+        }
+
+        inputLogic.cursorLeft(1, false, false)
+
+        val selectionStart = inputLogic.mConnection.getExpectedSelectionStart()
+        val selectionEnd = inputLogic.mConnection.getExpectedSelectionEnd()
+        val wordRangeAtCursor = inputLogic.mConnection.getWordRangeAtCursor(
+            settings.current.mSpacingAndPunctuations,
+            helper.currentKeyboardScriptId,
+            true
+        )
+
+        val charsAfterCursor = when {
+            wordRangeAtCursor != null && wordRangeAtCursor.numberOfCharsInWordAfterCursor > 0 -> {
+                wordRangeAtCursor.numberOfCharsInWordAfterCursor
+            }
+            else -> getFirstCodePointLengthAfterCursor()
+        }
+
+        val startOfSelection = when {
+            wordRangeAtCursor != null && wordRangeAtCursor.numberOfCharsInWordBeforeCursor > 0 -> {
+                (selectionStart - wordRangeAtCursor.numberOfCharsInWordBeforeCursor)
+                    .coerceAtLeast(0)
+            }
+            else -> (selectionStart - 1).coerceAtLeast(0)
+        }
+        val endOfSelection = (selectionEnd + charsAfterCursor).coerceAtLeast(startOfSelection)
+        if (endOfSelection <= startOfSelection) {
+            inputLogic.cursorRight(1, false, false)
+            return false
+        }
+
+        inputLogic.mConnection.setSelection(startOfSelection, endOfSelection)
+        onUpWithDeletePointerActive()
+        return true
+    }
+
     private fun moveCursorToLastWordIfTrailingSpace(): Boolean {
         val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
         if (!beforeCursor.isNullOrEmpty()
@@ -847,6 +896,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
                 val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
                 if (!beforeCursor.isNullOrEmpty() && beforeCursor.last() == ' ') {
+                    if (deleteWordBeforeTrailingSpace()) {
+                        return
+                    }
+
                     sendDeleteKeypress()
                     return
                 }
