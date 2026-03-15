@@ -965,6 +965,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
 
         if (mIsSlidingCursor && oldKey != null
+                && oldKey.getCode() != Constants.CODE_SPACE
+                && oldKey.getCode() != Constants.CODE_DELETE
                 && settingsValues.mGestureActionsEnabled) {
             final int pointerStep = sPointerSwipeActionStep;
             final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout
