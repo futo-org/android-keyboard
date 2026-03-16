@@ -306,7 +306,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             resetSwipeSuggestionSession()
         }
 
-        val inputTransaction = when (event.eventType) {
+        val swipeActionPunctuationTransaction = handleSwipeActionTrailingSpacePunctuation(event)
+
+        val inputTransaction = swipeActionPunctuationTransaction ?: when (event.eventType) {
             Event.EVENT_TYPE_INPUT_KEYPRESS,
             Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
                 inputLogic.onCodeInput(
@@ -578,6 +580,84 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         if (movedCursorToLastWord) {
             inputLogic.cursorRight(1, false, false)
         }
+    }
+
+    private fun getSwipeActionTrailingSpacePunctuationCodePoint(event: Event): Int? {
+        if (!isSwipeActionsModeEnabled()) {
+            return null
+        }
+
+        val codePoint = when (event.eventType) {
+            Event.EVENT_TYPE_INPUT_KEYPRESS,
+            Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> event.mCodePoint
+            Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> {
+                val text = event.getTextToCommit().toString()
+                if (text.codePointCount(0, text.length) != 1) {
+                    return null
+                }
+                text.codePointAt(0)
+            }
+            else -> return null
+        }
+
+        if (codePoint == Event.NOT_A_CODE_POINT
+            || Character.isWhitespace(codePoint)
+            || !settings.current.isWordSeparator(codePoint)
+            || !settings.current.isUsuallyFollowedBySpace(codePoint)
+            || settings.current.isOptionallyPrecededBySpace(codePoint)) {
+            return null
+        }
+
+        val beforeCursor = inputLogic.mConnection.getTextBeforeCursor(1, 0)?.toString()
+        return if (!beforeCursor.isNullOrEmpty()
+            && beforeCursor.last() == ' '
+            && inputLogic.mConnection.hasCursorPosition()
+            && !inputLogic.mConnection.hasSelection()) {
+            codePoint
+        } else {
+            null
+        }
+    }
+
+    private fun handleSwipeActionTrailingSpacePunctuation(event: Event): InputTransaction? {
+        val punctuationCodePoint = getSwipeActionTrailingSpacePunctuationCodePoint(event)
+            ?: return null
+        inputLogic.mConnection.removeTrailingSpace()
+
+        val normalizedEvent = Event.createSoftwareKeypressEvent(
+            punctuationCodePoint,
+            punctuationCodePoint,
+            Constants.NOT_A_COORDINATE,
+            Constants.NOT_A_COORDINATE,
+            false
+        )
+
+        val punctuationTransaction = inputLogic.onCodeInput(
+            settings.current,
+            normalizedEvent,
+            helper.keyboardShiftMode,
+            helper.currentKeyboardScriptId
+        )
+
+        val codePointAfterCursor = inputLogic.mConnection.getCodePointAfterCursor()
+        if (inputLogic.mConnection.spaceFollowsCursor()
+            || (codePointAfterCursor != Constants.NOT_A_CODE
+                && Character.isWhitespace(codePointAfterCursor))) {
+            return punctuationTransaction
+        }
+
+        return inputLogic.onCodeInput(
+            settings.current,
+            Event.createSoftwareKeypressEvent(
+                Constants.CODE_SPACE,
+                Constants.CODE_SPACE,
+                Constants.NOT_A_COORDINATE,
+                Constants.NOT_A_COORDINATE,
+                false
+            ),
+            helper.keyboardShiftMode,
+            helper.currentKeyboardScriptId
+        )
     }
 
     private fun getSwipePunctuationCycle(): List<String> {
