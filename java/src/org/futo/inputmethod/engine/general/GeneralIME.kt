@@ -288,12 +288,18 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         composingSpanStart: Int,
         composingSpanEnd: Int
     ) {
-        inputLogic.onUpdateSelection(
+        val cursorMovedByUser = inputLogic.onUpdateSelection(
             oldSelStart, oldSelEnd,
             newSelStart, newSelEnd,
             composingSpanStart, composingSpanEnd,
             Settings.getInstance().current
         )
+
+        if (swipeSuggestionSelectionUpdatesToIgnore > 0) {
+            swipeSuggestionSelectionUpdatesToIgnore -= 1
+        } else if (cursorMovedByUser) {
+            resetSwipeSuggestionSession()
+        }
     }
 
     override fun isGestureHandlingAvailable(): Boolean =
@@ -493,6 +499,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     private var swipeSuggestionCandidates: List<SuggestedWordInfo>? = null
     private var swipeSuggestionRestingWord: String? = null
     private var swipeSuggestionRevertWord: String? = null
+    private var swipeSuggestionSelectionUpdatesToIgnore = 0
 
     private fun resetSwipeSuggestionSession() {
         swipeSuggestionIndex = -1
@@ -500,6 +507,16 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         swipeSuggestionCandidates = null
         swipeSuggestionRestingWord = null
         swipeSuggestionRevertWord = null
+    }
+
+    private fun moveCursorForSwipeSuggestions(steps: Int) {
+        swipeSuggestionSelectionUpdatesToIgnore += 1
+
+        if (steps < 0) {
+            inputLogic.cursorLeft(-steps, false, false)
+        } else {
+            inputLogic.cursorRight(steps, false, false)
+        }
     }
 
     private fun getSwipeSuggestionInfo(
@@ -569,7 +586,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             && beforeCursor.last() == ' '
             && inputLogic.mConnection.hasCursorPosition()
             && !inputLogic.mConnection.hasSelection()) {
-            inputLogic.cursorLeft(1, false, false)
+            moveCursorForSwipeSuggestions(-1)
             return true
         }
 
@@ -578,7 +595,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     private fun restoreCursorIfMoved(movedCursorToLastWord: Boolean) {
         if (movedCursorToLastWord) {
-            inputLogic.cursorRight(1, false, false)
+            moveCursorForSwipeSuggestions(1)
         }
     }
 
