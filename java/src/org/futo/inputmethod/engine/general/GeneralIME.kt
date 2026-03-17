@@ -519,6 +519,30 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
     }
 
+    private fun replaceCommittedSwipeSuggestionIfNeeded(
+        currentSwipeWord: String?,
+        replacement: String
+    ): Boolean {
+        val resolvedSwipeWord = currentSwipeWord ?: inputLogic.mLastComposedWord.mCommittedWord?.toString()
+        if (resolvedSwipeWord.isNullOrEmpty() || inputLogic.mConnection.hasSelection()) {
+            return false
+        }
+
+        if (!inputLogic.mConnection.sameAsTextBeforeCursor(resolvedSwipeWord)) {
+            return false
+        }
+
+        helper.requestCursorUpdate()
+        inputLogic.mConnection.beginBatchEdit()
+        inputLogic.mConnection.finishComposingText()
+        inputLogic.mConnection.deleteTextBeforeCursor(resolvedSwipeWord.length)
+        inputLogic.mConnection.commitText(replacement, 1)
+        inputLogic.mConnection.endBatchEdit()
+        inputLogic.mConnection.send()
+        helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
+        return true
+    }
+
     private fun getSwipeSuggestionInfo(
         candidates: List<SuggestedWordInfo>,
         word: String
@@ -1067,7 +1091,12 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                         } else {
                             candidates[previousIndex]
                         }
-                        onEvent(Event.createSuggestionPickedEvent(selected))
+                        if (!replaceCommittedSwipeSuggestionIfNeeded(
+                                swipeSuggestionWord ?: currentWord,
+                                selected.mWord
+                            )) {
+                            onEvent(Event.createSuggestionPickedEvent(selected))
+                        }
                         if (!restingWord.isNullOrEmpty() && selected.mWord == restingWord) {
                             swipeSuggestionIndex = -1
                             swipeSuggestionWord = null
@@ -1142,7 +1171,12 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     return
                 }
 
-                onEvent(Event.createSuggestionPickedEvent(selected))
+                if (!replaceCommittedSwipeSuggestionIfNeeded(
+                        swipeSuggestionWord ?: currentWord,
+                        selected.mWord
+                    )) {
+                    onEvent(Event.createSuggestionPickedEvent(selected))
+                }
                 swipeSuggestionIndex = nextIndex
                 swipeSuggestionWord = selected.mWord
 
