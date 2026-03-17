@@ -288,6 +288,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         composingSpanStart: Int,
         composingSpanEnd: Int
     ) {
+        val selectionChanged = oldSelStart != newSelStart || oldSelEnd != newSelEnd
+
         val cursorMovedByUser = inputLogic.onUpdateSelection(
             oldSelStart, oldSelEnd,
             newSelStart, newSelEnd,
@@ -297,7 +299,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
         if (swipeSuggestionSelectionUpdatesToIgnore > 0) {
             swipeSuggestionSelectionUpdatesToIgnore -= 1
-        } else if (cursorMovedByUser) {
+        } else if (selectionChanged && cursorMovedByUser) {
             resetSwipeSuggestionSession()
         }
     }
@@ -541,6 +543,18 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.mConnection.send()
         helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
         return true
+    }
+
+    private fun shouldResetSwipeSuggestionSessionForTouchedWord(touchedWord: String?): Boolean {
+        if (swipeSuggestionCandidates == null && swipeSuggestionRestingWord == null && swipeSuggestionWord == null) {
+            return false
+        }
+
+        if (touchedWord.isNullOrEmpty()) {
+            return false
+        }
+
+        return touchedWord != swipeSuggestionWord && touchedWord != swipeSuggestionRestingWord
     }
 
     private fun getSwipeSuggestionInfo(
@@ -1046,6 +1060,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 }
 
                 val touchedWord = inputLogic.mWordComposer.typedWord
+
+                if (shouldResetSwipeSuggestionSessionForTouchedWord(touchedWord)) {
+                    resetSwipeSuggestionSession()
+                }
 
                 if (swipeSuggestionRestingWord == null) {
                     swipeSuggestionRestingWord = touchedWord
