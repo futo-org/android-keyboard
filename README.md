@@ -2,8 +2,6 @@
 
 LocalLlamaBoard is a fork of [FUTO Keyboard](https://github.com/futo-org/android-keyboard) with one major addition: an integrated LLM prompt system that lets you rewrite and transform text using a locally-hosted LLM, all without leaving the keyboard.
 
-Inspired by [3Sparks Keyboard](https://www.3sparks.net/) for iOS, LocalLlamaBoard brings the same AI text rewriting capability to Android, built on top of FUTO's excellent privacy-focused keyboard.
-
 ## How It Works
 
 1. Type a message in any app (SMS, email, Slack, etc.) using LocalLlamaBoard.
