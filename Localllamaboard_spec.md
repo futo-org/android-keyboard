@@ -286,7 +286,7 @@ This is the core UX integration. FUTO's keyboard has an **action bar** (toolbar)
 
 1. Appears as an icon in the toolbar (a wand, sparkle, or brain icon).
 2. When tapped, reads the current text from the active input field using `InputConnection.getExtractedText()` or `InputConnection.getTextBeforeCursor()` + `getTextAfterCursor()`.
-3. Shows a prompt picker (a scrollable horizontal chip bar or a bottom sheet with the list of prompts).
+3. Shows a prompt picker (a bottom sheet with the list of prompts).
 4. On prompt selection:
    a. Shows a loading indicator (e.g., a small progress bar in the action bar area).
    b. Fires the API request asynchronously.
@@ -435,7 +435,7 @@ java/src/org/futo/inputmethod/latin/uix/llm/
 ├── PromptManager.kt          # Prompt CRUD and storage
 ├── LlmPrompt.kt             # Data class for prompts (or keep in PromptManager)
 └── ui/
-    ├── PromptPickerSheet.kt  # Bottom sheet or chip bar for selecting prompts
+    ├── PromptPickerSheet.kt  # Bottom sheet for selecting prompts
     ├── LlmSettingsPage.kt    # Backend configuration settings
     └── PromptEditorPage.kt   # Prompt management settings
 ```
