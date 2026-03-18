@@ -27,7 +27,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
+    <!-- LocalLlamaBoard: Internet access for connecting to user's local LLM backend only -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application android:label="@string/english_ime_name"
          android:icon="@mipmap/ic_launcher"

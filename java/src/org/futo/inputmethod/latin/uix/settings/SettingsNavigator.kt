@@ -57,6 +57,8 @@ import org.futo.inputmethod.latin.uix.settings.pages.themes.ThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputMenu
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
+import org.futo.inputmethod.latin.uix.llm.ui.LlmSettingsScreen
+import org.futo.inputmethod.latin.uix.llm.ui.PromptManagerScreen
 import org.futo.inputmethod.latin.uix.settings.pages.buggyeditors.BuggyTextEditVariations
 import org.futo.inputmethod.latin.uix.settings.pages.pdict.ConfirmDeleteExtraDictFileDialog
 import org.futo.inputmethod.latin.uix.settings.pages.pdict.PersonalDictionaryLanguageList
@@ -145,6 +147,8 @@ fun SettingsNavigator(
             composable("themes") { ThemeScreen(navController) }
             composable("customTheme/{uri}") { CustomThemeScreen(it.arguments?.getString("uri") ?: "", navController) }
 
+            composable("llmSettings") { LlmSettingsScreen() }
+            composable("llmPrompts") { PromptManagerScreen() }
             composable("developer") { DeveloperScreen(navController) }
             composable("devtextedit") { DevEditTextVariationsScreen(navController) }
             composable("devbuggytextedit") { BuggyTextEditVariations(navController) }

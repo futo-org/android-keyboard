@@ -99,6 +99,14 @@ val HomeScreenLite = UserSettingsMenu(
         ),
 
         userSettingNavigationItem(
+            title = R.string.llm_settings_title,
+            style = NavigationItemStyle.HomeTertiary,
+            navigateTo = "llmSettings",
+            subtitle = R.string.llm_settings_subtitle,
+            icon = R.drawable.sparkle
+        ),
+
+        userSettingNavigationItem(
             title = R.string.theme_settings_title,
             style = NavigationItemStyle.HomeTertiary,
             navigateTo = "themes",

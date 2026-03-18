@@ -638,4 +638,47 @@ Default is %1$s</string>
     <string name="personal_dictionary_delete_additional_file">Delete extra dictionary file?</string>
     <!-- %1$s will be replaced with the custom dictionary name -->
     <string name="personal_dictionary_delete_additional_file_text">%1$s will be deleted</string>
+
+    <!-- LLM Rewrite Action -->
+    <string name="action_llm_rewrite_title">LLM Rewrite</string>
+    <string name="llm_settings_title">LLM Backend</string>
+    <string name="llm_settings_subtitle">Configure your local LLM server</string>
+    <string name="llm_settings_backend_url">Backend URL</string>
+    <string name="llm_settings_backend_url_subtitle">e.g. http://enterprise.arpa:5001</string>
+    <string name="llm_settings_api_key">API Key (optional)</string>
+    <string name="llm_settings_api_key_subtitle">For backends that require authentication</string>
+    <string name="llm_settings_test_connection">Test Connection</string>
+    <string name="llm_settings_testing_connection">Testing…</string>
+    <string name="llm_settings_connection_success">Connected successfully!</string>
+    <string name="llm_settings_connection_failed">Connection failed: %1$s</string>
+    <string name="llm_settings_default_system_prompt">Default System Prompt</string>
+    <string name="llm_settings_temperature">Temperature</string>
+    <string name="llm_settings_max_tokens">Max Tokens</string>
+    <string name="llm_settings_manage_prompts">Manage Prompts</string>
+    <string name="llm_settings_manage_prompts_subtitle">Add, edit, and reorder prompts</string>
+    <string name="llm_settings_reset_prompts">Reset to Defaults</string>
+    <string name="llm_settings_network_note">Network access is used only to connect to your own LLM server. No data is sent to external services.</string>
+    <string name="llm_prompt_picker_title">Select Prompt</string>
+    <string name="llm_rewriting_text">Rewriting text…</string>
+    <string name="llm_no_text">No text to rewrite</string>
+    <string name="llm_error_connection">Cannot reach LLM server — is your VPN connected?</string>
+    <string name="llm_error_timeout">Request timed out</string>
+    <string name="llm_error_generic">LLM error: %1$s</string>
+    <string name="llm_undo_rewrite">Undo Rewrite</string>
+    <string name="llm_prompt_name_fix_grammar">Fix Grammar</string>
+    <string name="llm_prompt_name_make_formal">Make Formal</string>
+    <string name="llm_prompt_name_make_casual">Make Casual</string>
+    <string name="llm_prompt_name_make_concise">Make Concise</string>
+    <string name="llm_prompt_name_expand">Expand</string>
+    <string name="llm_prompt_name_translate_spanish">Translate to Spanish</string>
+    <string name="llm_prompt_name_eli5">ELI5</string>
+    <string name="llm_prompt_editor_title">Edit Prompt</string>
+    <string name="llm_prompt_editor_name">Prompt Name</string>
+    <string name="llm_prompt_editor_system_prompt">System Prompt</string>
+    <string name="llm_prompt_editor_user_template">User Prompt Template</string>
+    <string name="llm_prompt_editor_user_template_hint">Use {{TEXT}} as placeholder for user text</string>
+    <string name="llm_prompt_editor_save">Save</string>
+    <string name="llm_prompt_editor_delete">Delete</string>
+    <string name="llm_prompt_editor_add">Add Prompt</string>
+    <string name="llm_cancel">Cancel</string>
 </resources>
