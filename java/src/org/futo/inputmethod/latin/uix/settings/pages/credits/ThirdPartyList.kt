@@ -168,5 +168,12 @@ SKK Development Team <skk@ring.gr.jp>""",
         "https://zilluzion.art/",
         "Copyright (c) 2025 zilluzion",
         License.Proprietary
+    ),
+    TP(
+        "ClearFlow Layout",
+        "ClearFlow Layout (xjunbi)",
+        "https://clearflowkeyboard.github.io/",
+        "Copyright (c) 2024-2026 Xiaojun Bi (xjunbi)",
+        License.PublicDomain
     )
 )

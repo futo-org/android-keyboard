@@ -10,7 +10,8 @@ enum class License {
     NAIST_2003,
     CC_BY_SA_4_0,
     GPL_V2,
-    Proprietary
+    Proprietary,
+    PublicDomain
 }
 
 @Suppress("HardCodedStringLiteral")
@@ -1143,4 +1144,10 @@ Public License instead of this License.
 """
 
     License.Proprietary -> "All rights reserved. Used with authorization"
+
+    License.PublicDomain -> """This work has been released into the public domain by the copyright holder. This applies worldwide.
+
+In jurisdictions where this is not legally possible, the copyright holder grants anyone the right to use this work for any purpose, without any conditions, unless such conditions are required by law.
+
+No copyright is claimed. This work may be freely reproduced, distributed, transmitted, modified, built upon, or otherwise used by anyone for any lawful purpose."""
 }
