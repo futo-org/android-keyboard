@@ -18,7 +18,11 @@ import org.futo.inputmethod.latin.uix.actions.ensureWellFormed
 import org.futo.inputmethod.latin.uix.actions.toActionEditorItems
 import org.futo.inputmethod.latin.uix.actions.toActionMap
 import org.futo.inputmethod.latin.uix.actions.updateSettingsWithNewActions
+import org.futo.inputmethod.latin.uix.PinnedActionsOnLeft
+import org.futo.inputmethod.latin.uix.PinnedActionsSize
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.setSettingBlocking
+import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
@@ -27,6 +31,7 @@ import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
+import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
 import org.futo.inputmethod.latin.uix.urlEncode
 
 val ActionsScreen = UserSettingsMenu(
@@ -149,6 +154,36 @@ val ActionsScreen = UserSettingsMenu(
         },
 
         // TODO: Add a "Show voice input button" toggle
+
+        userSettingToggleDataStore(
+            title = R.string.action_settings_pinned_on_left,
+            subtitle = R.string.action_settings_pinned_on_left_subtitle,
+            setting = PinnedActionsOnLeft
+        ),
+
+        UserSetting(
+            name = R.string.action_settings_pinned_size,
+            subtitle = R.string.action_settings_pinned_size_subtitle
+        ) {
+            val context = LocalContext.current
+            val size = useDataStoreValue(PinnedActionsSize)
+            val labelSmall = stringResource(R.string.action_settings_pinned_size_small)
+            val labelNormal = stringResource(R.string.action_settings_pinned_size_normal)
+            val labelLarge = stringResource(R.string.action_settings_pinned_size_large)
+            DropDownPickerSettingItem(
+                label = stringResource(R.string.action_settings_pinned_size),
+                options = listOf(0, 1, 2),
+                selection = size,
+                onSet = { context.setSettingBlocking(PinnedActionsSize.key, it) },
+                getDisplayName = { v ->
+                    when(v) {
+                        0 -> labelSmall
+                        2 -> labelLarge
+                        else -> labelNormal
+                    }
+                }
+            )
+        },
 
         userSettingNavigationItem(
             title = R.string.action_editor_title,

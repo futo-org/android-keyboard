@@ -384,6 +384,13 @@
     <string name="action_settings_quick_option_language_switch_key">Language switch key</string>
     <string name="action_settings_quick_option_language_switch_key_subtitle">Replace the emoji key with a language switch key. Go to “Edit Actions” to put something else.</string>
     <string name="action_settings_action_settings">Action Settings</string>
+    <string name="action_settings_pinned_on_left">Pinned actions on left side</string>
+    <string name="action_settings_pinned_on_left_subtitle">Show pinned actions (e.g. microphone) to the left of suggestions instead of the right</string>
+    <string name="action_settings_pinned_size">Pinned action button size</string>
+    <string name="action_settings_pinned_size_subtitle">Adjust the size of pinned action buttons in the suggestion bar</string>
+    <string name="action_settings_pinned_size_small">Small</string>
+    <string name="action_settings_pinned_size_normal">Normal</string>
+    <string name="action_settings_pinned_size_large">Large</string>
 
     <!-- Keyboard's size settings -->
     <string name="size_settings_title">Resize Keyboard</string>
