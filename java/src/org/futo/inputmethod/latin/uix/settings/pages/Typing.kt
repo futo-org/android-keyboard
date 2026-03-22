@@ -84,6 +84,7 @@ import kotlinx.coroutines.delay
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.engine.IMESettingsMenu
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.SwipeModelSetting
 import org.futo.inputmethod.latin.settings.LongPressKey
 import org.futo.inputmethod.latin.settings.LongPressKeyLayoutSetting
 import org.futo.inputmethod.latin.settings.Settings
@@ -807,6 +808,12 @@ val TypingSettingsMenu = UserSettingsMenu(
                 AutoSpacesSetting()
             }
         ),
+
+        userSettingToggleDataStore(
+            title = R.string.typing_settings_swipe_model,
+            setting = SwipeModelSetting
+        ),
+
         userSettingToggleSharedPrefs(
             title = R.string.typing_settings_swipe,
             subtitle = R.string.typing_settings_swipe_subtitle,

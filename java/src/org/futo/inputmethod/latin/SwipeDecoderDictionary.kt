@@ -2,12 +2,15 @@ package org.futo.inputmethod.latin
 
 import android.content.Context
 import android.util.Log
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
+import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.ml.inference.SwipeDecoder
 import java.io.File
 import java.util.ArrayList
@@ -19,6 +22,8 @@ data class Inputs(
     val y: FloatArray,
     val t: FloatArray
 )
+
+val SwipeModelSetting = SettingsKey(booleanPreferencesKey("_experimental_swipe_model"), true)
 
 class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Dictionary("swipe", locale) {
     companion object {
@@ -142,7 +147,9 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         weightForLocale: Float,
         inOutWeightOfLangModelVsSpatialModel: FloatArray?
     ): ArrayList<SuggestedWords.SuggestedWordInfo>? {
-        Log.d("SwipeDecoderDictionary", "isBatchMode=${composedData.mIsBatchMode} inputPointerSize=${composedData.mInputPointers.pointerSize} typedWord=${composedData.mTypedWord}")
+        if(context.getSetting(SwipeModelSetting) == false) return null
+
+        //Log.d("SwipeDecoderDictionary", "isBatchMode=${composedData.mIsBatchMode} inputPointerSize=${composedData.mInputPointers.pointerSize} typedWord=${composedData.mTypedWord}")
         if(!composedData.mIsBatchMode && composedData.mInputPointers.pointerSize == 0 && composedData.mTypedWord.isEmpty()) {
             return getPredictions(
                 composedData,
