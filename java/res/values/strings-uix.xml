@@ -69,6 +69,7 @@
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_clear_unpinned_items_button">Clear</string>
     <string name="action_clipboard_manager_clear_clipboard">Clear clipboard</string>
+    <string name="action_clipboard_manager_search">Search clipboard&#8230;</string>
     <string name="action_clipboard_manager_error_device_locked_title">Device Locked</string>
     <string name="action_clipboard_manager_error_device_locked_text">Please unlock your device to access clipboard history</string>
     <string name="action_clipboard_manager_error_general_title">Clipboard Error</string>
