@@ -168,5 +168,19 @@ SKK Development Team <skk@ring.gr.jp>""",
         "https://zilluzion.art/",
         "Copyright (c) 2025 zilluzion",
         License.Proprietary
+    ),
+    TP(
+        "RimeJNI",
+        "Chinese input engine wrapper - RimeJNI",
+        "https://github.com/AstroNot233/RimeJni",
+        "Copyright (c) 2026 Astronot233",
+        License.MIT
+    ),
+    TP(
+        "RIME",
+        "Chinese input engine - RIME",
+        "https://rime.im/",
+        "Copyright (c) 2014, RIME Developers",
+        License.BSD3
     )
 )
