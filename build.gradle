@@ -309,7 +309,8 @@ android {
             ]
             java.srcDirs = ['common/src', 'java/src']
             manifest.srcFile 'java/AndroidManifest.xml'
-            assets.srcDirs = ['java/assets']
+            assets.srcDirs = ['java/assets', 'swipe-precompiled/assets']
+            jniLibs.srcDirs = ['swipe-precompiled/jniLibs']
         }
 
         playstore {

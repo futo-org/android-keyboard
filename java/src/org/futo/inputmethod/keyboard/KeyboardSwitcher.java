@@ -38,6 +38,7 @@ import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.RichInputMethodSubtype;
 import org.futo.inputmethod.latin.Subtypes;
+import org.futo.inputmethod.latin.SwipeDecoderDictionary;
 import org.futo.inputmethod.latin.WordComposer;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.settings.LongPressKeySettings;
@@ -213,6 +214,7 @@ public final class KeyboardSwitcher implements SwitchActions {
         final Keyboard oldKeyboard = keyboardView.getKeyboard();
         final Keyboard newKeyboard = mKeyboardLayoutSet.getKeyboard(element);
         keyboardView.setKeyboard(newKeyboard);
+        SwipeDecoderDictionary.updateKeyboard(newKeyboard);
         keyboardView.setKeyPreviewPopupEnabled(
                 currentSettingsValues.mKeyPreviewPopupOn,
                 currentSettingsValues.mKeyPreviewPopupDismissDelay);

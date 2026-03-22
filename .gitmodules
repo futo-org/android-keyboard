@@ -16,3 +16,6 @@
 [submodule "java/res-large"]
 	path = java/res-large
 	url = https://gitlab.futo.org/keyboard/keyboard-large-resources.git
+[submodule "swipe-precompiled"]
+	path = swipe-precompiled
+	url = git@gitlab.futo.org:keyboard/swipe-precompiled.git

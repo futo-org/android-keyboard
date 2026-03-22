@@ -87,6 +87,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private static final Class<?>[] DICT_FACTORY_METHOD_ARG_TYPES =
             new Class[] { Context.class, Locale.class, File.class, String.class, String.class };
 
+
+    public static SwipeDecoderDictionary swipeDecoderDictionary = null;
+
     private LruCache<String, Boolean> mValidSpellingWordReadCache;
     private LruCache<String, Boolean> mValidSpellingWordWriteCache;
 
@@ -326,6 +329,19 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             @Nullable final String account,
             final String dictNamePrefix,
             @Nullable final DictionaryInitializationListener listener) {
+
+        Locale englishLocale = null;
+        for(Locale locale : newLocales) {
+            if(locale.getLanguage().equals("en")) {
+                englishLocale = locale;
+                break;
+            }
+        }
+
+        if(englishLocale != null && DictionaryFacilitatorImpl.swipeDecoderDictionary == null) {
+            DictionaryFacilitatorImpl.swipeDecoderDictionary = new SwipeDecoderDictionary(context, englishLocale);
+        }
+
         final HashMap<Locale, ArrayList<String>> existingDictionariesToCleanup = new HashMap<>();
         // TODO: Make subDictTypesToUse configurable by resource or a static final list.
         final HashSet<String> subDictTypesToUse = new HashSet<>();
@@ -793,6 +809,26 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
 
         updateDictionaryGroupWeights();
+
+        if(DictionaryFacilitatorImpl.swipeDecoderDictionary != null) {
+            SwipeDecoderDictionary.updateKeyboard(keyboard);
+
+            if(SwipeDecoderDictionary.canBeUsed()) {
+                final ArrayList<SuggestedWordInfo> dictionarySuggestions =
+                        DictionaryFacilitatorImpl.swipeDecoderDictionary.getSuggestions(composedData, ngramContext,
+                                proximityInfoHandle, settingsValuesForSuggestion, sessionId,
+                                0.0f, weightOfLangModelVsSpatialModel);
+
+                if (dictionarySuggestions != null) {
+                    suggestionResults.addAll(dictionarySuggestions);
+                    if (null != suggestionResults.mRawSuggestions) {
+                        suggestionResults.mRawSuggestions.addAll(dictionarySuggestions);
+                    }
+
+                    return suggestionResults;
+                }
+            }
+        }
 
         for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
             for (final String dictType : ALL_DICTIONARY_TYPES) {

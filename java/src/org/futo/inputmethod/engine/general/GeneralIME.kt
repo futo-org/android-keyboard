@@ -24,6 +24,7 @@ import org.futo.inputmethod.event.InputTransaction
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.DictionaryFacilitator
+import org.futo.inputmethod.latin.DictionaryFacilitatorImpl
 import org.futo.inputmethod.latin.DictionaryFacilitatorProvider
 import org.futo.inputmethod.latin.NgramContext
 import org.futo.inputmethod.latin.RichInputMethodManager
@@ -31,6 +32,7 @@ import org.futo.inputmethod.latin.Subtypes.switchToNextLanguage
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
+import org.futo.inputmethod.latin.SwipeDecoderDictionary
 import org.futo.inputmethod.latin.WordComposer
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
@@ -407,7 +409,16 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     var lmUpdateJob: Job? = null
     private fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
         // This method returns null for us if LM is disabled
-        val predictionInputValues = languageModelFacilitator.makePredictionInputValues(inputStyle)
+        var predictionInputValues = languageModelFacilitator.makePredictionInputValues(inputStyle)
+
+
+        // temporary logic to force swipe model
+        if(SwipeDecoderDictionary.canBeUsed() && DictionaryFacilitatorImpl.swipeDecoderDictionary != null) {
+            if(inputStyle == SuggestedWords.INPUT_STYLE_PREDICTION || inputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH || inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH ||
+                !inputLogic.mWordComposer.isComposingWord) {
+                predictionInputValues = null
+            }
+        }
 
         var dictResult: SuggestedWords? = null
         var lmResult: ArrayList<SuggestedWordInfo>? = null

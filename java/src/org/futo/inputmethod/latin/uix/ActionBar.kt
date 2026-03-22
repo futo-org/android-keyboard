@@ -296,23 +296,28 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         else -> LocalKeyboardScheme.current.onSurfaceVariant
     }
 
-    val topSuggestionIcon = painterResource(id = R.drawable.transformer_suggestion)
-    val textButtonModifier = when (wordInfo?.mOriginatesFromTransformerLM) {
-        true -> Modifier.drawBehind {
-            with(topSuggestionIcon) {
-                val iconSize = topSuggestionIcon.intrinsicSize
+    val iconToUse = when {
+        wordInfo?.mOriginatesFromTransformerLM == true -> painterResource(id = R.drawable.transformer_suggestion)
+        wordInfo?.mOriginatesFromSwipeModel    == true -> painterResource(id = R.drawable.swipemodel_indicator)
+        else -> null
+    }
+    val textButtonModifier = if(iconToUse != null) {
+        Modifier.drawBehind {
+            with(iconToUse) {
+                val iconSize = iconToUse.intrinsicSize
                 translate(
                     left = (size.width - iconSize.width) / 2.0f,
-                    top = size.height - iconSize.height * 2.0f
+                    top = size.height - iconSize.height * (if(wordInfo?.mOriginatesFromSwipeModel == true) 1.3f else 2.0f)
                 ) {
                     draw(
-                        topSuggestionIcon.intrinsicSize,
+                        iconToUse.intrinsicSize,
                         colorFilter = ColorFilter.tint(color = color)
                     )
                 }
             }
         }
-        else -> Modifier
+    } else {
+        Modifier
     }
 
     val textStyle = when(isAutocorrect) {
