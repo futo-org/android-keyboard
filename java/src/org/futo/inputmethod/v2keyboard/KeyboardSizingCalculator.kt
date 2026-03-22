@@ -46,7 +46,11 @@ sealed class ComputedKeyboardSize(
     val height: Int,
     val padding: Rect,
     val singleRowHeight: Int = height / 4
-)
+) {
+    override fun toString(): String {
+        return "${this.javaClass.simpleName}(width=$width height=$height padding=$padding singleRowHeight=$singleRowHeight)"
+    }
+}
 
 class RegularKeyboardSize(
     width: Int, height: Int, padding: Rect, singleRowHeight: Int = height / 4
@@ -512,13 +516,16 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
             savedSettings.currentMode == KeyboardMode.Floating -> {
                 val singularRowHeightFloat = dp(savedSettings.floatingHeightDp.guardNaN(240.0f)) / 4.0f
                 val recommendedHeightFloat = singularRowHeightFloat * numRows
+
+                val width = dp(savedSettings.floatingWidthDp).coerceInLoosely(dp(48), displayWidth)
+                val height = recommendedHeightFloat.toInt().coerceInLoosely(dp(88), displayHeight)
                 FloatingKeyboardSize(
                     bottomOrigin = Pair(
-                        dp(savedSettings.floatingBottomOriginDp.first),
-                        dp(savedSettings.floatingBottomOriginDp.second)
+                        dp(savedSettings.floatingBottomOriginDp.first).coerceInLoosely(0, displayWidth - width),
+                        dp(savedSettings.floatingBottomOriginDp.second).coerceInLoosely(0, displayHeight - height)
                     ),
-                    width = dp(savedSettings.floatingWidthDp).coerceInLoosely(dp(48), displayWidth),
-                    height = recommendedHeightFloat.toInt().coerceInLoosely(dp(88), displayHeight),
+                    width = width,
+                    height = height,
                     singleRowHeight = singularRowHeightFloat.roundToInt(),
                     padding = padding
                 )
