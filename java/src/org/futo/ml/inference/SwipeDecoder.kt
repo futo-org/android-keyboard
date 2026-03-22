@@ -1,5 +1,8 @@
 package org.futo.ml.inference
 
+import androidx.annotation.Keep
+import org.futo.inputmethod.annotations.ExternallyReferenced
+
 
 private var libraryLoaded = false
 
@@ -30,6 +33,8 @@ class SwipeDecoder(
         libraryLoaded
     }
 
+    @Keep
+    @ExternallyReferenced
     data class Result(val word: String, val score: Float, val ctcScore: Float = 0f, val lmScore: Float = 0f)
 
     /** Per-stage timing (microseconds) from the most recent recognize() call. */
