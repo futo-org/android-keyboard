@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin.uix
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -393,6 +394,7 @@ fun SuggestedWords.getInfoOrNull(idx: Int): SuggestedWordInfo? = try {
 
 fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?): SuggestionLayout {
     val isGestureBatch = words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+    val isSwipeTail = words.mInputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
 
     val typedWord = words.getInfoOrNull(SuggestedWords.INDEX_OF_TYPED_WORD)?.let {
         if(it.kind == KIND_TYPED) { it } else { null }
@@ -419,6 +421,10 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
             // Do not include the verbatim word when autocorrecting to avoid such duplicate word situation:
             // [ hid | **his** | "hid" ]
             && (isGestureBatch || autocorrectMatch == null || typedWord == null || it.mWord != typedWord.mWord)
+    }.toMutableList()
+
+    if(isSwipeTail && sortedMatches.size > 1) {
+        sortedMatches.removeAt(0)
     }
 
     val areSuggestionsClueless = (autocorrectMatch ?: sortedMatches.getOrNull(0))?.let {
