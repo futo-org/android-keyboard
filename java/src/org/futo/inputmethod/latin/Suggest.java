@@ -487,6 +487,7 @@ public final class Suggest {
                 wordInfo.mAutoCommitFirstWordConfidence);
 
         result.mOriginatesFromTransformerLM = wordInfo.mOriginatesFromTransformerLM;
+        result.mOriginatesFromSwipeModel    = wordInfo.mOriginatesFromSwipeModel;
 
         return result;
     }
