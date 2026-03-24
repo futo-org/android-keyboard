@@ -84,7 +84,9 @@ import kotlinx.coroutines.delay
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.engine.IMESettingsMenu
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.SwipeLanguageModelSetting
 import org.futo.inputmethod.latin.SwipeModelSetting
+import org.futo.inputmethod.latin.SwipeVocabulary2Setting
 import org.futo.inputmethod.latin.settings.LongPressKey
 import org.futo.inputmethod.latin.settings.LongPressKeyLayoutSetting
 import org.futo.inputmethod.latin.settings.Settings
@@ -812,6 +814,16 @@ val TypingSettingsMenu = UserSettingsMenu(
         userSettingToggleDataStore(
             title = R.string.typing_settings_swipe_model,
             setting = SwipeModelSetting
+        ),
+
+        userSettingToggleDataStore(
+            title = R.string.typing_settings_swipe_vocab2,
+            setting = SwipeVocabulary2Setting
+        ),
+
+        userSettingToggleDataStore(
+            title = R.string.typing_settings_swipe_language_model,
+            setting = SwipeLanguageModelSetting
         ),
 
         userSettingToggleSharedPrefs(

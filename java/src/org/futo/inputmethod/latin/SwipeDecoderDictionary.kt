@@ -17,13 +17,18 @@ import java.util.ArrayList
 import java.util.Locale
 
 @Serializable
-data class Inputs(
-    val x: FloatArray,
-    val y: FloatArray,
-    val t: FloatArray
+data class Input(
+    val x: Float,
+    val y: Float,
+    val t: Float
 )
 
+@Serializable
+data class Inputs(val inputs: List<Input>)
+
 val SwipeModelSetting = SettingsKey(booleanPreferencesKey("_experimental_swipe_model"), true)
+val SwipeVocabulary2Setting = SettingsKey(booleanPreferencesKey("_experimental_swipe_vocab2"), true)
+val SwipeLanguageModelSetting = SettingsKey(booleanPreferencesKey("_experimental_swipe_language_model"), true)
 
 class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Dictionary("swipe", locale) {
     companion object {
@@ -57,20 +62,57 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         if(locale.language != "en") throw IllegalStateException("SwipeDecoderDictionary is only for English")
     }
 
-    val decoder = run {
+    var decoderHasLM = false
+    var decoderHasVocab2 = false
+    var decoder: SwipeDecoder? = null
+
+    private fun getOrInitDecoder(): SwipeDecoder {
+        val needLM = context.getSetting(SwipeLanguageModelSetting)
+        val needVocab2 = context.getSetting(SwipeVocabulary2Setting)
+        decoder?.let {
+            if(decoderHasLM == needLM && decoderHasVocab2 == needVocab2) {
+                return it
+            } else {
+                it.close()
+                decoder = null
+            }
+        }
+
         val swipeModelPath = getModelPath()
         val languageModelPath = getLMPath()
-        val vocabPath = getVocabPath()
-        SwipeDecoder(swipeModelPath, vocabPath, lmModelPath=languageModelPath, lmVocabPath=vocabPath)
+        val vocabPath = getVocabPath(needVocab2)
+        decoderHasLM = needLM
+        decoderHasVocab2 = needVocab2
+        val decoder = if(needLM) {
+            SwipeDecoder(
+                swipeModelPath,
+                vocabPath,
+                lmModelPath = languageModelPath,
+                lmVocabPath = vocabPath,
+                lmAlpha = 1.0f
+            )
+        } else {
+            SwipeDecoder(
+                swipeModelPath,
+                vocabPath
+            )
+        }
+
+        this.decoder = decoder
+        return decoder
     }
 
-    private fun getVocabPath(): String {
+
+
+    private fun getVocabPath(vocab2: Boolean): String {
         val assets = context.assets
         val tmpDir = context.codeCacheDir
         val vocabFile = File(tmpDir, "swipe_vocab.txt")
 
         if(vocabFile.exists()) vocabFile.delete()
-        assets.open("vocabulary.txt").use { inputStream ->
+
+        val fname = if(vocab2) "vocabulary2.txt" else "vocabulary.txt"
+        assets.open(fname).use { inputStream ->
             vocabFile.outputStream().use { outputStream ->
                 inputStream.copyTo(outputStream)
             }
@@ -118,13 +160,13 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         composedData: ComposedData,
         ngramContext: NgramContext?
     ): ArrayList<SuggestedWords.SuggestedWordInfo>? {
-        Log.d("SwipeDecoderDictionary", "getPredictions called")
+        val decoder = getOrInitDecoder()
         val wordsContext = ngramContext?.fullContext?.split(' ')?.takeLast(10) ?: emptyList()
         decoder.setContext(wordsContext)
 
         val results = decoder.predictNext()
 
-        Log.d("SwipeDecoderDictionary", "getPredictions results=${results}")
+        //Log.d("SwipeDecoderDictionary", "getPredictions results=${results}")
         val list = ArrayList<SuggestedWords.SuggestedWordInfo>(results.size)
         results.forEach {
             list.add(SuggestedWords.SuggestedWordInfo(
@@ -180,15 +222,29 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         val times = pointers.times.take(count).map { it.toFloat() }.toFloatArray()
 
         val wordsContext = ngramContext?.fullContext?.split(' ')?.takeLast(10) ?: emptyList()
+        val decoder = getOrInitDecoder()
         decoder.setContext(wordsContext)
 
         val results = decoder.recognize(xCoords, yCoords, times)
 
 
-        //val inputs = Inputs(xCoords, yCoords, times)
-        //Log.d("SwipeDecoderDictionary", "Inputs = ${Json.encodeToString(Inputs.serializer(), inputs)}")
-        //Log.d("SwipeDecoderDictionary", "transformed x ${xCoords[0]}")
-        //Log.d("SwipeDecoderDictionary", "transformed y ${yCoords[0]}")
+        if(false) {
+            val inputs = Inputs(xCoords.zip(yCoords.zip(times)).map {
+                val x = it.first
+                val y = it.second.first
+                val t = it.second.second
+
+                Input(x, y, t)
+            })
+            Log.d(
+                "SwipeDecoderDictionary",
+                "Inputs = ${Json.encodeToString(Inputs.serializer(), inputs)}"
+            )
+            Log.d("SwipeDecoderDictionary", "transformed fx ${xCoords[0]}")
+            Log.d("SwipeDecoderDictionary", "transformed fy ${yCoords[0]}")
+            Log.d("SwipeDecoderDictionary", "transformed lx ${xCoords.last()}")
+            Log.d("SwipeDecoderDictionary", "transformed ly ${yCoords.last()}")
+        }
 
         val list = ArrayList<SuggestedWords.SuggestedWordInfo>(results.size)
         results.forEach {
