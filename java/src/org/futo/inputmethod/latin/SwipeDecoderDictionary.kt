@@ -87,6 +87,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             SwipeDecoder(
                 swipeModelPath,
                 vocabPath,
+                useExpansion = true,
                 lmModelPath = languageModelPath,
                 lmVocabPath = vocabPath,
                 lmAlpha = 1.0f
@@ -94,7 +95,8 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         } else {
             SwipeDecoder(
                 swipeModelPath,
-                vocabPath
+                vocabPath,
+                useExpansion = true,
             )
         }
 
