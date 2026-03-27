@@ -361,6 +361,12 @@ android {
         mlModelBinding true
         buildConfig true
     }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
