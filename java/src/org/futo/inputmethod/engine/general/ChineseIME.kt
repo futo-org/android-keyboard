@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import icu.astronot233.rime.DeployStage
 import icu.astronot233.rime.Rime
@@ -55,6 +56,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.userSettingToggleDataStore
 import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.latin.utils.toEnumOrNull
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
@@ -77,13 +79,15 @@ object ChineseIMESettings {
         val rimeId: String
     ) {
         // These must not be renamed, or the existing setting value for users will break
-        FullPinyin("全拼", "Full Pinyin", "luna_pinyin"),
-        Natural("自然碼雙拼", "Double Pinyin", "double_pinyin"),
-        ABC("智能ABC雙拼", "Double Pinyin - ABC", "double_pinyin_abc"),
-        FlyPY("小鶴雙拼", "Double Pinyin - flyPY", "double_pinyin_flypy"),
-        MS("微軟雙拼", "Double Pinyin - MS", "double_pinyin_mspy"),
-        PYJJ("拼音加加雙拼", "Double Pinyin - PYJJ", "double_pinyin_pyjj"),
-        ST("四通雙拼", "Double Pinyin - ST", "double_pinyin_st");
+        Full("全拼", "Full Pinyin", "rime_ice"),
+        Double("自然码双拼", "Double Pinyin - Natural", "double_pinyin"),
+        Double_abc("智能 ABC 双拼", "Double Pinyin - ABC", "double_pinyin_abc"),
+        Double_mspy("微软双拼", "Double Pinyin - MS", "double_pinyin_mspy"),
+        Double_sogou("搜狗双拼", "Double Pinyin - Sogou", "double_pinyin_sogou"),
+        Double_flypy("小鹤双拼", "Double Pinyin - FlyPY", "double_pinyin_flypy"),
+        Double_ziguang("紫光双拼", "Double Pinyin - Ziguang", "double_pinyin_ziguang"),
+        Double_jiajia("拼音加加双拼", "Double Pinyin - Jiajia", "double_pinyin_jiajia"),
+//        Full_t9("中文九键", "Full Pinyin - 9 Tiles", "t9"); // TODO: Supporte 9-Tile Layout
     }
 
     internal fun initialPatch(pattern: String, substitution: String, twoWay: Boolean)
@@ -125,6 +129,11 @@ object ChineseIMESettings {
         }
     }
 
+    val AdvancedMode = SettingsKey(
+        booleanPreferencesKey("Advanced_mode"),
+        false
+    )
+
     val SimplificationSetting = SettingsKey(
         stringPreferencesKey("ChineseIME_simplification"),
         ChineseSimplificationMode.ByLanguage.name
@@ -132,7 +141,7 @@ object ChineseIMESettings {
 
     val PinyinSchemeSetting = SettingsKey(
         stringPreferencesKey("ChineseIME_pinyin_scheme"),
-        PinyinScheme.FullPinyin.name
+        PinyinScheme.Full.name
     )
 
     val FuzzyPinyinSetting = SettingsKey(
@@ -146,6 +155,11 @@ object ChineseIMESettings {
         searchTags = R.string.chinese_setting_search_tags,
         navPath = "ime/zh", registerNavPath = true,
         settings = listOf(
+                userSettingToggleDataStore(title = R.string.chinese_setting_advanced_mode,
+                    subtitle = R.string.chinese_setting_advanced_mode_description,
+                    setting = AdvancedMode
+                )
+            ) + listOf(
             UserSetting(R.string.chinese_setting_simplification) {
                 val context = LocalContext.current
                 val (setting, setSetting) = useDataStore(SimplificationSetting)
@@ -155,29 +169,6 @@ object ChineseIMESettings {
                     setting.toEnumOrNull<ChineseSimplificationMode>() ?: ChineseSimplificationMode.ByLanguage,
                     { setSetting(it.name) },
                     { context.getString(it.stringResource) }
-                )
-            },
-
-            UserSetting(R.string.chinese_setting_pinyin_scheme) {
-                val context = LocalContext.current
-                val (setting, setSetting) = useDataStore(PinyinSchemeSetting)
-
-                val availableEntries = remember {
-                    val sharedDir = ChineseIME.getShared(context)
-                    val files = (sharedDir.listFiles() ?: emptyArray()).map { it.name.split('.').first() }.toSet()
-                    PinyinScheme.entries.filter {
-                        files.contains(it.rimeId) || it == PinyinScheme.FullPinyin
-                    }
-                }
-                DropDownPickerSettingItem<PinyinScheme>(
-                    stringResource(R.string.chinese_setting_pinyin_scheme),
-                    availableEntries,
-                    setting.toEnumOrNull<PinyinScheme>() ?: PinyinScheme.FullPinyin,
-                    { setSetting(it.name) },
-                    { when(context.resources.configuration.locale.language) {
-                        "zh" -> it.displayNameZH
-                        else -> it.displayNameEN
-                    } }
                 )
             },
 
@@ -226,8 +217,557 @@ class InputKeeper() {
     }
 }
 
-class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAccessor, PreEditListener {
+class ChineseRimeIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAccessor, PreEditListener {
     private val TAG = "ChineseIME (rime)"
+
+    private val rime: Rime
+    private val connect get() = helper.getCurrentInputConnection()
+    private val coroScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val expandableUiCfg = ExpandableSuggestionBarConfiguration(true, false)
+    private val maxBufferLength = 0x100000
+    private val rawInput = InputKeeper()
+
+    private enum class EditingState(val active: Boolean) {
+        NotEditing(false),
+        Editing(true),
+        Finishing(false)
+    }
+    private var editingState = EditingState.NotEditing
+
+    companion object {
+        @JvmStatic
+        fun getRimeDir(context: Context) = context.getExternalFilesDir("rime")
+                ?: throw IllegalStateException("Failed to access ExternalFilesDir!")
+
+        @JvmStatic
+        fun getShared(context: Context) = File(getRimeDir(context), "shared")
+
+        @JvmStatic
+        fun getUser(context: Context) = File(getRimeDir(context), "user")
+
+        val PreviouslyExtractedDictionaryName = SettingsKey(
+            stringPreferencesKey("ChineseDictionaryExtractedValue"),
+            ""
+        )
+        var localPrevExtractedDictionaryName: String? = null
+
+        fun resetSharedFromResources(context: Context, scope: CoroutineScope): Boolean {
+            val pref = FileKind.Dictionary.preferenceKeyFor("zh")
+            val namePref = FileKind.Dictionary.namePreferenceKeyFor("zh")
+            val filePath = context.getSetting(pref, "")
+            val file = File(context.applicationContext.getExternalFilesDir(null), filePath)
+
+            val name = context.getSetting(namePref, "?")
+
+
+
+            if((localPrevExtractedDictionaryName ?: context.getSetting(PreviouslyExtractedDictionaryName)) == name) {
+                return false
+            }
+
+            try {
+                val shared = getShared(context)
+                shared.walkBottomUp()
+                    .fold(true) { res, it -> (it == shared || it.delete() || !it.exists()) && res }
+
+                // We are intentionally checking this only after deleting the shared directory
+                // This is because if the user deletes the dictionary file, we want to apply
+                // the deletion (TODO: It doesn't apply)
+                if(filePath.isEmpty()) return true
+                if(!file.exists()) return true
+
+                ZipFileHelper.extract(file, shared)
+
+                return true
+            } finally {
+                localPrevExtractedDictionaryName = name
+                scope.launch(Dispatchers.IO) {
+                    context.setSetting(PreviouslyExtractedDictionaryName.key, name)
+                }
+            }
+        }
+    }
+
+    init {
+        val shared = getShared(helper.context)
+        val user = getUser(helper.context)
+
+        if(!shared.exists() || !user.exists()) {
+            shared.mkdirs()
+            user.mkdirs()
+        }
+
+        rime = Rime(shared.path, user.path, helper.context.packageName)
+    }
+
+    fun requestTakeOver(who: Any): Pair<Rime?, CoroutineScope?> {
+        Log.d(TAG, "$who tries to take over")
+        return Pair(rime, coroScope)
+    }
+
+    private fun handleBypassMessage(x11Code: Int, mask: Int) {
+        when (x11Code) {
+            XK_BackSpace -> sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
+            XK_Tab       -> sendDownUpKeyEvent(KeyEvent.KEYCODE_TAB, 0)
+            XK_Linefeed  -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
+            XK_Return    -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
+            else -> {
+                if (rime.preeditFlow.value.text.isEmpty() || editingState.active) {
+                    connect?.commitText(String(Character.toChars(x11Code)), 1)
+                } else {
+                    coroScope.launch {
+                        rime.commitComposition()
+                        rime.processX11Code(x11Code, mask)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun subscribeToRimeMessage() = rime.messageFlow.onEach { msg -> when (msg) {
+        is RimeMessage.Deploy -> when (msg.value) {
+            DeployStage.Unknown -> Log.e(TAG, "Deploy: Failed")
+            DeployStage.Startup -> Log.i(TAG, "Deploy: Startup")
+            DeployStage.Success -> {
+                Log.i(TAG, "Deploy: Success")
+                coroScope.launch {
+                    ChineseIMESettings.schemaList = rime.getSchemata().also {
+                        Log.d(TAG, "Schemas: ${it.joinToString { it.toString() }} ")
+                    }
+                }
+            }
+            else -> {}
+        }
+        is RimeMessage.Sync -> when (msg.value) {
+            SyncStage.Unknown -> Log.e(TAG, "Sync: Failed")
+//            SyncStage.Startup ->
+//            SyncStage.Success ->
+            else -> {}
+        }
+        is RimeMessage.Commit -> {
+            connect?.commitText(msg.value, 1)
+        }
+        is RimeMessage.Bypass -> {
+            val (x11Code, mask) = msg.value
+            handleBypassMessage(x11Code, mask)
+        }
+        is RimeMessage.Unknown -> {
+            Log.e(TAG, "Unrecognized error occurred: ${msg.value}")
+        }
+    }}.launchIn(coroScope)
+
+    private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped ->
+        val notEditing = editingState == EditingState.NotEditing
+        if(ped.text.isEmpty() && notEditing) { rawInput.clear() }
+
+        helper.updateUiInputState(ped.text.isEmpty() && notEditing)
+        helper.setPreedit(FloatingPreEdit.build(ped.text, this, emptyMap(),rawInput.text))
+    }.launchIn(coroScope)
+
+    override fun onStartEdit() {
+        editingState = EditingState.Editing
+    }
+
+    // This assumes that the only valid characters for input simulation are ASCII letters
+    // In particular, some characters like space will break the input by ending composition
+    // (Maybe there are other valid symbols potentially?)
+    private fun safeguardInputStringForSimulation(input: String): String {
+        var string = input
+        string = string.filter { it in 'a'..'z' || it in 'A'..'Z' }
+        return string
+    }
+
+    private var updateEditJob: Job? = null
+    override fun onUpdateEdit(string: String) {
+        updateEditJob?.cancel()
+        updateEditJob = coroScope.launch {
+            ensureActive()
+            rime.clearComposition()
+
+            val converted = safeguardInputStringForSimulation(string)
+            ensureActive()
+            rime.simulateKeySequence(converted)
+            rawInput.replace(converted)
+        }
+    }
+
+    private var waitingToSelect: Pair<String, Int>? = null
+    override fun onFinishEdit(string: String, candidateWord: String?, candidateIndex: Int?) {
+        if(!editingState.active) return
+        editingState = EditingState.Finishing
+
+        coroScope.launch {
+            rime.clearComposition()
+
+            if(candidateWord != null && candidateIndex != null) {
+                // TODO: This is kind of a buggy way of doing it
+                waitingToSelect = candidateWord to candidateIndex
+            }
+
+            val converted = safeguardInputStringForSimulation(string)
+            rime.simulateKeySequence(converted)
+            rawInput.replace(converted)
+
+            editingState = EditingState.NotEditing
+
+            if(string.isEmpty()) {
+                showSuggestionStrip(
+                    SuggestedWords(
+                        ArrayList(emptyList()),
+                        ArrayList(emptyList()),
+                        null,
+                        false,
+                        false,
+                        false,
+                        0,
+                        0,
+                        0
+                    )
+                )
+            }
+        }
+    }
+
+    private fun subscribeToRimeCandidates() = rime.candidatesFlow.onEach { cdd ->
+        waitingToSelect?.let { sel ->
+            if(cdd.getOrNull(sel.second)?.text == sel.first) {
+                if(rime.selectCandidate(sel.second)) {
+                    waitingToSelect = null
+                    return@onEach
+                } else {
+                    Log.e(TAG, "Error selecting candidate!")
+                }
+            }
+        }
+
+        val suggestWordList = cdd.mapIndexed { index, candidate -> SuggestedWordInfo(
+            candidate.text,
+            "",
+            Int.MAX_VALUE - index,
+            1,
+            null,
+            SuggestedWordInfo.NOT_AN_INDEX,
+            SuggestedWordInfo.NOT_A_CONFIDENCE,
+            index,
+            candidate.comment
+        ) }.let { ArrayList(it) }
+
+        // Don't flicker an empty suggest bar when editing
+        if(editingState != EditingState.NotEditing && suggestWordList.isEmpty()) {
+            return@onEach
+        }
+
+        showSuggestionStrip(
+            SuggestedWords(
+                suggestWordList,
+                suggestWordList,
+                null,
+                false,
+                false,
+                false,
+                0,
+                0,
+                0
+            )
+        )
+    }.launchIn(coroScope)
+
+    override fun onCreate() {
+        if (!rime.startup(false))
+            Log.e(TAG, "Error occurred!")
+        subscribeToRimeMessage()
+        subscribeToRimePreedit()
+        subscribeToRimeCandidates()
+        blacklist.init()
+    }
+    override fun onDestroy() {
+        helper.lifecycleScope.cancel()
+        coroScope.cancel()
+        rime.shutdown()
+    }
+
+    override fun onStartInput() {
+        if(resetSharedFromResources(helper.context, helper.lifecycleScope)) {
+            coroScope.launch { rime.deploy() }
+        }
+    }
+
+    override fun onFinishInput() {
+        if(editingState.active) return
+        coroScope.launch {
+            waitingToSelect = null
+            rawInput.clear()
+            rime.clearComposition()
+        }
+    }
+
+    override fun onFinishSlidingInput() {
+        // TODO("Unsupported yet")
+    }
+
+    private fun interruptInput(text: CharSequence? = null) {
+        coroScope.launch {
+            rawInput.clear()
+            rime.clearComposition()
+        }
+        connect?.finishComposingText()
+        if (text != null) {
+            connect?.commitText(text, 1)
+        }
+    }
+
+    private fun sendDownUpKeyEvent(keyCode: Int, metaState: Int = 0) {
+        // NOTE: Modified based on InputLogic
+        val eventTime = SystemClock.uptimeMillis()
+        connect?.sendKeyEvent(
+            KeyEvent(
+                eventTime, eventTime,
+                KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE
+            )
+        )
+        connect?.sendKeyEvent(
+            KeyEvent(
+                eventTime, eventTime,
+                KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE
+            )
+        )
+    }
+    private fun triggerIfIsAction(keyCode: Int): Boolean {
+        if (Constants.CODE_ACTION_0 <= keyCode && keyCode <= Constants.CODE_ACTION_MAX) {
+            val actionId: Int = keyCode - Constants.CODE_ACTION_0
+            helper.triggerAction(actionId, false)
+            return true
+        }
+        if (Constants.CODE_ALT_ACTION_0 <= keyCode && keyCode <= Constants.CODE_ALT_ACTION_MAX) {
+            val actionId: Int = keyCode - Constants.CODE_ALT_ACTION_0
+            helper.triggerAction(actionId, true)
+            return true
+        }
+        return false
+    }
+    override fun onEvent(event: Event) {
+        helper.requestCursorUpdate()
+        when (event.eventType) {
+            Event.EVENT_TYPE_INPUT_KEYPRESS,
+            Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
+                if (triggerIfIsAction(event.mKeyCode))
+                    return
+                val x11Code = when (event.mKeyCode) {
+                    Constants.CODE_DELETE -> '\b'.code
+                    Event.NOT_A_KEY_CODE -> event.mCodePoint
+                    else -> return
+                }.let { when (it) {
+                    '\b'.code -> XK_BackSpace
+                    '\t'.code -> XK_Tab
+                    '\n'.code -> XK_Return // Use return instead of linefeed here.
+                    '\r'.code -> XK_Return
+                    else -> it
+                } }
+
+                if(!editingState.active) {
+                    // Only update outside editing state. We cannot update inside editing state,
+                    // because the cursor position is unknown and we assume it's always at the end
+                    if(x11Code == XK_BackSpace) {
+                        rawInput.backspace()
+                    } else if(x11Code == XK_Return || x11Code == ' '.code) {
+                        rawInput.clear()
+                    } else if(event.mKeyCode == Event.NOT_A_KEY_CODE) {
+                        rawInput.append(event.mCodePoint)
+                    }
+
+                    coroScope.launch { rime.processX11Code(x11Code) }
+                } else {
+                    handleBypassMessage(x11Code, 0)
+                }
+            }
+
+            Event.EVENT_TYPE_SUGGESTION_PICKED -> {
+                val suggestion = event.mSuggestedWordInfo ?: return
+                if (suggestion.isKindOf(SuggestedWordInfo.KIND_UNDO)) {
+                    connect?.commitText(suggestion.word, 1)
+                } else {
+                    coroScope.launch {
+                        if(!rime.selectCandidate(suggestion.mCandidateIndex)) {
+                            Log.e(TAG, "Couldn't select candidate")
+                        }
+                    }
+                }
+            }
+
+            Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> {
+                interruptInput(event.mText)
+            }
+
+            Event.EVENT_TYPE_DOWN_UP_KEYEVENT -> {
+                interruptInput()
+                if (event.mX == KeyEvent.META_CTRL_ON) when (event.mKeyCode) {
+                    KeyEvent.KEYCODE_F1 -> {
+
+                    }
+                    KeyEvent.KEYCODE_F2 -> {
+                        Log.d(TAG, "Redeploying...")
+                        coroScope.launch { rime.deploy() }
+                        return
+                    }
+                }
+                sendDownUpKeyEvent(event.mKeyCode, event.mX)
+            }
+
+            else -> {}
+        }
+    }
+
+    private var anchorOutOfDate = true
+    private var anchorLeftCount = 0
+    private var anchorRightCount = 0
+    private val currentAnchorCursor: Pair<Int, Int> get() {
+        if (anchorOutOfDate) {
+            anchorLeftCount = (connect?.getTextBeforeCursor(maxBufferLength, 0) ?: "").length
+            anchorRightCount = (connect?.getTextAfterCursor(maxBufferLength, 0) ?: "").length
+            currentMovingCursor = anchorLeftCount
+            anchorOutOfDate = false
+        }
+        return Pair(anchorLeftCount, anchorRightCount)
+    }
+    private var currentMovingCursor: Int = 0
+    override fun onMovePointer(steps: Int, stepOverWords: Boolean, select: Boolean?) {
+        var meta = 0
+        if (stepOverWords) meta = meta or KeyEvent.META_CTRL_ON
+        if (select == true) meta = meta or KeyEvent.META_SHIFT_ON
+        if(steps < 0) {
+            for(i in 0 until -steps) {
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta)
+            }
+        } else {
+            for(i in 0 until steps) {
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta)
+            }
+        }
+    }
+    override fun onUpWithPointerActive() {
+        // TODO("Unsupported yet")
+    }
+    override fun onMoveDeletePointer(steps: Int) {
+        setNeutralSuggestionStrip()
+        val (lBound, rBound) = currentAnchorCursor
+        currentMovingCursor = when {
+            steps < 0 -> max(0, currentMovingCursor - 1)
+            steps > 0 -> min(lBound + rBound, currentMovingCursor + 1)
+            else -> currentMovingCursor
+        }
+        connect?.setSelection(lBound, currentMovingCursor)
+    }
+    override fun onUpWithDeletePointerActive() {
+        anchorOutOfDate = true
+        val selection: CharSequence? = connect?.getSelectedText(0)
+        if (selection == null) {
+            onUpWithPointerActive()
+            return
+        }
+        coroScope.launch {
+            val preedit = rime.getPreedit()
+            var reserved: String
+            when {
+                preedit.text.endsWith(selection) -> {
+                    reserved = preedit.text.removeSuffix(selection).filterNot { it.isWhitespace() }
+                    connect?.commitText(reserved, 1)
+                }
+                selection.endsWith(preedit.text) -> {
+                    reserved = selection.removeSuffix(preedit.text) as String
+                    sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
+                }
+                else -> {
+                    sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
+                    Log.w(TAG, "Wrong preedit text fetched?")
+                    return@launch
+                }
+            }
+            rawInput.clear()
+            rime.clearComposition()
+            val info = arrayListOf(SuggestedWordInfo(
+                reserved,
+                "",
+                Int.MAX_VALUE,
+                SuggestedWordInfo.KIND_UNDO,
+                null,
+                0,
+                0
+            ))
+            showSuggestionStrip(SuggestedWords(
+                info,
+                null,
+                null,
+                false,
+                false,
+                false,
+                0,
+                0
+            ))
+        }
+    }
+
+    override fun onSwipeLanguage(direction: Int) {
+        switchToNextLanguage(helper.context, direction)
+    }
+
+    private var prevSuggest: SuggestedWords? = null
+    private val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
+    override fun setNeutralSuggestionStrip() {
+        prevSuggest = null
+        helper.setNeutralSuggestionStrip(expandableUiCfg)
+    }
+    override fun showSuggestionStrip(suggestedWords: SuggestedWords?) {
+        val words = suggestedWords?.let { blacklist.filterBlacklistedSuggestions(it) }
+        prevSuggest = words
+        helper.showSuggestionStrip(words, expandableUiCfg)
+    }
+
+    override fun requestSuggestionRefresh() {
+        showSuggestionStrip(null)
+    }
+
+    override fun isGestureHandlingAvailable() : Boolean {
+        return false
+        // TODO("To be supported")
+    }
+
+    override fun onCustomRequest(requestCode: Int): Boolean {
+        return false
+        // TODO("Might never be supported")
+    }
+
+    override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {
+        // TODO("Might never be supported")
+    }
+
+    override fun clearUserHistoryDictionaries() {
+        // TODO("Unsupported yet")
+    }
+
+    override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
+//        TODO("Not yet implemented")
+    }
+    override fun onStartBatchInput() {}
+    override fun onUpdateBatchInput(batchPointers: InputPointers?) {}
+    override fun onEndBatchInput(batchPointers: InputPointers?) {}
+    override fun onCancelBatchInput() {}
+
+// Non-behavior methods {{
+// NOTE: These methods are scheduled to have no behavior
+    override fun onCancelInput() {}
+    override fun onDeviceUnlocked() {}
+    override fun onOrientationChanged() {}
+    override fun onUpdateSelection(oldSelStart: Int, oldSelEnd: Int, newSelStart: Int, newSelEnd: Int, composingSpanStart: Int, composingSpanEnd: Int) {}
+// Non-behavior methods }}
+
+    val debugInfo: String
+        get() = "rawInput=${rawInput.text}"
+}
+
+class ChinesePinyinIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAccessor, PreEditListener {
+    private val TAG = "ChinesePinyinIME"
 
     private val rime: Rime
     private val connect get() = helper.getCurrentInputConnection()
@@ -261,7 +801,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
         @JvmStatic
         fun getRimeDir(context: Context) = context.getExternalFilesDir("rime")
-                ?: throw IllegalStateException("Failed to access ExternalFilesDir!")
+            ?: throw IllegalStateException("Failed to access ExternalFilesDir!")
 
         @JvmStatic
         fun getShared(context: Context) = File(getRimeDir(context), "shared")
@@ -336,7 +876,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             XK_Linefeed  -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
             XK_Return    -> sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0)
             else -> {
-                if (rime.preeditFlow.value.isEmpty() || editingState.active) {
+                if (rime.preeditFlow.value.text.isEmpty() || editingState.active) {
                     connect?.commitText(String(Character.toChars(x11Code)), 1)
                 } else {
                     coroScope.launch {
@@ -371,7 +911,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         is RimeMessage.Commit -> {
             connect?.commitText(msg.value, 1)
         }
-        is RimeMessage.Passby -> {
+        is RimeMessage.Bypass -> {
             val (x11Code, mask) = msg.value
             handlePassByMessage(x11Code, mask)
         }
@@ -382,10 +922,10 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
     private fun subscribeToRimePreedit() = rime.preeditFlow.onEach { ped ->
         val notEditing = editingState == EditingState.NotEditing
-        if(ped.isEmpty() && notEditing) { rawInput.clear() }
+        if(ped.text.isEmpty() && notEditing) { rawInput.clear() }
 
-        helper.updateUiInputState(ped.isEmpty() && notEditing)
-        helper.setPreedit(FloatingPreEdit.build(ped, this, currentTransformation, rawInput.text))
+        helper.updateUiInputState(ped.text.isEmpty() && notEditing)
+        helper.setPreedit(FloatingPreEdit.build(ped.text, this, currentTransformation, rawInput.text))
     }.launchIn(coroScope)
 
     override fun onStartEdit() {
@@ -585,25 +1125,21 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             val simplified = isSimplifiedChinese(locale)
 
             val pinyinScheme = helper.context.getSetting(ChineseIMESettings.PinyinSchemeSetting).toEnumOrNull<ChineseIMESettings.PinyinScheme>()
-                ?: ChineseIMESettings.PinyinScheme.FullPinyin
+                ?: ChineseIMESettings.PinyinScheme.Full
             val schema = when(layoutHint) {
                 "qwerty" -> {
-                    when {
-                        pinyinScheme == ChineseIMESettings.PinyinScheme.FullPinyin -> when {
-                            simplified -> "luna_pinyin_simp"
-                            else -> "luna_pinyin"
-                        }
-
-                        else -> pinyinScheme.rimeId
-                    }
+                    pinyinScheme.rimeId
                 }
                 "stroke" -> {
                     "stroke"
                 }
+//                "t9" -> {
+//                    ChineseIMESettings.PinyinScheme.Full_t9
+//                }
                 null -> { return@launch }
                 else -> {
                     throwIfDebug(IllegalStateException("Invalid layout hint '${layoutHint}'"))
-                    "luna_pinyin"
+                    pinyinScheme.rimeId
                 }
             }
 
@@ -809,12 +1345,12 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             val preedit = rime.getPreedit()
             var reserved: String
             when {
-                preedit.endsWith(selection) -> {
-                    reserved = preedit.removeSuffix(selection).filterNot { it.isWhitespace() }
+                preedit.text.endsWith(selection) -> {
+                    reserved = preedit.text.removeSuffix(selection).filterNot { it.isWhitespace() }
                     connect?.commitText(reserved, 1)
                 }
-                selection.endsWith(preedit) -> {
-                    reserved = selection.removeSuffix(preedit) as String
+                selection.endsWith(preedit.text) -> {
+                    reserved = selection.removeSuffix(preedit.text) as String
                     sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
                 }
                 else -> {
@@ -890,7 +1426,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     override fun onEndBatchInput(batchPointers: InputPointers?) {}
     override fun onCancelBatchInput() {}
 
-// Non-behavior methods {{
+    // Non-behavior methods {{
 // NOTE: These methods are scheduled to have no behavior
     override fun onCancelInput() {}
     override fun onDeviceUnlocked() {}
