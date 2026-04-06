@@ -43,6 +43,7 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.ClipboardQuickClipsEnabled
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.uix.actions.ClipboardStripUrlTracking
 
 enum class QuickClipKind {
     FullString,
@@ -215,7 +216,7 @@ object QuickClip {
         timeOfDismissal = System.currentTimeMillis()
     }
 
-    private fun getStateForItem(validUntil: Long, mimeTypes: List<String>, item: ClipData.Item, isSensitive: Boolean): QuickClipState? {
+    private fun getStateForItem(validUntil: Long, mimeTypes: List<String>, item: ClipData.Item, isSensitive: Boolean, context: Context): QuickClipState? {
         val texts = mutableListOf<QuickClipItem>()
         val currTexts = mutableSetOf<String>()
 
@@ -227,11 +228,18 @@ object QuickClip {
 
         val text = item.text
         if(text != null && text.length > 32_000) {
+            // Skip any processing for huge strings
             if(text.length > 500_000) return null
 
-            // Skip any processing for huge strings
+            // Replaces the text variable and calls it cleanedText but has fallback to text.toString
+            val cleanedText = if (context.getSetting(ClipboardStripUrlTracking)) {
+                UrlCleaner.cleanUrl(text.toString())
+            } else {
+                text.toString()
+            }
+
             return QuickClipState(
-                texts = listOf(QuickClipItem(QuickClipKind.FullString, text.toString(), 0)),
+                texts = listOf(QuickClipItem(QuickClipKind.FullString, cleanedText, 0)),
                 image = item.uri,
                 imageMimeTypes = mimeTypes,
                 validUntil = validUntil,
@@ -239,7 +247,12 @@ object QuickClip {
             )
         }
 
-        item.text?.toString()?.let { text ->
+        item.text?.toString()?.let { rawText ->
+            val text = if (context.getSetting(ClipboardStripUrlTracking)) {
+                UrlCleaner.cleanUrl(rawText)
+            } else {
+                rawText
+            }
             regexesToUse.forEach { entry ->
                 entry.value.findAll(text).forEach {
                     if(!currTexts.contains(it.value)) {
@@ -311,7 +324,8 @@ object QuickClip {
             validUntil = System.currentTimeMillis() + (60L * 1000L),
             item = firstItem,
             mimeTypes = description.mimeTypes,
-            isSensitive = isSensitive
+            isSensitive = isSensitive,
+            context = context
         ).also {
             cachedPreviousItem = firstItem
             cachedPreviousState = it
