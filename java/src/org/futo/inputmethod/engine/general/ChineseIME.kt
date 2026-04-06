@@ -13,7 +13,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import icu.astronot233.rime.DeployStage
 import icu.astronot233.rime.Rime
 import icu.astronot233.rime.RimeMessage
-import icu.astronot233.rime.RimeSchema
 import icu.astronot233.rime.SyncStage
 import icu.astronot233.rime.X11Keys.XK_BackSpace
 import icu.astronot233.rime.X11Keys.XK_Linefeed
@@ -162,7 +161,6 @@ object PinyinSettings {
         title = R.string.chinese_settings_title,
         searchTags = R.string.chinese_setting_search_tags,
         navPath = "ime/zh", registerNavPath = true,
-        visibilityCheck = {},
         settings = listOf(
             UserSetting(R.string.chinese_setting_simplification) {
                 val context = LocalContext.current

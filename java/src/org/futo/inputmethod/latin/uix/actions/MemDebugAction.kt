@@ -22,7 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.futo.inputmethod.engine.general.ChineseRimeIME
+import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.R
@@ -242,7 +242,7 @@ val MemoryDebugAction = Action(
                             }
                         }
 
-                        is ChineseRimeIME -> {
+                        is ChineseIME -> {
                             Text("ChineseIME\n${ime.debugInfo}", style = DebugLabel)
                         }
 
