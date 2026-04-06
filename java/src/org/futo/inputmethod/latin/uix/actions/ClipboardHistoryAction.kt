@@ -68,6 +68,7 @@ import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.PersistentStateInitialization
+import org.futo.inputmethod.latin.uix.QuickClip
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
@@ -597,6 +598,7 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
                         ?.coerceToText(context)?.toString()
                 ) {
                     clipboardManager.clearPrimaryClip()
+                    QuickClip.markQuickClipDismissed()
                 }
             } catch(e: Exception) {
                 e.printStackTrace()

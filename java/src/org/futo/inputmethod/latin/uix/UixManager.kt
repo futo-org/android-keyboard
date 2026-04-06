@@ -726,7 +726,8 @@ class UixManager(private val latinIME: LatinIME) {
                     isActionsExpanded = isActionsExpanded.value,
                     toggleActionsExpanded = { toggleActionsExpanded() },
                     quickClipState = run {
-                        if(!inlineStuffHiddenByTyping.value) quickClipState.value else null
+                        if(!inlineStuffHiddenByTyping.value) quickClipState.value.filterIfDismissed()
+                            else null
                     },
                     onQuickClipDismiss = { quickClipState.value = null },
                     needToUseExpandableSuggestionUi = needToUseExpandableSuggestionUi
