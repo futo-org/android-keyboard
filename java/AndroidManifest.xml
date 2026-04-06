@@ -35,6 +35,7 @@
          android:supportsRtl="true"
          android:allowBackup="true"
          android:largeHeap="true"
+         android:enableOnBackInvokedCallback="true"
          android:name=".CrashLoggingApplication">
 
         <!-- Services -->
