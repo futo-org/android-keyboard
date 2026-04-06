@@ -27,12 +27,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
@@ -64,6 +67,7 @@ import kotlinx.serialization.json.Json
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
+import org.futo.inputmethod.latin.uix.ActionSearchEditText
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.PersistentActionState
@@ -781,14 +785,45 @@ val ClipboardHistoryAction = Action(
                         }
                     }
                 } else {
-                    val sortedList = when {
-                        useDataStoreValue(ClipboardShowPinnedOnTop) -> clipboardHistoryManager.clipboardHistory
-                            .sortedBy { it.pinned }
+                    val searchQueryState = remember { mutableStateOf("") }
+                    val searchQuery = searchQueryState.value
+                    
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        ActionSearchEditText(
+                            text = searchQueryState,
+                            placeholder = stringResource(R.string.action_clipboard_manager_search),
+                            icon = { 
+                                Icon(
+                                    painter = painterResource(id = R.drawable.sym_keyboard_search_lxx_light),
+                                    contentDescription = stringResource(R.string.action_clipboard_manager_search),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                ) 
+                            },
+                            trailingIcon = {
+                                if (searchQuery.isNotEmpty()) {
+                                    androidx.compose.material3.IconButton(onClick = { searchQueryState.value = "" }) {
+                                        Icon(
+                                            painterResource(id = R.drawable.close),
+                                            contentDescription = stringResource(R.string.action_clipboard_manager_remove_item)
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                        Spacer(modifier = Modifier.padding(bottom = 6.dp))
 
-                        else -> clipboardHistoryManager.clipboardHistory
-                    }
+                        val filteredList = clipboardHistoryManager.clipboardHistory.filter { 
+                            searchQuery.isBlank() || 
+                            it.text?.contains(searchQuery, ignoreCase = true) == true ||
+                            it.mimeTypes.any { mime -> mime.contains(searchQuery, ignoreCase = true) }
+                        }
 
-                    val useSingleColumn = useDataStoreValue(ClipboardSingleColumn)
+                        val sortedList = when {
+                            useDataStoreValue(ClipboardShowPinnedOnTop) -> filteredList.sortedBy { it.pinned }
+                            else -> filteredList
+                        }
+
+                        val useSingleColumn = useDataStoreValue(ClipboardSingleColumn)
                     val columns = if(useSingleColumn) {
                         StaggeredGridCells.Fixed(1)
                     } else {
@@ -851,6 +886,7 @@ val ClipboardHistoryAction = Action(
                                 })
                         }
                     }
+                    } // Column
                 }
             }
         }

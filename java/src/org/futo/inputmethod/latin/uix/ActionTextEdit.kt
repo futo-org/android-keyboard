@@ -368,3 +368,52 @@ fun SettingsTextEdit(
         }
     }
 }
+
+@Composable
+fun ActionSearchEditText(
+    text: MutableState<String>,
+    placeholder: String? = null,
+    icon: (@Composable () -> Unit)? = null,
+    trailingIcon: (@Composable () -> Unit)? = null,
+    autocorrect: Boolean = false,
+    autofocus: Boolean = false
+) {
+    val manager = if(!LocalInspectionMode.current) LocalManager.current else null
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp, 0.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            icon?.let {
+                it.invoke()
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+
+            GenericEditTextCompose(
+                text = text,
+                multiline = false,
+                textSize = 16.sp,
+                placeholder = placeholder,
+                autocorrect = autocorrect,
+                autofocus = autofocus,
+                modifier = Modifier.weight(1.0f),
+                onOverride = { ic, ed ->
+                    manager!!.overrideInputConnection(ic, ed)
+                },
+                onUnoverride = {
+                    manager!!.unsetInputConnection()
+                }
+            )
+
+            trailingIcon?.let {
+                Spacer(modifier = Modifier.width(8.dp))
+                it.invoke()
+            }
+        }
+    }
+}
