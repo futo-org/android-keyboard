@@ -50,6 +50,7 @@ import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
 import org.futo.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import org.futo.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import org.futo.inputmethod.keyboard.internal.TimerHandler;
+import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.SuggestedWords;
@@ -645,6 +646,9 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     @Override
     public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
+        AudioAndHapticFeedbackManager.getInstance().performHapticFeedback(
+                this, true);
+
         locatePreviewPlacerView();
         // Dismiss another {@link MoreKeysPanel} that may be being showed.
         onDismissMoreKeysPanel();
