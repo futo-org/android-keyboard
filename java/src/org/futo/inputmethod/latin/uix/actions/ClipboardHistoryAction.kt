@@ -123,6 +123,11 @@ val ClipboardQuickClipsEnabled = SettingsKey(
     true
 )
 
+val ClipboardSkipDeleteConfirmation = SettingsKey(
+    booleanPreferencesKey("clipboard_skip_delete_confirmation"),
+    false
+)
+
 
 object UriSerializer : KSerializer<Uri> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Uri", PrimitiveKind.STRING)
@@ -829,22 +834,32 @@ val ClipboardHistoryAction = Action(
                                     clipboardHistoryManager.onPaste(it)
                                     manager.performHapticAndAudioFeedback(Constants.CODE_OUTPUT_TEXT, view)
                                 }, onRemove = {
-                                    manager.requestDialog(
-                                        context.getString(R.string.action_clipboard_manager_remove_item_confirm_dialog, run {
-                                            sanitizeClipboardText(it.text ?: "", 24)
-                                        }),
-                                        listOf(
-                                            DialogRequestItem(
-                                                context.getString(R.string.action_clipboard_manager_cancel_action_button)
-                                            ) { },
-                                            DialogRequestItem(
-                                                context.getString(R.string.action_clipboard_manager_remove_item)
-                                            ) {
-                                                clipboardHistoryManager.onRemove(it)
-                                                manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
-                                            }
-                                        )
-                                    ) { }
+                                    if(context.getSetting(ClipboardSkipDeleteConfirmation)) {
+                                        clipboardHistoryManager.onRemove(it)
+                                        manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                                    } else {
+                                        manager.requestDialog(
+                                            context.getString(
+                                                R.string.action_clipboard_manager_remove_item_confirm_dialog,
+                                                run {
+                                                    sanitizeClipboardText(it.text ?: "", 24)
+                                                }),
+                                            listOf(
+                                                DialogRequestItem(
+                                                    context.getString(R.string.action_clipboard_manager_cancel_action_button)
+                                                ) { },
+                                                DialogRequestItem(
+                                                    context.getString(R.string.action_clipboard_manager_remove_item)
+                                                ) {
+                                                    clipboardHistoryManager.onRemove(it)
+                                                    manager.performHapticAndAudioFeedback(
+                                                        Constants.CODE_TAB,
+                                                        view
+                                                    )
+                                                }
+                                            )
+                                        ) { }
+                                    }
                                 }, onPin = {
                                     clipboardHistoryManager.onTogglePin(it)
                                     manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
@@ -920,6 +935,11 @@ val ClipboardHistoryAction = Action(
             userSettingToggleDataStore(
                 title = R.string.action_clipboard_manager_settings_list_layout,
                 setting = ClipboardSingleColumn
+            ).copy(visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }),
+
+            userSettingToggleDataStore(
+                title = R.string.action_clipboard_manager_settings_skip_delete_confirmation,
+                setting = ClipboardSkipDeleteConfirmation
             ).copy(visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }),
         )
     )
