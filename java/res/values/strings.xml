@@ -77,6 +77,13 @@
     <!-- Description for "next word suggestion" option. This displays suggestions even when there is no input, based on the previous word. -->
     <string name="bigram_prediction_summary">Use the previous word in making suggestions</string>
 
+    <!-- Title for auto-switch language setting -->
+    <string name="auto_switch_language_title">Auto-switch language</string>
+    <!-- Subtitle for auto-switch language setting -->
+    <string name="auto_switch_language_subtitle">Automatically switch to a matching language if the text field requests it (e.g. Translate)</string>
+    <!-- Title for advanced language settings section -->
+    <string name="language_settings_advanced_options">Advanced options</string>
+
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Languages</string>
 

@@ -52,6 +52,7 @@ import org.futo.inputmethod.latin.MultilingualBucketSetting
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
+import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.FileKind
 import org.futo.inputmethod.latin.uix.ResourceHelper
 import org.futo.inputmethod.latin.uix.getSetting
@@ -66,6 +67,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.openModelImpor
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
+import org.futo.inputmethod.latin.uix.settings.userSettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
@@ -507,6 +509,16 @@ val LanguageSettingsTop = listOf(
         navigateTo = "addLanguage",
     )
 )
+
+val LanguageSettingsToggles = listOf(
+    userSettingToggleSharedPrefs(
+        title = R.string.auto_switch_language_title,
+        subtitle = R.string.auto_switch_language_subtitle,
+        key = Settings.PREF_AUTO_SWITCH_LANGUAGE,
+        default = { false }
+    )
+)
+
 val LanguageSettingsBottom = listOf(
     userSettingNavigationItem(
         title = R.string.language_settings_import_resource_from_file,
@@ -748,6 +760,14 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             ScreenTitle(stringResource(R.string.language_settings_other_options))
         }
         items(LanguageSettingsBottom) {
+            it.component()
+        }
+
+        item {
+            ScreenTitle(stringResource(R.string.language_settings_advanced_options))
+        }
+
+        items(LanguageSettingsToggles) {
             it.component()
         }
     }
