@@ -15,10 +15,12 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 import org.futo.inputmethod.annotations.UsedForTesting
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.engine.IMEMessage
+import org.futo.inputmethod.engine.NonExpandableSuggestionBar
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.event.InputTransaction
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
@@ -229,8 +231,14 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         languageModelFacilitator.loadHistoryLog()
     }
 
+    private val expandableExpandableCfg = ExpandableSuggestionBarConfiguration(true, false)
+    private var expandableCfg: ExpandableSuggestionBarConfiguration = NonExpandableSuggestionBar
     override fun onStartInput() {
-        useExpandableUi = helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)
+        expandableCfg = if(helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)) {
+            expandableExpandableCfg
+        } else {
+            NonExpandableSuggestionBar
+        }
 
         resetDictionaryFacilitator()
         setNeutralSuggestionStrip()
@@ -713,10 +721,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
     }
 
-    private var useExpandableUi = false
     override fun setNeutralSuggestionStrip() {
         inputLogic.setSuggestedWords(SuggestedWords.getEmptyInstance())
-        helper.setNeutralSuggestionStrip(useExpandableUi)
+        helper.setNeutralSuggestionStrip(expandableCfg)
     }
 
     val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
@@ -724,9 +731,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.setSuggestedWords(words)
 
         if(settings.current.isSuggestionsEnabledPerUserSettings) {
-            helper.showSuggestionStrip(words, useExpandableUi)
+            helper.showSuggestionStrip(words, expandableCfg)
         } else {
-            helper.setNeutralSuggestionStrip(useExpandableUi)
+            helper.setNeutralSuggestionStrip(expandableCfg)
         }
     }
 

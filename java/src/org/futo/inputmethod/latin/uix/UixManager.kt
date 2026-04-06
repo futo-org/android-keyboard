@@ -103,7 +103,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEInterface
+import org.futo.inputmethod.engine.NonExpandableSuggestionBar
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
@@ -252,9 +254,13 @@ fun BoxScope.KeyboardBackground(
                 }
             }
 
-            Box(Modifier.matchParentSize().background(backgroundBrush))
+            Box(Modifier
+                .matchParentSize()
+                .background(backgroundBrush))
         }
-        else -> Box(Modifier.background(backgroundBrush).matchParentSize())
+        else -> Box(Modifier
+            .background(backgroundBrush)
+            .matchParentSize())
     }
 }
 
@@ -440,9 +446,11 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
         uixManager.isInputOverridden.value = true
     }
 
-    override fun unsetInputConnection() {
+    override fun unsetInputConnection(): Boolean {
+        val wasOverridden = uixManager.isInputOverridden.value
         latinIME.overrideInputConnection(null, null)
         uixManager.isInputOverridden.value = false
+        return wasOverridden
     }
 
     override fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit) {
@@ -517,11 +525,8 @@ class UixActionKeyboardManager(val uixManager: UixManager, val latinIME: LatinIM
 
     override fun getLatinIMEForDebug(): LatinIME = latinIME
 
-    override fun <T : IMEInterface> getIMEInterface(clazz: Class<T>): T? {
-        if(clazz == IMEInterface::class.java) throw IllegalArgumentException("Please specify a specific IMEInterface")
-
-        val ime = latinIME.imeManager.getActiveIME(Settings.getInstance().current)
-        return if(clazz.isInstance(ime)) clazz.cast(ime) else null
+    override fun getCurrentIME(): IMEInterface {
+        return latinIME.imeManager.getActiveIME(Settings.getInstance().current)
     }
 }
 
@@ -547,9 +552,48 @@ class UixManager(private val latinIME: LatinIME) {
     internal val composeView: ComposeView?
         get() = latinIME.composeView
 
+    private val suggestionStripListener = object : SuggestionStripViewListener {
+        override fun showImportantNoticeContents() {
+            latinIME.latinIMELegacy.showImportantNoticeContents()
+        }
+
+        override fun pickSuggestionManually(word: SuggestedWordInfo?) {
+            if(floatingPreeditEditing.value && floatingPreedit.value != null) {
+                val text = floatingPreeditText.value
+
+                keyboardManagerForAction.unsetInputConnection()
+
+                floatingPreedit.value?.let { preedit ->
+                    preedit.listener.onFinishEdit(preedit.untransform(text), word?.word, word?.mCandidateIndex)
+                }
+
+                floatingPreeditEditing.value = false
+                floatingPreeditText.value = ""
+            } else {
+                latinIME.latinIMELegacy.pickSuggestionManually(word)
+            }
+        }
+
+        override fun requestForgetWord(word: SuggestedWordInfo?) {
+            latinIME.latinIMELegacy.requestForgetWord(word)
+        }
+
+        override fun onCodeInput(
+            primaryCode: Int,
+            x: Int,
+            y: Int,
+            isKeyRepeat: Boolean
+        ) {
+            latinIME.latinIMELegacy.onCodeInput(primaryCode, x, y, isKeyRepeat)
+        }
+
+    }
+
     private val shouldShowSuggestionStrip = mutableStateOf(true)
     private val suggestedWords: MutableState<SuggestedWords?> = mutableStateOf(null)
-    private val useExpandableSuggestionsUi: MutableState<Boolean> = mutableStateOf(false)
+    private val expandableSuggestionCfg: MutableState<ExpandableSuggestionBarConfiguration> = mutableStateOf(
+        NonExpandableSuggestionBar
+    )
 
     var currWindowAction: MutableState<Action?> = mutableStateOf(null)
     private var persistentStates: HashMap<Action, PersistentActionState?> = hashMapOf()
@@ -582,6 +626,11 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     val foldingOptions = mutableStateOf(FoldingOptions(null))
+    val floatingPreedit = mutableStateOf<FloatingPreEdit?>(null)
+    val floatingPreeditPosition = mutableStateOf<LayoutCoordinates?>(null)
+    val floatingPreeditHeight = mutableStateOf<Int>(0)
+    val floatingPreeditEditing = mutableStateOf(false)
+    val floatingPreeditText = mutableStateOf("")
 
     var isInputOverridden = mutableStateOf(false)
 
@@ -654,7 +703,7 @@ class UixManager(private val latinIME: LatinIME) {
             if(actionBarShown.value || inlineSuggestions.isNotEmpty()) {
                 ActionBar(
                     suggestedWordsOrNull,
-                    latinIME.latinIMELegacy as SuggestionStripViewListener,
+                    suggestionStripListener,
                     inlineSuggestions = inlineSuggestions,
                     onActionActivated = {
                         keyboardManagerForAction.performHapticAndAudioFeedback(
@@ -800,7 +849,7 @@ class UixManager(private val latinIME: LatinIME) {
                         words = suggestedWordsOrNull,
                         showClose = currWindowActionWindow.value?.showCloseButton == true,
                         showCollapse = currWindowActionWindow.value?.positionIsUserManagable == true,
-                        suggestionStripListener = latinIME.latinIMELegacy as SuggestionStripViewListener
+                        suggestionStripListener = suggestionStripListener
                     )
                 }
             } else if(showingAboveKeyboard && !needToUseExpandableSuggestionUi) {
@@ -1220,9 +1269,10 @@ class UixManager(private val latinIME: LatinIME) {
 
             KeyboardWindowSelector { gap ->
                 Column {
+                    Box(Modifier.onGloballyPositioned { floatingPreeditPosition.value = it })
                     // TODO: Refactor how we handle expandable suggestions here to not be a mess
                     val needToUseExpandableSuggestionUi =
-                        useExpandableSuggestionsUi.value && suggestedWords.value?.size()?.equals(0) != true
+                        expandableSuggestionCfg.value.useExpandableUi && suggestedWords.value?.size()?.equals(0) != true
                                 && mainKeyboardHidden.value == false
                                 && (quickClipState.value == null || inlineStuffHiddenByTyping.value)
                                 && currentNotice.value == null
@@ -1258,24 +1308,28 @@ class UixManager(private val latinIME: LatinIME) {
                         if(needToUseExpandableSuggestionUi) {
                             ActionBarWithExpandableCandidates(
                                 suggestedWords.value,
-                                latinIME.latinIMELegacy as SuggestionStripViewListener,
+                                suggestionStripListener,
                                 isActionsExpanded = isActionsExpanded.value,
                                 toggleActionsExpanded = { toggleActionsExpanded() },
                                 closeActionWindow = currWindowActionWindow.value?.let {{ closeActionWindow() }},
                                 keyboardOffset = keyboardViewOffset,
-                                keyboardHeight = (latinIME.size.value?.height ?: kbHeight.intValue) + with(LocalDensity.current) { navBarHeight().toPx().toInt() }
+                                keyboardHeight = (latinIME.size.value?.height ?: kbHeight.intValue) + with(LocalDensity.current) { navBarHeight().toPx().toInt() },
+                                expandableSuggestionCfg = expandableSuggestionCfg.value
                             )
                         }
-                        latinIME.LegacyKeyboardView(modifier = Modifier.align(Alignment.BottomCenter).onSizeChanged {
+                        latinIME.LegacyKeyboardView(modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .onSizeChanged {
                                 // TODO: Is there a better way?
                                 kbHeight.intValue = it.height.let {
-                                    if(it > 0) {
+                                    if (it > 0) {
                                         it
                                     } else {
                                         latinIME.size.value!!.height
                                     }
                                 }
-                            }.absoluteOffset { IntOffset(0, keyboardViewOffset.intValue) },
+                            }
+                            .absoluteOffset { IntOffset(0, keyboardViewOffset.intValue) },
                             hidden = mainKeyboardHidden.value)
                     }
 
@@ -1288,7 +1342,19 @@ class UixManager(private val latinIME: LatinIME) {
             }
 
             ActionEditorHost()
+
+            val preedit = floatingPreedit.value
+            if(preedit != null && floatingPreeditShown) {
+                FloatingPreEditView(preedit, floatingPreeditPosition.value,
+                    { floatingPreeditHeight.value = it },
+                    floatingPreeditText, floatingPreeditEditing)
+            }
         }
+    }
+
+    private val floatingPreeditShown: Boolean get() = run {
+        val preedit = floatingPreedit.value
+        return preedit != null && (preedit.entries.isNotEmpty() || floatingPreeditEditing.value)
     }
 
     fun setContent() {
@@ -1386,9 +1452,9 @@ class UixManager(private val latinIME: LatinIME) {
         this.shouldShowSuggestionStrip.value = shouldShowSuggestionsStrip
     }
 
-    fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean, useExpandableUi: Boolean) {
+    fun setSuggestions(suggestedWords: SuggestedWords?, rtlSubtype: Boolean, cfg: ExpandableSuggestionBarConfiguration) {
         this.suggestedWords.value = suggestedWords
-        this.useExpandableSuggestionsUi.value = useExpandableUi
+        this.expandableSuggestionCfg.value = cfg
 
         if(currentNotice.value != null && suggestedWords?.isEmpty != true) {
             if(numSuggestionsSinceNotice > 0) {
@@ -1554,6 +1620,7 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         quickClipState.value = QuickClip.getCurrentState(latinIME)
+        floatingPreeditEditing.value = false
     }
 
     fun onInputFinishing() {
@@ -1562,6 +1629,7 @@ class UixManager(private val latinIME: LatinIME) {
         isShowingActionEditor.value = false
         resizers.hideResizer()
         inlineSuggestions.value = emptyList()
+        floatingPreeditText.value = ""
     }
 
     // Called by InputLogic on any event
@@ -1621,4 +1689,13 @@ class UixManager(private val latinIME: LatinIME) {
             }
         }
     }
+
+    fun setPreedit(preedit: FloatingPreEdit?) {
+        floatingPreedit.value = preedit
+    }
+
+    val extraTopTouchHeight: Int
+        get() = if(floatingPreeditShown) floatingPreeditHeight.value else 0
 }
+
+

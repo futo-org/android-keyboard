@@ -9,6 +9,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
+import org.futo.inputmethod.latin.uix.LangSpecAction
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
@@ -40,7 +41,7 @@ val AllActionsMap = mapOf(
     "down" to ArrowDownAction,
     "left" to ArrowLeftAction,
     "right" to ArrowRightAction,
-    "font_typer" to FontTyperAction
+    "font_typer" to FontTyperAction,
 )
 
 val ActionToId = AllActionsMap.entries.associate { it.value to it.key }
