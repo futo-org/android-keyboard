@@ -43,7 +43,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
-import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
