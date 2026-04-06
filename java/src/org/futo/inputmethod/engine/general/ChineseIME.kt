@@ -541,6 +541,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
     private data class Configuration(
         val schema: String,
+        val learning: Boolean,
         val simplification: Boolean,
         val autocorrect: Boolean,
         val fuzzyMode: Set<ChineseIMESettings.FuzzyPinyinModes>
@@ -554,6 +555,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             appendLine("patch:")
 
             appendLine("    translator/enable_correction: ${cfg.autocorrect}")
+            appendLine("    translator/enable_user_dict: ${cfg.learning}")
 
             appendLine("    switches/+:")
             appendLine("        - name: futo_zh_simp")
@@ -614,7 +616,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             val autocorrect = settings.mAutoCorrectionEnabledPerUserSettings
                     || settings.isSuggestionsEnabledPerUserSettings
 
-            val config = Configuration(schema, simplified, autocorrect, fuzzy)
+            val learning = settings.isPersonalizationEnabled
+
+            val config = Configuration(schema, learning, simplified, autocorrect, fuzzy)
             if(config != prevConfiguration) {
                 writeCustomizationFile(config)
                 rime.selectSchema(config.schema)
@@ -641,7 +645,6 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }
 
     override fun onFinishSlidingInput() {
-        // TODO("Unsupported yet")
     }
 
     private fun interruptInput(text: CharSequence? = null) {
@@ -872,7 +875,14 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {}
 
     override fun clearUserHistoryDictionaries() {
-        // TODO("Unsupported yet")
+        Log.d(TAG, "Clearing Chinese dictionary...")
+
+        coroScope.launch {
+            rime.shutdown()
+            getUser(helper.context).deleteRecursively()
+            rime.startup(false)
+            prevConfiguration = null
+        }
     }
 
     override fun onStartBatchInput() {}
