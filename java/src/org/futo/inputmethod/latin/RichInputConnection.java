@@ -39,6 +39,7 @@ import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.inputlogic.InputLogic;
 import org.futo.inputmethod.latin.inputlogic.PrivateCommandPerformer;
 import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
 import org.futo.inputmethod.latin.utils.CapsModeUtils;
 import org.futo.inputmethod.latin.utils.DebugLogUtils;
@@ -774,10 +775,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     private static boolean isPartOfCompositionForScript(final int codePoint,
-            final SpacingAndPunctuations spacingAndPunctuations, final int scriptId) {
+            final SettingsValues settingsValues, final int scriptId) {
         // We always consider word connectors part of compositions.
+        final SpacingAndPunctuations spacingAndPunctuations = settingsValues.mSpacingAndPunctuations;
         return spacingAndPunctuations.isWordConnector(codePoint)
-                || Settings.getInstance().getCurrent().isWordCodePoint(codePoint) // TODO: This wasn't originally here, why not?
+                || settingsValues.isWordCodePoint(codePoint) // TODO: This wasn't originally here, why not?
                 // Otherwise, it's part of composition if it's part of script and not a separator.
                 || (!spacingAndPunctuations.isWordSeparator(codePoint)
                         && ScriptUtils.isLetterPartOfScript(codePoint, scriptId));
@@ -786,11 +788,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     /**
      * Returns the text surrounding the cursor.
      *
-     * @param spacingAndPunctuations the rules for spacing and punctuation
+     * @param settingsValues for the rules for spacing and punctuation
      * @param scriptId the script we consider to be writing words, as one of ScriptUtils.SCRIPT_*
      * @return a range containing the text surrounding the cursor
      */
-    public TextRange getWordRangeAtCursor(final SpacingAndPunctuations spacingAndPunctuations,
+    public TextRange getWordRangeAtCursor(final SettingsValues settingsValues,
             final int scriptId, final boolean checkAfter) {
         updateConnection();
         if (!isConnected()) {
@@ -823,7 +825,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         int startIndexInBefore = before.length();
         while (startIndexInBefore > 0) {
             final int codePoint = Character.codePointBefore(before, startIndexInBefore);
-            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId)) {
+            if (!isPartOfCompositionForScript(codePoint, settingsValues, scriptId)) {
                 break;
             }
             --startIndexInBefore;
@@ -836,7 +838,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         int endIndexInAfter = -1;
         while (++endIndexInAfter < after.length()) {
             final int codePoint = Character.codePointAt(after, endIndexInAfter);
-            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId)) {
+            if (!isPartOfCompositionForScript(codePoint, settingsValues, scriptId)) {
                 break;
             }
             if (Character.isSupplementaryCodePoint(codePoint)) {

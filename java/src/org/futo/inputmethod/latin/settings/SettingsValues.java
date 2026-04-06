@@ -200,7 +200,7 @@ public class SettingsValues {
         mNumberRowMode = mIsNumberRowEnabledByUser ?
                 prefs.getInt(Settings.PREF_NUMBER_ROW_MODE, Settings.NUMBER_ROW_MODE_DEFAULT)
                 : Settings.NUMBER_ROW_MODE_DEFAULT;
-        mAltSpacesMode = prefs.getInt(Settings.PREF_ALT_SPACES_MODE, Settings.DEFAULT_ALT_SPACES_MODE);
+        mAltSpacesMode = inputAttributes.mIsEmailField ? Settings.SPACES_MODE_NONE : prefs.getInt(Settings.PREF_ALT_SPACES_MODE, Settings.DEFAULT_ALT_SPACES_MODE);
 
         mShouldShowLxxSuggestionUi = Settings.SHOULD_SHOW_LXX_SUGGESTION_UI
                 && prefs.getBoolean(DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI, true);
@@ -288,14 +288,27 @@ public class SettingsValues {
     }
 
     public boolean isWordSeparator(final int code) {
+        if(mInputAttributes.mIsEmailField) {
+            if(code == '.') return false;
+            if(code == '@') return true;
+        }
         return mSpacingAndPunctuations.isWordSeparator(code);
     }
 
     public boolean isWordConnector(final int code) {
+        if(mInputAttributes.mIsEmailField) {
+            if(code == '.') return true;
+            if(code == '@') return false;
+        }
         return mSpacingAndPunctuations.isWordConnector(code);
     }
 
     public boolean isWordCodePoint(final int code) {
+        if(mInputAttributes.mIsEmailField) {
+            if(code == '.') return true;
+            if(code == '@') return false;
+        }
+
         if(ScriptUtils2.isLetterDefinitelyIncompatibleForLocale(code, mLocale)) return false;
 
         int type = Character.getType(code);

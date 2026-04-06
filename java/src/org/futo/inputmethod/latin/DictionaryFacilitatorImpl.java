@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.keyboard.Keyboard;
+import org.futo.inputmethod.keyboard.KeyboardId;
 import org.futo.inputmethod.latin.NgramContext.WordInfo;
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import org.futo.inputmethod.latin.common.ComposedData;
@@ -33,6 +34,8 @@ import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.permissions.PermissionsUtil;
 import org.futo.inputmethod.latin.personalization.UserHistoryDictionary;
+import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import org.futo.inputmethod.latin.utils.ExecutorUtils;
 import org.futo.inputmethod.latin.utils.SuggestionResults;
@@ -70,6 +73,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     // dictionary.
     private static final int CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT = 140;
 
+    @androidx.annotation.Nullable
+    private EmailDictionary mEmailDictionary = null;
     private List<DictionaryGroup> mDictionaryGroups = new ArrayList<>();
     private volatile CountDownLatch mLatchForWaitingLoadingMainDictionaries = new CountDownLatch(0);
     // To synchronize assigning mDictionaryGroup to ensure closing dictionaries.
@@ -79,6 +84,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             DICT_TYPE_TO_CLASS = new HashMap<>();
 
     static {
+        DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_EMAIL, EmailDictionary.class);
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER_HISTORY, UserHistoryDictionary.class);
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER, UserBinaryDictionary.class);
     }
@@ -250,8 +256,26 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public void onStartInput() {
     }
 
+
     @Override
     public void onFinishInput(Context context) {
+
+    }
+
+    @Override
+    public void onEmailTyped(String email) {
+        SettingsValues settings = Settings.getInstance().getCurrent();
+        if(!settings.isPersonalizationEnabled() || settings.mInputAttributes.mNoLearning) return;
+
+        if(email != null) {
+            if(email.contains("@") && email.contains(".") && mEmailDictionary != null) {
+                String domain = email.split("@")[1];
+                if(domain.contains(".")) {
+                    mEmailDictionary.addEntryNow(NgramContext.BEGINNING_OF_SENTENCE, 32, email);
+                    mEmailDictionary.addEntryNow(NgramContext.EMAIL_DOMAIN, 32, domain);
+                }
+            }
+        }
     }
 
     @Override
@@ -339,6 +363,14 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
         if (usePersonalizedDicts) {
             subDictTypesToUse.add(Dictionary.TYPE_USER_HISTORY);
+        }
+
+        if(usePersonalizedDicts && (forceReloadAllDictionaries || mEmailDictionary == null)) {
+            if(mEmailDictionary != null) mEmailDictionary.close();
+            mEmailDictionary = new EmailDictionary(context);
+        }else if(!usePersonalizedDicts && mEmailDictionary != null) {
+            mEmailDictionary.close();
+            mEmailDictionary = null;
         }
 
         // Gather all dictionaries. We'll remove them from the list to clean up later.
@@ -723,6 +755,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     private void removeWord(final String dictName, final String word) {
+        if(mEmailDictionary != null) {
+            mEmailDictionary.removeUnigramEntryDynamically(word);
+        }
         for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
             final ExpandableBinaryDictionary dictionary = dictionaryGroup.getSubDict(dictName);
             if (dictionary != null) {
@@ -785,6 +820,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             NgramContext ngramContext, @Nonnull final Keyboard keyboard,
             SettingsValuesForSuggestion settingsValuesForSuggestion, int sessionId,
             int inputStyle) {
+
         long proximityInfoHandle = keyboard.getProximityInfo().getNativeProximityInfo();
         final SuggestionResults suggestionResults = new SuggestionResults(
                 SuggestedWords.MAX_SUGGESTIONS, ngramContext.isBeginningOfSentenceContext(),
@@ -793,6 +829,30 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
 
         updateDictionaryGroupWeights();
+
+        if(keyboard.mId.mMode == KeyboardId.MODE_EMAIL && mEmailDictionary != null) {
+            boolean isTypingDomain = ngramContext.fullContext.contains("@");
+            NgramContext ngramContextForEmail = isTypingDomain ? NgramContext.EMAIL_DOMAIN : NgramContext.BEGINNING_OF_SENTENCE;
+
+            final ArrayList<SuggestedWordInfo> dictionarySuggestions =
+                    mEmailDictionary.getSuggestions(composedData, ngramContextForEmail, proximityInfoHandle, settingsValuesForSuggestion, sessionId, 1.5f, weightOfLangModelVsSpatialModel);
+
+            if(dictionarySuggestions != null && !dictionarySuggestions.isEmpty()) {
+                ArrayList<SuggestedWordInfo> filteredSuggestions = new ArrayList<>();
+                for(int i=0; i<dictionarySuggestions.size(); i++) {
+                    boolean isSuggestionDomain = !dictionarySuggestions.get(i).mWord.contains("@");
+                    if(isSuggestionDomain == isTypingDomain) filteredSuggestions.add(dictionarySuggestions.get(i));
+                }
+
+                suggestionResults.addAll(filteredSuggestions);
+                if (null != suggestionResults.mRawSuggestions) {
+                    suggestionResults.mRawSuggestions.addAll(filteredSuggestions);
+                }
+                return suggestionResults;
+            } else {
+                Log.d(TAG, "was null or empty: " + dictionarySuggestions);
+            }
+        }
 
         for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
             for (final String dictType : ALL_DICTIONARY_TYPES) {
@@ -887,6 +947,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     @Override
     public boolean clearUserHistoryDictionary(final Context context) {
+        if(mEmailDictionary != null) {
+            mEmailDictionary.clear();
+            mEmailDictionary.loadInitialContentsLocked();
+            mEmailDictionary.asyncFlushBinaryDictionary();
+        }
+
         return clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
     }
 
@@ -923,6 +989,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                     dictionaryGroup.getSubDict(Dictionary.TYPE_USER_HISTORY);
             if(dictionary == null) continue;
             dictionary.asyncFlushBinaryDictionary();
+        }
+
+        if(mEmailDictionary != null) {
+            mEmailDictionary.asyncFlushBinaryDictionary();
         }
     }
 
