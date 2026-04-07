@@ -182,6 +182,17 @@ val OldStyleActionsBar = SettingsKey(
     false
 )
 
+val PinnedActionsOnLeft = SettingsKey(
+    booleanPreferencesKey("pinnedActionsOnLeft"),
+    false
+)
+
+// 0 = small, 1 = normal (default), 2 = large
+val PinnedActionsSize = SettingsKey(
+    intPreferencesKey("pinnedActionsSize"),
+    1
+)
+
 
 interface ImportantNotice {
     @Composable fun getText(): String
@@ -525,16 +536,17 @@ fun LazyItemScope.ActionItem(idx: Int, action: Action, onSelect: (Action) -> Uni
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
+fun ActionItemSmall(action: Action, size: Int = 1, onSelect: (Action) -> Unit, onLongSelect: (Action) -> Unit) {
     val bgCol = LocalKeyboardScheme.current.keyboardContainer
     val fgCol = LocalKeyboardScheme.current.onKeyboardContainer
 
-    val circleRadius = with(LocalDensity.current) {
-        16.dp.toPx()
-    }
+    val buttonWidth = when(size) { 0 -> 34.dp; 2 -> 54.dp; else -> 42.dp }
+    val iconSize = when(size) { 0 -> 13.dp; 2 -> 22.dp; else -> 16.dp }
+    val circleRadiusDp = when(size) { 0 -> 13.dp; 2 -> 22.dp; else -> 16.dp }
+    val circleRadius = with(LocalDensity.current) { circleRadiusDp.toPx() }
 
     Box(modifier = Modifier
-        .width(42.dp)
+        .width(buttonWidth)
         .fillMaxHeight()
         .drawBehind {
             drawCircle(
@@ -555,7 +567,7 @@ fun ActionItemSmall(action: Action, onSelect: (Action) -> Unit, onLongSelect: (A
             painter = painterResource(id = action.icon),
             contentDescription = stringResource(action.name),
             tint = fgCol,
-            modifier = Modifier.size(16.dp)
+            modifier = Modifier.size(iconSize)
         )
     }
 }
@@ -747,12 +759,18 @@ fun RowScope.PinnedActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action
         PinnedActions.default
     }
 
+    val size = if(!LocalInspectionMode.current) {
+        useDataStoreValue(PinnedActionsSize)
+    } else {
+        1
+    }
+
     val actionItems = remember(actions) {
         actions.toActionList()
     }
 
     actionItems.forEach {
-        ActionItemSmall(it, onSelect, onLongSelect)
+        ActionItemSmall(it, size, onSelect, onLongSelect)
     }
 }
 
@@ -827,6 +845,12 @@ fun ActionBar(
                 .weight(1.0f), color = actionBarColor()
         ) {
             Row(Modifier.safeKeyboardPadding()) {
+                val pinnedOnLeft = if(!LocalInspectionMode.current) {
+                    useDataStoreValue(PinnedActionsOnLeft)
+                } else {
+                    false
+                }
+
                 ExpandActionsButton(isActionsExpanded) {
                     toggleActionsExpanded()
 
@@ -846,6 +870,10 @@ fun ActionBar(
                     if (importantNotice != null) {
                         ImportantNoticeView(importantNotice)
                     } else {
+                        if(pinnedOnLeft && inlineSuggestions.isEmpty()) {
+                            PinnedActionItems(onActionActivated, onActionAltActivated)
+                        }
+
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                             && inlineSuggestions.isNotEmpty()
                         ) {
@@ -873,7 +901,7 @@ fun ActionBar(
                             Spacer(modifier = Modifier.weight(1.0f))
                         }
 
-                        if(inlineSuggestions.isEmpty()) {
+                        if(!pinnedOnLeft && inlineSuggestions.isEmpty()) {
                             PinnedActionItems(onActionActivated, onActionAltActivated)
                         }
                     }
