@@ -190,6 +190,12 @@
             android:name=".content.KbContentProvider"
             android:exported="false"
             android:grantUriPermissions="true" />
+
+        <provider
+            android:authorities="${applicationId}.clipboard"
+            android:name=".uix.actions.clipboard.ClipboardProvider"
+            android:exported="false"
+            android:grantUriPermissions="true" />
     </application>
 
     <!-- To query enabled input methods for voice IME detection -->

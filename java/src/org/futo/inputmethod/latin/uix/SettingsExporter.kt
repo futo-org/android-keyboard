@@ -39,9 +39,10 @@ import org.futo.inputmethod.engine.general.mozcUserProfileDir
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.utils.readAllBytesCompat
 import org.futo.inputmethod.latin.uix.PreferenceUtils.getDefaultSharedPreferences
-import org.futo.inputmethod.latin.uix.actions.ClipboardFileName
-import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryManager.Companion.onClipboardImportedFlow
-import org.futo.inputmethod.latin.uix.actions.clipboardFile
+import org.futo.inputmethod.latin.uix.actions.clipboard.ClipboardFileName
+import org.futo.inputmethod.latin.uix.actions.clipboard.ClipboardHistoryManager.Companion.onClipboardImportedFlow
+import org.futo.inputmethod.latin.uix.actions.clipboard.clipboardDir
+import org.futo.inputmethod.latin.uix.actions.clipboard.clipboardFile
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
@@ -268,6 +269,15 @@ object SettingsExporter {
             }
         }
 
+        // Collect clipboard files
+        context.clipboardDir.listFiles()?.forEach { clipboardFile ->
+            assert(!clipboardFile.isDirectory)
+            val entry = ZipEntry("clipboard/${clipboardFile.name}")
+            zipOut.putNextEntry(entry)
+            clipboardFile.inputStream().use { it.copyTo(zipOut) }
+            zipOut.closeEntry()
+        }
+
         // Collect mozc (Japanese user typing history, etc)
         mozcUserProfileDir(context).listFiles()?.forEach { subfile ->
             assert(!subfile.isDirectory)
@@ -321,6 +331,7 @@ object SettingsExporter {
                 }
             }
 
+            context.clipboardDir.deleteRecursively()
             mozcUserProfileDir(context).deleteRecursively()
 
             // delete all themes
@@ -381,6 +392,18 @@ object SettingsExporter {
                         zipIn.copyTo(it)
                     }
                 }
+
+                entry.name.startsWith("clipboard/") -> {
+                    val relDir = entry.name.split('/', limit=2).last()
+                    assert(!relDir.contains('/'))
+
+                    val clipboardDir = context.clipboardDir
+                    clipboardDir.mkdirs()
+                    File(clipboardDir, relDir).outputStream().use {
+                        zipIn.copyTo(it)
+                    }
+                }
+
 
                 entry.name.startsWith("mozc/") -> {
                     val relDir = entry.name.split('/', limit=2).last()

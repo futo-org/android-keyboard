@@ -57,6 +57,7 @@
     <string name="action_clipboard_manager_pin_item">Pin item</string>
     <string name="action_clipboard_manager_remove_item">Remove item</string>
     <string name="action_clipboard_manager_remove_item_confirm_dialog">Confirm remove:\n\"%s\"</string>
+    <string name="action_clipboard_manager_remove_item_confirm_dialog_image">Confirm remove image</string>
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_cancel_action_button">Cancel</string>
     <string name="action_clipboard_manager_disable_text">There are no items to clear. Disable clipboard history?</string>
@@ -86,13 +87,15 @@
     <!-- This message is shown when we're typing in a text field does not support image insertion ("app" refers to the external app that is providing the text field) -->
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
     <string name="action_clipboard_manager_settings_title">Clipboard Manager Settings</string>
+    <string name="action_clipboard_manager_settings_save_images">Save copied images</string>
     <string name="action_clipboard_manager_settings_hours_to_keep_clips">Hours to keep unpinned clips</string>
     <string name="action_clipboard_manager_settings_maximum_clips">Number of unpinned clips to keep</string>
     <string name="action_clipboard_manager_settings_save_sensitive_clips">Save sensitive clips</string>
     <string name="action_clipboard_manager_settings_save_sensitive_clips_subtitle">If enabled, it will save items from password managers, incognito windows, etc</string>
     <string name="action_clipboard_manager_settings_list_layout">Use vertical list layout instead of grid</string>
     <string name="action_clipboard_manager_settings_show_pinned_above_others">Keep pinned clips on top</string>
-    <string name="action_clipboard_manager_settings_skip_delete_confirmation">Skip confirmation when deleting clips</string>
+    <string name="action_clipboard_manager_settings_skip_delete_confirmation">Skip confirmation when deleting unpinned clips</string>
+
     <string name="action_clipboard_manager_settings_show_quick_clips">Show recently copied text in suggestion bar</string>
 
     <!-- For keyboard modes action -->
