@@ -142,6 +142,13 @@ val keySoundVolumeSetting = SettingsKey(
     0.0f
 )
 
+val flickThresholdSetting = SettingsKey(
+    floatPreferencesKey("flick_threshold_ratio"),
+    -1.0f
+)
+
+const val FLICK_THRESHOLD_DEFAULT = 1.0f / 3.0f
+
 val ActionBarDisplayedSetting = SettingsKey(
     booleanPreferencesKey("enable_action_bar"),
     true
@@ -793,6 +800,28 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             subtitle = R.string.keyboard_settings_period_key_subtitle2,
             key = Settings.PREF_ENABLE_ALT_PERIOD_KEY,
             default = {false},
+        ),
+        UserSetting(
+            name = R.string.keyboard_settings_flick_threshold,
+            subtitle = R.string.keyboard_settings_flick_threshold_subtitle,
+            component = {
+                val context = LocalContext.current
+                SettingSlider(
+                    title = stringResource(R.string.keyboard_settings_flick_threshold),
+                    setting = flickThresholdSetting,
+                    range = -1.0f .. 0.8f,
+                    hardRange = -1.0f .. 1.0f,
+                    transform = { if(it <= 0.0f) -1.0f else it },
+                    indicator = {
+                        if(it < 0.0f) {
+                            context.getString(R.string.keyboard_settings_flick_threshold_default)
+                        } else {
+                            "${(it * 100).roundToInt()}%"
+                        }
+                    },
+                    subtitle = stringResource(R.string.keyboard_settings_flick_threshold_subtitle)
+                )
+            }
         ),
     )
 )

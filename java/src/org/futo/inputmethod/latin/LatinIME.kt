@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.keyboard.Key
 import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEManager
 import org.futo.inputmethod.engine.general.WordLearner
@@ -62,6 +63,8 @@ import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
+import org.futo.inputmethod.latin.uix.settings.pages.FLICK_THRESHOLD_DEFAULT
+import org.futo.inputmethod.latin.uix.settings.pages.flickThresholdSetting
 import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
@@ -422,6 +425,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                         }
                     }
                 }
+        }
+
+        Key.flickThresholdRatio = getSettingBlocking(flickThresholdSetting).let {
+            if(it < 0.0f) FLICK_THRESHOLD_DEFAULT else it
+        }
+        launchJob {
+            getSettingFlow(flickThresholdSetting).collect {
+                Key.flickThresholdRatio = if(it < 0.0f) FLICK_THRESHOLD_DEFAULT else it
+            }
         }
 
         launchJob {

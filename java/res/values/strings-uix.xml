@@ -478,6 +478,10 @@
     <string name="keyboard_settings_period_key">Quick period key</string>
     <string name="keyboard_settings_period_key_subtitle2">Replaces the layout of long-pressed period key with a flickable layout: ! , . ?</string>
 
+    <string name="keyboard_settings_flick_threshold">Flick sensitivity</string>
+    <string name="keyboard_settings_flick_threshold_subtitle">Adjust how far you need to swipe to trigger a flick action. Lower values make flick easier to trigger.</string>
+    <string name="keyboard_settings_flick_threshold_default">Default (33%)</string>
+
     <string name="keyboard_settings_number_row_title">Number row</string>
     <string name="keyboard_settings_number_row_style">Number row style</string>
     <!-- Slightly more compact than a full key, has no background -->
