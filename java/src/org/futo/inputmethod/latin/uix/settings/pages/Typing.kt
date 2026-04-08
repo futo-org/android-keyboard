@@ -809,9 +809,9 @@ val KeyboardSettingsMenu = UserSettingsMenu(
                 SettingSlider(
                     title = stringResource(R.string.keyboard_settings_flick_threshold),
                     setting = flickThresholdSetting,
-                    range = -1.0f .. 0.8f,
-                    hardRange = -1.0f .. 1.0f,
-                    transform = { if(it <= 0.0f) -1.0f else it },
+                    range = -1.0f .. 80.0f,
+                    hardRange = -1.0f .. 100.0f,
+                    transform = { if(it <= 0.0f) -1.0f else it / 100.0f },
                     indicator = {
                         if(it < 0.0f) {
                             context.getString(R.string.keyboard_settings_flick_threshold_default)

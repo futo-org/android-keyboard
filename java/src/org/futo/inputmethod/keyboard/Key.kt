@@ -567,6 +567,7 @@ data class Key(
         get() = mFlickDirection
 
     companion object {
+        @Volatile
         @JvmStatic
         var flickThresholdRatio: Float = 1.0f / 3.0f
 
