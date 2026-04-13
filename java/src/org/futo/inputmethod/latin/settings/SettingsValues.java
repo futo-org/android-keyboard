@@ -146,7 +146,7 @@ public class SettingsValues {
         }
         mIsRTL = TextUtils.getLayoutDirectionFromLocale(mLocale) == View.LAYOUT_DIRECTION_RTL;
         // Get the resources
-        mSpacingAndPunctuations = new SpacingAndPunctuations(res);
+        mSpacingAndPunctuations = SpacingAndPunctuations.create(context, res.getConfiguration().locale);
 
         // Store the input attributes
         mInputAttributes = inputAttributes;

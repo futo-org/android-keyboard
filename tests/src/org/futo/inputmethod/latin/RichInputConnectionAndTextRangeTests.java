@@ -21,12 +21,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.Parcel;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
+import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -40,6 +42,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.futo.inputmethod.engine.InputMethodConnectionProvider;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.StringUtils;
+import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
 import org.futo.inputmethod.latin.utils.NgramContextUtils;
 import org.futo.inputmethod.latin.utils.RunInLocale;
@@ -51,8 +54,13 @@ import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
+import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -64,14 +72,10 @@ public class RichInputConnectionAndTextRangeTests {
 
     @Before
     public void setUp() throws Exception {
-        final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
-            @Override
-            protected SpacingAndPunctuations job(final Resources res) {
-                return new SpacingAndPunctuations(res);
-            }
-        };
-        final Resources res = InstrumentationRegistry.getTargetContext().getResources();
-        mSpacingAndPunctuations = job.runInLocale(res, Locale.ENGLISH);
+        mSpacingAndPunctuations = SpacingAndPunctuations.create(
+                InstrumentationRegistry.getTargetContext(),
+                Locale.ENGLISH
+        );
     }
 
     private class MockConnection extends InputConnectionWrapper {
@@ -171,7 +175,7 @@ public class RichInputConnectionAndTextRangeTests {
 
         @Override
         public @NotNull Context getContextForSettings() {
-            return null;
+            return InstrumentationRegistry.getTargetContext();
         }
     }
 
@@ -248,15 +252,15 @@ public class RichInputConnectionAndTextRangeTests {
         /**
          * Test logic in getting the word range at the cursor.
          */
-        final SpacingAndPunctuations SPACE = new SpacingAndPunctuations(
-                mSpacingAndPunctuations, new int[] { Constants.CODE_SPACE });
-        final SpacingAndPunctuations TAB = new SpacingAndPunctuations(
-                mSpacingAndPunctuations, new int[] { Constants.CODE_TAB });
+        final SettingsValues SPACE = buildSettingsValues(SpacingAndPunctuations.createForTesting(
+                mSpacingAndPunctuations, new int[] { Constants.CODE_SPACE }));
+        final SettingsValues TAB = buildSettingsValues(SpacingAndPunctuations.createForTesting(
+                mSpacingAndPunctuations, new int[] { Constants.CODE_TAB }));
         // A character that needs surrogate pair to represent its code point (U+2008A).
         final String SUPPLEMENTARY_CHAR_STRING = "\uD840\uDC8A";
-        final SpacingAndPunctuations SUPPLEMENTARY_CHAR = new SpacingAndPunctuations(
+        final SettingsValues SUPPLEMENTARY_CHAR = buildSettingsValues(SpacingAndPunctuations.createForTesting(
                 mSpacingAndPunctuations, StringUtils.toSortedCodePointArray(
-                        SUPPLEMENTARY_CHAR_STRING));
+                        SUPPLEMENTARY_CHAR_STRING)));
         final String HIRAGANA_WORD = "\u3042\u3044\u3046\u3048\u304A"; // あいうえお
         final String GREEK_WORD = "\u03BA\u03B1\u03B9"; // και
 
@@ -294,7 +298,8 @@ public class RichInputConnectionAndTextRangeTests {
         ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_LATIN, true);
         ic.endBatchEdit();
-        assertTrue(TextUtils.equals("word", r.mWord));
+        // Note: Originally, the behavior was to treat Latin and Greek as incompatible scripts
+        assertTrue(TextUtils.equals("word" + GREEK_WORD, r.mWord));
 
         // likewise for greek
         mockInputMethodService.setInputConnection(
@@ -302,7 +307,8 @@ public class RichInputConnectionAndTextRangeTests {
         ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor(SUPPLEMENTARY_CHAR, ScriptUtils.SCRIPT_GREEK, true);
         ic.endBatchEdit();
-        assertTrue(TextUtils.equals(GREEK_WORD, r.mWord));
+        // Note: Originally, the behavior was to treat Latin and Greek as incompatible scripts
+        assertTrue(TextUtils.equals("text" + GREEK_WORD + "text", r.mWord));
     }
 
     /**
@@ -316,14 +322,61 @@ public class RichInputConnectionAndTextRangeTests {
         helpTestGetSuggestionSpansAtWord(16);
     }
 
+    private SettingsValues buildSettingsValues(final SpacingAndPunctuations spacingAndPunctuations) {
+        SharedPreferences emptyPrefs = new SharedPreferences() {
+            @Override public boolean getBoolean(String key, boolean def) { return def; }
+            @Override public int     getInt(String key, int def) { return def; }
+            @Override public long    getLong(String key, long def) { return def; }
+            @Override public float   getFloat(String key, float def) { return def; }
+            @Override public String  getString(String key, String def) { return def; }
+            @Override public Set<String> getStringSet(String key, Set<String> def) { return def; }
+
+            // --- boiler-plate that nobody calls in this test ---
+            @Override public Map<String, ?> getAll() { return Collections.emptyMap(); }
+            @Override public boolean contains(String key) { return false; }
+            @Override public Editor edit() { return new Editor() {
+                public Editor putBoolean(String k, boolean v) { return this; }
+                public Editor putInt   (String k, int    v) { return this; }
+                public Editor putLong(String key, long value) { return this; }
+                public Editor putFloat (String k, float  v) { return this; }
+                public Editor putString(String k, String v) { return this; }
+                public Editor putStringSet(String k, Set<String> v) { return this; }
+                public Editor remove(String k) { return this; }
+                public Editor clear() { return this; }
+                public boolean commit() { return true; }
+                public void apply() {}
+            };};
+            @Override public void registerOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener l) {}
+            @Override public void unregisterOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener l) {}
+        };
+
+        SettingsValues real = new SettingsValues(
+                InstrumentationRegistry.getTargetContext(),
+                emptyPrefs,
+                InstrumentationRegistry.getTargetContext().getResources(),
+                new InputAttributes(null, false, ""));
+
+        try {
+            Field f = SettingsValues.class.getDeclaredField("mSpacingAndPunctuations");
+            f.setAccessible(true);
+            f.set(real, spacingAndPunctuations);
+        }catch(Exception e) {
+            throw new IllegalStateException(e);
+        }
+
+        return real;
+    }
+
     private void helpTestGetSuggestionSpansAtWord(final int cursorPos) {
-        final SpacingAndPunctuations SPACE = new SpacingAndPunctuations(
-                mSpacingAndPunctuations, new int[] { Constants.CODE_SPACE });
+        final SettingsValues SPACE = buildSettingsValues(SpacingAndPunctuations.createForTesting(
+                mSpacingAndPunctuations, new int[] { Constants.CODE_SPACE }));
         final MockInputMethodService mockInputMethodService = new MockInputMethodService();
         final RichInputConnection ic = new RichInputConnection(mockInputMethodService);
 
         final String[] SUGGESTIONS1 = { "swing", "strong" };
         final String[] SUGGESTIONS2 = { "storing", "strung" };
+
+
 
         // Test the usual case.
         SpannableString text = new SpannableString("This is a string for test");
