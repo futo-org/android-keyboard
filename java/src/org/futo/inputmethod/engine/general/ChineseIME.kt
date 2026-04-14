@@ -28,8 +28,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
+import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
+import org.futo.inputmethod.engine.IMEMessage
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes.switchToNextLanguage
@@ -502,6 +504,20 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         subscribeToRimeMessage()
         subscribeToRimePreedit()
         subscribeToRimeCandidates()
+
+        helper.lifecycleScope.launch {
+            GlobalIMEMessage.collect { message ->
+                when(message) {
+                    IMEMessage.ReloadResources -> coroScope.launch {
+                        rime.shutdown()
+                        rime.startup(false)
+                        prevConfiguration = null
+                    }
+                    else -> {}
+                }
+            }
+        }
+
         blacklist.init()
     }
     override fun onDestroy() {

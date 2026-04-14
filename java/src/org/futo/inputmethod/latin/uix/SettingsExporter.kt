@@ -35,6 +35,7 @@ import okio.sink
 import okio.source
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
+import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.mozcUserProfileDir
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.utils.readAllBytesCompat
@@ -236,7 +237,7 @@ object SettingsExporter {
         }
 
         // Collect resources
-        context.getExternalFilesDir(null)?.listFiles()?.forEach { resourceFile ->
+        context.getExternalFilesDir(null)?.listFiles()?.filter { it.isFile }?.forEach { resourceFile ->
             // if includeHeavyResources, then only include this if its not a .dict
             if (resourceFile.extension == "dict" || includeHeavyResources) {
                 zipOut.putNextEntry(ZipEntry("ext/${resourceFile.name}"))
@@ -287,6 +288,17 @@ object SettingsExporter {
             zipOut.closeEntry()
         }
 
+        // Collect RIME (Chinese user typing history, etc)
+        val rimeDir = ChineseIME.getRimeDir(context)
+        rimeDir.walk().filter { it.isFile }.forEach { subfile ->
+            val rel = subfile.toRelativeString(rimeDir)
+
+            val entry = ZipEntry("rime/$rel")
+            zipOut.putNextEntry(entry)
+            subfile.inputStream().use { it.copyTo(zipOut) }
+            zipOut.closeEntry()
+        }
+
         // Collect themes
         ZipThemes.customThemesDir(context).listFiles()?.forEach { themeFile ->
             zipOut.putNextEntry(ZipEntry("themes/${themeFile.name}"))
@@ -332,6 +344,7 @@ object SettingsExporter {
             }
 
             context.clipboardDir.deleteRecursively()
+            ChineseIME.getRimeDir(context).deleteRecursively()
             mozcUserProfileDir(context).deleteRecursively()
 
             // delete all themes
@@ -394,7 +407,7 @@ object SettingsExporter {
                 }
 
                 entry.name.startsWith("clipboard/") -> {
-                    val relDir = entry.name.split('/', limit=2).last()
+                    val relDir = entry.name.splitSlash()
                     assert(!relDir.contains('/'))
 
                     val clipboardDir = context.clipboardDir
@@ -406,13 +419,25 @@ object SettingsExporter {
 
 
                 entry.name.startsWith("mozc/") -> {
-                    val relDir = entry.name.split('/', limit=2).last()
+                    val relDir = entry.name.splitSlash()
 
                     assert(!relDir.contains('/'))
 
                     val userProfileDir = mozcUserProfileDir(context)
                     userProfileDir.mkdirs()
                     File(userProfileDir, relDir).outputStream().use {
+                        zipIn.copyTo(it)
+                    }
+                }
+
+                entry.name.startsWith("rime/") -> {
+                    val relDir = entry.name.splitSlash()
+                    val rimeDir = ChineseIME.getRimeDir(context)
+
+                    val targetFile = File(rimeDir, relDir)
+                    targetFile.parentFile!!.mkdirs()
+
+                    targetFile.outputStream().use {
                         zipIn.copyTo(it)
                     }
                 }
