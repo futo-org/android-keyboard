@@ -1,5 +1,6 @@
 package org.futo.inputmethod.engine
 
+import androidx.compose.runtime.MutableState
 import org.futo.inputmethod.annotations.UsedForTesting
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.latin.common.Constants
@@ -24,6 +25,9 @@ interface IMEInterface {
     )
 
     fun isGestureHandlingAvailable(): Boolean
+
+    /** Optionally return a state to indicate the IME is loading and no input can be processed */
+    fun getLoadingState(): MutableState<Boolean>? = null
 
     // Input
     fun onEvent(event: Event)

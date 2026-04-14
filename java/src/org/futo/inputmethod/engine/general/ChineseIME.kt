@@ -5,6 +5,8 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -239,6 +241,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     private val maxBufferLength = 0x100000
     private var layoutHint: String? = null
     private val rawInput = InputKeeper()
+    private val rimeLoading = mutableStateOf(false)
+
+    override fun getLoadingState(): MutableState<Boolean>? = rimeLoading
 
     private val currentTransformation get() = when(layoutHint) {
         "stroke" -> StrokeTransformation
@@ -641,6 +646,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
                 val config = Configuration(schema, learning, simplified, autocorrect, fuzzy)
                 if (config != prevConfiguration) {
+                    rimeLoading.value = true
                     writeCustomizationFile(config)
                     rime.deploy()
 
@@ -663,6 +669,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
                 }
             } finally {
                 configSemaphore.release()
+                rimeLoading.value = false
             }
         }
     }

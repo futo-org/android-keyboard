@@ -730,7 +730,8 @@ class UixManager(private val latinIME: LatinIME) {
                             else null
                     },
                     onQuickClipDismiss = { quickClipState.value = null },
-                    needToUseExpandableSuggestionUi = needToUseExpandableSuggestionUi
+                    needToUseExpandableSuggestionUi = needToUseExpandableSuggestionUi,
+                    loading = latinIME.imeManager.isImeLoading()
                 )
             }
         }

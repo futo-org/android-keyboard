@@ -1,5 +1,9 @@
 package org.futo.inputmethod.engine
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.lifecycleScope
@@ -53,7 +57,9 @@ class IMEManager(
     private val helper = IMEHelper(service)
     private val settings = Settings.getInstance()
     private val imes: MutableMap<IMEKind, IMEInterface> = mutableMapOf()
-    private var activeIme: IMEInterface? = null
+    private var activeIme by mutableStateOf<IMEInterface?>(null)
+
+    @Composable fun isImeLoading(): Boolean = activeIme?.getLoadingState()?.value == true
 
     private fun getActiveIMEKind(settingsValues: SettingsValues): IMEKind =
         when(settingsValues.mLocale.language) {

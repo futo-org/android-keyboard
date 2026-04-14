@@ -38,11 +38,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -782,7 +784,8 @@ fun ActionBar(
     keyboardManagerForAction: KeyboardManagerForAction? = null,
     quickClipState: QuickClipState? = null,
     onQuickClipDismiss: () -> Unit = {},
-    needToUseExpandableSuggestionUi: Boolean = false
+    needToUseExpandableSuggestionUi: Boolean = false,
+    loading: Boolean = false,
 ) {
     val view = LocalView.current
     val context = LocalContext.current
@@ -846,7 +849,14 @@ fun ActionBar(
                     if (importantNotice != null) {
                         ImportantNoticeView(importantNotice)
                     } else {
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                        if(loading) {
+                            Spacer(Modifier.weight(1.0f))
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(32.dp).align(CenterVertically),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(Modifier.weight(1.0f))
+                        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                             && inlineSuggestions.isNotEmpty()
                         ) {
                             InlineSuggestions(inlineSuggestions)
@@ -1557,10 +1567,10 @@ fun PreviewActionBarWithSuggestions(colorScheme: ThemeOption = DefaultDarkScheme
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = false,
             toggleActionsExpanded = { },
-            onActionAltActivated = { }
         )
     }
 }
@@ -1607,10 +1617,10 @@ fun PreviewActionBarWithQuickClip(colorScheme: ThemeOption = DefaultDarkScheme) 
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = false,
             toggleActionsExpanded = { },
-            onActionAltActivated = { },
             quickClipState = QuickClipState(
                 texts = listOf(
                     QuickClipItem(QuickClipKind.EmailAddress, "keyboard@futo.org", 0),
@@ -1621,7 +1631,7 @@ fun PreviewActionBarWithQuickClip(colorScheme: ThemeOption = DefaultDarkScheme) 
                 validUntil = Long.MAX_VALUE,
                 imageMimeTypes = listOf(),
                 isSensitive = true
-            )
+            ),
         )
     }
 }
@@ -1634,10 +1644,10 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = true,
             toggleActionsExpanded = { },
-            onActionAltActivated = { },
             importantNotice = object : ImportantNotice {
                 @Composable
                 override fun getText(): String {
@@ -1646,7 +1656,7 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
 
                 override fun onDismiss(context: Context, auto: Boolean) { }
                 override fun onOpen(context: Context) { }
-            }
+            },
         )
     }
 }
@@ -1659,10 +1669,27 @@ fun PreviewActionBarWithEmptySuggestions(colorScheme: ThemeOption = DefaultDarkS
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = true,
             toggleActionsExpanded = { },
-            onActionAltActivated = { }
+        )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewActionBarLoading(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
+        ActionBar(
+            words = exampleSuggestedWordsEmpty,
+            suggestionStripListener = ExampleListener(),
+            onActionActivated = { },
+            onActionAltActivated = { },
+            inlineSuggestions = listOf(),
+            isActionsExpanded = true,
+            toggleActionsExpanded = { },
+            loading = true
         )
     }
 }
@@ -1675,10 +1702,10 @@ fun PreviewExpandedActionBar(colorScheme: ThemeOption = DefaultDarkScheme) {
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = true,
             toggleActionsExpanded = { },
-            onActionAltActivated = { }
         )
     }
 }
@@ -1714,6 +1741,14 @@ fun PreviewActionBarWithEmptySuggestionsDynamicLight() {
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
+fun PreviewActionBarLoadingDynamicLight() {
+    PreviewActionBarLoading(DynamicLightTheme)
+}
+
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview
 fun PreviewExpandedActionBarDynamicLight() {
     PreviewExpandedActionBar(DynamicLightTheme)
 }
@@ -1730,6 +1765,13 @@ fun PreviewActionBarWithSuggestionsDynamicDark() {
 @Preview
 fun PreviewActionBarWithEmptySuggestionsDynamicDark() {
     PreviewActionBarWithEmptySuggestions(DynamicDarkTheme)
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview
+fun PreviewActionBarLoadingDynamicDark() {
+    PreviewActionBarLoading(DynamicDarkTheme)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
