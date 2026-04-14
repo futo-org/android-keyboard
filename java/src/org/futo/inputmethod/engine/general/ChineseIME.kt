@@ -27,6 +27,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
 import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
@@ -326,11 +327,6 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         rime = Rime(shared.path, user.path, helper.context.packageName)
     }
 
-    fun requestTakeOver(who: Any): Pair<Rime?, CoroutineScope?> {
-        Log.d(TAG, "$who tries to take over")
-        return Pair(rime, coroScope)
-    }
-
     private fun handlePassByMessage(x11Code: Int, mask: Int) {
         when (x11Code) {
             XK_BackSpace -> sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL, 0)
@@ -593,55 +589,80 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         file.writeText(content)
     }
 
+    private var configSemaphore = Semaphore(1)
     private fun updateConfig() {
         coroScope.launch {
             if(editingState.active) return@launch
+            if(!configSemaphore.tryAcquire()) return@launch
 
-            val settings = Settings.getInstance().current
-            val locale = settings.mLocale
+            try {
+                val settings = Settings.getInstance().current
+                val locale = settings.mLocale
 
-            val simplified = isSimplifiedChinese(locale)
+                val simplified = isSimplifiedChinese(locale)
 
-            val pinyinScheme = helper.context.getSetting(ChineseIMESettings.PinyinSchemeSetting).toEnumOrNull<ChineseIMESettings.PinyinScheme>()
-                ?: ChineseIMESettings.PinyinScheme.FullPinyin
-            val schema = when(layoutHint) {
-                "qwerty" -> {
-                    when {
-                        pinyinScheme == ChineseIMESettings.PinyinScheme.FullPinyin -> when {
-                            simplified -> "luna_pinyin_simp"
-                            else -> "luna_pinyin"
+                val pinyinScheme = helper.context.getSetting(ChineseIMESettings.PinyinSchemeSetting)
+                    .toEnumOrNull<ChineseIMESettings.PinyinScheme>()
+                    ?: ChineseIMESettings.PinyinScheme.FullPinyin
+                val schema = when (layoutHint) {
+                    "qwerty" -> {
+                        when {
+                            pinyinScheme == ChineseIMESettings.PinyinScheme.FullPinyin -> when {
+                                simplified -> "luna_pinyin_simp"
+                                else -> "luna_pinyin"
+                            }
+
+                            else -> pinyinScheme.rimeId
                         }
+                    }
 
-                        else -> pinyinScheme.rimeId
+                    "stroke" -> {
+                        "stroke"
+                    }
+
+                    null -> {
+                        return@launch
+                    }
+
+                    else -> {
+                        throwIfDebug(IllegalStateException("Invalid layout hint '${layoutHint}'"))
+                        "luna_pinyin"
                     }
                 }
-                "stroke" -> {
-                    "stroke"
+
+                val fuzzy = ChineseIMESettings.FuzzyPinyinModes.fromCommaString(
+                    helper.context.getSetting(ChineseIMESettings.FuzzyPinyinSetting)
+                )
+
+                val autocorrect = settings.mAutoCorrectionEnabledPerUserSettings
+                        || settings.isSuggestionsEnabledPerUserSettings
+
+                val learning = settings.isPersonalizationEnabled
+
+                val config = Configuration(schema, learning, simplified, autocorrect, fuzzy)
+                if (config != prevConfiguration) {
+                    writeCustomizationFile(config)
+                    rime.deploy()
+
+                    var result = false
+                    for(i in 0..10) {
+                        if(rime.selectSchema(config.schema)) {
+                            result = true
+                            break
+                        }
+                        Thread.sleep(300L)
+                    }
+
+                    if(!result) {
+                        Log.e(TAG, "Failed to select schema 3s after deployment!")
+                    }
+
+                    rime.setOption("simplification", simplified)
+                    rime.setOption("traditional", !simplified)
+                    prevConfiguration = config
                 }
-                null -> { return@launch }
-                else -> {
-                    throwIfDebug(IllegalStateException("Invalid layout hint '${layoutHint}'"))
-                    "luna_pinyin"
-                }
-            }
-
-            val fuzzy = ChineseIMESettings.FuzzyPinyinModes.fromCommaString(
-                helper.context.getSetting(ChineseIMESettings.FuzzyPinyinSetting)
-            )
-
-            val autocorrect = settings.mAutoCorrectionEnabledPerUserSettings
-                    || settings.isSuggestionsEnabledPerUserSettings
-
-            val learning = settings.isPersonalizationEnabled
-
-            val config = Configuration(schema, learning, simplified, autocorrect, fuzzy)
-            if(config != prevConfiguration) {
-                writeCustomizationFile(config)
-                rime.selectSchema(config.schema)
-                rime.deploy()
-                rime.setOption("simplification", simplified)
-                rime.setOption("traditional", !simplified)
-                prevConfiguration = config
+            } finally {
+                configSemaphore.release()
             }
         }
     }
