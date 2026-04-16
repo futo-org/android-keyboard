@@ -2391,6 +2391,10 @@ public final class InputLogic {
         // We try sending keyEvent first and fallback to commitText. This might cause double numeric
         // inputs in InputConnections that return false but commit text anyway
         if (codePoint >= '0' && codePoint <= '9') {
+            // Send any pending changes, otherwise the order of input will be reversed. Notably,
+            // the automatic space would be sent after the number, rather than before, as in:
+            // https://github.com/futo-org/android-keyboard/issues/1795
+            mConnection.send();
             if(sendDownUpKeyEvent(codePoint - '0' + KeyEvent.KEYCODE_0, 0)) {
                 return;
             }
