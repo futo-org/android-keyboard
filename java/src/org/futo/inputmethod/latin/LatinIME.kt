@@ -370,6 +370,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun onCreate() {
         super.onCreate()
 
+        UserBinaryDictionary.resetUserDictionariesRequiringRecreation()
+
         CanThrowIfDebug = isDirectBootUnlocked
 
         JniUtils.loadNativeLibrary()
@@ -888,6 +890,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         Log.i("LatinIME", "Device has been unlocked, reloading settings")
 
         // Every place that called getDefaultSharedPreferences now needs to be refreshed or call it again
+        UserBinaryDictionary.resetUserDictionariesRequiringRecreation()
 
         // Mainly Settings singleton needs to be refreshed
         Settings.init(applicationContext)
