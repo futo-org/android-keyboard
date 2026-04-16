@@ -54,6 +54,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.function.Consumer
 import java.util.function.IntConsumer
@@ -281,10 +285,14 @@ private fun GenericEditTextCompose(
     }
 
     val token = LocalView.current.windowToken
+    val scope = LocalLifecycleOwner.current
     DisposableEffect(autofocus, token) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if(autofocus) {
-            imm.showSoftInput(editText, 0)
+            scope.lifecycleScope.launch(Dispatchers.Main) {
+                editText.requestFocus()
+                imm.showSoftInput(editText, 0)
+            }
         }
 
         onDispose {
@@ -340,10 +348,11 @@ fun SettingsTextEdit(
     autocorrect: Boolean = true,
     autofocus: Boolean = false,
     forceQwerty: Boolean = false,
+    error: Boolean = false,
 ) {
     Surface(
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        color = if(error) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surfaceContainerHighest,
+        border = BorderStroke(1.dp, if(error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline),
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
