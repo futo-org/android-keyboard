@@ -7,6 +7,15 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
+data class StateHint(
+    /** Makes KeyboardState instantly unshift when any key with code > 0 is pressed on the alphabet layout */
+    @JvmField val unshiftOnPressed: Boolean = false,
+
+    /** Makes PointerTracker use looser matching rules for keyboard layout changes, to be used in combination with the above */
+    @JvmField val useLooseMatching: Boolean = false,
+)
+val DefaultStateHint = StateHint()
+
 interface IMEInterface {
     // Basic lifecycle
     fun onCreate()
@@ -28,6 +37,9 @@ interface IMEInterface {
 
     /** Optionally return a state to indicate the IME is loading and no input can be processed */
     fun getLoadingState(): MutableState<Boolean>? = null
+
+    /** Optional hint for how the keyboard state should behave */
+    fun getStateHint(imeHint: String?) = DefaultStateHint
 
     // Input
     fun onEvent(event: Event)

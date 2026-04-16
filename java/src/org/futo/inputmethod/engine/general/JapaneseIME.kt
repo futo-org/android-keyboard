@@ -26,6 +26,7 @@ import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.engine.IMEMessage
+import org.futo.inputmethod.engine.StateHint
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
@@ -79,6 +80,7 @@ import org.mozc.android.inputmethod.japanese.protobuf.ProtoConfig
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoUserDictionaryStorage
 import java.io.File
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicBoolean
 
 object JapaneseIMESettings {
     val FlickOnly = SettingsKey(
@@ -604,6 +606,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         return false
     }
 
+    override fun getStateHint(imeHint: String?): StateHint = if(imeHint == "12key") StateHint(true, true) else StateHint()
+
     private fun createKeyEvent(
         original: KeyEvent,
         eventTime: Long,
@@ -847,7 +851,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     // We use the "shift" alphabet state to show the language switch key
     override fun getCurrentAutoCapsState() = when {
-        !hasPreedit && layoutHint == "12key" -> TextUtils.CAP_MODE_CHARACTERS
+        !hasPreedit && layoutHint == "12key" && !evalPending.get() -> TextUtils.CAP_MODE_CHARACTERS
         else -> Constants.TextUtils.CAP_MODE_OFF
     }
 
@@ -984,11 +988,13 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         }
     }
 
+    private val evalPending = AtomicBoolean(false)
     private val evaluationCallback = object : SessionExecutor.EvaluationCallback {
         override fun onCompleted(
             command: Optional<ProtoCommands.Command>,
             triggeringKeyEvent: Optional<KeyEventInterface>
         ) {
+            evalPending.set(false)
             if(!command.isPresent) return
 
             renderInputConnection(command.get(), triggeringKeyEvent.orNull())
@@ -1119,6 +1125,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 val touchEvents = emptyList<ProtoCommands.Input.TouchEvent>()
 
                 if(mozcEvent != null) {
+                    evalPending.set(true)
                     executor.sendKey(
                         mozcEvent,
                         triggeringKeyEvent,

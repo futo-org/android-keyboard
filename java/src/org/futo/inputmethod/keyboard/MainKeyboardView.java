@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.accessibility.MainKeyboardAccessibilityDelegate;
 import org.futo.inputmethod.annotations.ExternallyReferenced;
+import org.futo.inputmethod.engine.StateHint;
 import org.futo.inputmethod.keyboard.internal.DrawingPreviewPlacerView;
 import org.futo.inputmethod.keyboard.internal.DrawingProxy;
 import org.futo.inputmethod.keyboard.internal.GestureFloatingTextDrawingPreview;
@@ -906,5 +907,9 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     public void deallocateMemory() {
         super.deallocateMemory();
         mDrawingPreviewPlacerView.deallocateMemory();
+    }
+
+    public void updateStateHint(StateHint stateHint) {
+        PointerTracker.setStateHint(stateHint);
     }
 }

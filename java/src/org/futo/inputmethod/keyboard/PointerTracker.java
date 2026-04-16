@@ -22,6 +22,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import org.futo.inputmethod.engine.IMEInterfaceKt;
+import org.futo.inputmethod.engine.StateHint;
 import org.futo.inputmethod.keyboard.internal.BatchInputArbiter;
 import org.futo.inputmethod.keyboard.internal.BatchInputArbiter.BatchInputArbiterListener;
 import org.futo.inputmethod.keyboard.internal.BogusMoveEventDetector;
@@ -85,6 +87,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     private static GestureEnabler sGestureEnabler = new GestureEnabler();
+    private static StateHint sStateHint = IMEInterfaceKt.getDefaultStateHint();
+
+    public static void setStateHint(StateHint stateHint) {
+        PointerTracker.sStateHint = stateHint;
+    }
 
     // Parameters for pointer handling.
     private static PointerTrackerParams sParams;
@@ -728,10 +735,15 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                 Key prevKey = key;
                 key = getKeyOn(x, y);
 
-                if(key != null && !key.isModifier() || !areTwoKeysCompatibleFollowingLayoutChange(prevKey, key))
-                    key = null;
-                else
-                    key = onDownKey(x, y, eventTime);
+                if(key != null) {
+                    boolean matchesStrictRule = key.isModifier() && areTwoKeysCompatibleFollowingLayoutChange(prevKey, key);
+                    boolean matchesLooseRule = PointerTracker.sStateHint.useLooseMatching && key.equals(prevKey);
+                    if(matchesStrictRule || matchesLooseRule) {
+                        key = onDownKey(x, y, eventTime);
+                    } else {
+                        key = null;
+                    }
+                }
             }
 
             if(key == null) return;
