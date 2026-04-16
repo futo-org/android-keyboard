@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -251,7 +252,7 @@ fun ClipboardEntryView(modifier: Modifier, clipboardEntry: ClipboardEntry, onPas
         .padding(2.dp)
         .combinedClickable(
             interactionSource = remember { MutableInteractionSource() },
-            indication = rememberRipple(),
+            indication = ripple(),
             enabled = true,
             onClick = { onPaste(clipboardEntry) },
             onLongClick = { onPin(clipboardEntry) }
@@ -1103,7 +1104,7 @@ val ClipboardHistoryAction = Action(
                             val i = sortedList.size - r_i - 1
                             val entry = sortedList[i]
                             ClipboardEntryView(
-                                modifier = Modifier.animateItemPlacement(),
+                                modifier = Modifier.animateItem(),
                                 clipboardEntry = entry, onPaste = {
                                     if(it.text != null) {
                                         manager.typeText(it.text)

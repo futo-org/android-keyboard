@@ -232,13 +232,15 @@ private fun GenericEditTextCompose(
 
             setHeight(height.toInt())
 
-            val editorInfo = EditorInfo().apply {
-                this.inputType = inputType
-                this.packageName = context.packageName
-            }
-            onCreateInputConnection(editorInfo)
+            if(onOverride != null) {
+                val editorInfo = EditorInfo().apply {
+                    this.inputType = inputType
+                    this.packageName = context.packageName
+                }
+                onCreateInputConnection(editorInfo)
 
-            onOverride?.invoke(inputConnection!!, editorInfo)
+                onOverride.invoke(inputConnection!!, editorInfo)
+            }
 
             // Remove underline and padding
             background = null

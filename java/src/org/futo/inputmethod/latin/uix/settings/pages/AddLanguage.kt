@@ -1,5 +1,6 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -77,11 +78,8 @@ fun SelectLanguageScreen(navController: NavHostController = rememberNavControlle
     }
 
     LazyColumn {
-        item {
+        item(key=0) {
             ScreenTitle(stringResource(R.string.language_settings_select_language), showBack = true, navController)
-        }
-
-        item {
             Box(Modifier.padding(8.dp)) {
                 SettingsTextEdit(textFieldValue, icon = {
                     Icon(
