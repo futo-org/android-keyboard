@@ -59,6 +59,7 @@ import org.futo.inputmethod.latin.uix.icon
 import org.futo.inputmethod.latin.uix.kindTitle
 import org.futo.inputmethod.latin.uix.namePreferenceKeyFor
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.Route
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
@@ -712,7 +713,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                     if(layoutSetName.startsWith("custom")) {
                         val i = layoutSetName.substring("custom".length).toIntOrNull()
                         if(i != null) {
-                            navController.navigate("devlayoutedit/$i")
+                            navController.navigate(Route.DevLayoutEdit(i))
                         }
                     } else {
                         Subtypes.removeLanguage(context, subtype)
@@ -726,7 +727,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                     }
                 },
                 onLayoutAdditionRequested = {
-                    navController.navigate("addLayout/${locale.toString().urlEncode()}")
+                    navController.navigate(Route.AddLayout(locale.toLanguageTag()))
                 },
                 onToggleMultilingualBucket = { to ->
                     val newSet = multilingualBucket.value.toMutableSet()

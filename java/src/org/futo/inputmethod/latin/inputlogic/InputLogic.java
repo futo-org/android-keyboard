@@ -16,12 +16,9 @@
 
 package org.futo.inputmethod.latin.inputlogic;
 
-import android.graphics.Color;
 import android.os.SystemClock;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.view.KeyCharacterMap;
@@ -37,6 +34,7 @@ import org.futo.inputmethod.event.Event;
 import org.futo.inputmethod.event.InputTransaction;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardSwitcher;
+import org.futo.inputmethod.latin.BinaryDictionary;
 import org.futo.inputmethod.latin.DictionaryFacilitator;
 import org.futo.inputmethod.latin.LastComposedWord;
 import org.futo.inputmethod.latin.NgramContext;
@@ -231,6 +229,11 @@ public final class InputLogic {
      * Clean up the input logic after input is finished.
      */
     public void finishInput() {
+        rememberCommittedEmail();
+        resetInput();
+    }
+
+    private void resetInput() {
         if (mWordComposer.isComposingWord()) {
             mConnection.finishComposingText();
             StatsUtils.onWordCommitUserTyped(
@@ -1022,7 +1025,7 @@ public final class InputLogic {
         // keyboard UI slow and non-responsive.
         // TODO: Cache the text after the cursor so we don't need to go to the InputConnection
         // each time. We are already doing this for getTextBeforeCursor().
-                //&& (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                //&& (!settingsValues.mSpacingAndPunctuations.currentLanguageHasSpaces
                 //        || !mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
                 //                InputLogic.COMPOSITION_TEXT_AFTER && !mConnection.hasSlowInputConnection() /* checkTextAfter */)))
         ){
@@ -1080,7 +1083,7 @@ public final class InputLogic {
         final boolean wasComposingWord = mWordComposer.isComposingWord();
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
-                && !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                && !settingsValues.mSpacingAndPunctuations.currentLanguageHasSpaces
                 && wasComposingWord;
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
@@ -1318,7 +1321,7 @@ public final class InputLogic {
                 // (non-revert) backspace handling.
                 if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
                         && inputTransaction.mSettingsValues.mSpacingAndPunctuations
-                                .mCurrentLanguageHasSpaces
+                                .currentLanguageHasSpaces
                         && !mConnection.isCursorFollowedByWordCharacter(
                                 inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
                     final int spaceState = mSpaceState; // Need to preserve space state, which restart resets
@@ -1496,7 +1499,7 @@ public final class InputLogic {
                 mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             } else if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
                     && inputTransaction.mSettingsValues.mSpacingAndPunctuations
-                            .mCurrentLanguageHasSpaces
+                            .currentLanguageHasSpaces
                     && (
                             !mConnection.isCursorFollowedByWordCharacter(inputTransaction.mSettingsValues.mSpacingAndPunctuations)
                                     || nowHasWordCharacter
@@ -1511,9 +1514,9 @@ public final class InputLogic {
     String getWordAtCursor(final SettingsValues settingsValues, final int currentKeyboardScriptId) {
         if (!mConnection.hasSelection()
                 && settingsValues.isSuggestionsEnabledPerUserSettings()
-                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
+                && settingsValues.mSpacingAndPunctuations.currentLanguageHasSpaces) {
             final TextRange range = mConnection.getWordRangeAtCursor(
-                    settingsValues.mSpacingAndPunctuations,
+                    settingsValues,
                     currentKeyboardScriptId, true);
             if (range != null) {
                 return range.mWord.toString();
@@ -1763,7 +1766,7 @@ public final class InputLogic {
             cancelDoubleSpacePeriodCountdown();
             mConnection.deleteTextBeforeCursor(1);
             final String textToInsert = inputTransaction.mSettingsValues.mSpacingAndPunctuations
-                    .mSentenceSeparatorAndSpace;
+                    .sentenceSeparatorAndSpace;
             mConnection.commitText(textToInsert, 1);
             inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
             inputTransaction.setRequiresUpdateSuggestions();
@@ -1822,7 +1825,7 @@ public final class InputLogic {
             if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
             mRecapitalizeStatus.start(selectionStart, selectionEnd, selectedText.toString(),
                     settingsValues.mLocale,
-                    settingsValues.mSpacingAndPunctuations.mSortedWordSeparators);
+                    settingsValues.mSpacingAndPunctuations.sortedWordSeparators);
             // We trim leading and trailing whitespace.
             mRecapitalizeStatus.trim();
         }
@@ -1880,7 +1883,7 @@ public final class InputLogic {
         if (settingsValues.isBrokenByRecorrection()
                 // Recorrection is not supported in languages without spaces because we don't know
                 // how to segment them yet.
-                || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                || !settingsValues.mSpacingAndPunctuations.currentLanguageHasSpaces
                 // If we are currently in a batch input, we must not resume suggestions, or the result
                 // of the batch input will replace the new composition. This may happen in the corner case
                 // that the app moves the cursor on its own accord during a batch input.
@@ -1920,7 +1923,7 @@ public final class InputLogic {
         final int currentKeyboardScriptId = mImeHelper.getCurrentKeyboardScriptId();
 
         final TextRange range = mConnection.getWordRangeAtCursor(
-                settingsValues.mSpacingAndPunctuations, currentKeyboardScriptId, useAfter);
+                settingsValues, currentKeyboardScriptId, useAfter);
 
         if (null == range) {
             return false; // Happens if we don't have an input connection at all
@@ -1985,7 +1988,7 @@ public final class InputLogic {
         if (settingsValues.isBrokenByRecorrection()
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
-                || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                || !settingsValues.mSpacingAndPunctuations.currentLanguageHasSpaces
         // If no suggestions are requested, don't try restarting suggestions.
                 || !settingsValues.needsToLookupSuggestions()
         // If we are currently in a batch input, we must not resume suggestions, or the result
@@ -2095,7 +2098,7 @@ public final class InputLogic {
             );
         }
 
-        if (inputTransaction.mSettingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
+        if (inputTransaction.mSettingsValues.mSpacingAndPunctuations.currentLanguageHasSpaces) {
             mConnection.commitText(textToCommit, 1);
             if (usePhantomSpace) {
                 if(settingsValues.mAltSpacesMode != Settings.SPACES_MODE_NONE) mSpaceState = SpaceState.PHANTOM;
@@ -2195,7 +2198,7 @@ public final class InputLogic {
      */
     public NgramContext getNgramContextFromNthPreviousWordForSuggestion(
             final SpacingAndPunctuations spacingAndPunctuations, final int nthPreviousWord) {
-        if (spacingAndPunctuations.mCurrentLanguageHasSpaces) {
+        if (spacingAndPunctuations.currentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
             // word information from textview.
             return mConnection.getNgramContextFromNthPreviousWord(
@@ -2225,10 +2228,25 @@ public final class InputLogic {
                 && Constants.CODE_DASH != firstCodePoint;
     }
 
+    private void rememberCommittedEmail() {
+        if(!Settings.getInstance().getCurrent().mInputAttributes.mIsEmailField) return;
+        CharSequence cs = mConnection.getTextBeforeCursor(BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH, 0);
+        if(cs == null) return;
+        if(cs.length() >= BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH) return;
+
+        String text = cs.toString();
+        if(text.indexOf(' ') != -1) return;
+
+        if(text.indexOf('@') == -1 || text.indexOf('.') == -1) return;
+
+        mDictionaryFacilitator.onEmailTyped(text);
+    }
+
     /**
      * @param actionId the action to perform
      */
     private void performEditorAction(final int actionId) {
+        rememberCommittedEmail();
         mConnection.performEditorAction(actionId);
     }
 
@@ -2400,7 +2418,7 @@ public final class InputLogic {
      */
     private void insertAutomaticSpaceIfOptionsAndTextAllow(final SettingsValues settingsValues) {
         if (settingsValues.shouldInsertSpacesAutomatically()
-                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                && settingsValues.mSpacingAndPunctuations.currentLanguageHasSpaces
                 && !mConnection.textBeforeCursorLooksLikeURL()) {
             sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
         }
@@ -2409,7 +2427,7 @@ public final class InputLogic {
     private boolean canInsertAutoSpace(final SettingsValues settingsValues) {
         return (settingsValues.mAltSpacesMode >= Settings.SPACES_MODE_SUGGESTIONS)
                 && settingsValues.shouldInsertSpacesAutomatically()
-                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                && settingsValues.mSpacingAndPunctuations.currentLanguageHasSpaces
                 && !settingsValues.mInputAttributes.mIsUriField
                 && !mConnection.textBeforeCursorLooksLikeURL();
     }
@@ -2739,7 +2757,7 @@ public final class InputLogic {
 
 
     private void cursorLeftInternal(int steps, boolean stepOverWords, boolean select) {
-        finishInput();
+        resetInput();
 
         if(!mConnection.hasSelection()) isRightSidePointer = true;
 
@@ -2747,7 +2765,7 @@ public final class InputLogic {
     }
 
     private void cursorRightInternal(int steps, boolean stepOverWords, boolean select) {
-        finishInput();
+        resetInput();
 
         if(!mConnection.hasSelection()) isRightSidePointer = false;
 

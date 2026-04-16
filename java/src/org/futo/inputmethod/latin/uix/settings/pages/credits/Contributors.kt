@@ -80,7 +80,8 @@ val layoutContribs: List<String> = listOf(
     "pjrobertson",
     "sapradhan",
     "slycordinator",
-    "tenextractor"
+    "tenextractor",
+    "AstroNot233"
 )
 
 @Suppress("HardCodedStringLiteral")
@@ -99,5 +100,6 @@ val codeContribs: List<String> = listOf(
     "s-h-a-d-o-w",
     "sapradhan",
     "tenextractor",
-    "venkatesh2090"
+    "venkatesh2090",
+    "AstroNot233"
 )

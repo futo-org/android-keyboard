@@ -26,6 +26,9 @@ import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 
+import org.futo.inputmethod.engine.IMEInterface;
+import org.futo.inputmethod.engine.IMEManager;
+import org.futo.inputmethod.engine.StateHint;
 import org.futo.inputmethod.event.Event;
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutElement;
 import org.futo.inputmethod.keyboard.internal.KeyboardState;
@@ -71,6 +74,7 @@ public final class KeyboardSwitcher implements SwitchActions {
     public KeyboardState mState;
 
     private KeyboardLayoutSetV2 mKeyboardLayoutSet;
+    private StateHint mStateHint;
     // TODO: The following {@link KeyboardTextsSet} should be in {@link KeyboardLayoutSet}.
     private final KeyboardTextsSet mKeyboardTextsSet = new KeyboardTextsSet();
 
@@ -171,13 +175,26 @@ public final class KeyboardSwitcher implements SwitchActions {
                     params
             );
 
-            mState.onLoadKeyboard(editorInfo, transformAutoCapsState(currentAutoCapsState),
-                    layoutSetName);
+            mStateHint = getStateHint(settingsValues);
+            mState.onLoadKeyboard(
+                    editorInfo,
+                    transformAutoCapsState(currentAutoCapsState),
+                    layoutSetName,
+                    mStateHint
+            );
+
             mLatinIMELegacy.setLayout(mKeyboardLayoutSet);
             mKeyboardTextsSet.setLocale(mRichImm.getCurrentSubtypeLocale(), mThemeContext);
         } catch (Exception e) {
             Log.e(TAG, "loading keyboard failed: ", e);
         }
+    }
+
+    private StateHint getStateHint(SettingsValues settingsValues) {
+        IMEManager imeManager = mLatinIMELegacy.getLatinIME().getImeManager();
+        IMEInterface activeIME = imeManager.getActiveIME(settingsValues);
+        String imeHint = mKeyboardLayoutSet.getMainLayout().getImeHint();
+        return activeIME.getStateHint(imeHint);
     }
 
     private int transformAutoCapsState(int state) {
@@ -215,6 +232,7 @@ public final class KeyboardSwitcher implements SwitchActions {
         final Keyboard newKeyboard = mKeyboardLayoutSet.getKeyboard(element);
         keyboardView.setKeyboard(newKeyboard);
         SwipeDecoderDictionary.updateKeyboard(newKeyboard);
+        keyboardView.updateStateHint(mStateHint);
         keyboardView.setKeyPreviewPopupEnabled(
                 currentSettingsValues.mKeyPreviewPopupOn,
                 currentSettingsValues.mKeyPreviewPopupDismissDelay);

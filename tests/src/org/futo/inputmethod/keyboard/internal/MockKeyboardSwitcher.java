@@ -97,7 +97,7 @@ public class MockKeyboardSwitcher implements SwitchActions {
     }
 
     public void loadKeyboard() {
-        mState.onLoadKeyboard(null, mAutoCapsState, null);
+        mState.onLoadKeyboard(null, mAutoCapsState, null, null);
     }
 
     public void saveKeyboardState() {

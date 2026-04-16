@@ -579,10 +579,10 @@ internal fun ThemeEditor(
                                                 words = suggestedWords,
                                                 suggestionStripListener = ExampleListener(),
                                                 onActionActivated = { },
+                                                onActionAltActivated = { },
                                                 inlineSuggestions = listOf(),
                                                 isActionsExpanded = false,
                                                 toggleActionsExpanded = { },
-                                                onActionAltActivated = { }
                                             )
                                             Spacer(Modifier.Companion.height(4.dp))
                                         }

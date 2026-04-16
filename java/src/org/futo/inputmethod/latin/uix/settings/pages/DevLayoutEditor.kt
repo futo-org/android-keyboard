@@ -40,6 +40,7 @@ import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.Route
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.updates.openURI
@@ -143,11 +144,15 @@ private fun handleIndentation(newValue: TextFieldValue, oldValue: TextFieldValue
 
 @OptIn(ExperimentalEncodingApi::class)
 @Composable
-fun LayoutEditor(layout: CustomLayout, onSave: (CustomLayout) -> Unit, onDelete: () -> Unit) {
+fun LayoutEditor(layout: CustomLayout, onSave: (CustomLayout) -> Unit, onDelete: () -> Unit, onModified: (Boolean) -> Unit) {
     var language by remember { mutableStateOf(TextFieldValue(layout.language)) }
     var layoutYaml by remember { mutableStateOf(TextFieldValue(layout.layoutYaml)) }
 
     var testText by remember { mutableStateOf(TextFieldValue("")) }
+
+    LaunchedEffect(layoutYaml, language) {
+        onModified(layoutYaml.text != layout.layoutYaml || language.text != layout.language)
+    }
 
     val textFieldModifier = Modifier
         .fillMaxWidth()
@@ -160,7 +165,7 @@ fun LayoutEditor(layout: CustomLayout, onSave: (CustomLayout) -> Unit, onDelete:
 
     val options = KeyboardOptions.Default.copy(
         keyboardType = KeyboardType.Password,
-        autoCorrect = false
+        autoCorrectEnabled = false
     )
 
     val cursorBrush = SolidColor(LocalKeyboardScheme.current.onSurfaceVariant)
@@ -261,9 +266,10 @@ fun DevLayoutEdit(navController: NavHostController = rememberNavController(), i:
         getCustomLayouts(context)[i]
     }
 
+    var isModified by remember { mutableStateOf(false) }
     var backTime by remember { mutableStateOf(0L) }
     BackHandler {
-        if(System.currentTimeMillis() < (backTime + 5000L)) {
+        if(!isModified || System.currentTimeMillis() < (backTime + 5000L)) {
             navController.navigateUp()
         } else {
             backTime = System.currentTimeMillis()
@@ -288,7 +294,7 @@ fun DevLayoutEdit(navController: NavHostController = rememberNavController(), i:
             newList.removeAt(i)
             updateCustomLayoutsAndSyncSubtypes(context, newList)
             navController.navigateUp()
-        })
+        }, onModified = { isModified = it })
     }
 }
 
@@ -307,7 +313,7 @@ fun DevLayoutEditor(navController: NavHostController = rememberNavController()) 
                 style = NavigationItemStyle.MiscNoArrow,
                 subtitle = "Custom Layout $i",
                 navigate = {
-                    navController.navigate("devlayoutedit/$i")
+                    navController.navigate(Route.DevLayoutEdit(i))
                 }
             )
         }
@@ -317,7 +323,7 @@ fun DevLayoutEditor(navController: NavHostController = rememberNavController()) 
             style = NavigationItemStyle.MiscNoArrow,
             navigate = {
                 updateCustomLayoutsAndSyncSubtypes(context, customLayouts + listOf(defaultCustomLayout))
-                navController.navigate("devlayoutedit/${customLayouts.size}")
+                navController.navigate(Route.DevLayoutEdit(customLayouts.size))
             },
             icon = painterResource(R.drawable.plus_circle)
         )

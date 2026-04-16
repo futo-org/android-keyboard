@@ -54,8 +54,10 @@ import org.futo.inputmethod.v2keyboard.LayoutManager
 import java.util.Locale
 import kotlin.math.sign
 
-public fun localeFromString(s: String): Locale =
+fun localeFromString(s: String): Locale =
     Locale.forLanguageTag(s.replace("__#", "-").replace("_", "-"))
+
+fun String.toLocale() = localeFromString(this)
 
 fun Locale.stripExtensionsIfNeeded(): Locale {
     val newLocale = if(Build.VERSION.SDK_INT >= 26) {

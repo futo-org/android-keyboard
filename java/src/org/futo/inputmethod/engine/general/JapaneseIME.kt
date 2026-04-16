@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.google.android.apps.inputmethod.libs.mozc.session.MozcJNI
@@ -22,10 +21,12 @@ import com.google.common.base.Optional
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.engine.IMEMessage
+import org.futo.inputmethod.engine.StateHint
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.keyboard.KeyboardId
 import org.futo.inputmethod.keyboard.internal.KeyboardLayoutKind
@@ -79,6 +80,7 @@ import org.mozc.android.inputmethod.japanese.protobuf.ProtoConfig
 import org.mozc.android.inputmethod.japanese.protobuf.ProtoUserDictionaryStorage
 import java.io.File
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicBoolean
 
 object JapaneseIMESettings {
     val FlickOnly = SettingsKey(
@@ -604,6 +606,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         return false
     }
 
+    override fun getStateHint(imeHint: String?): StateHint = if(imeHint == "12key") StateHint(true, true) else StateHint()
+
     private fun createKeyEvent(
         original: KeyEvent,
         eventTime: Long,
@@ -847,7 +851,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     // We use the "shift" alphabet state to show the language switch key
     override fun getCurrentAutoCapsState() = when {
-        !hasPreedit && layoutHint == "12key" -> TextUtils.CAP_MODE_CHARACTERS
+        !hasPreedit && layoutHint == "12key" && !evalPending.get() -> TextUtils.CAP_MODE_CHARACTERS
         else -> Constants.TextUtils.CAP_MODE_OFF
     }
 
@@ -984,11 +988,13 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         }
     }
 
+    private val evalPending = AtomicBoolean(false)
     private val evaluationCallback = object : SessionExecutor.EvaluationCallback {
         override fun onCompleted(
             command: Optional<ProtoCommands.Command>,
             triggeringKeyEvent: Optional<KeyEventInterface>
         ) {
+            evalPending.set(false)
             if(!command.isPresent) return
 
             renderInputConnection(command.get(), triggeringKeyEvent.orNull())
@@ -1119,6 +1125,7 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
                 val touchEvents = emptyList<ProtoCommands.Input.TouchEvent>()
 
                 if(mozcEvent != null) {
+                    evalPending.set(true)
                     executor.sendKey(
                         mozcEvent,
                         triggeringKeyEvent,
@@ -1222,10 +1229,10 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         if(helper.isImeActive(this)) updateConfig(false)
     }
 
-    private val useExpandableUi = true
+    private val expandableUiCfg = ExpandableSuggestionBarConfiguration(true, true)
     fun setNeutralSuggestionStrip() {
         prevSuggestions = null
-        helper.setNeutralSuggestionStrip(useExpandableUi)
+        helper.setNeutralSuggestionStrip(expandableUiCfg)
     }
 
     val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
@@ -1235,6 +1242,6 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
         //  2. During conversion, we need some more complicated logic to skip blacklisted entries mozc has given us, and to recalculate the focused index properly
         val words = suggestedWords//?.let { blacklist.filterBlacklistedSuggestions(it) }
         prevSuggestions = words
-        helper.showSuggestionStrip(words, useExpandableUi)
+        helper.showSuggestionStrip(words, expandableUiCfg)
     }
 }

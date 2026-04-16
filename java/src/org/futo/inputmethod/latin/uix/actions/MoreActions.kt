@@ -135,9 +135,8 @@ fun MoreActionsView() {
         (map[ActionCategory.Favorites] ?: listOf()) +
                 (map[ActionCategory.ActionKey] ?: listOf()) +
                 (map[ActionCategory.PinnedKey] ?: listOf()) +
-                (map[ActionCategory.More] ?: listOf())
+                (map[ActionCategory.More]      ?: listOf())
     }
-
 
     if(actions.isEmpty()) {
         ScreenTitle(stringResource(R.string.action_editor_warning_no_actions))

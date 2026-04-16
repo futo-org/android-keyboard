@@ -4,6 +4,7 @@ import org.futo.inputmethod.event.Combiner
 import org.futo.inputmethod.event.DeadKeyCombiner
 import org.futo.inputmethod.event.combiners.NFCNormalizingCombiner
 import org.futo.inputmethod.event.combiners.DeadKeyPreCombiner
+import org.futo.inputmethod.event.combiners.KoashurCombiner
 import org.futo.inputmethod.event.combiners.KoreanCombiner
 import org.futo.inputmethod.event.combiners.wylie.WylieCombiner
 
@@ -14,4 +15,5 @@ enum class CombinerKind(val factory: () -> Combiner) {
     Korean({ KoreanCombiner() }),
     KoreanCombineInitials({ KoreanCombiner(combineInitials = true) }),
     Wylie({ WylieCombiner() }),
+    Koashur({ KoashurCombiner() }),
 }

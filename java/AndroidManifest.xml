@@ -35,6 +35,7 @@
          android:supportsRtl="true"
          android:allowBackup="true"
          android:largeHeap="true"
+         android:enableOnBackInvokedCallback="true"
          android:name=".CrashLoggingApplication">
 
         <!-- Services -->
@@ -187,6 +188,12 @@
         <provider
             android:authorities="${applicationId}.font"
             android:name=".content.KbContentProvider"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+
+        <provider
+            android:authorities="${applicationId}.clipboard"
+            android:name=".uix.actions.clipboard.ClipboardProvider"
             android:exported="false"
             android:grantUriPermissions="true" />
     </application>
