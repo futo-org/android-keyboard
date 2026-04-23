@@ -1054,6 +1054,10 @@ public final class InputLogic {
             // it entirely and resume suggestions on the previous word, we'd like to still
             // have touch coordinates for it.
             resetComposingState(false /* alsoResetLastComposedWord */);
+            // If we are touching a number, mark it as attached to a non-word
+            if(mConnection.isCursorTouchingNumber()) {
+                mWordComposer.markAttachedToNonWord();
+            }
         }
         if (isComposingWord) {
             mWordComposer.applyProcessedEvent(event);

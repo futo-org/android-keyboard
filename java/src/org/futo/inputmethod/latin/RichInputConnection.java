@@ -1395,4 +1395,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public boolean useAutoCorrectIndicator() {
         return !(mIC instanceof InputConnectionInternalComposingWrapper);
     }
+
+    public boolean isCursorTouchingNumber() {
+        final int codeBefore = getCodePointBeforeCursor();
+        return codeBefore >= '0' && codeBefore <= '9';
+    }
 }
