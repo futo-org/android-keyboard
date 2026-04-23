@@ -898,6 +898,11 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         }
         paint.setColor(color);
         paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
+
+        final float ratio = Math.min(1.0f, (width * 0.90f) /
+                TypefaceUtils.getStringWidth(language, paint));
+
+        paint.setTextScaleX(ratio);
         canvas.drawText(language, width / 2, baseline - descent, paint);
         paint.clearShadowLayer();
         paint.setTextScaleX(1.0f);
