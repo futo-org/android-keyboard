@@ -593,7 +593,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             }
         }
 
-        file.writeText(content)
+        if(file.parentFile?.isDirectory == true) {
+            file.writeText(content)
+        }
     }
 
     private var configSemaphore = Semaphore(1)
