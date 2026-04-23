@@ -767,6 +767,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         };
     }
 
+    override fun hasMoreTextToDelete(): Boolean =
+        inputLogic.mConnection.codePointBeforeCursor != Constants.NOT_A_CODE
+                || inputLogic.mWordComposer.isComposingWord
+
     companion object {
         @OptIn(ExperimentalCoroutinesApi::class)
         val dictionaryScope = Dispatchers.Default.limitedParallelism(1)

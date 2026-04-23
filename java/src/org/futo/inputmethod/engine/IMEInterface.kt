@@ -92,6 +92,9 @@ interface IMEInterface {
     /** Refresh as a result of blacklist update */
     fun requestSuggestionRefresh()
 
+    /** Used to determine whether the delete key should continue sending haptic feedback when held */
+    fun hasMoreTextToDelete(): Boolean = true
+
     /**
      * Hints the keyboard switcher whether to auto-shift (capitalize) the layout or not.
      * For immediate changes, call imeHelper.keyboardSwitcher.requestUpdatingShiftState(mode)
