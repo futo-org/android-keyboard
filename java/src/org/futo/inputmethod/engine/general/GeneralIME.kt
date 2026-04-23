@@ -1,6 +1,8 @@
 package org.futo.inputmethod.engine.general
 
+import android.os.Build
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -754,6 +756,15 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     @UsedForTesting
     override fun recycle() {
         inputLogic.recycle()
+    }
+
+    fun cursorStepped(steps: Int, overWords: Boolean) {
+        if(!settings.current.mVibrateOn) return
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(
+                if(overWords) HapticFeedbackConstants.KEYBOARD_TAP else HapticFeedbackConstants.TEXT_HANDLE_MOVE)
+        };
     }
 
     companion object {

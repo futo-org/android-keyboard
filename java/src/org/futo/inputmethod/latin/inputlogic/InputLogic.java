@@ -2786,8 +2786,9 @@ public final class InputLogic {
         }
 
         int cursor = isRightSidePointer ? mConnection.getExpectedSelectionStart() : mConnection.getExpectedSelectionEnd();
-        int start = mConnection.getExpectedSelectionStart();
-        int end = mConnection.getExpectedSelectionEnd();
+        final int initialStart = mConnection.getExpectedSelectionStart();
+        final int initialEnd = mConnection.getExpectedSelectionEnd();
+        int start = initialStart, end = initialEnd;
         if(isRightSidePointer) {
             start += steps;
             cursor += steps;
@@ -2803,6 +2804,10 @@ public final class InputLogic {
 
         start = Math.max(0, start);
         end = Math.max(0, end);
+
+        if(start != initialStart || end != initialEnd) {
+            mIme.cursorStepped(steps, stepOverWords);
+        }
 
         mConnection.setSelection(start, end);
     }
