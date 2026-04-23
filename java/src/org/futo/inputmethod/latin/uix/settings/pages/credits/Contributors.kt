@@ -78,6 +78,7 @@ val layoutContribs: List<String> = listOf(
     "NicolasLagaillardie",
     "PlagaMedicum",
     "RHJihan",
+    "RenoirTan",
     "SanmayJoshi",
     "Shunnuo",
     "Zvonimir-FUTO",
