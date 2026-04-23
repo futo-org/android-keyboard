@@ -890,7 +890,8 @@ public final class InputLogic {
                 // Handled in KeyboardState
                 break;
             default:
-                throw new RuntimeException("Unknown key code : " + event.mKeyCode);
+                BugViewerKt.throwIfDebug(new RuntimeException("Unknown key code : " + event.mKeyCode));
+                return;
         }
     }
 
