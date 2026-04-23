@@ -136,7 +136,7 @@ object Telex {
                         } else if (lowercaseCh == 'o' && lowercaseVowel.contentEquals("oeo")) {
                             // handle "oeo" edge case (should output "oeo", not "ôe"):
                             // remove the second 'o''s index from modifierIndices so that it will be outputted
-                            modifierIndices['o']!!.removeLast()
+                            modifierIndices['o']!!.removeAt(modifierIndices['o']!!.lastIndex)
                             output.append(ch)
                         } else {
                             output.append(Common.CIRCUMFLEX_MAP[ch])
