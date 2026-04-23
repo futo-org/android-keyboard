@@ -60,11 +60,14 @@ import org.futo.inputmethod.latin.utils.StatsUtils;
 import org.futo.inputmethod.latin.utils.TextRange;
 
 import java.text.BreakIterator;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
@@ -100,6 +103,8 @@ public final class InputLogic {
     private int mDeleteCount;
     private long mLastKeyTime;
     public final TreeSet<Long> mCurrentlyPressedHardwareKeys = new TreeSet<>();
+
+    final ArrayDeque<Event> mLastEvents = new ArrayDeque<>();
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private String mEnteredText;
@@ -163,6 +168,7 @@ public final class InputLogic {
         mRecapitalizeStatus.disable(); // Do not perform recapitalize until the cursor is moved once
         mCurrentlyPressedHardwareKeys.clear();
         mSuggestedWords = SuggestedWords.getEmptyInstance();
+        mLastEvents.clear();
 
         final EditorInfo ei = getCurrentInputEditorInfo();
         if(ei != null && !mConnection.resetCachesUponCursorMoveAndReturnSuccess(
@@ -545,6 +551,15 @@ public final class InputLogic {
             @Nonnull final Event event, final int keyboardShiftMode,
             final int currentKeyboardScriptId) {
         mWordBeingCorrectedByCursor = null;
+
+        if(settingsValues.needsToLookupSuggestions()) {
+            if (mLastEvents.size() >= 8) mLastEvents.removeFirst();
+            if(event.mKeyCode == Constants.CODE_DELETE) {
+                mLastEvents.pollLast();
+            } else {
+                mLastEvents.addLast(event);
+            }
+        }
 
         if(mWordComposer.isComposingWord() && mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // TODO: Double check this isn't causing any new regressions. I believe this is also redundant
@@ -1232,6 +1247,42 @@ public final class InputLogic {
             codeShouldBeFollowedBySpace = codeShouldBeFollowedBySpace && !fieldEmptyBeforeText;
 
             if(autoInsertSpaces && codeShouldBeFollowedBySpace) {
+                // Workaround for i.e., e.g., which are common enough in English to warrant a specific
+                // exception in the automatic spacing logic
+                if(codePoint == Constants.CODE_PERIOD && canInsertAutoSpace(settingsValues)
+                        && settingsValues.mLocale.getLanguage() == "en" && mLastEvents.size() >= 4) {
+
+                    final Iterator<Event> it = mLastEvents.descendingIterator();
+                    int c3 = it.next().mCodePoint;
+                    int c2 = it.next().mCodePoint;
+                    int c1 = it.next().mCodePoint;
+                    int c0 = it.next().mCodePoint;
+
+                    if(settingsValues.mAutoCap) {
+                        c0 = Character.toLowerCase(c0);
+                        c2 = Character.toLowerCase(c2);
+                    }
+
+                    String regex = null;
+                    String replacement = null;
+
+                    if (c0 == 'e' && c1 == '.' && c2 == 'g' && c3 == '.') {
+                        regex = "\\W[Ee]\\. [Gg]\\.";
+                        replacement = "e.g.";
+                    } else if (c0 == 'i' && c1 == '.' && c2 == 'e' && c3 == '.') {
+                        regex = "\\W[Ii]\\. [Ee]\\.";
+                        replacement = "i.e.";
+                    }
+
+                    if (regex != null) {
+                        final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(6, 0);
+                        if (textBeforeCursor != null && Pattern.matches(regex, textBeforeCursor.toString())) {
+                            mConnection.deleteTextBeforeCursor(5);
+                            mConnection.commitText(replacement, 1);
+                        }
+                    }
+                }
+
                 insertOrSetPhantomSpace(settingsValues);
 
                 if(inputTransaction.didAutoCorrect()) {
