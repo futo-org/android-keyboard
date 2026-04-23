@@ -40,7 +40,7 @@ public class BatchInputArbiter {
     private static final InputPointers sAggregatedPointers = new InputPointers(
             Constants.DEFAULT_GESTURE_POINTS_CAPACITY);
     private static int sLastRecognitionPointSize = 0; // synchronized using sAggregatedPointers
-    private static long sLastRecognitionTime = 0; // synchronized using sAggregatedPointers
+    private static long sLastRecognitionTime = -1; // synchronized using sAggregatedPointers
 
     private final GestureStrokeRecognitionPoints mRecognitionPoints;
 
@@ -70,7 +70,7 @@ public class BatchInputArbiter {
      * @param activePointerCount the number of active pointers when this pointer down event occurs.
      */
     public void addDownEventPoint(final int x, final int y, final long downEventTime,
-            final long lastLetterTypingTime, final int activePointerCount) {
+                                  final long lastLetterTypingTime, final int activePointerCount) {
         if (activePointerCount == 1) {
             sGestureFirstDownTime = downEventTime;
         }
@@ -91,7 +91,7 @@ public class BatchInputArbiter {
      * @return true if this move event occurs on the valid gesture area.
      */
     public boolean addMoveEventPoint(final int x, final int y, final long moveEventTime,
-            final boolean isMajorEvent, final BatchInputArbiterListener listener) {
+                                     final boolean isMajorEvent, final BatchInputArbiterListener listener) {
         final int beforeLength = mRecognitionPoints.getLength();
         final boolean onValidArea = mRecognitionPoints.addEventPoint(
                 x, y, getElapsedTimeSinceFirstDown(moveEventTime), isMajorEvent);
@@ -128,7 +128,13 @@ public class BatchInputArbiter {
      *     {@link #updateBatchInput(long,BatchInputArbiterListener)}.
      */
     public void updateBatchInputByTimer(final long syntheticMoveEventTime,
-            final BatchInputArbiterListener listener) {
+                                        final BatchInputArbiterListener listener) {
+        synchronized(sAggregatedPointers) {
+            if(sLastRecognitionTime == -1) {
+                // Not in gesture input. We need to start it before we can permit update by timer.
+                return;
+            }
+        }
         mRecognitionPoints.duplicateLastPointWith(
                 getElapsedTimeSinceFirstDown(syntheticMoveEventTime));
         updateBatchInput(syntheticMoveEventTime, listener);
@@ -143,7 +149,7 @@ public class BatchInputArbiter {
      *     possible future synthetic move event.
      */
     public void updateBatchInput(final long moveEventTime,
-            final BatchInputArbiterListener listener) {
+                                 final BatchInputArbiterListener listener) {
         synchronized (sAggregatedPointers) {
             mRecognitionPoints.appendIncrementalBatchPoints(sAggregatedPointers);
             final int size = sAggregatedPointers.getPointerSize();
@@ -168,11 +174,12 @@ public class BatchInputArbiter {
      * @return true if the batch input has ended successfully.
      */
     public boolean mayEndBatchInput(final long upEventTime, final int activePointerCount,
-            final BatchInputArbiterListener listener) {
+                                    final BatchInputArbiterListener listener) {
         synchronized (sAggregatedPointers) {
             mRecognitionPoints.appendAllBatchPoints(sAggregatedPointers);
             if (activePointerCount == 1) {
                 listener.onEndBatchInput(sAggregatedPointers, upEventTime);
+                sLastRecognitionTime = -1;
                 return true;
             }
         }
