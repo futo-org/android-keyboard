@@ -36,6 +36,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -71,6 +72,7 @@ import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.actions.CanThrowIfDebug
@@ -111,6 +113,11 @@ val SupportsNonComposing = Build.VERSION.SDK_INT >= 31
 val UseTransparentNavbar =
     // https://github.com/futo-org/android-keyboard/issues/772
     !Build.MANUFACTURER.lowercase().contains("motorola")
+
+val HideKeyboardWhenHardKeyboardConnected = SettingsKey(
+    booleanPreferencesKey("hideKeyboardWhenHardKeyboardConnected"),
+    false
+)
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -745,7 +752,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     override fun onEvaluateInputViewShown(): Boolean {
-        return latinIMELegacy.onEvaluateInputViewShown() || super.onEvaluateInputViewShown()
+        return latinIMELegacy.onEvaluateInputViewShown()
+                || super.onEvaluateInputViewShown()
+                || !getSetting(HideKeyboardWhenHardKeyboardConnected)
     }
 
     override fun onEvaluateFullscreenMode(): Boolean {
