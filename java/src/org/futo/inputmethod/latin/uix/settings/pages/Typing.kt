@@ -47,6 +47,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.painterResource
@@ -241,17 +242,18 @@ fun ResizeScreen(navController: NavHostController = rememberNavController()) {
 @Composable
 private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPressKey, Int) -> Unit, disable: (LongPressKey) -> Unit, dragIcon: @Composable () -> Unit, limits: IntRange) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val talkBackOn = remember {
         AccessibilityUtils.init(context)
         AccessibilityUtils.getInstance().isAccessibilityEnabled
     }
 
-    val customActions = remember(idx, limits, item) {
+    val customActions = remember(idx, limits, item, resources) {
         buildList {
             if (idx > limits.first) {
                 add(
                     CustomAccessibilityAction(
-                        context.getString(R.string.morekey_settings_move_kind_up)
+                        resources.getString(R.string.morekey_settings_move_kind_up)
                     ) {
                         moveItem(item, -1)
                         true
@@ -260,7 +262,7 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
 
                 add(
                     CustomAccessibilityAction(
-                        context.getString(R.string.morekey_settings_move_kind_up_to_top)
+                        resources.getString(R.string.morekey_settings_move_kind_up_to_top)
                     ) {
                         moveItem(item, -100)
                         true
@@ -270,7 +272,7 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
             if (idx < limits.last) {
                 add(
                     CustomAccessibilityAction(
-                        context.getString(R.string.morekey_settings_move_kind_down)
+                        resources.getString(R.string.morekey_settings_move_kind_down)
                     ) {
                         moveItem(item, 1)
                         true
@@ -278,7 +280,7 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
                 )
                 add(
                     CustomAccessibilityAction(
-                        context.getString(R.string.morekey_settings_move_kind_down_to_bottom)
+                        resources.getString(R.string.morekey_settings_move_kind_down_to_bottom)
                     ) {
                         moveItem(item, 100)
                         true
@@ -287,7 +289,7 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
             }
             add(
                 CustomAccessibilityAction(
-                    context.getString(R.string.morekey_settings_disable)
+                    resources.getString(R.string.morekey_settings_disable)
                 ) {
                     disable(item)
                     true
@@ -297,8 +299,8 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
     }
 
     val semantics = Modifier.clearAndSetSemantics {
-        contentDescription = item.name(context)
-        stateDescription = context.getString(
+        contentDescription = item.name(resources)
+        stateDescription = resources.getString(
             R.string.morekey_settings_kind_position,
             (idx + 1).toString(),
             (limits.last + 1).toString()
@@ -325,8 +327,8 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
     val shouldClampUpper = (idx + 1) > limits.last
 
     SettingItem(
-        title = "${idx+1}. " + item.name(context),
-        subtitle = item.description(context),
+        title = "${idx+1}. " + item.name(resources),
+        subtitle = item.description(resources),
         icon = {
             if(talkBackOn) {
                 Column {
@@ -411,6 +413,7 @@ private fun DraggableSettingItem(idx: Int, item: LongPressKey, moveItem: (LongPr
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<String>) {
+    val resources = LocalResources.current
     Row(Modifier.padding(16.dp)) {
         Text(stringResource(R.string.morekey_settings_layout), style = Typography.Heading.Medium, modifier = Modifier
             .align(CenterVertically)
@@ -475,7 +478,7 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
                 rowCount = items.size,
                 columnCount = 1
             )
-            contentDescription = context.getString(R.string.morekey_settings_active)
+            contentDescription = resources.getString(R.string.morekey_settings_active)
         }) {
             items.forEachIndexed { i, v ->
                 key(v.ordinal) {
@@ -504,16 +507,16 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
                 rowCount = inactiveEntries.size,
                 columnCount = 1
             )
-            contentDescription = context.getString(R.string.morekey_settings_inactive)
+            contentDescription = resources.getString(R.string.morekey_settings_inactive)
         }) {
             inactiveEntries.forEach {
                 SettingItem(
-                    title = it.name(context),
-                    subtitle = it.description(context),
+                    title = it.name(resources),
+                    subtitle = it.description(resources),
                     modifier = Modifier.clearAndSetSemantics {
-                        contentDescription = it.name(context)
+                        contentDescription = it.name(resources)
 
-                        onClick(label = context.getString(R.string.morekey_settings_reactivate)) {
+                        onClick(label = resources.getString(R.string.morekey_settings_reactivate)) {
                             enable(it)
                             true
                         }
@@ -555,7 +558,7 @@ val LongPressMenu = UserSettingsMenu(
             name = R.string.morekey_settings_duration,
             subtitle = R.string.morekey_settings_duration_subtitle,
         ) {
-            val context = LocalContext.current
+            val resources = LocalResources.current
             SettingSliderSharedPrefsInt(
                 title = stringResource(R.string.morekey_settings_duration),
                 subtitle = stringResource(R.string.morekey_settings_duration_subtitle),
@@ -564,7 +567,7 @@ val LongPressMenu = UserSettingsMenu(
                 range = 100.0f..700.0f,
                 hardRange = 25.0f..1200.0f,
                 transform = { it.roundToInt() },
-                indicator = { context.getString(R.string.abbreviation_unit_milliseconds, "$it") },
+                indicator = { resources.getString(R.string.abbreviation_unit_milliseconds, "$it") },
                 steps = 23
             )
         },
@@ -879,6 +882,7 @@ val TypingSettingsMenu = UserSettingsMenu(
             },
             component = {
                 val context = LocalContext.current
+                val resources = LocalResources.current
                 SyncDataStoreToPreferencesInt(vibrationDurationSetting, PREF_VIBRATION_DURATION_SETTINGS)
 
                 SettingSlider(
@@ -889,9 +893,9 @@ val TypingSettingsMenu = UserSettingsMenu(
                     transform = { it.roundToInt() },
                     indicator = {
                         if(it == -1) {
-                            context.getString(R.string.typing_settings_vibration_strength_default)
+                            resources.getString(R.string.typing_settings_vibration_strength_default)
                         } else {
-                            context.getString(R.string.abbreviation_unit_milliseconds, "$it")
+                            resources.getString(R.string.abbreviation_unit_milliseconds, "$it")
                         }
                     }
                 )
@@ -912,6 +916,7 @@ val TypingSettingsMenu = UserSettingsMenu(
             },
             component = {
                 val context = LocalContext.current
+                val resources = LocalResources.current
                 SyncDataStoreToPreferencesFloat(keySoundVolumeSetting, PREF_KEYPRESS_SOUND_VOLUME)
 
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -927,7 +932,7 @@ val TypingSettingsMenu = UserSettingsMenu(
                     }
                     val volume = value.floatValue.let {
                         if(it == -1.0f) {
-                            Settings.readDefaultKeypressSoundVolume(context.resources)
+                            Settings.readDefaultKeypressSoundVolume(resources)
                         } else {
                             it
                         }
@@ -965,7 +970,7 @@ val TypingSettingsMenu = UserSettingsMenu(
                     },
                     indicator = {
                         if(it <= 0.0f) {
-                            context.getString(R.string.typing_settings_keypress_sound_volume_default)
+                            resources.getString(R.string.typing_settings_keypress_sound_volume_default)
                         } else {
                             "${(it * 100.0f).roundToInt()}%"
                         }

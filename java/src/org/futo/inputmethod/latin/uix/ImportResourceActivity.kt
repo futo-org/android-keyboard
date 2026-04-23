@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -165,10 +167,11 @@ fun SettingsImportScreen(
 @Composable
 fun ImportScreen(fileKind: FileKindAndInfo, onApply: (FileKindAndInfo, InputMethodSubtype) -> Unit, onCancel: () -> Unit) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val importing = remember { mutableStateOf(false) }
     val importingLanguage = remember { mutableStateOf("") }
     ScrollableList {
-        ScreenTitleWithIcon(title = stringResource(R.string.resource_importer_import_title, fileKind.kind.kindTitle(context)), painter = painterResource(id = fileKind.kind.icon()))
+        ScreenTitleWithIcon(title = stringResource(R.string.resource_importer_import_title, fileKind.kind.kindTitle(resources)), painter = painterResource(id = fileKind.kind.icon()))
 
         if(fileKind.kind == FileKind.Invalid) {
             if(fileKind.invalidKindHint == InvalidFileHint.ImportedWordListInsteadOfDict) {
@@ -255,13 +258,13 @@ enum class FileKind {
     }
 }
 
-fun FileKind.kindTitle(context: Context): String {
-    return when(this) {
-        FileKind.VoiceInput -> context.getString(R.string.file_kind_voice_input_model)
-        FileKind.Transformer -> context.getString(R.string.file_kind_transformer_model)
-        FileKind.Dictionary -> context.getString(R.string.file_kind_dictionary)
-        FileKind.Invalid -> context.getString(R.string.file_kind_invalid_file)
-    }
+fun FileKind.kindTitle(resources: Resources): String {
+    return resources.getString(when(this) {
+        FileKind.VoiceInput -> R.string.file_kind_voice_input_model
+        FileKind.Transformer -> R.string.file_kind_transformer_model
+        FileKind.Dictionary -> R.string.file_kind_dictionary
+        FileKind.Invalid -> R.string.file_kind_invalid_file
+    })
 }
 
 fun FileKind.icon(): Int {

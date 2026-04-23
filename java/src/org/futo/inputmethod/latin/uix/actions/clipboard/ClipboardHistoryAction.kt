@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -935,7 +936,7 @@ val ClipboardHistoryAction = Action(
             override fun WindowTitleBar(rowScope: RowScope) {
                 super.WindowTitleBar(rowScope)
 
-                val context = LocalContext.current
+                val resources = LocalResources.current
 
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!clipboardHistory.value) return
@@ -946,10 +947,10 @@ val ClipboardHistoryAction = Action(
                             clipboardHistoryManager.clipboardHistory.count { !it.pinned }
                         if (clipboardHistoryManager.clipboardHistory.isEmpty()) {
                             manager.requestDialog(
-                                context.getString(R.string.action_clipboard_manager_disable_text),
+                                resources.getString(R.string.action_clipboard_manager_disable_text),
                                 listOf(
-                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
-                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_disable_button)) {
+                                    DialogRequestItem(resources.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
+                                    DialogRequestItem(resources.getString(R.string.action_clipboard_manager_disable_button)) {
                                         clipboardHistory.setValue(false)
                                     },
                                 ),
@@ -957,10 +958,10 @@ val ClipboardHistoryAction = Action(
                             )
                         } else if (numUnpinnedItems == 0) {
                             manager.requestDialog(
-                                context.getString(R.string.action_clipboard_manager_unpin_all_items_text),
+                                resources.getString(R.string.action_clipboard_manager_unpin_all_items_text),
                                 listOf(
-                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
-                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_unpin_all_items_button)) {
+                                    DialogRequestItem(resources.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
+                                    DialogRequestItem(resources.getString(R.string.action_clipboard_manager_unpin_all_items_button)) {
                                         clipboardHistoryManager.clipboardHistory.toList().forEach {
                                             if (it.pinned) {
                                                 clipboardHistoryManager.onTogglePin(it)
@@ -972,10 +973,10 @@ val ClipboardHistoryAction = Action(
                             )
                         } else {
                             manager.requestDialog(
-                                context.getString(R.string.action_clipboard_manager_clear_unpinned_items_text),
+                                resources.getString(R.string.action_clipboard_manager_clear_unpinned_items_text),
                                 listOf(
-                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
-                                    DialogRequestItem(context.getString(R.string.action_clipboard_manager_clear_unpinned_items_button)) {
+                                    DialogRequestItem(resources.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
+                                    DialogRequestItem(resources.getString(R.string.action_clipboard_manager_clear_unpinned_items_button)) {
                                         clipboardHistoryManager.clipboardHistory.toList().forEach {
                                             if (!it.pinned) {
                                                 clipboardHistoryManager.onRemove(it)
@@ -999,6 +1000,7 @@ val ClipboardHistoryAction = Action(
             override fun WindowContents(keyboardShown: Boolean) {
                 val view = LocalView.current
                 val context = LocalContext.current
+                val resources = LocalResources.current
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!unlocked) {
                     ScrollableList {
@@ -1029,10 +1031,10 @@ val ClipboardHistoryAction = Action(
                             }
                             Button(onClick = {
                                     manager.requestDialog(
-                                        context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_text),
+                                        resources.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_text),
                                         listOf(
-                                            DialogRequestItem(context.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
-                                            DialogRequestItem(context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button)) {
+                                            DialogRequestItem(resources.getString(R.string.action_clipboard_manager_cancel_action_button)) {},
+                                            DialogRequestItem(resources.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button)) {
                                                 clipboardHistoryManager.clipboardIOFailure.value = false
                                                 clipboardHistory.setValue(false)
                                                 clipboardHistoryManager.deleteClipboard()
@@ -1044,7 +1046,7 @@ val ClipboardHistoryAction = Action(
                                 }, modifier = Modifier
                                     .fillMaxWidth()
                             ) {
-                                Text(context.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button))
+                                Text(resources.getString(R.string.action_clipboard_manager_delete_corrupted_clipboard_button))
                             }
                         }
                     }
@@ -1131,19 +1133,19 @@ val ClipboardHistoryAction = Action(
                                     } else {
                                         manager.requestDialog(
                                             if(it.backingFile != null && it.text == null) {
-                                                context.getString(R.string.action_clipboard_manager_remove_item_confirm_dialog_image)
+                                                resources.getString(R.string.action_clipboard_manager_remove_item_confirm_dialog_image)
                                             } else {
-                                                context.getString(
+                                                resources.getString(
                                                     R.string.action_clipboard_manager_remove_item_confirm_dialog,
                                                     sanitizeClipboardText(it.text ?: "", 24)
                                                 )
                                             },
                                             listOf(
                                                 DialogRequestItem(
-                                                    context.getString(R.string.action_clipboard_manager_cancel_action_button)
+                                                    resources.getString(R.string.action_clipboard_manager_cancel_action_button)
                                                 ) { },
                                                 DialogRequestItem(
-                                                    context.getString(R.string.action_clipboard_manager_remove_item)
+                                                    resources.getString(R.string.action_clipboard_manager_remove_item)
                                                 ) {
                                                     clipboardHistoryManager.onRemove(it)
                                                     manager.performHapticAndAudioFeedback(

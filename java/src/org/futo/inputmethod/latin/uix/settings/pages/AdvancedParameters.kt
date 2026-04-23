@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.settings.pages
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -17,7 +18,7 @@ import org.futo.inputmethod.latin.xlm.BinaryDictTransformerWeightSetting
 @Preview
 @Composable
 fun AdvancedParametersScreen(navController: NavHostController = rememberNavController()) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     ScrollableList {
         ScreenTitle(stringResource(R.string.prediction_settings_transformer_advanced_params), showBack = true, navController)
 
@@ -40,10 +41,10 @@ fun AdvancedParametersScreen(navController: NavHostController = rememberNavContr
             indicator = {
                 when {
                     it == Float.POSITIVE_INFINITY -> {
-                        context.getString(R.string.prediction_settings_transformer_advanced_params_transformer_lm_strength_always_transformer)
+                        resources.getString(R.string.prediction_settings_transformer_advanced_params_transformer_lm_strength_always_transformer)
                     }
                     it == Float.NEGATIVE_INFINITY -> {
-                        context.getString(R.string.prediction_settings_transformer_advanced_params_transformer_lm_strength_always_binarydictionary)
+                        resources.getString(R.string.prediction_settings_transformer_advanced_params_transformer_lm_strength_always_binarydictionary)
                     }
                     (it > 0.1f) -> {
                         "a = ${String.format("%.1f", it)}"

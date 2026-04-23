@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.collection.mutableIntSetOf
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -112,8 +113,8 @@ enum class ActionCategory {
     Disabled
 }
 
-fun ActionCategory.name(context: Context): String {
-    return context.getString(when(this) {
+fun ActionCategory.name(resources: Resources): String {
+    return resources.getString(when(this) {
         ActionCategory.ActionKey -> R.string.action_kind_action_key
         ActionCategory.PinnedKey -> R.string.action_kind_pinned_key
         ActionCategory.Favorites -> R.string.action_kind_favorites
