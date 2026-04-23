@@ -499,6 +499,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
 
                 val canSaveSensitive = context.getSetting(ClipboardHistorySaveSensitive)
+                val canSaveImages = context.getSetting(ClipboardSaveImages)
                 val isSensitive = clip?.description?.extras?.getBoolean(
                     ClipDescription.EXTRA_IS_SENSITIVE, false
                 ) == true
@@ -522,7 +523,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
                     clipboardHistory.add(newEntry)
 
                     saveClipboard()
-                }else if (uri != null) {
+                }else if (uri != null && canSaveImages) {
                     // We may get exceptions here from opening uri, invalid image, etc
                     // so let's just ignore them
                     try {
