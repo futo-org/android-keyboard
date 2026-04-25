@@ -385,6 +385,9 @@ public final class InputAttributes {
         if(editorInfo.packageName.startsWith("com.termux") && editorInfo.inputType == 0)
             return CODE_FIELD_NO_COMPOSITION;
 
+        if(editorInfo.packageName.startsWith("sh.haven.app") && editorInfo.inputType == 0)
+            return CODE_FIELD_NO_COMPOSITION;
+
         if(editorInfo.packageName.startsWith("com.android.virtualization.terminal") && noSuggestions)
             return CODE_FIELD_NO_COMPOSITION;
 
