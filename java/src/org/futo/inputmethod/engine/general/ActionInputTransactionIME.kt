@@ -15,7 +15,9 @@ import org.futo.inputmethod.latin.uix.utils.TextContext
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
 class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInputTransaction {
-    val ic = if(helper.context.getSetting(VoiceInputAlternativeIC) && SupportsNonComposing) {
+    val ic = if(helper.context.getSetting(VoiceInputAlternativeIC)
+                && SupportsNonComposing
+                && helper.getCurrentEditorInfo()?.inputType != 0) {
         InputConnectionInternalComposingWrapper(
             helper.context.getSetting(VoiceInputAlternativeICComposing),
             true,
