@@ -3,9 +3,12 @@ package org.futo.inputmethod.latin.uix.actions.clipboard
 import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.collection.LruCache
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -56,6 +59,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -99,6 +103,7 @@ import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
+import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.ParagraphText
@@ -160,6 +165,11 @@ val ClipboardSkipDeleteConfirmation = SettingsKey(
 val ClipboardSaveImages = SettingsKey(
     booleanPreferencesKey("clipboard_save_images"),
     true
+)
+
+val ClipboardSaveScreenshots = SettingsKey(
+    booleanPreferencesKey("clipboard_save_screenshots"),
+    false
 )
 
 
@@ -458,8 +468,98 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
     var clipboardLoaded = false
 
+    private val screenshotHelper = ScreenshotHelper(context, coroutineScope, object : ScreenshotListener {
+        override fun onScreenshotAdded(mime: String, uri: Uri) {
+            onImageAdded(listOf(mime), uri, keepUri = true)
+        }
+
+        override fun onScreenshotChange(
+            uri: Uri,
+            checkTrashed: suspend () -> Boolean
+        ) {
+            val item = clipboardHistory.find { it.uri == uri }
+            if(item != null) {
+                coroutineScope.launch {
+                    if(checkTrashed()) {
+                        withContext(Dispatchers.Main) { onRemove(item) }
+                    }
+                }
+            }
+        }
+    })
+
     override suspend fun onDeviceUnlocked() {
         loadClipboard()
+    }
+
+    internal fun onImageAdded(mimeTypes: List<String>, uri: Uri, timestamp: Long = System.currentTimeMillis(), keepUri: Boolean = false) {
+        // We may get exceptions here from opening uri, invalid image, etc
+        // so let's just ignore them
+        try {
+            val targetMime = mimeTypes.firstOrNull { it == "image/png" }
+                ?: mimeTypes.firstOrNull { it == "image/jpeg" || it == "image/jpg" }
+                ?: mimeTypes.firstOrNull { it == "image/webp" }
+                ?: return
+
+            val resolver = context.contentResolver
+            val stream = resolver.openInputStream(uri) ?: return
+            val md = MessageDigest.getInstance("MD5")
+            val buffer = ByteArray(8 * 1024)
+            var totalBytes = 0L
+            var bytesRead: Int
+
+            val tempFile = File(context.cacheDir, "temp_img")
+            tempFile.outputStream().use { out ->
+                while (stream.read(buffer).also { bytesRead = it } != -1) {
+                    totalBytes += bytesRead
+                    if (totalBytes > 10 * 1024 * 1024) {
+                        tempFile.delete()
+                        return
+                    }
+                    md.update(buffer, 0, bytesRead)
+                    out.write(buffer, 0, bytesRead)
+                }
+            }
+            stream.close()
+
+            val md5Hex = md.digest().joinToString("") { "%02x".format(it) }
+            val extension = when (targetMime) {
+                "image/png" -> "png"
+                "image/jpeg", "image/jpg" -> "jpg"
+                "image/webp" -> "webp"
+                else -> "img"
+            }
+
+            context.clipboardDir.mkdirs()
+            val finalFile = File(context.clipboardDir, "$md5Hex.$extension")
+            if (!finalFile.exists()) {
+                tempFile.renameTo(finalFile)
+                ClipboardUtil.generateThumbnail(finalFile)
+            } else {
+                tempFile.delete()
+            }
+
+            val isAlreadyPinned = clipboardHistory.firstOrNull {
+                it.backingFile == finalFile.name && it.pinned
+            }?.pinned == true
+
+            clipboardHistory.removeAll { it.backingFile == finalFile.name }
+
+            val newEntry = ClipboardEntry(
+                timestamp = timestamp,
+                pinned = isAlreadyPinned,
+                text = null,
+                uri = if(keepUri) uri else null,
+                backingFile = finalFile.name,
+                sizeMb = totalBytes / (1024f * 1024f),
+                mimeTypes = listOf(targetMime)
+            )
+            clipboardHistory.add(newEntry)
+        }catch(e: Exception) {
+            throwIfDebug(e)
+        } finally {
+            saveClipboard()
+        }
     }
 
     private val primaryClipChangedListener = object : ClipboardManager.OnPrimaryClipChangedListener {
@@ -525,73 +625,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
                     saveClipboard()
                 }else if (uri != null && canSaveImages) {
-                    // We may get exceptions here from opening uri, invalid image, etc
-                    // so let's just ignore them
-                    try {
-                        val targetMime = mimeTypes.firstOrNull { it == "image/png" }
-                            ?: mimeTypes.firstOrNull { it == "image/jpeg" || it == "image/jpg" }
-                            ?: mimeTypes.firstOrNull { it == "image/webp" }
-                            ?: return
-
-                        val resolver = context.contentResolver
-                        val stream = resolver.openInputStream(uri) ?: return
-                        val md = MessageDigest.getInstance("MD5")
-                        val buffer = ByteArray(8 * 1024)
-                        var totalBytes = 0L
-                        var bytesRead: Int
-
-                        val tempFile = File(context.cacheDir, "temp_img")
-                        tempFile.outputStream().use { out ->
-                            while (stream.read(buffer).also { bytesRead = it } != -1) {
-                                totalBytes += bytesRead
-                                if (totalBytes > 10 * 1024 * 1024) {
-                                    tempFile.delete()
-                                    return
-                                }
-                                md.update(buffer, 0, bytesRead)
-                                out.write(buffer, 0, bytesRead)
-                            }
-                        }
-                        stream.close()
-
-                        val md5Hex = md.digest().joinToString("") { "%02x".format(it) }
-                        val extension = when (targetMime) {
-                            "image/png" -> "png"
-                            "image/jpeg", "image/jpg" -> "jpg"
-                            "image/webp" -> "webp"
-                            else -> "img"
-                        }
-
-                        context.clipboardDir.mkdirs()
-                        val finalFile = File(context.clipboardDir, "$md5Hex.$extension")
-                        if (!finalFile.exists()) {
-                            tempFile.renameTo(finalFile)
-                            ClipboardUtil.generateThumbnail(finalFile)
-                        } else {
-                            tempFile.delete()
-                        }
-
-                        val isAlreadyPinned = clipboardHistory.firstOrNull {
-                            it.backingFile == finalFile.name && it.pinned
-                        }?.pinned == true
-
-                        clipboardHistory.removeAll { it.backingFile == finalFile.name }
-
-                        val newEntry = ClipboardEntry(
-                            timestamp = timestamp,
-                            pinned = isAlreadyPinned,
-                            text = null,
-                            uri = null,
-                            backingFile = finalFile.name,
-                            sizeMb = totalBytes / (1024f * 1024f),
-                            mimeTypes = listOf(targetMime)
-                        )
-                        clipboardHistory.add(newEntry)
-                    }catch(e: Exception) {
-                        throwIfDebug(e)
-                    } finally {
-                        saveClipboard()
-                    }
+                    onImageAdded(mimeTypes, uri, timestamp)
                 }
             }
         }
@@ -894,6 +928,7 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
 
     override fun close() {
         clipboardManager.removePrimaryClipChangedListener(primaryClipChangedListener)
+        screenshotHelper.onDestroy()
     }
 
 }
@@ -1187,6 +1222,45 @@ val ClipboardHistoryAction = Action(
                 setting = ClipboardSaveImages
             ).copy(visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }),
 
+            UserSetting(
+                name = R.string.action_clipboard_manager_settings_save_screenshots,
+                component = {
+                    val context = LocalContext.current
+                    val (enabled, setEnabled) = useDataStore(ClipboardSaveScreenshots)
+
+                    val permission = ScreenshotHelper.permission
+
+                    val launcher = rememberLauncherForActivityResult(
+                        ActivityResultContracts.RequestPermission()
+                    ) { isGranted: Boolean ->
+                        if (isGranted) {
+                            setEnabled(true)
+                        } else {
+                            setEnabled(false)
+                        }
+                    }
+
+                    SettingToggleRaw(
+                        title = stringResource(R.string.action_clipboard_manager_settings_save_screenshots),
+                        subtitle = if(enabled) null else stringResource(R.string.action_clipboard_manager_settings_save_screenshots_subtitle),
+                        enabled = enabled,
+                        setValue = {
+                            if(!it) setEnabled(false) else {
+                                if (ContextCompat.checkSelfPermission(
+                                        context,
+                                        permission
+                                    ) == PackageManager.PERMISSION_GRANTED
+                                ) {
+                                    setEnabled(true)
+                                } else {
+                                    launcher.launch(permission)
+                                }
+                            }
+                        }
+                    )
+                },
+                visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }
+            ),
             UserSetting(
                 name = R.string.action_clipboard_manager_settings_maximum_clips,
                 component = {
