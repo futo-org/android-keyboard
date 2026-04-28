@@ -68,3 +68,49 @@ val USE_PERSONAL_DICT = SettingsKey(
     key = booleanPreferencesKey("use_personal_dict_voice_input"),
     default = true
 )
+
+// Dictation command settings
+val DICTATION_COMMANDS_ENABLED = SettingsKey(
+    key = booleanPreferencesKey("dictation_commands_enabled"),
+    default = true
+)
+
+val DICTATION_FORMATTING = SettingsKey(
+    key = booleanPreferencesKey("dictation_formatting"),
+    default = true
+)
+
+val DICTATION_CAPITALIZATION = SettingsKey(
+    key = booleanPreferencesKey("dictation_capitalization"),
+    default = true
+)
+
+val DICTATION_PUNCTUATION = SettingsKey(
+    key = booleanPreferencesKey("dictation_punctuation"),
+    default = true
+)
+
+val DICTATION_SYMBOLS = SettingsKey(
+    key = booleanPreferencesKey("dictation_symbols"),
+    default = true
+)
+
+val DICTATION_MATH = SettingsKey(
+    key = booleanPreferencesKey("dictation_math"),
+    default = true
+)
+
+val DICTATION_CURRENCY = SettingsKey(
+    key = booleanPreferencesKey("dictation_currency"),
+    default = true
+)
+
+val DICTATION_EMOTICONS = SettingsKey(
+    key = booleanPreferencesKey("dictation_emoticons"),
+    default = true
+)
+
+val DICTATION_IP_MARKS = SettingsKey(
+    key = booleanPreferencesKey("dictation_ip_marks"),
+    default = true
+)
