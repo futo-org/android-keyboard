@@ -448,7 +448,7 @@
     <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
 
     <string name="typing_settings_swipe_model">Use experimental swipe model</string>
-    <string name="typing_settings_swipe_vocab2">Use wider vocabulary for swipe</string>
+    <string name="typing_settings_swipe_special_decoder">Allow special decoders (English QWERTY)</string>
     <string name="typing_settings_swipe_language_model">Use language model for swipe</string>
 
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>

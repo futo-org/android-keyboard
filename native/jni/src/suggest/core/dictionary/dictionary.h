@@ -28,6 +28,8 @@
 #include "dictionary/property/word_property.h"
 #include "suggest/core/suggest_interface.h"
 #include "utils/int_array_view.h"
+#include "itrie.h"
+#include "dictionary_itrie.h"
 
 namespace latinime {
 
@@ -116,8 +118,13 @@ class Dictionary {
         return mDictionaryStructureWithBufferPolicy.get();
     }
 
- private:
+    ITrie *getITrieHandle(std::string letters);
+
+private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
+
+    ITrie itrie;
+    DicITrieWrapper itrieWrapper;
 
     typedef std::unique_ptr<SuggestInterface> SuggestInterfacePtr;
 

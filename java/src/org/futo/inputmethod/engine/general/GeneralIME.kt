@@ -1,6 +1,7 @@
 package org.futo.inputmethod.engine.general
 
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -92,6 +93,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             override fun onUpdateMainDictionaryAvailability(isMainDictionaryAvailable: Boolean) {
                 helper.updateGestureAvailability(isGestureHandlingAvailable())
                 updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING)
+
+                dictionaryFacilitator.onKeyboardUpdated(
+                    Settings.getInstance().current,
+                    helper.keyboardSwitcher.keyboard
+                )
             }
         }
 
@@ -404,12 +410,16 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
         showSuggestionStrip(words)
         when(inputStyle) {
-            SuggestedWords.INPUT_STYLE_TAIL_BATCH ->
+            SuggestedWords.INPUT_STYLE_TAIL_BATCH -> {
                 inputLogic.onUpdateTailBatchInputCompleted(
                     settings.current,
                     words,
                     helper.keyboardSwitcher
                 )
+                helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(
+                    HapticFeedbackConstants.VIRTUAL_KEY_RELEASE
+                )
+            }
         }
     }
 
@@ -730,6 +740,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
+
+        dictionaryFacilitator.onKeyboardUpdated(
+            Settings.getInstance().current,
+            helper.keyboardSwitcher.keyboard
+        )
     }
 
     override fun setNeutralSuggestionStrip() {

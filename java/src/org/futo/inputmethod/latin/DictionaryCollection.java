@@ -25,6 +25,7 @@ import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -151,5 +152,9 @@ public final class DictionaryCollection extends Dictionary {
         } else {
             Log.w(TAG, "This collection does not contain this dictionary: " + dict);
         }
+    }
+
+    public List<Dictionary> getDictionaries() {
+        return mDictionaries;
     }
 }

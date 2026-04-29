@@ -218,6 +218,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native boolean isCorruptedNative(long dict);
     private static native boolean migrateNative(long dict, String dictFilePath,
             long newFormatVersion);
+    private static native long getITrieHandleNative(long dict, String letters);
 
     // TODO: Move native dict into session
     private void loadDictionary(final String path, final long startOffset,
@@ -650,6 +651,14 @@ public final class BinaryDictionary extends Dictionary {
         } finally {
             isMigratingDir.delete();
         }
+    }
+
+    public long getITrie(final String letters) {
+        if (!isValidDictionary()) {
+            return 0;
+        }
+
+        return getITrieHandleNative(mNativeDict, letters);
     }
 
     @UsedForTesting

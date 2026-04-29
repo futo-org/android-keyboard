@@ -86,7 +86,7 @@ import org.futo.inputmethod.engine.IMESettingsMenu
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SwipeLanguageModelSetting
 import org.futo.inputmethod.latin.SwipeModelSetting
-import org.futo.inputmethod.latin.SwipeVocabulary2Setting
+import org.futo.inputmethod.latin.SwipeSpecialDecoderSetting
 import org.futo.inputmethod.latin.settings.LongPressKey
 import org.futo.inputmethod.latin.settings.LongPressKeyLayoutSetting
 import org.futo.inputmethod.latin.settings.Settings
@@ -817,8 +817,8 @@ val TypingSettingsMenu = UserSettingsMenu(
         ),
 
         userSettingToggleDataStore(
-            title = R.string.typing_settings_swipe_vocab2,
-            setting = SwipeVocabulary2Setting
+            title = R.string.typing_settings_swipe_special_decoder,
+            setting = SwipeSpecialDecoderSetting
         ),
 
         userSettingToggleDataStore(

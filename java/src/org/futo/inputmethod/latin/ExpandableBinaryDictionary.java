@@ -185,6 +185,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return mBinaryDictionary;
     }
 
+    public long getITrie(final String letters) {
+        if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()) {
+            return 0;
+        }
+
+        return mBinaryDictionary.getITrie(letters);
+    }
+
     void closeBinaryDictionary() {
         if (mBinaryDictionary != null) {
             mBinaryDictionary.close();

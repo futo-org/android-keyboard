@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardId;
+import org.futo.inputmethod.keyboard.KeyboardLayout;
 import org.futo.inputmethod.latin.NgramContext.WordInfo;
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import org.futo.inputmethod.latin.common.ComposedData;
@@ -354,16 +355,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             final String dictNamePrefix,
             @Nullable final DictionaryInitializationListener listener) {
 
-        Locale englishLocale = null;
-        for(Locale locale : newLocales) {
-            if(locale.getLanguage().equals("en")) {
-                englishLocale = locale;
-                break;
-            }
-        }
-
-        if(englishLocale != null && DictionaryFacilitatorImpl.swipeDecoderDictionary == null) {
-            DictionaryFacilitatorImpl.swipeDecoderDictionary = new SwipeDecoderDictionary(context, englishLocale);
+        mPrevKeyboard = null;
+        if(DictionaryFacilitatorImpl.swipeDecoderDictionary == null) {
+            DictionaryFacilitatorImpl.swipeDecoderDictionary = new SwipeDecoderDictionary(context, Locale.ENGLISH);
         }
 
         final HashMap<Locale, ArrayList<String>> existingDictionariesToCleanup = new HashMap<>();
@@ -403,6 +397,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
 
+        mTrieCorrespondingGroups = null;
         ArrayList<DictionaryGroup> newDictionaryGroups = new ArrayList<>();
         for(Locale newLocale : newLocales) {
             final DictionaryGroup dictionaryGroupForLocale =
@@ -872,12 +867,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
         if(DictionaryFacilitatorImpl.swipeDecoderDictionary != null) {
             SwipeDecoderDictionary.updateKeyboard(keyboard);
+            onKeyboardUpdated(Settings.getInstance().getCurrent(), keyboard);
 
             if(SwipeDecoderDictionary.canBeUsed()) {
                 final ArrayList<SuggestedWordInfo> dictionarySuggestions =
                         DictionaryFacilitatorImpl.swipeDecoderDictionary.getSuggestions(composedData, ngramContext,
-                                proximityInfoHandle, settingsValuesForSuggestion, sessionId,
-                                0.0f, weightOfLangModelVsSpatialModel);
+                            inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH, getTrieWeights());
 
                 if (dictionarySuggestions != null) {
                     suggestionResults.addAll(dictionarySuggestions);
@@ -1029,6 +1024,80 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
         if(mEmailDictionary != null) {
             mEmailDictionary.asyncFlushBinaryDictionary();
+        }
+    }
+
+    private void addDictionaryTries(List<Dictionary> dictList, String letters, ArrayList<Long> tries) {
+        for(Dictionary dict : dictList) {
+            long handle = 0;
+            if(dict instanceof BinaryDictionary) {
+                handle = ((BinaryDictionary) dict).getITrie(letters);
+            } else if(dict instanceof ReadOnlyBinaryDictionary) {
+                handle = ((ReadOnlyBinaryDictionary) dict).getITrie(letters);
+            }else if(dict instanceof ExpandableBinaryDictionary) {
+                handle = ((ExpandableBinaryDictionary) dict).getITrie(letters);
+            }else if(dict instanceof DictionaryCollection) {
+                addDictionaryTries(((DictionaryCollection) dict).getDictionaries(), letters, tries);
+            }
+
+            if(handle == 0) continue;
+            tries.add(handle);
+        }
+    }
+
+
+    private Keyboard mPrevKeyboard = null;
+    private ArrayList<DictionaryGroup> mTrieCorrespondingGroups;
+
+    private float[] getTrieWeights() {
+        if(mTrieCorrespondingGroups == null) return new float[0];
+
+        int size = mTrieCorrespondingGroups.size();
+        float[] result = new float[size];
+
+        for(int i=0; i<size; i++) {
+            result[i] = mTrieCorrespondingGroups.get(i).mWeightForGesturingInLocale;
+        }
+
+        return result;
+    }
+
+    @Override
+    public void onKeyboardUpdated(SettingsValues values, Keyboard keyboard) {
+        if(!hasAtLeastOneInitializedMainDictionary()) return;
+        if(keyboard == null) return;
+        KeyboardLayout layout = keyboard.getKeyboardLayout();
+        if(layout == null) return;
+        if(swipeDecoderDictionary == null) return;
+
+        if(keyboard == mPrevKeyboard) return;
+        mPrevKeyboard = keyboard;
+
+        final LayoutInfoForModel info = LayoutInfoForModel.buildLayoutInfo(swipeDecoderDictionary.getContext(), keyboard, values);
+        // Log.d("DictionaryFacilitatorImpl", "Keyboard updated... New info: " + info);
+
+        if(info != null) {
+            // Make sure to update tries
+            ArrayList<Long> trieArray = new ArrayList<>();
+
+            mTrieCorrespondingGroups = new ArrayList<>();
+
+            for(DictionaryGroup group : mDictionaryGroups) {
+                int prevLength = trieArray.size();
+                ArrayList<Dictionary> dicts = new ArrayList<Dictionary>();
+                dicts.add(group.getDict(Dictionary.TYPE_MAIN));
+                dicts.add(group.getDict(Dictionary.TYPE_USER));
+                dicts.add(group.getDict(Dictionary.TYPE_USER_HISTORY));
+
+                addDictionaryTries(dicts, info.getLetters(), trieArray);
+                int newLength = trieArray.size();
+
+                for(int i=0; i<(newLength - prevLength); i++) {
+                    mTrieCorrespondingGroups.add(group);
+                }
+            }
+
+            swipeDecoderDictionary.updateKeyboard(new SwipeDecoderDictionary.PendingLayoutInfo(info, trieArray));
         }
     }
 

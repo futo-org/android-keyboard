@@ -32,14 +32,18 @@ import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.SwipeDecoderDictionary
+import org.futo.inputmethod.latin.SwipeModelSetting
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.LocalFoldingState
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
+import java.io.File
 
 val DebugLabel = Typography.Small.copy(fontFamily = FontFamily.Monospace)
 val DebugTitle = Typography.Body.Medium.copy(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
@@ -257,6 +261,12 @@ val MemoryDebugAction = Action(
     windowImpl = { manager, _ ->
         val latinIme = manager.getLatinIMEForDebug()
         object : ActionWindow() {
+            override val onlyShowAboveKeyboard: Boolean
+                get() = true
+
+            override val positionIsUserManagable: Boolean
+                get() = true
+
             @Composable
             override fun windowName(): String {
                 return stringResource(R.string.action_debug_title)
@@ -277,7 +287,44 @@ val MemoryDebugAction = Action(
 
                 val foldingState = LocalFoldingState.current
 
+                val codenameFor: (String) -> String = { pteAsset ->
+                    if(pteAsset.isBlank()) {
+                        ""
+                    } else {
+                        val metadataAsset = SwipeDecoderDictionary.metadataFor(pteAsset)
+                        val file = File(
+                            SwipeDecoderDictionary.getFilePath(
+                                manager.getContext(),
+                                metadataAsset
+                            )
+                        )
+                        val content = file.readText()
+
+                        SwipeDecoderDictionary.parseMetadataToGetCodename(content)
+                    }
+                }
                 ScrollableList {
+                    Text("Swipe Info", style = DebugTitle)
+                    SwipeDecoderDictionary.appliedLayoutInfo.let { layout ->
+                        if(useDataStoreValue(SwipeModelSetting) == false) {
+                            Text("using legacy mode...", style = DebugLabel)
+                        } else {
+                            Text("universal model = ${SwipeDecoderDictionary.SWIPE_MODEL} (${remember(SwipeDecoderDictionary.SWIPE_MODEL) { codenameFor(SwipeDecoderDictionary.SWIPE_MODEL)} })", style = DebugLabel)
+                            Text("special decoder = ${SwipeDecoderDictionary.appliedLayoutInfo.decoder.ifBlank { "<none>" }} (${remember(SwipeDecoderDictionary.appliedLayoutInfo.decoder) { codenameFor(SwipeDecoderDictionary.appliedLayoutInfo.decoder)} })", style = DebugLabel)
+                            Text("context lm      = ${SwipeDecoderDictionary.appliedLayoutInfo.lm.ifBlank { "<none>" }} (${remember(SwipeDecoderDictionary.appliedLayoutInfo.lm) { codenameFor(SwipeDecoderDictionary.appliedLayoutInfo.lm)} })", style = DebugLabel)
+                            Text("", style = DebugLabel)
+                            Text("layout letters  = ${layout.letters}", style = DebugLabel)
+                            Text("layout scale    = ${layout.sx}, ${layout.sy}", style = DebugLabel)
+                            Text("layout offset   = ${layout.ox}, ${layout.oy}", style = DebugLabel)
+                            Text("", style = DebugLabel)
+                            Text("dictionary count   = ${SwipeDecoderDictionary.appliedTries?.size}", style = DebugLabel)
+                            Text("dictionary weights = ${SwipeDecoderDictionary.appliedTrieWeights.joinToString(", ")}", style = DebugLabel)
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Text("Editor Info", style = DebugTitle)
                     latinIme.currentInputEditorInfo?.let { info ->
                         Text("packageName       = ${info.packageName}",       style = DebugLabel)

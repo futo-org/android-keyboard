@@ -38,6 +38,7 @@
 #include "utils/profiler.h"
 #include "utils/time_keeper.h"
 #include "suggest/core/suggest.h"
+#include "jni_utils.h"
 
 namespace latinime {
 
@@ -642,6 +643,16 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
     return true;
 }
 
+static jlong latinime_BinaryDictionary_getITrieHandleNative(JNIEnv *env, jclass clazz, jlong dict,
+                                                            jstring letters) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return false;
+
+    std::string lettersValue = jstring2string(env, letters);
+
+    return (jlong)dictionary->getITrieHandle(lettersValue);
+}
+
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("openNative"),
@@ -765,6 +776,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("migrateNative"),
         const_cast<char *>("(JLjava/lang/String;J)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_migrateNative)
+    },
+    {
+        const_cast<char *>("getITrieHandleNative"),
+        const_cast<char *>("(JLjava/lang/String;)J"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getITrieHandleNative)
     }
 };
 
