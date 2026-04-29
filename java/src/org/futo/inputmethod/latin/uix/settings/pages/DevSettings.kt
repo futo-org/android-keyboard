@@ -242,49 +242,51 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             UseExpandableSuggestionsForGeneralIME,
         )
 
-        NavigationItem(
-            title = "Crash the app",
-            style = NavigationItemStyle.MiscNoArrow,
-            navigate = {
-                scope.lifecycleScope.launch {
-                    withContext(Dispatchers.Default) {
-                        delay(300L)
-                        throw RuntimeException("User requested app to crash :3")
-                    }
-                }
-            },
-            icon = painterResource(id = R.drawable.close)
-        )
-
-        if(BuildConfig.DEBUG) {
+        if(!BuildConfig.IS_PLAYSTORE_BUILD) {
             NavigationItem(
-                title = "Corrupt the settings, the clipboard, and exit the app",
+                title = "Crash the app",
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = {
                     scope.lifecycleScope.launch {
                         withContext(Dispatchers.Default) {
                             delay(300L)
-
-                            context.getPreferencesDataStoreFile().outputStream().use {
-                                it.write(0)
-                            }
-                            context.clipboardFile.outputStream().use {
-                                it.write(0)
-                            }
-
-                            exitProcess(1)
+                            throw RuntimeException("User requested app to crash :3")
                         }
                     }
-                }
+                },
+                icon = painterResource(id = R.drawable.close)
             )
+
+            if(BuildConfig.DEBUG) {
+                NavigationItem(
+                    title = "Corrupt the settings, the clipboard, and exit the app",
+                    style = NavigationItemStyle.MiscNoArrow,
+                    navigate = {
+                        scope.lifecycleScope.launch {
+                            withContext(Dispatchers.Default) {
+                                delay(300L)
+
+                                context.getPreferencesDataStoreFile().outputStream().use {
+                                    it.write(0)
+                                }
+                                context.clipboardFile.outputStream().use {
+                                    it.write(0)
+                                }
+
+                                exitProcess(1)
+                            }
+                        }
+                    }
+                )
+            }
+
+            NavigationItem(
+                title = "Inline Keyboard",
+                subtitle = "This can break everything, force stop or crash the app to fix",
+                style = NavigationItemStyle.Misc,
+                navigate = { navController.navigate("devkeyboard") }
+            )
+
         }
-
-        NavigationItem(
-            title = "Inline Keyboard",
-            subtitle = "This can break everything, force stop or crash the app to fix",
-            style = NavigationItemStyle.Misc,
-            navigate = { navController.navigate("devkeyboard") }
-        )
-
     }
 }

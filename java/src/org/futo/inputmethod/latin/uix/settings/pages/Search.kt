@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +64,7 @@ private fun normalizeString(s: String): String {
 @Preview(showBackground = true)
 @Composable
 fun SearchScreen(navController: NavHostController = rememberNavController()) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     val textFieldValue = remember { mutableStateOf("") }
 
     val searchTagsByMenu = remember {
@@ -72,11 +73,11 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
             .filter { it.name != 0 }
             .associate {
                 it to run {
-                    normalizeString(context.getString(it.name)) + "\n" +
-                            (it.searchTagList?.joinToString("\n") { normalizeString(context.getString(it)) }
-                                ?: it.searchTags?.let { normalizeString(context.getString(it)) }
+                    normalizeString(resources.getString(it.name)) + "\n" +
+                            (it.searchTagList?.joinToString("\n") { normalizeString(resources.getString(it)) }
+                                ?: it.searchTags?.let { normalizeString(resources.getString(it)) }
                                 ?: "") + "\n" +
-                            (it.subtitle?.let { normalizeString(context.getString(it)) } ?: "")
+                            (it.subtitle?.let { normalizeString(resources.getString(it)) } ?: "")
                 }
             }
     }

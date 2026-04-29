@@ -54,8 +54,10 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -590,11 +592,11 @@ private fun EmojiCategoriesContainer(
         }
     }
 
-    val context = LocalContext.current
+    val resources = LocalResources.current
 
     LazyRow(state = listState, modifier = modifier.padding(8.dp, 0.dp)) {
         items(categories) {
-            val localizedTitle = localizedCategoryNameMap[it.title]?.let { context.getString(it) } ?: it.title
+            val localizedTitle = localizedCategoryNameMap[it.title]?.let { resources.getString(it) } ?: it.title
             IconButton(
                 onClick = { goToCategory(it) }, modifier = if (it == activeCategoryItem) {
                     Modifier.background(
@@ -604,7 +606,7 @@ private fun EmojiCategoriesContainer(
                 } else {
                     Modifier
                 }.clearAndSetSemantics {
-                    contentDescription = context.getString(R.string.action_emoji_jump_to_category, localizedTitle)
+                    contentDescription = resources.getString(R.string.action_emoji_jump_to_category, localizedTitle)
                     toggleableState = ToggleableState(it == activeCategoryItem)
                 }
             ) {
@@ -637,14 +639,14 @@ private fun EmojiCategoriesContainer(
 
 @Composable
 private fun BackspaceKey(onBackspace: (Boolean) -> Unit) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     Box(modifier = Modifier
         .minimumInteractiveComponentSize()
         .repeatablyClickableAction(onTrigger = onBackspace)
         .size(48.dp)
         .clearAndSetSemantics {
             this.role = Role.Button
-            this.text = AnnotatedString(context.getString(R.string.spoken_description_delete))
+            this.text = AnnotatedString(resources.getString(R.string.spoken_description_delete))
         },
         contentAlignment = Alignment.Center
     ) {
@@ -729,7 +731,7 @@ fun EmojiGrid(
     var emojiList = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis
 
     if(isSearching) {
-        val locale = context.resources.configuration.locale
+        val locale = LocalConfiguration.current.locale
         val context = LocalContext.current
         LaunchedEffect(locale.language) {
             PersistentEmojiState.loadTranslationsForLanguage(context, locale)
@@ -1010,7 +1012,7 @@ val EmojiAction = Action(
 
             @Composable
             override fun WindowTitleBar(rowScope: RowScope) {
-                val context = LocalContext.current
+                val resources = LocalResources.current
                 if(searching.value) {
                     with(rowScope) {
                         Surface(
@@ -1055,10 +1057,10 @@ val EmojiAction = Action(
 
                     IconButton(onClick = {
                         manager.requestDialog(
-                            context.getString(R.string.action_emoji_clear_recent_emojis_question),
+                            resources.getString(R.string.action_emoji_clear_recent_emojis_question),
                             listOf(
-                                DialogRequestItem(context.getString(R.string.action_emoji_clear_recent_emojis_cancel)) {},
-                                DialogRequestItem(context.getString(R.string.action_emoji_clear_recent_emojis_clear)) {
+                                DialogRequestItem(resources.getString(R.string.action_emoji_clear_recent_emojis_cancel)) {},
+                                DialogRequestItem(resources.getString(R.string.action_emoji_clear_recent_emojis_clear)) {
                                     runBlocking {
                                         manager.getContext().resetRecentEmojis()
                                     }

@@ -10,9 +10,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.math.max
 import androidx.core.graphics.scale
 import androidx.core.graphics.createBitmap
+import kotlin.math.min
 
 object ClipboardUtil {
     fun thumbnailForName(name: String): String
@@ -26,6 +26,7 @@ object ClipboardUtil {
         if (thumbFile.exists()) return thumbFile
 
         var bitmap: Bitmap? = null
+        var croppedBitmap: Bitmap? = null
         try {
             val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeFile(imageFile.absolutePath, options)
@@ -33,22 +34,40 @@ object ClipboardUtil {
             val (w, h) = options.outWidth to options.outHeight
             if (w <= 0 || h <= 0) return null
 
-            val maxSide = 256
+            val cropSize = min(w, h)
+            val cropX = (w - cropSize) / 2
+            val cropY = (h - cropSize) / 2
+
+            val maxSide = 384
             var sample = 1
-            while (w / sample > maxSide || h / sample > maxSide) sample *= 2
+            while (cropSize / sample > maxSide) sample *= 2
 
             options.inJustDecodeBounds = false
             options.inSampleSize = sample
+
             bitmap = BitmapFactory.decodeFile(imageFile.absolutePath, options) ?: return null
 
-            val finalBmp = if (bitmap.width > maxSide || bitmap.height > maxSide) {
-                val scale = maxSide.toFloat() / max(bitmap.width, bitmap.height)
-                bitmap.scale(
-                    (bitmap.width * scale).toInt().coerceAtLeast(1),
-                    (bitmap.height * scale).toInt().coerceAtLeast(1)
-                )
-            } else {
+            val scaledCropX = cropX / sample
+            val scaledCropY = cropY / sample
+            val scaledCropSize = cropSize / sample
+
+            croppedBitmap = if (scaledCropSize == bitmap.width && scaledCropSize == bitmap.height) {
+                // Already square, no crop needed
                 bitmap
+            } else {
+                Bitmap.createBitmap(
+                    bitmap,
+                    scaledCropX.coerceIn(0, bitmap.width - scaledCropSize),
+                    scaledCropY.coerceIn(0, bitmap.height - scaledCropSize),
+                    scaledCropSize.coerceAtMost(bitmap.width),
+                    scaledCropSize.coerceAtMost(bitmap.height)
+                )
+            }
+
+            val finalBmp = if (croppedBitmap.width != maxSide || croppedBitmap.height != maxSide) {
+                croppedBitmap.scale(maxSide, maxSide)
+            } else {
+                croppedBitmap
             }
 
             FileOutputStream(thumbFile).use { out ->
@@ -60,10 +79,12 @@ object ClipboardUtil {
             thumbFile.delete()
             return null
         } finally {
+            if (croppedBitmap !== bitmap) {
+                croppedBitmap?.recycle()
+            }
             bitmap?.recycle()
         }
     }
-
 
     fun generateCheckerboardBitmap(
         width: Int = 256,

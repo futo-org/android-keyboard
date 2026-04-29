@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -116,7 +117,7 @@ fun LanguageConfigurable(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    kind.kindTitle(LocalContext.current),
+                    kind.kindTitle(LocalResources.current),
                     modifier = Modifier.align(Alignment.CenterVertically),
                     style = Typography.Small,
                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
@@ -384,7 +385,7 @@ fun ConfirmResourceActionDialog(
             Icon(painterResource(id = resourceKind.icon()), contentDescription = null)
         },
         title = {
-            Text(text = "${locale.displayLanguage} - ${resourceKind.kindTitle(LocalContext.current)}")
+            Text(text = "${locale.displayLanguage} - ${resourceKind.kindTitle(LocalResources.current)}")
         },
         text = {
             if (isCurrentlySet) {
@@ -565,6 +566,7 @@ val LanguageSettingsLite = UserSettingsMenu(
 @Composable
 fun LanguagesScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val deleteDialogInfo: MutableState<DeleteInfo?> = remember { mutableStateOf(null) }
     val languageDeleteInfo: MutableState<Locale?> = remember { mutableStateOf(null) }
 
@@ -668,11 +670,11 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                         FileKind.Dictionary.namePreferenceKeyFor(it),
                         "Dictionary"
                     )
-                } + " " + context.getString(
+                } + " " + resources.getString(
                     R.string.language_settings_resource_imported_indicator
                 )
              } ?: if (Dictionaries.getDictionaryIfExists(context, locale, Dictionaries.DictionaryKind.Any) != null) {
-                context.getString(R.string.language_settings_resource_builtin_dictionary_name)
+                resources.getString(R.string.language_settings_resource_builtin_dictionary_name)
             } else {
                 null
             }
@@ -680,7 +682,7 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
             val transformerName =
                 runBlocking { ModelPaths.getModelOptions(context) }.get(locale.language)?.let {
                     it.loadDetails()?.let {
-                        it.name + if (it.isUnsupported()) (" " + context.getString(R.string.language_settings_resource_unsupported_indicator)) else ""
+                        it.name + if (it.isUnsupported()) (" " + resources.getString(R.string.language_settings_resource_unsupported_indicator)) else ""
                     }
                 }
 

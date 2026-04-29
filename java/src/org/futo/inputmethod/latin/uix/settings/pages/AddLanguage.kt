@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,10 +54,11 @@ fun normalize(str: String): String {
 @Composable
 fun SelectLanguageScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
+    val resources = LocalResources.current
 
     val layoutMapping = remember { LayoutManager.getLayoutMapping(context) }
 
-    val systemLocale = remember { context.resources.configuration.locales[0] }
+    val systemLocale = remember { resources.configuration.locales[0] }
     val textFieldValue = remember { mutableStateOf("") }
 
     val locales = remember {
@@ -143,8 +145,6 @@ fun SelectLayoutsScreen(navController: NavHostController = rememberNavController
     val context = LocalContext.current
 
     val layoutMapping = remember { LayoutManager.getLayoutMapping(context) }
-
-    val systemLocale = remember { context.resources.configuration.locales[0] }
 
     val relevantLayouts = remember {
         layoutMapping.entries.filter {

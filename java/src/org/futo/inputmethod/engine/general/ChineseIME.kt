@@ -9,6 +9,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.datastore.preferences.core.stringPreferencesKey
 import icu.astronot233.rime.DeployStage
@@ -152,19 +153,20 @@ object ChineseIMESettings {
         navPath = "ime/zh", registerNavPath = true,
         settings = listOf(
             UserSetting(R.string.chinese_setting_simplification) {
-                val context = LocalContext.current
+                val resources = LocalResources.current
                 val (setting, setSetting) = useDataStore(SimplificationSetting)
                 DropDownPickerSettingItem<ChineseSimplificationMode>(
                     stringResource(R.string.chinese_setting_simplification),
                     ChineseSimplificationMode.entries,
                     setting.toEnumOrNull<ChineseSimplificationMode>() ?: ChineseSimplificationMode.ByLanguage,
                     { setSetting(it.name) },
-                    { context.getString(it.stringResource) }
+                    { resources.getString(it.stringResource) }
                 )
             },
 
             UserSetting(R.string.chinese_setting_pinyin_scheme) {
                 val context = LocalContext.current
+                val resources = LocalResources.current
                 val (setting, setSetting) = useDataStore(PinyinSchemeSetting)
 
                 val availableEntries = remember {
@@ -179,7 +181,7 @@ object ChineseIMESettings {
                     availableEntries,
                     setting.toEnumOrNull<PinyinScheme>() ?: PinyinScheme.FullPinyin,
                     { setSetting(it.name) },
-                    { when(context.resources.configuration.locale.language) {
+                    { when(resources.configuration.locale.language) {
                         "zh" -> it.displayNameZH
                         else -> it.displayNameEN
                     } }
@@ -591,7 +593,9 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
             }
         }
 
-        file.writeText(content)
+        if(file.parentFile?.isDirectory == true) {
+            file.writeText(content)
+        }
     }
 
     private var configSemaphore = Semaphore(1)
