@@ -89,7 +89,7 @@ data class LayoutInfoForModel(
                 val xs = positions.map { it.first }
                 val ys = positions.map { it.second * yScale }
 
-                return LayoutInfoForModel(
+                return@run LayoutInfoForModel(
                     letters = letters,
                     xs = xs, ys = ys,
                     sx = 1.0f, sy = yScale,
@@ -117,7 +117,7 @@ private class SpecialContextLM private constructor(
         )
 
         fun match(settingsValues: SettingsValues): String {
-            if(settingsValues.mMultilingualLocales.size > 1) return ""
+            if(settingsValues.mMultilingualLocales.isNotEmpty()) return ""
 
             return contextLMs.firstOrNull { it.language == settingsValues.mLocale.language }?.asset ?: ""
         }
@@ -158,7 +158,7 @@ private class SpecialDecoder private constructor(
         )
 
         internal fun matchLayout(keyboard: Keyboard, settingsValues: SettingsValues): LayoutInfoForModel? {
-            if(settingsValues.mMultilingualLocales.size > 1) return null
+            if(settingsValues.mMultilingualLocales.isNotEmpty()) return null
 
             val keys = keyboard.sortedKeys.associate { Character.toLowerCase(it.code) to it }
 
