@@ -134,6 +134,7 @@ import org.futo.inputmethod.latin.uix.settings.DataStoreCacheProvider
 import org.futo.inputmethod.latin.uix.settings.pages.ActionBarDisplayedSetting
 import org.futo.inputmethod.latin.uix.settings.pages.InlineAutofillSetting
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.KeyboardSurfaceShaderBackground
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
@@ -1494,6 +1495,57 @@ class UixManager(private val latinIME: LatinIME) {
 
             onActionActivatedInternal(action)
         }
+    }
+
+    fun getSuggestionAtVisualPosition(position: Int): SuggestedWordInfo? {
+        val words = suggestedWords.value ?: return null
+        val layout = makeSuggestionLayout(words, null)
+
+        if (layout.isGestureBatch || (layout.emojiMatches.isEmpty() && layout.presentableSuggestions.size <= 1)) {
+            return if (position == 1) layout.presentableSuggestions.firstOrNull() else null
+        }
+
+        if (layout.autocorrectMatch != null) {
+            var supplementalIndex = 0
+            val left = if (layout.emojiMatches.isEmpty()) {
+                layout.sortedMatches.getOrNull(supplementalIndex++)
+            } else {
+                layout.emojiMatches.getOrNull(0)
+            }
+            val center = layout.autocorrectMatch
+            val right = if (layout.verbatimWord != null && layout.verbatimWord.mWord != layout.autocorrectMatch.mWord) {
+                layout.verbatimWord
+            } else {
+                layout.sortedMatches.getOrNull(supplementalIndex)
+            }
+            return when (position) {
+                0 -> left
+                1 -> center
+                2 -> right
+                else -> null
+            }
+        }
+
+        // No autocorrect
+        var supplementalIndex = 1
+        val left = if (layout.emojiMatches.isEmpty()) {
+            layout.sortedMatches.getOrNull(supplementalIndex++)
+        } else {
+            layout.emojiMatches.getOrNull(0)
+        }
+        val center = layout.sortedMatches.getOrNull(0)
+        val right = layout.sortedMatches.getOrNull(supplementalIndex)
+        return when (position) {
+            0 -> left
+            1 -> center
+            2 -> right
+            else -> null
+        }
+    }
+
+    fun pickSuggestionAtVisualPosition(position: Int) {
+        val suggestion = getSuggestionAtVisualPosition(position) ?: return
+        latinIME.latinIMELegacy.pickSuggestionManually(suggestion)
     }
 
     fun requestForgetWord(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {

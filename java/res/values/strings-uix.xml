@@ -448,6 +448,13 @@
     <!-- When translating, rename it to gesture typing if it makes more sense for that language -->
     <string name="typing_settings_swipe">Swipe Typing (alpha)</string>
     <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
+    <string name="swipe_gesture_left_delete">Swipe left to delete word</string>
+    <string name="swipe_gesture_right_space">Swipe right for space</string>
+    <string name="swipe_gesture_down_prediction">Swipe down to accept middle prediction</string>
+    <string name="swipe_gesture_down_lr_prediction">Swipe diagonal down to accept side predictions</string>
+    <string name="swipe_gesture_down_lr_prediction_subtitle">Swipe diagonal down right to accept right-side prediction, diagonal down left to accept left-side prediction</string>
+    <string name="swipe_gesture_up_undo">Swipe up to undo</string>
+    <string name="swipe_gestures_title">Swipe Gestures</string>
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
     <string name="typing_settings_suggest_emojis_subtitle">Suggest emojis while you\'re typing</string>
     <string name="typing_settings_vibration_strength">Vibration</string>
