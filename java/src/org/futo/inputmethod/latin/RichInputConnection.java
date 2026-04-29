@@ -559,6 +559,20 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
+    public void deleteTextAroundCursor(final int beforeLength, final int afterLength) {
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+        final int lengthToDeleteBefore = Math.min(beforeLength, mExpectedSelStart);
+        mExpectedSelStart -= lengthToDeleteBefore;
+        mExpectedSelEnd = mExpectedSelStart;
+        mComposingText.setLength(0);
+
+        if (isConnected()) {
+            mIC.deleteSurroundingText(beforeLength, afterLength);
+        }
+        reloadTextCache();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+    }
+
     public void performEditorAction(final int actionId) {
         updateConnection();
         if (isConnected()) {

@@ -59,6 +59,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     override fun onUpWithDeletePointerActive() {}
     override fun onUpWithPointerActive() {}
     override fun onSwipeLanguage(direction: Int) {}
+    override fun onSwipeAction(direction: Int) {}
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {}
     override fun clearUserHistoryDictionaries() {}
     override fun requestSuggestionRefresh() {}
