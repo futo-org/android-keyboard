@@ -1,5 +1,7 @@
 package org.futo.ml.inference
 
+import androidx.annotation.Keep
+import org.futo.inputmethod.annotations.ExternallyReferenced
 import java.io.File
 import java.util.Locale
 
@@ -25,7 +27,8 @@ class SwipeDecoder(
     lmAlpha: Float = 0.0f,
 ) : AutoCloseable {
 
-    data class Result(val word: String, val score: Float, val ctcScore: Float = 0f, val lmScore: Float = 0f)
+    @Keep
+    data class Result(val word: String, val score: Float, val ctcScore: Float, val lmScore: Float)
 
     /** Per-stage timing (microseconds) from the most recent recognize() call. */
     data class Timing(
