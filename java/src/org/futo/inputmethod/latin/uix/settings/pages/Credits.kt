@@ -34,6 +34,7 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.settings.BottomSpacer
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.Route
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SpacedColumn
@@ -180,7 +181,7 @@ fun CreditCategorySection(
                     Column(
                         Modifier.fillMaxWidth()
                             .clickable {
-                                navController!!.navigate("credits/thirdparty/" + it)
+                                navController!!.navigate(Route.ThirdPartyInfo(it))
                             }
                     ) {
                         Text(

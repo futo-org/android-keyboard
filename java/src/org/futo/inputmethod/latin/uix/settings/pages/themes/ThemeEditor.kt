@@ -59,6 +59,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -141,6 +142,8 @@ internal fun ThemeEditor(
     startingBitmap: Bitmap? = null,
 ) {
     val context = LocalContext.current
+    val resources = LocalResources.current
+
     val ensureInitialized = remember {
         LayoutManager.init(context)
         RichInputMethodManager.init(context)
@@ -148,7 +151,7 @@ internal fun ThemeEditor(
     }
 
     val originalBitmap = remember {
-        (startingBitmap ?: BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_keyboard)).let {
+        (startingBitmap ?: BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_keyboard)).let {
             limitBitmapSize(context, it)
         }
     }
@@ -555,7 +558,7 @@ internal fun ThemeEditor(
                                             val suggestedWords = remember {
                                                 val suggestedWordsForActionBar = arrayListOf(
                                                     SuggestedWords.SuggestedWordInfo(
-                                                        context.getString(R.string.theme_customizer_adjust_background_image_hint),
+                                                        resources.getString(R.string.theme_customizer_adjust_background_image_hint),
                                                         "",
                                                         100,
                                                         1,
@@ -579,10 +582,10 @@ internal fun ThemeEditor(
                                                 words = suggestedWords,
                                                 suggestionStripListener = ExampleListener(),
                                                 onActionActivated = { },
+                                                onActionAltActivated = { },
                                                 inlineSuggestions = listOf(),
                                                 isActionsExpanded = false,
                                                 toggleActionsExpanded = { },
-                                                onActionAltActivated = { }
                                             )
                                             Spacer(Modifier.Companion.height(4.dp))
                                         }

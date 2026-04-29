@@ -1,6 +1,8 @@
 package org.futo.inputmethod.engine.general
 
+import android.os.Build
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,10 +17,12 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 import org.futo.inputmethod.annotations.UsedForTesting
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.engine.IMEMessage
+import org.futo.inputmethod.engine.NonExpandableSuggestionBar
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.event.InputTransaction
 import org.futo.inputmethod.keyboard.KeyboardActionListener
@@ -232,8 +236,14 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         languageModelFacilitator.loadHistoryLog()
     }
 
+    private val expandableExpandableCfg = ExpandableSuggestionBarConfiguration(true, false)
+    private var expandableCfg: ExpandableSuggestionBarConfiguration = NonExpandableSuggestionBar
     override fun onStartInput() {
-        useExpandableUi = helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)
+        expandableCfg = if(helper.context.getSetting(UseExpandableSuggestionsForGeneralIME)) {
+            expandableExpandableCfg
+        } else {
+            NonExpandableSuggestionBar
+        }
         resetSwipeSuggestionSession()
 
         resetDictionaryFacilitator()
@@ -1229,10 +1239,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
     }
 
-    private var useExpandableUi = false
     override fun setNeutralSuggestionStrip() {
         inputLogic.setSuggestedWords(SuggestedWords.getEmptyInstance())
-        helper.setNeutralSuggestionStrip(useExpandableUi)
+        helper.setNeutralSuggestionStrip(expandableCfg)
     }
 
     val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
@@ -1240,9 +1249,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.setSuggestedWords(words)
 
         if(settings.current.isSuggestionsEnabledPerUserSettings) {
-            helper.showSuggestionStrip(words, useExpandableUi)
+            helper.showSuggestionStrip(words, expandableCfg)
         } else {
-            helper.setNeutralSuggestionStrip(useExpandableUi)
+            helper.setNeutralSuggestionStrip(expandableCfg)
         }
     }
 
@@ -1264,6 +1273,19 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun recycle() {
         inputLogic.recycle()
     }
+
+    fun cursorStepped(steps: Int, overWords: Boolean) {
+        if(!settings.current.mVibrateOn) return
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(
+                if(overWords) HapticFeedbackConstants.KEYBOARD_TAP else HapticFeedbackConstants.TEXT_HANDLE_MOVE)
+        };
+    }
+
+    override fun hasMoreTextToDelete(): Boolean =
+        inputLogic.mConnection.codePointBeforeCursor != Constants.NOT_A_CODE
+                || inputLogic.mWordComposer.isComposingWord
 
     companion object {
         @OptIn(ExperimentalCoroutinesApi::class)

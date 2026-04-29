@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.accessibility.MainKeyboardAccessibilityDelegate;
 import org.futo.inputmethod.annotations.ExternallyReferenced;
+import org.futo.inputmethod.engine.StateHint;
 import org.futo.inputmethod.keyboard.internal.DrawingPreviewPlacerView;
 import org.futo.inputmethod.keyboard.internal.DrawingProxy;
 import org.futo.inputmethod.keyboard.internal.GestureFloatingTextDrawingPreview;
@@ -50,6 +51,7 @@ import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
 import org.futo.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import org.futo.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import org.futo.inputmethod.keyboard.internal.TimerHandler;
+import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.SuggestedWords;
@@ -645,6 +647,9 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     @Override
     public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
+        AudioAndHapticFeedbackManager.getInstance().performHapticFeedback(
+                this, true);
+
         locatePreviewPlacerView();
         // Dismiss another {@link MoreKeysPanel} that may be being showed.
         onDismissMoreKeysPanel();
@@ -893,6 +898,11 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         }
         paint.setColor(color);
         paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
+
+        final float ratio = Math.min(1.0f, (width * 0.90f) /
+                TypefaceUtils.getStringWidth(language, paint));
+
+        paint.setTextScaleX(ratio);
         canvas.drawText(language, width / 2, baseline - descent, paint);
         paint.clearShadowLayer();
         paint.setTextScaleX(1.0f);
@@ -902,5 +912,9 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     public void deallocateMemory() {
         super.deallocateMemory();
         mDrawingPreviewPlacerView.deallocateMemory();
+    }
+
+    public void updateStateHint(StateHint stateHint) {
+        PointerTracker.setStateHint(stateHint);
     }
 }

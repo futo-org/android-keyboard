@@ -12,3 +12,10 @@ fun InputStream.readAllBytesCompat(): ByteArray {
     }
     return buffer.toByteArray()
 }
+
+inline fun <reified T : Enum<T>> String.toEnumOrNull(): T? =
+    try {
+        enumValueOf<T>(this)
+    } catch (e: IllegalArgumentException) {
+        null
+    }

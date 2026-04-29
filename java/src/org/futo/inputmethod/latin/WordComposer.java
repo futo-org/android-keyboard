@@ -63,6 +63,7 @@ public final class WordComposer {
     private SuggestedWordInfo mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
+    private boolean mIsAttachedToNonWord;
     // A memory of the last rejected batch mode suggestion, if any. This goes like this: the user
     // gestures a word, is displeased with the results and hits backspace, then gestures again.
     // At the very least we should avoid re-suggesting the same thing, and to do that we memorize
@@ -96,6 +97,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
+        mIsAttachedToNonWord = false;
         refreshTypedWordCache();
     }
 
@@ -134,6 +136,7 @@ public final class WordComposer {
         mIsResumed = false;
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
+        mIsAttachedToNonWord = false;
 
         if(alsoResetRejectedBatchSuggestion) mRejectedBatchModeSuggestion = null;
         refreshTypedWordCache();
@@ -233,6 +236,14 @@ public final class WordComposer {
                     + "in a word of size " + mCodePointSize);
         }
         return mCursorPositionWithinWord != mCodePointSize;
+    }
+
+    public boolean isAttachedToNonWord() {
+        return mIsAttachedToNonWord;
+    }
+
+    public void markAttachedToNonWord() {
+        mIsAttachedToNonWord = true;
     }
 
     /**

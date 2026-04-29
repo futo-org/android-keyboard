@@ -41,7 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.uix.actions.ClipboardQuickClipsEnabled
+import org.futo.inputmethod.latin.uix.actions.clipboard.ClipboardQuickClipsEnabled
 import org.futo.inputmethod.latin.uix.theme.Typography
 
 enum class QuickClipKind {
@@ -93,8 +93,15 @@ data class QuickClipState(
     val image: Uri?,
     val imageMimeTypes: List<String>,
     val validUntil: Long,
-    val isSensitive: Boolean
+    val isSensitive: Boolean,
+    val createdAt: Long = System.currentTimeMillis()
 )
+
+fun QuickClipState?.filterIfDismissed(): QuickClipState? = when {
+    this == null -> null
+    this.createdAt < QuickClip.timeOfDismissal -> null
+    else -> this
+}
 
 @Composable
 private fun QuickClipPill(icon: Painter, contentDescription: String, text: String?, uri: Uri?, onActivate: () -> Unit) {
@@ -207,7 +214,7 @@ fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
 }
 
 object QuickClip {
-    private var timeOfDismissal = 0L
+    internal var timeOfDismissal = 0L
 
     // This shall be called when a quick clip is either used or it was dismissed.
     // It can be dismissed by typing something

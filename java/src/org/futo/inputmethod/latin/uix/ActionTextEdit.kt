@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CancellationSignal
 import android.os.Handler
+import android.text.InputFilter
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.KeyEvent
@@ -53,6 +54,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.function.Consumer
 import java.util.function.IntConsumer
@@ -174,8 +179,10 @@ private fun GenericEditTextCompose(
     modifier: Modifier = Modifier,
     onOverride: ((InputConnection, EditorInfo) -> Unit)? = null,
     onUnoverride: (() -> Unit)? = null,
+    onEnter: (() -> Unit)? = null,
     autofocus: Boolean = false,
     forceQwerty: Boolean = false,
+    inputFilters: Array<InputFilter>? = null,
 ) {
     val context = LocalContext.current
 
@@ -190,7 +197,7 @@ private fun GenericEditTextCompose(
     } or if(autocorrect) {
         EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT
     } else {
-        0
+        EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS
     }
 
     val color = LocalContentColor.current
@@ -203,7 +210,10 @@ private fun GenericEditTextCompose(
 
             setTextChangeCallback { text.value = it }
 
+            if(inputFilters != null) filters = inputFilters
+
             setText(text.value)
+            setSelection(text.value.length)
             setTextColor(color.toArgb())
             placeholder?.let { setHint(it) }
 
@@ -222,17 +232,26 @@ private fun GenericEditTextCompose(
 
             setHeight(height.toInt())
 
-            val editorInfo = EditorInfo().apply {
-                this.inputType = inputType
-                this.packageName = context.packageName
-            }
-            onCreateInputConnection(editorInfo)
+            if(onOverride != null) {
+                val editorInfo = EditorInfo().apply {
+                    this.inputType = inputType
+                    this.packageName = context.packageName
+                }
+                onCreateInputConnection(editorInfo)
 
-            onOverride?.invoke(inputConnection!!, editorInfo)
+                onOverride.invoke(inputConnection!!, editorInfo)
+            }
 
             // Remove underline and padding
             background = null
             setPadding(0, 0, 0, 0)
+
+            if(!multiline) {
+                setOnEditorActionListener { view, actionId, ev ->
+                    onEnter?.invoke()
+                    return@setOnEditorActionListener true
+                }
+            }
 
             if(autofocus) requestFocus()
         }
@@ -268,10 +287,14 @@ private fun GenericEditTextCompose(
     }
 
     val token = LocalView.current.windowToken
+    val scope = LocalLifecycleOwner.current
     DisposableEffect(autofocus, token) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if(autofocus) {
-            imm.showSoftInput(editText, 0)
+            scope.lifecycleScope.launch(Dispatchers.Main) {
+                editText.requestFocus()
+                imm.showSoftInput(editText, 0)
+            }
         }
 
         onDispose {
@@ -286,7 +309,13 @@ fun ActionTextEditor(
     multiline: Boolean = false,
     textSize: TextUnit = 16.sp,
     typeface: Typeface? = null,
-    autocorrect: Boolean = false
+    autocorrect: Boolean = false,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    afterOverride: (() -> Unit)? = null,
+    afterUnOverride: ((Boolean) -> Unit)? = null,
+    onEnter: (() -> Unit)? = null,
+    autofocus: Boolean = false,
+    inputFilters: Array<InputFilter>? = null,
 ) {
     val manager = if(!LocalInspectionMode.current) LocalManager.current else null
     GenericEditTextCompose(
@@ -296,13 +325,18 @@ fun ActionTextEditor(
         typeface = typeface,
         autocorrect = autocorrect,
         placeholder = null,
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
+        autofocus = autofocus,
+        onEnter = onEnter,
         onOverride = { ic, ed ->
             manager!!.overrideInputConnection(ic, ed)
+            afterOverride?.invoke()
         },
         onUnoverride = {
-            manager!!.unsetInputConnection()
-        }
+            val result = manager!!.unsetInputConnection()
+            afterUnOverride?.invoke(result)
+        },
+        inputFilters = inputFilters
     )
 }
 
@@ -316,10 +350,11 @@ fun SettingsTextEdit(
     autocorrect: Boolean = true,
     autofocus: Boolean = false,
     forceQwerty: Boolean = false,
+    error: Boolean = false,
 ) {
     Surface(
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        color = if(error) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surfaceContainerHighest,
+        border = BorderStroke(1.dp, if(error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline),
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {

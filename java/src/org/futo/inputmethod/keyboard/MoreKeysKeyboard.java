@@ -26,6 +26,7 @@ import org.futo.inputmethod.keyboard.internal.MoreKeySpec;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
+import org.futo.inputmethod.latin.uix.actions.BugViewerKt;
 import org.futo.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.List;
@@ -84,8 +85,8 @@ public final class MoreKeysKeyboard extends Keyboard {
                 final int dividerWidth) {
             mIsMoreKeysFixedOrder = isMoreKeysFixedOrder;
             if (parentKeyboardWidth / keyWidth < Math.min(numKeys, numColumn)) {
-                throw new IllegalArgumentException("Keyboard is too small to hold more keys: "
-                        + parentKeyboardWidth + " " + keyWidth + " " + numKeys + " " + numColumn);
+                BugViewerKt.throwIfDebug(new IllegalArgumentException("Keyboard is too small to hold more keys: "
+                        + parentKeyboardWidth + " " + keyWidth + " " + numKeys + " " + numColumn));
             }
             mDefaultKeyWidth = keyWidth;
             mDefaultRowHeight = rowHeight;

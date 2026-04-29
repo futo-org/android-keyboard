@@ -1,6 +1,10 @@
 package org.futo.inputmethod.latin.uix.settings
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -73,6 +77,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -810,6 +815,46 @@ fun<T> DropDownPicker(
     }
 }*/
 
+@Composable
+fun CollapsibleSection(title: String, modifier: Modifier = Modifier, section: @Composable ColumnScope.() -> Unit) {
+    val resources = LocalResources.current
+    var expanded by remember { mutableStateOf(false) }
+
+    Column {
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 44.dp).clickable {
+                expanded = !expanded
+            }.padding(16.dp).semantics {
+                stateDescription = resources.getString(
+                    if(expanded)
+                        R.string.setting_section_expanded
+                    else
+                        R.string.setting_section_collapsed
+                )
+                role = Role.DropdownList
+            }
+        ) {
+            RotatingChevronIcon(expanded, tint = LocalContentColor.current)
+
+            Spacer(Modifier.width(16.dp))
+
+            Text(
+                text = title,
+                style = Typography.Body.Regular,
+                color = LocalContentColor.current,
+                modifier = Modifier.weight(1.0f)
+            )
+        }
+
+        AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
+            Column {
+                section()
+            }
+        }
+    }
+}
+
+
 private val DropDownShape = RoundedCornerShape(12.dp)
 @Composable
 fun<T> DropDownPicker(
@@ -820,22 +865,30 @@ fun<T> DropDownPicker(
     scrollableOptions: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val resources = LocalResources.current
     var expanded by remember { mutableStateOf(false) }
 
-    Box(modifier = modifier.semantics { role = Role.DropdownList }) {
+    SpacedColumn(4.dp, modifier = modifier.semantics {
+        role = Role.DropdownList
+    }) {
         Row(
-            Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape)
-                .border(1.dp, MaterialTheme.colorScheme.outline, DropDownShape)
-                .heightIn(min = 44.dp)
-                .clip(DropDownShape)
-                .clickable { expanded = !expanded }
-                .padding(16.dp)
-                .semantics {
-                    stateDescription = if (expanded) "Expanded" else "Collapsed"
-                    role = Role.DropdownList
-                }
+            Modifier.fillMaxWidth().background(
+                MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape
+            ).border(
+                if(expanded) { 2.dp } else { 1.dp },
+                MaterialTheme.colorScheme.outline,
+                DropDownShape
+            ).heightIn(min = 44.dp).clip(DropDownShape).clickable {
+                expanded = !expanded
+            }.padding(16.dp).semantics {
+                stateDescription = resources.getString(
+                    if(expanded)
+                        R.string.setting_section_expanded
+                    else
+                        R.string.setting_section_collapsed
+                )
+                role = Role.DropdownList
+            }
         ) {
             if (selection != null) {
                 Text(
@@ -851,26 +904,39 @@ fun<T> DropDownPicker(
             RotatingChevronIcon(expanded, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = if (scrollableOptions) {
-                Modifier.heightIn(max = 280.dp)
-            } else {
-                Modifier
-            }
-        ) {
-            val selectedBackground = LocalKeyboardScheme.current.onSurfaceTransparent
-            for (option in options) {
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            getDisplayName(option),
-                            style = Typography.Body.Regular,
-                            color = if (selection == option) {
-                                MaterialTheme.colorScheme.onSurface
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
+        AnimatedVisibility(expanded, enter = fadeIn(), exit = fadeOut()) {
+            val scrollState = rememberScrollState()
+            Column(Modifier.let {
+                if(scrollableOptions) {
+                    it.verticalScroll(scrollState)
+                } else {
+                    it
+                }
+            }) {
+                Spacer(Modifier.height(9.dp))
+                Column(
+                    Modifier.fillMaxWidth().background(
+                        MaterialTheme.colorScheme.surfaceContainerHighest, DropDownShape
+                    ).border(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline,
+                        DropDownShape
+                    ).clip(DropDownShape)
+                ) {
+                    options.forEach {
+                        Box(
+                            Modifier.fillMaxWidth().heightIn(min = 44.dp).background(
+                                if(selection == it) {
+                                    LocalKeyboardScheme.current.onSurfaceTransparent
+                                } else {
+                                    Color.Transparent
+                                }
+                            ).clickable {
+                                onSet(it)
+                                expanded = false
+                            }.padding(16.dp).semantics {
+                                selected = selection == it
+                                role = Role.DropdownList
                             }
                         )
                     },

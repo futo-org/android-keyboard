@@ -1,5 +1,9 @@
 package org.futo.inputmethod.engine
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +16,7 @@ import kotlinx.coroutines.withContext
 import org.futo.inputmethod.annotations.UsedForTesting
 import org.futo.inputmethod.engine.general.ActionInputTransactionIME
 import org.futo.inputmethod.engine.general.GeneralIME
+import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.settings.Settings
@@ -42,6 +47,7 @@ private val ImesEverUsedWithDictionaryPersonalization = SettingsKey(
 
 enum class IMEKind(val factory: (IMEHelper) -> IMEInterface) {
     General({ GeneralIME(it) }),
+    Chinese({ ChineseIME(it) }),
     Japanese({ JapaneseIME(it) })
 }
 
@@ -51,10 +57,13 @@ class IMEManager(
     private val helper = IMEHelper(service)
     private val settings = Settings.getInstance()
     private val imes: MutableMap<IMEKind, IMEInterface> = mutableMapOf()
-    private var activeIme: IMEInterface? = null
+    private var activeIme by mutableStateOf<IMEInterface?>(null)
+
+    @Composable fun isImeLoading(): Boolean = activeIme?.getLoadingState()?.value == true
 
     private fun getActiveIMEKind(settingsValues: SettingsValues): IMEKind =
         when(settingsValues.mLocale.language) {
+            "zh" -> IMEKind.Chinese
             "ja" -> IMEKind.Japanese
             else -> IMEKind.General
         }
@@ -64,6 +73,8 @@ class IMEManager(
             activeIme?.onFinishInput()
             startIme(new)
         }
+
+        helper.setPreedit(null)
 
         service.latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.setImeAllowsGestureInput(
             new.isGestureHandlingAvailable())

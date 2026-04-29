@@ -36,6 +36,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -55,6 +56,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEManager
 import org.futo.inputmethod.engine.general.WordLearner
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -70,6 +72,7 @@ import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.actions.CanThrowIfDebug
@@ -110,6 +113,11 @@ val SupportsNonComposing = Build.VERSION.SDK_INT >= 31
 val UseTransparentNavbar =
     // https://github.com/futo-org/android-keyboard/issues/772
     !Build.MANUFACTURER.lowercase().contains("motorola")
+
+val HideKeyboardWhenHardKeyboardConnected = SettingsKey(
+    booleanPreferencesKey("hideKeyboardWhenHardKeyboardConnected"),
+    false
+)
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -227,7 +235,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(
                 currentInputEditorInfo ?: return,
                 latinIMELegacy.currentAutoCapsState,
-                latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName
+                latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName,
+                null
             )
         }
 
@@ -367,6 +376,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onCreate() {
         super.onCreate()
+
+        UserBinaryDictionary.resetUserDictionariesRequiringRecreation()
 
         CanThrowIfDebug = isDirectBootUnlocked
 
@@ -701,7 +712,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
                     val left   = uixManager.floatingPosition.x.toInt()
                     val right  = (uixManager.floatingPosition.x + size.width).roundToInt()
-                    val top    = uixManager.floatingPosition.y.toInt()
+                    val top    = uixManager.floatingPosition.y.toInt() - uixManager.extraTopTouchHeight
                     val bottom = (uixManager.floatingPosition.y + height).roundToInt()
 
                     touchableInsets = Insets.TOUCHABLE_INSETS_REGION
@@ -710,7 +721,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                     visibleTopInsets = viewHeight - bottomInset
                 }
                 else -> {
-                    touchableInsets = Insets.TOUCHABLE_INSETS_CONTENT
+                    touchableInsets = Insets.TOUCHABLE_INSETS_VISIBLE
 
                     val touchableHeight = uixManager.touchableHeight
                     val topInset = if(touchableHeight < 1 || touchableHeight >= viewHeight - 1) {
@@ -722,7 +733,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                     }
 
                     contentTopInsets = topInset
-                    visibleTopInsets = topInset
+                    visibleTopInsets = topInset - uixManager.extraTopTouchHeight
                 }
             }
 
@@ -741,7 +752,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     override fun onEvaluateInputViewShown(): Boolean {
-        return latinIMELegacy.onEvaluateInputViewShown() || super.onEvaluateInputViewShown()
+        return latinIMELegacy.onEvaluateInputViewShown()
+                || super.onEvaluateInputViewShown()
+                || !getSetting(HideKeyboardWhenHardKeyboardConnected)
     }
 
     override fun onEvaluateFullscreenMode(): Boolean {
@@ -769,9 +782,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun setSuggestions(
         suggestedWords: SuggestedWords,
         rtlSubtype: Boolean,
-        useExpandableUi: Boolean
+        cfg: ExpandableSuggestionBarConfiguration
     ) {
-        uixManager.setSuggestions(suggestedWords, rtlSubtype, useExpandableUi)
+        uixManager.setSuggestions(suggestedWords, rtlSubtype, cfg)
 
         // Cache the auto-correction in accessibility code so we can speak it if the user
         // touches a key that will insert it.
@@ -838,6 +851,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     private var overrideInputConnection: InputConnection? = null
     private var overrideEditorInfo: EditorInfo? = null
     fun overrideInputConnection(to: InputConnection?, editorInfo: EditorInfo?) {
+        if(to == this.overrideInputConnection && editorInfo == overrideEditorInfo) return
+
         imeManager.onFinishInput()
         this.overrideInputConnection = to
         this.overrideEditorInfo = editorInfo
@@ -884,6 +899,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         Log.i("LatinIME", "Device has been unlocked, reloading settings")
 
         // Every place that called getDefaultSharedPreferences now needs to be refreshed or call it again
+        UserBinaryDictionary.resetUserDictionariesRequiringRecreation()
 
         // Mainly Settings singleton needs to be refreshed
         Settings.init(applicationContext)
