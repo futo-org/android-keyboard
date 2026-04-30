@@ -394,6 +394,16 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
         currentMode = if(it.prefersSplit) KeyboardMode.Split else KeyboardMode.Regular
     ) }
 
+    fun doesCurrentLayoutSupportSplit(): Boolean {
+        val layoutName = uixManager.getCurrentLayoutName()
+        val layout = try {
+            LayoutManager.getLayout(context, layoutName)
+        } catch (e: Exception) {
+            return true
+        }
+        return layout.supportsSplit
+    }
+
     /// Allows empty ranges, may be less than min if max is smaller than min
     private fun Int.coerceInLoosely(min: Int, max: Int) = coerceAtLeast(min).coerceAtMost(max)
 
@@ -491,6 +501,14 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
                     splitLayoutWidth = displayWidth * 3 / 5
                 )
             }
+
+            savedSettings.currentMode == KeyboardMode.Split && !layout.supportsSplit ->
+                RegularKeyboardSize(
+                    width = width,
+                    height = recommendedHeight.roundToInt(),
+                    singleRowHeight = singularRowHeight.roundToInt(),
+                    padding = padding
+                )
 
             savedSettings.currentMode == KeyboardMode.Split ->
                 SplitKeyboardSize(
