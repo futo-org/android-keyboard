@@ -138,7 +138,7 @@ class ScreenshotHelper(
         )
 
         val selection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            "${MediaStore.Images.Media.RELATIVE_PATH} LIKE '%Pictures/Screenshots%' " +
+            "${MediaStore.Images.Media.RELATIVE_PATH} LIKE '%/Screenshots/%' " +
                     "AND ${MediaStore.Images.Media._ID} > ?"
         } else {
             "${MediaStore.Images.Media.DISPLAY_NAME} LIKE '%screenshot%' " +
