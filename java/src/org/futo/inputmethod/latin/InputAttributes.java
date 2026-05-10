@@ -63,6 +63,7 @@ public final class InputAttributes {
      * {@link org.futo.inputmethod.latin.settings.SettingsValues#mGestureFloatingPreviewTextEnabled}
      */
     final public boolean mDisableGestureFloatingPreviewText;
+    final public boolean mSendKeyEventsMode;
     final public boolean mIsGeneralTextInput;
     final public boolean mIsWebField;
     final public boolean mNoLearning;
@@ -108,11 +109,13 @@ public final class InputAttributes {
             mIsGeneralTextInput = false;
             mNoLearning = false;
             mIsEmailField = false;
+            mSendKeyEventsMode = true;
             mIsWebField = false;
             mLocaleOverride = null;
             mLayoutOverride = null;
             return;
         }
+        mSendKeyEventsMode = false;
         // inputClass == InputType.TYPE_CLASS_TEXT
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
         final boolean flagNoSuggestions =

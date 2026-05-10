@@ -526,9 +526,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         uixManager.setContent()
 
-        composeView.setOnApplyWindowInsetsListener { v, insets ->
+        window.window?.decorView?.setOnApplyWindowInsetsListener { v, insets ->
             onSizeUpdated()
-            insets
+            v.onApplyWindowInsets(insets)
         }
 
         return composeView
