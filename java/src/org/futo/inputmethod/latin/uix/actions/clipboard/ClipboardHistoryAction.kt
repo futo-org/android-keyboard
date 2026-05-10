@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -61,12 +60,16 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.util.AtomicFile
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -100,6 +103,7 @@ import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.getUnlockedSetting
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
+import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
@@ -170,6 +174,11 @@ val ClipboardSaveImages = SettingsKey(
 val ClipboardSaveScreenshots = SettingsKey(
     booleanPreferencesKey("clipboard_save_screenshots"),
     false
+)
+
+val ClipboardLastBackup = SettingsKey(
+    longPreferencesKey("clipboard_last_backup"),
+    0
 )
 
 
@@ -459,9 +468,11 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
     // Primary file
     val clipboardFile = context.clipboardFile
+    val atomicClipboardFile = AtomicFile(clipboardFile)
 
     // Backup in case primary gets corrupted somehow
-    val clipboardFileBak = File(context.filesDir, "$ClipboardFileName.bak")
+    val clipboardFileBak = File(context.filesDir, "$ClipboardFileName.backup")
+    val clipboardFileBakLegacy = File(context.filesDir, "$ClipboardFileName.bak")
 
     // Temporary file used during saving, after writing we delete previous backup, move primary to backup, move swap to primary
     val clipboardFileSwap = File(context.filesDir, "$ClipboardFileName.swap")
@@ -646,6 +657,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
     }
 
     private suspend fun onClipboardImported(file: File) {
+        migrateLegacyClipboardBak()
         val data = decodeFile(file).map {
             // Restore all saved items
             it.copy(timestamp = System.currentTimeMillis())
@@ -725,8 +737,15 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         }
     }
 
+    private fun migrateLegacyClipboardBak() {
+        // AtomicFile interprets a (filename + ".bak") file entirely differently, we
+        // need to make sure it's gone before any AtomicFile operations.
+        if(clipboardFileBakLegacy.exists()) { clipboardFileBakLegacy.renameTo(clipboardFileBak) }
+    }
+
     var saveClipboardLoadJob: Job? = null
-    internal fun saveClipboard(exiting: Boolean = false): Job? {
+    var lastClipboardWritten: List<ClipboardEntry>? = null
+    internal fun saveClipboard(): Job? {
         if(!context.isDirectBootUnlocked) return null
         if(!clipboardLoaded) {
             if(saveClipboardLoadJob?.isActive == true) return null
@@ -737,7 +756,7 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
                 if(clipboardLoaded) {
                     clipboardHistory.addAll(currentEntries)
-                    saveClipboard(exiting)
+                    saveClipboard()
                 } else {
                     clipboardIOFailure.value = true
                 }
@@ -748,29 +767,59 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
         return coroutineScope.launch(context = ClipboardIOContext) {
             try {
-                if(!exiting) pruneOldItems()
+                val list = withContext(Dispatchers.Main) { clipboardHistory.toList() }
+                val json = Json.encodeToString(list).toByteArray()
 
-                val list = clipboardHistory.toList()
-                val json = Json.encodeToString(list)
+                if(list == lastClipboardWritten) return@launch
 
-                clipboardFileSwap.writeText(json)
+                // Once every day only
+                val shouldBackup = (System.currentTimeMillis() - context.getSetting(ClipboardLastBackup)) > 1000L * 60L * 60L * 24L * 1L
+                var backupSucceeded = false
 
-                // Validate it can be read
-                val decodedData = decodeFile(clipboardFileSwap)
-                if (decodedData != list) {
-                    throw Exception("Saved file data does not match expected data. Decoded: $decodedData, expected: $list")
-                }
 
-                // Move current to bak
-                if (clipboardFile.exists()) {
-                    if (!clipboardFile.renameTo(clipboardFileBak)) {
-                        throw Exception("Failed to move clipboard file backup")
+                withContext(NonCancellable) {
+                    synchronized(atomicClipboardFile) {
+                        migrateLegacyClipboardBak()
+
+                        // Produce a backup
+                        if (clipboardFile.exists() && shouldBackup) {
+                            val existingData = atomicClipboardFile.readFully()
+
+                            val isValid = try {
+                                decodeData(existingData).isNotEmpty()
+                            } catch (_: Exception) {
+                                false
+                            }
+                            if (isValid) {
+                                val atomicBackup = AtomicFile(clipboardFileBak)
+
+                                val stream = atomicBackup.startWrite()
+                                try {
+                                    stream.write(existingData)
+                                    stream.flush()
+                                    atomicBackup.finishWrite(stream)
+                                    backupSucceeded = true
+                                } catch (e: Exception) {
+                                    atomicBackup.failWrite(stream)
+                                }
+                            }
+                        }
+
+                        val stream = atomicClipboardFile.startWrite()
+                        try {
+                            stream.write(json)
+                            stream.flush()
+                            atomicClipboardFile.finishWrite(stream)
+                            lastClipboardWritten = list
+                        } catch (e: Exception) {
+                            atomicClipboardFile.failWrite(stream)
+                            throw e
+                        }
                     }
                 }
 
-                // Move swap to current
-                if (!clipboardFileSwap.renameTo(clipboardFile)) {
-                    throw Exception("Failed to swap new clipboard file")
+                if(backupSucceeded) {
+                    context.setSetting(ClipboardLastBackup, System.currentTimeMillis())
                 }
 
                 // Finally validate it can be read
@@ -780,6 +829,8 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
 
                 clipboardIOFailure.value = false
             } catch (e: Exception) {
+                if(e is CancellationException) return@launch
+
                 clipboardIOFailure.value = true
                 clipboardIOFailureReason = e.toString()
                 reportError("saveClipboard", e)
@@ -793,12 +844,11 @@ class ClipboardHistoryManager(val context: Context, val coroutineScope: Lifecycl
         }
     }
 
-    private fun decodeFile(file: File): List<ClipboardEntry> {
-        val inputString = file.readText()
-        val data = Json.decodeFromString<List<ClipboardEntry>>(inputString)
+    private fun decodeData(data: ByteArray): List<ClipboardEntry> =
+        Json.decodeFromString<List<ClipboardEntry>>(data.decodeToString())
 
-        return data
-    }
+    private fun decodeFile(file: File): List<ClipboardEntry> =
+        decodeData(AtomicFile(file).readFully())
 
     private fun reportError(during: String, e: Exception) {
         BugViewerState.pushBug(BugInfo("ClipboardHistoryManager", """
@@ -841,14 +891,17 @@ ${if(clipboardFileSwap.exists()) { clipboardFileSwap.readText() } else { "File d
             if(clipboardSetting == false) {
                 deleteClipboard()
             } else if (clipboardFile.exists()) {
-                val data = try {
-                    decodeFile(clipboardFile)
-                } catch(e: Exception) {
-                    reportError("loadClipboard main, trying bak", e)
-                    if(clipboardFileBak.exists()) {
-                        decodeFile(clipboardFileBak)
-                    } else {
-                        throw e
+                migrateLegacyClipboardBak()
+                val data = synchronized(atomicClipboardFile) {
+                    try {
+                        decodeFile(clipboardFile)
+                    } catch(e: Exception) {
+                        reportError("loadClipboard main, trying bak", e)
+                        if(clipboardFileBak.exists()) {
+                            decodeFile(clipboardFileBak)
+                        } else {
+                            throw e
+                        }
                     }
                 }
 

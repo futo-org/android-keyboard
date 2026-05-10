@@ -1085,6 +1085,13 @@ public final class InputLogic {
             return;
         }
 
+        if(codePoint == Constants.CODE_ENTER
+                && inputTransaction.mSettingsValues.mInputAttributes.mSendKeyEventsMode
+        ) {
+            sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER, 0);
+            return;
+        }
+
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
             handleSeparatorEvent(event, inputTransaction);
