@@ -114,13 +114,6 @@ val PredictiveTextMenu = UserSettingsMenu(
             default = {true}
         ),
 
-        userSettingToggleSharedPrefs(
-            title = R.string.use_personalized_dicts,
-            subtitle = R.string.use_personalized_dicts_summary,
-            key = Settings.PREF_KEY_USE_PERSONALIZED_DICTS,
-            default = {true}
-        ),
-
         //if(!transformerLmEnabled) {
         userSettingToggleSharedPrefs(
             title = R.string.bigram_prediction,
