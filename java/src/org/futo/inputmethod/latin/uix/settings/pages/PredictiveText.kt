@@ -87,6 +87,13 @@ val PredictiveTextMenu = UserSettingsMenu(
         ).copy(searchTags = R.string.auto_correction_tags),
 
         userSettingToggleSharedPrefs(
+            title = R.string.auto_correct_address_bars,
+            subtitle = R.string.auto_correct_address_bars_summary,
+            key = Settings.PREF_AUTO_CORRECT_ADDRESS_BARS,
+            default = {false}
+        ),
+
+        userSettingToggleSharedPrefs(
             title = R.string.prediction_settings_smart_keyhit_detection,
             subtitle = R.string.prediction_settings_smart_keyhit_detection_subtitle,
             key = Settings.PREF_USE_DICT_KEY_BOOSTING,
@@ -97,6 +104,13 @@ val PredictiveTextMenu = UserSettingsMenu(
             title = R.string.prefs_show_suggestions,
             subtitle = R.string.prefs_show_suggestions_summary,
             key = Settings.PREF_SHOW_SUGGESTIONS,
+            default = {true}
+        ),
+
+        userSettingToggleSharedPrefs(
+            title = R.string.use_personalized_dicts,
+            subtitle = R.string.use_personalized_dicts_summary,
+            key = Settings.PREF_KEY_USE_PERSONALIZED_DICTS,
             default = {true}
         ),
 
