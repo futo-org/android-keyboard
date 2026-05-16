@@ -27,6 +27,7 @@ import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.DictionaryFacilitator
 import org.futo.inputmethod.latin.DictionaryFacilitatorProvider
+import org.futo.inputmethod.latin.LastComposedWord
 import org.futo.inputmethod.latin.NgramContext
 import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.Subtypes.switchToNextLanguage
@@ -545,6 +546,45 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         return true
     }
 
+    private fun revertLastAutocorrectForSwipeIfNeeded(lastComposedWord: LastComposedWord): Boolean {
+        val typedWord = lastComposedWord.mTypedWord
+        val committedWord = lastComposedWord.mCommittedWord?.toString()
+
+        if (!lastComposedWord.canRevertCommit()
+            || typedWord.isNullOrEmpty()
+            || committedWord.isNullOrEmpty()
+            || typedWord == committedWord
+            || inputLogic.mConnection.hasSelection()) {
+            return false
+        }
+
+        val separator = lastComposedWord.mSeparatorString ?: LastComposedWord.NOT_A_SEPARATOR
+        val committedText = committedWord + separator
+        val usePhantomSpace = separator == Constants.STRING_SPACE
+        val textToCommit = typedWord + if (usePhantomSpace) "" else separator
+        val textToDelete = if (inputLogic.mConnection.sameAsTextBeforeCursor(committedText)) {
+            committedText
+        } else if (inputLogic.mConnection.sameAsTextBeforeCursor(committedWord)) {
+            committedWord
+        } else {
+            return false
+        }
+
+        helper.requestCursorUpdate()
+        inputLogic.mConnection.beginBatchEdit()
+        inputLogic.mConnection.finishComposingText()
+        inputLogic.mConnection.deleteTextBeforeCursor(textToDelete.length)
+        inputLogic.mConnection.commitText(textToCommit, 1)
+        inputLogic.mConnection.endBatchEdit()
+        inputLogic.mConnection.send()
+        lastComposedWord.deactivate()
+        swipeSuggestionRestingWord = typedWord
+        swipeSuggestionRevertWord = null
+        swipeSuggestionCandidates = null
+        helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
+        return true
+    }
+
     private fun shouldResetSwipeSuggestionSessionForTouchedWord(touchedWord: String?): Boolean {
         if (swipeSuggestionCandidates == null && swipeSuggestionRestingWord == null && swipeSuggestionWord == null) {
             return false
@@ -1043,6 +1083,12 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 val movedCursorToLastWord = moveCursorToLastWordIfTrailingSpace()
 
                 if (trySwipeCyclePunctuation(direction)) {
+                    restoreCursorIfMoved(movedCursorToLastWord)
+                    return
+                }
+
+                if (direction == KeyboardActionListener.SWIPE_ACTION_UP
+                    && revertLastAutocorrectForSwipeIfNeeded(lastComposedWordAtSwipeStart)) {
                     restoreCursorIfMoved(movedCursorToLastWord)
                     return
                 }
