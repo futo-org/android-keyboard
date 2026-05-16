@@ -232,6 +232,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             private set
 
         // for debug info
+        var appliedScoring: SwipeDecoder.Scoring = SwipeDecoder.Scoring(0.0f, 0.0f, 0.0f, 0.0f)
         var appliedTries: LongArray? = null
         var appliedTrieWeights by mutableStateOf<FloatArray>(FloatArray(0))
 
@@ -303,6 +304,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
 
         val decoder = SwipeDecoder(
             encoderPath = swipeModelPath,
+            beamWidth = 300, // we use max of 300
             useExpansion = false, // ITrie contains expanded entries already
         )
 
@@ -335,7 +337,6 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
                 mOriginatesFromSwipeModel = true
             })
         }
-
 
         return list
     }
@@ -447,9 +448,9 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
                     tries=pend.tries.toLongArray(),
                     decoderPath=getFilePath(context, pend.layout.decoder),
                     lmModelPath=getFilePath(context, pend.layout.lm),
-                    lmVocabPath=getFilePath(context, vocabFor(pend.layout.lm)),
-                    lmAlpha=if(pend.layout.lm.isNotEmpty()) 1.0f else 0.0f
+                    lmVocabPath=getFilePath(context, vocabFor(pend.layout.lm))
                 )
+                appliedScoring = d.scoring
                 appliedLayoutInfo = pend.layout
                 appliedTries = pend.tries.toLongArray()
             }

@@ -309,9 +309,11 @@ val MemoryDebugAction = Action(
                         if(useDataStoreValue(SwipeModelSetting) == false) {
                             Text("using legacy mode...", style = DebugLabel)
                         } else {
+                            val scoring = SwipeDecoderDictionary.appliedScoring
                             Text("universal model = ${SwipeDecoderDictionary.SWIPE_MODEL} (${remember(SwipeDecoderDictionary.SWIPE_MODEL) { codenameFor(SwipeDecoderDictionary.SWIPE_MODEL)} })", style = DebugLabel)
                             Text("special decoder = ${SwipeDecoderDictionary.appliedLayoutInfo.decoder.ifBlank { "<none>" }} (${remember(SwipeDecoderDictionary.appliedLayoutInfo.decoder) { codenameFor(SwipeDecoderDictionary.appliedLayoutInfo.decoder)} })", style = DebugLabel)
                             Text("context lm      = ${SwipeDecoderDictionary.appliedLayoutInfo.lm.ifBlank { "<none>" }} (${remember(SwipeDecoderDictionary.appliedLayoutInfo.lm) { codenameFor(SwipeDecoderDictionary.appliedLayoutInfo.lm)} })", style = DebugLabel)
+                            Text("scoring         γ=${scoring.gamma} λ=${scoring.lambda} β=${scoring.beta} α=${scoring.alpha}", style = DebugLabel)
                             Text("", style = DebugLabel)
                             Text("layout letters  = ${layout.letters}", style = DebugLabel)
                             Text("layout scale    = ${layout.sx}, ${layout.sy}", style = DebugLabel)

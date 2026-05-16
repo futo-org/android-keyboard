@@ -23,8 +23,7 @@ class SwipeDecoder(
     useExpansion: Boolean = true,
     freqKey: String = "f",
     lmModelPath: String? = null,
-    lmVocabPath: String? = null,
-    lmAlpha: Float = 0.0f,
+    lmVocabPath: String? = null
 ) : AutoCloseable {
 
     @Keep
@@ -40,6 +39,8 @@ class SwipeDecoder(
         val totalUs: Float = 0f
     )
 
+    data class Scoring(val gamma: Float, val lambda: Float, val beta: Float, val alpha: Float)
+
     private var handle: Long
     private val contextWords = mutableListOf<String>()
 
@@ -48,7 +49,7 @@ class SwipeDecoder(
             encoderPath, decoderPath,
             threads, beamWidth, topK,
             useExpansion, freqKey,
-            lmModelPath, lmVocabPath, lmAlpha
+            lmModelPath, lmVocabPath
         )
         require(handle != 0L) { "Failed to initialize SwipeDecoder from $encoderPath" }
     }
@@ -121,6 +122,16 @@ class SwipeDecoder(
         )
     }
 
+    /**
+     * Current scoring
+     */
+    val scoring: Scoring
+        get() {
+            check(handle != 0L) { "SwipeDecoder has been closed" }
+            val arr = nativeGetScoring(handle) ?: return Scoring(0.0f, 0.0f, 0.0f, 0.0f)
+            return Scoring(arr[0], arr[1], arr[2], arr[3])
+        }
+
     /** True iff a paired decoder is currently loaded (vs. encoder-only). */
     fun hasDecoder(): Boolean {
         check(handle != 0L) { "SwipeDecoder has been closed" }
@@ -144,8 +155,6 @@ class SwipeDecoder(
      * Layout changes require all three of [letters], [cx], [cy] together;
      * passing any subset is treated as no layout change. Loads are staged
      * in scratch so a failure leaves prior state intact and returns false.
-     *
-     * @param lmAlpha LM rerank weight; `Float.NaN` = keep current
      */
     fun setMode(
         letters: String? = null,
@@ -155,7 +164,6 @@ class SwipeDecoder(
         decoderPath: String? = null,
         lmModelPath: String? = null,
         lmVocabPath: String? = null,
-        lmAlpha: Float = Float.NaN,
     ): Boolean {
         check(handle != 0L) { "SwipeDecoder has been closed" }
         if (letters != null || cx != null || cy != null) {
@@ -173,7 +181,7 @@ class SwipeDecoder(
         return nativeSetMode(
             handle, letters, cx, cy,
             tries, decoderPath,
-            lmModelPath, lmVocabPath, lmAlpha
+            lmModelPath, lmVocabPath
         )
     }
 
@@ -190,7 +198,6 @@ class SwipeDecoder(
         threads: Int, beamWidth: Int, topK: Int,
         useExpansion: Boolean, freqKey: String,
         lmModelPath: String?, lmVocabPath: String?,
-        lmAlpha: Float,
     ): Long
 
     private external fun nativeRecognize(
@@ -205,6 +212,8 @@ class SwipeDecoder(
 
     private external fun nativeGetLastTiming(handle: Long): FloatArray?
 
+    private external fun nativeGetScoring(handle: Long): FloatArray?
+
     private external fun nativeHasDecoder(handle: Long): Boolean
 
     private external fun nativeHasLm(handle: Long): Boolean
@@ -215,7 +224,6 @@ class SwipeDecoder(
         tries: LongArray?,
         decoderPath: String?,
         lmModelPath: String?, lmVocabPath: String?,
-        lmAlpha: Float
     ): Boolean
 
     private external fun nativeDestroy(handle: Long)
