@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -135,9 +136,8 @@ fun MoreActionsView() {
         (map[ActionCategory.Favorites] ?: listOf()) +
                 (map[ActionCategory.ActionKey] ?: listOf()) +
                 (map[ActionCategory.PinnedKey] ?: listOf()) +
-                (map[ActionCategory.More] ?: listOf())
+                (map[ActionCategory.More]      ?: listOf())
     }
-
 
     if(actions.isEmpty()) {
         ScreenTitle(stringResource(R.string.action_editor_warning_no_actions))
@@ -163,6 +163,7 @@ fun MoreActionsView() {
 @Composable
 fun ActionsEditor(header: @Composable () -> Unit) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val view = LocalView.current
 
     val initialList: List<ActionEditorItem> = if(!LocalInspectionMode.current) {
@@ -236,7 +237,7 @@ fun ActionsEditor(header: @Composable () -> Unit) {
                                     WarningTip(stringResource(R.string.action_editor_warning_too_many_pinned))
                                 }
                             }
-                            Text(it.category.name(context), modifier = Modifier.padding(top = 24.dp), style = Typography.Heading.MediumMl, color = LocalContentColor.current.copy(alpha = 0.6f))
+                            Text(it.category.name(resources), modifier = Modifier.padding(top = 24.dp), style = Typography.Heading.MediumMl, color = LocalContentColor.current.copy(alpha = 0.6f))
 
                             if(actionMap[it.category]?.isEmpty() == true && it.category != ActionCategory.entries.last()) {
                                 TextButton(onClick = {

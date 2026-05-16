@@ -38,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.settings.RotatingChevronIcon
+import org.futo.inputmethod.latin.uix.settings.Route
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.theme.ZipThemes
@@ -138,7 +139,7 @@ fun ThemeScreen(navController: NavHostController = rememberNavController()) {
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
             uri ?: return@rememberLauncherForActivityResult
-            navController.navigate("customTheme/${uri.toString().urlEncode()}")
+            navController.navigate(Route.CustomTheme(uri.toString()))
         }
     )
 
@@ -159,7 +160,7 @@ fun ThemeScreen(navController: NavHostController = rememberNavController()) {
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             ScreenTitle(stringResource(R.string.theme_settings_title), showBack = true, navController)
             ThemePicker({
-                navController.navigate("deleteTheme/${it.urlEncode()}")
+                navController.navigate(Route.DeleteTheme(it))
             }, {
                 pickLauncher.launch("image/*")
                 //navController.navigate("customTheme")

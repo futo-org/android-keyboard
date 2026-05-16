@@ -57,6 +57,7 @@
     <string name="action_clipboard_manager_pin_item">Pin item</string>
     <string name="action_clipboard_manager_remove_item">Remove item</string>
     <string name="action_clipboard_manager_remove_item_confirm_dialog">Confirm remove:\n\"%s\"</string>
+    <string name="action_clipboard_manager_remove_item_confirm_dialog_image">Confirm remove image</string>
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_cancel_action_button">Cancel</string>
     <string name="action_clipboard_manager_disable_text">There are no items to clear. Disable clipboard history?</string>
@@ -86,12 +87,17 @@
     <!-- This message is shown when we're typing in a text field does not support image insertion ("app" refers to the external app that is providing the text field) -->
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
     <string name="action_clipboard_manager_settings_title">Clipboard Manager Settings</string>
+    <string name="action_clipboard_manager_settings_save_images">Save copied images</string>
+    <string name="action_clipboard_manager_settings_save_screenshots">Save recent screenshots</string>
+    <string name="action_clipboard_manager_settings_save_screenshots_subtitle">You\'ll need to grant permission to access your screenshots</string>
     <string name="action_clipboard_manager_settings_hours_to_keep_clips">Hours to keep unpinned clips</string>
     <string name="action_clipboard_manager_settings_maximum_clips">Number of unpinned clips to keep</string>
     <string name="action_clipboard_manager_settings_save_sensitive_clips">Save sensitive clips</string>
     <string name="action_clipboard_manager_settings_save_sensitive_clips_subtitle">If enabled, it will save items from password managers, incognito windows, etc</string>
     <string name="action_clipboard_manager_settings_list_layout">Use vertical list layout instead of grid</string>
     <string name="action_clipboard_manager_settings_show_pinned_above_others">Keep pinned clips on top</string>
+    <string name="action_clipboard_manager_settings_skip_delete_confirmation">Skip confirmation when deleting unpinned clips</string>
+
     <string name="action_clipboard_manager_settings_show_quick_clips">Show recently copied text in suggestion bar</string>
 
     <!-- For keyboard modes action -->
@@ -290,6 +296,8 @@
     <string name="settings_search_enter_your_search">Enter a search term…</string>
     <string name="settings_search_no_options_found">No results found</string>
     <string name="misc_settings_title">Miscellaneous</string>
+    <string name="setting_section_collapsed">Collapsed</string>
+    <string name="setting_section_expanded">Expanded</string>
 
     <!-- When adding a new language -->
     <string name="language_settings_title">Languages &amp; Models</string>
@@ -491,6 +499,8 @@
     <!-- Languages like Arabic can have their own digit symbols, this forces use of Western numerals -->
     <string name="keyboard_settings_number_row_dont_use_script_digits">Always use Western numerals</string>
 
+    <string name="keyboard_settings_hide_when_hardware_keyboard_is_connected">Hide when USB keyboard is detected</string>
+
     <!-- misc titles -->
     <string name="settings_keyboard_typing_title">Keyboard &amp; Typing</string>
 
@@ -610,6 +620,16 @@
 
     <!-- Settings category title -->
     <string name="language_specific_settings_title">Language-specific settings</string>
+
+    <!-- Specific to Chinese input method -->
+    <string name="chinese_settings_title">Chinese Input Settings</string>
+    <string name="chinese_setting_search_tags">chinese, rime</string>
+    <string name="chinese_setting_simplification">Simplification</string>
+    <string name="chinese_setting_simplification_simplify_by_language_country">Default (by country)</string>
+    <string name="chinese_setting_simplification_force_simplified">Simplified</string>
+    <string name="chinese_setting_simplification_force_traditional">Traditional</string>
+    <string name="chinese_setting_pinyin_scheme">Pinyin Scheme</string>
+    <string name="chinese_setting_fuzzy_pinyin">Fuzzy Pinyin</string>
 
     <!-- Specific to Japanese input method -->
     <string name="japanese_settings_title">Japanese Input Settings</string>

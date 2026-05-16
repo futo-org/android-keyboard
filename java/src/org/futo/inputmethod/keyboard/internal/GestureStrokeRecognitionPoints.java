@@ -278,7 +278,7 @@ public final class GestureStrokeRecognitionPoints {
             updateMajorEvent(x, y, time);
         } else {
             final int distance = detectFastMove(x, y, time);
-            if (distance > mGestureSamplingMinimumDistance) {
+            if (distance > 0) { // TODO: Previously mGestureSamplingMinimumDistance. Remove it entirely?
                 appendPoint(x, y, time);
             }
         }

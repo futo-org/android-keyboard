@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +45,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
+import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
@@ -67,6 +70,7 @@ import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
+import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.openURI
 import org.futo.voiceinput.shared.BUILTIN_ENGLISH_MODEL
@@ -163,10 +167,11 @@ fun SettingsImportScreen(
 @Composable
 fun ImportScreen(fileKind: FileKindAndInfo, onApply: (FileKindAndInfo, InputMethodSubtype) -> Unit, onCancel: () -> Unit) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val importing = remember { mutableStateOf(false) }
     val importingLanguage = remember { mutableStateOf("") }
     ScrollableList {
-        ScreenTitleWithIcon(title = stringResource(R.string.resource_importer_import_title, fileKind.kind.kindTitle(context)), painter = painterResource(id = fileKind.kind.icon()))
+        ScreenTitleWithIcon(title = stringResource(R.string.resource_importer_import_title, fileKind.kind.kindTitle(resources)), painter = painterResource(id = fileKind.kind.icon()))
 
         if(fileKind.kind == FileKind.Invalid) {
             if(fileKind.invalidKindHint == InvalidFileHint.ImportedWordListInsteadOfDict) {
@@ -253,13 +258,13 @@ enum class FileKind {
     }
 }
 
-fun FileKind.kindTitle(context: Context): String {
-    return when(this) {
-        FileKind.VoiceInput -> context.getString(R.string.file_kind_voice_input_model)
-        FileKind.Transformer -> context.getString(R.string.file_kind_transformer_model)
-        FileKind.Dictionary -> context.getString(R.string.file_kind_dictionary)
-        FileKind.Invalid -> context.getString(R.string.file_kind_invalid_file)
-    }
+fun FileKind.kindTitle(resources: Resources): String {
+    return resources.getString(when(this) {
+        FileKind.VoiceInput -> R.string.file_kind_voice_input_model
+        FileKind.Transformer -> R.string.file_kind_transformer_model
+        FileKind.Dictionary -> R.string.file_kind_dictionary
+        FileKind.Invalid -> R.string.file_kind_invalid_file
+    })
 }
 
 fun FileKind.icon(): Int {
@@ -288,6 +293,7 @@ data class FileKindAndInfo(
     val kind: FileKind,
     val name: String?,
     val locale: String?,
+    val forceLocale: String? = null,
     val invalidKindHint: InvalidFileHint? = null
 )
 
@@ -522,7 +528,7 @@ fun determineFileKind(inputStream: InputStream): FileKindAndInfo {
         }
 
         (magic == 0x1f8b0808.toUInt()) || (magic == 0x1f8b0800.toUInt()) || (magic == 0x64696374.toUInt()) ->
-            FileKindAndInfo(FileKind.Invalid, null, null, InvalidFileHint.ImportedWordListInsteadOfDict)
+            FileKindAndInfo(FileKind.Invalid, null, null, invalidKindHint = InvalidFileHint.ImportedWordListInsteadOfDict)
 
         else -> FileKindAndInfo(FileKind.Invalid, null, null)
     }
@@ -703,7 +709,9 @@ class ImportResourceActivity : ComponentActivity() {
 
         if(item == null) return
 
-        val sanitizedLocaleForFilename = inputMethodSubtype.locale.replace("#", "H")
+        var locale = fileKind.forceLocale ?: inputMethodSubtype.locale
+
+        val sanitizedLocaleForFilename = locale.replace("#", "H")
         val outputFileName = "${fileKind.kind.name.lowercase()}_$sanitizedLocaleForFilename${fileKind.kind.extension()}"
 
         lifecycleScope.launch {
@@ -725,7 +733,7 @@ class ImportResourceActivity : ComponentActivity() {
                     }
 
                     // 2. Update reference
-                    val language = inputMethodSubtype.locale.split("_").first()
+                    val language = locale.split("_").first()
                     ModelPaths.updateModelOption(applicationContext, language, outputFile)
                 } else {
                     // 1. Copy file
@@ -742,12 +750,12 @@ class ImportResourceActivity : ComponentActivity() {
 
                     // 2. Update reference
                     applicationContext.setSetting(
-                        fileKind.kind.preferenceKeyFor(inputMethodSubtype.locale),
+                        fileKind.kind.preferenceKeyFor(locale),
                         outputFileName
                     )
                     fileKind.name?.let {
                         applicationContext.setSetting(
-                            fileKind.kind.namePreferenceKeyFor(inputMethodSubtype.locale),
+                            fileKind.kind.namePreferenceKeyFor(locale),
                             it
                         )
                     }
@@ -896,9 +904,32 @@ class ImportResourceActivity : ComponentActivity() {
         null
     }
 
+    private fun detectChineseDict(input: InputStream): String? {
+        var name: String? = null
+        var version: Int? = null
+
+        val success = ZipFileHelper.parseSafe(input,
+            "FUTOKeyboard_ChineseDictionary_Name" to {
+                name = it.decodeToString().trim()
+            },
+            "FUTOKeyboard_ChineseDictionary_Version" to {
+                version = it.decodeToString().trim().toInt()
+            }
+        )
+
+        if(name == null || version == null || !success) return null
+
+        return name
+    }
+
     private fun detectItemBeingImported(): ItemBeingImported? {
         val languageResource = getInputStream()?.use { determineFileKind(it) }
         if(languageResource != null && languageResource.kind != FileKind.Invalid) return ItemBeingImported.LanguageResource(languageResource)
+
+        val chineseDictionary = getInputStream()?.use { detectChineseDict(it) }
+        if(chineseDictionary != null) return ItemBeingImported.LanguageResource(FileKindAndInfo(
+            FileKind.Dictionary, name=chineseDictionary, locale="zh", forceLocale = "zh"
+        ))
 
         val settingsBackup = getInputStream()?.use { SettingsExporter.getCfgFileMetadata(it) }
         if(settingsBackup != null) return ItemBeingImported.SettingsBackup(settingsBackup)
@@ -971,12 +1002,12 @@ object MissingDictionaryHelper {
             "lt", "lb", "mai", "ml", "mr", "nb", "or", "pl", "pt", "pa", "ro", "ru", "sa", "sat", "sr",
             "sd", "sl", "es", "sv", "ta", "te", "tok", "tcy", "tr", "uk", "ur", "af", "ar", "bn", "bg",
             "cs", "fr", "de", "he", "id", "it", "kab", "kk", "pms", "ru", "sk", "es", "uk", "vi",
-            "ja"
+            "ja", "zh"
         )
 
-        // Typing is severely broken in Japanese without the dictionary, it is vital that this message
+        // Typing is severely broken in these languages without the dictionary, it is vital that this message
         // is shown every time until the user downloads the dictionary
-        val undismissableLanguages = setOf("ja")
+        val undismissableLanguages = setOf("ja", "zh")
 
         val dismissalSetting = SettingsKey(
             intPreferencesKey("dictionary_notice_dismiss_${locale.language}"),

@@ -21,11 +21,11 @@ import org.futo.inputmethod.keyboard.layout.expected.ExpectedKey.ExpectedAdditio
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.uix.Action;
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
-import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryActionKt;
 import org.futo.inputmethod.latin.uix.actions.EmojiActionKt;
 import org.futo.inputmethod.latin.uix.actions.SwitchLanguageActionKt;
 import org.futo.inputmethod.latin.uix.actions.TextEditActionKt;
 import org.futo.inputmethod.latin.uix.actions.UndoRedoActionsKt;
+import org.futo.inputmethod.latin.uix.actions.clipboard.ClipboardHistoryActionKt;
 
 /**
  * Base class to create an expected keyboard for unit test.

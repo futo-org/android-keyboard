@@ -456,6 +456,8 @@ public class LanguageModelFacilitator(
             return null
         }
 
+        if(settingsValues.mInputAttributes.mIsEmailField) return null
+
         if(!inputLogic.mConnection.isConnected) return null
 
         try {

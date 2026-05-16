@@ -39,6 +39,7 @@ import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.inputlogic.InputLogic;
 import org.futo.inputmethod.latin.inputlogic.PrivateCommandPerformer;
 import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
 import org.futo.inputmethod.latin.utils.CapsModeUtils;
 import org.futo.inputmethod.latin.utils.DebugLogUtils;
@@ -788,10 +789,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     private static boolean isPartOfCompositionForScript(final int codePoint,
-            final SpacingAndPunctuations spacingAndPunctuations, final int scriptId) {
+            final SettingsValues settingsValues, final int scriptId) {
         // We always consider word connectors part of compositions.
+        final SpacingAndPunctuations spacingAndPunctuations = settingsValues.mSpacingAndPunctuations;
         return spacingAndPunctuations.isWordConnector(codePoint)
-                || Settings.getInstance().getCurrent().isWordCodePoint(codePoint) // TODO: This wasn't originally here, why not?
+                || settingsValues.isWordCodePoint(codePoint) // TODO: This wasn't originally here, why not?
                 // Otherwise, it's part of composition if it's part of script and not a separator.
                 || (!spacingAndPunctuations.isWordSeparator(codePoint)
                         && ScriptUtils.isLetterPartOfScript(codePoint, scriptId));
@@ -800,11 +802,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     /**
      * Returns the text surrounding the cursor.
      *
-     * @param spacingAndPunctuations the rules for spacing and punctuation
+     * @param settingsValues for the rules for spacing and punctuation
      * @param scriptId the script we consider to be writing words, as one of ScriptUtils.SCRIPT_*
      * @return a range containing the text surrounding the cursor
      */
-    public TextRange getWordRangeAtCursor(final SpacingAndPunctuations spacingAndPunctuations,
+    public TextRange getWordRangeAtCursor(final SettingsValues settingsValues,
             final int scriptId, final boolean checkAfter) {
         updateConnection();
         if (!isConnected()) {
@@ -837,7 +839,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         int startIndexInBefore = before.length();
         while (startIndexInBefore > 0) {
             final int codePoint = Character.codePointBefore(before, startIndexInBefore);
-            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId)) {
+            if (!isPartOfCompositionForScript(codePoint, settingsValues, scriptId)) {
                 break;
             }
             --startIndexInBefore;
@@ -850,7 +852,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         int endIndexInAfter = -1;
         while (++endIndexInAfter < after.length()) {
             final int codePoint = Character.codePointAt(after, endIndexInAfter);
-            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId)) {
+            if (!isPartOfCompositionForScript(codePoint, settingsValues, scriptId)) {
                 break;
             }
             if (Character.isSupplementaryCodePoint(codePoint)) {
@@ -947,13 +949,13 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
-        if (!TextUtils.equals(spacingAndPunctuations.mSentenceSeparatorAndSpace,
+        if (!TextUtils.equals(spacingAndPunctuations.sentenceSeparatorAndSpace,
                 textBeforeCursor)) {
             // Theoretically we should not be coming here if there isn't ". " before the
             // cursor, but the application may be changing the text while we are typing, so
             // anything goes. We should not crash.
             Log.d(TAG, "Tried to revert double-space combo but we didn't find \""
-                    + spacingAndPunctuations.mSentenceSeparatorAndSpace
+                    + spacingAndPunctuations.sentenceSeparatorAndSpace
                     + "\" just before the cursor.");
             return false;
         }
@@ -1406,5 +1408,10 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
     public boolean useAutoCorrectIndicator() {
         return !(mIC instanceof InputConnectionInternalComposingWrapper);
+    }
+
+    public boolean isCursorTouchingNumber() {
+        final int codeBefore = getCodePointBeforeCursor();
+        return codeBefore >= '0' && codeBefore <= '9';
     }
 }

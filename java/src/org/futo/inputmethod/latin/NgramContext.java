@@ -38,6 +38,9 @@ public class NgramContext {
     @Nonnull
     public static final NgramContext BEGINNING_OF_SENTENCE =
             new NgramContext(WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO);
+    @Nonnull
+    public static final NgramContext EMAIL_DOMAIN =
+            new NgramContext(WordInfo.EMAIL_DOMAIN_WORD_INFO);
 
     public static final String BEGINNING_OF_SENTENCE_TAG = "<S>";
 
@@ -57,6 +60,8 @@ public class NgramContext {
         public static final WordInfo EMPTY_WORD_INFO = new WordInfo(null);
         @Nonnull
         public static final WordInfo BEGINNING_OF_SENTENCE_WORD_INFO = new WordInfo();
+        @Nonnull
+        public static final WordInfo EMAIL_DOMAIN_WORD_INFO = new WordInfo("@");
 
         // This is an empty char sequence when mIsBeginningOfSentence is true.
         public final CharSequence mWord;

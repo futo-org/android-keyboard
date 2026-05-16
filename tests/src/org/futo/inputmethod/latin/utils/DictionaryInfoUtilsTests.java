@@ -39,14 +39,8 @@ import java.util.Locale;
 public class DictionaryInfoUtilsTests {
     @Test
     public void testLooksValidForDictionaryInsertion() {
-        final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
-            @Override
-            protected SpacingAndPunctuations job(final Resources res) {
-                return new SpacingAndPunctuations(res);
-            }
-        };
-        final Resources res = InstrumentationRegistry.getTargetContext().getResources();
-        final SpacingAndPunctuations sp = job.runInLocale(res, Locale.ENGLISH);
+        final SpacingAndPunctuations sp = SpacingAndPunctuations.create(
+                InstrumentationRegistry.getTargetContext(), Locale.ENGLISH);
         assertTrue(DictionaryInfoUtils.looksValidForDictionaryInsertion("aochaueo", sp));
         assertFalse(DictionaryInfoUtils.looksValidForDictionaryInsertion("", sp));
         assertTrue(DictionaryInfoUtils.looksValidForDictionaryInsertion("ao-ch'aueo", sp));

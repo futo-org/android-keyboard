@@ -105,6 +105,8 @@ public interface DictionaryFacilitator {
      */
     void onFinishInput(Context context);
 
+    void onEmailTyped(String email);
+
     boolean isActive();
 
     Locale getPrimaryLocale();

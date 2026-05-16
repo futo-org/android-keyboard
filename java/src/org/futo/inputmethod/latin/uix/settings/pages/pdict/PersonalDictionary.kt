@@ -49,20 +49,36 @@ import org.futo.inputmethod.latin.uix.UserDictionaryIO
 import org.futo.inputmethod.latin.uix.getImportedUserDictFilesForLocale
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.Route
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
-import org.futo.inputmethod.latin.uix.urlEncode
 import java.util.Locale
+import kotlin.collections.get
+
+private data class ExceptionalPersonalDictionaryViewConfiguration(
+    val supported: Boolean,
+    val wordPopupDialog: @Composable (PersonalWord?, Locale?) -> Unit = {_, _ ->},
+    val transformNavWord: (PersonalWord) -> PersonalWord = { it }
+)
+
+private val ExceptionalPersonalDictionaryLanguages = mapOf(
+    "ja" to ExceptionalPersonalDictionaryViewConfiguration(
+        supported = true,
+        wordPopupDialog = { a, b -> JapaneseWordPopupDialog(a?.let { decodeJapanesePersonalWord(it) }, b) },
+        transformNavWord = { word -> decodeJapanesePersonalWord(word)?.let {
+            word.copy(word = it.output, shortcut = it.furigana)
+        } ?: word }
+    ),
+    "zh" to ExceptionalPersonalDictionaryViewConfiguration(supported = false)
+)
 
 @Composable
 @Preview
 fun WordPopupDialog(selectedWord: PersonalWord? = null, locale: Locale? = null) {
-    if(locale?.language == "ja") {
-        return JapaneseWordPopupDialog(
-            selectedWord?.let { decodeJapanesePersonalWord(it) },
-            locale
-        )
+    val exception = ExceptionalPersonalDictionaryLanguages[locale?.language]
+    if(exception != null) {
+        return exception.wordPopupDialog(selectedWord, locale)
     }
 
     val navController = LocalNavController.current
@@ -88,16 +104,20 @@ fun WordPopupDialog(selectedWord: PersonalWord? = null, locale: Locale? = null) 
 
                 Spacer(Modifier.height(12.dp))
 
+                val shortcutError = remember(shortcut.value) {
+                    shortcut.value.firstOrNull()?.let {
+                        Settings.getInstance().current.isWordCodePoint(it.code)
+                    } == false
+                }
                 Text(stringResource(R.string.user_dict_settings_add_shortcut_option_name))
                 SettingsTextEdit(shortcut,
-                    placeholder = stringResource(R.string.user_dict_settings_add_shortcut_hint))
+                    placeholder = stringResource(R.string.user_dict_settings_add_shortcut_hint), error = shortcutError)
 
-                if (shortcut.value.firstOrNull()?.let {
-                        Settings.getInstance().current.isWordCodePoint(it.code)
-                    } == false) {
+                if (shortcutError) {
                     Text(
                         stringResource(R.string.personal_dictionary_shortcut_error_symbols),
-                        color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
@@ -160,21 +180,21 @@ fun WordPopupDialog(selectedWord: PersonalWord? = null, locale: Locale? = null) 
 }
 
 @Composable
-fun WordPopupDialogF(selectedWord: String? = null, locale: String? = null) {
-    WordPopupDialog(
-        if(!selectedWord.isNullOrEmpty() && selectedWord != "add") { Json.decodeFromString(selectedWord) } else { null },
-        if(!locale.isNullOrEmpty() && locale != "all") { localeFromString(locale) } else { null }
-    )
+@Preview
+fun WordPopupDialogF(selectedWord: String? = null, locale: Locale? = null) {
+    val word = remember(selectedWord) {
+        selectedWord?.let { Json.decodeFromString<PersonalWord>(it) }
+    }
+    WordPopupDialog(word, locale)
 }
+
 
 @Composable
 fun PersonalDictionaryLanguageListForLocale(
     navController: NavHostController,
     backStackEntry: NavBackStackEntry,
-    localeString: String = "en"
+    locale: Locale?
 ) {
-    val locale = if(localeString == "all") { null } else { localeFromString(localeString) }
-
     val context = LocalContext.current
     val refreshCounter = remember { mutableIntStateOf(0) }
     val dict = remember { UserDictionaryIO(context) }
@@ -231,7 +251,7 @@ fun PersonalDictionaryLanguageListForLocale(
                     title = it.second,
                     style = NavigationItemStyle.MiscNoArrow,
                     navigate = {
-                        navController.navigate("pdictdelete/${it.first.name.urlEncode()}")
+                        navController.navigate(Route.PersonalDictDelete(it.first.name))
                     },
                     icon = painterResource(R.drawable.file_text)
                 )
@@ -245,19 +265,19 @@ fun PersonalDictionaryLanguageListForLocale(
                 title = stringResource(R.string.user_dict_settings_add_menu_title),
                 style = NavigationItemStyle.HomePrimary,
                 navigate = {
-                    navController.navigate("pdictword/${localeString}/add")
+                    navController.navigate(Route.PersonalDictWord(locale?.toLanguageTag(), null))
                 },
                 icon = painterResource(R.drawable.plus_circle)
             )
         }
         items(words) {
-            val jaWord = if(locale?.language == "ja") decodeJapanesePersonalWord(it) else null
+            val transformed = ExceptionalPersonalDictionaryLanguages[locale?.language]?.transformNavWord(it) ?: it
             NavigationItem(
-                title = jaWord?.output ?: it.word,
-                subtitle = jaWord?.furigana ?: it.shortcut,
+                title = transformed.word,
+                subtitle = transformed.shortcut,
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = {
-                    navController.navigate("pdictword/${localeString}/${Json.encodeToString(it).urlEncode()}")
+                    navController.navigate(Route.PersonalDictWord(locale?.toLanguageTag(), Json.encodeToString(it)))
                 }
             )
         }
@@ -290,16 +310,19 @@ fun PersonalDictionaryLanguageList() {
             subtitle = pluralStringResource(R.plurals.personal_dictionary_language_word_count, allLanguagesCount, allLanguagesCount),
             style = NavigationItemStyle.MiscNoArrow,
             navigate = {
-                nav!!.navigate("pdict/all")
+                nav!!.navigate(Route.PersonalDictList(null))
             }
         )
         languages.forEach {
+            val exception = ExceptionalPersonalDictionaryLanguages[it.first.language]
+            if(exception?.supported == false) return@forEach
+
             NavigationItem(
                 title = it.first.getDisplayName(LocalConfiguration.current.locale),
                 subtitle = pluralStringResource(R.plurals.personal_dictionary_language_word_count, it.second, it.second),
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = {
-                    nav!!.navigate("pdict/" + it.first.toString().urlEncode())
+                    nav!!.navigate(Route.PersonalDictList(it.first.toLanguageTag()))
                 }
             )
         }

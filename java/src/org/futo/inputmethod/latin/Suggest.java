@@ -227,6 +227,8 @@ public final class Suggest {
                 //|| wordComposer.isOrdinal(locale)
                 // If it starts with a digit, do not autocorrect
                 || wordComposer.startsWithDigit()
+                // If it's attached to a non word, do not autocorrect
+                || wordComposer.isAttachedToNonWord()
                 // If the word is mostly caps, we never auto-correct because this is almost
                 // certainly intentional (and careful input)
                 || wordComposer.isMostlyCaps()

@@ -4,6 +4,8 @@ import android.util.Log
 import android.view.ViewConfiguration
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.VisibleForTesting
+import org.futo.inputmethod.engine.DefaultStateHint
+import org.futo.inputmethod.engine.StateHint
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.keyboard.Key
 import org.futo.inputmethod.keyboard.Keyboard
@@ -198,6 +200,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
 
     private var prefersNumberLayout = false
     private var currentLayoutSet = ""
+    private var currentStateHint = DefaultStateHint
     private var preferredAlphabetKind: Pair<String, Int> = "" to 0
 
     private val debugState: String
@@ -271,11 +274,12 @@ class KeyboardState(private val switchActions: SwitchActions) {
         switchActions.requestUpdatingShiftState(autoCapsFlags)
     }
 
-    fun onLoadKeyboard(editorInfo: EditorInfo?, autoCapsFlags: Int, layoutSetName: String?) {
+    fun onLoadKeyboard(editorInfo: EditorInfo?, autoCapsFlags: Int, layoutSetName: String?, stateHint: StateHint?) {
         // Reset alphabet shift state.
         alphabetShiftState.isShiftLocked = false
 
         if(layoutSetName != null) currentLayoutSet = layoutSetName
+        if(stateHint != null) currentStateHint = stateHint
 
         shiftKeyState.onRelease()
         symbolKeyState.onRelease()
@@ -385,6 +389,10 @@ class KeyboardState(private val switchActions: SwitchActions) {
             onCancelShiftTimer()
         }
 
+        if(currentStateHint.unshiftOnPressed && isAlphabet && code > 0) {
+            setAlphabetLayout(0)
+        }
+
         when (code) {
             Constants.CODE_SHIFT -> {
                 shiftKeyState.onPress()
@@ -473,7 +481,7 @@ class KeyboardState(private val switchActions: SwitchActions) {
         when(getKeyboardMode(editorInfo ?: EditorInfo())) {
             KeyboardId.MODE_NUMBER, KeyboardId.MODE_PHONE,
             KeyboardId.MODE_DATE, KeyboardId.MODE_TIME,
-            KeyboardId.MODE_DATETIME -> onLoadKeyboard(editorInfo, autoCapsFlags, currentLayoutSet)
+            KeyboardId.MODE_DATETIME -> onLoadKeyboard(editorInfo, autoCapsFlags, currentLayoutSet, currentStateHint)
 
             else -> setAlphabetLayout(autoCapsFlags)
         }

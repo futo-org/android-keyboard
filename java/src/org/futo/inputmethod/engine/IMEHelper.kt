@@ -11,12 +11,20 @@ import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.FloatingPreEdit
 
 interface InputMethodConnectionProvider {
     fun getCurrentInputConnection(): InputConnection?
     fun getCurrentEditorInfo(): EditorInfo?
     fun getContextForSettings(): Context
 }
+
+data class ExpandableSuggestionBarConfiguration(
+    val useExpandableUi: Boolean,
+    val addExtraSpaceForFirstEntry: Boolean
+)
+
+val NonExpandableSuggestionBar = ExpandableSuggestionBarConfiguration(false, false)
 
 class IMEHelper(
     private val latinIME: LatinIME
@@ -70,19 +78,19 @@ class IMEHelper(
 
     override fun getContextForSettings(): Context = context
 
-    fun setNeutralSuggestionStrip(useExpandableUi: Boolean) {
+    fun setNeutralSuggestionStrip(cfg: ExpandableSuggestionBarConfiguration = NonExpandableSuggestionBar) {
         latinIME.setSuggestions(
             suggestedWords = SuggestedWords.getEmptyInstance(),
             rtlSubtype = Settings.getInstance().current.mIsRTL,
-            useExpandableUi = useExpandableUi
+            cfg = cfg
         )
     }
 
-    fun showSuggestionStrip(suggestedWords: SuggestedWords?, useExpandableUi: Boolean) {
+    fun showSuggestionStrip(suggestedWords: SuggestedWords?, cfg: ExpandableSuggestionBarConfiguration = NonExpandableSuggestionBar) {
         latinIME.setSuggestions(
             suggestedWords = suggestedWords ?: SuggestedWords.getEmptyInstance(),
             rtlSubtype = Settings.getInstance().current.mIsRTL,
-            useExpandableUi = useExpandableUi
+            cfg = cfg
         )
     }
 
@@ -107,4 +115,8 @@ class IMEHelper(
 
     fun isImeActive(ime: IMEInterface) =
         latinIME.imeManager.getActiveIME(Settings.getInstance().current) == ime
+
+    fun setPreedit(preEdit: FloatingPreEdit?) {
+        latinIME.uixManager.setPreedit(preEdit)
+    }
 }

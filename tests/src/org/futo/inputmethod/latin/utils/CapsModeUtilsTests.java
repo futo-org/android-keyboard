@@ -63,14 +63,10 @@ public class CapsModeUtilsTests {
         final int c = TextUtils.CAP_MODE_CHARACTERS;
         final int w = TextUtils.CAP_MODE_WORDS;
         final int s = TextUtils.CAP_MODE_SENTENCES;
-        final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
-            @Override
-            protected SpacingAndPunctuations job(final Resources res) {
-                return new SpacingAndPunctuations(res);
-            }
-        };
-        final Resources res = InstrumentationRegistry.getTargetContext().getResources();
-        SpacingAndPunctuations sp = job.runInLocale(res, Locale.ENGLISH);
+        SpacingAndPunctuations sp = SpacingAndPunctuations.create(
+            InstrumentationRegistry.getTargetContext(),
+            Locale.ENGLISH
+        );
         allPathsForCaps("", c | w | s, sp, false);
         allPathsForCaps("Word", c, sp, false);
         allPathsForCaps("Word.", c, sp, false);
@@ -101,20 +97,29 @@ public class CapsModeUtilsTests {
         allPathsForCaps("Word.\n", c | w | s, sp, true);
         allPathsForCaps("Word.\n ", c | w | s, sp, true);
 
-        sp = job.runInLocale(res, Locale.FRENCH);
+        sp = SpacingAndPunctuations.create(
+            InstrumentationRegistry.getTargetContext(),
+            Locale.FRENCH
+        );
         allPathsForCaps("\"Word.\" ", c | w, sp, false);
         allPathsForCaps("\"Word\". ", c | w | s, sp, false);
         allPathsForCaps("\"Word\" ", c | w, sp, false);
 
         // Test special case for German. German does not capitalize at the start of a
         // line when the previous line starts with a comma. It does in other cases.
-        sp = job.runInLocale(res, Locale.GERMAN);
+        sp = SpacingAndPunctuations.create(
+            InstrumentationRegistry.getTargetContext(),
+            Locale.GERMAN
+        );
         allPathsForCaps("Liebe Sara,\n", c | w, sp, false);
         allPathsForCaps("Liebe Sara,\n", c | w, sp, true);
         allPathsForCaps("Liebe Sara,  \n  ", c | w, sp, false);
         allPathsForCaps("Liebe Sara  \n  ", c | w | s, sp, false);
         allPathsForCaps("Liebe Sara.\n  ", c | w | s, sp, false);
-        sp = job.runInLocale(res, Locale.ENGLISH);
+        sp = SpacingAndPunctuations.create(
+            InstrumentationRegistry.getTargetContext(),
+            Locale.ENGLISH
+        );
         allPathsForCaps("Liebe Sara,\n", c | w | s, sp, false);
         allPathsForCaps("Liebe Sara,\n", c | w | s, sp, true);
         allPathsForCaps("Liebe Sara,  \n  ", c | w | s, sp, false);
@@ -122,7 +127,10 @@ public class CapsModeUtilsTests {
         allPathsForCaps("Liebe Sara.\n  ", c | w | s, sp, false);
 
         // Test armenian period
-        sp = job.runInLocale(res, LocaleUtils.constructLocaleFromString("hy_AM"));
+        sp = SpacingAndPunctuations.create(
+            InstrumentationRegistry.getTargetContext(),
+            LocaleUtils.constructLocaleFromString("hy_AM")
+        );
         assertTrue("Period is not sentence separator in Armenian",
                 !sp.isSentenceSeparator('.'));
         assertTrue("Sentence separator is Armenian period in Armenian",
@@ -136,7 +144,10 @@ public class CapsModeUtilsTests {
         allPathsForCaps("Word\u0589 ", c | w | s, sp, false);
 
         // Test for sentence terminators
-        sp = job.runInLocale(res, Locale.ENGLISH);
+        sp = SpacingAndPunctuations.create(
+                InstrumentationRegistry.getTargetContext(),
+                Locale.ENGLISH
+        );
         allPathsForCaps("Word? ", c | w | s, sp, false);
         allPathsForCaps("Word?", c | w | s, sp, true);
         allPathsForCaps("Word?", c, sp, false);
@@ -147,7 +158,10 @@ public class CapsModeUtilsTests {
         allPathsForCaps("Word;", c | w, sp, true);
         allPathsForCaps("Word;", c, sp, false);
         // Test for sentence terminators in Greek
-        sp = job.runInLocale(res, LocaleUtils.constructLocaleFromString("el"));
+        sp = SpacingAndPunctuations.create(
+            InstrumentationRegistry.getTargetContext(),
+            LocaleUtils.constructLocaleFromString("el")
+        );
         allPathsForCaps("Word? ", c | w | s, sp, false);
         allPathsForCaps("Word?", c | w | s, sp, true);
         allPathsForCaps("Word?", c, sp, false);

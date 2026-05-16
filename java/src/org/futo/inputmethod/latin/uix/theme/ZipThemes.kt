@@ -16,6 +16,7 @@ import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.pages.DevAutoAcceptThemeImport
+import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.latin.utils.readAllBytesCompat
 import java.io.BufferedOutputStream
 import java.io.File
@@ -138,46 +139,31 @@ object ZipThemes {
         var config: SerializableCustomTheme? = null
         var error: String? = null
 
-        try {
-            ZipInputStream(inputStream).use { zipIn ->
-                var entry = zipIn.nextEntry
-                while (entry != null) {
-                    if(entry.isDirectory) continue
-                    if(entry.name == versionFileName) {
-                        val bytes = zipIn.readAllBytesCompat()
+        ZipFileHelper.parseSafe(inputStream,
+            versionFileName to { bytes ->
+                val buff = ByteBuffer.wrap(bytes).apply { order(ByteOrder.LITTLE_ENDIAN) }
+                val version = buff.get()
+                val date = buff.getLong()
 
-                        val buff = ByteBuffer.wrap(bytes).apply { order(ByteOrder.LITTLE_ENDIAN) }
-                        val version = buff.get()
-                        val date = buff.getLong()
+                metadata = ThemeMetadata(
+                    dateExported = Date(date),
+                    isNewer = version > currentVersion
+                )
+            },
+            configFileName to { bytes ->
+                try {
+                    val string = bytes.decodeToString()
+                    val cfg = json.decodeFromString<SerializableCustomTheme>(string)
 
-                        metadata = ThemeMetadata(
-                            dateExported = Date(date),
-                            isNewer = version > currentVersion
-                        )
-                    }
+                    if(cfg.id == null || cfg.id.length < 3) throw Exception("ID must be at least 3 characters for a custom theme")
+                    if(cfg.id.endsWith('_')) throw Exception("ID must not end with underscores")
 
-                    if(entry.name == configFileName) {
-                        try {
-                            val bytes = zipIn.readAllBytesCompat()
-                            val string = bytes.decodeToString()
-                            val cfg = json.decodeFromString<SerializableCustomTheme>(string)
-
-                            if(cfg.id == null || cfg.id.length < 3) throw Exception("ID must be at least 3 characters for a custom theme")
-                            if(cfg.id.endsWith('_')) throw Exception("ID must not end with underscores")
-
-                            config = cfg
-                        } catch(e: Exception) {
-                            error += "Cause: ${e.message}\n\nStack trace: ${e.stackTrace.map { it.toString() }}"
-                        }
-                    }
-
-                    zipIn.closeEntry()
-                    entry = zipIn.nextEntry
+                    config = cfg
+                } catch(e: Exception) {
+                    error += "Cause: ${e.message}\n\nStack trace: ${e.stackTrace.map { it.toString() }}"
                 }
             }
-        } catch (e: Exception) {
-            //e.printStackTrace()
-        }
+        )
 
         return metadata?.let {
             ThemeMetadataResult(metadata, config, error)

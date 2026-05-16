@@ -38,6 +38,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -108,6 +109,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -782,7 +784,8 @@ fun ActionBar(
     keyboardManagerForAction: KeyboardManagerForAction? = null,
     quickClipState: QuickClipState? = null,
     onQuickClipDismiss: () -> Unit = {},
-    needToUseExpandableSuggestionUi: Boolean = false
+    needToUseExpandableSuggestionUi: Boolean = false,
+    loading: Boolean = false,
 ) {
     val view = LocalView.current
     val context = LocalContext.current
@@ -846,7 +849,14 @@ fun ActionBar(
                     if (importantNotice != null) {
                         ImportantNoticeView(importantNotice)
                     } else {
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                        if(loading) {
+                            Spacer(Modifier.weight(1.0f))
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(32.dp).align(CenterVertically),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(Modifier.weight(1.0f))
+                        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                             && inlineSuggestions.isNotEmpty()
                         ) {
                             InlineSuggestions(inlineSuggestions)
@@ -1167,7 +1177,8 @@ private fun RowScope.InlineCandidates(
     closeActionWindow: (() -> Unit)?,
     suggestionStripListener: SuggestionStripViewListener,
     wordList: List<SuggestedWordInfo>,
-    widths: CachedCharacterWidthValues
+    widths: CachedCharacterWidthValues,
+    extraSpaceForFirstItem: Boolean,
 ) {
     val view = LocalView.current
     val expandHeight = with(LocalDensity.current) { 120.dp.toPx().coerceAtMost(keyboardHeight / 2.0f) }
@@ -1220,7 +1231,7 @@ private fun RowScope.InlineCandidates(
                     last = i == wordList.size-1,
                     width = with(LocalDensity.current) {
                         measureWord(this, widths, it).toDp()
-                    }.coerceAtLeast(if(i == 0) 120.dp else 48.dp)
+                    }.coerceAtLeast(if(i == 0 && extraSpaceForFirstItem) 120.dp else 48.dp)
                 )
             }
         }
@@ -1272,6 +1283,7 @@ fun BoxScope.ActionBarWithExpandableCandidates(
     closeActionWindow: (() -> Unit)?,
     keyboardOffset: MutableIntState? = null,
     keyboardHeight: Int = 1000,
+    expandableSuggestionCfg: ExpandableSuggestionBarConfiguration,
 ) {
     val wordList = remember(words) {
         words?.mSuggestedWordInfoList?.toList()?.filter {
@@ -1373,7 +1385,8 @@ fun BoxScope.ActionBarWithExpandableCandidates(
                         closeActionWindow,
                         suggestionStripListener,
                         wordList,
-                        widths
+                        widths,
+                        expandableSuggestionCfg.addExtraSpaceForFirstEntry
                     )
                 }
 
@@ -1413,6 +1426,7 @@ val exampleSuggestionsList = arrayListOf(
 )
 
 val japaneseSuggestionsList = arrayListOf(
+    SuggestedWordInfo("あ", "", 97, 1, null, 0, 0),
     SuggestedWordInfo("あいう", "", 97, 1, null, 0, 0, 0, "ＬＯＮＧ　ＡＮＤ　ＣＯＭＰＬＥＸ\nＷＩＴＨ　ＭＵＬＴＩＰＬＥ　ＬＩＮＥＳ\nｓｏｍｅ　ｔｅｘｔ　ｈｅｒｅ"),
     SuggestedWordInfo("アイウ", "", 96, 1, null, 0, 0, 0, "[あああ]"),
     SuggestedWordInfo("あいうえお", "", 95, 1, null, 0, 0),
@@ -1553,17 +1567,17 @@ fun PreviewActionBarWithSuggestions(colorScheme: ThemeOption = DefaultDarkScheme
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = false,
             toggleActionsExpanded = { },
-            onActionAltActivated = { }
         )
     }
 }
 
 @Composable
 @Preview
-fun PreviewActionBarWithExpandableCandidates(colorScheme: ThemeOption = DefaultDarkScheme) {
+fun PreviewActionBarWithExpandableCandidatesExtraSpace(colorScheme: ThemeOption = DefaultDarkScheme) {
     UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
         Box(Modifier.fillMaxWidth().height(250.dp)) {
             ActionBarWithExpandableCandidates(
@@ -1571,7 +1585,25 @@ fun PreviewActionBarWithExpandableCandidates(colorScheme: ThemeOption = DefaultD
                 suggestionStripListener = ExampleListener(),
                 isActionsExpanded = false,
                 toggleActionsExpanded = { },
-                closeActionWindow = null
+                closeActionWindow = null,
+                expandableSuggestionCfg = ExpandableSuggestionBarConfiguration(true, true)
+            )
+        }
+    }
+}
+
+@Composable
+@Preview
+fun PreviewActionBarWithExpandableCandidatesNoExtraSpace(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
+        Box(Modifier.fillMaxWidth().height(250.dp)) {
+            ActionBarWithExpandableCandidates(
+                words = japaneseSuggestedWords,
+                suggestionStripListener = ExampleListener(),
+                isActionsExpanded = false,
+                toggleActionsExpanded = { },
+                closeActionWindow = null,
+                expandableSuggestionCfg = ExpandableSuggestionBarConfiguration(true, false)
             )
         }
     }
@@ -1585,10 +1617,10 @@ fun PreviewActionBarWithQuickClip(colorScheme: ThemeOption = DefaultDarkScheme) 
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = false,
             toggleActionsExpanded = { },
-            onActionAltActivated = { },
             quickClipState = QuickClipState(
                 texts = listOf(
                     QuickClipItem(QuickClipKind.EmailAddress, "keyboard@futo.org", 0),
@@ -1599,7 +1631,7 @@ fun PreviewActionBarWithQuickClip(colorScheme: ThemeOption = DefaultDarkScheme) 
                 validUntil = Long.MAX_VALUE,
                 imageMimeTypes = listOf(),
                 isSensitive = true
-            )
+            ),
         )
     }
 }
@@ -1612,10 +1644,10 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = true,
             toggleActionsExpanded = { },
-            onActionAltActivated = { },
             importantNotice = object : ImportantNotice {
                 @Composable
                 override fun getText(): String {
@@ -1624,7 +1656,7 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
 
                 override fun onDismiss(context: Context, auto: Boolean) { }
                 override fun onOpen(context: Context) { }
-            }
+            },
         )
     }
 }
@@ -1637,10 +1669,27 @@ fun PreviewActionBarWithEmptySuggestions(colorScheme: ThemeOption = DefaultDarkS
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = true,
             toggleActionsExpanded = { },
-            onActionAltActivated = { }
+        )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewActionBarLoading(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
+        ActionBar(
+            words = exampleSuggestedWordsEmpty,
+            suggestionStripListener = ExampleListener(),
+            onActionActivated = { },
+            onActionAltActivated = { },
+            inlineSuggestions = listOf(),
+            isActionsExpanded = true,
+            toggleActionsExpanded = { },
+            loading = true
         )
     }
 }
@@ -1653,10 +1702,10 @@ fun PreviewExpandedActionBar(colorScheme: ThemeOption = DefaultDarkScheme) {
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = true,
             toggleActionsExpanded = { },
-            onActionAltActivated = { }
         )
     }
 }
@@ -1692,6 +1741,14 @@ fun PreviewActionBarWithEmptySuggestionsDynamicLight() {
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
+fun PreviewActionBarLoadingDynamicLight() {
+    PreviewActionBarLoading(DynamicLightTheme)
+}
+
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview
 fun PreviewExpandedActionBarDynamicLight() {
     PreviewExpandedActionBar(DynamicLightTheme)
 }
@@ -1708,6 +1765,13 @@ fun PreviewActionBarWithSuggestionsDynamicDark() {
 @Preview
 fun PreviewActionBarWithEmptySuggestionsDynamicDark() {
     PreviewActionBarWithEmptySuggestions(DynamicDarkTheme)
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview
+fun PreviewActionBarLoadingDynamicDark() {
+    PreviewActionBarLoading(DynamicDarkTheme)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
