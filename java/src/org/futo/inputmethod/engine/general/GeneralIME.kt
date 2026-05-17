@@ -426,7 +426,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     var updateSuggestionJob: Job? = null
     var lmUpdateJob: Job? = null
-    private fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
+    private suspend fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
         // This method returns null for us if LM is disabled
         var predictionInputValues = languageModelFacilitator.makePredictionInputValues(inputStyle)
 
@@ -472,32 +472,33 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             ) { suggestedWords -> dictResult = suggestedWords }
         }
 
-        @Suppress("KotlinConstantConditions")
-        when {
-            !lmResult.isNullOrEmpty() && dictResult != null && predictionInputValues != null -> {
-                val processed = languageModelFacilitator.processAndMergeSuggestions(
-                    predictionInputValues,
-                    dictResult,
-                    lmResult
-                )
-                if(processed != null) {
-                    onGetSuggestedWords(processed, inputStyle, sequenceNumber)
-                } else {
-                    throwIfDebug(IllegalStateException(
-                        "The processAndMergeSuggestions method should not typically return null"
-                    ))
+        withContext(Dispatchers.Main) {
+            when {
+                !lmResult.isNullOrEmpty() && dictResult != null && predictionInputValues != null -> {
+                    val processed = languageModelFacilitator.processAndMergeSuggestions(
+                        predictionInputValues,
+                        dictResult,
+                        lmResult
+                    )
+                    if(processed != null) {
+                        onGetSuggestedWords(processed, inputStyle, sequenceNumber)
+                    } else {
+                        throwIfDebug(IllegalStateException(
+                            "The processAndMergeSuggestions method should not typically return null"
+                        ))
 
+                        onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
+                    }
+                }
+
+                dictResult != null -> {
                     onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
                 }
-            }
 
-            dictResult != null -> {
-                onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
-            }
-
-            // Note: we don't support LM results but not dict
-            else -> {
-                setNeutralSuggestionStrip()
+                // Note: we don't support LM results but not dict
+                else -> {
+                    setNeutralSuggestionStrip()
+                }
             }
         }
     }
