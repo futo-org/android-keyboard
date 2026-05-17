@@ -512,7 +512,27 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     private var swipeSuggestionCandidates: List<SuggestedWordInfo>? = null
     private var swipeSuggestionRestingWord: String? = null
     private var swipeSuggestionRevertWord: String? = null
+    private var swipeReplacementSession: SwipeReplacementSession? = null
     private var swipeSuggestionSelectionUpdatesToIgnore = 0
+
+    private data class SwipeReplacementSession(
+        val entries: List<String>,
+        var index: Int
+    )
+
+    private fun getLastAutocorrectRevertPair(lastComposedWord: LastComposedWord): Pair<String, String>? {
+        val typedWord = lastComposedWord.mTypedWord
+        val committedWord = lastComposedWord.mCommittedWord?.toString()
+
+        if (!lastComposedWord.canRevertCommit()
+            || typedWord.isNullOrEmpty()
+            || committedWord.isNullOrEmpty()
+            || typedWord == committedWord) {
+            return null
+        }
+
+        return committedWord to typedWord
+    }
 
     private fun resetSwipeSuggestionSession() {
         swipeSuggestionIndex = -1
@@ -520,6 +540,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         swipeSuggestionCandidates = null
         swipeSuggestionRestingWord = null
         swipeSuggestionRevertWord = null
+        swipeReplacementSession = null
     }
 
     private fun moveCursorForSwipeSuggestions(steps: Int) {
@@ -556,15 +577,71 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         return true
     }
 
-    private fun revertLastAutocorrectForSwipeIfNeeded(lastComposedWord: LastComposedWord): Boolean {
-        val typedWord = lastComposedWord.mTypedWord
-        val committedWord = lastComposedWord.mCommittedWord?.toString()
+    private fun getReplacementForSwipeSuggestion(replacement: String): String {
+        val restingWord = swipeSuggestionRestingWord
+        if (restingWord.isNullOrEmpty() || !restingWord.contains(' ') || replacement.contains(' ')) {
+            return replacement
+        }
 
-        if (!lastComposedWord.canRevertCommit()
-            || typedWord.isNullOrEmpty()
-            || committedWord.isNullOrEmpty()
-            || typedWord == committedWord
-            || inputLogic.mConnection.hasSelection()) {
+        val prefix = restingWord.substringBeforeLast(' ', "")
+        return if (prefix.isNotEmpty()) "$prefix $replacement" else replacement
+    }
+
+    private fun buildSwipeReplacementSession(
+        candidates: List<SuggestedWordInfo>,
+        committedWord: String,
+        typedWord: String
+    ): SwipeReplacementSession {
+        val entries = ArrayList<String>()
+        val seen = HashSet<String>()
+
+        if (seen.add(typedWord)) {
+            entries.add(typedWord)
+        }
+        if (seen.add(committedWord)) {
+            entries.add(committedWord)
+        }
+
+        for (candidate in candidates) {
+            val word = getReplacementForSwipeSuggestion(candidate.mWord)
+            if (seen.add(word)) {
+                entries.add(word)
+            }
+        }
+
+        return SwipeReplacementSession(entries, entries.indexOf(committedWord))
+    }
+
+    private fun applySwipeReplacementSessionStep(direction: Int): Boolean {
+        val session = swipeReplacementSession ?: return false
+        if (session.index !in session.entries.indices) {
+            resetSwipeSuggestionSession()
+            return false
+        }
+
+        val step = if (direction == KeyboardActionListener.SWIPE_ACTION_UP) -1 else 1
+        val nextIndex = session.index + step
+        if (nextIndex !in session.entries.indices) {
+            return true
+        }
+
+        val currentWord = session.entries[session.index]
+        val replacement = session.entries[nextIndex]
+        if (!replaceCommittedSwipeSuggestionIfNeeded(currentWord, replacement)) {
+            resetSwipeSuggestionSession()
+            return false
+        }
+
+        session.index = nextIndex
+        swipeSuggestionWord = if (replacement == swipeSuggestionRestingWord) null else replacement
+        return true
+    }
+
+    private fun revertLastAutocorrectForSwipeIfNeeded(lastComposedWord: LastComposedWord): Boolean {
+        val (committedWord, typedWord) = getLastAutocorrectRevertPair(lastComposedWord)
+            ?: return false
+
+        if (inputLogic.mConnection.hasSelection()) {
             return false
         }
 
@@ -591,6 +668,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         swipeSuggestionRestingWord = typedWord
         swipeSuggestionRevertWord = null
         swipeSuggestionCandidates = null
+        swipeReplacementSession = null
         helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
         return true
     }
@@ -1097,6 +1175,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     return
                 }
 
+                if (applySwipeReplacementSessionStep(direction)) {
+                    restoreCursorIfMoved(movedCursorToLastWord)
+                    return
+                }
+
                 if (direction == KeyboardActionListener.SWIPE_ACTION_UP
                     && revertLastAutocorrectForSwipeIfNeeded(lastComposedWordAtSwipeStart)) {
                     restoreCursorIfMoved(movedCursorToLastWord)
@@ -1121,20 +1204,13 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     resetSwipeSuggestionSession()
                 }
 
+                val autocorrectRevertPair = getLastAutocorrectRevertPair(lastComposedWordAtSwipeStart)
                 if (swipeSuggestionRestingWord == null) {
-                    swipeSuggestionRestingWord = touchedWord
+                    swipeSuggestionRestingWord = autocorrectRevertPair?.first ?: touchedWord
                 }
 
-                if (swipeSuggestionRevertWord == null) {
-                    val committedWord = lastComposedWordAtSwipeStart.mCommittedWord?.toString()
-                    val typedWordFromLastCommit = lastComposedWordAtSwipeStart.mTypedWord
-                    if (lastComposedWordAtSwipeStart.canRevertCommit()
-                        && !typedWordFromLastCommit.isNullOrEmpty()
-                        && !committedWord.isNullOrEmpty()
-                        && touchedWord == committedWord
-                        && typedWordFromLastCommit != committedWord) {
-                        swipeSuggestionRevertWord = typedWordFromLastCommit
-                    }
+                if (swipeSuggestionRevertWord == null && autocorrectRevertPair != null) {
+                    swipeSuggestionRevertWord = autocorrectRevertPair.second
                 }
 
                 val candidates = swipeSuggestionCandidates ?: run {
@@ -1151,9 +1227,24 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     rebuiltCandidates
                 }
 
+                if (autocorrectRevertPair != null) {
+                    swipeReplacementSession = buildSwipeReplacementSession(
+                        candidates,
+                        autocorrectRevertPair.first,
+                        autocorrectRevertPair.second
+                    )
+                    if (applySwipeReplacementSessionStep(direction)) {
+                        restoreCursorIfMoved(movedCursorToLastWord)
+                        return
+                    }
+                    resetSwipeSuggestionSession()
+                    restoreCursorIfMoved(movedCursorToLastWord)
+                    return
+                }
+
                 if (direction == KeyboardActionListener.SWIPE_ACTION_UP) {
                     val restingWord = swipeSuggestionRestingWord
-                    val currentWord = swipeSuggestionWord ?: touchedWord
+                    val currentWord = swipeSuggestionWord ?: restingWord ?: touchedWord
 
                     if (!swipeSuggestionWord.isNullOrEmpty()
                         && swipeSuggestionIndex in candidates.indices
@@ -1165,18 +1256,19 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                         } else {
                             candidates[previousIndex]
                         }
+                        val replacement = getReplacementForSwipeSuggestion(selected.mWord)
                         if (!replaceCommittedSwipeSuggestionIfNeeded(
                                 swipeSuggestionWord ?: currentWord,
-                                selected.mWord
+                                replacement
                             )) {
-                            onEvent(Event.createSuggestionPickedEvent(selected))
+                            onEvent(Event.createSuggestionPickedEvent(getSwipeSuggestionInfo(candidates, replacement)))
                         }
-                        if (!restingWord.isNullOrEmpty() && selected.mWord == restingWord) {
+                        if (!restingWord.isNullOrEmpty() && replacement == restingWord) {
                             swipeSuggestionIndex = -1
                             swipeSuggestionWord = null
                         } else {
                             swipeSuggestionIndex = previousIndex
-                            swipeSuggestionWord = selected.mWord
+                            swipeSuggestionWord = replacement
                         }
                         restoreCursorIfMoved(movedCursorToLastWord)
                         return
@@ -1188,7 +1280,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                         && currentWord == restingWord
                         && revertWord != currentWord) {
                         val selected = getSwipeSuggestionInfo(candidates, revertWord)
-                        onEvent(Event.createSuggestionPickedEvent(selected))
+                        if (!replaceCommittedSwipeSuggestionIfNeeded(currentWord, selected.mWord)) {
+                            onEvent(Event.createSuggestionPickedEvent(selected))
+                        }
                         swipeSuggestionIndex = -1
                         swipeSuggestionWord = null
                         swipeSuggestionRestingWord = selected.mWord
@@ -1247,12 +1341,14 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
                 if (!replaceCommittedSwipeSuggestionIfNeeded(
                         swipeSuggestionWord ?: currentWord,
-                        selected.mWord
+                        getReplacementForSwipeSuggestion(selected.mWord)
                     )) {
-                    onEvent(Event.createSuggestionPickedEvent(selected))
+                    onEvent(Event.createSuggestionPickedEvent(
+                        getSwipeSuggestionInfo(candidates, getReplacementForSwipeSuggestion(selected.mWord))
+                    ))
                 }
                 swipeSuggestionIndex = nextIndex
-                swipeSuggestionWord = selected.mWord
+                swipeSuggestionWord = getReplacementForSwipeSuggestion(selected.mWord)
 
                 restoreCursorIfMoved(movedCursorToLastWord)
             }
