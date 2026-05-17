@@ -718,7 +718,7 @@ public final class InputLogic {
     private BackspaceDeletionTarget getDeletionTargetForWordAtCursor(
             final SettingsValues settingsValues, final int currentKeyboardScriptId) {
         final TextRange range = mConnection.getWordRangeAtCursor(
-                settingsValues.mSpacingAndPunctuations, currentKeyboardScriptId, true);
+                settingsValues, currentKeyboardScriptId, true);
         if (range == null || range.length() <= 0) {
             return null;
         }
@@ -1611,7 +1611,7 @@ public final class InputLogic {
                             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
                         } else if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
                                 && inputTransaction.mSettingsValues.mSpacingAndPunctuations
-                                        .mCurrentLanguageHasSpaces
+                                        .currentLanguageHasSpaces
                                 && !mConnection.isCursorFollowedByWordCharacter(
                                         inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
                             restartSuggestionsOnWordTouchedByCursor(

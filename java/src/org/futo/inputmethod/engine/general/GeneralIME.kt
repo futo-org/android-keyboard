@@ -768,7 +768,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     private fun getSwipePunctuationCycle(): List<String> {
         val cycle = LinkedHashSet<String>()
 
-        val suggestedPunctuation = settings.current.mSpacingAndPunctuations.mSuggestPuncList
+        val suggestedPunctuation = settings.current.mSpacingAndPunctuations.suggestPuncList
         for (index in 0 until suggestedPunctuation.size()) {
             val punctuation = suggestedPunctuation.getWord(index)
             if (!punctuation.isNullOrEmpty() && punctuation.codePointCount(0, punctuation.length) == 1) {
