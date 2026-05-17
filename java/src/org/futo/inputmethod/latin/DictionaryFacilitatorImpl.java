@@ -679,7 +679,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         DictionaryGroup mostConfidentDictionary = findDictionaryGroupWithLocale(mDictionaryGroups,
                 getMostConfidentLocale());
         if(mostConfidentDictionary == null) return;
-        if(mostConfidentDictionary.mConfidence == 0) return;
+        if(mostConfidentDictionary.mConfidence == 0 && mDictionaryGroups.size() > 1) return;
         for (int i = 0; i < words.length; i++) {
             final String currentWord = words[i];
             final boolean wasCurrentWordAutoCapitalized = i == 0 && wasAutoCapitalized;
