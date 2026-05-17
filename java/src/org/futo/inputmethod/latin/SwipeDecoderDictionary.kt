@@ -21,6 +21,7 @@ import org.futo.ml.inference.SwipeDecoder
 import java.io.File
 import java.util.Locale
 import kotlin.math.abs
+import kotlin.math.sqrt
 
 @Serializable
 data class Input(
@@ -299,12 +300,18 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
 
     var decoder: SwipeDecoder? = null
 
+    object BeamValues {
+        const val shortBeam = 16
+        const val highBeam = 300
+        const val highestBeam = 900
+    }
+
     private fun getOrInitDecoder(): SwipeDecoder = decoder ?: run {
         val swipeModelPath = getFilePath(context, SWIPE_MODEL)
 
         val decoder = SwipeDecoder(
             encoderPath = swipeModelPath,
-            beamWidth = 300, // we use max of 300
+            beamWidth = BeamValues.highestBeam,
             useExpansion = false, // ITrie contains expanded entries already
         )
 
@@ -353,6 +360,19 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         throw UnsupportedOperationException("Use the non-dictionary method instead")
     }
 
+    private fun needHighestBeam(xCoords: FloatArray, yCoords: FloatArray, times: FloatArray): Boolean {
+        var dist = 0.0f
+        for(i in 1 until xCoords.size) {
+            val dx = xCoords[i] - xCoords[i-1]
+            val dy = yCoords[i] - yCoords[i-1]
+            val delta = sqrt(dx * dx + dy * dy)
+            dist += delta
+        }
+
+        val deltaTime = times[times.size - 1] - times[0]
+        return dist > 5.0f && deltaTime > 1500.0f
+    }
+
     fun getSuggestions(
         composedData: ComposedData,
         ngramContext: NgramContext?,
@@ -397,12 +417,17 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         decoder.setContext(wordsContext)
         appliedTrieWeights = trieWeights
 
-        val beamWidth = if(useHighBeam) 300 else 16
+        val beamWidth = when {
+            !useHighBeam -> BeamValues.shortBeam
+            needHighestBeam(xCoords, yCoords, times) -> BeamValues.highestBeam
+            else -> BeamValues.highBeam
+        }
+
         val topK = if(useHighBeam) 4 else 1
         val results = decoder.recognize(xCoords, yCoords, times, topK=topK, beamWidth=beamWidth, trieWeights=trieWeights)
 
 
-        if(false) {
+        if(useHighBeam) {
             val inputs = Inputs(xCoords.zip(yCoords.zip(times)).map {
                 val x = it.first
                 val y = it.second.first
@@ -410,6 +435,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
 
                 Input(x, y, t)
             })
+            Log.d("SwipeDecoderDictionary", "Timing: ${decoder.lastTiming()}")
             Log.d(
                 "SwipeDecoderDictionary",
                 "Inputs = ${Json.encodeToString(Inputs.serializer(), inputs)}"
