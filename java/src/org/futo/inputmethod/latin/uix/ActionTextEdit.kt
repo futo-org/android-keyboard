@@ -316,7 +316,7 @@ fun ActionTextEditor(
     afterOverride: (() -> Unit)? = null,
     afterUnOverride: ((Boolean) -> Unit)? = null,
     onEnter: (() -> Unit)? = null,
-    autofocus: Boolean = false,
+    autofocus: Boolean = true,
     inputFilters: Array<InputFilter>? = null,
     placeholder: String? = null
 ) {
