@@ -22,83 +22,135 @@ val FunctionalAttributes = KeyAttributes(
 
 private val ShiftMoreKeys = listOf("!noPanelAutoMoreKey!", " |!code/key_capslock")
 
-val TemplateShiftKey = CaseSelector(
-    normal = BaseKey(
-        spec = "!icon/shift_key|!code/key_shift",
-        moreKeys = ShiftMoreKeys,
-        attributes = FunctionalAttributes
-    ),
 
-    shifted = BaseKey(
-        spec = "!icon/shift_key_shifted|!code/key_shift",
-        moreKeys = ShiftMoreKeys,
-        attributes = FunctionalAttributes
-    ),
+interface TemplatedKey : AbstractKey {
+    val templateKey: Key
 
-    shiftLocked = BaseKey(
-        spec = "!icon/shift_key_shifted|!code/key_shift",
-        moreKeys = ShiftMoreKeys,
-        attributes = FunctionalAttributes.copy(style = KeyVisualStyle.StickyOn)
-    ),
+    override fun countsToKeyCoordinate(
+        params: KeyboardParams,
+        row: Row,
+        keyboard: Keyboard
+    ): Boolean = templateKey.countsToKeyCoordinate(params, row, keyboard)
 
-    symbols = BaseKey(
-        spec = "!text/keylabel_to_more_symbol|!code/key_shift",
-        attributes = FunctionalAttributes
-    ),
+    override fun computeData(
+        params: KeyboardParams,
+        row: Row,
+        keyboard: Keyboard,
+        coordinate: KeyCoordinate
+    ): ComputedKeyData? = templateKey.computeData(params, row, keyboard, coordinate)
+}
 
-    symbolsShifted = BaseKey(
-        spec = "!text/keylabel_to_symbol|!code/key_shift",
-        attributes = FunctionalAttributes
+@Serializable
+@SerialName("shift")
+data class ShiftKey(
+    val attributes: KeyAttributes = KeyAttributes()
+): TemplatedKey {
+    override val templateKey: Key = CaseSelector(
+        normal = BaseKey(
+            spec = "!icon/shift_key|!code/key_shift",
+            moreKeys = ShiftMoreKeys,
+            attributes = attributes + FunctionalAttributes,
+        ),
+
+        shifted = BaseKey(
+            spec = "!icon/shift_key_shifted|!code/key_shift",
+            moreKeys = ShiftMoreKeys,
+            attributes = attributes + FunctionalAttributes
+        ),
+
+        shiftLocked = BaseKey(
+            spec = "!icon/shift_key_shifted|!code/key_shift",
+            moreKeys = ShiftMoreKeys,
+            attributes = KeyAttributes(style = KeyVisualStyle.StickyOn) + attributes + FunctionalAttributes
+        ),
+
+        symbols = BaseKey(
+            spec = "!text/keylabel_to_more_symbol|!code/key_shift",
+            attributes = attributes + FunctionalAttributes
+        ),
+
+        symbolsShifted = BaseKey(
+            spec = "!text/keylabel_to_symbol|!code/key_shift",
+            attributes = attributes + FunctionalAttributes
+        )
     )
-)
+}
+val TemplateShiftKey = ShiftKey()
 
-val TemplateDeleteKey = BaseKey(
-    spec = "!icon/delete_key|!code/key_delete",
-    attributes = FunctionalAttributes.copy(repeatableEnabled = true)
-)
 
-val TemplateSymbolsKey = BaseKey(
-    spec = "!text/keylabel_to_symbol|!code/key_switch_alpha_symbol",
-    attributes = FunctionalAttributes
-)
-
-val TemplateAlphabetKey = BaseKey(
-    spec = "!text/keylabel_to_alpha|!code/key_switch_alpha_symbol",
-    attributes = FunctionalAttributes
-)
-
-val TemplateNumberKey = BaseKey(
-    spec = "!icon/numpad|!code/key_to_number_layout",
-    attributes = KeyAttributes(
-        showPopup = false
+@Serializable
+@SerialName("delete")
+data class DeleteKey(val attributes: KeyAttributes = KeyAttributes()) : TemplatedKey {
+    override val templateKey: Key = BaseKey(
+        spec = "!icon/delete_key|!code/key_delete",
+        attributes = KeyAttributes(repeatableEnabled = true) + attributes + FunctionalAttributes
     )
-)
+}
+val TemplateDeleteKey = DeleteKey()
 
-val TemplateSpaceKey = BaseKey(
-    spec = "!icon/space_key|!code/key_space",
-    attributes = KeyAttributes(
-        width = KeyWidth.Grow,
-        style = KeyVisualStyle.Spacebar,
-        showPopup = false,
-        longPressEnabled = true,
-        moreKeyMode = MoreKeyMode.OnlyExplicit
+@Serializable
+@SerialName("symbols")
+data class SymbolsKey(val attributes: KeyAttributes = KeyAttributes()) : TemplatedKey {
+    override val templateKey: Key = BaseKey(
+        spec = "!text/keylabel_to_symbol|!code/key_switch_alpha_symbol",
+        attributes = attributes + FunctionalAttributes
     )
-)
+}
+val TemplateSymbolsKey = SymbolsKey()
 
-val TemplateAlt0Key = BaseKey(
-    spec = "0|!code/key_to_alt_0_layout",
-    attributes = FunctionalAttributes
-)
+@Serializable
+@SerialName("alphabet")
+data class AlphabetKey(val attributes: KeyAttributes = KeyAttributes()) : TemplatedKey {
+    override val templateKey: Key = BaseKey(
+        spec = "!text/keylabel_to_alpha|!code/key_switch_alpha_symbol",
+        attributes = attributes + FunctionalAttributes
+    )
+}
+val TemplateAlphabetKey = AlphabetKey()
 
-val TemplateAlt1Key = BaseKey(
-    spec = "1|!code/key_to_alt_1_layout",
-    attributes = FunctionalAttributes
-)
 
-val TemplateAlt2Key = BaseKey(
-    spec = "2|!code/key_to_alt_2_layout",
-    attributes = FunctionalAttributes
-)
+@Serializable
+@SerialName("number")
+data class NumberKey(val attributes: KeyAttributes = KeyAttributes()) : TemplatedKey {
+    override val templateKey: Key = BaseKey(
+        spec = "!icon/numpad|!code/key_to_number_layout",
+        attributes = KeyAttributes(showPopup = false) + attributes
+    )
+}
+val TemplateNumberKey = NumberKey()
+
+@Serializable
+@SerialName("space")
+data class SpaceKey(val attributes: KeyAttributes = KeyAttributes()) : TemplatedKey {
+    override val templateKey: Key = BaseKey(
+        spec = "!icon/space_key|!code/key_space",
+        attributes = attributes + KeyAttributes(
+            width = KeyWidth.Grow,
+            style = KeyVisualStyle.Spacebar,
+            showPopup = false,
+            longPressEnabled = true,
+            moreKeyMode = MoreKeyMode.OnlyExplicit
+        )
+    )
+}
+val TemplateSpaceKey = SpaceKey()
+
+
+@Serializable
+@SerialName("alt")
+data class AltLayoutKey(val idx: Int, val attributes: KeyAttributes = KeyAttributes()) : TemplatedKey {
+    init {
+        if(idx !in 0..2) throw IllegalArgumentException("Alt layout key can only be in [0, 1, 2]")
+    }
+
+    override val templateKey: Key = BaseKey(
+        spec = "$idx|!code/key_to_alt_${idx}_layout",
+        attributes = attributes + FunctionalAttributes
+    )
+}
+val TemplateAlt0Key = AltLayoutKey(0)
+val TemplateAlt1Key = AltLayoutKey(1)
+val TemplateAlt2Key = AltLayoutKey(2)
 
 @Serializable
 @SerialName("enter")
@@ -188,7 +240,8 @@ data class EnterKey(
 @Serializable
 @SerialName("action")
 data class ActionKey(
-    val attributes: KeyAttributes = KeyAttributes()
+    val attributes: KeyAttributes = KeyAttributes(),
+    val fallbackKey: Key? = null,
 ) : AbstractKey {
     override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean = false
     override fun computeData(
@@ -198,7 +251,7 @@ data class ActionKey(
         coordinate: KeyCoordinate
     ): ComputedKeyData? {
         if(!params.mId.mBottomEmojiKeyEnabled) {
-            return null
+            return fallbackKey?.computeData(params, row, keyboard, coordinate)
         }
 
         val attributes = attributes.getEffectiveAttributes(row, keyboard)

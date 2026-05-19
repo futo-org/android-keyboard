@@ -522,6 +522,30 @@ data class CaseSelector(
         selectKeyFromElement(params.mId.mElementId).computeData(params, row, keyboard, coordinate)
 }
 
+
+/**
+ * Action selector key, to use a fallback key when the action key is disabled
+ */
+@Serializable
+@SerialName("actionKeySelect")
+data class ActionKeySelector(
+    val enabled: Key,
+    val none: Key
+) : AbstractKey {
+    private fun selectKeyFromElement(isEnabled: Boolean): Key = if(isEnabled) enabled else none
+
+    override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean =
+        selectKeyFromElement(params.mId.mBottomEmojiKeyEnabled).countsToKeyCoordinate(params, row, keyboard)
+
+    override fun computeData(
+        params: KeyboardParams,
+        row: Row,
+        keyboard: Keyboard,
+        coordinate: KeyCoordinate
+    ): ComputedKeyData? =
+        selectKeyFromElement(params.mId.mBottomEmojiKeyEnabled).computeData(params, row, keyboard, coordinate)
+}
+
 typealias Key = @Serializable(with = KeyPathSerializer::class) AbstractKey
 
 object KeyPathSerializer : PathDependentModifier<AbstractKey>(
