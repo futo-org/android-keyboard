@@ -100,7 +100,7 @@ val SwipeMenu = UserSettingsMenu(
         ) {
             val alt1 = stringResource(R.string.swipe_settings_suggest_mode_alternative_word_1)
             val alt2 = stringResource(R.string.swipe_settings_suggest_mode_alternative_word_2)
-            val alt3 = stringResource(R.string.swipe_settings_suggest_mode_alternative_word_2)
+            val alt3 = stringResource(R.string.swipe_settings_suggest_mode_alternative_word_3)
             val main = stringResource(R.string.swipe_settings_suggest_mode_used_word)
 
             val setting = useDataStore(DisplayTop4Setting)
