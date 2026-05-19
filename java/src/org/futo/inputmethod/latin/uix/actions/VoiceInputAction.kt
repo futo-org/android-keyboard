@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.ANIMATE_BUBBLE
 import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
@@ -127,6 +128,7 @@ private class VoiceInputActionWindow(
         val canExpandSpace = context.getSetting(CAN_EXPAND_SPACE)
         val useVAD = context.getSetting(USE_VAD_AUTOSTOP)
         val usePersonalDict = context.getSetting(USE_PERSONAL_DICT)
+        val animateBubble = context.getSetting(ANIMATE_BUBBLE)
 
         val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
@@ -142,6 +144,7 @@ private class VoiceInputActionWindow(
         return RecognizerViewSettings(
             shouldShowInlinePartialResult = false,
             shouldShowVerboseFeedback = verboseFeedback,
+            shouldAnimateBubble = animateBubble,
             modelRunConfiguration = MultiModelRunConfiguration(
                 primaryModel = primaryModel,
                 languageSpecificModels = languageSpecificModels
