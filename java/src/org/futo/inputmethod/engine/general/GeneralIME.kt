@@ -1,6 +1,7 @@
 package org.futo.inputmethod.engine.general
 
 import android.os.Build
+import android.os.Looper
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -412,14 +413,21 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         showSuggestionStrip(words)
         when(inputStyle) {
             SuggestedWords.INPUT_STYLE_TAIL_BATCH -> {
-                inputLogic.onUpdateTailBatchInputCompleted(
-                    settings.current,
-                    words,
-                    helper.keyboardSwitcher
-                )
-                helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(
-                    HapticFeedbackConstants.VIRTUAL_KEY_RELEASE
-                )
+                val updateBatch = {
+                    inputLogic.onUpdateTailBatchInputCompleted(
+                        settings.current,
+                        words,
+                        helper.keyboardSwitcher
+                    )
+                    helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(
+                        HapticFeedbackConstants.VIRTUAL_KEY_RELEASE
+                    )
+                }
+                if(Looper.myLooper() != Looper.getMainLooper()) {
+                    helper.lifecycleScope.launch(Dispatchers.Main) { updateBatch() }
+                } else {
+                    updateBatch()
+                }
             }
         }
     }
@@ -472,33 +480,31 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             ) { suggestedWords -> dictResult = suggestedWords }
         }
 
-        withContext(Dispatchers.Main) {
-            when {
-                !lmResult.isNullOrEmpty() && dictResult != null && predictionInputValues != null -> {
-                    val processed = languageModelFacilitator.processAndMergeSuggestions(
-                        predictionInputValues,
-                        dictResult,
-                        lmResult
-                    )
-                    if(processed != null) {
-                        onGetSuggestedWords(processed, inputStyle, sequenceNumber)
-                    } else {
-                        throwIfDebug(IllegalStateException(
-                            "The processAndMergeSuggestions method should not typically return null"
-                        ))
+        when {
+            !lmResult.isNullOrEmpty() && dictResult != null && predictionInputValues != null -> {
+                val processed = languageModelFacilitator.processAndMergeSuggestions(
+                    predictionInputValues,
+                    dictResult,
+                    lmResult
+                )
+                if(processed != null) {
+                    onGetSuggestedWords(processed, inputStyle, sequenceNumber)
+                } else {
+                    throwIfDebug(IllegalStateException(
+                        "The processAndMergeSuggestions method should not typically return null"
+                    ))
 
-                        onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
-                    }
-                }
-
-                dictResult != null -> {
                     onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
                 }
+            }
 
-                // Note: we don't support LM results but not dict
-                else -> {
-                    setNeutralSuggestionStrip()
-                }
+            dictResult != null -> {
+                onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
+            }
+
+            // Note: we don't support LM results but not dict
+            else -> {
+                setNeutralSuggestionStrip()
             }
         }
     }
