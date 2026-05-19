@@ -163,7 +163,7 @@ private class VoiceInputActionWindow(
     private var recognizerView: MutableState<RecognizerView?> = mutableStateOf(null)
     private var modelException: MutableState<ModelDoesNotExistException?> = mutableStateOf(null)
 
-    private val initJob = manager.getLifecycleScope().launch {
+    private val initJob = manager.getLifecycleScope().launch(Dispatchers.Default) {
         yield()
         val settings = loadSettings()
 
