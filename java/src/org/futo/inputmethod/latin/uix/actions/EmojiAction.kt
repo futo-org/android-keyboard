@@ -94,7 +94,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
-import org.futo.inputmethod.latin.uix.ActionTextEditor
+import org.futo.inputmethod.latin.uix.ActionHeaderSearch
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.AutoFitText
 import org.futo.inputmethod.latin.uix.DialogRequestItem
@@ -1015,22 +1015,7 @@ val EmojiAction = Action(
                 val resources = LocalResources.current
                 if(searching.value) {
                     with(rowScope) {
-                        Surface(
-                            color = LocalKeyboardScheme.current.keyboardContainer,
-                            contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
-                            shape = RoundedCornerShape(24.dp),
-                            modifier = Modifier
-                                .minimumInteractiveComponentSize()
-                                .padding(2.dp)
-                                .weight(1.0f)
-                        ) {
-                            Box(
-                                modifier = Modifier.padding(8.dp),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                ActionTextEditor(text = searchText)
-                            }
-                        }
+                        ActionHeaderSearch(searchText, Modifier.weight(1.0f))
                     }
                 } else {
                     super.WindowTitleBar(rowScope)

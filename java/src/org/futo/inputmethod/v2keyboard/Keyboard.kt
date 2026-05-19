@@ -292,6 +292,19 @@ data class Keyboard(
      */
     val autoShift: Boolean = true,
 
+    /**
+     * (optional) Whether rows should be mirrored (reversed) in one-handed mode. When enabled and
+     * the keyboard is in left-handed one-hand mode, each row's keys are reversed so that keys
+     * like backspace move to the opposite (more reachable) side.
+     */
+    val mirrorInOneHanded: Boolean = false,
+
+    /**
+     * (optional) Whether the split keyboard mode should be offered for this layout. Set to false
+     * for layouts whose rows don't split well (e.g. due to rowSpan keys or unusual arrangements).
+     */
+    val supportsSplit: Boolean = true,
+
     val subKeyboards: Map<KeyboardLayoutKind, SubKeyboard> = emptyMap(),
     val imeHint: String? = null
 

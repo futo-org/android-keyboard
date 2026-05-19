@@ -70,6 +70,9 @@
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_clear_unpinned_items_button">Clear</string>
     <string name="action_clipboard_manager_clear_clipboard">Clear clipboard</string>
+    <string name="action_clipboard_manager_search">Search clipboard&#8230;</string>
+    <string name="action_clipboard_manager_enter_your_search">Enter a search term…</string>
+    <string name="action_clipboard_manager_no_clips_found">No results found</string>
     <string name="action_clipboard_manager_error_device_locked_title">Device Locked</string>
     <string name="action_clipboard_manager_error_device_locked_text">Please unlock your device to access clipboard history</string>
     <string name="action_clipboard_manager_error_general_title">Clipboard Error</string>
@@ -550,6 +553,8 @@
     <string name="voice_input_settings_long_form_subtitle">If disabled, voice input will auto-stop after 30 seconds.</string>
     <string name="voice_input_settings_autostop_vad">Auto-stop on silence</string>
     <string name="voice_input_settings_autostop_vad_subtitle">Automatically stop when silence is detected. You may need to manually stop regardless if there\'s too much background noise.</string>
+    <string name="voice_input_settings_animate_bubble">Animations</string>
+    <string name="voice_input_settings_animate_bubble_subtitle">Display a bubble that reacts to speech</string>
     <string name="voice_input_settings_change_models">Models</string>
     <string name="voice_input_settings_change_models_subtitle">To change the models, visit Languages &amp; Models menu</string>
 
