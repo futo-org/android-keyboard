@@ -86,9 +86,6 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.engine.IMESettingsMenu
 import org.futo.inputmethod.latin.HideKeyboardWhenHardKeyboardConnected
 import org.futo.inputmethod.latin.R
-import org.futo.inputmethod.latin.SwipeLanguageModelSetting
-import org.futo.inputmethod.latin.SwipeModelSetting
-import org.futo.inputmethod.latin.SwipeSpecialDecoderSetting
 import org.futo.inputmethod.latin.settings.LongPressKey
 import org.futo.inputmethod.latin.settings.LongPressKeyLayoutSetting
 import org.futo.inputmethod.latin.settings.Settings
@@ -816,32 +813,6 @@ val TypingSettingsMenu = UserSettingsMenu(
             name = R.string.typing_settings_auto_space_mode,
             component = {
                 AutoSpacesSetting()
-            }
-        ),
-
-        userSettingToggleDataStore(
-            title = R.string.typing_settings_swipe_model,
-            setting = SwipeModelSetting
-        ),
-
-        userSettingToggleDataStore(
-            title = R.string.typing_settings_swipe_special_decoder,
-            setting = SwipeSpecialDecoderSetting
-        ),
-
-        userSettingToggleDataStore(
-            title = R.string.typing_settings_swipe_language_model,
-            setting = SwipeLanguageModelSetting
-        ),
-
-        userSettingToggleSharedPrefs(
-            title = R.string.typing_settings_swipe,
-            subtitle = R.string.typing_settings_swipe_subtitle,
-            key = Settings.PREF_GESTURE_INPUT,
-            default = {true},
-            icon = {
-                Icon(painterResource(id = R.drawable.swipe_icon), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
         ),
         userSettingToggleDataStore(

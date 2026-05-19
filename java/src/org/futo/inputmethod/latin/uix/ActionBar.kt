@@ -111,6 +111,7 @@ import androidx.core.net.toUri
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
+import org.futo.inputmethod.latin.DisplayTop4Setting
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -287,12 +288,12 @@ fun TextStyle.withCustomFont(): TextStyle {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
+fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit, forcePrimary: Boolean) {
     val wordInfo = words.getInfoOrNull(idx)
     val isVerbatim = wordInfo?.kind == KIND_TYPED
     val word = wordInfo?.mWord
 
-    val isAutocorrect = isPrimary && words.mWillAutoCorrect
+    val isAutocorrect = forcePrimary || (isPrimary && words.mWillAutoCorrect)
 
     val color = when(isAutocorrect) {
         true -> LocalKeyboardScheme.current.onSurface
@@ -385,6 +386,9 @@ data class SuggestionLayout(
     /** Set to true if this is a gesture update, and we should only show one suggestion */
     val isGestureBatch: Boolean,
 
+    /** The primary tail batch element, if present it should be highlighted */
+    val swipePrimaryElement: SuggestedWordInfo?,
+
     val presentableSuggestions: List<SuggestedWordInfo>
 )
 
@@ -394,7 +398,7 @@ fun SuggestedWords.getInfoOrNull(idx: Int): SuggestedWordInfo? = try {
     null
 }
 
-fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?): SuggestionLayout {
+fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?, swipeTailRemovePrimarySuggestion: Boolean): SuggestionLayout {
     val isGestureBatch = words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
     val isSwipeTail = words.mInputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
 
@@ -425,8 +429,13 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
             && (isGestureBatch || autocorrectMatch == null || typedWord == null || it.mWord != typedWord.mWord)
     }.toMutableList()
 
+    var swipePrimaryElement: SuggestedWordInfo? = null
     if(isSwipeTail && sortedMatches.size > 1) {
-        sortedMatches.removeAt(0)
+        if(swipeTailRemovePrimarySuggestion) {
+            sortedMatches.removeAt(0)
+        } else {
+            swipePrimaryElement = sortedMatches[0]
+        }
     }
 
     val areSuggestionsClueless = (autocorrectMatch ?: sortedMatches.getOrNull(0))?.let {
@@ -447,15 +456,17 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
         verbatimWord = typedWord,
         areSuggestionsClueless = areSuggestionsClueless,
         isGestureBatch = isGestureBatch,
-        presentableSuggestions = presentableSuggestions
+        presentableSuggestions = presentableSuggestions,
+        swipePrimaryElement = swipePrimaryElement
     )
 }
 
 @Composable
 fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
     val layout = makeSuggestionLayout(
-        words,
-        null
+        words = words,
+        blacklist = null,
+        swipeTailRemovePrimarySuggestion = useDataStoreValue(DisplayTop4Setting)
     )
 
     val suggestionItem = @Composable { suggestion: SuggestedWordInfo? ->
@@ -465,6 +476,7 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
                 words,
                 idx,
                 isPrimary = idx == SuggestedWords.INDEX_OF_AUTO_CORRECTION,
+                forcePrimary = suggestion == layout.swipePrimaryElement,
                 onClick = { onClick(idx) },
                 onLongClick = { onLongClick(idx) }
             )

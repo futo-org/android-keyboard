@@ -204,11 +204,11 @@ fun SpacedColumn(gap: Dp, modifier: Modifier = Modifier, horizontalAlignment: Al
 @Composable
 fun SettingItem(
     title: String,
+    modifier: Modifier = Modifier,
     subtitle: String? = null,
     onClick: (() -> Unit)? = null,
     icon: (@Composable () -> Unit)? = null,
     disabled: Boolean = false,
-    modifier: Modifier = Modifier,
     subcontent: (@Composable () -> Unit)? = null,
     compact: Boolean = false,
     onSubmenuNavigate: (() -> Unit)? = null,
@@ -446,19 +446,21 @@ fun<T> SettingRadio(
     options: List<T>,
     optionNames: List<String>,
     setting: DataStoreItem<T>,
+    modifier: Modifier = Modifier,
     hints: List<@Composable () -> Unit>? = null,
+    subcontent: List<@Composable () -> Unit>? = null,
 ) {
     ScreenTitle(title, showBack = false)
     Column {
         options.zip(optionNames).forEachIndexed { i, it ->
             SettingItem(title = it.second, onClick = { setting.setValue(it.first) }, icon = {
                 RadioButton(selected = setting.value == it.first, onClick = null)
-            }, modifier = Modifier.clearAndSetSemantics {
+            }, modifier = modifier.clearAndSetSemantics {
                 this.text = AnnotatedString(it.second)
                 this.role = Role.RadioButton
                 this.selected = setting.value == it.first
-            }) {
-                hints?.getOrNull(i)?.let { it() }
+            }, subcontent = subcontent?.getOrNull(i)) {
+                hints?.getOrNull(i)?.invoke()
             }
         }
     }

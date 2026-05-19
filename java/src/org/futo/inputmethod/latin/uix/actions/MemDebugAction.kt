@@ -31,9 +31,9 @@ import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
 import org.futo.inputmethod.latin.LatinIME
+import org.futo.inputmethod.latin.LegacySwipeSetting
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SwipeDecoderDictionary
-import org.futo.inputmethod.latin.SwipeModelSetting
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
@@ -306,7 +306,7 @@ val MemoryDebugAction = Action(
                 ScrollableList {
                     Text("Swipe Info", style = DebugTitle)
                     SwipeDecoderDictionary.appliedLayoutInfo.let { layout ->
-                        if(useDataStoreValue(SwipeModelSetting) == false) {
+                        if(useDataStoreValue(LegacySwipeSetting) == true) {
                             Text("using legacy mode...", style = DebugLabel)
                         } else {
                             val scoring = SwipeDecoderDictionary.appliedScoring

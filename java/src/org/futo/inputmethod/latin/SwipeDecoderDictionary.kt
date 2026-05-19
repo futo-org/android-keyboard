@@ -220,9 +220,11 @@ private class SpecialDecoder private constructor(
     }
 }
 
-val SwipeModelSetting = SettingsKey(booleanPreferencesKey("_experimental_swipe_model"), true)
-val SwipeSpecialDecoderSetting = SettingsKey(booleanPreferencesKey("_experimental_swipe_special_decoder"), true)
-val SwipeLanguageModelSetting = SettingsKey(booleanPreferencesKey("_experimental_swipe_language_model"), true)
+val LegacySwipeSetting = SettingsKey(booleanPreferencesKey("swipe_mode_legacy"), false)
+val DisplayTop4Setting = SettingsKey(booleanPreferencesKey("swipe_use_top4_suggestions"), true)
+
+val SwipeSpecialDecoderSetting = SettingsKey(booleanPreferencesKey("__experimental_swipe_special_decoder"), true)
+val SwipeLanguageModelSetting = SettingsKey(booleanPreferencesKey("__experimental_swipe_language_model"), true)
 
 class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Dictionary("swipe", locale) {
     companion object {
@@ -379,7 +381,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         useHighBeam: Boolean,
         trieWeights: FloatArray
     ): ArrayList<SuggestedWords.SuggestedWordInfo>? {
-        if(context.getSetting(SwipeModelSetting) == false) return null
+        if(context.getSetting(LegacySwipeSetting) == true) return null
 
         if(!composedData.mIsBatchMode && composedData.mInputPointers.pointerSize == 0 && composedData.mTypedWord.isEmpty()) {
             return getPredictions(
