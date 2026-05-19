@@ -1190,7 +1190,7 @@ val ClipboardHistoryAction = Action(
                         }
 
                         val showPinnedOnTop = useDataStoreValue(ClipboardShowPinnedOnTop)
-                        val clipboardList = remember(searchQuery, clipboardHistoryManager.clipboardHistory) {
+                        val clipboardList = run {
                             val filtered = clipboardHistoryManager.clipboardHistory.filter {
                                 !searching.value
                                         || it.text?.contains(searchQuery, ignoreCase = true) == true
