@@ -429,7 +429,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         val results = decoder.recognize(xCoords, yCoords, times, topK=topK, beamWidth=beamWidth, trieWeights=trieWeights)
 
 
-        if(useHighBeam) {
+        if(BuildConfig.DEBUG) {
             val inputs = Inputs(xCoords.zip(yCoords.zip(times)).map {
                 val x = it.first
                 val y = it.second.first
