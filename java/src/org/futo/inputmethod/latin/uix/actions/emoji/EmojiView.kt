@@ -48,6 +48,9 @@ class EmojiView @JvmOverloads constructor(
     View(context, attrs) {
 
     companion object {
+        private val exceptionalCompatEmojis = mutableSetOf<String>()
+        fun addExceptionalCompatEmoji(emoji: String) = exceptionalCompatEmojis.add(emoji)
+
         private const val EMOJI_DRAW_TEXT_SIZE_DP = 42
     }
 
@@ -141,6 +144,13 @@ class EmojiView @JvmOverloads constructor(
             if (emoji is Spanned) {
                 createStaticLayout(emoji, width).draw(this)
             } else {
+                val shouldUseCompatFont = emoji.toString() !in exceptionalCompatEmojis
+                if(shouldUseCompatFont && textPaint.typeface == null) {
+                    textPaint.typeface = emojiTypeface
+                } else if (!shouldUseCompatFont && textPaint.typeface != null) {
+                    textPaint.typeface = null
+                }
+
                 var textWidth = textPaint.measureText(emoji, 0, emoji.length)
                 if(textWidth > width) {
                     scale(width / textWidth, 1.0f)

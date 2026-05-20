@@ -907,6 +907,7 @@ class PersistentEmojiState : PersistentActionState {
                 emojis.value = (emojiData + supplementalEmoteData).mapNotNull {
                     val emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content
                     val version = it.jsonObject["unicode_version"]!!.jsonPrimitive.content
+                    val description = it.jsonObject["description"]!!.jsonPrimitive.content
                     val category = it.jsonObject["category"]!!.jsonPrimitive.content
                     val supported =
                         emoji.codePoints().toList().all { c -> Character.getName(c) != null }
@@ -917,6 +918,11 @@ class PersistentEmojiState : PersistentActionState {
                         ?.toList() ?: listOf()
                     val aliases = it.jsonObject["aliases"]?.jsonArray?.map { it.jsonPrimitive.content }
                         ?.toList() ?: listOf()
+
+                    val isUnsupportedByFont = version !in CompatEmojiVersions
+                    if(isUnsupportedByFont) {
+                        EmojiView.addExceptionalCompatEmoji(emoji)
+                    }
 
                     if(!supported) {
                         null
@@ -942,7 +948,7 @@ class PersistentEmojiState : PersistentActionState {
 
                         EmojiItem(
                             emoji = emoji,
-                            description = it.jsonObject["description"]!!.jsonPrimitive.content,
+                            description = description,
                             category = category,
                             skinTones = it.jsonObject["skin_tones"]?.jsonPrimitive?.booleanOrNull == true,
                             //tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
