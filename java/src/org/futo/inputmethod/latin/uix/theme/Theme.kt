@@ -10,12 +10,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.actions.compatEmojiTypeface
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import kotlin.math.sqrt
@@ -53,14 +56,22 @@ fun StatusBarColorSetter() {
     }
 }
 
+val LocalEmojiFontFamily = compositionLocalOf<FontFamily?> { null }
+
 @Composable
 fun UixThemeWrapper(colorScheme: KeyboardColorScheme, content: @Composable () -> Unit) {
+    val context = LocalContext.current
+    val emojiFont = remember {
+        context.compatEmojiTypeface?.let { FontFamily(it) }
+    }
     CompositionLocalProvider(LocalKeyboardScheme provides colorScheme) {
-        MaterialTheme(
-            colorScheme = colorScheme.base,
-            //typography = Typography,
-            content = content,
-        )
+        CompositionLocalProvider(LocalEmojiFontFamily provides emojiFont) {
+            MaterialTheme(
+                colorScheme = colorScheme.base,
+                //typography = Typography,
+                content = content,
+            )
+        }
     }
 }
 
