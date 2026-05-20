@@ -261,7 +261,7 @@ class InputConnectionInternalComposingWrapper(
                 val lengthAccordingToHistory = (composingText.length)
                 val lengthToFetch = maxOf(lengthAccordingToHistory, lengthAccordingToCursor)
                 var pastText = super.getTextBeforeCursor(lengthToFetch, 1)
-                if(pastText != null) {
+                if(pastText != null && (pastText.isNotEmpty() || lengthToFetch == 0)) {
                     // There are multiple cases we need to account for:
                     // 1. The framework is filtering out specific characters (e.g. spaces), in which case we must trust cursor position instead of composingText which contains spaces
                     // 2. The framework has shifted our cursor where the word is located, in which case we cannot trust cursor position and have to rely on composingText
