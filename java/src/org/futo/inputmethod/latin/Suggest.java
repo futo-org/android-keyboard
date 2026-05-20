@@ -19,6 +19,7 @@ package org.futo.inputmethod.latin;
 import android.text.TextUtils;
 import android.util.Log;
 
+import static org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo.KIND_CORRECTION;
 import static org.futo.inputmethod.latin.define.DecoderSpecificConstants.SHOULD_AUTO_CORRECT_USING_NON_WHITE_LISTED_SUGGESTION;
 import static org.futo.inputmethod.latin.define.DecoderSpecificConstants.SHOULD_REMOVE_PREVIOUSLY_REJECTED_SUGGESTION;
 
@@ -32,6 +33,7 @@ import org.futo.inputmethod.latin.utils.AutoCorrectionUtils;
 import org.futo.inputmethod.latin.utils.BinaryDictionaryUtils;
 import org.futo.inputmethod.latin.utils.SuggestionResults;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -165,15 +167,27 @@ public final class Suggest {
             final float autoCorrectionThreshold, final boolean numberRowActive
     ) {
         final String typedWordString = wordComposer.getTypedWord();
+        final String revertWord = wordComposer.getRevertWord();
         final int trailingSingleQuotesCount =
                 StringUtils.getTrailingSingleQuotesCount(typedWordString);
         final String consideredWord = trailingSingleQuotesCount > 0
                 ? typedWordString.substring(0, typedWordString.length() - trailingSingleQuotesCount)
                 : typedWordString;
 
-        final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
-                        trailingSingleQuotesCount, locale);
+        ArrayList<SuggestedWordInfo> suggestionsContainer = getTransformedSuggestedWordInfoList(wordComposer, suggestionResults, trailingSingleQuotesCount, locale);;
+        if (revertWord != null) {
+            SuggestedWordInfo revertSuggestion = new SuggestedWordInfo(
+                    revertWord, "", 100, KIND_CORRECTION, null, -1, -1);
+            // Puts the revertWord in the left most slot, which is the 2nd element in the Array
+            if(!suggestionsContainer.isEmpty()){
+                SuggestedWordInfo originalSuggestion = suggestionsContainer.get(1);
+                suggestionsContainer.set(1, revertSuggestion);
+                suggestionsContainer.set(0, originalSuggestion);
+            } else {
+                suggestionsContainer.add(revertSuggestion);
+            }
+        }
+
 
         boolean foundInDictionary = false;
         Dictionary sourceDictionaryOfRemovedWord = null;
