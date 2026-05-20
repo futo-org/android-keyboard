@@ -100,6 +100,11 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private LruCache<String, Boolean> mValidSpellingWordReadCache;
     private LruCache<String, Boolean> mValidSpellingWordWriteCache;
 
+    private static boolean sTriesAreInvalid = false;
+    public static void onAnyBinaryDictionaryClosed() {
+        sTriesAreInvalid = true;
+    }
+
     @Override
     public void setValidSpellingWordReadCache(final LruCache<String, Boolean> cache) {
         mValidSpellingWordReadCache = cache;
@@ -867,7 +872,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
         if(DictionaryFacilitatorImpl.swipeDecoderDictionary != null) {
             SwipeDecoderDictionary.updateKeyboard(keyboard);
-            onKeyboardUpdated(Settings.getInstance().getCurrent(), keyboard);
+            updateSwipeLayoutAndDictsIfNeeded(Settings.getInstance().getCurrent(), keyboard);
 
             if(SwipeDecoderDictionary.canBeUsed()) {
                 final ArrayList<SuggestedWordInfo> dictionarySuggestions =
@@ -1063,14 +1068,22 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     @Override
-    public void onKeyboardUpdated(SettingsValues values, Keyboard keyboard) {
+    public void updateSwipeLayoutAndDictsIfNeeded(SettingsValues values, Keyboard keyboard) {
+        if(swipeDecoderDictionary == null) return;
+
+        boolean needsToRecreate = keyboard != mPrevKeyboard;
+        if(sTriesAreInvalid) {
+            needsToRecreate = true;
+            swipeDecoderDictionary.invalidateTries();
+        }
+
+        if(!needsToRecreate) return;
+
         if(!hasAtLeastOneInitializedMainDictionary()) return;
         if(keyboard == null) return;
         KeyboardLayout layout = keyboard.getKeyboardLayout();
         if(layout == null) return;
-        if(swipeDecoderDictionary == null) return;
 
-        if(keyboard == mPrevKeyboard) return;
         mPrevKeyboard = keyboard;
 
         final LayoutInfoForModel info = LayoutInfoForModel.buildLayoutInfo(swipeDecoderDictionary.getContext(), keyboard, values);
@@ -1098,6 +1111,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
 
             swipeDecoderDictionary.updateKeyboard(new SwipeDecoderDictionary.PendingLayoutInfo(info, trieArray));
+            sTriesAreInvalid = false;
         }
     }
 

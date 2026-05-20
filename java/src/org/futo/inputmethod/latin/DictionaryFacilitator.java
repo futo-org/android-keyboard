@@ -183,7 +183,7 @@ public interface DictionaryFacilitator {
 
     void flushUserHistoryDictionaries();
 
-    void onKeyboardUpdated(SettingsValues values, Keyboard keyboard);
+    void updateSwipeLayoutAndDictsIfNeeded(SettingsValues values, Keyboard keyboard);
 
     String dump(final Context context);
 

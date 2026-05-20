@@ -96,7 +96,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 helper.updateGestureAvailability(isGestureHandlingAvailable())
                 updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING)
 
-                dictionaryFacilitator.onKeyboardUpdated(
+                dictionaryFacilitator.updateSwipeLayoutAndDictsIfNeeded(
                     Settings.getInstance().current,
                     helper.keyboardSwitcher.keyboard
                 )
@@ -749,7 +749,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
 
-        dictionaryFacilitator.onKeyboardUpdated(
+        dictionaryFacilitator.updateSwipeLayoutAndDictsIfNeeded(
             Settings.getInstance().current,
             helper.keyboardSwitcher.keyboard
         )

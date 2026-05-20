@@ -691,6 +691,7 @@ public final class BinaryDictionary extends Dictionary {
 
     private synchronized void closeInternalLocked() {
         if (mNativeDict != 0) {
+            DictionaryFacilitatorImpl.onAnyBinaryDictionaryClosed();
             closeNative(mNativeDict);
             mNativeDict = 0;
         }

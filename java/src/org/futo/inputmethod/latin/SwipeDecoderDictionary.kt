@@ -494,4 +494,10 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
     override fun isInDictionary(word: String?): Boolean {
         return false
     }
+
+    fun invalidateTries() {
+        if(appliedTries?.isEmpty() != false) return
+        decoder?.setMode(tries = emptyList<Long>().toLongArray())
+        appliedTries = null
+    }
 }
