@@ -289,7 +289,7 @@ fun TextStyle.withCustomFont(orDefault: FontFamily? = null): TextStyle {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
+fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit, isEmoji: Boolean) {
     val wordInfo = words.getInfoOrNull(idx)
     val isVerbatim = wordInfo?.kind == KIND_TYPED
     val word = wordInfo?.mWord
@@ -323,7 +323,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
     val textStyle = when(isAutocorrect) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
-    }.copy(color = color).withCustomFont(LocalEmojiFontFamily.current)
+    }.copy(color = color).withCustomFont(if(isEmoji) LocalEmojiFontFamily.current else null)
 
     Box(
         modifier = textButtonModifier
@@ -458,7 +458,8 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
                 idx,
                 isPrimary = idx == SuggestedWords.INDEX_OF_AUTO_CORRECTION,
                 onClick = { onClick(idx) },
-                onLongClick = { onLongClick(idx) }
+                onLongClick = { onLongClick(idx) },
+                isEmoji = suggestion in layout.emojiMatches
             )
         } else {
             Spacer(Modifier.weight(1.0f))
