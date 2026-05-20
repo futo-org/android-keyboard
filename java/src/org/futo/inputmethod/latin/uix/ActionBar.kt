@@ -124,6 +124,7 @@ import org.futo.inputmethod.latin.uix.actions.PinnedActions
 import org.futo.inputmethod.latin.uix.actions.toActionList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.theme.LocalEmojiFontFamily
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
@@ -274,11 +275,13 @@ fun AutoFitText(
 }
 
 @Composable
-fun TextStyle.withCustomFont(): TextStyle {
+fun TextStyle.withCustomFont(orDefault: FontFamily? = null): TextStyle {
     val typeface = LocalKeyboardScheme.current.extended.advancedThemeOptions.font
     if(typeface != null) {
         val family = FontFamily(typeface)
         return this.copy(fontFamily = family)
+    } else if (orDefault != null) {
+        return this.copy(fontFamily = orDefault)
     } else {
         return this
     }
@@ -320,7 +323,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
     val textStyle = when(isAutocorrect) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
-    }.copy(color = color).withCustomFont()
+    }.copy(color = color).withCustomFont(LocalEmojiFontFamily.current)
 
     Box(
         modifier = textButtonModifier

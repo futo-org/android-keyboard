@@ -24,6 +24,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.Typeface
 import android.os.Build
 import android.text.Layout
 import android.text.Spanned
@@ -41,6 +42,7 @@ import org.futo.inputmethod.latin.R
 
 class EmojiView @JvmOverloads constructor(
     context: Context,
+    val emojiTypeface: Typeface?,
     attrs: AttributeSet? = null,
 ) :
     View(context, attrs) {
@@ -63,6 +65,8 @@ class EmojiView @JvmOverloads constructor(
             EMOJI_DRAW_TEXT_SIZE_DP.toFloat(),
             context.resources.displayMetrics
         )
+
+        emojiTypeface?.let { setTypeface(it) }
     }
 
     fun setTextColor(color: Int) {

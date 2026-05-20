@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -116,6 +117,13 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.streams.toList
 
+private val CompatEmojiVersions = setOf("9.0", "10.0", "12.0", "12.1", "13.0", "13.1", "14.0", "15.0", "15.1", "16.0", "17.0")
+val Context.compatEmojiTypeface: Typeface? get() = try {
+    Typeface.createFromAsset(assets, "fonts/NotoColorEmoji_api24.ttf")
+} catch(e: Exception) {
+    null
+}
+
 private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
     val lhsLen = lhs.length
     val rhsLen = rhs.length
@@ -214,14 +222,16 @@ class EmojiGridAdapter(
     private val onSelectSkinTone: (PopupInfo) -> Unit,
     private val emojiCellWidth: Int,
     private val contentColor: Color,
+    private val emojiTypeface: Typeface?,
     var wideCellWidth: Float
 ) : ListAdapter<EmojiViewItem, RecyclerView.ViewHolder>(EmojiViewItemDiffCallback) {
 
     class EmojiViewHolder(
         context: Context,
+        emojiTypeface: Typeface?,
         width: Int,
         height: Int
-    ) : RecyclerView.ViewHolder(EmojiView(context)) {
+    ) : RecyclerView.ViewHolder(EmojiView(context, emojiTypeface)) {
         private val emojiView: EmojiView = (itemView as EmojiView).apply {
             layoutParams = ViewGroup.LayoutParams(width, height)
             isClickable = true
@@ -271,7 +281,7 @@ class EmojiGridAdapter(
     @UiThread
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            VIEW_EMOJI -> EmojiViewHolder(parent.context, width = emojiCellWidth, height = emojiCellWidth)
+            VIEW_EMOJI -> EmojiViewHolder(parent.context, width = emojiCellWidth, height = emojiCellWidth, emojiTypeface = emojiTypeface)
             VIEW_CATEGORY -> CategoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.emoji_category, parent, false))
             else -> throw RuntimeException("Unknown viewType $viewType")
         }
@@ -348,17 +358,21 @@ fun Emojis(
 
     val color = LocalKeyboardScheme.current.onKeyboardContainer
 
+    val context = LocalContext.current
     var wideEmojiWidth by remember { mutableIntStateOf(100) }
     val emojiAdapter = remember {
+        val emojiTypeface = context.compatEmojiTypeface
+
         EmojiGridAdapter(
-            onClick,
+            onClick = onClick,
             onSelectSkinTone = {
                 activePopup = it
                 popupIsActive = true
             },
-            emojiWidth,
-            color,
-            wideEmojiWidth / 100.0f
+            emojiCellWidth = emojiWidth,
+            contentColor = color,
+            wideCellWidth = wideEmojiWidth / 100.0f,
+            emojiTypeface = emojiTypeface,
         )
     }
 
@@ -892,10 +906,12 @@ class PersistentEmojiState : PersistentActionState {
 
                 emojis.value = (emojiData + supplementalEmoteData).mapNotNull {
                     val emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content
+                    val version = it.jsonObject["unicode_version"]!!.jsonPrimitive.content
                     val category = it.jsonObject["category"]!!.jsonPrimitive.content
                     val supported =
                         emoji.codePoints().toList().all { c -> Character.getName(c) != null }
                                 || category == "ASCII"
+                                || CompatEmojiVersions.contains(version)
 
                     val tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
                         ?.toList() ?: listOf()
