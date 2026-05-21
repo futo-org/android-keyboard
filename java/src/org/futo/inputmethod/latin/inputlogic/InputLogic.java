@@ -18,6 +18,7 @@ package org.futo.inputmethod.latin.inputlogic;
 
 import android.os.SystemClock;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
@@ -371,18 +372,37 @@ public final class InputLogic {
         // for the sequence of language switching.
         inputTransaction.setDidAffectContents();
 
-        if(suggestionInfo.mKindAndFlags == SuggestedWordInfo.KIND_UNDO || suggestionInfo.mKindAndFlags == SuggestedWordInfo.KIND_CORRECTION) {
-            inputTransaction.setRequiresUpdateSuggestions();
+        switch (suggestionInfo.mKindAndFlags){
+            case SuggestedWordInfo.KIND_UNDO: {
+                inputTransaction.setRequiresUpdateSuggestions();
 
-            if (suggestionInfo.mKindAndFlags == SuggestedWordInfo.KIND_UNDO){
                 mConnection.finishComposingText();
+
+                mWordComposer.reset(true);
+
+                mConnection.commitText(suggestionInfo.mWord, 1);
+
+                return inputTransaction;
             }
+            case SuggestedWordInfo.KIND_CORRECTION:{
+                inputTransaction.setRequiresUpdateSuggestions();
 
-            mWordComposer.reset(true);
+                mWordComposer.reset(true);
 
-            mConnection.commitText(suggestionInfo.mWord, 1);
+                final NgramContext ngramContext = mConnection.getNgramContextFromNthPreviousWord(
+                        settingsValues.mSpacingAndPunctuations, 1);
+                performAdditionToUserHistoryDictionary(settingsValues, suggestionInfo.mWord, ngramContext, 1);
 
-            return inputTransaction;
+                SpannableStringBuilder correctedWord = new SpannableStringBuilder(suggestionInfo.mWord);
+
+                // add space and remove leading space to set new cursor position after the space and avoid double spacing
+                mConnection.commitText(correctedWord.append(" "), 1);
+                if (mConnection.spaceFollowsCursor()) {
+                    mConnection.removeLeadingSpace();
+                }
+
+                return inputTransaction;
+            }
         }
 
         mConnection.beginBatchEdit();
