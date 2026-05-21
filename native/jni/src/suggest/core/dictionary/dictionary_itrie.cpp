@@ -124,11 +124,20 @@ static TrieId ITrie_GetChild(void* self, TrieId id, uint32_t idx) {
 static bool ITrie_IsWord(void* self, TrieId id) {
     auto dic = ((DicITrieWrapper *)self);
     auto node = dic->nodes.find(id);
-    if(node == dic->nodes.end()) {
-        return false;
-    }
+    if(node == dic->nodes.end()) return false;
+    if(!node->second.isTerminalDicNode()) return false;
 
-    return node->second.isTerminalDicNode();
+    BinaryDictionaryShortcutIterator shortcutIt = dic->structure->getShortcutIterator(node->second.getWordId());
+    if(shortcutIt.hasNextShortcutTarget()) return true;
+
+    const WordAttributes wordAttributes = dic->structure->getWordAttributesInContext(
+            node->second.getPrevWordIds(),
+            node->second.getWordId(), nullptr);
+
+    if(wordAttributes.isNotAWord()) return false;
+    if(wordAttributes.isBlacklisted()) return false;
+
+    return true;
 }
 
 static float ITrie_GetFrequency(void* self, TrieId id) {
@@ -168,12 +177,22 @@ static char *ITrie_GetWord(void* self, TrieId id, bool final) {
         return nullptr;
     }
 
-    static char charBuf[50];
+    static char charBuf[MAX_WORD_LENGTH];
     int charBufHead = 0;
     const int* buf = node->second.getOutputWordBuf();
 
     if(final) {
-        intArrayToCharArray(buf, node->second.getNodeCodePointCount(), charBuf, 50);
+        BinaryDictionaryShortcutIterator shortcutIt = dic->structure->getShortcutIterator(node->second.getWordId());
+        if(shortcutIt.hasNextShortcutTarget()) {
+            int shortcutTarget[MAX_WORD_LENGTH];
+            int shortcutTargetLength;
+            bool isWhitelist;
+            shortcutIt.nextShortcutTarget(MAX_WORD_LENGTH, shortcutTarget, &shortcutTargetLength, &isWhitelist);
+            intArrayToCharArray(shortcutTarget, shortcutTargetLength, charBuf, MAX_WORD_LENGTH);
+            return charBuf;
+        }
+
+        intArrayToCharArray(buf, node->second.getNodeCodePointCount(), charBuf, MAX_WORD_LENGTH);
         return charBuf;
     } else {
         for (int i = 0; i < node->second.getNodeCodePointCount(); i++) {
@@ -181,7 +200,7 @@ static char *ITrie_GetWord(void* self, TrieId id, bool final) {
             if (letterIdx != -1) {
                 int code = dic->lettersAsCodePoints[letterIdx];
                 charBufHead += intArrayToCharArray(&code, 1, &charBuf[charBufHead],
-                                                   50 - charBufHead);
+                                                   MAX_WORD_LENGTH - charBufHead);
             }
         }
 
