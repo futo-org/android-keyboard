@@ -305,9 +305,9 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
     var decoder: SwipeDecoder? = null
 
     object BeamValues {
-        const val shortBeam = 16
+        const val shortBeam = 32
         const val highBeam = 300
-        const val highestBeam = 900
+        const val highestBeam = 300
     }
 
     private fun getOrInitDecoder(): SwipeDecoder = decoder ?: run {
@@ -362,19 +362,6 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         inOutWeightOfLangModelVsSpatialModel: FloatArray?
     ): ArrayList<SuggestedWords.SuggestedWordInfo?>? {
         throw UnsupportedOperationException("Use the non-dictionary method instead")
-    }
-
-    private fun needHighestBeam(xCoords: FloatArray, yCoords: FloatArray, times: FloatArray): Boolean {
-        var dist = 0.0f
-        for(i in 1 until xCoords.size) {
-            val dx = xCoords[i] - xCoords[i-1]
-            val dy = yCoords[i] - yCoords[i-1]
-            val delta = sqrt(dx * dx + dy * dy)
-            dist += delta
-        }
-
-        val deltaTime = times[times.size - 1] - times[0]
-        return dist > 5.0f && deltaTime > 1500.0f
     }
 
     val whitespaceRegex = Regex("\\W+")
@@ -432,7 +419,6 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
 
         val beamWidth = when {
             !useHighBeam -> BeamValues.shortBeam
-            needHighestBeam(xCoords, yCoords, times) -> BeamValues.highestBeam
             else -> BeamValues.highBeam
         }
 
