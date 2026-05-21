@@ -235,8 +235,19 @@ fun LayoutEditor(layout: CustomLayout, onSave: (CustomLayout) -> Unit, onDelete:
 
             Spacer(Modifier.width(16.dp))
 
+            val context = LocalContext.current
+            val doubleTapDeleteTime = remember { mutableLongStateOf(0L) }
             Button(onClick = {
-                onDelete()
+                if(System.currentTimeMillis() < (doubleTapDeleteTime.longValue + 5000L)) {
+                    onDelete()
+                } else {
+                    doubleTapDeleteTime.longValue = System.currentTimeMillis()
+                    Toast.makeText(
+                        context,
+                        "Tap delete again to confirm",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }, colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.errorContainer,
                 contentColor = MaterialTheme.colorScheme.onErrorContainer
