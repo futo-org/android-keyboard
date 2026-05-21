@@ -1072,6 +1072,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public void updateSwipeLayoutAndDictsIfNeeded(SettingsValues values, Keyboard keyboard) {
         if(swipeDecoderDictionary == null) return;
 
+        // TODO: This could be more optimized by avoiding unnecessary recreations when
+        //  isMultiLine is changed, or something else trivial has changed. Maybe also cache the
+        //  resulting LayoutInfos
         boolean needsToRecreate = keyboard != mPrevKeyboard;
         if(sTriesAreInvalid) {
             needsToRecreate = true;

@@ -230,6 +230,8 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
     companion object {
         const val SWIPE_MODEL = "universal_model/model_fp32.pte"
 
+        var debugLogUntil: Long = 0L
+
         private var prevKeyboard: Keyboard? = null
         var appliedLayoutInfo: LayoutInfoForModel = LayoutInfoForModel.DEFAULT
             private set
@@ -443,7 +445,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         }
 
 
-        if(BuildConfig.DEBUG) {
+        if(BuildConfig.DEBUG || System.currentTimeMillis() < debugLogUntil) {
             val inputs = Inputs(xCoords.zip(yCoords.zip(times)).map {
                 val x = it.first
                 val y = it.second.first

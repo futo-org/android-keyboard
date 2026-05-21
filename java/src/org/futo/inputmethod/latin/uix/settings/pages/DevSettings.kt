@@ -27,6 +27,7 @@ import org.futo.inputmethod.engine.general.UseExpandableSuggestionsForGeneralIME
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.CrashLoggingApplication
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.SwipeDecoderDictionary
 import org.futo.inputmethod.latin.TextInputAlternativeIC
 import org.futo.inputmethod.latin.TextInputAlternativeICComposing
 import org.futo.inputmethod.latin.TextInputBufferedIC
@@ -243,6 +244,16 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
         )
 
         if(!BuildConfig.IS_PLAYSTORE_BUILD) {
+            NavigationItem(
+                title = "Enable swipe debug logging for 5 minutes",
+                style = NavigationItemStyle.MiscNoArrow,
+                navigate = {
+                    SwipeDecoderDictionary.debugLogUntil = System.currentTimeMillis() + 5L * 60L * 1000L
+                },
+                icon = painterResource(id = R.drawable.code)
+            )
+
+
             NavigationItem(
                 title = "Crash the app",
                 style = NavigationItemStyle.MiscNoArrow,
