@@ -426,7 +426,21 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         }
 
         val topK = if(useHighBeam) 4 else 1
-        val results = decoder.recognize(xCoords, yCoords, times, topK=topK, beamWidth=beamWidth, trieWeights=trieWeights)
+
+        val results = synchronized(BinaryDictionary.sTrieUsageLock) {
+            if(appliedTries?.isEmpty() != false) {
+                Log.e("SwipeDecoderDictionary", "Applied tries are blank! $appliedTries")
+                return null
+            }
+             decoder.recognize(
+                xCoords,
+                yCoords,
+                times,
+                topK = topK,
+                beamWidth = beamWidth,
+                trieWeights = trieWeights
+            )
+        }
 
 
         if(BuildConfig.DEBUG) {

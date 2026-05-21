@@ -103,6 +103,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private static boolean sTriesAreInvalid = false;
     public static void onAnyBinaryDictionaryClosed() {
         sTriesAreInvalid = true;
+        swipeDecoderDictionary.invalidateTries();
     }
 
     @Override
@@ -1074,7 +1075,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         boolean needsToRecreate = keyboard != mPrevKeyboard;
         if(sTriesAreInvalid) {
             needsToRecreate = true;
-            swipeDecoderDictionary.invalidateTries();
         }
 
         if(!needsToRecreate) return;
@@ -1111,7 +1111,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
 
             swipeDecoderDictionary.updateKeyboard(new SwipeDecoderDictionary.PendingLayoutInfo(info, trieArray));
-            sTriesAreInvalid = false;
+            sTriesAreInvalid = trieArray.isEmpty();
         }
     }
 

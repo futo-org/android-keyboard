@@ -53,6 +53,10 @@ import javax.annotation.Nonnull;
 public final class BinaryDictionary extends Dictionary {
     private static final String TAG = BinaryDictionary.class.getSimpleName();
 
+    // To prevent free-during-use by external libraries referencing the dictionary handle
+    // (swipe integration)
+    public static Object sTrieUsageLock = new Object();
+
     // The cutoff returned by native for auto-commit confidence.
     // Must be equal to CONFIDENCE_TO_AUTO_COMMIT in native/jni/src/defines.h
     private static final int CONFIDENCE_TO_AUTO_COMMIT = 1000000;
@@ -690,10 +694,12 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     private synchronized void closeInternalLocked() {
-        if (mNativeDict != 0) {
-            DictionaryFacilitatorImpl.onAnyBinaryDictionaryClosed();
-            closeNative(mNativeDict);
-            mNativeDict = 0;
+        synchronized (sTrieUsageLock) {
+            if (mNativeDict != 0) {
+                DictionaryFacilitatorImpl.onAnyBinaryDictionaryClosed();
+                closeNative(mNativeDict);
+                mNativeDict = 0;
+            }
         }
     }
 
