@@ -371,10 +371,13 @@ public final class InputLogic {
         // for the sequence of language switching.
         inputTransaction.setDidAffectContents();
 
-        if(suggestionInfo.mKindAndFlags == SuggestedWordInfo.KIND_UNDO) {
+        if(suggestionInfo.mKindAndFlags == SuggestedWordInfo.KIND_UNDO || suggestionInfo.mKindAndFlags == SuggestedWordInfo.KIND_CORRECTION) {
             inputTransaction.setRequiresUpdateSuggestions();
 
-            mConnection.finishComposingText();
+            if (suggestionInfo.mKindAndFlags == SuggestedWordInfo.KIND_UNDO){
+                mConnection.finishComposingText();
+            }
+
             mWordComposer.reset(true);
 
             mConnection.commitText(suggestionInfo.mWord, 1);
