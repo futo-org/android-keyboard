@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -32,7 +34,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
@@ -94,22 +99,41 @@ fun TogglableKey(
 @Composable
 fun Modifier.repeatablyClickableAction(repeatable: Boolean = true, onTrigger: (Boolean) -> Unit): Modifier {
     val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
+    val currentOnTrigger by rememberUpdatedState(onTrigger)
 
-    LaunchedEffect(isPressed) {
-        if(isPressed) {
-            onTrigger(false)
-            if(repeatable) {
-                delay(670L)
-                while (isPressed) {
-                    onTrigger(true)
-                    delay(50L)
+    LaunchedEffect(interactionSource, repeatable) {
+        var repeatJob: Job? = null
+
+        interactionSource.interactions.collect { interaction ->
+            when (interaction) {
+                is PressInteraction.Press -> {
+                    currentOnTrigger(false)
+
+                    if (repeatable) {
+                        repeatJob?.cancel()
+                        repeatJob = launch {
+                            delay(670L)
+                            while (isActive) {
+                                currentOnTrigger(true)
+                                delay(50L)
+                            }
+                        }
+                    }
+                }
+                is PressInteraction.Release,
+                is PressInteraction.Cancel -> {
+                    repeatJob?.cancel()
+                    repeatJob = null
                 }
             }
         }
     }
 
-    return this.clickable(interactionSource, indication = LocalIndication.current, onClick = { })
+    return this.clickable(
+        interactionSource = interactionSource,
+        indication = LocalIndication.current,
+        onClick = { }
+    )
 }
 
 @Composable
