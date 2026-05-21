@@ -51,6 +51,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.xlm.AllowTransformerOnNonQWERTYLayouts
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 import org.futo.inputmethod.updates.dismissedMigrateUpdateNotice
 import kotlin.system.exitProcess
@@ -156,6 +157,11 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             title = "Theme dev utility",
             style = NavigationItemStyle.Misc,
             navigate = { navController.navigate("devtheme") }
+        )
+
+        SettingToggleDataStore(
+            title = "Allow transformer models on non QWERTY layouts",
+            setting = AllowTransformerOnNonQWERTYLayouts
         )
 
 
