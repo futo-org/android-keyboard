@@ -126,10 +126,12 @@ import org.futo.inputmethod.latin.uix.actions.PinnedActions
 import org.futo.inputmethod.latin.uix.actions.toActionList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
-import org.futo.inputmethod.latin.uix.theme.LocalEmojiFontFamily
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiFamily
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiTypeface
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.emojiNeedsCompat
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
@@ -327,10 +329,20 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         Modifier
     }
 
+    val compatTypeface = LocalCompatEmojiTypeface.current
+    val compatFamily = LocalCompatEmojiFamily.current
+    val potentiallyCompatEmojiFont = remember(word, isEmoji) {
+        if(word != null && isEmoji && emojiNeedsCompat(word, compatTypeface)) {
+            compatFamily
+        } else {
+            null
+        }
+    }
+
     val textStyle = when(isAutocorrect) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
-    }.copy(color = color).withCustomFont(if(isEmoji) LocalEmojiFontFamily.current else null)
+    }.copy(color = color).withCustomFont(potentiallyCompatEmojiFont)
 
     Box(
         modifier = textButtonModifier

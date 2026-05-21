@@ -9,8 +9,13 @@ import android.view.accessibility.AccessibilityEvent
 import android.widget.TextView
 import androidx.annotation.UiThread
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -106,7 +111,11 @@ import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiFamily
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiTypeface
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.uix.theme.emojiNeedsCompat
+import org.futo.inputmethod.latin.uix.theme.emojiShouldShow
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -115,7 +124,6 @@ import java.util.zip.GZIPInputStream
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import kotlin.streams.toList
 
 private val CompatEmojiVersions = setOf("9.0", "10.0", "12.0", "12.1", "13.0", "13.1", "14.0", "15.0", "15.1", "16.0", "17.0")
 val Context.compatEmojiTypeface: Typeface? get() = try {
@@ -222,16 +230,18 @@ class EmojiGridAdapter(
     private val onSelectSkinTone: (PopupInfo) -> Unit,
     private val emojiCellWidth: Int,
     private val contentColor: Color,
+    private val rippleColor: Color,
     private val emojiTypeface: Typeface?,
     var wideCellWidth: Float
 ) : ListAdapter<EmojiViewItem, RecyclerView.ViewHolder>(EmojiViewItemDiffCallback) {
 
     class EmojiViewHolder(
         context: Context,
+        rippleColor: Int,
         emojiTypeface: Typeface?,
         width: Int,
         height: Int
-    ) : RecyclerView.ViewHolder(EmojiView(context, emojiTypeface)) {
+    ) : RecyclerView.ViewHolder(EmojiView(context, rippleColor, emojiTypeface)) {
         private val emojiView: EmojiView = (itemView as EmojiView).apply {
             layoutParams = ViewGroup.LayoutParams(width, height)
             isClickable = true
@@ -281,7 +291,7 @@ class EmojiGridAdapter(
     @UiThread
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            VIEW_EMOJI -> EmojiViewHolder(parent.context, width = emojiCellWidth, height = emojiCellWidth, emojiTypeface = emojiTypeface)
+            VIEW_EMOJI -> EmojiViewHolder(parent.context, width = emojiCellWidth, height = emojiCellWidth, rippleColor = rippleColor.toArgb(), emojiTypeface = emojiTypeface)
             VIEW_CATEGORY -> CategoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.emoji_category, parent, false))
             else -> throw RuntimeException("Unknown viewType $viewType")
         }
@@ -358,11 +368,10 @@ fun Emojis(
 
     val color = LocalKeyboardScheme.current.onKeyboardContainer
 
-    val context = LocalContext.current
     var wideEmojiWidth by remember { mutableIntStateOf(100) }
+    val emojiTypeface = LocalCompatEmojiTypeface.current
+    val rippleColor = LocalKeyboardScheme.current.keyboardContainerPressed
     val emojiAdapter = remember {
-        val emojiTypeface = context.compatEmojiTypeface
-
         EmojiGridAdapter(
             onClick = onClick,
             onSelectSkinTone = {
@@ -373,6 +382,7 @@ fun Emojis(
             contentColor = color,
             wideCellWidth = wideEmojiWidth / 100.0f,
             emojiTypeface = emojiTypeface,
+            rippleColor = rippleColor
         )
     }
 
@@ -383,6 +393,11 @@ fun Emojis(
     var viewWidth by remember { mutableIntStateOf(0) }
     var viewHeight by remember { mutableIntStateOf(0) }
     var popupSize by remember { mutableStateOf(IntSize(0, 0)) }
+
+    val blockerAlpha: Float by animateFloatAsState(
+        targetValue = if (popupIsActive) 1.0f else 0.0f
+    )
+
 
     Box(modifier = modifier) {
         AndroidView(
@@ -476,7 +491,12 @@ fun Emojis(
                         }
                     }
                 }
+                .padding(8.dp, 0.dp)
         )
+
+        Box(Modifier.matchParentSize().background(
+            MaterialTheme.colorScheme.background.copy(alpha = blockerAlpha * 0.5f)
+        ))
 
         val posX = (activePopup?.x ?: 0) - popupSize.width / 2
         val posY = (activePopup?.y ?: 0) - popupSize.height
@@ -495,17 +515,31 @@ fun Emojis(
             }
             .absoluteOffset {
                 IntOffset(x, y)
-            }) {
+            },
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             activePopup?.let { popupInfo ->
+                val compatFamily = LocalCompatEmojiFamily.current
+                val familyToUse = remember(compatFamily, popupInfo.emoji.emoji) {
+                    if(emojiNeedsCompat(popupInfo.emoji.emoji, emojiTypeface)) {
+                        compatFamily
+                    } else {
+                        null
+                    }
+                }
                 Box {
                     Surface(
-                        color = MaterialTheme.colorScheme.primaryContainer,
+                        color = LocalKeyboardScheme.current.keyboardPress,
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Row {
+                        Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                             generateSkinToneVariants(popupInfo.emoji.emoji, emojiMap).map { emoji ->
-                                IconButton(
-                                    onClick = {
+
+                                Box(Modifier
+                                    .width(40.dp)
+                                    .height(40.dp)
+                                    .clickable {
                                         onClick(
                                             EmojiItem(
                                                 emoji = emoji,
@@ -515,13 +549,13 @@ fun Emojis(
                                             )
                                         )
                                         popupIsActive = false
-                                    }, modifier = Modifier
-                                        .width(42.dp)
-                                        .height(42.dp)
-                                ) {
-                                    Box {
-                                        Text(emoji, modifier = Modifier.align(Alignment.Center))
                                     }
+                                ) {
+                                    Text(emoji, modifier = Modifier.align(Alignment.Center),
+                                        fontFamily = familyToUse,
+                                        fontSize = with(LocalDensity.current) {
+                                            32.dp.toSp()
+                                        })
                                 }
                             }
                         }
@@ -742,7 +776,13 @@ fun EmojiGrid(
     val jumpCategory: MutableState<CategoryItem?> = remember { mutableStateOf(null) }
 
 
-    var emojiList = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis
+    var emojiList = buildList<EmojiViewItem> {
+        if(recentEmojis.isNotEmpty()) {
+            add(CategoryItem("Recent"))
+            addAll(recentEmojis.map { EmojiItemItem(it) })
+        }
+        addAll(categorizedEmojis)
+    }
 
     if(isSearching) {
         val locale = LocalConfiguration.current.locale
@@ -895,6 +935,8 @@ class PersistentEmojiState : PersistentActionState {
             val supplementalEmoteText = context.resources.openRawResource(R.raw.supplemental_emotes)
                 .bufferedReader().readText()
 
+            val compatTypeface = context.compatEmojiTypeface
+
             withContext(Dispatchers.Default) {
                 val emojiData = Json.parseToJsonElement(text).jsonArray.toList()
                 val supplementalEmoteData = Json.parseToJsonElement(supplementalEmoteText).jsonArray
@@ -909,19 +951,15 @@ class PersistentEmojiState : PersistentActionState {
                     val version = it.jsonObject["unicode_version"]!!.jsonPrimitive.content
                     val description = it.jsonObject["description"]!!.jsonPrimitive.content
                     val category = it.jsonObject["category"]!!.jsonPrimitive.content
-                    val supported =
-                        emoji.codePoints().toList().all { c -> Character.getName(c) != null }
-                                || category == "ASCII"
-                                || CompatEmojiVersions.contains(version)
 
                     val tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
                         ?.toList() ?: listOf()
                     val aliases = it.jsonObject["aliases"]?.jsonArray?.map { it.jsonPrimitive.content }
                         ?.toList() ?: listOf()
 
-                    val isUnsupportedByFont = version !in CompatEmojiVersions
-                    if(isUnsupportedByFont) {
-                        EmojiView.addExceptionalCompatEmoji(emoji)
+                    val supported = when {
+                        category == "ASCII" -> true
+                        else -> emojiShouldShow(emoji, compatTypeface)
                     }
 
                     if(!supported) {
