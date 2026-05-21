@@ -1645,6 +1645,16 @@ class UixManager(private val latinIME: LatinIME) {
         inlineStuffHiddenByTyping.value = textBlank == false
     }
 
+    fun updateEmojiTranslationsIfNeeded() {
+        if(latinIME.getSetting(SHOW_EMOJI_SUGGESTIONS)
+            && Settings.getInstance().current.needsToLookupSuggestions()
+        ) {
+            prevLocale?.let {
+                PersistentEmojiState.loadTranslationsForLanguage(latinIME, it)
+            }
+        }
+    }
+
     private var prevLocale: Locale? = null
     fun updateLocale(locale: Locale): Configuration? {
         var result: Configuration? = null
@@ -1659,7 +1669,7 @@ class UixManager(private val latinIME: LatinIME) {
             setContent()
         }
 
-        PersistentEmojiState.loadTranslationsForLanguage(latinIME, locale)
+        updateEmojiTranslationsIfNeeded()
         checkIfDictInstalled()
         return result
     }

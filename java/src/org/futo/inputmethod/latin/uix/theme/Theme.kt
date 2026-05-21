@@ -2,7 +2,9 @@ package org.futo.inputmethod.latin.uix.theme
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Build
+import android.text.TextPaint
 import android.view.View
 import android.view.Window
 import androidx.annotation.ColorInt
@@ -20,7 +22,6 @@ import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.actions.compatEmojiTypeface
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
-import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import kotlin.math.sqrt
 
 fun applyWindowColors(window: Window, @ColorInt color: Int, statusBar: Boolean) {
@@ -56,22 +57,45 @@ fun StatusBarColorSetter() {
     }
 }
 
-val LocalEmojiFontFamily = compositionLocalOf<FontFamily?> { null }
+val LocalCompatEmojiFamily = compositionLocalOf<FontFamily?> { null }
+val LocalCompatEmojiTypeface = compositionLocalOf<Typeface?> { null }
+
+private var systemPaint = TextPaint().apply {
+    typeface = Typeface.DEFAULT
+    textSize = 64f
+}
+private var compatPaint = TextPaint().apply {
+    textSize = 64f
+}
+private var compatCache = mutableMapOf<String, Int>()
+private fun putCompatCache(emoji: String, compatTypeface: Typeface?): Int {
+    compatPaint.typeface = compatTypeface
+
+    return when {
+        systemPaint.hasGlyph(emoji) -> 0
+        compatPaint.hasGlyph(emoji) -> 1
+        else -> 2
+    }
+}
+fun emojiNeedsCompat(emoji: String, compatTypeface: Typeface?): Boolean =
+    compatCache.getOrPut(emoji) { putCompatCache(emoji, compatTypeface) } == 1
+fun emojiShouldShow(emoji: String, compatTypeface: Typeface?): Boolean =
+    compatCache.getOrPut(emoji) { putCompatCache(emoji, compatTypeface) } != 2
 
 @Composable
 fun UixThemeWrapper(colorScheme: KeyboardColorScheme, content: @Composable () -> Unit) {
     val context = LocalContext.current
-    val emojiFont = remember {
-        context.compatEmojiTypeface?.let { FontFamily(it) }
-    }
-    CompositionLocalProvider(LocalKeyboardScheme provides colorScheme) {
-        CompositionLocalProvider(LocalEmojiFontFamily provides emojiFont) {
-            MaterialTheme(
-                colorScheme = colorScheme.base,
-                //typography = Typography,
-                content = content,
-            )
-        }
+    val emojiTypeface = remember { context.compatEmojiTypeface }
+    val emojiFamily = remember(emojiTypeface) { emojiTypeface?.let { FontFamily(it) } }
+    CompositionLocalProvider(
+        LocalKeyboardScheme provides colorScheme,
+        LocalCompatEmojiFamily provides emojiFamily,
+        LocalCompatEmojiTypeface provides emojiTypeface
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme.base,
+            content = content,
+        )
     }
 }
 
