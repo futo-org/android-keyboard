@@ -377,6 +377,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         return dist > 5.0f && deltaTime > 1500.0f
     }
 
+    val whitespaceRegex = Regex("\\W+")
     fun getSuggestions(
         composedData: ComposedData,
         ngramContext: NgramContext?,
@@ -416,7 +417,15 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         }.toFloatArray()
         val times = pointers.times.take(count).map { it.toFloat() }.toFloatArray()
 
-        val wordsContext = ngramContext?.fullContext?.split(' ')?.takeLast(10) ?: emptyList()
+        val wordsContext = ngramContext?.fullContext
+            ?.lineSequence()
+            ?.lastOrNull()
+            ?.splitToSequence(whitespaceRegex)
+            ?.filter { it.isNotEmpty() }
+            ?.toList()
+            ?.takeLast(10)
+            ?: emptyList()
+
         val decoder = getOrInitDecoder()
         decoder.setContext(wordsContext)
         appliedTrieWeights = trieWeights
@@ -458,6 +467,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
                 "SwipeDecoderDictionary",
                 "Inputs = ${Json.encodeToString(Inputs.serializer(), inputs)}"
             )
+            Log.d("SwipeDecoderDictionary", "Context = $wordsContext")
             Log.d("SwipeDecoderDictionary", "transformed fx ${xCoords[0]}")
             Log.d("SwipeDecoderDictionary", "transformed fy ${yCoords[0]}")
             Log.d("SwipeDecoderDictionary", "transformed lx ${xCoords.last()}")
