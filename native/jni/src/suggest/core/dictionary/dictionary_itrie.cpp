@@ -181,6 +181,11 @@ static char *ITrie_GetWord(void* self, TrieId id, bool final) {
     int charBufHead = 0;
     const int* buf = node->second.getOutputWordBuf();
 
+    if(id == 0) {
+        charBuf[0] = 0;
+        return charBuf;
+    }
+
     if(final) {
         BinaryDictionaryShortcutIterator shortcutIt = dic->structure->getShortcutIterator(node->second.getWordId());
         if(shortcutIt.hasNextShortcutTarget()) {
