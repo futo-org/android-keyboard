@@ -143,6 +143,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static final String PREF_USE_WESTERN_NUMERALS = "pref_use_western_numerals";
 
+    public static final String PREF_SWIPE_LEFT_DELETE = "swipe_left_delete";
+    public static final String PREF_SWIPE_RIGHT_SPACE = "swipe_right_space";
+    public static final String PREF_SWIPE_DOWN_PREDICTION = "swipe_down_prediction";
+    public static final String PREF_SWIPE_DOWN_LR_PREDICTION = "swipe_down_lr_prediction";
+    public static final String PREF_SWIPE_UP_UNDO = "swipe_up_undo";
+
     public static final int DEFAULT_ALT_SPACES_MODE = SPACES_MODE_ALL;
 
     // Emoji

@@ -157,6 +157,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private boolean mStartedOnFastLongPress;
     private boolean mCursorMoved = false;
     private boolean mSpacebarLongPressed = false;
+    private boolean mSwipeActionTriggered = false;
+
+    private static final int sSwipeActionStep =
+            (int)(18.0 * Resources.getSystem().getDisplayMetrics().density);
 
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
@@ -757,8 +761,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mStartTime = System.currentTimeMillis();
             mStartedOnFastLongPress = key.isFastLongPress();
             mSpacebarLongPressed = false;
+            mSwipeActionTriggered = false;
 
-            mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
+            final boolean swipeActionsMode = !Settings.getInstance().getCurrent().mGestureInputEnabled;
+            mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE
+                    || key.getCode() == Constants.CODE_SPACE
+                    || swipeActionsMode;
             mIsFlickingKey = !mIsSlidingCursor && key.getHasFlick();
             mFlickDirection = key.flickDirection(0, 0);
             mCurrentKey = key;
@@ -966,6 +974,72 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
 
+        // Swipe actions (when gesture typing is off)
+        // Skip spacebar — it has its own swipe gestures (cursor movement, language switch)
+        if (mIsSlidingCursor && oldKey != null && !mSwipeActionTriggered
+                && !settingsValues.mGestureInputEnabled
+                && oldKey.getCode() != Constants.CODE_SPACE
+                && oldKey.getCode() != Constants.CODE_DELETE) {
+            final int dx = x - mStartX;
+            final int dy = y - mStartY;
+            final long swipeDistSq = (long)dx * dx + (long)dy * dy;
+            final long thresholdSq = (long)sSwipeActionStep * sSwipeActionStep;
+            final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout
+                    / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
+
+            if (swipeDistSq >= thresholdSq
+                    && mStartTime + swipeIgnoreTime < System.currentTimeMillis()) {
+                final int absDx = Math.abs(dx);
+                final int absDy = Math.abs(dy);
+                int direction = 0;
+                boolean enabled = false;
+
+                if (absDx > 2 * absDy) {
+                    // Horizontal swipe
+                    if (dx < 0) {
+                        direction = KeyboardActionListener.SWIPE_ACTION_LEFT;
+                        enabled = settingsValues.mSwipeLeftDelete;
+                    } else {
+                        direction = KeyboardActionListener.SWIPE_ACTION_RIGHT;
+                        enabled = settingsValues.mSwipeRightSpace;
+                    }
+                } else if (absDy > 2 * absDx) {
+                    // Vertical swipe
+                    if (dy < 0) {
+                        direction = KeyboardActionListener.SWIPE_ACTION_UP;
+                        enabled = settingsValues.mSwipeUpUndo;
+                    } else {
+                        direction = KeyboardActionListener.SWIPE_ACTION_DOWN;
+                        enabled = settingsValues.mSwipeDownPrediction;
+                    }
+                } else if (dy > 0) {
+                    // Diagonal down
+                    if (dx < 0) {
+                        direction = KeyboardActionListener.SWIPE_ACTION_DOWN_LEFT;
+                        enabled = settingsValues.mSwipeDownLRPrediction;
+                    } else {
+                        direction = KeyboardActionListener.SWIPE_ACTION_DOWN_RIGHT;
+                        enabled = settingsValues.mSwipeDownLRPrediction;
+                    }
+                }
+
+                if (enabled && direction != 0) {
+                    mSwipeActionTriggered = true;
+                    sTimerProxy.cancelKeyTimersOf(this);
+                    sListener.onSwipeAction(direction);
+                    mLastX = x;
+                    mLastY = y;
+                    return;
+                }
+            }
+        }
+
+        if (mSwipeActionTriggered) {
+            mLastX = x;
+            mLastY = y;
+            return;
+        }
+
         if (mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_SPACE) {
             int pointerStep = sPointerStep;
             if(settingsValues.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_LANGUAGE && !mSpacebarLongPressed) {
@@ -1110,6 +1184,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             sListener.onUpWithDeletePointerActive();
         } else if(mCursorMoved) {
             sListener.onUpWithPointerActive();
+        }
+
+        if (mSwipeActionTriggered) {
+            return;
         }
 
         if(mIsFlickingKey && currentKey != null) {

@@ -109,6 +109,7 @@ import org.futo.inputmethod.latin.uix.settings.DropDownPickerSettingItem
 import org.futo.inputmethod.latin.uix.settings.LocalSharedPrefsCache
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.PrimarySettingToggleDataStoreItem
+import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingItem
@@ -815,16 +816,81 @@ val TypingSettingsMenu = UserSettingsMenu(
                 AutoSpacesSetting()
             }
         ),
-        userSettingToggleSharedPrefs(
-            title = R.string.typing_settings_swipe,
+        UserSetting(
+            name = R.string.typing_settings_swipe,
             subtitle = R.string.typing_settings_swipe_subtitle,
-            key = Settings.PREF_GESTURE_INPUT,
-            default = {true},
-            icon = {
-                Icon(painterResource(id = R.drawable.swipe_icon), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
-            }
-        ),
+        ) {
+            val gestureInput = useSharedPrefsBool(Settings.PREF_GESTURE_INPUT, true)
+            val leftDelete = useSharedPrefsBool(Settings.PREF_SWIPE_LEFT_DELETE, false)
+            val rightSpace = useSharedPrefsBool(Settings.PREF_SWIPE_RIGHT_SPACE, false)
+            val downPrediction = useSharedPrefsBool(Settings.PREF_SWIPE_DOWN_PREDICTION, false)
+            val downLrPrediction = useSharedPrefsBool(Settings.PREF_SWIPE_DOWN_LR_PREDICTION, false)
+            val upUndo = useSharedPrefsBool(Settings.PREF_SWIPE_UP_UNDO, false)
+
+            SettingToggleRaw(
+                title = stringResource(R.string.typing_settings_swipe),
+                subtitle = stringResource(R.string.typing_settings_swipe_subtitle),
+                enabled = gestureInput.value,
+                setValue = { newValue ->
+                    gestureInput.setValue(newValue)
+                    if (newValue) {
+                        leftDelete.setValue(false)
+                        rightSpace.setValue(false)
+                        downPrediction.setValue(false)
+                        downLrPrediction.setValue(false)
+                        upUndo.setValue(false)
+                    }
+                },
+                icon = {
+                    Icon(painterResource(id = R.drawable.swipe_icon), contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+                }
+            )
+        },
+
+        UserSetting(name = R.string.swipe_gestures_title) {
+            val gestureInputOn = useSharedPrefsBool(Settings.PREF_GESTURE_INPUT, true)
+            val enabled = !gestureInputOn.value
+
+            val leftDelete = useSharedPrefsBool(Settings.PREF_SWIPE_LEFT_DELETE, false)
+            val rightSpace = useSharedPrefsBool(Settings.PREF_SWIPE_RIGHT_SPACE, false)
+            val downPrediction = useSharedPrefsBool(Settings.PREF_SWIPE_DOWN_PREDICTION, false)
+            val downLrPrediction = useSharedPrefsBool(Settings.PREF_SWIPE_DOWN_LR_PREDICTION, false)
+            val upUndo = useSharedPrefsBool(Settings.PREF_SWIPE_UP_UNDO, false)
+
+            SettingToggleRaw(
+                title = stringResource(R.string.swipe_gesture_left_delete),
+                enabled = leftDelete.value,
+                disabled = !enabled,
+                setValue = { leftDelete.setValue(it) }
+            )
+            SettingToggleRaw(
+                title = stringResource(R.string.swipe_gesture_right_space),
+                enabled = rightSpace.value,
+                disabled = !enabled,
+                setValue = { rightSpace.setValue(it) }
+            )
+            SettingToggleRaw(
+                title = stringResource(R.string.swipe_gesture_down_prediction),
+                enabled = downPrediction.value,
+                disabled = !enabled,
+                setValue = { downPrediction.setValue(it) }
+            )
+            SettingToggleRaw(
+                title = stringResource(R.string.swipe_gesture_down_lr_prediction),
+                subtitle = stringResource(R.string.swipe_gesture_down_lr_prediction_subtitle),
+                enabled = downLrPrediction.value,
+                disabled = !enabled,
+                setValue = { downLrPrediction.setValue(it) }
+            )
+            SettingToggleRaw(
+                title = stringResource(R.string.swipe_gesture_up_undo),
+                enabled = upUndo.value,
+                disabled = !enabled,
+                setValue = { upUndo.setValue(it) }
+            )
+        },
+
         userSettingToggleDataStore(
             title = R.string.typing_settings_suggest_emojis,
             subtitle = R.string.typing_settings_suggest_emojis_subtitle,

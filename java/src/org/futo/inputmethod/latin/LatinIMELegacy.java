@@ -47,6 +47,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodSubtype;
 
 import androidx.annotation.NonNull;
@@ -647,6 +648,41 @@ public class LatinIMELegacy implements KeyboardActionListener,
     @Override
     public void onSwipeLanguage(int direction) {
         Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, direction);
+    }
+
+    @Override
+    public void onSwipeAction(int direction) {
+        if (direction == KeyboardActionListener.SWIPE_ACTION_LEFT) {
+            // Delete word before cursor
+            sendCtrlKeyEvent(KeyEvent.KEYCODE_DEL);
+        } else if (direction == KeyboardActionListener.SWIPE_ACTION_RIGHT) {
+            // Insert space
+            onCodeInput(Constants.CODE_SPACE,
+                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE, false);
+        } else if (direction == KeyboardActionListener.SWIPE_ACTION_UP) {
+            // Undo
+            sendCtrlKeyEvent(KeyEvent.KEYCODE_Z);
+        } else if (direction == KeyboardActionListener.SWIPE_ACTION_DOWN) {
+            // Accept center prediction
+            getLatinIME().getUixManager().pickSuggestionAtVisualPosition(1);
+        } else if (direction == KeyboardActionListener.SWIPE_ACTION_DOWN_LEFT) {
+            // Accept left prediction
+            getLatinIME().getUixManager().pickSuggestionAtVisualPosition(0);
+        } else if (direction == KeyboardActionListener.SWIPE_ACTION_DOWN_RIGHT) {
+            // Accept right prediction
+            getLatinIME().getUixManager().pickSuggestionAtVisualPosition(2);
+        }
+    }
+
+    private void sendCtrlKeyEvent(int keyCode) {
+        final InputConnection ic = mInputMethodService.getCurrentInputConnection();
+        if (ic != null) {
+            final long now = android.os.SystemClock.uptimeMillis();
+            ic.sendKeyEvent(new KeyEvent(
+                    now, now, KeyEvent.ACTION_DOWN, keyCode, 0, KeyEvent.META_CTRL_ON));
+            ic.sendKeyEvent(new KeyEvent(
+                    now, now, KeyEvent.ACTION_UP, keyCode, 0, KeyEvent.META_CTRL_ON));
+        }
     }
 
     @Override
