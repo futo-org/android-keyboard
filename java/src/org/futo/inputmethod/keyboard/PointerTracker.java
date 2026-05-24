@@ -667,7 +667,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         mBogusMoveEventDetector.onActualDownEvent(x, y);
 
         boolean needsToReleasePointers = KeyboardState.shouldReleaseAllPointers(mKeyboard, key);
-        if (needsToReleasePointers) {
+        if (needsToReleasePointers && !sInGesture) {
             // Before processing a down event, all pointers already being tracked should be released
             // Triggers when a modifier key is pressed (e.g. shift), or the layout is not
             // shift-locked
@@ -675,6 +675,18 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
         sPointerTrackerQueue.add(this);
         onDownEventInternal(x, y, eventTime);
+
+        /*if (sInGesture && key != null) {
+            boolean canEndBatch = key.getCode() == Constants.CODE_SPACE
+                    || key.getCode() == Constants.CODE_DELETE;
+
+            if (canEndBatch && mBatchInputArbiter.mayEndBatchInput(eventTime, getActivePointerTrackerCount(), this)) {
+                sInGesture = false;
+                callListenerOnRelease(key, key.getCode(), true);
+                return;
+            }
+        }*/
+
         if (!sGestureEnabler.shouldHandleGesture()) {
             return;
         }
@@ -1133,7 +1145,15 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
 
         if (sInGesture) {
+            mBatchInputArbiter.onPointerUp();
             if (currentKey != null) {
+                /*boolean canEndBatch = currentKey.getCode() == Constants.CODE_SPACE
+                        || currentKey.getCode() == Constants.CODE_DELETE;
+
+                if (canEndBatch && mBatchInputArbiter.mayEndBatchInput(eventTime, getActivePointerTrackerCount(), this)) {
+                    sInGesture = false;
+                }*/
+
                 callListenerOnRelease(currentKey, currentKey.getCode(), true /* withSliding */);
             }
             if (mBatchInputArbiter.mayEndBatchInput(

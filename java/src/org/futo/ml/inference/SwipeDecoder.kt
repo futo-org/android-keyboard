@@ -1,7 +1,6 @@
 package org.futo.ml.inference
 
 import androidx.annotation.Keep
-import org.futo.inputmethod.annotations.ExternallyReferenced
 import java.io.File
 import java.util.Locale
 
@@ -25,9 +24,24 @@ class SwipeDecoder(
     lmModelPath: String? = null,
     lmVocabPath: String? = null
 ) : AutoCloseable {
+    @Keep
+    data class Result(val word: String, val score: Float, val ctcScore: Float = 0f, val lmScore: Float = 0f)
 
     @Keep
-    data class Result(val word: String, val score: Float, val ctcScore: Float, val lmScore: Float)
+    data class SwipeSeg(
+        val x: FloatArray,
+        val y: FloatArray,
+        val t: FloatArray
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            other as SwipeSeg
+            return x.contentEquals(other.x) && y.contentEquals(other.y) && t.contentEquals(other.t)
+        }
+        override fun hashCode() = 31 * (31 * x.contentHashCode() + y.contentHashCode()) + t.contentHashCode()
+    }
+
 
     /** Per-stage timing (microseconds) from the most recent recognize() call. */
     data class Timing(
@@ -79,21 +93,20 @@ class SwipeDecoder(
      * resampling step. Must be the same length as [x] and [y].
      */
     fun recognize(
-        x: FloatArray,
-        y: FloatArray,
-        t: FloatArray,
+        leftSegs: Array<SwipeSeg>,
+        rightSegs: Array<SwipeSeg>,
         topK: Int = 4,
         beamWidth: Int = 100,
         trieWeights: FloatArray? = null,
     ): List<Result> {
         check(handle != 0L) { "SwipeDecoder has been closed" }
-        pinCoresOnce()
-        require(x.isNotEmpty()) { "x array must not be empty" }
-        require(x.size == y.size) { "x and y arrays must have the same size (${x.size} != ${y.size})" }
-        require(t.size == x.size) { "t array size must match x/y (${t.size} != ${x.size})" }
+
+        require(leftSegs.isNotEmpty() || rightSegs.isNotEmpty()) { "must have at least one segment" }
+        //require((leftSegs.size + rightSegs.size) > 1 || leftSegs.isNotEmpty()) { "in single mode, left should contain the swipe" }
+
         require(topK > 0) { "topK must be positive, got $topK" }
         val ctx = if (contextWords.isNotEmpty()) contextWords.toTypedArray() else null
-        val results = nativeRecognize(handle, x, y, t, topK, ctx, beamWidth, trieWeights)
+        val results = nativeRecognize(handle, leftSegs, rightSegs, topK, ctx, beamWidth, trieWeights)
         return results?.toList() ?: emptyList()
     }
 
@@ -201,9 +214,13 @@ class SwipeDecoder(
     ): Long
 
     private external fun nativeRecognize(
-        handle: Long, x: FloatArray, y: FloatArray,
-        t: FloatArray?, topK: Int, context: Array<String>?,
-        beamWidth: Int, trieWeights: FloatArray?
+        handle: Long,
+        leftSegs: Array<SwipeSeg>,
+        rightSegs: Array<SwipeSeg>,
+        topK: Int,
+        context: Array<String>?,
+        beamWidth: Int,
+        trieWeights: FloatArray?
     ): Array<Result>?
 
     private external fun nativePredictNext(

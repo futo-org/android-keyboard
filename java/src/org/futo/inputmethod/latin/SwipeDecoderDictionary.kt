@@ -12,6 +12,7 @@ import org.futo.inputmethod.keyboard.Key
 import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.keyboard.internal.isAlphabet
 import org.futo.inputmethod.latin.common.ComposedData
+import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.settings.SettingsValues
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
@@ -383,7 +384,10 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         if(!composedData.mIsBatchMode) return null
 
         val pointers = composedData.mInputPointers
-        val count = pointers.pointerSize
+        val segments = pointers.gestureSegments.toList().filter { it.x.length > 0 }
+
+        val count = segments.size
+        //Log.d("BatchInputSwipeDecoderDictionary", "total count is $count out of ${pointers.gestureSegments.size}")
         if(count == 0) return null
 
         val keyboardWidth = prevKeyboard?.mOccupiedWidth ?: run {
@@ -396,13 +400,26 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             return null
         }
 
-        val xCoords = pointers.xCoordinates.take(count).map {
-            it.toFloat() / keyboardWidth * appliedLayoutInfo.sx + appliedLayoutInfo.ox
-        }.toFloatArray()
-        val yCoords = pointers.yCoordinates.take(count).map {
-            minOf(1.0f, (it.toFloat() / keyboardHeight) * (4.0f / 3.0f) * appliedLayoutInfo.sy + appliedLayoutInfo.oy )
-        }.toFloatArray()
-        val times = pointers.times.take(count).map { it.toFloat() }.toFloatArray()
+        val earliestTime = segments[0].t.get(0).toFloat()
+        val transformSegment = { seg: InputPointers.GestureSegment -> SwipeDecoder.SwipeSeg(
+            x = seg.x.primitiveArray.take(seg.x.length).map {
+                it.toFloat() / keyboardWidth * appliedLayoutInfo.sx + appliedLayoutInfo.ox
+            }.toFloatArray(),
+            y = seg.y.primitiveArray.take(seg.y.length).map {
+                minOf(1.0f, (it.toFloat() / keyboardHeight) * (4.0f / 3.0f) * appliedLayoutInfo.sy + appliedLayoutInfo.oy )
+            }.toFloatArray(),
+            t = seg.t.primitiveArray.take(seg.t.length).map { it - earliestTime }.toFloatArray()
+        ) }
+
+        val left = mutableListOf<SwipeDecoder.SwipeSeg>()
+        val right = mutableListOf<SwipeDecoder.SwipeSeg>()
+
+        if(count == 1) {
+            left.add(transformSegment(segments.first()))
+        } else {
+            left.addAll(segments.filter { it.pointerId == 0 }.map { transformSegment(it) })
+            right.addAll(segments.filter { it.pointerId == 1 }.map { transformSegment(it) })
+        }
 
         val wordsContext = ngramContext?.fullContext
             ?.lineSequence()
@@ -418,6 +435,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         appliedTrieWeights = trieWeights
 
         val beamWidth = when {
+            (left.size + right.size) > 1 -> BeamValues.highBeam
             !useHighBeam -> BeamValues.shortBeam
             else -> BeamValues.highBeam
         }
@@ -429,35 +447,21 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
                 Log.e("SwipeDecoderDictionary", "Applied tries are blank! $appliedTries")
                 return null
             }
-             decoder.recognize(
-                xCoords,
-                yCoords,
-                times,
-                topK = topK,
-                beamWidth = beamWidth,
-                trieWeights = trieWeights
+            decoder.recognize(
+                 left.toTypedArray(), right.toTypedArray(),
+                 topK = topK,
+                 beamWidth = beamWidth,
+                 trieWeights = trieWeights
             )
         }
 
 
         if(BuildConfig.DEBUG || System.currentTimeMillis() < debugLogUntil) {
-            val inputs = Inputs(xCoords.zip(yCoords.zip(times)).map {
-                val x = it.first
-                val y = it.second.first
-                val t = it.second.second
-
-                Input(x, y, t)
-            })
             Log.d("SwipeDecoderDictionary", "Timing: ${decoder.lastTiming()}")
-            Log.d(
-                "SwipeDecoderDictionary",
-                "Inputs = ${Json.encodeToString(Inputs.serializer(), inputs)}"
-            )
+            Log.d("SwipeDecoderDictionary", "Left = $left")
+            Log.d("SwipeDecoderDictionary", "Right = $right")
+
             Log.d("SwipeDecoderDictionary", "Context = $wordsContext")
-            Log.d("SwipeDecoderDictionary", "transformed fx ${xCoords[0]}")
-            Log.d("SwipeDecoderDictionary", "transformed fy ${yCoords[0]}")
-            Log.d("SwipeDecoderDictionary", "transformed lx ${xCoords.last()}")
-            Log.d("SwipeDecoderDictionary", "transformed ly ${yCoords.last()}")
             Log.d("SwipeDecoderDictionary", "curr scale is  ${appliedLayoutInfo.sx} ${appliedLayoutInfo.sy}")
             Log.d("SwipeDecoderDictionary", "curr offset is ${appliedLayoutInfo.ox} ${appliedLayoutInfo.oy}")
             Log.d("SwipeDecoderDictionary", "outputs = ${results.joinToString { "Word(\"${it.word}\", score=${it.score}, lm=${it.lmScore}, ctc=${it.ctcScore})" }}")
