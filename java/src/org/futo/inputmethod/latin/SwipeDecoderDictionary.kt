@@ -54,6 +54,20 @@ internal fun getKeyYBottom(key: Key, keyboard: Keyboard): Float =
     (key.y + key.verticalGap + key.height) *
             ((1.0f / (keyboard.mBaseHeight - keyboard.mPadding.bottom)) * (4.0f / 3.0f))
 
+private val TRAILING_PUNCTUATION = setOf('.', ',', '!', '?')
+
+// Returns the trailing-punctuation character the gesture ended on, or null. The endpoint
+// must fall inside the key's hit area (not just be "nearest") so finger drift onto a
+// letter-row punctuation key from an adjacent letter swipe doesn't trigger a false append.
+internal fun findTrailingPunctuation(keyboard: Keyboard, rawX: Float, rawY: Float): Char? {
+    val ix = rawX.toInt()
+    val iy = rawY.toInt()
+    val key = keyboard.sortedKeys.firstOrNull { it.code > 0 && it.hitBox.contains(ix, iy) }
+        ?: return null
+    val ch = key.code.toChar()
+    return if (ch in TRAILING_PUNCTUATION) ch else null
+}
+
 
 val Key.swipeCode: Int get() = swipeCodeOverride ?: code
 
@@ -481,7 +495,27 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             Log.d("SwipeDecoderDictionary", "outputs = ${results.joinToString { "Word(\"${it.word}\", score=${it.score}, lm=${it.lmScore}, ctc=${it.ctcScore})" }}")
         }
 
-        val list = ArrayList<SuggestedWords.SuggestedWordInfo>(results.size)
+        val trailingPunct: Char? = prevKeyboard?.let { kb ->
+            val lastSeg = segments.last()
+            val lastRawX = lastSeg.x.primitiveArray[lastSeg.x.length - 1].toFloat()
+            val lastRawY = lastSeg.y.primitiveArray[lastSeg.y.length - 1].toFloat()
+            findTrailingPunctuation(kb, lastRawX, lastRawY)
+        }
+
+        val list = ArrayList<SuggestedWords.SuggestedWordInfo>(results.size + 1)
+
+        // If the swipe ended on a punctuation key, surface "word+punct" as the top suggestion
+        // (so it gets auto-committed) while keeping the plain candidates available as fallbacks.
+        if (trailingPunct != null && results.isNotEmpty()) {
+            val top = results.first()
+            list.add(SuggestedWords.SuggestedWordInfo(
+                top.word + trailingPunct, "", (top.score * 1000.0f + 10001.0f).toInt(),
+                SuggestedWords.SuggestedWordInfo.KIND_CORRECTION, this, 0, 0
+            ).apply {
+                mOriginatesFromSwipeModel = true
+            })
+        }
+
         results.forEach {
             list.add(SuggestedWords.SuggestedWordInfo(
                 it.word, "", (it.score * 1000.0f + 10000.0f).toInt(), SuggestedWords.SuggestedWordInfo.KIND_CORRECTION, this, 0, 0
