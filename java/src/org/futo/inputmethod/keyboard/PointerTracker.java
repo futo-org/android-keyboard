@@ -675,6 +675,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
         sPointerTrackerQueue.add(this);
         onDownEventInternal(x, y, eventTime);
+
         if (!sGestureEnabler.shouldHandleGesture()) {
             return;
         }
@@ -1093,6 +1094,21 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     private void onUpEventInternal(final int x, final int y, final long eventTime) {
+        // Update the key if the layout has changed
+        if(mKeyboardLayoutHasBeenChanged
+                && mCurrentKey != null
+                && !mIsFlickingKey
+                && !mIsInSlidingKeyInput
+                && !mIsInDraggingFinger) {
+            final Key newKey = getKeyOn(x, y);
+            if(newKey != null) {
+                final Key oldKey = mCurrentKey;
+                mCurrentKey = newKey;
+                dragFingerFromOldKeyToNewKey(newKey, x, y, eventTime, oldKey, x, y);
+            }
+            mKeyboardLayoutHasBeenChanged = false;
+        }
+
         mStartedOnFastLongPress = false;
         sTimerProxy.cancelKeyTimersOf(this);
         final boolean isInDraggingFinger = mIsInDraggingFinger;
@@ -1133,6 +1149,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
 
         if (sInGesture) {
+            mBatchInputArbiter.onPointerUp();
             if (currentKey != null) {
                 callListenerOnRelease(currentKey, currentKey.getCode(), true /* withSliding */);
             }

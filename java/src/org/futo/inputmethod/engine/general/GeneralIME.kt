@@ -1,6 +1,7 @@
 package org.futo.inputmethod.engine.general
 
 import android.os.Build
+import android.os.Looper
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -28,6 +29,7 @@ import org.futo.inputmethod.event.InputTransaction
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.DictionaryFacilitator
+import org.futo.inputmethod.latin.DictionaryFacilitatorImpl
 import org.futo.inputmethod.latin.DictionaryFacilitatorProvider
 import org.futo.inputmethod.latin.NgramContext
 import org.futo.inputmethod.latin.RichInputMethodManager
@@ -35,6 +37,7 @@ import org.futo.inputmethod.latin.Subtypes.switchToNextLanguage
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
+import org.futo.inputmethod.latin.SwipeDecoderDictionary
 import org.futo.inputmethod.latin.WordComposer
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
@@ -92,6 +95,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             override fun onUpdateMainDictionaryAvailability(isMainDictionaryAvailable: Boolean) {
                 helper.updateGestureAvailability(isGestureHandlingAvailable())
                 updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING)
+
+                dictionaryFacilitator.updateSwipeLayoutAndDictsIfNeeded(
+                    Settings.getInstance().current,
+                    helper.keyboardSwitcher.keyboard
+                )
             }
         }
 
@@ -404,18 +412,29 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
         showSuggestionStrip(words)
         when(inputStyle) {
-            SuggestedWords.INPUT_STYLE_TAIL_BATCH ->
-                inputLogic.onUpdateTailBatchInputCompleted(
-                    settings.current,
-                    words,
-                    helper.keyboardSwitcher
-                )
+            SuggestedWords.INPUT_STYLE_TAIL_BATCH -> {
+                val updateBatch = {
+                    inputLogic.onUpdateTailBatchInputCompleted(
+                        settings.current,
+                        words,
+                        helper.keyboardSwitcher
+                    )
+                    helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(
+                        HapticFeedbackConstants.VIRTUAL_KEY_RELEASE
+                    )
+                }
+                if(Looper.myLooper() != Looper.getMainLooper()) {
+                    helper.lifecycleScope.launch(Dispatchers.Main) { updateBatch() }
+                } else {
+                    updateBatch()
+                }
+            }
         }
     }
 
     var updateSuggestionJob: Job? = null
     var lmUpdateJob: Job? = null
-    private fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
+    private suspend fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
         // This method returns null for us if LM is disabled
         val predictionInputValues = languageModelFacilitator.makePredictionInputValues(inputStyle)
 
@@ -452,7 +471,6 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             ) { suggestedWords -> dictResult = suggestedWords }
         }
 
-        @Suppress("KotlinConstantConditions")
         when {
             !lmResult.isNullOrEmpty() && dictResult != null && predictionInputValues != null -> {
                 val processed = languageModelFacilitator.processAndMergeSuggestions(
@@ -721,6 +739,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
         inputLogic.mWordComposer.setCombiners(layout.mainLayout.combiners)
+
+        dictionaryFacilitator.updateSwipeLayoutAndDictsIfNeeded(
+            Settings.getInstance().current,
+            helper.keyboardSwitcher.keyboard
+        )
     }
 
     override fun setNeutralSuggestionStrip() {

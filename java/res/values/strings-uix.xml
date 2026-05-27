@@ -448,9 +448,6 @@
 
     <!-- typing settings -->
     <string name="typing_settings_title">Typing preferences</string>
-    <!-- When translating, rename it to gesture typing if it makes more sense for that language -->
-    <string name="typing_settings_swipe">Swipe Typing (alpha)</string>
-    <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
     <string name="typing_settings_suggest_emojis_subtitle">Suggest emojis while you\'re typing</string>
     <string name="typing_settings_vibration_strength">Vibration</string>
@@ -526,6 +523,26 @@
     <string name="theme_customizer_import_custom_theme_author_text">Author: %s</string>
 
     <string name="dev_settings_title">Developer Settings</string>
+
+    <!-- Swipe typing settings menu -->
+    <!-- When translating, rename it to something like "gesture typing" if it makes more sense for that language -->
+    <string name="swipe_settings_title">Swipe Typing</string>
+    <string name="swipe_settings_enable_swipe_typing">Enable swipe typing</string>
+    <string name="swipe_settings_enable_swipe_typing_subtitle">Allow swiping from key to key to write words.</string>
+
+    <string name="swipe_settings_suggest_mode">Suggestion bar mode</string>
+    <string name="swipe_settings_suggest_mode_tags">show 3 suggestions, used word, accepted word, main word, display 3 alternative, swipe typing, swish input, swype, center middle centre other words</string>
+    <string name="swipe_settings_suggest_mode_top4_title">3 alternatives</string>
+    <string name="swipe_settings_suggest_mode_top3_title">2 alternatives</string>
+    <string name="swipe_settings_suggest_mode_used_word">Main</string>
+    <string name="swipe_settings_suggest_mode_alternative_word_1">Alt1</string>
+    <string name="swipe_settings_suggest_mode_alternative_word_2">Alt2</string>
+    <string name="swipe_settings_suggest_mode_alternative_word_3">Alt3</string>
+
+    <string name="swipe_settings_show_unsupported">Show unsupported settings…</string>
+    <string name="swipe_settings_use_old_swipe">Use legacy swipe algorithm</string>
+    <string name="swipe_settings_use_old_swipe_subtitle_short">The legacy algorithm is very inaccurate and not recommended.</string>
+    <string name="swipe_settings_use_old_swipe_subtitle">The legacy algorithm is very inaccurate and not recommended. If you have to use this, please tell us why at keyboard@futo.org. This option will be removed in the future.</string>
 
     <!-- Voice input settings menu -->
     <string name="voice_input_settings_title">Voice Input</string>

@@ -29,6 +29,7 @@ import android.view.inputmethod.EditorInfo;
 import org.futo.inputmethod.compat.AppWorkaroundsUtils;
 import org.futo.inputmethod.latin.InputAttributes;
 import org.futo.inputmethod.latin.R;
+import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
 import org.futo.inputmethod.latin.uix.actions.RegistryKt;
 import org.futo.inputmethod.latin.utils.AsyncResultHolder;
@@ -37,6 +38,7 @@ import org.futo.inputmethod.latin.utils.ScriptUtils2;
 import org.futo.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -106,6 +108,8 @@ public class SettingsValues {
     public final int mBackspaceMode;
     public final int mNumberRowMode;
     public final int mAltSpacesMode;
+
+    public final List<Locale> mMultilingualLocales;
 
     // From the input box
     @Nonnull
@@ -254,6 +258,9 @@ public class SettingsValues {
         mKeyPreviewDismissEndYScale = Settings.readKeyPreviewAnimationScale(
                 prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE,
                 defaultKeyPreviewDismissEndScale);
+
+        mMultilingualLocales = Subtypes.INSTANCE.getMultilingualBucket(context, mLocale);
+
         mDisplayOrientation = res.getConfiguration().orientation;
         mAppWorkarounds = new AsyncResultHolder<>("AppWorkarounds");
         final PackageInfo packageInfo = TargetPackageInfoGetterTask.getCachedPackageInfo(

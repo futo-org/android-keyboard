@@ -366,6 +366,12 @@ android {
         mlModelBinding true
         buildConfig true
     }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
@@ -419,6 +425,8 @@ dependencies {
     // For RIME
     implementation files('libs/rime-release.aar')
     // End for RIME
+
+    implementation files('libs/futo-swipe-release.aar')
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'

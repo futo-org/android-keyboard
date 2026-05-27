@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.keyboard.KeyboardId;
+import org.futo.inputmethod.keyboard.KeyboardLayout;
 import org.futo.inputmethod.latin.NgramContext.WordInfo;
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import org.futo.inputmethod.latin.common.ComposedData;
@@ -93,8 +94,17 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private static final Class<?>[] DICT_FACTORY_METHOD_ARG_TYPES =
             new Class[] { Context.class, Locale.class, File.class, String.class, String.class };
 
+
+    public static SwipeDecoderDictionary swipeDecoderDictionary = null;
+
     private LruCache<String, Boolean> mValidSpellingWordReadCache;
     private LruCache<String, Boolean> mValidSpellingWordWriteCache;
+
+    private static boolean sTriesAreInvalid = false;
+    public static void onAnyBinaryDictionaryClosed() {
+        sTriesAreInvalid = true;
+        swipeDecoderDictionary.invalidateTries();
+    }
 
     @Override
     public void setValidSpellingWordReadCache(final LruCache<String, Boolean> cache) {
@@ -144,7 +154,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         // TODO: Run evaluation to determine a reasonable value for these constants. The current
         // values are ad-hoc and chosen without any particular care or methodology.
         public static final float WEIGHT_FOR_MOST_PROBABLE_LANGUAGE = 1.0f;
-        public static final float WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.0f;
+        public static final float WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.3f;
         public static final float WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.8f;
 
         /**
@@ -350,6 +360,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             @Nullable final String account,
             final String dictNamePrefix,
             @Nullable final DictionaryInitializationListener listener) {
+
+        mPrevKeyboard = null;
+        if(DictionaryFacilitatorImpl.swipeDecoderDictionary == null) {
+            DictionaryFacilitatorImpl.swipeDecoderDictionary = new SwipeDecoderDictionary(context, Locale.ENGLISH);
+        }
+
         final HashMap<Locale, ArrayList<String>> existingDictionariesToCleanup = new HashMap<>();
         // TODO: Make subDictTypesToUse configurable by resource or a static final list.
         final HashSet<String> subDictTypesToUse = new HashSet<>();
@@ -387,6 +403,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
 
+        mTrieCorrespondingGroups = null;
         ArrayList<DictionaryGroup> newDictionaryGroups = new ArrayList<>();
         for(Locale newLocale : newLocales) {
             final DictionaryGroup dictionaryGroupForLocale =
@@ -668,7 +685,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         DictionaryGroup mostConfidentDictionary = findDictionaryGroupWithLocale(mDictionaryGroups,
                 getMostConfidentLocale());
         if(mostConfidentDictionary == null) return;
-        if(mostConfidentDictionary.mConfidence == 0) return;
+        if(mostConfidentDictionary.mConfidence == 0 && mDictionaryGroups.size() > 1) return;
         for (int i = 0; i < words.length; i++) {
             final String currentWord = words[i];
             final boolean wasCurrentWordAutoCapitalized = i == 0 && wasAutoCapitalized;
@@ -854,6 +871,26 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
 
+        if(DictionaryFacilitatorImpl.swipeDecoderDictionary != null) {
+            SwipeDecoderDictionary.updateKeyboard(keyboard);
+            updateSwipeLayoutAndDictsIfNeeded(Settings.getInstance().getCurrent(), keyboard);
+
+            if(SwipeDecoderDictionary.canBeUsed()) {
+                final ArrayList<SuggestedWordInfo> dictionarySuggestions =
+                        DictionaryFacilitatorImpl.swipeDecoderDictionary.getSuggestions(composedData, ngramContext,
+                            inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH, getTrieWeights());
+
+                if (dictionarySuggestions != null) {
+                    suggestionResults.addAll(dictionarySuggestions);
+                    if (null != suggestionResults.mRawSuggestions) {
+                        suggestionResults.mRawSuggestions.addAll(dictionarySuggestions);
+                    }
+
+                    return suggestionResults;
+                }
+            }
+        }
+
         for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
             for (final String dictType : ALL_DICTIONARY_TYPES) {
                 final Dictionary dictionary = dictionaryGroup.getDict(dictType);
@@ -993,6 +1030,91 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
         if(mEmailDictionary != null) {
             mEmailDictionary.asyncFlushBinaryDictionary();
+        }
+    }
+
+    private void addDictionaryTries(List<Dictionary> dictList, String letters, ArrayList<Long> tries) {
+        for(Dictionary dict : dictList) {
+            long handle = 0;
+            if(dict instanceof BinaryDictionary) {
+                handle = ((BinaryDictionary) dict).getITrie(letters);
+            } else if(dict instanceof ReadOnlyBinaryDictionary) {
+                handle = ((ReadOnlyBinaryDictionary) dict).getITrie(letters);
+            }else if(dict instanceof ExpandableBinaryDictionary) {
+                handle = ((ExpandableBinaryDictionary) dict).getITrie(letters);
+            }else if(dict instanceof DictionaryCollection) {
+                addDictionaryTries(((DictionaryCollection) dict).getDictionaries(), letters, tries);
+            }
+
+            if(handle == 0) continue;
+            tries.add(handle);
+        }
+    }
+
+
+    private Keyboard mPrevKeyboard = null;
+    private ArrayList<DictionaryGroup> mTrieCorrespondingGroups;
+
+    private float[] getTrieWeights() {
+        if(mTrieCorrespondingGroups == null) return new float[0];
+
+        int size = mTrieCorrespondingGroups.size();
+        float[] result = new float[size];
+
+        for(int i=0; i<size; i++) {
+            result[i] = mTrieCorrespondingGroups.get(i).mWeightForGesturingInLocale;
+        }
+
+        return result;
+    }
+
+    @Override
+    public void updateSwipeLayoutAndDictsIfNeeded(SettingsValues values, Keyboard keyboard) {
+        if(swipeDecoderDictionary == null) return;
+
+        // TODO: This could be more optimized by avoiding unnecessary recreations when
+        //  isMultiLine is changed, or something else trivial has changed. Maybe also cache the
+        //  resulting LayoutInfos
+        boolean needsToRecreate = keyboard != mPrevKeyboard;
+        if(sTriesAreInvalid) {
+            needsToRecreate = true;
+        }
+
+        if(!needsToRecreate) return;
+
+        if(!hasAtLeastOneInitializedMainDictionary()) return;
+        if(keyboard == null) return;
+        KeyboardLayout layout = keyboard.getKeyboardLayout();
+        if(layout == null) return;
+
+        mPrevKeyboard = keyboard;
+
+        final LayoutInfoForModel info = LayoutInfoForModel.buildLayoutInfo(swipeDecoderDictionary.getContext(), keyboard, values);
+        // Log.d("DictionaryFacilitatorImpl", "Keyboard updated... New info: " + info);
+
+        if(info != null) {
+            // Make sure to update tries
+            ArrayList<Long> trieArray = new ArrayList<>();
+
+            mTrieCorrespondingGroups = new ArrayList<>();
+
+            for(DictionaryGroup group : mDictionaryGroups) {
+                int prevLength = trieArray.size();
+                ArrayList<Dictionary> dicts = new ArrayList<Dictionary>();
+                dicts.add(group.getDict(Dictionary.TYPE_MAIN));
+                dicts.add(group.getDict(Dictionary.TYPE_USER));
+                dicts.add(group.getDict(Dictionary.TYPE_USER_HISTORY));
+
+                addDictionaryTries(dicts, info.getLetters(), trieArray);
+                int newLength = trieArray.size();
+
+                for(int i=0; i<(newLength - prevLength); i++) {
+                    mTrieCorrespondingGroups.add(group);
+                }
+            }
+
+            swipeDecoderDictionary.updateKeyboard(new SwipeDecoderDictionary.PendingLayoutInfo(info, trieArray));
+            sTriesAreInvalid = trieArray.isEmpty();
         }
     }
 
