@@ -1080,6 +1080,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         sTimerProxy.cancelUpdateBatchInputTimer(this);
         if (!sInGesture) {
+            if (mCurrentKey != null && mCurrentKey.isModifier()) {
+                // Before processing an up event of modifier key, all pointers already being
+                // tracked should be released.
+                sPointerTrackerQueue.releaseAllPointersExcept(this, eventTime);
+            } else {
+                sPointerTrackerQueue.releaseAllPointersOlderThan(this, eventTime);
+            }
+
             // Update the key if the layout has changed
             if(mKeyboardLayoutHasBeenChanged && mCurrentKey != null) {
                 final Key newKey = getKeyOn(x, y);
@@ -1088,14 +1096,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                     mCurrentKey = newKey;
                     dragFingerFromOldKeyToNewKey(newKey, x, y, eventTime, oldKey, x, y);
                 }
-            }
-
-            if (mCurrentKey != null && mCurrentKey.isModifier()) {
-                // Before processing an up event of modifier key, all pointers already being
-                // tracked should be released.
-                sPointerTrackerQueue.releaseAllPointersExcept(this, eventTime);
-            } else {
-                sPointerTrackerQueue.releaseAllPointersOlderThan(this, eventTime);
+                mKeyboardLayoutHasBeenChanged = false;
             }
         }
         onUpEventInternal(x, y, eventTime);
