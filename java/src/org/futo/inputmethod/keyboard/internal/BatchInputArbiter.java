@@ -73,9 +73,11 @@ public class BatchInputArbiter {
      */
     public void addDownEventPoint(final int x, final int y, final long downEventTime,
             final long lastLetterTypingTime, final int activePointerCount) {
-        if (sGestureFirstDownTime == -1) {
-            sGestureFirstDownTime = downEventTime;
-            sAggregatedPointers.resetForBatch();
+        synchronized(sAggregatedPointers) {
+            if (sGestureFirstDownTime == -1) {
+                sGestureFirstDownTime = downEventTime;
+                sAggregatedPointers.resetForBatch();
+            }
         }
         final int elapsedTimeSinceFirstDown = getElapsedTimeSinceFirstDown(downEventTime);
         final int elapsedTimeSinceLastTyping = (int)(downEventTime - lastLetterTypingTime);
@@ -97,6 +99,10 @@ public class BatchInputArbiter {
      */
     public boolean addMoveEventPoint(final int x, final int y, final long moveEventTime,
             final boolean isMajorEvent, final BatchInputArbiterListener listener) {
+        synchronized(sAggregatedPointers) {
+            if (sGestureFirstDownTime == -1) return false;
+        }
+
         final int beforeLength = mRecognitionPoints.getLength();
         final boolean onValidArea = mRecognitionPoints.addEventPoint(
                 x, y, getElapsedTimeSinceFirstDown(moveEventTime), isMajorEvent);
