@@ -2521,15 +2521,17 @@ public final class InputLogic {
      * Do the final processing after a batch input has ended. This commits the word to the editor.
      * @param settingsValues the current values of the settings.
      * @param suggestedWords suggestedWords to use.
+     * @param distinct Whether this is a distinct word, or should update the last word
      */
     public void onUpdateTailBatchInputCompleted(final SettingsValues settingsValues,
-            final SuggestedWords suggestedWords, final KeyboardSwitcher keyboardSwitcher) {
+            final SuggestedWords suggestedWords, final KeyboardSwitcher keyboardSwitcher,
+            final boolean distinct) {
         final String batchInputText = suggestedWords.isEmpty() ? null : suggestedWords.getWord(0);
         if (TextUtils.isEmpty(batchInputText)) {
             return;
         }
         mConnection.beginBatchEdit();
-        mConnection.finishComposingText();
+        if(distinct) mConnection.finishComposingText();
         if (SpaceState.PHANTOM == mSpaceState) {
             if(!mConnection.spacePrecedesComposingText())
                 insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);

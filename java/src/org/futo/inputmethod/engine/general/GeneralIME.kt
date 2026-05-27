@@ -396,6 +396,13 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         suggestedWords: SuggestedWords,
         inputStyle: Int,
         sequenceNumber: Int
+    ) = onGetSuggestedWordsInternal(suggestedWords, inputStyle, sequenceNumber, true)
+
+    private fun onGetSuggestedWordsInternal(
+        suggestedWords: SuggestedWords,
+        inputStyle: Int,
+        sequenceNumber: Int,
+        swipeDistinct: Boolean = true
     ) {
         if(sequenceNumber < sequenceId.get() && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH) {
             return
@@ -417,7 +424,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     inputLogic.onUpdateTailBatchInputCompleted(
                         settings.current,
                         words,
-                        helper.keyboardSwitcher
+                        helper.keyboardSwitcher,
+                        swipeDistinct
                     )
                     helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(
                         HapticFeedbackConstants.VIRTUAL_KEY_RELEASE
@@ -726,10 +734,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun requestSuggestionRefresh() {
         inputLogic.mSuggestedWords?.let {
-            onGetSuggestedWords(
+            onGetSuggestedWordsInternal(
                 it,
                 it.mInputStyle,
-                sequenceIdCompleted.get()
+                sequenceIdCompleted.get(),
+                false
             )
         }
     }
