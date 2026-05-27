@@ -24,6 +24,12 @@ import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.sqrt
 
+private const val ENCODER_ASSET = "futo-swipe/honorable_sturgeon/model_fp32.pte"
+private const val ENGLISH_LM_ASSET = "futo-swipe/hungry_jellyfish/context_lm.pte"
+private const val ENGLISH_LM_VOCAB_ASSET = "futo-swipe/hungry_jellyfish/vocab.txt"
+private const val ENGLISH_DECODER_ASSET = "futo-swipe/magic_macaw/model_fp32.pte"
+private const val SCORING_ASSET = "futo-swipe/scoring.json"
+
 @Serializable
 data class Input(
     val x: Float,
@@ -115,7 +121,7 @@ private class SpecialContextLM private constructor(
 ) {
     companion object {
         private val contextLMs = listOf(
-            SpecialContextLM("en", "english_contextlm/hungry_jellyfish.pte")
+            SpecialContextLM("en", ENGLISH_LM_ASSET)
         )
 
         fun match(settingsValues: SettingsValues): String {
@@ -147,7 +153,7 @@ private class SpecialDecoder private constructor(
     companion object {
         private val specialDecoders = listOf(
             SpecialDecoder(
-                asset = "english_decoder/model_fp32.pte",
+                asset = ENGLISH_DECODER_ASSET,
                 language = "en",
                 layoutLetters = "abcdefghijklmnopqrstuvwxyz",
                 layoutXs = listOf(0.055555555555555566f, 0.611111111111111f, 0.38888888888888895f, 0.2777777777777778f, 0.22222222222222227f, 0.38888888888888895f, 0.5000000000000001f, 0.611111111111111f, 0.7777777777777778f, 0.7222222222222222f, 0.8333333333333334f, 0.9444444444444445f, 0.8333333333333334f, 0.7222222222222222f, 0.888888888888889f, 1.0f, 0.0f, 0.33333333333333337f, 0.1666666666666667f, 0.44444444444444453f, 0.6666666666666667f, 0.5000000000000001f, 0.11111111111111112f, 0.2777777777777778f, 0.5555555555555556f, 0.1666666666666667f),
@@ -229,7 +235,7 @@ val SwipeLanguageModelSetting = SettingsKey(booleanPreferencesKey("__experimenta
 
 class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Dictionary("swipe", locale) {
     companion object {
-        const val SWIPE_MODEL = "universal_model/model_fp32.pte"
+        const val SWIPE_MODEL = ENCODER_ASSET
 
         var debugLogUntil: Long = 0L
 
