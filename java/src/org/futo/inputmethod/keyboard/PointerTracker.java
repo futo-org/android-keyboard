@@ -1087,17 +1087,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             } else {
                 sPointerTrackerQueue.releaseAllPointersOlderThan(this, eventTime);
             }
-
-            // Update the key if the layout has changed
-            if(mKeyboardLayoutHasBeenChanged && mCurrentKey != null) {
-                final Key newKey = getKeyOn(x, y);
-                if(newKey != null) {
-                    final Key oldKey = mCurrentKey;
-                    mCurrentKey = newKey;
-                    dragFingerFromOldKeyToNewKey(newKey, x, y, eventTime, oldKey, x, y);
-                }
-                mKeyboardLayoutHasBeenChanged = false;
-            }
         }
         onUpEventInternal(x, y, eventTime);
         sPointerTrackerQueue.remove(this);
@@ -1116,6 +1105,21 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     private void onUpEventInternal(final int x, final int y, final long eventTime) {
+        // Update the key if the layout has changed
+        if(mKeyboardLayoutHasBeenChanged
+                && mCurrentKey != null
+                && !mIsFlickingKey
+                && !mIsInSlidingKeyInput
+                && !mIsInDraggingFinger) {
+            final Key newKey = getKeyOn(x, y);
+            if(newKey != null) {
+                final Key oldKey = mCurrentKey;
+                mCurrentKey = newKey;
+                dragFingerFromOldKeyToNewKey(newKey, x, y, eventTime, oldKey, x, y);
+            }
+            mKeyboardLayoutHasBeenChanged = false;
+        }
+
         mStartedOnFastLongPress = false;
         sTimerProxy.cancelKeyTimersOf(this);
         final boolean isInDraggingFinger = mIsInDraggingFinger;
