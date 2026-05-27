@@ -451,8 +451,11 @@ public class LanguageModelFacilitator(
     fun makePredictionInputValues(inputStyle: Int): PredictionInputValues? {
         if(shouldPassThroughToLegacy()) return null
 
+        if(inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
+            || inputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH) return null
+
         val settingsValues = settings.current
-        if (!settingsValues.needsToLookupSuggestions() && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH) {
+        if (!settingsValues.needsToLookupSuggestions()) {
             return null
         }
 

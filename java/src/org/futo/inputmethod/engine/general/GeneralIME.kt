@@ -438,15 +438,6 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         // This method returns null for us if LM is disabled
         var predictionInputValues = languageModelFacilitator.makePredictionInputValues(inputStyle)
 
-
-        // temporary logic to force swipe model
-        if(SwipeDecoderDictionary.canBeUsed() && DictionaryFacilitatorImpl.swipeDecoderDictionary != null) {
-            if(inputStyle == SuggestedWords.INPUT_STYLE_PREDICTION || inputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH || inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH ||
-                !inputLogic.mWordComposer.isComposingWord) {
-                predictionInputValues = null
-            }
-        }
-
         var dictResult: SuggestedWords? = null
         var lmResult: ArrayList<SuggestedWordInfo>? = null
         if(predictionInputValues != null) {

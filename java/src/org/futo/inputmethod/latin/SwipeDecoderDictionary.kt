@@ -340,6 +340,8 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         composedData: ComposedData,
         ngramContext: NgramContext?
     ): ArrayList<SuggestedWords.SuggestedWordInfo>? {
+        if(true) return null
+
         val decoder = getOrInitDecoder()
         val wordsContext = ngramContext?.fullContext?.split(' ')?.takeLast(10) ?: emptyList()
         decoder.setContext(wordsContext)
