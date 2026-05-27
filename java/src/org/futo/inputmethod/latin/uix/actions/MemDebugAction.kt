@@ -216,6 +216,8 @@ private data class SKeyboard(
 
     val screenWidth: Int,
     val screenHeight: Int,
+    val mostCommonKeyWidth: Int,
+    val mostCommonKeyHeight: Int,
 )
 internal fun serializeKeyboard(ime: LatinIME): String {
     val keyboard = ime.latinIMELegacy.mKeyboardSwitcher.keyboard!!
@@ -249,6 +251,8 @@ internal fun serializeKeyboard(ime: LatinIME): String {
         keys = list,
         screenWidth = ime.resources.displayMetrics.widthPixels,
         screenHeight = ime.resources.displayMetrics.heightPixels,
+        mostCommonKeyWidth = keyboard.mMostCommonKeyWidth,
+        mostCommonKeyHeight = keyboard.mMostCommonKeyHeight,
     )
     return Json.encodeToString(SKeyboard.serializer(), kb)
 }
