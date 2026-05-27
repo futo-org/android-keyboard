@@ -309,8 +309,7 @@ android {
             ]
             java.srcDirs = ['common/src', 'java/src']
             manifest.srcFile 'java/AndroidManifest.xml'
-            assets.srcDirs = ['java/assets', 'swipe-precompiled/assets']
-            jniLibs.srcDirs = ['swipe-precompiled/jniLibs']
+            assets.srcDirs = ['java/assets']
         }
 
         playstore {
@@ -426,6 +425,8 @@ dependencies {
     // For RIME
     implementation files('libs/rime-release.aar')
     // End for RIME
+
+    implementation files('libs/futo-swipe-release.aar')
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
