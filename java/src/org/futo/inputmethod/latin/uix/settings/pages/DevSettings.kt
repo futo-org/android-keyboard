@@ -27,6 +27,9 @@ import org.futo.inputmethod.engine.general.UseExpandableSuggestionsForGeneralIME
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.CrashLoggingApplication
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.SwipeDecoderDictionary
+import org.futo.inputmethod.latin.SwipeLanguageModelSetting
+import org.futo.inputmethod.latin.SwipeSpecialDecoderSetting
 import org.futo.inputmethod.latin.TextInputAlternativeIC
 import org.futo.inputmethod.latin.TextInputAlternativeICComposing
 import org.futo.inputmethod.latin.TextInputBufferedIC
@@ -197,6 +200,26 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             title = "Use setComposingRegion",
             setting = VoiceInputAlternativeICComposing,
             disabled = useDataStoreValue(VoiceInputAlternativeIC) == false
+        )
+
+        ScreenTitle("Swipe debug")
+        SettingToggleDataStore(
+            title = "Special decoder",
+            subtitle = "default = yes",
+            setting = SwipeSpecialDecoderSetting
+        )
+        SettingToggleDataStore(
+            title = "Language model",
+            subtitle = "default = yes",
+            setting = SwipeLanguageModelSetting
+        )
+        NavigationItem(
+            title = "Activate swipe debug logging for 5 minutes",
+            subtitle = "Swipes and text will be logged to logcat",
+            style = NavigationItemStyle.MiscNoArrow,
+            navigate = {
+                SwipeDecoderDictionary.debugLogUntil = System.currentTimeMillis() + 5L * 60L * 1000L
+            }
         )
 
         ScreenTitle(title = "Payment stuff")

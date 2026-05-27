@@ -309,6 +309,7 @@ public class SuggestedWords {
         private String mDebugString = "";
 
         public boolean mOriginatesFromTransformerLM = false;
+        public boolean mOriginatesFromSwipeModel = false;
 
         /**
          * Create a new suggested word info.

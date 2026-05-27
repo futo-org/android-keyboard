@@ -136,4 +136,12 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
             mLock.writeLock().unlock();
         }
     }
+
+    public long getITrie(final String letters) {
+        if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()) {
+            return 0;
+        }
+
+        return mBinaryDictionary.getITrie(letters);
+    }
 }

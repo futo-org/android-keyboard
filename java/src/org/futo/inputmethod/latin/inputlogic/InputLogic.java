@@ -2529,6 +2529,7 @@ public final class InputLogic {
             return;
         }
         mConnection.beginBatchEdit();
+        mConnection.finishComposingText();
         if (SpaceState.PHANTOM == mSpaceState) {
             if(!mConnection.spacePrecedesComposingText())
                 insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);

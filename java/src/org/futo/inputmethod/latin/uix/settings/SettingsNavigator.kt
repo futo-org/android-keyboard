@@ -54,6 +54,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.ResizeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SearchScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLanguageScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLayoutsScreen
+import org.futo.inputmethod.latin.uix.settings.pages.SwipeMenu
 import org.futo.inputmethod.latin.uix.settings.pages.TypingSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputMenu
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
@@ -98,6 +99,7 @@ val SettingsMenus = listOf(
     TypingSettingsMenu,
     ResizeMenuLite,
     LongPressMenu,
+    SwipeMenu,
     PredictiveTextMenu,
     BlacklistScreenLite,
     VoiceInputMenu,
