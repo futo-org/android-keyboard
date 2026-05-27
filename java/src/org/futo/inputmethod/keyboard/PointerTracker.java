@@ -1080,6 +1080,16 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         sTimerProxy.cancelUpdateBatchInputTimer(this);
         if (!sInGesture) {
+            // Update the key if the layout has changed
+            if(mKeyboardLayoutHasBeenChanged && mCurrentKey != null) {
+                final Key newKey = getKeyOn(x, y);
+                if(newKey != null) {
+                    final Key oldKey = mCurrentKey;
+                    mCurrentKey = newKey;
+                    dragFingerFromOldKeyToNewKey(newKey, x, y, eventTime, oldKey, x, y);
+                }
+            }
+
             if (mCurrentKey != null && mCurrentKey.isModifier()) {
                 // Before processing an up event of modifier key, all pointers already being
                 // tracked should be released.
