@@ -170,7 +170,7 @@ static uint16_t ITrie_GetDepth(void* self, TrieId id) {
 
     return depth;
 }
-static char *ITrie_GetWord(void* self, TrieId id, bool final) {
+static const char *ITrie_GetWord(void* self, TrieId id) {
     auto dic = ((DicITrieWrapper *)self);
     auto node = dic->nodes.find(id);
     if(node == dic->nodes.end()) {
@@ -186,7 +186,7 @@ static char *ITrie_GetWord(void* self, TrieId id, bool final) {
         return charBuf;
     }
 
-    if(final) {
+    if(true) {
         BinaryDictionaryShortcutIterator shortcutIt = dic->structure->getShortcutIterator(node->second.getWordId());
         if(shortcutIt.hasNextShortcutTarget()) {
             int shortcutTarget[MAX_WORD_LENGTH];
@@ -223,7 +223,7 @@ void ITrie_EndSearch(void *self) {
 static const ITrieVTable dicTraverseVtable = {
         &ITrie_NumChars, &ITrie_Root,
         &ITrie_GetCodepoint, &ITrie_GetChildCount, &ITrie_GetChild,
-        &ITrie_IsWord, &ITrie_GetFrequency, &ITrie_GetLogFrequency,
+        &ITrie_IsWord, &ITrie_GetFrequency,
         &ITrie_GetDepth, &ITrie_GetWord, &ITrie_EndSearch
 };
 
