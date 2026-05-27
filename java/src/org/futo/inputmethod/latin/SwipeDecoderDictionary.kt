@@ -244,7 +244,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             private set
 
         // for debug info
-        var appliedScoring: SwipeDecoder.Scoring = SwipeDecoder.Scoring(0.0f, 0.0f, 0.0f, 0.0f)
+        val appliedScoring = mutableStateOf(SwipeDecoder.Scoring(0.0f, 0.0f, 0.0f, 0.0f))
         var appliedTries: LongArray? = null
         var appliedTrieWeights by mutableStateOf<FloatArray>(FloatArray(0))
 
@@ -465,6 +465,8 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             )
         }
 
+        // basically update it at end of swiping
+        if(useHighBeam) appliedScoring.value = decoder.scoring
 
         if(BuildConfig.DEBUG || System.currentTimeMillis() < debugLogUntil) {
             Log.d("SwipeDecoderDictionary", "Timing: ${decoder.lastTiming()}")
@@ -504,7 +506,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
                     lmModelPath=getFilePath(context, pend.layout.lm),
                     lmVocabPath=getFilePath(context, vocabFor(pend.layout.lm))
                 )
-                appliedScoring = d.scoring
+                appliedScoring.value = d.scoring
                 appliedLayoutInfo = pend.layout
                 appliedTries = pend.tries.toLongArray()
             }
