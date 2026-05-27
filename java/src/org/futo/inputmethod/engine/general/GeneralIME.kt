@@ -436,7 +436,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     var lmUpdateJob: Job? = null
     private suspend fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
         // This method returns null for us if LM is disabled
-        var predictionInputValues = languageModelFacilitator.makePredictionInputValues(inputStyle)
+        val predictionInputValues = languageModelFacilitator.makePredictionInputValues(inputStyle)
 
         var dictResult: SuggestedWords? = null
         var lmResult: ArrayList<SuggestedWordInfo>? = null
