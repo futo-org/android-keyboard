@@ -967,31 +967,37 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
 
-        if (mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_SPACE) {
-            int pointerStep = sPointerStep;
-            if(settingsValues.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_LANGUAGE && !mSpacebarLongPressed) {
-                pointerStep = sPointerHugeStep;
-            }
+        if (!sInGesture && mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_SPACE) {
+            boolean allowedBySettings = (mSpacebarLongPressed && settingsValues.mSpacebarHoldMode == Settings.SPACEBAR_MODE_CURSOR)
+                        || (!mSpacebarLongPressed && settingsValues.mSpacebarSwipeMode != Settings.SPACEBAR_MODE_OFF);
 
-            int steps = (x - mStartX) / pointerStep;
-            final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
-            if (steps != 0 && mStartTime + swipeIgnoreTime < System.currentTimeMillis()) {
-                mCursorMoved = true;
-                mStartX += steps * pointerStep;
-
-                if(settingsValues.mSpacebarMode == Settings.SPACEBAR_MODE_SWIPE_LANGUAGE && !mSpacebarLongPressed) {
-                    sListener.onSwipeLanguage(steps);
-                } else {
-                    sListener.onMovePointer(steps);
+            if(allowedBySettings) {
+                int pointerStep = sPointerStep;
+                if (settingsValues.mSpacebarSwipeMode == Settings.SPACEBAR_MODE_LANGUAGE && !mSpacebarLongPressed) {
+                    pointerStep = sPointerHugeStep;
                 }
-            }
 
-            mLastX = x;
-            mLastY = y;
-            return;
+                int steps = (x - mStartX) / pointerStep;
+                final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
+                if (steps != 0 && mStartTime + swipeIgnoreTime < System.currentTimeMillis()) {
+                    mCursorMoved = true;
+                    mStartX += steps * pointerStep;
+
+                    if (settingsValues.mSpacebarSwipeMode == Settings.SPACEBAR_MODE_LANGUAGE && !mSpacebarLongPressed) {
+                        sListener.onSwipeLanguage(steps);
+                    } else {
+                        sListener.onMovePointer(steps);
+                    }
+                }
+
+                mLastX = x;
+                mLastY = y;
+                return;
+            }
         }
 
-        if (mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_DELETE) {
+        if (!sInGesture && mIsSlidingCursor && oldKey != null && oldKey.getCode() == Constants.CODE_DELETE
+                && settingsValues.mBackspaceMode != Settings.BACKSPACE_MODE_OFF) {
             int pointerStep = sPointerStep;
             if(settingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS) {
                 pointerStep = sPointerBigStep;
@@ -1213,14 +1219,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {
-            int spacebarMode = Settings.getInstance().getCurrent().mSpacebarMode;
-            if(spacebarMode == Settings.SPACEBAR_MODE_SWIPE_LANGUAGE) {
+            int spacebarMode = Settings.getInstance().getCurrent().mSpacebarHoldMode;
+            if(spacebarMode == Settings.SPACEBAR_MODE_CURSOR) {
                 mSpacebarLongPressed = true;
                 mStartX = mLastX;
                 mStartY = mLastY;
                 sListener.onMovingCursorLockEvent(true);
                 return;
-            }else if(spacebarMode == Settings.SPACEBAR_MODE_SWIPE_CURSOR_ONLY) {
+            }else if(spacebarMode == Settings.SPACEBAR_MODE_OFF) {
                 return;
             }
 
@@ -1398,7 +1404,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         // Slow down the repeat key if we are deleting whole words
         if(code == Constants.CODE_DELETE
-                && settingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS
+                && settingsValues.mBackspaceModeHold == Settings.BACKSPACE_MODE_WORDS
                 && repeatCount > 1) {
             delay = (int)((float)delay * (7.0f * (1.0f / ((float)(repeatCount - 1))) + 1.0f));
         }

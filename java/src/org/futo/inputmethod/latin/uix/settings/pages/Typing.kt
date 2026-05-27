@@ -115,6 +115,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.SettingRadio
 import org.futo.inputmethod.latin.uix.settings.SettingSlider
 import org.futo.inputmethod.latin.uix.settings.SettingSliderSharedPrefsInt
+import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.SyncDataStoreToPreferencesFloat
 import org.futo.inputmethod.latin.uix.settings.SyncDataStoreToPreferencesInt
 import org.futo.inputmethod.latin.uix.settings.Tip
@@ -544,6 +545,97 @@ val LongPressMenu = UserSettingsMenu(
             setting = KeyHintsSetting
         ).copy(searchTags = R.string.morekey_settings_show_hints_tags),
 
+        userSettingDecorationOnly {
+            ScreenTitle(stringResource(R.string.morekey_settings_backspace_title))
+        },
+
+        UserSetting(name = R.string.morekey_settings_backspace_hold_delete_words) {
+            val oldSetting = useSharedPrefsInt(
+                key = Settings.PREF_BACKSPACE_MODE,
+                default = Settings.BACKSPACE_MODE_CHARACTERS
+            )
+
+            val setting = useSharedPrefsInt(
+                key = Settings.PREF_BACKSPACE_MODE_HOLD,
+                default = oldSetting.value
+            )
+
+            SettingToggleRaw(
+                title = stringResource(R.string.morekey_settings_backspace_hold_delete_words),
+                enabled = setting.value == Settings.BACKSPACE_MODE_WORDS,
+                setValue = { to ->
+                    setting.setValue(if(to) Settings.BACKSPACE_MODE_WORDS else Settings.BACKSPACE_MODE_CHARACTERS)
+                }
+            )
+        },
+
+        UserSetting(name = R.string.morekey_settings_backspace_swipe_to_delete) {
+            val setting = useSharedPrefsInt(
+                key = Settings.PREF_BACKSPACE_MODE,
+                default = Settings.BACKSPACE_MODE_CHARACTERS
+            )
+
+            val deleteModes = mapOf(
+                Settings.BACKSPACE_MODE_OFF to stringResource(R.string.morekey_settings_backspace_swipe_to_delete_off),
+                Settings.BACKSPACE_MODE_CHARACTERS to stringResource(R.string.morekey_settings_backspace_swipe_to_delete_characters),
+                Settings.BACKSPACE_MODE_WORDS to stringResource(R.string.morekey_settings_backspace_swipe_to_delete_words),
+            )
+
+            DropDownPickerSettingItem(
+                label = stringResource(R.string.morekey_settings_backspace_swipe_to_delete),
+                options = deleteModes.keys.toList(),
+                selection = setting.value,
+                onSet = { setting.setValue(it) },
+                getDisplayName = { deleteModes[it] ?: "?" },
+            )
+        },
+
+
+        userSettingDecorationOnly {
+            ScreenTitle(stringResource(R.string.morekey_settings_spacebar_title))
+        },
+
+        UserSetting(name = R.string.morekey_settings_spacebar_swipe_shortcut) {
+            val setting = useSharedPrefsInt(
+                key = Settings.PREF_SPACEBAR_SWIPE_MODE,
+                default = remember { Settings.getInstance().current.mSpacebarSwipeMode }
+            )
+
+            val modes = mapOf(
+                Settings.SPACEBAR_MODE_OFF to stringResource(R.string.morekey_settings_spacebar_swipe_shortcut_off),
+                Settings.SPACEBAR_MODE_CURSOR to stringResource(R.string.morekey_settings_spacebar_swipe_shortcut_cursor),
+                Settings.SPACEBAR_MODE_LANGUAGE to stringResource(R.string.morekey_settings_spacebar_swipe_shortcut_language),
+            )
+
+            DropDownPickerSettingItem(
+                label = stringResource(R.string.morekey_settings_spacebar_swipe_shortcut),
+                options = modes.keys.toList(),
+                selection = setting.value,
+                onSet = { setting.setValue(it) },
+                getDisplayName = { modes[it] ?: "?" },
+            )
+        },
+
+        UserSetting(name = R.string.morekey_settings_spacebar_hold_shortcut) {
+            val setting = useSharedPrefsInt(
+                key = Settings.PREF_SPACEBAR_HOLD_MODE,
+                default = remember { Settings.getInstance().current.mSpacebarHoldMode }
+            )
+
+            val modes = mapOf(
+                Settings.SPACEBAR_MODE_CURSOR to stringResource(R.string.morekey_settings_spacebar_hold_shortcut_cursor),
+                Settings.SPACEBAR_MODE_LANGUAGE to stringResource(R.string.morekey_settings_spacebar_hold_shortcut_language),
+            )
+
+            DropDownPickerSettingItem(
+                label = stringResource(R.string.morekey_settings_spacebar_hold_shortcut),
+                options = modes.keys.toList(),
+                selection = setting.value,
+                onSet = { setting.setValue(it) },
+                getDisplayName = { modes[it] ?: "?" },
+            )
+        },
+
         // TODO: Might not work well for showing up in search
         UserSetting(name = R.string.morekey_settings_layout) {
             val context = LocalContext.current
@@ -571,51 +663,6 @@ val LongPressMenu = UserSettingsMenu(
                 steps = 23
             )
         },
-        UserSetting(
-            name = R.string.morekey_settings_backspace_behavior
-        ) {
-            SettingRadio(
-                title = stringResource(R.string.morekey_settings_backspace_behavior),
-                options = listOf(
-                    Settings.BACKSPACE_MODE_CHARACTERS,
-                    Settings.BACKSPACE_MODE_WORDS
-                ),
-                optionNames = listOf(
-                    stringResource(R.string.morekey_settings_backspace_behavior_delete_chars),
-                    stringResource(R.string.morekey_settings_backspace_behavior_delete_words)
-                ),
-                setting = useSharedPrefsInt(
-                    key = Settings.PREF_BACKSPACE_MODE,
-                    default = Settings.BACKSPACE_MODE_CHARACTERS
-                )
-            )
-        },
-        UserSetting(
-            name = R.string.morekey_settings_space_behavior,
-            searchTagList = listOf(
-                R.string.morekey_settings_space_behavior_swipe_cursor,
-                R.string.morekey_settings_space_behavior_swipe_lang,
-                R.string.morekey_settings_space_behavior_only_cursor
-            )
-        ) {
-            SettingRadio(
-                title = stringResource(R.string.morekey_settings_space_behavior),
-                options = listOf(
-                    Settings.SPACEBAR_MODE_SWIPE_CURSOR,
-                    Settings.SPACEBAR_MODE_SWIPE_LANGUAGE,
-                    Settings.SPACEBAR_MODE_SWIPE_CURSOR_ONLY
-                ),
-                optionNames = listOf(
-                    stringResource(R.string.morekey_settings_space_behavior_swipe_cursor),
-                    stringResource(R.string.morekey_settings_space_behavior_swipe_lang),
-                    stringResource(R.string.morekey_settings_space_behavior_only_cursor)
-                ),
-                setting = useSharedPrefsInt(
-                    key = Settings.PREF_SPACEBAR_MODE,
-                    default = Settings.SPACEBAR_MODE_SWIPE_CURSOR
-                )
-            )
-        }
     )
 )
 

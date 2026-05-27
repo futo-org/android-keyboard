@@ -30,6 +30,8 @@ import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.AutoFitText
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.SuggestionSeparator
+import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
+import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.SettingRadio
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.UserSetting
@@ -37,6 +39,7 @@ import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
+import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.suggestionStyleAlternative
 import org.futo.inputmethod.latin.uix.suggestionStylePrimary
@@ -121,10 +124,21 @@ val SwipeMenu = UserSettingsMenu(
         },
 
         userSettingDecorationOnly {
+            ScreenTitle(stringResource(R.string.swipe_settings_miscellaneous_title))
+        },
+
+        userSettingNavigationItem(
+            title = R.string.swipe_settings_configure_shortcuts,
+            subtitle = R.string.swipe_settings_configure_shortcuts_subtitle,
+            navigateTo = LongPressMenu.navPath,
+            style = NavigationItemStyle.Misc
+        ).copy(appearsInSearch=false),
+
+        userSettingDecorationOnly {
             val useLegacy = useDataStoreValue(LegacySwipeSetting)
             val showUseLegacy = remember { mutableStateOf(useLegacy) }
 
-            Spacer(Modifier.height(64.dp))
+            Spacer(Modifier.height(8.dp))
             if(!showUseLegacy.value) {
                 TextButton(onClick = {
                     showUseLegacy.value = true

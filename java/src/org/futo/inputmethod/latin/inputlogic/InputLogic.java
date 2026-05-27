@@ -1340,7 +1340,7 @@ public final class InputLogic {
         }
 
         final boolean deleteWholeWords = event.isKeyRepeat()
-                && inputTransaction.mSettingsValues.mBackspaceMode == Settings.BACKSPACE_MODE_WORDS;
+                && inputTransaction.mSettingsValues.mBackspaceModeHold == Settings.BACKSPACE_MODE_WORDS;
 
         if (mWordComposer.isComposingWord() && !mConnection.hasSelection()) {
             if (mWordComposer.isBatchMode()) {

@@ -425,13 +425,21 @@
     <string name="morekey_settings_show_hints_tags">additional characters, alt keys, symbols, popup keys</string>
     <string name="morekey_settings_duration">Long Press Duration</string>
     <string name="morekey_settings_duration_subtitle">How long a key needs to be pressed to be considered a long-press</string>
-    <string name="morekey_settings_backspace_behavior">Backspace Behavior when holding or swiping</string>
-    <string name="morekey_settings_backspace_behavior_delete_chars">Delete characters</string>
-    <string name="morekey_settings_backspace_behavior_delete_words">Delete entire words</string>
-    <string name="morekey_settings_space_behavior">Spacebar Behavior</string>
-    <string name="morekey_settings_space_behavior_swipe_cursor">Swiping moves cursor, long-pressing switches language</string>
-    <string name="morekey_settings_space_behavior_swipe_lang">Swiping changes language, long-pressing moves cursor</string>
-    <string name="morekey_settings_space_behavior_only_cursor">Swiping and long-pressing only moves cursor</string>
+
+    <string name="morekey_settings_backspace_title">Backspace</string>
+    <string name="morekey_settings_backspace_hold_delete_words">Hold to delete words</string>
+    <string name="morekey_settings_backspace_swipe_to_delete">Swipe to delete</string>
+    <string name="morekey_settings_backspace_swipe_to_delete_off">Off</string>
+    <string name="morekey_settings_backspace_swipe_to_delete_characters">Characters</string>
+    <string name="morekey_settings_backspace_swipe_to_delete_words">Words</string>
+    <string name="morekey_settings_spacebar_title">Spacebar</string>
+    <string name="morekey_settings_spacebar_swipe_shortcut">Swipe</string>
+    <string name="morekey_settings_spacebar_swipe_shortcut_off">Off</string>
+    <string name="morekey_settings_spacebar_swipe_shortcut_cursor">Move cursor</string>
+    <string name="morekey_settings_spacebar_swipe_shortcut_language">Switch language</string>
+    <string name="morekey_settings_spacebar_hold_shortcut">Hold</string>
+    <string name="morekey_settings_spacebar_hold_shortcut_cursor">Move cursor</string>
+    <string name="morekey_settings_spacebar_hold_shortcut_language">Switch language</string>
 
     <!-- Types of morekeys that can be configured, and examples of them -->
     <string name="morekey_settings_kind_numbers">Numbers</string>
@@ -538,6 +546,11 @@
     <string name="swipe_settings_suggest_mode_alternative_word_1">Alt1</string>
     <string name="swipe_settings_suggest_mode_alternative_word_2">Alt2</string>
     <string name="swipe_settings_suggest_mode_alternative_word_3">Alt3</string>
+
+    <string name="swipe_settings_miscellaneous_title">Other</string>
+
+    <string name="swipe_settings_configure_shortcuts">Shortcuts</string>
+    <string name="swipe_settings_configure_shortcuts_subtitle">Configure spacebar and delete key gestures in long-press settings</string>
 
     <string name="swipe_settings_show_unsupported">Show unsupported settings…</string>
     <string name="swipe_settings_use_old_swipe">Use legacy swipe algorithm</string>
