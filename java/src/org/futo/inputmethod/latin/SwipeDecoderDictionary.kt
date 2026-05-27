@@ -313,6 +313,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
 
     object BeamValues {
         const val shortBeam = 32
+        const val midBeam = 64
         const val highBeam = 300
         const val highestBeam = 300
     }
@@ -442,8 +443,9 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         decoder.setContext(wordsContext)
         appliedTrieWeights = trieWeights
 
+        val isMultiSwipe = (left.size + right.size) > 1
         val beamWidth = when {
-            (left.size + right.size) > 1 -> BeamValues.highBeam
+            isMultiSwipe && !useHighBeam -> BeamValues.midBeam
             !useHighBeam -> BeamValues.shortBeam
             else -> BeamValues.highBeam
         }
