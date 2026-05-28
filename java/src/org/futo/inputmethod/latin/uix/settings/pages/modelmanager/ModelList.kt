@@ -94,7 +94,7 @@ fun ModelListScreen(navController: NavHostController = rememberNavController()) 
             title = "Docs",
             style = NavigationItemStyle.Misc,
             navigate = {
-                context.openURI("https://gitlab.futo.org/alex/keyboard-wiki/-/wikis/Keyboard-LM-docs")
+                context.openURI("https://gitlab.futo.org/alex/futo-keyboard-lm-docs/-/blob/main/README.md")
             }
         )
         NavigationItem(
