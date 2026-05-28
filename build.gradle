@@ -139,17 +139,10 @@ tasks.register('updateContributors') {
     outputs.file outputFile
 
     doLast {
-        def buffer = new ByteArrayOutputStream()
-
         exec {
             environment 'GITHUB_TOKEN', System.getenv('GITHUB_TOKEN') ?: ''
             commandLine 'python3', script.absolutePath
-            standardOutput = buffer
         }
-
-        outputFile.parentFile.mkdirs()
-        outputFile.text = buffer.toString("UTF-8")
-        println "Wrote contributors to ${project.relativePath(outputFile)}"
     }
 }
 
