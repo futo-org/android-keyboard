@@ -20,6 +20,11 @@ import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.InputPointers;
 
 public interface KeyboardActionListener {
+    public static final int SWIPE_ACTION_LEFT = -1;
+    public static final int SWIPE_ACTION_RIGHT = 1;
+    public static final int SWIPE_ACTION_UP = -2;
+    public static final int SWIPE_ACTION_DOWN = 2;
+
     /**
      * Called when the user presses a key. This is sent before the {@link #onCodeInput} is called.
      * For keys that repeat, this is only called once.
@@ -106,6 +111,7 @@ public interface KeyboardActionListener {
     public void onUpWithDeletePointerActive();
     public void onUpWithPointerActive();
     public void onSwipeLanguage(int direction);
+    public void onSwipeAction(int direction);
     public void onMovingCursorLockEvent(boolean canMoveCursor);
 
     public static final KeyboardActionListener EMPTY_LISTENER = new Adapter();
@@ -143,6 +149,8 @@ public interface KeyboardActionListener {
         public void onUpWithPointerActive() {}
         @Override
         public void onSwipeLanguage(int direction) {}
+        @Override
+        public void onSwipeAction(int direction) {}
         @Override
         public void onMovingCursorLockEvent(boolean canMoveCursor) {}
     }
