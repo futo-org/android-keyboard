@@ -18,6 +18,7 @@ package org.futo.inputmethod.latin.inputlogic;
 
 import android.os.SystemClock;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
@@ -62,6 +63,7 @@ import org.futo.inputmethod.latin.utils.TextRange;
 import java.text.BreakIterator;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
@@ -118,6 +120,8 @@ public final class InputLogic {
     // Note: This does not have a composing span, so it must be handled separately.
     private String mWordBeingCorrectedByCursor = null;
 
+    private HashMap<String, String> mAutocorrectedWords = new HashMap<>();
+
     /**
      * Create a new instance of the input logic.
      * @param imeHelper the interface to access IME stuff
@@ -168,6 +172,7 @@ public final class InputLogic {
         mRecapitalizeStatus.disable(); // Do not perform recapitalize until the cursor is moved once
         mCurrentlyPressedHardwareKeys.clear();
         mSuggestedWords = SuggestedWords.getEmptyInstance();
+        mAutocorrectedWords.clear();
         mLastEvents.clear();
 
         final EditorInfo ei = getCurrentInputEditorInfo();
@@ -367,15 +372,37 @@ public final class InputLogic {
         // for the sequence of language switching.
         inputTransaction.setDidAffectContents();
 
-        if(suggestionInfo.mKindAndFlags == SuggestedWordInfo.KIND_UNDO) {
-            inputTransaction.setRequiresUpdateSuggestions();
+        switch (suggestionInfo.mKindAndFlags){
+            case SuggestedWordInfo.KIND_UNDO: {
+                inputTransaction.setRequiresUpdateSuggestions();
 
-            mConnection.finishComposingText();
-            mWordComposer.reset(true);
+                mConnection.finishComposingText();
 
-            mConnection.commitText(suggestionInfo.mWord, 1);
+                mWordComposer.reset(true);
 
-            return inputTransaction;
+                mConnection.commitText(suggestionInfo.mWord, 1);
+
+                return inputTransaction;
+            }
+            case SuggestedWordInfo.KIND_CORRECTION:{
+                inputTransaction.setRequiresUpdateSuggestions();
+
+                mWordComposer.reset(true);
+
+                final NgramContext ngramContext = mConnection.getNgramContextFromNthPreviousWord(
+                        settingsValues.mSpacingAndPunctuations, 1);
+                performAdditionToUserHistoryDictionary(settingsValues, suggestionInfo.mWord, ngramContext, 1);
+
+                SpannableStringBuilder correctedWord = new SpannableStringBuilder(suggestionInfo.mWord);
+
+                // add space and remove leading space to set new cursor position after the space and avoid double spacing
+                mConnection.commitText(correctedWord.append(" "), 1);
+                if (mConnection.spaceFollowsCursor()) {
+                    mConnection.removeLeadingSpace();
+                }
+
+                return inputTransaction;
+            }
         }
 
         mConnection.beginBatchEdit();
@@ -2025,6 +2052,11 @@ public final class InputLogic {
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor(), typedWordString);
 
+        if (mAutocorrectedWords.containsKey(typedWordString)){
+            mWordComposer.setRevertWord(mAutocorrectedWords.get(typedWordString));
+            Log.d(TAG, "autocorrected word found in hashmap:"+typedWordString+"->"+mAutocorrectedWords.get(typedWordString));
+        };
+
         mConnection.send();
         return true;
     }
@@ -2657,6 +2689,13 @@ public final class InputLogic {
         final SuggestedWords suggestedWords = mSuggestedWords;
         // TODO: Locale should be determined based on context and the text given.
         final Locale locale = getDictionaryFacilitatorLocale();
+
+        final String originalWord = mWordComposer.getTypedWord();
+
+        if(!originalWord.equals(chosenWord) && !TextUtils.isEmpty(originalWord)) {
+            mAutocorrectedWords.put(chosenWord, originalWord);
+        }
+
         final CharSequence chosenWordWithSuggestions = chosenWord;
         // b/21926256
         //      SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,

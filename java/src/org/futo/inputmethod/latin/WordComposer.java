@@ -83,6 +83,8 @@ public final class WordComposer {
     // code points.
     private int mCodePointSize;
     private int mCursorPositionWithinWord;
+    // is set, when the word has been autocorrected before in this session
+    private String mRevertWord;
 
     /**
      * Whether the composing word has the only first char capitalized.
@@ -103,6 +105,13 @@ public final class WordComposer {
 
     public ComposedData getComposedDataSnapshot() {
         return new ComposedData(getInputPointers(), isBatchMode(), mTypedWordCache.toString());
+    }
+
+    public void setRevertWord(String word){
+        mRevertWord = word;
+    }
+    public String getRevertWord(){
+        return mRevertWord;
     }
 
     /**
@@ -137,6 +146,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mIsAttachedToNonWord = false;
+        mRevertWord = null;
 
         if(alsoResetRejectedBatchSuggestion) mRejectedBatchModeSuggestion = null;
         refreshTypedWordCache();
