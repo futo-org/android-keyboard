@@ -62,6 +62,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_AUTO_CORRECTION_THRESHOLD_OBSOLETE =
             "auto_correction_threshold";
     public static final String PREF_AUTO_CORRECTION = "pref_key_auto_correction";
+    public static final String PREF_AUTO_CORRECT_ADDRESS_BARS = "auto_correct_address_bars";
     // PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE is obsolete. Use PREF_SHOW_SUGGESTIONS instead.
     public static final String PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE = "show_suggestions_setting";
     public static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";

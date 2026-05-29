@@ -126,6 +126,7 @@ public class SettingsValues {
     public final float mPlausibilityThreshold;
     public final boolean mAutoCorrectionEnabledPerUserSettings;
     public final boolean mAutoCorrectionEnabledPerTextFieldSettings;
+    private final boolean mAutoCorrectAddressBarsEnabled;
     private final boolean mSuggestionsEnabledPerUserSettings;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
@@ -238,6 +239,7 @@ public class SettingsValues {
         mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled
                 && !mInputAttributes.mInputTypeNoAutoCorrect;
         mAutoCorrectionEnabledPerTextFieldSettings = !mInputAttributes.mInputTypeNoAutoCorrect;
+        mAutoCorrectAddressBarsEnabled = readAutoCorrectAddressBarsEnabled(prefs);
         mSuggestionsEnabledPerUserSettings = readSuggestionsEnabled(prefs);
         mIsInternal = Settings.isInternal(prefs);
         mHasCustomKeyPreviewAnimationParams = prefs.getBoolean(
@@ -292,6 +294,10 @@ public class SettingsValues {
     public boolean needsToLookupSuggestions() {
         return mInputAttributes.mShouldShowSuggestions
                 && (mAutoCorrectionEnabledPerUserSettings || isSuggestionsEnabledPerUserSettings());
+    }
+
+    public boolean isAutoCorrectAddressBarsEnabled() {
+        return mAutoCorrectAddressBarsEnabled;
     }
 
     public boolean isSuggestionsEnabledPerUserSettings() {
@@ -377,6 +383,10 @@ public class SettingsValues {
     }
 
     private static final String SUGGESTIONS_VISIBILITY_HIDE_VALUE_OBSOLETE = "2";
+
+    private static boolean readAutoCorrectAddressBarsEnabled(final SharedPreferences prefs) {
+        return prefs.getBoolean(Settings.PREF_AUTO_CORRECT_ADDRESS_BARS, false);
+    }
 
     private static boolean readSuggestionsEnabled(final SharedPreferences prefs) {
         if (prefs.contains(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE)) {
