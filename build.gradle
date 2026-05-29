@@ -139,17 +139,10 @@ tasks.register('updateContributors') {
     outputs.file outputFile
 
     doLast {
-        def buffer = new ByteArrayOutputStream()
-
         exec {
             environment 'GITHUB_TOKEN', System.getenv('GITHUB_TOKEN') ?: ''
             commandLine 'python3', script.absolutePath
-            standardOutput = buffer
         }
-
-        outputFile.parentFile.mkdirs()
-        outputFile.text = buffer.toString("UTF-8")
-        println "Wrote contributors to ${project.relativePath(outputFile)}"
     }
 }
 
@@ -366,6 +359,12 @@ android {
         mlModelBinding true
         buildConfig true
     }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
@@ -419,6 +418,8 @@ dependencies {
     // For RIME
     implementation files('libs/rime-release.aar')
     // End for RIME
+
+    implementation files('libs/futo-swipe-release.aar')
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'

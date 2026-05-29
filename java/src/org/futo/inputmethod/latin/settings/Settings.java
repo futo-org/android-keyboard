@@ -126,14 +126,22 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_BACKSPACE_UNDO_AUTOCORRECT =
             "pref_backspace_undo_autocorrect";
 
-    public static final String PREF_SPACEBAR_MODE = "pref_spacebar_mode";
-    public static final int SPACEBAR_MODE_SWIPE_CURSOR = 0; // Long-Press switches language, swipe moves cursor
-    public static final int SPACEBAR_MODE_SWIPE_LANGUAGE = 1; // Swipe switches language, long-press+drag moves cursor
-    public static final int SPACEBAR_MODE_SWIPE_CURSOR_ONLY = 2; // Swipe and long-press+drag moves cursor
+    public static final String PREF_SPACEBAR_MODE_LEGACY = "pref_spacebar_mode";
+    public static final int SPACEBAR_MODE_SWIPE_CURSOR_LEGACY = 0; // Long-Press switches language, swipe moves cursor
+    public static final int SPACEBAR_MODE_SWIPE_LANGUAGE_LEGACY = 1; // Swipe switches language, long-press+drag moves cursor
+    public static final int SPACEBAR_MODE_SWIPE_CURSOR_ONLY_LEGACY = 2; // Swipe and long-press+drag moves cursor
 
+    public static final String PREF_SPACEBAR_HOLD_MODE = "pref_spacebar_hold_mode";
+    public static final String PREF_SPACEBAR_SWIPE_MODE = "pref_spacebar_swipe_mode";
+    public static final int SPACEBAR_MODE_OFF = 0;
+    public static final int SPACEBAR_MODE_CURSOR = 1;
+    public static final int SPACEBAR_MODE_LANGUAGE = 2;
+
+    public static final String PREF_BACKSPACE_MODE_HOLD = "pref_backspace_mode_hold";
     public static final String PREF_BACKSPACE_MODE = "pref_backspace_mode";
     public static final int BACKSPACE_MODE_CHARACTERS = 0; // Long-press backspace and swipe backspace removes just characters
     public static final int BACKSPACE_MODE_WORDS = 1; // Long-press backspace and swipe backspace removes entire words
+    public static final int BACKSPACE_MODE_OFF = 2;
 
     public static final String PREF_ALT_SPACES_MODE = "pref_alt_spaces";
     public static final int SPACES_MODE_NONE = -1; // No phantom spaces, no antiphantom

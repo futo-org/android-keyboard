@@ -3,18 +3,17 @@ package org.futo.inputmethod.latin.xlm;
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.OnGetSuggestedWordsCallbackWithInputStyle
+import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.keyboard.KeyboardSwitcher
 import org.futo.inputmethod.latin.BinaryDictionary
 import org.futo.inputmethod.latin.BuildConfig
@@ -26,15 +25,11 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.common.ComposedData
-import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
-import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_TRANSFORMER_FINETUNING
 import org.futo.inputmethod.latin.uix.getSetting
-import org.futo.inputmethod.latin.uix.getSettingFlow
-import org.futo.inputmethod.latin.utils.AsyncResultHolder
 import org.futo.inputmethod.latin.utils.SuggestionResults
 import kotlin.math.ceil
 
@@ -47,6 +42,11 @@ val AutocorrectThresholdSetting = SettingsKey(
 val BinaryDictTransformerWeightSetting = SettingsKey(
     floatPreferencesKey("binary_dict_result_weight"),
     3.4f
+)
+
+val AllowTransformerOnNonQWERTYLayouts = SettingsKey(
+    booleanPreferencesKey("allow_transformer_lm_on_non_qwerty"),
+    false
 )
 
 internal fun SuggestedWordInfo.add(other: SuggestedWordInfo): SuggestedWordInfo {
@@ -448,11 +448,16 @@ public class LanguageModelFacilitator(
     }
 
     // This method should return null if transformer is disabled by settings or locale
+    var prevAcceptedLayout: Keyboard? = null
+    var prevAcceptedLayoutResult = false
     fun makePredictionInputValues(inputStyle: Int): PredictionInputValues? {
         if(shouldPassThroughToLegacy()) return null
 
+        if(inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
+            || inputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH) return null
+
         val settingsValues = settings.current
-        if (!settingsValues.needsToLookupSuggestions() && inputStyle != SuggestedWords.INPUT_STYLE_TAIL_BATCH) {
+        if (!settingsValues.needsToLookupSuggestions()) {
             return null
         }
 
@@ -466,6 +471,28 @@ public class LanguageModelFacilitator(
                 settingsValues.mSpacingAndPunctuations,
                 2
             )
+
+            if(wordComposer.isComposingWord
+                && !context.getSetting(AllowTransformerOnNonQWERTYLayouts)
+            ) {
+                // Check we are on a supported layout
+                if(prevAcceptedLayout != keyboardSwitcher.keyboard) {
+                    if(keyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName == "qwerty") {
+                        prevAcceptedLayoutResult = true
+                    } else {
+                        val letters = keyboardSwitcher.keyboard?.sortedKeys?.filter {
+                            settingsValues.isWordCodePoint(it.code) && it.code != '\''.code
+                        }?.sortedBy {
+                            it.x + 10000 * it.y
+                        }?.joinToString(separator = "") { it.label.lowercase() } ?: ""
+
+                        prevAcceptedLayoutResult = letters == "qwertyuiopasdfghjklzxcvbnm"
+                    }
+                }
+
+                if(prevAcceptedLayoutResult == false)
+                    return null
+            }
 
             val values = PredictionInputValues(
                 wordComposer.composedDataSnapshot,

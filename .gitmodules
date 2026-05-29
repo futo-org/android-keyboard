@@ -16,3 +16,6 @@
 [submodule "java/res-large"]
 	path = java/res-large
 	url = https://gitlab.futo.org/keyboard/keyboard-large-resources.git
+[submodule "java/assets/futo-swipe"]
+	path = java/assets/futo-swipe
+	url = https://huggingface.co/futo-org/futo-swipe

@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin.uix
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -110,6 +111,7 @@ import androidx.core.net.toUri
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
+import org.futo.inputmethod.latin.DisplayTop4Setting
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -124,9 +126,12 @@ import org.futo.inputmethod.latin.uix.actions.PinnedActions
 import org.futo.inputmethod.latin.uix.actions.toActionList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiFamily
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiTypeface
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.emojiNeedsCompat
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
@@ -274,11 +279,13 @@ fun AutoFitText(
 }
 
 @Composable
-fun TextStyle.withCustomFont(): TextStyle {
+fun TextStyle.withCustomFont(orDefault: FontFamily? = null): TextStyle {
     val typeface = LocalKeyboardScheme.current.extended.advancedThemeOptions.font
     if(typeface != null) {
         val family = FontFamily(typeface)
         return this.copy(fontFamily = family)
+    } else if (orDefault != null) {
+        return this.copy(fontFamily = orDefault)
     } else {
         return this
     }
@@ -286,41 +293,56 @@ fun TextStyle.withCustomFont(): TextStyle {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
+fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit, forcePrimary: Boolean, isEmoji: Boolean) {
     val wordInfo = words.getInfoOrNull(idx)
     val isVerbatim = wordInfo?.kind == KIND_TYPED
     val word = wordInfo?.mWord
 
-    val isAutocorrect = isPrimary && words.mWillAutoCorrect
+    val isAutocorrect = forcePrimary || (isPrimary && words.mWillAutoCorrect)
 
     val color = when(isAutocorrect) {
         true -> LocalKeyboardScheme.current.onSurface
         else -> LocalKeyboardScheme.current.onSurfaceVariant
     }
 
-    val topSuggestionIcon = painterResource(id = R.drawable.transformer_suggestion)
-    val textButtonModifier = when (wordInfo?.mOriginatesFromTransformerLM) {
-        true -> Modifier.drawBehind {
-            with(topSuggestionIcon) {
-                val iconSize = topSuggestionIcon.intrinsicSize
+    val iconToUse = when {
+        wordInfo?.mOriginatesFromTransformerLM == true -> painterResource(id = R.drawable.transformer_suggestion)
+        wordInfo?.mOriginatesFromSwipeModel    == true -> painterResource(id = R.drawable.swipemodel_indicator)
+        else -> null
+    }
+    val textButtonModifier = if(iconToUse != null) {
+        Modifier.drawBehind {
+            with(iconToUse) {
+                val iconSize = iconToUse.intrinsicSize
                 translate(
                     left = (size.width - iconSize.width) / 2.0f,
-                    top = size.height - iconSize.height * 2.0f
+                    top = size.height - iconSize.height * (if(wordInfo?.mOriginatesFromSwipeModel == true) 1.3f else 2.0f)
                 ) {
                     draw(
-                        topSuggestionIcon.intrinsicSize,
+                        iconToUse.intrinsicSize,
                         colorFilter = ColorFilter.tint(color = color)
                     )
                 }
             }
         }
-        else -> Modifier
+    } else {
+        Modifier
+    }
+
+    val compatTypeface = LocalCompatEmojiTypeface.current
+    val compatFamily = LocalCompatEmojiFamily.current
+    val potentiallyCompatEmojiFont = remember(word, isEmoji) {
+        if(word != null && isEmoji && emojiNeedsCompat(word, compatTypeface)) {
+            compatFamily
+        } else {
+            null
+        }
     }
 
     val textStyle = when(isAutocorrect) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
-    }.copy(color = color).withCustomFont()
+    }.copy(color = color).withCustomFont(potentiallyCompatEmojiFont)
 
     Box(
         modifier = textButtonModifier
@@ -379,6 +401,9 @@ data class SuggestionLayout(
     /** Set to true if this is a gesture update, and we should only show one suggestion */
     val isGestureBatch: Boolean,
 
+    /** The primary tail batch element, if present it should be highlighted */
+    val swipePrimaryElement: SuggestedWordInfo?,
+
     val presentableSuggestions: List<SuggestedWordInfo>
 )
 
@@ -388,8 +413,9 @@ fun SuggestedWords.getInfoOrNull(idx: Int): SuggestedWordInfo? = try {
     null
 }
 
-fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?): SuggestionLayout {
+fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?, swipeTailRemovePrimarySuggestion: Boolean): SuggestionLayout {
     val isGestureBatch = words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+    val isSwipeTail = words.mInputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
 
     val typedWord = words.getInfoOrNull(SuggestedWords.INDEX_OF_TYPED_WORD)?.let {
         if(it.kind == KIND_TYPED) { it } else { null }
@@ -416,6 +442,15 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
             // Do not include the verbatim word when autocorrecting to avoid such duplicate word situation:
             // [ hid | **his** | "hid" ]
             && (isGestureBatch || autocorrectMatch == null || typedWord == null || it.mWord != typedWord.mWord)
+    }.toMutableList()
+
+    var swipePrimaryElement: SuggestedWordInfo? = null
+    if(isSwipeTail && sortedMatches.size > 1) {
+        if(swipeTailRemovePrimarySuggestion) {
+            sortedMatches.removeAt(0)
+        } else {
+            swipePrimaryElement = sortedMatches[0]
+        }
     }
 
     val areSuggestionsClueless = (autocorrectMatch ?: sortedMatches.getOrNull(0))?.let {
@@ -436,15 +471,17 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
         verbatimWord = typedWord,
         areSuggestionsClueless = areSuggestionsClueless,
         isGestureBatch = isGestureBatch,
-        presentableSuggestions = presentableSuggestions
+        presentableSuggestions = presentableSuggestions,
+        swipePrimaryElement = swipePrimaryElement
     )
 }
 
 @Composable
 fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
     val layout = makeSuggestionLayout(
-        words,
-        null
+        words = words,
+        blacklist = null,
+        swipeTailRemovePrimarySuggestion = useDataStoreValue(DisplayTop4Setting)
     )
 
     val suggestionItem = @Composable { suggestion: SuggestedWordInfo? ->
@@ -454,8 +491,10 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
                 words,
                 idx,
                 isPrimary = idx == SuggestedWords.INDEX_OF_AUTO_CORRECTION,
+                forcePrimary = suggestion == layout.swipePrimaryElement,
                 onClick = { onClick(idx) },
-                onLongClick = { onLongClick(idx) }
+                onLongClick = { onLongClick(idx) },
+                isEmoji = suggestion in layout.emojiMatches
             )
         } else {
             Spacer(Modifier.weight(1.0f))

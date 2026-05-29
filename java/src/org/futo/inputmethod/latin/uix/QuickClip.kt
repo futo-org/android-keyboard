@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -41,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.actions.clipboard.ClipboardQuickClipsEnabled
 import org.futo.inputmethod.latin.uix.theme.Typography
 
@@ -153,6 +155,7 @@ fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
         }
     } else state.isSensitive
 
+    val view = LocalView.current
     LazyRow(Modifier.weight(1.0f)) {
         state.image?.let { uri ->
             item {
@@ -162,6 +165,7 @@ fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
                     text = null,
                     uri = uri
                 ) {
+                    manager!!.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                     manager!!.typeUri(uri, state.imageMimeTypes)
                     QuickClip.markQuickClipDismissed()
                     dismiss()
@@ -204,6 +208,7 @@ fun RowScope.QuickClipView(state: QuickClipState, dismiss: () -> Unit) {
                     },
                     uri = null
                 ) {
+                    manager!!.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
                     manager!!.typeText(it.text)
                     QuickClip.markQuickClipDismissed()
                     dismiss()

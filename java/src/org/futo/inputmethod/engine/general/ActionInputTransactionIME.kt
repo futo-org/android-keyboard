@@ -1,5 +1,6 @@
 package org.futo.inputmethod.engine.general
 
+import android.view.inputmethod.EditorInfo
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.event.Event
@@ -15,7 +16,13 @@ import org.futo.inputmethod.latin.uix.utils.TextContext
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 
 class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInputTransaction {
-    val ic = if(helper.context.getSetting(VoiceInputAlternativeIC) && SupportsNonComposing) {
+    val useComposingMode = run {
+        val inputType = helper.getCurrentEditorInfo()?.inputType ?: 0
+        val inputClass = inputType and EditorInfo.TYPE_MASK_CLASS
+        inputClass == EditorInfo.TYPE_CLASS_TEXT
+    }
+
+    val ic = if(helper.context.getSetting(VoiceInputAlternativeIC) && SupportsNonComposing && useComposingMode) {
         InputConnectionInternalComposingWrapper(
             helper.context.getSetting(VoiceInputAlternativeICComposing),
             true,
@@ -73,7 +80,7 @@ class ActionInputTransactionIME(val helper: IMEHelper) : IMEInterface, ActionInp
     private var isFinished = false
     private var partialText = ""
     override fun updatePartial(text: String) {
-        if (isFinished) return
+        if (isFinished || !useComposingMode) return
         helper.requestCursorUpdate()
         partialText = text
         ic?.setComposingText(

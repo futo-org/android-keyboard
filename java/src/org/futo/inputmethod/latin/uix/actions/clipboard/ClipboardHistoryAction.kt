@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
@@ -54,6 +57,8 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -87,6 +92,7 @@ import kotlinx.serialization.json.Json
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
+import org.futo.inputmethod.latin.uix.ActionHeaderSearch
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.PersistentActionState
@@ -1010,6 +1016,8 @@ val ClipboardHistoryAction = Action(
     altPressImpl = PasteAction.simplePressImpl,
     persistentStateInitialization = PersistentStateInitialization.OnKeyboardLoad,
     windowImpl = { manager, persistent ->
+        val searching = mutableStateOf(false)
+        val searchText = mutableStateOf("")
         val unlocked = !manager.isDeviceLocked()
         val clipboardHistoryManager = persistent as ClipboardHistoryManager
 
@@ -1021,15 +1029,32 @@ val ClipboardHistoryAction = Action(
             }
 
             @Composable
-            override fun WindowTitleBar(rowScope: RowScope) {
-                super.WindowTitleBar(rowScope)
+            override fun WindowTitleBar(rowScope: RowScope) = with(rowScope) {
+                if(searching.value) {
+                    ActionHeaderSearch(searchText, Modifier.weight(1.0f),
+                        placeholder = stringResource(R.string.action_clipboard_manager_enter_your_search))
+                    return
+                }
+
+                Text(windowName(), modifier = Modifier.align(Alignment.CenterVertically))
+                Spacer(modifier = Modifier.weight(1.0f))
 
                 val resources = LocalResources.current
 
                 val clipboardHistory = useDataStore(ClipboardHistoryEnabled, blocking = true)
                 if(!clipboardHistory.value) return
 
-                if(unlocked && !clipboardHistoryManager.clipboardIOFailure.value) {
+                if(unlocked
+                    && !clipboardHistoryManager.clipboardIOFailure.value
+                ) {
+                    IconButton(onClick = {
+                        searching.value = true
+                    }) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = stringResource(R.string.action_clipboard_manager_search)
+                        )
+                    }
                     IconButton(onClick = {
                         val numUnpinnedItems =
                             clipboardHistoryManager.clipboardHistory.count { !it.pinned }
@@ -1157,97 +1182,132 @@ val ClipboardHistoryAction = Action(
                         }
                     }
                 } else {
-                    val sortedList = when {
-                        useDataStoreValue(ClipboardShowPinnedOnTop) -> clipboardHistoryManager.clipboardHistory
-                            .sortedBy { it.pinned }
+                    
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        val searchQuery = searchText.value
+                        if(searching.value && searchQuery.isBlank()) {
+                            return
+                        }
 
-                        else -> clipboardHistoryManager.clipboardHistory
-                    }
-
-                    val useSingleColumn = useDataStoreValue(ClipboardSingleColumn)
-                    val columns = if(useSingleColumn) {
-                        StaggeredGridCells.Fixed(1)
-                    } else {
-                        StaggeredGridCells.Adaptive(140.dp)
-                    }
-
-                    LazyVerticalStaggeredGrid(
-                        modifier = Modifier.fillMaxWidth(),
-                        columns = columns,
-                        verticalItemSpacing = 4.dp,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        items(sortedList.size, key = { r_i ->
-                            val i = sortedList.size - r_i - 1
-                            val entry = sortedList[i]
-
-                            entry.text?.let {
-                                if(it.length > 512) {
-                                    // Compose really doesn't like extremely long keys, so
-                                    // to avoid crashing we just provide a hash
-                                    it.toFNV1aHash()
-                                } else {
-                                    it
+                        val showPinnedOnTop = useDataStoreValue(ClipboardShowPinnedOnTop)
+                        val clipboardList = run {
+                            val filtered = clipboardHistoryManager.clipboardHistory.filter {
+                                !searching.value
+                                        || it.text?.contains(searchQuery, ignoreCase = true) == true
+                                        || it.mimeTypes.any { mime ->
+                                    mime.contains(
+                                        searchQuery,
+                                        ignoreCase = true
+                                    )
                                 }
-                            } ?: entry.backingFile ?: i
-                            i
-                        }) { r_i ->
-                            val i = sortedList.size - r_i - 1
-                            val entry = sortedList[i]
-                            ClipboardEntryView(
-                                modifier = Modifier.animateItem(),
-                                clipboardEntry = entry, onPaste = {
-                                    if(it.text != null) {
-                                        manager.typeText(it.text)
-                                    } else if(it.backingFile != null && it.mimeTypes.isNotEmpty()) {
-                                        val request = ClipboardProviderState.addRequest(
-                                            ClipboardPasteRequest(
-                                                file = File(context.clipboardDir, it.backingFile),
-                                                mimeType = it.mimeTypes.first(),
-                                                expiration = System.currentTimeMillis() + 5L * 60L * 1000L
-                                            )
-                                        )
+                            }
 
-                                        val uri = "content://${CLIPBOARD_AUTHORITY}/clip/$request".toUri()
-                                        manager.typeUri(uri, it.mimeTypes, true)
-                                    }
+                            val sorted = when {
+                                showPinnedOnTop -> filtered.sortedBy { it.pinned }
+                                else -> filtered
+                            }
 
-                                    clipboardHistoryManager.onPaste(it)
-                                    manager.performHapticAndAudioFeedback(Constants.CODE_OUTPUT_TEXT, view)
-                                }, onRemove = {
-                                    if(context.getSetting(ClipboardSkipDeleteConfirmation) && !it.pinned) {
-                                        clipboardHistoryManager.onRemove(it)
-                                        manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                            sorted
+                        }
+
+                        if(clipboardList.isEmpty() && searching.value && searchQuery.isNotEmpty() && clipboardHistoryManager.clipboardHistory.isNotEmpty()) {
+                            Text(
+                                stringResource(R.string.action_clipboard_manager_no_clips_found),
+                                style = Typography.Body.Medium.copy(fontStyle = FontStyle.Italic),
+                                color = MaterialTheme.colorScheme.outline,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth()
+                            )
+                            return
+                        }
+
+                        val useSingleColumn = useDataStoreValue(ClipboardSingleColumn)
+                        val columns = if(useSingleColumn) {
+                            StaggeredGridCells.Fixed(1)
+                        } else {
+                            StaggeredGridCells.Adaptive(140.dp)
+                        }
+
+                        LazyVerticalStaggeredGrid(
+                            modifier = Modifier.fillMaxWidth(),
+                            columns = columns,
+                            verticalItemSpacing = 4.dp,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            items(clipboardList.size, key = { r_i ->
+                                val i = clipboardList.size - r_i - 1
+                                val entry = clipboardList[i]
+
+                                entry.text?.let {
+                                    if(it.length > 512) {
+                                        // Compose really doesn't like extremely long keys, so
+                                        // to avoid crashing we just provide a hash
+                                        it.toFNV1aHash()
                                     } else {
-                                        manager.requestDialog(
-                                            if(it.backingFile != null && it.text == null) {
-                                                resources.getString(R.string.action_clipboard_manager_remove_item_confirm_dialog_image)
-                                            } else {
-                                                resources.getString(
-                                                    R.string.action_clipboard_manager_remove_item_confirm_dialog,
-                                                    sanitizeClipboardText(it.text ?: "", 24)
-                                                )
-                                            },
-                                            listOf(
-                                                DialogRequestItem(
-                                                    resources.getString(R.string.action_clipboard_manager_cancel_action_button)
-                                                ) { },
-                                                DialogRequestItem(
-                                                    resources.getString(R.string.action_clipboard_manager_remove_item)
-                                                ) {
-                                                    clipboardHistoryManager.onRemove(it)
-                                                    manager.performHapticAndAudioFeedback(
-                                                        Constants.CODE_TAB,
-                                                        view
-                                                    )
-                                                }
-                                            )
-                                        ) { }
+                                        it
                                     }
-                                }, onPin = {
-                                    clipboardHistoryManager.onTogglePin(it)
-                                    manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
-                                })
+                                } ?: entry.backingFile ?: i
+                                i
+                            }) { r_i ->
+                                val i = clipboardList.size - r_i - 1
+                                val entry = clipboardList[i]
+                                ClipboardEntryView(
+                                    modifier = Modifier.animateItem(),
+                                    clipboardEntry = entry, onPaste = {
+                                        if(it.text != null) {
+                                            manager.typeText(it.text)
+                                        } else if(it.backingFile != null && it.mimeTypes.isNotEmpty()) {
+                                            val request = ClipboardProviderState.addRequest(
+                                                ClipboardPasteRequest(
+                                                    file = File(context.clipboardDir, it.backingFile),
+                                                    mimeType = it.mimeTypes.first(),
+                                                    expiration = System.currentTimeMillis() + 5L * 60L * 1000L
+                                                )
+                                            )
+
+                                            val uri = "content://${CLIPBOARD_AUTHORITY}/clip/$request".toUri()
+                                            manager.typeUri(uri, it.mimeTypes, true)
+                                        }
+
+                                        clipboardHistoryManager.onPaste(it)
+                                        manager.performHapticAndAudioFeedback(Constants.CODE_OUTPUT_TEXT, view)
+                                    }, onRemove = {
+                                        if(context.getSetting(ClipboardSkipDeleteConfirmation) && !it.pinned) {
+                                            clipboardHistoryManager.onRemove(it)
+                                            manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                                        } else {
+                                            manager.requestDialog(
+                                                if(it.backingFile != null && it.text == null) {
+                                                    resources.getString(R.string.action_clipboard_manager_remove_item_confirm_dialog_image)
+                                                } else {
+                                                    resources.getString(
+                                                        R.string.action_clipboard_manager_remove_item_confirm_dialog,
+                                                        sanitizeClipboardText(it.text ?: "", 24)
+                                                    )
+                                                },
+                                                listOf(
+                                                    DialogRequestItem(
+                                                        resources.getString(R.string.action_clipboard_manager_cancel_action_button)
+                                                    ) { },
+                                                    DialogRequestItem(
+                                                        resources.getString(R.string.action_clipboard_manager_remove_item)
+                                                    ) {
+                                                        clipboardHistoryManager.onRemove(it)
+                                                        manager.performHapticAndAudioFeedback(
+                                                            Constants.CODE_TAB,
+                                                            view
+                                                        )
+                                                    }
+                                                )
+                                            ) { }
+                                        }
+                                    }, onPin = {
+                                        clipboardHistoryManager.onTogglePin(it)
+                                        manager.performHapticAndAudioFeedback(Constants.CODE_TAB, view)
+                                    })
+                            }
                         }
                     }
                 }

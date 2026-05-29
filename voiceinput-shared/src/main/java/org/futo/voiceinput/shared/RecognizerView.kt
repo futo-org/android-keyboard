@@ -34,6 +34,7 @@ import org.futo.voiceinput.shared.whisper.MultiModelRunConfiguration
 data class RecognizerViewSettings(
     val shouldShowVerboseFeedback: Boolean,
     val shouldShowInlinePartialResult: Boolean,
+    val shouldAnimateBubble: Boolean,
 
     val modelRunConfiguration: MultiModelRunConfiguration,
     val decodingConfiguration: DecodingConfiguration,
@@ -225,7 +226,7 @@ class RecognizerView(
         }
 
         override fun updateMagnitude(magnitude: Float, state: MagnitudeState) {
-            magnitudeState.floatValue = magnitude
+            if(settings.shouldAnimateBubble) magnitudeState.floatValue = magnitude
             statusState.value = state
             currentViewState.value = CurrentView.InnerRecognize
         }

@@ -30,6 +30,7 @@
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/core/suggest_options.h"
 #include "utils/profiler.h"
+#include "src/suggest/core/dictionary/itrie.h"
 
 namespace latinime {
 

@@ -29,6 +29,7 @@ import android.view.inputmethod.EditorInfo;
 import org.futo.inputmethod.compat.AppWorkaroundsUtils;
 import org.futo.inputmethod.latin.InputAttributes;
 import org.futo.inputmethod.latin.R;
+import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.uix.actions.ActionRegistry;
 import org.futo.inputmethod.latin.uix.actions.RegistryKt;
 import org.futo.inputmethod.latin.utils.AsyncResultHolder;
@@ -37,6 +38,7 @@ import org.futo.inputmethod.latin.utils.ScriptUtils2;
 import org.futo.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -104,10 +106,14 @@ public class SettingsValues {
 
     public final boolean mBackspaceDeletesInsertedText;
     public final boolean mBackspaceUndoesAutocorrect;
-    public final int mSpacebarMode;
+    public final int mSpacebarSwipeMode;
+    public final int mSpacebarHoldMode;
     public final int mBackspaceMode;
+    public final int mBackspaceModeHold;
     public final int mNumberRowMode;
     public final int mAltSpacesMode;
+
+    public final List<Locale> mMultilingualLocales;
 
     // From the input box
     @Nonnull
@@ -197,8 +203,14 @@ public class SettingsValues {
         mBackspaceDeletesInsertedText = prefs.getBoolean(Settings.PREF_BACKSPACE_DELETE_INSERTED_TEXT, true);
         mBackspaceUndoesAutocorrect = prefs.getBoolean(Settings.PREF_BACKSPACE_UNDO_AUTOCORRECT, true);
 
-        mSpacebarMode = prefs.getInt(Settings.PREF_SPACEBAR_MODE, Settings.SPACEBAR_MODE_SWIPE_CURSOR);
+        int legacySpacebarMode = prefs.getInt(Settings.PREF_SPACEBAR_MODE_LEGACY, Settings.SPACEBAR_MODE_SWIPE_CURSOR_LEGACY);
+        mSpacebarSwipeMode = prefs.getInt(Settings.PREF_SPACEBAR_SWIPE_MODE,
+                legacySpacebarMode == Settings.SPACEBAR_MODE_SWIPE_LANGUAGE_LEGACY ? Settings.SPACEBAR_MODE_LANGUAGE : Settings.SPACEBAR_MODE_CURSOR);
+        mSpacebarHoldMode = prefs.getInt(Settings.PREF_SPACEBAR_HOLD_MODE,
+                legacySpacebarMode == Settings.SPACEBAR_MODE_SWIPE_CURSOR_LEGACY ? Settings.SPACEBAR_MODE_LANGUAGE : Settings.SPACEBAR_MODE_CURSOR);
+
         mBackspaceMode = prefs.getInt(Settings.PREF_BACKSPACE_MODE, Settings.BACKSPACE_MODE_CHARACTERS);
+        mBackspaceModeHold = prefs.getInt(Settings.PREF_BACKSPACE_MODE_HOLD, mBackspaceMode);
         mNumberRowMode = mIsNumberRowEnabledByUser ?
                 prefs.getInt(Settings.PREF_NUMBER_ROW_MODE, Settings.NUMBER_ROW_MODE_DEFAULT)
                 : Settings.NUMBER_ROW_MODE_DEFAULT;
@@ -262,6 +274,9 @@ public class SettingsValues {
         mKeyPreviewDismissEndYScale = Settings.readKeyPreviewAnimationScale(
                 prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE,
                 defaultKeyPreviewDismissEndScale);
+
+        mMultilingualLocales = Subtypes.INSTANCE.getMultilingualBucket(context, mLocale);
+
         mDisplayOrientation = res.getConfiguration().orientation;
         mAppWorkarounds = new AsyncResultHolder<>("AppWorkarounds");
         final PackageInfo packageInfo = TargetPackageInfoGetterTask.getCachedPackageInfo(
@@ -567,8 +582,6 @@ public class SettingsValues {
         sb.append("" + mBackspaceDeletesInsertedText);
         sb.append("\n   mBackspaceUndoesAutocorrect = ");
         sb.append("" + mBackspaceUndoesAutocorrect);
-        sb.append("\n   mSpacebarMode = ");
-        sb.append("" + mSpacebarMode);
         sb.append("\n   mBackspaceMode = ");
         sb.append("" + mBackspaceMode);
         sb.append("\n   mNumberRowMode = ");

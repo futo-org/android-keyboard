@@ -28,6 +28,7 @@ import android.view.inputmethod.TextBoundsInfoResult
 import android.view.inputmethod.TextSnapshot
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +39,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -314,8 +316,9 @@ fun ActionTextEditor(
     afterOverride: (() -> Unit)? = null,
     afterUnOverride: ((Boolean) -> Unit)? = null,
     onEnter: (() -> Unit)? = null,
-    autofocus: Boolean = false,
+    autofocus: Boolean = true,
     inputFilters: Array<InputFilter>? = null,
+    placeholder: String? = null
 ) {
     val manager = if(!LocalInspectionMode.current) LocalManager.current else null
     GenericEditTextCompose(
@@ -324,7 +327,7 @@ fun ActionTextEditor(
         textSize = textSize,
         typeface = typeface,
         autocorrect = autocorrect,
-        placeholder = null,
+        placeholder = placeholder,
         modifier = modifier,
         autofocus = autofocus,
         onEnter = onEnter,
@@ -336,7 +339,7 @@ fun ActionTextEditor(
             val result = manager!!.unsetInputConnection()
             afterUnOverride?.invoke(result)
         },
-        inputFilters = inputFilters
+        inputFilters = inputFilters,
     )
 }
 
@@ -376,6 +379,25 @@ fun SettingsTextEdit(
                 autofocus = autofocus,
                 forceQwerty = forceQwerty
             )
+        }
+    }
+}
+
+@Composable
+fun ActionHeaderSearch(searchText: MutableState<String>, modifier: Modifier = Modifier, placeholder: String? = null) {
+    Surface(
+        color = LocalKeyboardScheme.current.keyboardContainer,
+        contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
+        shape = RoundedCornerShape(24.dp),
+        modifier = modifier
+            .minimumInteractiveComponentSize()
+            .padding(2.dp)
+    ) {
+        Box(
+            modifier = Modifier.padding(8.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            ActionTextEditor(text = searchText, placeholder = placeholder)
         }
     }
 }
