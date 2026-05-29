@@ -360,7 +360,15 @@ data class LayoutEngine(
         val totalRowWidth = computedRow.sumOf { it.widthPx.toDouble() }.toFloat()
 
         val rowLayoutWidth = if(splittable) { layoutWidth } else { unsplitLayoutWidth }
-        val entries = mergeDuplicates(computedRow.addGap(rowLayoutWidth - totalRowWidth))
+        val entries = if(keyboard.staggered) {
+            mergeDuplicates(computedRow.addGap(rowLayoutWidth - totalRowWidth))
+        } else {
+            // Stretch keys to fill the entire row width (ortholinear/grid layout)
+            val extraPerKey = (rowLayoutWidth - totalRowWidth) / computedRow.size
+            computedRow.map { key ->
+                LayoutEntry.Key(key.data, key.widthPx + extraPerKey)
+            }
+        }
 
         return LayoutRow(
             entries = entries,
