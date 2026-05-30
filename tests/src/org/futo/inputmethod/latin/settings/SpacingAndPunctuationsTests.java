@@ -108,13 +108,7 @@ public class SpacingAndPunctuationsTests {
     }
 
     private SpacingAndPunctuations getSpacingAndPunctuations(final Locale locale) {
-        final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
-            @Override
-            protected SpacingAndPunctuations job(Resources res) {
-                return new SpacingAndPunctuations(res);
-            }
-        };
-        return job.runInLocale(getContext().getResources(), locale);
+        return SpacingAndPunctuations.create(getContext(), locale);
     }
 
     private static void testingStandardWordSeparator(final SpacingAndPunctuations sp) {
@@ -379,34 +373,34 @@ public class SpacingAndPunctuationsTests {
 
     @Test
     public void testLanguageHasSpace() {
-        assertTrue(ENGLISH.mCurrentLanguageHasSpaces);
-        assertTrue(FRENCH.mCurrentLanguageHasSpaces);
-        assertTrue(GERMAN.mCurrentLanguageHasSpaces);
-        assertFalse(THAI.mCurrentLanguageHasSpaces);
-        assertFalse(CAMBODIA_KHMER.mCurrentLanguageHasSpaces);
-        assertFalse(LAOS_LAO.mCurrentLanguageHasSpaces);
+        assertTrue(ENGLISH.currentLanguageHasSpaces);
+        assertTrue(FRENCH.currentLanguageHasSpaces);
+        assertTrue(GERMAN.currentLanguageHasSpaces);
+        assertFalse(THAI.currentLanguageHasSpaces);
+        assertFalse(CAMBODIA_KHMER.currentLanguageHasSpaces);
+        assertFalse(LAOS_LAO.currentLanguageHasSpaces);
         // TODO: We should fix these.
-        assertTrue(KHMER.mCurrentLanguageHasSpaces);
-        assertTrue(LAO.mCurrentLanguageHasSpaces);
+        assertTrue(KHMER.currentLanguageHasSpaces);
+        assertTrue(LAO.currentLanguageHasSpaces);
     }
 
     @Test
     public void testUsesAmericanTypography() {
-        assertTrue(ENGLISH.mUsesAmericanTypography);
-        assertTrue(UNITED_STATES.mUsesAmericanTypography);
-        assertTrue(UNITED_KINGDOM.mUsesAmericanTypography);
-        assertTrue(INDIA_ENGLISH.mUsesAmericanTypography);
-        assertFalse(FRENCH.mUsesAmericanTypography);
-        assertFalse(GERMAN.mUsesAmericanTypography);
-        assertFalse(SWISS_GERMAN.mUsesAmericanTypography);
+        assertTrue(ENGLISH.usesAmericanTypography);
+        assertTrue(UNITED_STATES.usesAmericanTypography);
+        assertTrue(UNITED_KINGDOM.usesAmericanTypography);
+        assertTrue(INDIA_ENGLISH.usesAmericanTypography);
+        assertFalse(FRENCH.usesAmericanTypography);
+        assertFalse(GERMAN.usesAmericanTypography);
+        assertFalse(SWISS_GERMAN.usesAmericanTypography);
     }
 
     @Test
     public void testUsesGermanRules() {
-        assertFalse(ENGLISH.mUsesGermanRules);
-        assertFalse(FRENCH.mUsesGermanRules);
-        assertTrue(GERMAN.mUsesGermanRules);
-        assertTrue(SWISS_GERMAN.mUsesGermanRules);
+        assertFalse(ENGLISH.usesGermanRules);
+        assertFalse(FRENCH.usesGermanRules);
+        assertTrue(GERMAN.usesGermanRules);
+        assertTrue(SWISS_GERMAN.usesGermanRules);
     }
 
     // Punctuations for phone.
@@ -444,7 +438,7 @@ public class SpacingAndPunctuationsTests {
 
     private static void testingStandardPunctuationSuggestions(final SpacingAndPunctuations sp,
             final String[] punctuationLabels, final String[] punctuationWords) {
-        final SuggestedWords suggestedWords = sp.mSuggestPuncList;
+        final SuggestedWords suggestedWords = sp.suggestPuncList;
         assertFalse("typedWordValid", suggestedWords.mTypedWordValid);
         assertFalse("willAutoCorrect", suggestedWords.mWillAutoCorrect);
         assertTrue("isPunctuationSuggestions", suggestedWords.isPunctuationSuggestions());

@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -451,6 +452,9 @@ fun PaymentScreen(
 
     val reminderTimeIsUp = (currentTime >= pushReminderTime.value) && ((numDaysInstalled.intValue >= TRIAL_PERIOD_DAYS) || forceShowNotice.value)
 
+    val context = LocalContext.current
+    val resources = LocalResources.current
+
     ScrollableList {
         ScreenTitle(stringResource(R.string.payment_screen_short_title), showBack = true, navController = navController)
 
@@ -461,8 +465,6 @@ fun PaymentScreen(
         }
 
         Spacer(Modifier.height(8.dp))
-
-        val context = LocalContext.current
 
         SpacedColumn(32.dp) {
             PaymentSurface(isPrimary = true) {
@@ -560,12 +562,12 @@ fun PaymentScreen(
 
                     ActionsColumn {
                         val context = LocalContext.current
-                        val remindOptions = remember(context) {
+                        val remindOptions = remember(resources) {
                             listOf(
-                                7 to context.getString(R.string.payment_screen_set_reminder_setter_7_days),
-                                30 to context.getString(R.string.payment_screen_set_reminder_setter_1_month),
-                                182 to context.getString(R.string.payment_screen_set_reminder_setter_6_months),
-                                36500 to context.getString(R.string.payment_screen_set_reminder_setter_next_century),
+                                7 to resources.getString(R.string.payment_screen_set_reminder_setter_7_days),
+                                30 to resources.getString(R.string.payment_screen_set_reminder_setter_1_month),
+                                182 to resources.getString(R.string.payment_screen_set_reminder_setter_6_months),
+                                36500 to resources.getString(R.string.payment_screen_set_reminder_setter_next_century),
                             )
                         }
                         val selection = remember(remindOptions) { mutableStateOf(remindOptions.first()) }

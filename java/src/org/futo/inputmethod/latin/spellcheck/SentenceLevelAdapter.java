@@ -17,6 +17,8 @@
 package org.futo.inputmethod.latin.spellcheck;
 
 import android.annotation.TargetApi;
+import android.app.Application;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
 import android.view.textservice.SentenceSuggestionsInfo;
@@ -77,15 +79,10 @@ public class SentenceLevelAdapter {
 
     private static class WordIterator {
         private final SpacingAndPunctuations mSpacingAndPunctuations;
-        public WordIterator(final Resources res, final Locale locale) {
-            final RunInLocale<SpacingAndPunctuations> job =
-                    new RunInLocale<SpacingAndPunctuations>() {
-                @Override
-                protected SpacingAndPunctuations job(final Resources r) {
-                    return new SpacingAndPunctuations(r);
-                }
-            };
-            mSpacingAndPunctuations = job.runInLocale(res, locale);
+        public WordIterator(final Context context, final Locale locale) {
+            mSpacingAndPunctuations = SpacingAndPunctuations.create(
+                    context, locale
+            );
         }
 
         public int getEndOfWord(final CharSequence sequence, final int fromIndex) {
@@ -131,8 +128,8 @@ public class SentenceLevelAdapter {
     }
 
     private final WordIterator mWordIterator;
-    public SentenceLevelAdapter(final Resources res, final Locale locale) {
-        mWordIterator = new WordIterator(res, locale);
+    public SentenceLevelAdapter(final Context context, final Locale locale) {
+        mWordIterator = new WordIterator(context, locale);
     }
 
     public SentenceTextInfoParams getSplitWords(TextInfo originalTextInfo) {

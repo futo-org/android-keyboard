@@ -4,7 +4,10 @@ import org.futo.inputmethod.event.Combiner
 import org.futo.inputmethod.event.DeadKeyCombiner
 import org.futo.inputmethod.event.combiners.NFCNormalizingCombiner
 import org.futo.inputmethod.event.combiners.DeadKeyPreCombiner
+import org.futo.inputmethod.event.combiners.KoashurCombiner
 import org.futo.inputmethod.event.combiners.KoreanCombiner
+import org.futo.inputmethod.event.combiners.vietnamese.VNICombiner
+import org.futo.inputmethod.event.combiners.vietnamese.VietTelexCombiner
 import org.futo.inputmethod.event.combiners.wylie.WylieCombiner
 
 enum class CombinerKind(val factory: () -> Combiner) {
@@ -13,5 +16,8 @@ enum class CombinerKind(val factory: () -> Combiner) {
     NFCNormalize({ NFCNormalizingCombiner() }),
     Korean({ KoreanCombiner() }),
     KoreanCombineInitials({ KoreanCombiner(combineInitials = true) }),
+    VietTelex( { VietTelexCombiner() }),
+    VNI( { VNICombiner() }),
     Wylie({ WylieCombiner() }),
+    Koashur({ KoashurCombiner() }),
 }

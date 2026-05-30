@@ -17,6 +17,7 @@
 package org.futo.inputmethod.latin.spellcheck;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Binder;
 import android.os.Build;
@@ -36,12 +37,12 @@ import java.util.Locale;
 public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheckerSession {
     private static final String TAG = AndroidSpellCheckerSession.class.getSimpleName();
     private static final boolean DBG = false;
-    private final Resources mResources;
+    private final Context mContext;
     private SentenceLevelAdapter mSentenceLevelAdapter;
 
     public AndroidSpellCheckerSession(AndroidSpellCheckerService service) {
         super(service);
-        mResources = service.getResources();
+        mContext = service;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -164,7 +165,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
             if (sentenceLevelAdapter == null) {
                 final String localeStr = getLocale();
                 if (!TextUtils.isEmpty(localeStr)) {
-                    sentenceLevelAdapter = new SentenceLevelAdapter(mResources,
+                    sentenceLevelAdapter = new SentenceLevelAdapter(mContext,
                             new Locale(localeStr));
                     mSentenceLevelAdapter = sentenceLevelAdapter;
                 }

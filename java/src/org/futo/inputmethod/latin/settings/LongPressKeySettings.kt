@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.settings
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.datastore.preferences.core.stringPreferencesKey
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
@@ -15,22 +16,22 @@ enum class LongPressKey {
     MiscLetters
 }
 
-fun LongPressKey.name(context: Context): String {
+fun LongPressKey.name(resources: Resources): String {
     return when(this) {
-        LongPressKey.Numbers -> context.getString(R.string.morekey_settings_kind_numbers)
-        LongPressKey.LanguageKeys -> context.getString(R.string.morekey_settings_kind_language_keys)
-        LongPressKey.Symbols -> context.getString(R.string.morekey_settings_kind_symbols)
-        LongPressKey.QuickActions -> context.getString(R.string.morekey_settings_kind_actions)
-        LongPressKey.MiscLetters -> context.getString(R.string.morekey_settings_kind_misc_common)
+        LongPressKey.Numbers -> resources.getString(R.string.morekey_settings_kind_numbers)
+        LongPressKey.LanguageKeys -> resources.getString(R.string.morekey_settings_kind_language_keys)
+        LongPressKey.Symbols -> resources.getString(R.string.morekey_settings_kind_symbols)
+        LongPressKey.QuickActions -> resources.getString(R.string.morekey_settings_kind_actions)
+        LongPressKey.MiscLetters -> resources.getString(R.string.morekey_settings_kind_misc_common)
     }
 }
-fun LongPressKey.description(context: Context): String {
+fun LongPressKey.description(resources: Resources): String {
     return when(this) {
-        LongPressKey.Numbers -> context.getString(R.string.morekey_settings_kind_numbers_example)
-        LongPressKey.LanguageKeys -> context.getString(R.string.morekey_settings_kind_language_keys_example)
-        LongPressKey.Symbols -> context.getString(R.string.morekey_settings_kind_symbols_example)
-        LongPressKey.QuickActions -> context.getString(R.string.morekey_settings_kind_actions_example)
-        LongPressKey.MiscLetters -> context.getString(R.string.morekey_settings_kind_misc_common_example)
+        LongPressKey.Numbers -> resources.getString(R.string.morekey_settings_kind_numbers_example)
+        LongPressKey.LanguageKeys -> resources.getString(R.string.morekey_settings_kind_language_keys_example)
+        LongPressKey.Symbols -> resources.getString(R.string.morekey_settings_kind_symbols_example)
+        LongPressKey.QuickActions -> resources.getString(R.string.morekey_settings_kind_actions_example)
+        LongPressKey.MiscLetters -> resources.getString(R.string.morekey_settings_kind_misc_common_example)
     }
 }
 

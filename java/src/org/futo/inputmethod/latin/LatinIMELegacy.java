@@ -836,6 +836,10 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public void onPressKey(final int primaryCode, final int repeatCount,
             final boolean isSinglePointer) {
         mKeyboardSwitcher.onPressKey(primaryCode, isSinglePointer, getCurrentAutoCapsState());
+
+        if(primaryCode == Constants.CODE_DELETE && repeatCount > 1) {
+            if(!getActiveIME().hasMoreTextToDelete()) return;
+        }
         hapticAndAudioFeedback(primaryCode, repeatCount);
     }
 

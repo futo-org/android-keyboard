@@ -22,6 +22,7 @@ import android.util.LruCache;
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.keyboard.Keyboard;
 import org.futo.inputmethod.latin.common.ComposedData;
+import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import org.futo.inputmethod.latin.utils.SuggestionResults;
 
@@ -105,6 +106,8 @@ public interface DictionaryFacilitator {
      */
     void onFinishInput(Context context);
 
+    void onEmailTyped(String email);
+
     boolean isActive();
 
     Locale getPrimaryLocale();
@@ -179,6 +182,8 @@ public interface DictionaryFacilitator {
     boolean clearUserHistoryDictionary(final Context context);
 
     void flushUserHistoryDictionaries();
+
+    void updateSwipeLayoutAndDictsIfNeeded(SettingsValues values, Keyboard keyboard);
 
     String dump(final Context context);
 

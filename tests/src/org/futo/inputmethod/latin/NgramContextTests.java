@@ -31,6 +31,8 @@ import org.futo.inputmethod.latin.utils.NgramContextUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Locale;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class NgramContextTests {
@@ -140,8 +142,10 @@ public class NgramContextTests {
 
     @Test
     public void testGetNgramContextFromNthPreviousWord() {
-        SpacingAndPunctuations spacingAndPunctuations = new SpacingAndPunctuations(
-                InstrumentationRegistry.getTargetContext().getResources());
+        SpacingAndPunctuations spacingAndPunctuations = SpacingAndPunctuations.create(
+            InstrumentationRegistry.getTargetContext(),
+            Locale.ENGLISH
+        );
         assertEquals("<S>", NgramContextUtils.getNgramContextFromNthPreviousWord("",
                 spacingAndPunctuations, 1).extractPrevWordsContext());
         assertEquals("<S> b", NgramContextUtils.getNgramContextFromNthPreviousWord("a. b ",

@@ -26,6 +26,8 @@ import androidx.annotation.NonNull;
 
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.keyboard.Keyboard;
+import org.futo.inputmethod.keyboard.KeyboardId;
+import org.futo.inputmethod.keyboard.KeyboardLayout;
 import org.futo.inputmethod.latin.NgramContext.WordInfo;
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import org.futo.inputmethod.latin.common.ComposedData;
@@ -33,6 +35,8 @@ import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.StringUtils;
 import org.futo.inputmethod.latin.permissions.PermissionsUtil;
 import org.futo.inputmethod.latin.personalization.UserHistoryDictionary;
+import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import org.futo.inputmethod.latin.utils.ExecutorUtils;
 import org.futo.inputmethod.latin.utils.SuggestionResults;
@@ -70,6 +74,8 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     // dictionary.
     private static final int CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT = 140;
 
+    @androidx.annotation.Nullable
+    private EmailDictionary mEmailDictionary = null;
     private List<DictionaryGroup> mDictionaryGroups = new ArrayList<>();
     private volatile CountDownLatch mLatchForWaitingLoadingMainDictionaries = new CountDownLatch(0);
     // To synchronize assigning mDictionaryGroup to ensure closing dictionaries.
@@ -79,6 +85,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             DICT_TYPE_TO_CLASS = new HashMap<>();
 
     static {
+        DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_EMAIL, EmailDictionary.class);
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER_HISTORY, UserHistoryDictionary.class);
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER, UserBinaryDictionary.class);
     }
@@ -87,8 +94,17 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private static final Class<?>[] DICT_FACTORY_METHOD_ARG_TYPES =
             new Class[] { Context.class, Locale.class, File.class, String.class, String.class };
 
+
+    public static SwipeDecoderDictionary swipeDecoderDictionary = null;
+
     private LruCache<String, Boolean> mValidSpellingWordReadCache;
     private LruCache<String, Boolean> mValidSpellingWordWriteCache;
+
+    private static boolean sTriesAreInvalid = false;
+    public static void onAnyBinaryDictionaryClosed() {
+        sTriesAreInvalid = true;
+        swipeDecoderDictionary.invalidateTries();
+    }
 
     @Override
     public void setValidSpellingWordReadCache(final LruCache<String, Boolean> cache) {
@@ -138,7 +154,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         // TODO: Run evaluation to determine a reasonable value for these constants. The current
         // values are ad-hoc and chosen without any particular care or methodology.
         public static final float WEIGHT_FOR_MOST_PROBABLE_LANGUAGE = 1.0f;
-        public static final float WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.0f;
+        public static final float WEIGHT_FOR_GESTURING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.3f;
         public static final float WEIGHT_FOR_TYPING_IN_NOT_MOST_PROBABLE_LANGUAGE = 0.8f;
 
         /**
@@ -250,8 +266,26 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public void onStartInput() {
     }
 
+
     @Override
     public void onFinishInput(Context context) {
+
+    }
+
+    @Override
+    public void onEmailTyped(String email) {
+        SettingsValues settings = Settings.getInstance().getCurrent();
+        if(!settings.isPersonalizationEnabled() || settings.mInputAttributes.mNoLearning) return;
+
+        if(email != null) {
+            if(email.contains("@") && email.contains(".") && mEmailDictionary != null) {
+                String domain = email.split("@")[1];
+                if(domain.contains(".")) {
+                    mEmailDictionary.addEntryNow(NgramContext.BEGINNING_OF_SENTENCE, 32, email);
+                    mEmailDictionary.addEntryNow(NgramContext.EMAIL_DOMAIN, 32, domain);
+                }
+            }
+        }
     }
 
     @Override
@@ -326,6 +360,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             @Nullable final String account,
             final String dictNamePrefix,
             @Nullable final DictionaryInitializationListener listener) {
+
+        mPrevKeyboard = null;
+        if(DictionaryFacilitatorImpl.swipeDecoderDictionary == null) {
+            DictionaryFacilitatorImpl.swipeDecoderDictionary = new SwipeDecoderDictionary(context, Locale.ENGLISH);
+        }
+
         final HashMap<Locale, ArrayList<String>> existingDictionariesToCleanup = new HashMap<>();
         // TODO: Make subDictTypesToUse configurable by resource or a static final list.
         final HashSet<String> subDictTypesToUse = new HashSet<>();
@@ -339,6 +379,14 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
         if (usePersonalizedDicts) {
             subDictTypesToUse.add(Dictionary.TYPE_USER_HISTORY);
+        }
+
+        if(usePersonalizedDicts && (forceReloadAllDictionaries || mEmailDictionary == null)) {
+            if(mEmailDictionary != null) mEmailDictionary.close();
+            mEmailDictionary = new EmailDictionary(context);
+        }else if(!usePersonalizedDicts && mEmailDictionary != null) {
+            mEmailDictionary.close();
+            mEmailDictionary = null;
         }
 
         // Gather all dictionaries. We'll remove them from the list to clean up later.
@@ -355,6 +403,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
 
+        mTrieCorrespondingGroups = null;
         ArrayList<DictionaryGroup> newDictionaryGroups = new ArrayList<>();
         for(Locale newLocale : newLocales) {
             final DictionaryGroup dictionaryGroupForLocale =
@@ -636,7 +685,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         DictionaryGroup mostConfidentDictionary = findDictionaryGroupWithLocale(mDictionaryGroups,
                 getMostConfidentLocale());
         if(mostConfidentDictionary == null) return;
-        if(mostConfidentDictionary.mConfidence == 0) return;
+        if(mostConfidentDictionary.mConfidence == 0 && mDictionaryGroups.size() > 1) return;
         for (int i = 0; i < words.length; i++) {
             final String currentWord = words[i];
             final boolean wasCurrentWordAutoCapitalized = i == 0 && wasAutoCapitalized;
@@ -723,6 +772,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     }
 
     private void removeWord(final String dictName, final String word) {
+        if(mEmailDictionary != null) {
+            mEmailDictionary.removeUnigramEntryDynamically(word);
+        }
         for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
             final ExpandableBinaryDictionary dictionary = dictionaryGroup.getSubDict(dictName);
             if (dictionary != null) {
@@ -785,6 +837,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             NgramContext ngramContext, @Nonnull final Keyboard keyboard,
             SettingsValuesForSuggestion settingsValuesForSuggestion, int sessionId,
             int inputStyle) {
+
         long proximityInfoHandle = keyboard.getProximityInfo().getNativeProximityInfo();
         final SuggestionResults suggestionResults = new SuggestionResults(
                 SuggestedWords.MAX_SUGGESTIONS, ngramContext.isBeginningOfSentenceContext(),
@@ -793,6 +846,50 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL };
 
         updateDictionaryGroupWeights();
+
+        if(keyboard.mId.mMode == KeyboardId.MODE_EMAIL && mEmailDictionary != null) {
+            boolean isTypingDomain = ngramContext.fullContext.contains("@");
+            NgramContext ngramContextForEmail = isTypingDomain ? NgramContext.EMAIL_DOMAIN : NgramContext.BEGINNING_OF_SENTENCE;
+
+            final ArrayList<SuggestedWordInfo> dictionarySuggestions =
+                    mEmailDictionary.getSuggestions(composedData, ngramContextForEmail, proximityInfoHandle, settingsValuesForSuggestion, sessionId, 1.5f, weightOfLangModelVsSpatialModel);
+
+            if(dictionarySuggestions != null && !dictionarySuggestions.isEmpty()) {
+                ArrayList<SuggestedWordInfo> filteredSuggestions = new ArrayList<>();
+                for(int i=0; i<dictionarySuggestions.size(); i++) {
+                    boolean isSuggestionDomain = !dictionarySuggestions.get(i).mWord.contains("@");
+                    if(isSuggestionDomain == isTypingDomain) filteredSuggestions.add(dictionarySuggestions.get(i));
+                }
+
+                suggestionResults.addAll(filteredSuggestions);
+                if (null != suggestionResults.mRawSuggestions) {
+                    suggestionResults.mRawSuggestions.addAll(filteredSuggestions);
+                }
+                return suggestionResults;
+            } else {
+                Log.d(TAG, "was null or empty: " + dictionarySuggestions);
+            }
+        }
+
+        if(DictionaryFacilitatorImpl.swipeDecoderDictionary != null) {
+            SwipeDecoderDictionary.updateKeyboard(keyboard);
+            updateSwipeLayoutAndDictsIfNeeded(Settings.getInstance().getCurrent(), keyboard);
+
+            if(SwipeDecoderDictionary.canBeUsed()) {
+                final ArrayList<SuggestedWordInfo> dictionarySuggestions =
+                        DictionaryFacilitatorImpl.swipeDecoderDictionary.getSuggestions(composedData, ngramContext,
+                            inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH, getTrieWeights());
+
+                if (dictionarySuggestions != null) {
+                    suggestionResults.addAll(dictionarySuggestions);
+                    if (null != suggestionResults.mRawSuggestions) {
+                        suggestionResults.mRawSuggestions.addAll(dictionarySuggestions);
+                    }
+
+                    return suggestionResults;
+                }
+            }
+        }
 
         for(DictionaryGroup dictionaryGroup : mDictionaryGroups) {
             for (final String dictType : ALL_DICTIONARY_TYPES) {
@@ -887,6 +984,12 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
 
     @Override
     public boolean clearUserHistoryDictionary(final Context context) {
+        if(mEmailDictionary != null) {
+            mEmailDictionary.clear();
+            mEmailDictionary.loadInitialContentsLocked();
+            mEmailDictionary.asyncFlushBinaryDictionary();
+        }
+
         return clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
     }
 
@@ -923,6 +1026,95 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                     dictionaryGroup.getSubDict(Dictionary.TYPE_USER_HISTORY);
             if(dictionary == null) continue;
             dictionary.asyncFlushBinaryDictionary();
+        }
+
+        if(mEmailDictionary != null) {
+            mEmailDictionary.asyncFlushBinaryDictionary();
+        }
+    }
+
+    private void addDictionaryTries(List<Dictionary> dictList, String letters, ArrayList<Long> tries) {
+        for(Dictionary dict : dictList) {
+            long handle = 0;
+            if(dict instanceof BinaryDictionary) {
+                handle = ((BinaryDictionary) dict).getITrie(letters);
+            } else if(dict instanceof ReadOnlyBinaryDictionary) {
+                handle = ((ReadOnlyBinaryDictionary) dict).getITrie(letters);
+            }else if(dict instanceof ExpandableBinaryDictionary) {
+                handle = ((ExpandableBinaryDictionary) dict).getITrie(letters);
+            }else if(dict instanceof DictionaryCollection) {
+                addDictionaryTries(((DictionaryCollection) dict).getDictionaries(), letters, tries);
+            }
+
+            if(handle == 0) continue;
+            tries.add(handle);
+        }
+    }
+
+
+    private Keyboard mPrevKeyboard = null;
+    private ArrayList<DictionaryGroup> mTrieCorrespondingGroups;
+
+    private float[] getTrieWeights() {
+        if(mTrieCorrespondingGroups == null) return new float[0];
+
+        int size = mTrieCorrespondingGroups.size();
+        float[] result = new float[size];
+
+        for(int i=0; i<size; i++) {
+            result[i] = mTrieCorrespondingGroups.get(i).mWeightForGesturingInLocale;
+        }
+
+        return result;
+    }
+
+    @Override
+    public void updateSwipeLayoutAndDictsIfNeeded(SettingsValues values, Keyboard keyboard) {
+        if(swipeDecoderDictionary == null) return;
+
+        // TODO: This could be more optimized by avoiding unnecessary recreations when
+        //  isMultiLine is changed, or something else trivial has changed. Maybe also cache the
+        //  resulting LayoutInfos
+        boolean needsToRecreate = keyboard != mPrevKeyboard;
+        if(sTriesAreInvalid) {
+            needsToRecreate = true;
+        }
+
+        if(!needsToRecreate) return;
+
+        if(!hasAtLeastOneInitializedMainDictionary()) return;
+        if(keyboard == null) return;
+        KeyboardLayout layout = keyboard.getKeyboardLayout();
+        if(layout == null) return;
+
+        mPrevKeyboard = keyboard;
+
+        final LayoutInfoForModel info = LayoutInfoForModel.buildLayoutInfo(swipeDecoderDictionary.getContext(), keyboard, values);
+        // Log.d("DictionaryFacilitatorImpl", "Keyboard updated... New info: " + info);
+
+        if(info != null) {
+            // Make sure to update tries
+            ArrayList<Long> trieArray = new ArrayList<>();
+
+            mTrieCorrespondingGroups = new ArrayList<>();
+
+            for(DictionaryGroup group : mDictionaryGroups) {
+                int prevLength = trieArray.size();
+                ArrayList<Dictionary> dicts = new ArrayList<Dictionary>();
+                dicts.add(group.getDict(Dictionary.TYPE_MAIN));
+                dicts.add(group.getDict(Dictionary.TYPE_USER));
+                dicts.add(group.getDict(Dictionary.TYPE_USER_HISTORY));
+
+                addDictionaryTries(dicts, info.getLetters(), trieArray);
+                int newLength = trieArray.size();
+
+                for(int i=0; i<(newLength - prevLength); i++) {
+                    mTrieCorrespondingGroups.add(group);
+                }
+            }
+
+            swipeDecoderDictionary.updateKeyboard(new SwipeDecoderDictionary.PendingLayoutInfo(info, trieArray));
+            sTriesAreInvalid = trieArray.isEmpty();
         }
     }
 

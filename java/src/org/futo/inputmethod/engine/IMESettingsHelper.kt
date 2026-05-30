@@ -2,13 +2,13 @@ package org.futo.inputmethod.engine
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import org.futo.inputmethod.engine.general.ChineseIMESettings
 import org.futo.inputmethod.engine.general.JapaneseIMESettings
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.pages.langspecific.zh.ChineseIMESettings
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 

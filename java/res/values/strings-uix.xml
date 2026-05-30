@@ -57,6 +57,7 @@
     <string name="action_clipboard_manager_pin_item">Pin item</string>
     <string name="action_clipboard_manager_remove_item">Remove item</string>
     <string name="action_clipboard_manager_remove_item_confirm_dialog">Confirm remove:\n\"%s\"</string>
+    <string name="action_clipboard_manager_remove_item_confirm_dialog_image">Confirm remove image</string>
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_cancel_action_button">Cancel</string>
     <string name="action_clipboard_manager_disable_text">There are no items to clear. Disable clipboard history?</string>
@@ -69,6 +70,9 @@
     <!-- Must be fairly short -->
     <string name="action_clipboard_manager_clear_unpinned_items_button">Clear</string>
     <string name="action_clipboard_manager_clear_clipboard">Clear clipboard</string>
+    <string name="action_clipboard_manager_search">Search clipboard&#8230;</string>
+    <string name="action_clipboard_manager_enter_your_search">Enter a search term…</string>
+    <string name="action_clipboard_manager_no_clips_found">No results found</string>
     <string name="action_clipboard_manager_error_device_locked_title">Device Locked</string>
     <string name="action_clipboard_manager_error_device_locked_text">Please unlock your device to access clipboard history</string>
     <string name="action_clipboard_manager_error_general_title">Clipboard Error</string>
@@ -86,12 +90,17 @@
     <!-- This message is shown when we're typing in a text field does not support image insertion ("app" refers to the external app that is providing the text field) -->
     <string name="action_clipboard_manager_error_app_image_insertion_unsupported">App does not support image insertion</string>
     <string name="action_clipboard_manager_settings_title">Clipboard Manager Settings</string>
+    <string name="action_clipboard_manager_settings_save_images">Save copied images</string>
+    <string name="action_clipboard_manager_settings_save_screenshots">Save recent screenshots</string>
+    <string name="action_clipboard_manager_settings_save_screenshots_subtitle">You\'ll need to grant permission to access your screenshots</string>
     <string name="action_clipboard_manager_settings_hours_to_keep_clips">Hours to keep unpinned clips</string>
     <string name="action_clipboard_manager_settings_maximum_clips">Number of unpinned clips to keep</string>
     <string name="action_clipboard_manager_settings_save_sensitive_clips">Save sensitive clips</string>
     <string name="action_clipboard_manager_settings_save_sensitive_clips_subtitle">If enabled, it will save items from password managers, incognito windows, etc</string>
     <string name="action_clipboard_manager_settings_list_layout">Use vertical list layout instead of grid</string>
     <string name="action_clipboard_manager_settings_show_pinned_above_others">Keep pinned clips on top</string>
+    <string name="action_clipboard_manager_settings_skip_delete_confirmation">Skip confirmation when deleting unpinned clips</string>
+
     <string name="action_clipboard_manager_settings_show_quick_clips">Show recently copied text in suggestion bar</string>
 
     <!-- For keyboard modes action -->
@@ -416,13 +425,21 @@
     <string name="morekey_settings_show_hints_tags">additional characters, alt keys, symbols, popup keys</string>
     <string name="morekey_settings_duration">Long Press Duration</string>
     <string name="morekey_settings_duration_subtitle">How long a key needs to be pressed to be considered a long-press</string>
-    <string name="morekey_settings_backspace_behavior">Backspace Behavior when holding or swiping</string>
-    <string name="morekey_settings_backspace_behavior_delete_chars">Delete characters</string>
-    <string name="morekey_settings_backspace_behavior_delete_words">Delete entire words</string>
-    <string name="morekey_settings_space_behavior">Spacebar Behavior</string>
-    <string name="morekey_settings_space_behavior_swipe_cursor">Swiping moves cursor, long-pressing switches language</string>
-    <string name="morekey_settings_space_behavior_swipe_lang">Swiping changes language, long-pressing moves cursor</string>
-    <string name="morekey_settings_space_behavior_only_cursor">Swiping and long-pressing only moves cursor</string>
+
+    <string name="morekey_settings_backspace_title">Backspace</string>
+    <string name="morekey_settings_backspace_hold_delete_words">Hold to delete words</string>
+    <string name="morekey_settings_backspace_swipe_to_delete">Swipe to delete</string>
+    <string name="morekey_settings_backspace_swipe_to_delete_off">Off</string>
+    <string name="morekey_settings_backspace_swipe_to_delete_characters">Characters</string>
+    <string name="morekey_settings_backspace_swipe_to_delete_words">Words</string>
+    <string name="morekey_settings_spacebar_title">Spacebar</string>
+    <string name="morekey_settings_spacebar_swipe_shortcut">Swipe</string>
+    <string name="morekey_settings_spacebar_swipe_shortcut_off">Off</string>
+    <string name="morekey_settings_spacebar_swipe_shortcut_cursor">Move cursor</string>
+    <string name="morekey_settings_spacebar_swipe_shortcut_language">Switch language</string>
+    <string name="morekey_settings_spacebar_hold_shortcut">Hold</string>
+    <string name="morekey_settings_spacebar_hold_shortcut_cursor">Move cursor</string>
+    <string name="morekey_settings_spacebar_hold_shortcut_language">Switch language</string>
 
     <!-- Types of morekeys that can be configured, and examples of them -->
     <string name="morekey_settings_kind_numbers">Numbers</string>
@@ -439,9 +456,6 @@
 
     <!-- typing settings -->
     <string name="typing_settings_title">Typing preferences</string>
-    <!-- When translating, rename it to gesture typing if it makes more sense for that language -->
-    <string name="typing_settings_swipe">Swipe Typing (alpha)</string>
-    <string name="typing_settings_swipe_subtitle">Allow swiping from key to key to write words.</string>
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
     <string name="typing_settings_suggest_emojis_subtitle">Suggest emojis while you\'re typing</string>
     <string name="typing_settings_vibration_strength">Vibration</string>
@@ -486,6 +500,8 @@
     <!-- Languages like Arabic can have their own digit symbols, this forces use of Western numerals -->
     <string name="keyboard_settings_number_row_dont_use_script_digits">Always use Western numerals</string>
 
+    <string name="keyboard_settings_hide_when_hardware_keyboard_is_connected">Hide when USB keyboard is detected</string>
+
     <!-- misc titles -->
     <string name="settings_keyboard_typing_title">Keyboard &amp; Typing</string>
 
@@ -516,6 +532,31 @@
 
     <string name="dev_settings_title">Developer Settings</string>
 
+    <!-- Swipe typing settings menu -->
+    <!-- When translating, rename it to something like "gesture typing" if it makes more sense for that language -->
+    <string name="swipe_settings_title">Swipe Typing</string>
+    <string name="swipe_settings_enable_swipe_typing">Enable swipe typing</string>
+    <string name="swipe_settings_enable_swipe_typing_subtitle">Allow swiping from key to key to write words.</string>
+
+    <string name="swipe_settings_suggest_mode">Suggestion bar mode</string>
+    <string name="swipe_settings_suggest_mode_tags">show 3 suggestions, used word, accepted word, main word, display 3 alternative, swipe typing, swish input, swype, center middle centre other words</string>
+    <string name="swipe_settings_suggest_mode_top4_title">3 alternatives</string>
+    <string name="swipe_settings_suggest_mode_top3_title">2 alternatives</string>
+    <string name="swipe_settings_suggest_mode_used_word">Main</string>
+    <string name="swipe_settings_suggest_mode_alternative_word_1">Alt1</string>
+    <string name="swipe_settings_suggest_mode_alternative_word_2">Alt2</string>
+    <string name="swipe_settings_suggest_mode_alternative_word_3">Alt3</string>
+
+    <string name="swipe_settings_miscellaneous_title">Other</string>
+
+    <string name="swipe_settings_configure_shortcuts">Shortcuts</string>
+    <string name="swipe_settings_configure_shortcuts_subtitle">Configure spacebar and delete key gestures in long-press settings</string>
+
+    <string name="swipe_settings_show_unsupported">Show unsupported settings…</string>
+    <string name="swipe_settings_use_old_swipe">Use legacy swipe algorithm</string>
+    <string name="swipe_settings_use_old_swipe_subtitle_short">The legacy algorithm is very inaccurate and not recommended.</string>
+    <string name="swipe_settings_use_old_swipe_subtitle">The legacy algorithm is very inaccurate and not recommended. If you have to use this, please tell us why at keyboard@futo.org. This option will be removed in the future.</string>
+
     <!-- Voice input settings menu -->
     <string name="voice_input_settings_title">Voice Input</string>
     <string name="voice_input_settings_builtin_disabled_notice">Built-in voice input is disabled!</string>
@@ -537,6 +578,8 @@
     <string name="voice_input_settings_long_form_subtitle">If disabled, voice input will auto-stop after 30 seconds.</string>
     <string name="voice_input_settings_autostop_vad">Auto-stop on silence</string>
     <string name="voice_input_settings_autostop_vad_subtitle">Automatically stop when silence is detected. You may need to manually stop regardless if there\'s too much background noise.</string>
+    <string name="voice_input_settings_animate_bubble">Animations</string>
+    <string name="voice_input_settings_animate_bubble_subtitle">Display a bubble that reacts to speech</string>
     <string name="voice_input_settings_change_models">Models</string>
     <string name="voice_input_settings_change_models_subtitle">To change the models, visit Languages &amp; Models menu</string>
 

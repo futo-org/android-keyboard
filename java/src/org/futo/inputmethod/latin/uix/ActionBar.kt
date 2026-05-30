@@ -3,6 +3,7 @@ package org.futo.inputmethod.latin.uix
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -38,11 +39,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -108,6 +111,7 @@ import androidx.core.net.toUri
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
+import org.futo.inputmethod.latin.DisplayTop4Setting
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -122,9 +126,12 @@ import org.futo.inputmethod.latin.uix.actions.PinnedActions
 import org.futo.inputmethod.latin.uix.actions.toActionList
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiFamily
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiTypeface
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.emojiNeedsCompat
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
@@ -272,11 +279,13 @@ fun AutoFitText(
 }
 
 @Composable
-fun TextStyle.withCustomFont(): TextStyle {
+fun TextStyle.withCustomFont(orDefault: FontFamily? = null): TextStyle {
     val typeface = LocalKeyboardScheme.current.extended.advancedThemeOptions.font
     if(typeface != null) {
         val family = FontFamily(typeface)
         return this.copy(fontFamily = family)
+    } else if (orDefault != null) {
+        return this.copy(fontFamily = orDefault)
     } else {
         return this
     }
@@ -284,41 +293,56 @@ fun TextStyle.withCustomFont(): TextStyle {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
+fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit, forcePrimary: Boolean, isEmoji: Boolean) {
     val wordInfo = words.getInfoOrNull(idx)
     val isVerbatim = wordInfo?.kind == KIND_TYPED
     val word = wordInfo?.mWord
 
-    val isAutocorrect = isPrimary && words.mWillAutoCorrect
+    val isAutocorrect = forcePrimary || (isPrimary && words.mWillAutoCorrect)
 
     val color = when(isAutocorrect) {
         true -> LocalKeyboardScheme.current.onSurface
         else -> LocalKeyboardScheme.current.onSurfaceVariant
     }
 
-    val topSuggestionIcon = painterResource(id = R.drawable.transformer_suggestion)
-    val textButtonModifier = when (wordInfo?.mOriginatesFromTransformerLM) {
-        true -> Modifier.drawBehind {
-            with(topSuggestionIcon) {
-                val iconSize = topSuggestionIcon.intrinsicSize
+    val iconToUse = when {
+        wordInfo?.mOriginatesFromTransformerLM == true -> painterResource(id = R.drawable.transformer_suggestion)
+        wordInfo?.mOriginatesFromSwipeModel    == true -> painterResource(id = R.drawable.swipemodel_indicator)
+        else -> null
+    }
+    val textButtonModifier = if(iconToUse != null) {
+        Modifier.drawBehind {
+            with(iconToUse) {
+                val iconSize = iconToUse.intrinsicSize
                 translate(
                     left = (size.width - iconSize.width) / 2.0f,
-                    top = size.height - iconSize.height * 2.0f
+                    top = size.height - iconSize.height * (if(wordInfo?.mOriginatesFromSwipeModel == true) 1.3f else 2.0f)
                 ) {
                     draw(
-                        topSuggestionIcon.intrinsicSize,
+                        iconToUse.intrinsicSize,
                         colorFilter = ColorFilter.tint(color = color)
                     )
                 }
             }
         }
-        else -> Modifier
+    } else {
+        Modifier
+    }
+
+    val compatTypeface = LocalCompatEmojiTypeface.current
+    val compatFamily = LocalCompatEmojiFamily.current
+    val potentiallyCompatEmojiFont = remember(word, isEmoji) {
+        if(word != null && isEmoji && emojiNeedsCompat(word, compatTypeface)) {
+            compatFamily
+        } else {
+            null
+        }
     }
 
     val textStyle = when(isAutocorrect) {
         true -> suggestionStylePrimary
         false -> suggestionStyleAlternative
-    }.copy(color = color).withCustomFont()
+    }.copy(color = color).withCustomFont(potentiallyCompatEmojiFont)
 
     Box(
         modifier = textButtonModifier
@@ -377,6 +401,9 @@ data class SuggestionLayout(
     /** Set to true if this is a gesture update, and we should only show one suggestion */
     val isGestureBatch: Boolean,
 
+    /** The primary tail batch element, if present it should be highlighted */
+    val swipePrimaryElement: SuggestedWordInfo?,
+
     val presentableSuggestions: List<SuggestedWordInfo>
 )
 
@@ -386,8 +413,9 @@ fun SuggestedWords.getInfoOrNull(idx: Int): SuggestedWordInfo? = try {
     null
 }
 
-fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?): SuggestionLayout {
+fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?, swipeTailRemovePrimarySuggestion: Boolean): SuggestionLayout {
     val isGestureBatch = words.mInputStyle == SuggestedWords.INPUT_STYLE_UPDATE_BATCH
+    val isSwipeTail = words.mInputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH
 
     val typedWord = words.getInfoOrNull(SuggestedWords.INDEX_OF_TYPED_WORD)?.let {
         if(it.kind == KIND_TYPED) { it } else { null }
@@ -414,6 +442,15 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
             // Do not include the verbatim word when autocorrecting to avoid such duplicate word situation:
             // [ hid | **his** | "hid" ]
             && (isGestureBatch || autocorrectMatch == null || typedWord == null || it.mWord != typedWord.mWord)
+    }.toMutableList()
+
+    var swipePrimaryElement: SuggestedWordInfo? = null
+    if(isSwipeTail && sortedMatches.size > 1) {
+        if(swipeTailRemovePrimarySuggestion) {
+            sortedMatches.removeAt(0)
+        } else {
+            swipePrimaryElement = sortedMatches[0]
+        }
     }
 
     val areSuggestionsClueless = (autocorrectMatch ?: sortedMatches.getOrNull(0))?.let {
@@ -434,15 +471,17 @@ fun makeSuggestionLayout(words: SuggestedWords, blacklist: SuggestionBlacklist?)
         verbatimWord = typedWord,
         areSuggestionsClueless = areSuggestionsClueless,
         isGestureBatch = isGestureBatch,
-        presentableSuggestions = presentableSuggestions
+        presentableSuggestions = presentableSuggestions,
+        swipePrimaryElement = swipePrimaryElement
     )
 }
 
 @Composable
 fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, onLongClick: (i: Int) -> Unit) {
     val layout = makeSuggestionLayout(
-        words,
-        null
+        words = words,
+        blacklist = null,
+        swipeTailRemovePrimarySuggestion = useDataStoreValue(DisplayTop4Setting)
     )
 
     val suggestionItem = @Composable { suggestion: SuggestedWordInfo? ->
@@ -452,8 +491,10 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
                 words,
                 idx,
                 isPrimary = idx == SuggestedWords.INDEX_OF_AUTO_CORRECTION,
+                forcePrimary = suggestion == layout.swipePrimaryElement,
                 onClick = { onClick(idx) },
-                onLongClick = { onLongClick(idx) }
+                onLongClick = { onLongClick(idx) },
+                isEmoji = suggestion in layout.emojiMatches
             )
         } else {
             Spacer(Modifier.weight(1.0f))
@@ -782,7 +823,8 @@ fun ActionBar(
     keyboardManagerForAction: KeyboardManagerForAction? = null,
     quickClipState: QuickClipState? = null,
     onQuickClipDismiss: () -> Unit = {},
-    needToUseExpandableSuggestionUi: Boolean = false
+    needToUseExpandableSuggestionUi: Boolean = false,
+    loading: Boolean = false,
 ) {
     val view = LocalView.current
     val context = LocalContext.current
@@ -846,7 +888,14 @@ fun ActionBar(
                     if (importantNotice != null) {
                         ImportantNoticeView(importantNotice)
                     } else {
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                        if(loading) {
+                            Spacer(Modifier.weight(1.0f))
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(32.dp).align(CenterVertically),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(Modifier.weight(1.0f))
+                        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                             && inlineSuggestions.isNotEmpty()
                         ) {
                             InlineSuggestions(inlineSuggestions)
@@ -1557,10 +1606,10 @@ fun PreviewActionBarWithSuggestions(colorScheme: ThemeOption = DefaultDarkScheme
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = false,
             toggleActionsExpanded = { },
-            onActionAltActivated = { }
         )
     }
 }
@@ -1607,10 +1656,10 @@ fun PreviewActionBarWithQuickClip(colorScheme: ThemeOption = DefaultDarkScheme) 
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = false,
             toggleActionsExpanded = { },
-            onActionAltActivated = { },
             quickClipState = QuickClipState(
                 texts = listOf(
                     QuickClipItem(QuickClipKind.EmailAddress, "keyboard@futo.org", 0),
@@ -1621,7 +1670,7 @@ fun PreviewActionBarWithQuickClip(colorScheme: ThemeOption = DefaultDarkScheme) 
                 validUntil = Long.MAX_VALUE,
                 imageMimeTypes = listOf(),
                 isSensitive = true
-            )
+            ),
         )
     }
 }
@@ -1634,10 +1683,10 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
             words = exampleSuggestedWords,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = true,
             toggleActionsExpanded = { },
-            onActionAltActivated = { },
             importantNotice = object : ImportantNotice {
                 @Composable
                 override fun getText(): String {
@@ -1646,7 +1695,7 @@ fun PreviewActionBarWithNotice(colorScheme: ThemeOption = DefaultDarkScheme) {
 
                 override fun onDismiss(context: Context, auto: Boolean) { }
                 override fun onOpen(context: Context) { }
-            }
+            },
         )
     }
 }
@@ -1659,10 +1708,27 @@ fun PreviewActionBarWithEmptySuggestions(colorScheme: ThemeOption = DefaultDarkS
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = true,
             toggleActionsExpanded = { },
-            onActionAltActivated = { }
+        )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewActionBarLoading(colorScheme: ThemeOption = DefaultDarkScheme) {
+    UixThemeWrapper(colorScheme.obtainColors(LocalContext.current)) {
+        ActionBar(
+            words = exampleSuggestedWordsEmpty,
+            suggestionStripListener = ExampleListener(),
+            onActionActivated = { },
+            onActionAltActivated = { },
+            inlineSuggestions = listOf(),
+            isActionsExpanded = true,
+            toggleActionsExpanded = { },
+            loading = true
         )
     }
 }
@@ -1675,10 +1741,10 @@ fun PreviewExpandedActionBar(colorScheme: ThemeOption = DefaultDarkScheme) {
             words = exampleSuggestedWordsEmpty,
             suggestionStripListener = ExampleListener(),
             onActionActivated = { },
+            onActionAltActivated = { },
             inlineSuggestions = listOf(),
             isActionsExpanded = true,
             toggleActionsExpanded = { },
-            onActionAltActivated = { }
         )
     }
 }
@@ -1714,6 +1780,14 @@ fun PreviewActionBarWithEmptySuggestionsDynamicLight() {
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview
+fun PreviewActionBarLoadingDynamicLight() {
+    PreviewActionBarLoading(DynamicLightTheme)
+}
+
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview
 fun PreviewExpandedActionBarDynamicLight() {
     PreviewExpandedActionBar(DynamicLightTheme)
 }
@@ -1730,6 +1804,13 @@ fun PreviewActionBarWithSuggestionsDynamicDark() {
 @Preview
 fun PreviewActionBarWithEmptySuggestionsDynamicDark() {
     PreviewActionBarWithEmptySuggestions(DynamicDarkTheme)
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+@Preview
+fun PreviewActionBarLoadingDynamicDark() {
+    PreviewActionBarLoading(DynamicDarkTheme)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)

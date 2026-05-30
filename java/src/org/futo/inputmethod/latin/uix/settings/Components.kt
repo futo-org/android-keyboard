@@ -76,6 +76,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -203,11 +204,11 @@ fun SpacedColumn(gap: Dp, modifier: Modifier = Modifier, horizontalAlignment: Al
 @Composable
 fun SettingItem(
     title: String,
+    modifier: Modifier = Modifier,
     subtitle: String? = null,
     onClick: (() -> Unit)? = null,
     icon: (@Composable () -> Unit)? = null,
     disabled: Boolean = false,
-    modifier: Modifier = Modifier,
     subcontent: (@Composable () -> Unit)? = null,
     compact: Boolean = false,
     onSubmenuNavigate: (() -> Unit)? = null,
@@ -445,19 +446,21 @@ fun<T> SettingRadio(
     options: List<T>,
     optionNames: List<String>,
     setting: DataStoreItem<T>,
+    modifier: Modifier = Modifier,
     hints: List<@Composable () -> Unit>? = null,
+    subcontent: List<@Composable () -> Unit>? = null,
 ) {
     ScreenTitle(title, showBack = false)
     Column {
         options.zip(optionNames).forEachIndexed { i, it ->
             SettingItem(title = it.second, onClick = { setting.setValue(it.first) }, icon = {
                 RadioButton(selected = setting.value == it.first, onClick = null)
-            }, modifier = Modifier.clearAndSetSemantics {
+            }, modifier = modifier.clearAndSetSemantics {
                 this.text = AnnotatedString(it.second)
                 this.role = Role.RadioButton
                 this.selected = setting.value == it.first
-            }) {
-                hints?.getOrNull(i)?.let { it() }
+            }, subcontent = subcontent?.getOrNull(i)) {
+                hints?.getOrNull(i)?.invoke()
             }
         }
     }
@@ -808,7 +811,7 @@ fun<T> DropDownPicker(
 
 @Composable
 fun CollapsibleSection(title: String, modifier: Modifier = Modifier, section: @Composable ColumnScope.() -> Unit) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     var expanded by remember { mutableStateOf(false) }
 
     Column {
@@ -816,7 +819,7 @@ fun CollapsibleSection(title: String, modifier: Modifier = Modifier, section: @C
             Modifier.fillMaxWidth().heightIn(min = 44.dp).clickable {
                 expanded = !expanded
             }.padding(16.dp).semantics {
-                stateDescription = context.getString(
+                stateDescription = resources.getString(
                     if(expanded)
                         R.string.setting_section_expanded
                     else
@@ -856,7 +859,7 @@ fun<T> DropDownPicker(
     scrollableOptions: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     var expanded by remember { mutableStateOf(false) }
 
     SpacedColumn(4.dp, modifier = modifier.semantics {
@@ -872,7 +875,7 @@ fun<T> DropDownPicker(
             ).heightIn(min = 44.dp).clip(DropDownShape).clickable {
                 expanded = !expanded
             }.padding(16.dp).semantics {
-                stateDescription = context.getString(
+                stateDescription = resources.getString(
                     if(expanded)
                         R.string.setting_section_expanded
                     else

@@ -16,7 +16,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -28,6 +27,9 @@ import org.futo.inputmethod.engine.general.UseExpandableSuggestionsForGeneralIME
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.CrashLoggingApplication
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.SwipeDecoderDictionary
+import org.futo.inputmethod.latin.SwipeLanguageModelSetting
+import org.futo.inputmethod.latin.SwipeSpecialDecoderSetting
 import org.futo.inputmethod.latin.TextInputAlternativeIC
 import org.futo.inputmethod.latin.TextInputAlternativeICComposing
 import org.futo.inputmethod.latin.TextInputBufferedIC
@@ -42,17 +44,17 @@ import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.UixManagerInstanceForDebug
 import org.futo.inputmethod.latin.uix.actions.BugViewerAction
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
-import org.futo.inputmethod.latin.uix.actions.clipboardFile
+import org.futo.inputmethod.latin.uix.actions.clipboard.clipboardFile
 import org.futo.inputmethod.latin.uix.getPreferencesDataStoreFile
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
-import org.futo.inputmethod.latin.uix.settings.SettingTextField
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.xlm.AllowTransformerOnNonQWERTYLayouts
 import org.futo.inputmethod.updates.DISABLE_UPDATE_REMINDER
 import org.futo.inputmethod.updates.dismissedMigrateUpdateNotice
 import kotlin.system.exitProcess
@@ -160,6 +162,11 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             navigate = { navController.navigate("devtheme") }
         )
 
+        SettingToggleDataStore(
+            title = "Allow transformer models on non QWERTY layouts",
+            setting = AllowTransformerOnNonQWERTYLayouts
+        )
+
 
         ScreenTitle("Text input debug")
         SettingToggleDataStore(
@@ -193,6 +200,26 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             title = "Use setComposingRegion",
             setting = VoiceInputAlternativeICComposing,
             disabled = useDataStoreValue(VoiceInputAlternativeIC) == false
+        )
+
+        ScreenTitle("Swipe debug")
+        SettingToggleDataStore(
+            title = "Special decoder",
+            subtitle = "default = yes",
+            setting = SwipeSpecialDecoderSetting
+        )
+        SettingToggleDataStore(
+            title = "Language model",
+            subtitle = "default = yes",
+            setting = SwipeLanguageModelSetting
+        )
+        NavigationItem(
+            title = "Activate swipe debug logging for 5 minutes",
+            subtitle = "Swipes and text will be logged to logcat",
+            style = NavigationItemStyle.MiscNoArrow,
+            navigate = {
+                SwipeDecoderDictionary.debugLogUntil = System.currentTimeMillis() + 5L * 60L * 1000L
+            }
         )
 
         ScreenTitle(title = "Payment stuff")
@@ -244,49 +271,51 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
             UseExpandableSuggestionsForGeneralIME,
         )
 
-        NavigationItem(
-            title = "Crash the app",
-            style = NavigationItemStyle.MiscNoArrow,
-            navigate = {
-                scope.lifecycleScope.launch {
-                    withContext(Dispatchers.Default) {
-                        delay(300L)
-                        throw RuntimeException("User requested app to crash :3")
-                    }
-                }
-            },
-            icon = painterResource(id = R.drawable.close)
-        )
-
-        if(BuildConfig.DEBUG) {
+        if(!BuildConfig.IS_PLAYSTORE_BUILD) {
             NavigationItem(
-                title = "Corrupt the settings, the clipboard, and exit the app",
+                title = "Crash the app",
                 style = NavigationItemStyle.MiscNoArrow,
                 navigate = {
                     scope.lifecycleScope.launch {
                         withContext(Dispatchers.Default) {
                             delay(300L)
-
-                            context.getPreferencesDataStoreFile().outputStream().use {
-                                it.write(0)
-                            }
-                            context.clipboardFile.outputStream().use {
-                                it.write(0)
-                            }
-
-                            exitProcess(1)
+                            throw RuntimeException("User requested app to crash :3")
                         }
                     }
-                }
+                },
+                icon = painterResource(id = R.drawable.close)
             )
+
+            if(BuildConfig.DEBUG) {
+                NavigationItem(
+                    title = "Corrupt the settings, the clipboard, and exit the app",
+                    style = NavigationItemStyle.MiscNoArrow,
+                    navigate = {
+                        scope.lifecycleScope.launch {
+                            withContext(Dispatchers.Default) {
+                                delay(300L)
+
+                                context.getPreferencesDataStoreFile().outputStream().use {
+                                    it.write(0)
+                                }
+                                context.clipboardFile.outputStream().use {
+                                    it.write(0)
+                                }
+
+                                exitProcess(1)
+                            }
+                        }
+                    }
+                )
+            }
+
+            NavigationItem(
+                title = "Inline Keyboard",
+                subtitle = "This can break everything, force stop or crash the app to fix",
+                style = NavigationItemStyle.Misc,
+                navigate = { navController.navigate("devkeyboard") }
+            )
+
         }
-
-        NavigationItem(
-            title = "Inline Keyboard",
-            subtitle = "This can break everything, force stop or crash the app to fix",
-            style = NavigationItemStyle.Misc,
-            navigate = { navController.navigate("devkeyboard") }
-        )
-
     }
 }

@@ -1,0 +1,62 @@
+{
+    "locale": "hi__#Latn",
+    "morekeys": {
+        "period": [
+            "!autoColumnOrder!8",
+            "\\,",
+            "।",
+            "?",
+            "!",
+            "॥",
+            "#",
+            ")",
+            "(",
+            "/",
+            "'",
+            "@",
+            ":",
+            ";",
+            "-",
+            "\"",
+            "+"
+        ],
+        "tablet_period": [
+            "!autoColumnOrder!8",
+            "।",
+            "\\,",
+            "?",
+            "!",
+            "॥",
+            "#",
+            ")",
+            "(",
+            "'",
+            "/",
+            "@",
+            ":",
+            ";",
+            "-",
+            "\"",
+            "+"
+        ]
+    },
+    "keyspec": {
+        "currency": "₹"
+    },
+    "label": {},
+    "keylabel": {},
+    "keyhintlabel": {},
+    "additional_morekeys": {
+        "symbols_1": ["१"],
+        "symbols_2": ["२"],
+        "symbols_3": ["३"],
+        "symbols_4": ["४"],
+        "symbols_5": ["५"],
+        "symbols_6": ["६"],
+        "symbols_7": ["७"],
+        "symbols_8": ["८"],
+        "symbols_9": ["९"],
+        "symbols_0": ["०"]
+    },
+    "other": {}
+}

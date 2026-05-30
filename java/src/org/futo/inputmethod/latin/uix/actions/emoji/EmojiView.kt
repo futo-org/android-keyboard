@@ -24,6 +24,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.Typeface
 import android.os.Build
 import android.text.Layout
 import android.text.Spanned
@@ -37,25 +38,30 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.createBitmap
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.theme.emojiNeedsCompat
 
 
 class EmojiView @JvmOverloads constructor(
     context: Context,
+    rippleColor: Int,
+    val emojiTypeface: Typeface?,
     attrs: AttributeSet? = null,
 ) :
     View(context, attrs) {
 
     companion object {
-        private const val EMOJI_DRAW_TEXT_SIZE_DP = 42
+        private const val EMOJI_DRAW_TEXT_SIZE_DP = 48
     }
 
     init {
         background = AppCompatResources.getDrawable(context, R.drawable.ripple_emoji_view)
+        background.setTint(rippleColor)
         importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
     }
 
     internal var willDrawVariantIndicator: Boolean = true
     private var textScale: Float = 1.0f
+    private var isAbleToScaleHorizontally = false
 
     private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply {
         textSize = TypedValue.applyDimension(
@@ -63,6 +69,8 @@ class EmojiView @JvmOverloads constructor(
             EMOJI_DRAW_TEXT_SIZE_DP.toFloat(),
             context.resources.displayMetrics
         )
+
+        emojiTypeface?.let { setTypeface(it) }
     }
 
     fun setTextColor(color: Int) {
@@ -70,6 +78,7 @@ class EmojiView @JvmOverloads constructor(
     }
 
     fun setTextSizeMultiplier(v: Float) {
+        isAbleToScaleHorizontally = v < 1.0f
         textPaint.textSize = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             EMOJI_DRAW_TEXT_SIZE_DP.toFloat() * v,
@@ -89,6 +98,7 @@ class EmojiView @JvmOverloads constructor(
         )
     }
 
+    private val bitmapPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
         canvas.run {
@@ -106,7 +116,7 @@ class EmojiView @JvmOverloads constructor(
             val left = (width  - scaledW) / 2f
             val top  = (height - scaledH) / 2f
 
-            drawBitmap(offscreenCanvasBitmap, null, RectF(left, top, left + scaledW, top + scaledH), null)
+            drawBitmap(offscreenCanvasBitmap, null, RectF(left, top, left + scaledW, top + scaledH), bitmapPaint)
         }
     }
 
@@ -137,9 +147,24 @@ class EmojiView @JvmOverloads constructor(
             if (emoji is Spanned) {
                 createStaticLayout(emoji, width).draw(this)
             } else {
+                textPaint.typeface = if(emojiNeedsCompat(emoji.toString(), emojiTypeface)) {
+                    emojiTypeface
+                } else {
+                    null
+                }
+
                 var textWidth = textPaint.measureText(emoji, 0, emoji.length)
+                val fm = textPaint.fontMetrics
+                var textHeight = fm.descent - fm.ascent
+
                 if(textWidth > width) {
-                    scale(width / textWidth, 1.0f)
+                    val scaleNeeded = width / textWidth
+                    if(isAbleToScaleHorizontally || scaleNeeded < 0.4f) {
+                        scale(scaleNeeded, 1.0f)
+                    } else {
+                        scale(scaleNeeded, scaleNeeded)
+                        textHeight *= scaleNeeded
+                    }
                     textScale = width / textWidth
                     textWidth = width.toFloat()
                 } else {
@@ -147,8 +172,6 @@ class EmojiView @JvmOverloads constructor(
                     textScale = 1.0f
                 }
 
-                val fm = textPaint.fontMetrics
-                val textHeight = fm.descent - fm.ascent
                 val textCenterY = height / 2f
                 val baselineY = textCenterY - textHeight / 2f - fm.ascent
 

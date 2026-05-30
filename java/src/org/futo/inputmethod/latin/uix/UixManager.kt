@@ -144,6 +144,7 @@ import org.futo.inputmethod.updates.isManualUpdateTimeExpired
 import org.futo.inputmethod.updates.openManualUpdateCheck
 import org.futo.inputmethod.updates.retrieveSavedLastUpdateCheckResult
 import org.futo.inputmethod.v2keyboard.ComputedKeyboardSize
+import org.futo.inputmethod.v2keyboard.getPrimaryLayoutOverride
 import org.futo.inputmethod.v2keyboard.FloatingKeyboardSize
 import org.futo.inputmethod.v2keyboard.KeyboardSizingCalculator
 import org.futo.inputmethod.v2keyboard.OneHandedDirection
@@ -603,6 +604,11 @@ class UixManager(private val latinIME: LatinIME) {
 
     private var mainKeyboardHidden = mutableStateOf(false)
 
+    fun getCurrentLayoutName(): String =
+        getPrimaryLayoutOverride(latinIME.currentInputEditorInfo)
+            ?: latinIME.latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName
+            ?: "qwerty"
+
     private var numSuggestionsSinceNotice = 0
     private var currentNotice: MutableState<ImportantNotice?> = mutableStateOf(null)
 
@@ -726,10 +732,12 @@ class UixManager(private val latinIME: LatinIME) {
                     isActionsExpanded = isActionsExpanded.value,
                     toggleActionsExpanded = { toggleActionsExpanded() },
                     quickClipState = run {
-                        if(!inlineStuffHiddenByTyping.value) quickClipState.value else null
+                        if(!inlineStuffHiddenByTyping.value) quickClipState.value.filterIfDismissed()
+                            else null
                     },
                     onQuickClipDismiss = { quickClipState.value = null },
-                    needToUseExpandableSuggestionUi = needToUseExpandableSuggestionUi
+                    needToUseExpandableSuggestionUi = needToUseExpandableSuggestionUi,
+                    loading = latinIME.imeManager.isImeLoading()
                 )
             }
         }
@@ -1637,6 +1645,16 @@ class UixManager(private val latinIME: LatinIME) {
         inlineStuffHiddenByTyping.value = textBlank == false
     }
 
+    fun updateEmojiTranslationsIfNeeded() {
+        if(latinIME.getSetting(SHOW_EMOJI_SUGGESTIONS)
+            && Settings.getInstance().current.needsToLookupSuggestions()
+        ) {
+            prevLocale?.let {
+                PersistentEmojiState.loadTranslationsForLanguage(latinIME, it)
+            }
+        }
+    }
+
     private var prevLocale: Locale? = null
     fun updateLocale(locale: Locale): Configuration? {
         var result: Configuration? = null
@@ -1651,7 +1669,7 @@ class UixManager(private val latinIME: LatinIME) {
             setContent()
         }
 
-        PersistentEmojiState.loadTranslationsForLanguage(latinIME, locale)
+        updateEmojiTranslationsIfNeeded()
         checkIfDictInstalled()
         return result
     }
