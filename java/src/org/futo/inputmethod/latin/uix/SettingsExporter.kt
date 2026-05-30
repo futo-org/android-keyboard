@@ -35,7 +35,6 @@ import okio.sink
 import okio.source
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
-import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.mozcUserProfileDir
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.utils.readAllBytesCompat
@@ -47,6 +46,7 @@ import org.futo.inputmethod.latin.uix.actions.clipboard.clipboardFile
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingsActivity
+import org.futo.inputmethod.latin.uix.settings.pages.langspecific.zh.RimeSettings
 import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.findSettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.xlm.ModelPaths
@@ -289,7 +289,7 @@ object SettingsExporter {
         }
 
         // Collect RIME (Chinese user typing history, etc)
-        val rimeDir = ChineseIME.getRimeDir(context)
+        val rimeDir = RimeSettings.RimeDir
         rimeDir.walk().filter { it.isFile }.forEach { subfile ->
             val rel = subfile.toRelativeString(rimeDir)
 
@@ -344,7 +344,7 @@ object SettingsExporter {
             }
 
             context.clipboardDir.deleteRecursively()
-            ChineseIME.getRimeDir(context).deleteRecursively()
+            RimeSettings.RimeDir.deleteRecursively()
             mozcUserProfileDir(context).deleteRecursively()
 
             // delete all themes
@@ -432,7 +432,7 @@ object SettingsExporter {
 
                 entry.name.startsWith("rime/") -> {
                     val relDir = entry.name.splitSlash()
-                    val rimeDir = ChineseIME.getRimeDir(context)
+                    val rimeDir = RimeSettings.RimeDir
 
                     val targetFile = File(rimeDir, relDir)
                     targetFile.parentFile!!.mkdirs()

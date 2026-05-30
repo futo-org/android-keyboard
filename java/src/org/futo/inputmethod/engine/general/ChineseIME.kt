@@ -44,7 +44,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-internal class InputKeeper {
+private class InputKeeper {
     var text = ""
     fun clear() {
         text = ""
@@ -66,8 +66,12 @@ internal class InputKeeper {
 class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAccessor, PreEditListener {
     private val TAG = "ChineseIME (rime)"
 
-    private val rime: Rime =
-        Rime(RimeSettings.SharedDataDir, RimeSettings.UserDataDir, helper.context.packageName)
+    private val rime: Rime
+    init {
+        RimeSettings.RimeDir = helper.context.getExternalFilesDir("Rime")!!
+        rime = Rime(RimeSettings.SharedDataDir.toString(), RimeSettings.UserDataDir.toString(), helper.context.packageName)
+    }
+
     private val connect get() = helper.getCurrentInputConnection()
     private val coroScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val expandableUiCfg = ExpandableSuggestionBarConfiguration(true, false)
