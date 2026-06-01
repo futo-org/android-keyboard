@@ -55,6 +55,8 @@ internal fun getKeyYBottom(key: Key, keyboard: Keyboard): Float =
             ((1.0f / (keyboard.mBaseHeight - keyboard.mPadding.bottom)) * (4.0f / 3.0f))
 
 
+val Key.swipeCode: Int get() = swipeCodeOverride ?: code
+
 data class LayoutInfoForModel(
     val letters: String,
     val xs: List<Float>,
@@ -82,10 +84,10 @@ data class LayoutInfoForModel(
                 else null
             } ?: run {
                 val keys = keyboard.sortedKeys
-                    .filter { settingsValues.isWordCodePoint(it.code) && !Character.isDigit(it.code) }
-                    .sortedBy { it.code }
-                    .distinctBy { it.code } // The engine currently can't handle letters existing multiple times. Sorry custom layouts!
-                val letters = keys.joinToString(separator="") { Character.toString(Character.toLowerCase(it.code)) }
+                    .filter { settingsValues.isWordCodePoint(it.swipeCode) && !Character.isDigit(it.swipeCode) }
+                    .sortedBy { it.swipeCode }
+                    .distinctBy { it.swipeCode } // The engine currently can't handle letters existing multiple times. Sorry custom layouts!
+                val letters = keys.joinToString(separator="") { Character.toString(Character.toLowerCase(it.swipeCode)) }
 
                 // Guard against non-alphabet keyboards
                 if(!keyboard.mId.mElement.kind.isAlphabet || letters.length < 6) return@run null
@@ -168,7 +170,7 @@ private class SpecialDecoder private constructor(
         internal fun matchLayout(keyboard: Keyboard, settingsValues: SettingsValues): LayoutInfoForModel? {
             if(settingsValues.mMultilingualLocales.isNotEmpty()) return null
 
-            val keys = keyboard.sortedKeys.associate { Character.toLowerCase(it.code) to it }
+            val keys = keyboard.sortedKeys.associate { Character.toLowerCase(it.swipeCode) to it }
 
             return specialDecoders.firstNotNullOfOrNull { decoder ->
                 if(keyboard.mId.mLocale.language != decoder.language) return@firstNotNullOfOrNull null
@@ -176,7 +178,7 @@ private class SpecialDecoder private constructor(
                 // In case the layout has multiple repeated instances of the same letter, let's forget
                 // about using a special decoder, since this should never occur in a regular layout.
                 if(decoder.layoutLetters.any { letter -> keyboard.sortedKeys.count { key ->
-                        Character.toLowerCase(key.code) == letter.code
+                        Character.toLowerCase(key.swipeCode) == letter.code
                 } > 1}) return@firstNotNullOfOrNull null
 
                 // Make sure the letters are a perfect match!

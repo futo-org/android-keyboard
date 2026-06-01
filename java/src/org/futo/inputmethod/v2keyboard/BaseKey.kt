@@ -347,7 +347,12 @@ data class BaseKey(
      */
     val hint: String? = null,
 
-    val code: Int? = null
+    val code: Int? = null,
+
+    /**
+     * Letter to use for swipe
+     */
+    val swipeLetter: String? = null
 ) : AbstractKey {
     override fun countsToKeyCoordinate(params: KeyboardParams, row: Row, keyboard: Keyboard): Boolean {
         val attributes = attributes.getEffectiveAttributes(row, keyboard)
@@ -447,7 +452,8 @@ data class BaseKey(
             hint = hint ?: "",
             labelFlags = attributes.labelFlags?.getValue() ?: 0,
             fastLongPress = attributes.fastMoreKeys == true,
-            rowSpan = attributes.rowSpan ?: 1
+            rowSpan = attributes.rowSpan ?: 1,
+            swipeLetter = swipeLetter
         )
     }
 
@@ -492,7 +498,12 @@ data class CaseSelector(
      * Key to use when in symbols layout, defaults to [normal]. Mainly used internally for
      * [TemplateShiftKey]
      */
-    val symbolsShifted: Key = normal
+    val symbolsShifted: Key = normal,
+
+    /**
+     * Letter to use for swipe
+     */
+    val swipeLetter: String? = null
 ) : AbstractKey {
     private fun selectKeyFromElement(elementId: Int): Key =
         when(elementId) {
@@ -519,7 +530,9 @@ data class CaseSelector(
         keyboard: Keyboard,
         coordinate: KeyCoordinate
     ): ComputedKeyData? =
-        selectKeyFromElement(params.mId.mElementId).computeData(params, row, keyboard, coordinate)
+        selectKeyFromElement(params.mId.mElementId).computeData(params, row, keyboard, coordinate)?.let {
+            if(swipeLetter != null) it.copy(swipeLetter = swipeLetter) else it
+        }
 }
 
 
