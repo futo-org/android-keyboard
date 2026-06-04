@@ -104,6 +104,7 @@ import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionHeaderSearch
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.AutoFitText
+import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.resetRecentEmojis
@@ -1064,6 +1065,12 @@ class PersistentEmojiState : PersistentActionState {
                     }
                 }
             }
+        }
+
+        @JvmStatic
+        fun transformEmojiToLastSkinTone(emoji: String): String {
+            val skintone = DataStoreHelper.getSetting(LastUsedSkinTone)
+            return generateSkinToneVariantOf(emoji, skintone, emojiMap)
         }
     }
 
