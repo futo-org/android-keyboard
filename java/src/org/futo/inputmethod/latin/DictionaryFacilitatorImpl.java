@@ -886,6 +886,45 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                         suggestionResults.mRawSuggestions.addAll(dictionarySuggestions);
                     }
 
+                    if (!dictionarySuggestions.isEmpty()) {
+                        final SuggestedWordInfo topSwipeWord = dictionarySuggestions.get(0);
+
+                        // Score one below the top word so the emoji appears in the strip
+                        // without displacing the swipe result as the auto-commit candidate
+                        final int emojiScore = topSwipeWord.mScore - 1;
+
+                        // Look the emoji up by the recognised word
+                        final ComposedData emojiComposedData = new ComposedData(
+                                composedData.mInputPointers, true, topSwipeWord.mWord);
+
+                        // Query each locale group's emoji dictionary with the recognised word
+                        for (DictionaryGroup dictionaryGroup : mDictionaryGroups) {
+                            final Dictionary emojiDict =
+                                    dictionaryGroup.getDict(Dictionary.TYPE_EMOJI);
+
+                            if (emojiDict == null) continue;
+
+                            final ArrayList<SuggestedWordInfo> emojiSuggestions =
+                                    emojiDict.getSuggestions(emojiComposedData, ngramContext,
+                                            proximityInfoHandle, settingsValuesForSuggestion,
+                                            sessionId,
+                                            dictionaryGroup.mWeightForGesturingInLocale,
+                                            weightOfLangModelVsSpatialModel);
+
+                            if (emojiSuggestions == null) continue;
+
+                            // Re-emit each entry at emojiScore; EmojiDictionary buries its
+                            // batch-mode score, which would sort it last
+                            for (SuggestedWordInfo emojiInfo : emojiSuggestions) {
+                                suggestionResults.add(new SuggestedWordInfo(
+                                        emojiInfo.mWord, emojiInfo.mPrevWordsContext, emojiScore,
+                                        emojiInfo.mKindAndFlags, emojiInfo.mSourceDict,
+                                        emojiInfo.mIndexOfTouchPointOfSecondWord,
+                                        emojiInfo.mAutoCommitFirstWordConfidence));
+                            }
+                        }
+                    }
+
                     return suggestionResults;
                 }
             }
