@@ -276,15 +276,20 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public void onEmailTyped(String email) {
         SettingsValues settings = Settings.getInstance().getCurrent();
         if(!settings.isPersonalizationEnabled() || settings.mInputAttributes.mNoLearning) return;
-
-        if(email != null) {
-            if(email.contains("@") && email.contains(".") && mEmailDictionary != null) {
-                String domain = email.split("@")[1];
-                if(domain.contains(".")) {
-                    mEmailDictionary.addEntryNow(NgramContext.BEGINNING_OF_SENTENCE, 32, email);
-                    mEmailDictionary.addEntryNow(NgramContext.EMAIL_DOMAIN, 32, domain);
-                }
-            }
+        if (email == null) return;
+        
+        int at = email.indexOf('@');
+        if (at <= 0) return;
+        if (at != email.lastIndexOf('@')) return;
+        if (at == email.length() - 1) return;
+        
+        String domain = email.substring(at + 1);
+        if (!domain.contains(".")) return;
+        if (domain.startsWith(".") || domain.endsWith(".")) return;
+        
+        if (mEmailDictionary != null) {
+          mEmailDictionary.addEntryNow(NgramContext.BEGINNING_OF_SENTENCE, 32, email);
+          mEmailDictionary.addEntryNow(NgramContext.EMAIL_DOMAIN, 32, domain);
         }
     }
 
