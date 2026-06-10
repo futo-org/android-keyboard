@@ -217,6 +217,9 @@ data class Key(
     /** Row/column indices */
     val row: Int,
     val column: Int,
+
+    /** Override the letter used for swipe */
+    val swipeCodeOverride: Int? = null,
 ) {
     /** Validation */
     init {

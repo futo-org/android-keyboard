@@ -188,7 +188,7 @@
     <!-- Must be fairly short -->
     <string name="keyboard_suggest_disable_emojis">Disable emoji suggestions</string>
     <!-- Must be fairly short -->
-    <string name="keyboard_version_status">Alpha</string>
+    <string name="keyboard_version_status" />
     <string name="keyboard_switch_keyboard">Switch Keyboard</string>
     <string name="keyboard_language_settings">Settings</string>
     <string name="keyboard_actionbar_manual_update_check_notice">Please tap to check for updates, or check in settings</string>
@@ -636,7 +636,7 @@
     <string name="setup_step_1">Setup - Step 1</string>
     <string name="setup_step_2">Setup - Step 2</string>
     <string name="setup_step_3">Setup - Step 3</string>
-    <string name="setup_welcome_text">Welcome to FUTO Keyboard (alpha)! This product is still under development and not yet finished, we appreciate your patience and understanding.\n\nTo get started, enable FUTO Keyboard as an input method.</string>
+    <string name="setup_welcome_text">Welcome to FUTO Keyboard! It\'s still being developed so it may lack certain features or languages. We appreciate your patience and understanding.\n\nTo get started, enable FUTO Keyboard as an input method.</string>
     <string name="setup_open_input_settings">Open Input Method Settings</string>
     <string name="setup_warning_multiple_versions">Warning: You seem to have both Play Store and Standalone versions installed, we only recommend installing one</string>
     <string name="setup_active_input_method">Please select FUTO Keyboard as your active input method.</string>

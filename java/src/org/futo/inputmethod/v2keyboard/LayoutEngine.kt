@@ -704,7 +704,10 @@ data class LayoutEngine(
             iconOverride = data.flick?.icon,
 
             row = row,
-            column = col
+            column = col,
+            swipeCodeOverride = data.swipeLetter?.let {
+                it.firstNotNullOfOrNull { it.code }
+            }
         )
     }
 

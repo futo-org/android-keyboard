@@ -42,6 +42,10 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
             }
         }
 
+        if(emoji != null) {
+            emoji = PersistentEmojiState.transformEmojiToLastSkinTone(emoji)
+        }
+
         return if(emoji != null) {
             val score = if(composedData?.mIsBatchMode == true) {
                 Int.MIN_VALUE + 1

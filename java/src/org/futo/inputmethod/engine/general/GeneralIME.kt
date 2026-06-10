@@ -447,9 +447,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                         helper.keyboardSwitcher,
                         swipeDistinct
                     )
-                    helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(
-                        HapticFeedbackConstants.VIRTUAL_KEY_RELEASE
-                    )
+
+                    if(settings.current.mVibrateOn) {
+                        helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE)
+                    }
                 }
                 if(Looper.myLooper() != Looper.getMainLooper()) {
                     helper.lifecycleScope.launch(Dispatchers.Main) { updateBatch() }

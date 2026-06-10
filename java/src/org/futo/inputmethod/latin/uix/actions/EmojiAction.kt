@@ -81,6 +81,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
@@ -103,14 +104,18 @@ import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionHeaderSearch
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.AutoFitText
+import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.resetRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.PersistentActionState
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
+import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiFamily
 import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiTypeface
 import org.futo.inputmethod.latin.uix.theme.Typography
@@ -319,7 +324,10 @@ class EmojiGridAdapter(
 }
 
 
+val LastUsedSkinTone = SettingsKey(stringPreferencesKey("last_used_skin_tone"), "")
+
 val skinTones = listOf(
+    "",
     "\ud83c\udffb",
     "\ud83c\udffc",
     "\ud83c\udffd",
@@ -327,21 +335,29 @@ val skinTones = listOf(
     "\ud83c\udfff",
 )
 
-// TODO: Mixing multiple skin tones
-//  e.g. family: woman, woman, girl, girl: medium, dark. light, medium skin tones
-fun generateSkinToneVariants(emoji: String, emojiMap: Map<String, EmojiItem>): List<String> {
-    val humanEmojis = emoji.split("\u200D")
-    val variants = mutableListOf<String>()
+data class TonedEmoji(
+    val emoji: String,
+    val skinTone: String?
+)
 
-    for (modifier in skinTones) {
-        val variant = humanEmojis.joinToString("\u200D") { part ->
-            if (emojiMap[part]?.category == "People & Body") {
-                part + modifier
-            } else {
-                part
-            }
+fun generateSkinToneVariantOf(emoji: String, modifier: String, emojiMap: Map<String, EmojiItem>): String {
+    if(modifier.isEmpty()) return emoji
+
+    val humanEmojis = emoji.split("\u200D")
+    val variant = humanEmojis.joinToString("\u200D") { part ->
+        if (emojiMap[part]?.category == "People & Body") {
+            part + modifier
+        } else {
+            part
         }
-        variants.add(variant.replace("\uFE0F", ""))
+    }
+
+    return variant // This used to have .replace("\uFE0F", "")
+}
+
+fun generateSkinToneVariants(emoji: String, emojiMap: Map<String, EmojiItem>): List<TonedEmoji> {
+    val variants = skinTones.map {
+        TonedEmoji(generateSkinToneVariantOf(emoji, it, emojiMap), it)
     }
 
     return variants
@@ -362,6 +378,8 @@ fun Emojis(
             42.dp.toPx().roundToInt()
         }
     }
+
+    val lastUsedSkinTone = useDataStore(LastUsedSkinTone)
 
     var activePopup: PopupInfo? by rememberSaveable { mutableStateOf(null) }
     var popupIsActive by rememberSaveable { mutableStateOf(false) }
@@ -534,28 +552,38 @@ fun Emojis(
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                            generateSkinToneVariants(popupInfo.emoji.emoji, emojiMap).map { emoji ->
+                            generateSkinToneVariants(popupInfo.emoji.untoned, emojiMap).map { toned ->
+                                val emoji = toned.emoji
+                                val tone = toned.skinTone
 
-                                Box(Modifier
-                                    .width(40.dp)
-                                    .height(40.dp)
-                                    .clickable {
-                                        onClick(
-                                            EmojiItem(
-                                                emoji = emoji,
-                                                description = popupInfo.emoji.description,
-                                                category = popupInfo.emoji.category,
-                                                skinTones = false
-                                            )
-                                        )
-                                        popupIsActive = false
+                                if(emoji != popupInfo.emoji.emoji) {
+                                    Box(
+                                        Modifier
+                                            .width(40.dp)
+                                            .height(40.dp)
+                                            .clickable {
+                                                onClick(
+                                                    EmojiItem(
+                                                        emoji = emoji,
+                                                        description = popupInfo.emoji.description,
+                                                        category = popupInfo.emoji.category,
+                                                        skinTones = false
+                                                    )
+                                                )
+                                                popupIsActive = false
+
+                                                if(tone != null) {
+                                                    lastUsedSkinTone.setValue(tone)
+                                                }
+                                            }
+                                    ) {
+                                        Text(
+                                            emoji, modifier = Modifier.align(Alignment.Center),
+                                            fontFamily = familyToUse,
+                                            fontSize = with(LocalDensity.current) {
+                                                32.dp.toSp()
+                                            })
                                     }
-                                ) {
-                                    Text(emoji, modifier = Modifier.align(Alignment.Center),
-                                        fontFamily = familyToUse,
-                                        fontSize = with(LocalDensity.current) {
-                                            32.dp.toSp()
-                                        })
                                 }
                             }
                         }
@@ -755,21 +783,21 @@ fun EmojiGrid(
         }
     }
 
-    val categorizedEmojis = remember {
+    val skinTone = useDataStoreValue(LastUsedSkinTone)
+    val emojiTypeface = LocalCompatEmojiTypeface.current
+    val categorizedEmojis = remember(skinTone) {
         var prevCategory = ""
-        val data = emojis.flatMap { emoji ->
-            listOfNotNull(
+
+        buildList {
+            for(emoji in emojis) {
                 if (emoji.category != prevCategory) {
                     prevCategory = emoji.category
-                    CategoryItem(emoji.category)
-                } else {
-                    null
-                },
-                EmojiItemItem(emoji)
-            )
-        }
+                    add(CategoryItem(emoji.category))
+                }
 
-        data
+                add(EmojiItemItem(transformEmojiForLastUsedSkinTone(skinTone, emoji, emojiMap, emojiTypeface)))
+            }
+        }
     }
 
     val currentCategory = remember { mutableStateOf(CategoryItem("Recent")) }
@@ -841,6 +869,35 @@ fun EmojiGrid(
             )
         }
     }
+}
+
+fun transformEmojiForLastUsedSkinTone(
+    skinTone: String,
+    item: EmojiItem,
+    emojiMap: Map<String, EmojiItem>,
+    emojiTypeface: Typeface?
+): EmojiItem {
+    // default skin tone
+    if(skinTone.isEmpty()) return item
+
+    // not toneable
+    if(!item.skinTones) return item
+
+    val toned = generateSkinToneVariantOf(item.emoji, skinTone, emojiMap)
+
+    // no need if it's identical
+    if(toned == item.emoji) return item
+
+    // if it's not renderable, skip
+    if(!emojiShouldShow(toned, emojiTypeface)) return item
+
+    return EmojiItem(
+        toned,
+        item.description,
+        item.category,
+        true,
+        untoned = item.emoji
+    )
 }
 
 data class EmojiNames(val names: List<String>)
@@ -1008,6 +1065,12 @@ class PersistentEmojiState : PersistentActionState {
                     }
                 }
             }
+        }
+
+        @JvmStatic
+        fun transformEmojiToLastSkinTone(emoji: String): String {
+            val skintone = DataStoreHelper.getSetting(LastUsedSkinTone)
+            return generateSkinToneVariantOf(emoji, skintone, emojiMap)
         }
     }
 
