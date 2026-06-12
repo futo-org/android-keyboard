@@ -222,7 +222,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native boolean isCorruptedNative(long dict);
     private static native boolean migrateNative(long dict, String dictFilePath,
             long newFormatVersion);
-    private static native long getITrieHandleNative(long dict, String letters);
+    private static native long getITrieHandleNative(long dict, String letters, boolean allowBadWords);
 
     // TODO: Move native dict into session
     private void loadDictionary(final String path, final long startOffset,
@@ -657,12 +657,12 @@ public final class BinaryDictionary extends Dictionary {
         }
     }
 
-    public long getITrie(final String letters) {
+    public long getITrie(final String letters, boolean allowBadWords) {
         if (!isValidDictionary()) {
             return 0;
         }
 
-        return getITrieHandleNative(mNativeDict, letters);
+        return getITrieHandleNative(mNativeDict, letters, allowBadWords);
     }
 
     @UsedForTesting

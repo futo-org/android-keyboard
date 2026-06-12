@@ -26,11 +26,13 @@ import org.futo.inputmethod.latin.SuggestedWords;
 import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.uix.PreferenceUtils;
+import org.futo.inputmethod.latin.uix.settings.BadWordMode;
 import org.futo.inputmethod.latin.uix.settings.BadWordsKt;
+
+import java.util.Locale;
 
 @SuppressWarnings("unused")
 public final class StatsUtils {
-
     private StatsUtils() {
         // Intentional empty constructor.
     }
@@ -49,9 +51,9 @@ public final class StatsUtils {
         swearCounter += weight;
         if(swearCounter >= 8) {
             SharedPreferences prefs = PreferenceUtils.INSTANCE.getDefaultSharedPreferences(context);
-            if(!prefs.contains(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE)) {
+            if(!prefs.contains(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE_2)) {
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE, false);
+                editor.putBoolean(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE_2, false);
                 editor.apply();
             }
 
@@ -65,9 +67,8 @@ public final class StatsUtils {
             final SuggestedWords.SuggestedWordInfo suggestionInfo,
             final DictionaryFacilitator dictionaryFacilitator) {
         if(swearCounter != Integer.MIN_VALUE
-                && Settings.getInstance().getCurrent().mBlockPotentiallyOffensive
                 && suggestionInfo.isKindOf(SuggestedWords.SuggestedWordInfo.KIND_TYPED)
-                && BadWordsKt.isFiltered(suggestionInfo.mWord)
+                && BadWordsKt.shouldBlockWord(getBadWordMode(), suggestionInfo.getWord())
         ) {
             incrementSwearCounterAndEnableToggleIfThresholdReached(context, 4);
         }
@@ -140,18 +141,25 @@ public final class StatsUtils {
     public static void onDecoderLaggy(final int operation, final long duration) {
     }
 
+    private static BadWordMode getBadWordMode() {
+        SettingsValues settings = Settings.getInstance().getCurrent();
+        return new BadWordMode(
+                settings.mLocale.getLanguage().toLowerCase(Locale.ROOT),
+                settings.mBlockSlurs,
+                settings.mBlockPotentiallyOffensive
+        );
+    }
+
     public static void onWordLearned(final Context context, final String word) {
         if(swearCounter != Integer.MIN_VALUE
-                && Settings.getInstance().getCurrent().mBlockPotentiallyOffensive
-                && BadWordsKt.isFiltered(word)
+                && BadWordsKt.shouldBlockWord(getBadWordMode(), word)
         ) {
             incrementSwearCounterAndEnableToggleIfThresholdReached(context, 1);
         }
     }
     public static void onWordUnlearned(final Context context, final String word) {
         if(swearCounter != Integer.MIN_VALUE
-                && Settings.getInstance().getCurrent().mBlockPotentiallyOffensive
-                && BadWordsKt.isFiltered(word)
+                && BadWordsKt.shouldBlockWord(getBadWordMode(), word)
         ) {
             incrementSwearCounterAndEnableToggleIfThresholdReached(context, -1);
         }

@@ -136,6 +136,7 @@ static bool ITrie_IsWord(void* self, TrieId id) {
 
     if(wordAttributes.isNotAWord()) return false;
     if(wordAttributes.isBlacklisted()) return false;
+    if(wordAttributes.isPossiblyOffensive() && !dic->badWordsAllowed) return false;
 
     return true;
 }
@@ -229,6 +230,7 @@ static const ITrieVTable dicTraverseVtable = {
 
 void DicITrieWrapper::initLetters(const std::string &letters) {
     if(this->letters == letters) return;
+    if(letters.size() == 0 && this->letters.size() > 0) return;
 
     this->letters = letters;
     this->lettersAsCodePoints = codepoints_from_utf8(letters);
