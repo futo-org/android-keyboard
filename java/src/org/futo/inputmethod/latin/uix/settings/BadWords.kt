@@ -1,6 +1,23 @@
 package org.futo.inputmethod.latin.uix.settings
 
-val badWords = listOf(
+private fun List<String>.extendSwears() = toSet()
+
+private val slurs = listOf(
+    "faggot", "faggots", "faggot's", "faggy",
+    "fag", "fags", "fag's",
+    "skank", "skanks", "skank's",
+    "nigga", "niggas", "nigga's",
+    "nigger", "niggers", "nigger's",
+    "chink", "chinks", "chink's",
+    "kike", "kikes", "kike's",
+    "negro", "negros", "negro's"
+).extendSwears()
+
+private val englishSpecificSlurs = listOf(
+    "negro", "negros", "negro's"
+).extendSwears()
+
+private val swearWords = listOf(
     "anus",
     "ass",
     "assface",
@@ -22,9 +39,6 @@ val badWords = listOf(
     "dick",
     "dildo",
     "dildos",
-    "fag",
-    "faggot",
-    "fags",
     "fuck",
     "fucked",
     "fucker",
@@ -42,9 +56,7 @@ val badWords = listOf(
     "semen",
     "sex",
     "shit",
-    "shit*",
     "shitty",
-    "skank",
     "slut",
     "sluts",
     "Slutty",
@@ -52,11 +64,8 @@ val badWords = listOf(
     "vagina",
     "whore",
     "masturbate",
-    "masterbat*",
     "mofo",
     "nazi",
-    "nigga",
-    "nigger",
     "pussy",
     "scrotum",
     "slut",
@@ -67,20 +76,37 @@ val badWords = listOf(
     "jackoff",
     "wank",
     "whore",
-    "bitch*",
     "porn",
     "asdfbadwordasdf",
     "\uD83D\uDD95"
-).flatMap { listOf(it, it.lowercase(), it.uppercase(), it.lowercase().capitalize()) }.toSet()
+).extendSwears()
 
-fun isFiltered(word: String): Boolean {
-    if(word in badWords) {
-        return true
+private val slurPrefixes = listOf("nigger", "nigga", "fagg")
+private val englishSpecificSlurPrefixes = listOf("negro")
+private val swearPrefixes = listOf("bitch", "fuck", "shit", "masturbat")
+
+data class BadWordMode(
+    val language: String,
+    val blockSlurs: Boolean,
+    val blockOffensive: Boolean
+)
+
+fun shouldBlockWord(mode: BadWordMode, word: String): Boolean {
+    val word = word.lowercase()
+    if(mode.blockSlurs || mode.blockOffensive) {
+        if(word in slurs) return true
+        if(slurPrefixes.any { word.startsWith(it) }) return true
+
+        if(mode.language == "en") {
+            if(word in englishSpecificSlurs) return true
+            if(englishSpecificSlurPrefixes.any { word.startsWith(it) }) return true
+        }
     }
 
-    if(word.lowercase() in badWords) {
-        return true
+    if(mode.blockOffensive) {
+        if(word in swearWords) return true
+        if(swearPrefixes.any { word.startsWith(it) }) return true
     }
 
-    return badWords.any { it.endsWith("*") && word.lowercase().startsWith(it.lowercase().substring(0, it.length - 1)) }
+    return false
 }

@@ -1033,17 +1033,18 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
     }
 
-    private void addDictionaryTries(List<Dictionary> dictList, String letters, ArrayList<Long> tries) {
+    private void addDictionaryTries(List<Dictionary> dictList, String letters, ArrayList<Long> tries,
+                                    boolean allowBadWords) {
         for(Dictionary dict : dictList) {
             long handle = 0;
             if(dict instanceof BinaryDictionary) {
-                handle = ((BinaryDictionary) dict).getITrie(letters);
+                handle = ((BinaryDictionary) dict).getITrie(letters, allowBadWords);
             } else if(dict instanceof ReadOnlyBinaryDictionary) {
-                handle = ((ReadOnlyBinaryDictionary) dict).getITrie(letters);
+                handle = ((ReadOnlyBinaryDictionary) dict).getITrie(letters, allowBadWords);
             }else if(dict instanceof ExpandableBinaryDictionary) {
-                handle = ((ExpandableBinaryDictionary) dict).getITrie(letters);
+                handle = ((ExpandableBinaryDictionary) dict).getITrie(letters, allowBadWords);
             }else if(dict instanceof DictionaryCollection) {
-                addDictionaryTries(((DictionaryCollection) dict).getDictionaries(), letters, tries);
+                addDictionaryTries(((DictionaryCollection) dict).getDictionaries(), letters, tries, allowBadWords);
             }
 
             if(handle == 0) continue;
@@ -1051,7 +1052,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
     }
 
-
+    private boolean mPrevBadWordsAllowed = false;
     private Keyboard mPrevKeyboard = null;
     private ArrayList<DictionaryGroup> mTrieCorrespondingGroups;
 
@@ -1068,6 +1069,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return result;
     }
 
+    private boolean areBadWordsAllowed() {
+        return !Settings.getInstance().getCurrent().mBlockPotentiallyOffensive;
+    }
+
     @Override
     public void updateSwipeLayoutAndDictsIfNeeded(SettingsValues values, Keyboard keyboard) {
         if(swipeDecoderDictionary == null) return;
@@ -1080,6 +1085,11 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             needsToRecreate = true;
         }
 
+        boolean allowBadWords = areBadWordsAllowed();
+        if(mPrevBadWordsAllowed != allowBadWords) {
+            needsToRecreate = true;
+        }
+
         if(!needsToRecreate) return;
 
         if(!hasAtLeastOneInitializedMainDictionary()) return;
@@ -1088,7 +1098,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         if(layout == null) return;
 
         mPrevKeyboard = keyboard;
-
         final LayoutInfoForModel info = LayoutInfoForModel.buildLayoutInfo(swipeDecoderDictionary.getContext(), keyboard, values);
         // Log.d("DictionaryFacilitatorImpl", "Keyboard updated... New info: " + info);
 
@@ -1105,7 +1114,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 dicts.add(group.getDict(Dictionary.TYPE_USER));
                 dicts.add(group.getDict(Dictionary.TYPE_USER_HISTORY));
 
-                addDictionaryTries(dicts, info.getLetters(), trieArray);
+                addDictionaryTries(dicts, info.getLetters(), trieArray, allowBadWords);
                 int newLength = trieArray.size();
 
                 for(int i=0; i<(newLength - prevLength); i++) {
@@ -1113,6 +1122,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 }
             }
 
+            mPrevBadWordsAllowed = allowBadWords;
             swipeDecoderDictionary.updateKeyboard(new SwipeDecoderDictionary.PendingLayoutInfo(info, trieArray));
             sTriesAreInvalid = trieArray.isEmpty();
         }

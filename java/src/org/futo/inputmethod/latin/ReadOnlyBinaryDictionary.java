@@ -137,11 +137,11 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
         }
     }
 
-    public long getITrie(final String letters) {
+    public long getITrie(final String letters, boolean allowBadWords) {
         if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()) {
             return 0;
         }
 
-        return mBinaryDictionary.getITrie(letters);
+        return mBinaryDictionary.getITrie(letters, allowBadWords);
     }
 }
