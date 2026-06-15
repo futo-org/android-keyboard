@@ -563,6 +563,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     // Implements {@link BatchInputArbiterListener}.
     @Override
     public void onUpdateBatchInput(final InputPointers aggregatedPointers, final long eventTime) {
+        if(!mIsDetectingGesture && !sInGesture) return;
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onUpdateBatchInput: batchPoints=%d", mPointerId,
                     aggregatedPointers.getPointerSize()));
@@ -601,6 +602,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onCancelBatchInput", mPointerId));
         }
+        mBatchInputArbiter.onCancelBatchInput();
         sListener.onCancelBatchInput();
     }
 

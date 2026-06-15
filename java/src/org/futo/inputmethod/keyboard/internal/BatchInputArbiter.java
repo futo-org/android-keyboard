@@ -199,6 +199,15 @@ public class BatchInputArbiter {
         return false;
     }
 
+    public void onCancelBatchInput() {
+        synchronized (sAggregatedPointers) {
+            sAggregatedPointers.upAllPointers();
+            sLastRecognitionTime = -1;
+            sGestureFirstDownTime = -1;
+            sAggregatedPointers.resetForBatch();
+        }
+    }
+
     /**
      * Marks the pointer as having been released from the touchscreen
      */
