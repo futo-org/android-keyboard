@@ -315,6 +315,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
     private fun onEventInternal(event: Event, ignoreSuggestionUpdate: Boolean = false) {
         helper.requestCursorUpdate()
 
+        val cursorBefore = inputLogic.mConnection.mExpectedSelStart
+
         val inputTransaction = when (event.eventType) {
             Event.EVENT_TYPE_INPUT_KEYPRESS,
             Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
@@ -370,6 +372,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
 
         inputLogic.mConnection.send()
+
+        val cursorAfter = inputLogic.mConnection.mExpectedSelStart
+
+        inputLogic.afterEventCursorDelta(cursorBefore, cursorAfter - cursorBefore)
 
         when(inputTransaction?.requiredShiftUpdate) {
             InputTransaction.SHIFT_UPDATE_LATER,

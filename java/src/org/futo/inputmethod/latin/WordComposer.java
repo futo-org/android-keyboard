@@ -155,6 +155,10 @@ public final class WordComposer {
         return mCodePointSize;
     }
 
+    public int sizeBeforeCursor() {
+        return mCursorPositionWithinWord;
+    }
+
     public boolean isSingleLetter() {
         return size() == 1;
     }

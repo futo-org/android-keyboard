@@ -246,18 +246,35 @@ public class SuggestedWords {
         return suggestionsList;
     }
 
-    public SuggestedWordInfo getAutoCommitCandidate() {
-        if (mSuggestedWordInfoList.size() <= 0) return null;
-        final SuggestedWordInfo candidate = mSuggestedWordInfoList.get(0);
-        return candidate.isEligibleForAutoCommit() ? candidate : null;
+    public SuggestedWordInfo getAutoCorrectCandidate() {
+        if(!mWillAutoCorrect) return null;
+        if(mSuggestedWordInfoList.size() <= INDEX_OF_AUTO_CORRECTION) return null;
+        final SuggestedWordInfo candidate = mSuggestedWordInfoList.get(INDEX_OF_AUTO_CORRECTION);
+        return candidate;
+    }
+
+    public SuggestedWords copyWithoutWord(String word) {
+        ArrayList<SuggestedWordInfo> newList = new ArrayList<>();
+        for(int i=0; i<mSuggestedWordInfoList.size(); i++) {
+            SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
+            if(info.mWord.equals(word)) continue;
+
+            SuggestedWordInfo copy = new SuggestedWordInfo(
+                    info.mWord, "",
+                    info.mScore, SuggestedWordInfo.KIND_CORRECTION,
+                    info.mSourceDict,
+                    info.mIndexOfTouchPointOfSecondWord,
+                    info.mAutoCommitFirstWordConfidence
+            );
+            copy.mOriginatesFromTransformerLM = info.mOriginatesFromTransformerLM;
+            copy.mOriginatesFromSwipeModel = info.mOriginatesFromSwipeModel;
+            newList.add(copy);
+        }
+
+        return new SuggestedWords(newList, new ArrayList<>(), null, false, false, false, 0, 0);
     }
 
     // non-final for testability.
-    /* TODO: This will need a few extra fields for integration with mozc
-    *         Annotation descripttion
-    *         a11y description?
-    *         Candidate ID, (candidate index?)
-    *         (candidate key?) */
     public static class SuggestedWordInfo {
         public static final int NOT_AN_INDEX = -1;
         public static final int NOT_A_CONFIDENCE = -1;
