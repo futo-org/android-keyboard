@@ -97,6 +97,13 @@ val SwipeMenu = UserSettingsMenu(
             default = {true},
         ),
 
+        userSettingToggleSharedPrefs(
+            title = R.string.swipe_settings_sensitive_swipe,
+            subtitle = R.string.swipe_settings_sensitive_swipe_subtitle,
+            key = Settings.PREF_GESTURE_INPUT_SENSITIVITY,
+            default = {false},
+        ),
+
         UserSetting(
             name = R.string.swipe_settings_suggest_mode,
             searchTags = R.string.swipe_settings_suggest_mode_tags

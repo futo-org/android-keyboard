@@ -538,6 +538,9 @@
     <string name="swipe_settings_enable_swipe_typing">Enable swipe typing</string>
     <string name="swipe_settings_enable_swipe_typing_subtitle">Allow swiping from key to key to write words.</string>
 
+    <string name="swipe_settings_sensitive_swipe">Increase sensitivity</string>
+    <string name="swipe_settings_sensitive_swipe_subtitle">Make swipe trigger more often</string>
+
     <string name="swipe_settings_suggest_mode">Suggestion bar mode</string>
     <string name="swipe_settings_suggest_mode_tags">show 3 suggestions, used word, accepted word, main word, display 3 alternative, swipe typing, swish input, swype, center middle centre other words</string>
     <string name="swipe_settings_suggest_mode_top4_title">3 alternatives</string>
