@@ -852,6 +852,15 @@ val KeyboardSettingsMenu = UserSettingsMenu(
     )
 )
 
+val SwipeInputSettingsMenu = UserSettingsMenu(
+    title = R.string.swipe_input_settings_title,
+    navPath = "swipe", registerNavPath = true,
+    settings = listOf(
+        UserSetting(name = R.string.swipe_input_settings_title) {
+            SwipeAlphaModesSetting()
+        }
+    )
+)
 val TypingSettingsMenu = UserSettingsMenu(
     title = R.string.typing_settings_title,
     navPath = "typing", registerNavPath = true,
@@ -1018,6 +1027,33 @@ val TypingSettingsMenu = UserSettingsMenu(
     )
 )
 
+@Composable
+private fun SwipeAlphaModesSetting() {
+    SettingRadio(
+        title = stringResource(R.string.swipe_input_settings_title),
+        options = listOf(
+            Settings.GESTURE_INPUT_MODE_TYPING,
+            Settings.GESTURE_INPUT_MODE_ACTIONS,
+            Settings.GESTURE_INPUT_MODE_NONE
+        ),
+        optionNames = listOf(
+            stringResource(R.string.swipe_input_settings_swipe),
+            stringResource(R.string.swipe_input_settings_swipe_actions_mode),
+            stringResource(R.string.swipe_input_settings_swipe_disabled)
+        ),
+        optionSubtitles = listOf(
+            stringResource(R.string.swipe_input_settings_swipe_subtitle),
+            stringResource(R.string.swipe_input_settings_swipe_actions_mode_subtitle),
+            stringResource(R.string.swipe_input_settings_swipe_disabled_subtitle)
+        ),
+        compact = true,
+        setting = useSharedPrefsInt(
+            key = Settings.PREF_GESTURE_INPUT_MODE,
+            default = Settings.GESTURE_INPUT_MODE_TYPING
+        )
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavController()) {
@@ -1043,6 +1079,7 @@ fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavContro
         }
 
         KeyboardSettingsMenu.render(showBack = false, showTitle = false)
+        SwipeInputSettingsMenu.render(showBack = false, showTitle = false)
         TypingSettingsMenu.render(showBack = false)
 
         BottomSpacer()
