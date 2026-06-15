@@ -22,7 +22,7 @@ import org.futo.ml.inference.SwipeDecoder
 import java.io.File
 import java.util.Locale
 import kotlin.math.abs
-import kotlin.math.sqrt
+import kotlin.math.roundToInt
 
 private const val ENCODER_ASSET = "futo-swipe/honorable_sturgeon/model_fp32.pte"
 private const val ENGLISH_LM_ASSET = "futo-swipe/hungry_jellyfish/context_lm.pte"
@@ -234,6 +234,13 @@ val DisplayTop4Setting = SettingsKey(booleanPreferencesKey("swipe_use_top4_sugge
 
 val SwipeSpecialDecoderSetting = SettingsKey(booleanPreferencesKey("__experimental_swipe_special_decoder"), true)
 val SwipeLanguageModelSetting = SettingsKey(booleanPreferencesKey("__experimental_swipe_language_model"), true)
+
+@Serializable
+data class SwipePoiSer(
+    val x: Float, val y: Float, val t: Int
+)
+@Serializable
+data class SwipeSegSer(val data: List<SwipePoiSer>)
 
 class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Dictionary("swipe", locale) {
     companion object {
@@ -472,6 +479,28 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             Log.d("SwipeDecoderDictionary", "Timing: ${decoder.lastTiming()}")
             Log.d("SwipeDecoderDictionary", "Left = $left")
             Log.d("SwipeDecoderDictionary", "Right = $right")
+
+            if(left.size == 1) {
+                val lf = left.first()
+                var lastT = 0
+                val ls = (lf.x.zip(lf.y)).zip(lf.t.toList()).map { v ->
+                    val x = (v.first.first * 100).roundToInt() / 100.0f
+                    val y = (v.first.second * 1000).roundToInt() / 1000.0f
+                    val t = v.second.toInt()
+
+                    SwipePoiSer(x, y, t)
+                }.filter {
+                    if(it.t == 0 || (it.t - lastT) > 33) {
+                        lastT = it.t
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+                val ser = Json.encodeToString(SwipeSegSer.serializer(), SwipeSegSer(ls))
+                Log.d("SwipeDecoderDictionary", "json = $ser")
+            }
 
             Log.d("SwipeDecoderDictionary", "Context = $wordsContext")
             Log.d("SwipeDecoderDictionary", "curr scale is  ${appliedLayoutInfo.sx} ${appliedLayoutInfo.sy}")
