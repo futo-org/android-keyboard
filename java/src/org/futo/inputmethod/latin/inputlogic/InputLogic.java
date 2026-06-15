@@ -310,6 +310,7 @@ public final class InputLogic {
     public void finishInput() {
         rememberCommittedEmail();
         resetInput();
+        mRememberedSuggestedWords.clear();
     }
 
     private void resetInput() {
@@ -321,7 +322,6 @@ public final class InputLogic {
         mIsAutoCorrectionIndicatorOn = false;
         resetComposingState(true /* alsoResetLastComposedWord */);
         mInputLogicHandler.reset();
-        mRememberedSuggestedWords.clear();
         mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
     }
 
