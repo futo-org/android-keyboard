@@ -401,15 +401,13 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         //Log.d("BatchInputSwipeDecoderDictionary", "total count is $count out of ${pointers.gestureSegments.size}")
         if(count == 0) return null
 
-        val keyboardWidth = prevKeyboard?.mOccupiedWidth ?: run {
-            Log.e("SwipeDecoderDictionary", "Could not determine keyboard width!")
-            context.resources.displayMetrics.widthPixels
-        }
-
-        val keyboardHeight = prevKeyboard?.mOccupiedHeight ?: run {
-            Log.e("SwipeDecoderDictionary", "Could not determine keyboard height! Cannot continue.")
+        val kb = prevKeyboard ?: run {
+            Log.e("SwipeDecoderDictionary", "Could not determine keyboard!")
             return null
         }
+
+        val keyboardWidth = kb.mBaseWidth
+        val keyboardHeight = kb.mBaseHeight - kb.mPadding.bottom
 
         val earliestTime = segments[0].t.get(0).toFloat()
         val transformSegment = { seg: InputPointers.GestureSegment -> SwipeDecoder.SwipeSeg(
