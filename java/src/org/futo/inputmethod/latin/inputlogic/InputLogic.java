@@ -1051,6 +1051,7 @@ public final class InputLogic {
 
         if(codePoint == Constants.CODE_SPACE
                 && inputTransaction.mSpaceState == SpaceState.ANTIPHANTOM) {
+            startDoubleSpacePeriodCountdown(inputTransaction);
             return;
         }
 
