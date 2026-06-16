@@ -54,7 +54,7 @@ public final class Suggest {
     public static final int SESSION_ID_GESTURE = 0;
 
     // Close to -2**31
-    private static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
+    public static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
 
     private static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private final DictionaryFacilitator mDictionaryFacilitator;

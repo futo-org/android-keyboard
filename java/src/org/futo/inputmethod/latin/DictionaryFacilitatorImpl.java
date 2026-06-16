@@ -892,6 +892,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                         suggestionResults.mRawSuggestions.addAll(dictionarySuggestions);
                     }
 
+                    if(!dictionarySuggestions.isEmpty())
+                        addEmojiSuggestionsForSwipe(suggestionResults, dictionarySuggestions.get(0));
+
                     return suggestionResults;
                 }
             }
@@ -916,6 +919,22 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
         return suggestionResults;
+    }
+
+    private void addEmojiSuggestionsForSwipe(SuggestionResults results, SuggestedWordInfo topWord) {
+        for (DictionaryGroup dictionaryGroup : mDictionaryGroups) {
+            final Dictionary emojiDict = dictionaryGroup.getDict(Dictionary.TYPE_EMOJI);
+
+            if (emojiDict == null) continue;
+            if (!(emojiDict instanceof EmojiDictionary)) continue;
+
+            final ArrayList<SuggestedWordInfo> emojiSuggestions = ((EmojiDictionary)emojiDict)
+                    .lookupEmoji(topWord.mWord, null, null);
+
+            if (emojiSuggestions == null) continue;
+
+            results.addAll(emojiSuggestions);
+        }
     }
 
     public boolean isValidSpellingWord(final String word) {

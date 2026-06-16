@@ -17,28 +17,22 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
     private fun isWordValidForShortcut(word: String) =
         word.length > 2 || word.all { it.isUpperCase() }
 
-    override fun getSuggestions(
-        composedData: ComposedData?,
+    fun lookupEmoji(
+        typedWord: String,
         ngramContext: NgramContext?,
-        proximityInfoHandle: Long,
-        settingsValuesForSuggestion: SettingsValuesForSuggestion?,
-        sessionId: Int,
-        weightForLocale: Float,
-        inOutWeightOfLangModelVsSpatialModel: FloatArray?
+        isBatchMode: Boolean?
     ): ArrayList<SuggestedWords.SuggestedWordInfo?>? {
         if(DataStoreHelper.getSetting(SHOW_EMOJI_SUGGESTIONS) == false) return arrayListOf()
-
-        val typedWord = composedData?.mTypedWord ?: ""
 
         var emoji: String? = null
         if(!typedWord.isEmpty()) {
             if(isWordValidForShortcut((typedWord)))
                 emoji = PersistentEmojiState.getShortcut(mLocale, typedWord.lowercase(mLocale))
-        } else if((ngramContext?.prevWordCount ?: 0) > 0 && composedData?.mIsBatchMode == false) {
+        } else if((ngramContext?.prevWordCount ?: 0) > 0 && isBatchMode == false) {
             val prevWord = ngramContext?.getNthPrevWord(1)?.toString() ?: ""
             if(!prevWord.isEmpty()) {
                 if(isWordValidForShortcut(prevWord))
-                     emoji = PersistentEmojiState.getShortcut(mLocale, prevWord.lowercase(mLocale))
+                    emoji = PersistentEmojiState.getShortcut(mLocale, prevWord.lowercase(mLocale))
             }
         }
 
@@ -47,11 +41,7 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
         }
 
         return if(emoji != null) {
-            val score = if(composedData?.mIsBatchMode == true) {
-                Int.MIN_VALUE + 1
-            } else {
-                SuggestedWords.SuggestedWordInfo.MAX_SCORE - 1
-            }
+            val score = Suggest.SUPPRESS_SUGGEST_THRESHOLD + 1
             arrayListOf(
                 SuggestedWords.SuggestedWordInfo(
                     emoji,
@@ -67,6 +57,21 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
             arrayListOf()
         }
     }
+
+    override fun getSuggestions(
+        composedData: ComposedData?,
+        ngramContext: NgramContext?,
+        proximityInfoHandle: Long,
+        settingsValuesForSuggestion: SettingsValuesForSuggestion?,
+        sessionId: Int,
+        weightForLocale: Float,
+        inOutWeightOfLangModelVsSpatialModel: FloatArray?
+    ): ArrayList<SuggestedWords.SuggestedWordInfo?>? =
+        lookupEmoji(
+            composedData?.mTypedWord ?: "",
+            ngramContext,
+            composedData?.mIsBatchMode
+        )
 
     override fun isInDictionary(word: String?): Boolean {
         return false

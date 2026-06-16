@@ -427,6 +427,10 @@ public class SuggestedWords {
             return mWord;
         }
 
+        public boolean isImportantToKeep() {
+            return mKindAndFlags == KIND_EMOJI_SUGGESTION;
+        }
+
         @Deprecated
         public Dictionary getSourceDictionary() {
             return mSourceDict;
