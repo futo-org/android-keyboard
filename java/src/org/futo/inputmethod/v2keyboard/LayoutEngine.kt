@@ -547,7 +547,7 @@ data class LayoutEngine(
     private fun swapOuterKeys(entries: List<LayoutEntry>): List<LayoutEntry> {
         fun isOuter(entry: LayoutEntry): Boolean = when(entry) {
             is LayoutEntry.Gap -> true
-            is LayoutEntry.Key -> entry.data.width != KeyWidth.Regular
+            is LayoutEntry.Key -> entry.data.width != KeyWidth.Regular && entry.data.anchored
         }
 
         val leadingCount = entries.indexOfFirst { !isOuter(it) }.let { if(it == -1) entries.size else it }
