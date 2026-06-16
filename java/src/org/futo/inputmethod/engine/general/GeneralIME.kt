@@ -687,7 +687,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 ignoreSuggestionUpdate = true
             )
 
-            if (selection != null) {
+            if (selection != null && settings.current.mInputAttributes.mShouldShowSuggestions) {
                 val info = ArrayList<SuggestedWordInfo?>()
                 info.add(
                     SuggestedWordInfo(
