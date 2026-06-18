@@ -363,7 +363,7 @@ public class LanguageModelFacilitator(
                     it != suggestedWordsDict.typedWordInfo && !filtered.contains(
                         it
                     )
-                }.take(10))
+                })
             }
         }
 
