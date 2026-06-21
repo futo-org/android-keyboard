@@ -388,3 +388,8 @@ val SHOW_EMOJI_SUGGESTIONS = SettingsKey(
     key = booleanPreferencesKey("suggestEmojis"),
     default = true
 )
+
+val APPLY_SHIFT_TO_SUGGESTIONS = SettingsKey(
+    key = booleanPreferencesKey("applyShiftToSuggestions"),
+    default = false
+)
