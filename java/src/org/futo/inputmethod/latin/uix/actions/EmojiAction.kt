@@ -902,10 +902,21 @@ fun transformEmojiForLastUsedSkinTone(
 
 data class EmojiNames(val names: List<String>) {
     operator fun plus(other: EmojiNames): EmojiNames {
-        return EmojiNames(names + other.names)
+        return EmojiNames((names + other.names).distinct())
     }
 }
-data class EmojiTranslations(val emojiToNames: Map<String, EmojiNames>)
+data class EmojiTranslations(val emojiToNames: Map<String, EmojiNames>) {
+    private fun getOrBlank(key: String) = emojiToNames[key] ?: EmojiNames(emptyList())
+    operator fun plus(other: EmojiTranslations): EmojiTranslations {
+        return EmojiTranslations(
+            buildMap {
+                (emojiToNames.keys + other.emojiToNames.keys).forEach {
+                    put(it, getOrBlank(it) + other.getOrBlank(it))
+                }
+            }
+        )
+    }
+}
 
 class PersistentEmojiState : PersistentActionState {
     companion object {
@@ -918,25 +929,32 @@ class PersistentEmojiState : PersistentActionState {
 
         @JvmStatic
         fun getTranslationForLocale(locale: Locale): EmojiTranslations? {
+            if(locale.language == "en") {
+                if("en_merged" in loadedTranslations) return loadedTranslations["en_merged"]
+
+                val fromUnicode = loadedTranslations["en"] ?: return null
+                val fromGemoji = loadedTranslations["en_gemoji"] ?: return null
+                val merged = fromUnicode + fromGemoji
+
+                loadedTranslations["en_merged"] = merged
+                return merged
+            }
             return loadedTranslations[locale.language]
         }
 
         @JvmStatic
         fun getTranslationForLocales(locales: List<Locale>): EmojiTranslations? {
+            if(locales.size == 1) return getTranslationForLocale(locales[0])
+
             val key = locales.joinToString { it.language }
             if(key in loadedTranslations) return loadedTranslations[key]
 
-            val merged = mutableMapOf<String, EmojiNames>()
-            for(locale in locales) {
-                val translations = loadedTranslations[locale.language] ?: return null
-                translations.emojiToNames.forEach {
-                    merged[it.key] = (merged[it.key] ?: EmojiNames(emptyList())) + it.value
-                }
+            val merged = locales.fold(EmojiTranslations(emptyMap())) { t, l ->
+                t + (getTranslationForLocale(l) ?: return null)
             }
 
-            val result = EmojiTranslations(merged)
-            loadedTranslations[key] = result
-            return result
+            loadedTranslations[key] = merged
+            return merged
         }
 
 
@@ -1009,7 +1027,7 @@ class PersistentEmojiState : PersistentActionState {
 
         @JvmStatic
         suspend fun loadEmojis(context: Context) = withContext(Dispatchers.IO) {
-            val stream = GZIPInputStream(context.resources.openRawResource(R.raw.gemoji))
+            val stream = context.resources.openRawResource(R.raw.gemoji)
             val text = stream.bufferedReader().readText()
 
             val supplementalEmoteText = context.resources.openRawResource(R.raw.supplemental_emotes)
@@ -1024,7 +1042,7 @@ class PersistentEmojiState : PersistentActionState {
 
                 val englishShortcuts = hashMapOf<String, String>()
                 val englishLooseShortcuts = hashMapOf<String, String>()
-                //val englishTranslations = hashMapOf<String, EmojiNames>()
+                val englishTranslations = hashMapOf<String, EmojiNames>()
 
                 emojis.value = (emojiData + supplementalEmoteData).mapNotNull {
                     val emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content
@@ -1045,9 +1063,13 @@ class PersistentEmojiState : PersistentActionState {
                     if(!supported) {
                         null
                     } else {
-                        //englishTranslations.put(emoji, EmojiNames((tags + aliases)
-                        //    .flatMap { listOf(it) + it.split("_") }
-                        //    .toSet().toList()))
+                        if(tags.isNotEmpty()) englishTranslations.put(emoji, EmojiNames(tags))
+
+                        if(!description.contains(' ')) {
+                            if(!englishShortcuts.containsKey(description)) {
+                                englishShortcuts.put(description, emoji)
+                            }
+                        }
 
                         aliases.forEach { x ->
                             if(!englishShortcuts.containsKey(x)) {
@@ -1082,11 +1104,14 @@ class PersistentEmojiState : PersistentActionState {
                     }
                 }
 
+                val forbiddenShortcuts = setOf("flag")
                 loadedTranslatedShortcuts["en"] = englishShortcuts.apply {
                     englishLooseShortcuts.forEach {
-                        if(!containsKey(it.key)) put(it.key, it.value)
+                        if(!containsKey(it.key) && !forbiddenShortcuts.contains(it.key)) put(it.key, it.value)
                     }
                 }
+
+                loadedTranslations["en_gemoji"] = EmojiTranslations(englishTranslations)
             }
         }
 
