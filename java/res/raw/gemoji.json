@@ -171,6 +171,7 @@
     ]
   , "tags": [
       "proud"
+    , "shy"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -224,6 +225,8 @@
     ]
   , "tags": [
       "eyes"
+    , "celebrity"
+    , "amazed"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -237,6 +240,7 @@
     ]
   , "tags": [
       "flirt"
+    , "kiss"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -313,6 +317,8 @@
   , "tags": [
       "tongue"
     , "lick"
+    , "nom"
+    , "eat"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -445,6 +451,9 @@
   , "tags": [
       "silence"
     , "quiet"
+    , "shh"
+    , "secret"
+    , "hush"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -457,6 +466,11 @@
       "thinking"
     ]
   , "tags": [
+      "confused"
+    , "puzzled"
+    , "unsure"
+    , "uncertain"
+    , "think"
     ]
   , "unicode_version": "8.0"
   , "ios_version": "9.1"
@@ -484,6 +498,7 @@
   , "tags": [
       "silence"
     , "hush"
+    , "zip"
     ]
   , "unicode_version": "8.0"
   , "ios_version": "9.1"
@@ -497,6 +512,7 @@
     ]
   , "tags": [
       "suspicious"
+    , "seriously"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -599,6 +615,7 @@
       "roll_eyes"
     ]
   , "tags": [
+      "sarcastic"
     ]
   , "unicode_version": "8.0"
   , "ios_version": "9.1"
@@ -611,6 +628,9 @@
       "grimacing"
     ]
   , "tags": [
+      "grit"
+    , "teeth"
+    , "grimace"
     ]
   , "unicode_version": "6.1"
   , "ios_version": "6.0"
@@ -734,6 +754,7 @@
     ]
   , "tags": [
       "zzz"
+    , "sleep"
     ]
   , "unicode_version": "6.1"
   , "ios_version": "6.0"
@@ -814,6 +835,7 @@
   , "tags": [
       "barf"
     , "sick"
+    , "vomit"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -869,6 +891,9 @@
     ]
   , "tags": [
       "groggy"
+    , "drunk"
+    , "alcohol"
+    , "intoxicated"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -907,6 +932,7 @@
   , "tags": [
       "mind"
     , "blown"
+    , "boom"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -984,6 +1010,7 @@
       "monocle_face"
     ]
   , "tags": [
+      "posh"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -1101,6 +1128,8 @@
       "flushed"
     ]
   , "tags": [
+      "embarrassed"
+    , "shy"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -1126,6 +1155,7 @@
   , "tags": [
       "puppy"
     , "eyes"
+    , "please"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -1340,6 +1370,9 @@
       "yawning_face"
     ]
   , "tags": [
+      "tired"
+    , "sleepy"
+    , "bored"
     ]
   , "unicode_version": "12.0"
   , "ios_version": "13.0"
@@ -1469,6 +1502,7 @@
     ]
   , "tags": [
       "crap"
+    , "poo"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -2400,6 +2434,7 @@
       "pinching_hand"
     ]
   , "tags": [
+      "small"
     ]
   , "unicode_version": "12.0"
   , "ios_version": "13.0"
@@ -2757,6 +2792,7 @@
   , "category": "People & Body"
   , "aliases": [
       "pray"
+    , "thanks"
     ]
   , "tags": [
       "please"
@@ -2962,6 +2998,7 @@
       "tooth"
     ]
   , "tags": [
+      "dentist"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -3797,6 +3834,7 @@
       "shrug"
     ]
   , "tags": [
+      "dunno"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -5969,6 +6007,7 @@
   , "aliases": [
       "woman_dancing"
     , "dancer"
+    , "lady"
     ]
   , "tags": [
       "dress"
@@ -6303,6 +6342,7 @@
   , "category": "People & Body"
   , "aliases": [
       "swimmer"
+    , "pool"
     ]
   , "tags": [
     ]
@@ -6431,6 +6471,8 @@
       "bicyclist"
     ]
   , "tags": [
+      "cycle"
+    , "cycling"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -6705,6 +6747,7 @@
     ]
   , "tags": [
       "meditation"
+    , "yoga"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -6719,6 +6762,7 @@
     ]
   , "tags": [
       "meditation"
+    , "yoga"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -6733,6 +6777,7 @@
     ]
   , "tags": [
       "meditation"
+    , "yoga"
     ]
   , "unicode_version": "11.0"
   , "ios_version": "12.1"
@@ -7991,6 +8036,7 @@
   , "category": "Animals & Nature"
   , "aliases": [
       "rabbit2"
+    , "bunny"
     ]
   , "tags": [
     ]
@@ -8003,6 +8049,7 @@
   , "category": "Animals & Nature"
   , "aliases": [
       "chipmunk"
+    , "squirrel"
     ]
   , "tags": [
     ]
@@ -8843,6 +8890,7 @@
   , "category": "Animals & Nature"
   , "aliases": [
       "lady_beetle"
+    , "ladybug"
     ]
   , "tags": [
       "bug"
@@ -9634,6 +9682,8 @@
     ]
   , "tags": [
       "spicy"
+    , "chili"
+    , "chilli"
     ]
   , "unicode_version": "7.0"
   , "ios_version": "9.1"
@@ -9970,6 +10020,7 @@
   , "category": "Food & Drink"
   , "aliases": [
       "fries"
+    , "chips"
     ]
   , "tags": [
     ]
@@ -10695,6 +10746,7 @@
   , "category": "Food & Drink"
   , "aliases": [
       "cocktail"
+    , "alcohol"
     ]
   , "tags": [
       "drink"
@@ -11105,6 +11157,7 @@
   , "category": "Travel & Places"
   , "aliases": [
       "beach_umbrella"
+    , "beach"
     ]
   , "tags": [
     ]
@@ -11129,6 +11182,7 @@
   , "category": "Travel & Places"
   , "aliases": [
       "desert_island"
+    , "island"
     ]
   , "tags": [
     ]
@@ -11261,6 +11315,7 @@
   , "category": "Travel & Places"
   , "aliases": [
       "house"
+    , "home"
     ]
   , "tags": [
     ]
@@ -12393,6 +12448,7 @@
   , "aliases": [
       "boat"
     , "sailboat"
+    , "sailing"
     ]
   , "tags": [
     ]
@@ -12692,6 +12748,7 @@
   , "category": "Travel & Places"
   , "aliases": [
       "watch"
+    , "time"
     ]
   , "tags": [
       "time"
@@ -12756,6 +12813,7 @@
       "clock12"
     ]
   , "tags": [
+      "clock"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -13188,6 +13246,7 @@
   , "category": "Travel & Places"
   , "aliases": [
       "thermometer"
+    , "hot"
     ]
   , "tags": [
     ]
@@ -13288,6 +13347,7 @@
       "milky_way"
     ]
   , "tags": [
+      "galaxy"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -13298,6 +13358,7 @@
   , "category": "Travel & Places"
   , "aliases": [
       "cloud"
+    , "cloudy"
     ]
   , "tags": [
     ]
@@ -13372,6 +13433,7 @@
   , "category": "Travel & Places"
   , "aliases": [
       "cloud_with_rain"
+    , "rain"
     ]
   , "tags": [
     ]
@@ -13616,6 +13678,7 @@
   , "category": "Travel & Places"
   , "aliases": [
       "ocean"
+    , "sea"
     ]
   , "tags": [
       "sea"
@@ -13632,6 +13695,7 @@
     ]
   , "tags": [
       "halloween"
+    , "pumpkin"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -13644,6 +13708,7 @@
       "christmas_tree"
     ]
   , "tags": [
+      "xmas"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -14260,6 +14325,7 @@
     ]
   , "tags": [
       "marathon"
+    , "singlet"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -14319,6 +14385,7 @@
   , "category": "Activities"
   , "aliases": [
       "yo_yo"
+    , "yoyo"
     ]
   , "tags": [
     ]
@@ -14449,6 +14516,8 @@
   , "category": "Activities"
   , "aliases": [
       "jigsaw"
+    , "part"
+    , "piece"
     ]
   , "tags": [
     ]
@@ -14894,6 +14963,8 @@
       "swim_brief"
     ]
   , "tags": [
+      "underpants"
+    , "underwear"
     ]
   , "unicode_version": "12.0"
   , "ios_version": "13.0"
@@ -15081,6 +15152,7 @@
   , "category": "Objects"
   , "aliases": [
       "high_heel"
+    , "heels"
     ]
   , "tags": [
       "shoe"
@@ -15719,6 +15791,7 @@
   , "category": "Objects"
   , "aliases": [
       "telephone_receiver"
+    , "call"
     ]
   , "tags": [
       "phone"
@@ -15782,6 +15855,10 @@
   , "category": "Objects"
   , "aliases": [
       "electric_plug"
+    , "cord"
+    , "plug"
+    , "cable"
+    , "power"
     ]
   , "tags": [
     ]
@@ -15895,6 +15972,8 @@
       "cd"
     ]
   , "tags": [
+      "disc"
+    , "disk"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -15907,6 +15986,8 @@
       "dvd"
     ]
   , "tags": [
+      "disc"
+    , "disk"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -16030,6 +16111,7 @@
   , "category": "Objects"
   , "aliases": [
       "vhs"
+    , "cassette"
     ]
   , "tags": [
     ]
@@ -16556,6 +16638,7 @@
     ]
   , "tags": [
       "shipping"
+    , "box"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -16711,6 +16794,7 @@
   , "aliases": [
       "memo"
     , "pencil"
+    , "test"
     ]
   , "tags": [
       "document"
@@ -16966,6 +17050,7 @@
   , "category": "Objects"
   , "aliases": [
       "scissors"
+    , "cut"
     ]
   , "tags": [
       "cut"
@@ -17006,6 +17091,10 @@
     ]
   , "tags": [
       "trash"
+    , "bin"
+    , "rubbish"
+    , "garbage"
+    , "refuse"
     ]
   , "unicode_version": "7.0"
   , "ios_version": "9.1"
@@ -17016,6 +17105,7 @@
   , "category": "Objects"
   , "aliases": [
       "lock"
+    , "padlock"
     ]
   , "tags": [
       "security"
@@ -17657,6 +17747,7 @@
   , "category": "Objects"
   , "aliases": [
       "couch_and_lamp"
+    , "sofa"
     ]
   , "tags": [
     ]
@@ -18214,6 +18305,8 @@
   , "tags": [
       "block"
     , "forbidden"
+    , "banned"
+    , "ban"
     ]
   , "unicode_version": "6.0"
   , "ios_version": "6.0"
@@ -18334,6 +18427,7 @@
       "arrow_up"
     ]
   , "tags": [
+      "up"
     ]
   , "unicode_version": "4.0"
   , "ios_version": "6.0"
@@ -18358,6 +18452,7 @@
       "arrow_right"
     ]
   , "tags": [
+      "right"
     ]
   , "unicode_version": ""
   , "ios_version": "6.0"
@@ -18382,6 +18477,7 @@
       "arrow_down"
     ]
   , "tags": [
+      "down"
     ]
   , "unicode_version": "4.0"
   , "ios_version": "6.0"
@@ -18406,6 +18502,7 @@
       "arrow_left"
     ]
   , "tags": [
+      "left"
     ]
   , "unicode_version": "4.0"
   , "ios_version": "6.0"
@@ -20745,6 +20842,7 @@
   , "category": "Flags"
   , "aliases": [
       "triangular_flag_on_post"
+    , "flag"
     ]
   , "tags": [
     ]
@@ -20807,6 +20905,7 @@
   , "category": "Flags"
   , "aliases": [
       "transgender_flag"
+    , "transgender"
     ]
   , "tags": [
       "trans"
@@ -21349,6 +21448,7 @@
   , "category": "Flags"
   , "aliases": [
       "switzerland"
+    , "swiss"
     ]
   , "tags": [
     ]
@@ -23115,6 +23215,7 @@
   , "category": "Flags"
   , "aliases": [
       "palestinian_territories"
+    , "palestine"
     ]
   , "tags": [
     ]

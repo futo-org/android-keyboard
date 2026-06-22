@@ -918,6 +918,9 @@ data class EmojiTranslations(val emojiToNames: Map<String, EmojiNames>) {
     }
 }
 
+data class LooseShortcut(val emoji: String, val shortcut: String, val score: Int)
+
+
 class PersistentEmojiState : PersistentActionState {
     companion object {
         var emojis: MutableState<List<EmojiItem>?> = mutableStateOf(null)
@@ -1040,8 +1043,7 @@ class PersistentEmojiState : PersistentActionState {
                 val supplementalEmoteData = Json.parseToJsonElement(supplementalEmoteText).jsonArray
                     .toList()
 
-                val englishShortcuts = hashMapOf<String, String>()
-                val englishLooseShortcuts = hashMapOf<String, String>()
+                val englishShortcuts = mutableListOf<LooseShortcut>()
                 val englishTranslations = hashMapOf<String, EmojiNames>()
 
                 emojis.value = (emojiData + supplementalEmoteData).mapNotNull {
@@ -1063,25 +1065,44 @@ class PersistentEmojiState : PersistentActionState {
                     if(!supported) {
                         null
                     } else {
-                        if(tags.isNotEmpty()) englishTranslations.put(emoji, EmojiNames(tags))
+                        englishTranslations.put(emoji, EmojiNames(listOf(description) + aliases + tags))
 
                         if(!description.contains(' ')) {
-                            if(!englishShortcuts.containsKey(description)) {
-                                englishShortcuts.put(description, emoji)
-                            }
+                            englishShortcuts.add(LooseShortcut(emoji = emoji, shortcut = description, score = 10))
                         }
 
                         aliases.forEach { x ->
-                            if(!englishShortcuts.containsKey(x)) {
-                                englishShortcuts.put(x, emoji)
-                            }
+                            englishShortcuts.add(LooseShortcut(emoji = emoji, shortcut = x, score = 5))
                         }
 
                         if(category != "ASCII") {
-                            (tags + aliases).forEach { x ->
-                                val v = x.split("_").first()
-                                if (!englishLooseShortcuts.containsKey(v)) {
-                                    englishLooseShortcuts.put(v, emoji)
+                            tags.forEach { x ->
+                                englishShortcuts.add(
+                                    LooseShortcut(
+                                        emoji = emoji,
+                                        shortcut = x,
+                                        score = 4
+                                    )
+                                )
+                            }
+
+                            val lowQualityShortcuts = setOf("flag", "united", "japanese", "mrs",
+                                "lady", "empty", "small", "last", "flat", "high", "old", "low",
+                                "long", "american", "cape", "costa", "cook", "diego", "central",
+                                "south", "heard", "north", "san", "el", "us")
+
+                            (tags + aliases).filter {
+                                it.contains('_')
+                            }.forEach { x ->
+                                val shortcut = x.split('_')[0]
+                                if(shortcut !in lowQualityShortcuts) {
+                                    englishShortcuts.add(
+                                        LooseShortcut(
+                                            emoji = emoji,
+                                            shortcut = shortcut,
+                                            score = 0
+                                        )
+                                    )
                                 }
                             }
                         }
@@ -1104,12 +1125,10 @@ class PersistentEmojiState : PersistentActionState {
                     }
                 }
 
-                val forbiddenShortcuts = setOf("flag")
-                loadedTranslatedShortcuts["en"] = englishShortcuts.apply {
-                    englishLooseShortcuts.forEach {
-                        if(!containsKey(it.key) && !forbiddenShortcuts.contains(it.key)) put(it.key, it.value)
-                    }
-                }
+                loadedTranslatedShortcuts["en"] = englishShortcuts
+                    .sortedByDescending { it.score }
+                    .distinctBy { it.shortcut }
+                    .associate { it.shortcut to it.emoji }
 
                 loadedTranslations["en_gemoji"] = EmojiTranslations(englishTranslations)
             }
