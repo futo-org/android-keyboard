@@ -60,7 +60,6 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
@@ -110,6 +109,7 @@ import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.resetRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
+import org.futo.inputmethod.latin.uix.LocalManager
 import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
@@ -813,15 +813,13 @@ fun EmojiGrid(
     }
 
     if(isSearching) {
-        val locale = LocalConfiguration.current.locale
         val context = LocalContext.current
-        LaunchedEffect(locale.language) {
-            PersistentEmojiState.loadTranslationsForLanguage(context, locale)
+        val locales = LocalManager.current.let { remember { it.getActiveLocales() } }
+        LaunchedEffect(locales) {
+            locales.forEach { PersistentEmojiState.loadTranslationsForLanguage(context, it) }
         }
 
-        val translations = remember(locale.language) {
-            PersistentEmojiState.getTranslationForLocale(locale)
-        }
+        val translations = PersistentEmojiState.getTranslationForLocales(locales)
 
         emojiList =
             emojiList.filterIsInstance<EmojiItemItem>().searchMultiple2(searchFilter) { item ->
@@ -833,6 +831,8 @@ fun EmojiGrid(
             }.take(30).distinctBy { it.emoji.emoji }
 
         if(emojiList.isEmpty()) {
+            // Note: this gets matched and auto translated by localizedCategoryNameMap, don't
+            // update this string without also updating it there
             emojiList = emojiList + listOf(CategoryItem("No results found"))
         }
     }
@@ -900,7 +900,11 @@ fun transformEmojiForLastUsedSkinTone(
     )
 }
 
-data class EmojiNames(val names: List<String>)
+data class EmojiNames(val names: List<String>) {
+    operator fun plus(other: EmojiNames): EmojiNames {
+        return EmojiNames(names + other.names)
+    }
+}
 data class EmojiTranslations(val emojiToNames: Map<String, EmojiNames>)
 
 class PersistentEmojiState : PersistentActionState {
@@ -916,6 +920,25 @@ class PersistentEmojiState : PersistentActionState {
         fun getTranslationForLocale(locale: Locale): EmojiTranslations? {
             return loadedTranslations[locale.language]
         }
+
+        @JvmStatic
+        fun getTranslationForLocales(locales: List<Locale>): EmojiTranslations? {
+            val key = locales.joinToString { it.language }
+            if(key in loadedTranslations) return loadedTranslations[key]
+
+            val merged = mutableMapOf<String, EmojiNames>()
+            for(locale in locales) {
+                val translations = loadedTranslations[locale.language] ?: return null
+                translations.emojiToNames.forEach {
+                    merged[it.key] = (merged[it.key] ?: EmojiNames(emptyList())) + it.value
+                }
+            }
+
+            val result = EmojiTranslations(merged)
+            loadedTranslations[key] = result
+            return result
+        }
+
 
         @JvmStatic
         fun getShortcut(locale: Locale, text: String): String? {
