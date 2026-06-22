@@ -184,10 +184,10 @@ SKK Development Team <skk@ring.gr.jp>""",
         License.BSD3
     ),
     TP(
+        "ClearFlow",
         "ClearFlow Layout",
-        "ClearFlow Layout (xjunbi)",
         "https://clearflowkeyboard.github.io/",
-        "Copyright (c) 2024-2026 Xiaojun Bi (xjunbi)",
-        License.PublicDomain
+        "Copyright (c) 2024-2026 ClearFlow Authors (Xiaojun Bi et al.)",
+        License.PublicDomainClearflow
     )
 )
