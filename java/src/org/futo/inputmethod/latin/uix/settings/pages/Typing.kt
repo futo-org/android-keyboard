@@ -99,6 +99,7 @@ import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
+import org.futo.inputmethod.latin.uix.APPLY_SHIFT_TO_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
@@ -879,6 +880,11 @@ val TypingSettingsMenu = UserSettingsMenu(
             icon = {
                 Text("Aa", style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
+        ),
+        userSettingToggleDataStore(
+            title = R.string.typing_settings_apply_shift_to_suggestions,
+            subtitle = R.string.typing_settings_apply_shift_to_suggestions_subtitle,
+            setting = APPLY_SHIFT_TO_SUGGESTIONS,
         ),
         userSettingToggleSharedPrefs(
             title = R.string.use_double_space_period,

@@ -53,6 +53,8 @@ import org.futo.inputmethod.latin.settings.SettingsValues;
 import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import org.futo.inputmethod.latin.settings.SpacingAndPunctuations;
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
+import org.futo.inputmethod.latin.uix.DataStoreHelper;
+import org.futo.inputmethod.latin.uix.SettingsKt;
 import org.futo.inputmethod.latin.uix.actions.BugViewerKt;
 import org.futo.inputmethod.latin.utils.InputTypeUtils;
 import org.futo.inputmethod.latin.utils.RecapitalizeStatus;
@@ -135,6 +137,13 @@ public final class InputLogic {
     private String mWordBeingCorrectedByCursor = null;
 
     final ArrayDeque<RememberedSuggestedWords> mRememberedSuggestedWords = new ArrayDeque<>();
+
+    // The untransformed suggestions to use as the source for shift-case cycling
+    // in the suggestion strip. Cleared on any external suggestion update.
+    private SuggestedWords mSuggestedWordsBeforeShiftTransform = null;
+    // Guard so showing transformed suggestions via the strip accessor doesn't
+    // itself clear mSuggestedWordsBeforeShiftTransform.
+    private boolean mPushingTransformedSuggestions = false;
 
     @Nullable
     private SuggestedWords lookupSuggestedWords(int cursor, String word) {
@@ -809,6 +818,11 @@ public final class InputLogic {
     // TODO: on the long term, this method should become private, but it will be difficult.
     // Especially, how do we deal with InputMethodService.onDisplayCompletions?
     public void setSuggestedWords(final SuggestedWords suggestedWords) {
+        if (!mPushingTransformedSuggestions) {
+            // Any external suggestion update invalidates the saved pre-transform copy
+            // used by shift-cycling in the suggestion strip.
+            mSuggestedWordsBeforeShiftTransform = null;
+        }
         if(mWordComposer.isComposingWord() && !suggestedWords.isEmpty()) {
             rememberSuggestedWords(mConnection.getExpectedSelectionStart() - mWordComposer.sizeBeforeCursor(),
                     mWordComposer.getTypedWord(), suggestedWords);
@@ -917,6 +931,7 @@ public final class InputLogic {
                 if (mSuggestedWords.isPrediction()) {
                     inputTransaction.setRequiresUpdateSuggestions();
                 }
+                tryApplyShiftCaseToSuggestionStrip();
                 break;
             case Constants.CODE_CAPSLOCK:
                 // Note: Changing keyboard to shift lock state is handled in
@@ -2733,6 +2748,113 @@ public final class InputLogic {
             }
         }
         return true;
+    }
+
+    // Modes for buildCaseTransformedSuggestions
+    private static final int CASE_TRANSFORM_NONE = 0;
+    private static final int CASE_TRANSFORM_CAPITALIZED = 1;
+    private static final int CASE_TRANSFORM_UPPER = 2;
+
+    /**
+     * If the user is composing a word and the "apply shift to word suggestion"
+     * setting is enabled, replace the suggestion strip with case-transformed
+     * variants of the current suggestions, matching the keyboard's shift state:
+     * original when shift is off, Capitalized on single shift, ALL CAPS on
+     * caps lock. The underlying {@link #mSuggestedWords} state is not mutated,
+     * so the next non-shift event resumes normal suggestions.
+     */
+    private void tryApplyShiftCaseToSuggestionStrip() {
+        if (!mWordComposer.isComposingWord()) {
+            mSuggestedWordsBeforeShiftTransform = null;
+            return;
+        }
+
+        final boolean enabled;
+        try {
+            enabled = DataStoreHelper.getSetting(SettingsKt.getAPPLY_SHIFT_TO_SUGGESTIONS());
+        } catch (final Throwable t) {
+            // Defensive: if DataStore isn't ready, behave as if disabled.
+            return;
+        }
+        if (!enabled) return;
+
+        // The "source" is the most recent untransformed suggestion set. If a
+        // previous shift press already replaced the strip, fall back to the
+        // saved copy rather than re-transforming an already-transformed list.
+        final SuggestedWords source = (mSuggestedWordsBeforeShiftTransform != null)
+                ? mSuggestedWordsBeforeShiftTransform
+                : mSuggestedWords;
+        if (source == null || source.isEmpty()) return;
+
+        final int shiftMode = mImeHelper.getKeyboardShiftMode();
+        final int caseMode;
+        switch (shiftMode) {
+            case WordComposer.CAPS_MODE_MANUAL_SHIFTED:
+            case WordComposer.CAPS_MODE_AUTO_SHIFTED:
+                caseMode = CASE_TRANSFORM_CAPITALIZED;
+                break;
+            case WordComposer.CAPS_MODE_MANUAL_SHIFT_LOCKED:
+            case WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED:
+                caseMode = CASE_TRANSFORM_UPPER;
+                break;
+            default:
+                caseMode = CASE_TRANSFORM_NONE;
+                break;
+        }
+
+        final SuggestedWords toDisplay;
+        if (caseMode == CASE_TRANSFORM_NONE) {
+            toDisplay = source;
+            mSuggestedWordsBeforeShiftTransform = null;
+        } else {
+            toDisplay = buildCaseTransformedSuggestions(source,
+                    getDictionaryFacilitatorLocale(), caseMode);
+            if (mSuggestedWordsBeforeShiftTransform == null) {
+                mSuggestedWordsBeforeShiftTransform = source;
+            }
+        }
+
+        mPushingTransformedSuggestions = true;
+        try {
+            mSuggestionStripViewAccessor.showSuggestionStrip(toDisplay);
+        } finally {
+            mPushingTransformedSuggestions = false;
+        }
+    }
+
+    private static SuggestedWords buildCaseTransformedSuggestions(
+            final SuggestedWords source, final Locale locale, final int caseMode) {
+        final ArrayList<SuggestedWordInfo> list = new ArrayList<>(source.size());
+        for (int i = 0; i < source.size(); i++) {
+            list.add(transformSuggestedWordInfo(source.getInfo(i), locale, caseMode));
+        }
+        final SuggestedWordInfo typed = source.getTypedWordInfo();
+        final SuggestedWordInfo transformedTyped = (typed == null)
+                ? null : transformSuggestedWordInfo(typed, locale, caseMode);
+        return new SuggestedWords(list, null, transformedTyped,
+                source.mTypedWordValid, source.mWillAutoCorrect,
+                source.mIsObsoleteSuggestions, source.mInputStyle, source.mSequenceNumber);
+    }
+
+    private static SuggestedWordInfo transformSuggestedWordInfo(
+            final SuggestedWordInfo info, final Locale locale, final int caseMode) {
+        final String original = info.mWord;
+        if (original == null || original.isEmpty()) return info;
+        final String transformed;
+        switch (caseMode) {
+            case CASE_TRANSFORM_UPPER:
+                transformed = original.toUpperCase(locale);
+                break;
+            case CASE_TRANSFORM_CAPITALIZED:
+                transformed = StringUtils.capitalizeFirstAndDowncaseRest(original, locale);
+                break;
+            default:
+                return info;
+        }
+        if (transformed.equals(original)) return info;
+        return new SuggestedWordInfo(transformed, info.mPrevWordsContext, info.mScore,
+                info.mKindAndFlags, info.mSourceDict,
+                info.mIndexOfTouchPointOfSecondWord, info.mAutoCommitFirstWordConfidence);
     }
 
     /**
