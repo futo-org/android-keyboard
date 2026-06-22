@@ -407,6 +407,20 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
     /// Allows empty ranges, may be less than min if max is smaller than min
     private fun Int.coerceInLoosely(min: Int, max: Int) = coerceAtLeast(min).coerceAtMost(max)
 
+    private fun getDefaultKeyboardWidth(): Int {
+        val window = (context as LatinIME).window.window
+        val width = ResourceUtils.getDefaultKeyboardWidth(window, context.resources)
+
+        return width
+    }
+
+    fun didMaybeChange(oldSize: ComputedKeyboardSize?): Boolean {
+        if(oldSize == null) return true
+        if(oldSize is FloatingKeyboardSize) return false
+
+        return getDefaultKeyboardWidth() != oldSize.width
+    }
+
     fun calculate(layoutName: String, settings: SettingsValues): ComputedKeyboardSize? {
         val savedSettings = getSavedSettings()
 
@@ -477,8 +491,7 @@ class KeyboardSizingCalculator(val context: Context, val uixManager: UixManager)
 
         val foldState = foldStateProvider.foldState.feature
 
-        val window = (context as LatinIME).window.window
-        val width = ResourceUtils.getDefaultKeyboardWidth(window, context.resources)
+        val width = getDefaultKeyboardWidth()
 
         return when {
             // Special case: 50% screen height no matter the row count or settings
