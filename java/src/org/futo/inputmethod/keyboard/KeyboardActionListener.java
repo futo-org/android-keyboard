@@ -103,6 +103,7 @@ public interface KeyboardActionListener {
 
     public void onMovePointer(int steps);
     public void onMoveDeletePointer(int steps);
+    public void onSelectWordLeft();
     public void onUpWithDeletePointerActive();
     public void onUpWithPointerActive();
     public void onSwipeLanguage(int direction);
@@ -137,6 +138,8 @@ public interface KeyboardActionListener {
         public void onMovePointer(int steps) {}
         @Override
         public void onMoveDeletePointer(int steps) {}
+        @Override
+        public void onSelectWordLeft() {}
         @Override
         public void onUpWithDeletePointerActive() {}
         @Override

@@ -90,6 +90,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
     public static final String PREF_GESTURE_INPUT = "gesture_input";
     public static final String PREF_GESTURE_INPUT_SENSITIVITY = "gesture_input_sensitivity";
+    public static final String PREF_DELETE_WORD_SWIPE = "delete_word_swipe";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME = "pref_keypress_sound_volume";

@@ -38,6 +38,7 @@ import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
 import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleSharedPrefs
@@ -95,6 +96,14 @@ val SwipeMenu = UserSettingsMenu(
             subtitle = R.string.swipe_settings_enable_swipe_typing_subtitle,
             key = Settings.PREF_GESTURE_INPUT,
             default = {true},
+        ),
+
+        userSettingToggleSharedPrefs(
+            title = R.string.swipe_settings_delete_word_swipe,
+            subtitle = R.string.swipe_settings_delete_word_swipe_subtitle,
+            key = Settings.PREF_DELETE_WORD_SWIPE,
+            default = {true},
+            disabled = { useSharedPrefsBool(Settings.PREF_GESTURE_INPUT, true).value },
         ),
 
         userSettingToggleSharedPrefs(
