@@ -631,6 +631,13 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     @Override
+    public void onSelectWordLeft() {
+        mImeManager.getActiveIME(
+                mSettings.getCurrent()
+        ).onSelectWordLeft();
+    }
+
+    @Override
     public void onUpWithDeletePointerActive() {
         mImeManager.getActiveIME(
                 mSettings.getCurrent()

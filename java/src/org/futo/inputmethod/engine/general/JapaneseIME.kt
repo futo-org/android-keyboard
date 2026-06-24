@@ -1195,6 +1195,8 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     }
 
+    override fun onSelectWordLeft() {}
+
     override fun onUpWithDeletePointerActive() {
 
     }

@@ -849,6 +849,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         }
         connect?.setSelection(lBound, currentMovingCursor)
     }
+    override fun onSelectWordLeft() {}
     override fun onUpWithDeletePointerActive() {
         anchorOutOfDate = true
         val selection: CharSequence? = connect?.getSelectedText(0)

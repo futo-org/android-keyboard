@@ -538,6 +538,9 @@
     <string name="swipe_settings_enable_swipe_typing">Enable swipe typing</string>
     <string name="swipe_settings_enable_swipe_typing_subtitle">Allow swiping from key to key to write words.</string>
 
+    <string name="swipe_settings_delete_word_swipe">Swipe to delete word</string>
+    <string name="swipe_settings_delete_word_swipe_subtitle">Swipe left on the keyboard to delete the last word. Only works when swipe typing is off.</string>
+
     <string name="swipe_settings_sensitive_swipe">Increase sensitivity</string>
     <string name="swipe_settings_sensitive_swipe_subtitle">Make swipe trigger more often</string>
 

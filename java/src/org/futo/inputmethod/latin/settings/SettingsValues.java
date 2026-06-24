@@ -86,6 +86,7 @@ public class SettingsValues {
     public final boolean mTransformerPredictionEnabled;
     public final boolean mGestureInputEnabled;
     public final boolean mGestureInputSensitive;
+    public final boolean mDeleteWordSwipeEnabled;
     public final boolean mGestureTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
     public final boolean mSlidingKeyInputPreviewEnabled;
@@ -233,6 +234,7 @@ public class SettingsValues {
         mPlausibilityThreshold = Settings.readPlausibilityThreshold(res);
         mGestureInputEnabled = Settings.readGestureInputEnabled(prefs, res);
         mGestureInputSensitive = prefs.getBoolean(Settings.PREF_GESTURE_INPUT_SENSITIVITY, false);
+        mDeleteWordSwipeEnabled = prefs.getBoolean(Settings.PREF_DELETE_WORD_SWIPE, true);
         mGestureTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mCloudSyncEnabled = prefs.getBoolean(LocalSettingsConstants.PREF_ENABLE_CLOUD_SYNC, false);
         mAccount = prefs.getString(LocalSettingsConstants.PREF_ACCOUNT_NAME,
@@ -496,6 +498,8 @@ public class SettingsValues {
         sb.append("" + mTransformerPredictionEnabled);
         sb.append("\n   mGestureInputEnabled = ");
         sb.append("" + mGestureInputEnabled);
+        sb.append("\n   mDeleteWordSwipeEnabled = ");
+        sb.append("" + mDeleteWordSwipeEnabled);
         sb.append("\n   mGestureTrailEnabled = ");
         sb.append("" + mGestureTrailEnabled);
         sb.append("\n   mGestureFloatingPreviewTextEnabled = ");

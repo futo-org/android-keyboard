@@ -672,6 +672,15 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
     }
 
+    override fun onSelectWordLeft() {
+        // Select exactly one word to the left, regardless of the backspace-mode setting.
+        // Used by the "left swipe anywhere to delete one word" gesture.
+        setNeutralSuggestionStrip()
+        if (inputLogic.mConnection.hasCursorPosition()) {
+            inputLogic.cursorLeft(-1, true, true)
+        }
+    }
+
     override fun onUpWithDeletePointerActive() {
         if (inputLogic.mConnection.hasSelection()) {
             val selection: CharSequence? = inputLogic.mConnection.getSelectedText(0)

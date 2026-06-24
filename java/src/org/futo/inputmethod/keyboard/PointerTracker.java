@@ -156,6 +156,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private long mStartTime;
     private boolean mStartedOnFastLongPress;
     private boolean mCursorMoved = false;
+    private boolean mIsLeftSwipeDeleteWord = false;
     private boolean mSpacebarLongPressed = false;
 
     // true if keyboard layout has been changed.
@@ -761,6 +762,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mStartedOnFastLongPress = key.isFastLongPress();
             mSpacebarLongPressed = false;
 
+            mIsLeftSwipeDeleteWord = false;
             mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
             mIsFlickingKey = !mIsSlidingCursor && key.getHasFlick();
             mFlickDirection = key.flickDirection(0, 0);
@@ -1021,6 +1023,37 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
 
+        // Left swipe anywhere on the alphabet keyboard deletes exactly one word to the left.
+        // This only fires when glide/swipe typing is off, the stroke starts on a regular key
+        // (not Delete or Space), and the motion is predominantly horizontal and leftward.
+        // Mirror direction for RTL: in RTL, swiping right (toward line start) triggers the
+        // delete, so we negate dx before checking.
+        if (mIsLeftSwipeDeleteWord) {
+            // Already latched: consume remaining moves silently, no normal handling.
+            mLastX = x;
+            mLastY = y;
+            return;
+        }
+
+        if (!sInGesture && !settingsValues.mGestureInputEnabled
+                && !mIsSlidingCursor
+                && settingsValues.mDeleteWordSwipeEnabled
+                && mKeyboard != null && mKeyboard.mId.isAlphabetKeyboard()) {
+            final int dx = x - mStartX;
+            final int dy = y - mStartY;
+            final int threshold = sPointerBigStep;
+            final int adjustedDx = settingsValues.mIsRTL ? -dx : dx;
+            if (adjustedDx <= -threshold && Math.abs(dx) > 2 * Math.abs(dy)) {
+                mIsLeftSwipeDeleteWord = true;
+                mCursorMoved = true;
+                sListener.onSelectWordLeft();
+                mLastX = x;
+                mLastY = y;
+                return;
+            }
+            // Non-qualifying move: fall through to normal drag/flick handling below.
+        }
+
         if(mIsFlickingKey && oldKey != null) {
             final Direction prevDirection = mFlickDirection;
             mFlickDirection = oldKey.flickDirection(x - mStartX, y - mStartY);
@@ -1132,11 +1165,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         if(mCursorMoved && currentKey != null && currentKey.getCode() == Constants.CODE_DELETE) {
             sListener.onUpWithDeletePointerActive();
+        } else if(mIsLeftSwipeDeleteWord) {
+            sListener.onUpWithDeletePointerActive();
+            mIsLeftSwipeDeleteWord = false;
         } else if(mCursorMoved) {
             sListener.onUpWithPointerActive();
         }
 
-        if(mIsFlickingKey && currentKey != null) {
+        if(mIsFlickingKey && currentKey != null && !mCursorMoved) {
             final Key flickedKey = currentKey.flick(x - mStartX, y - mStartY);
             detectAndSendKey(flickedKey, mKeyX, mKeyY, eventTime);
 
@@ -1192,6 +1228,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
         mIsTrackingForActionDisabled = true;
+        mIsLeftSwipeDeleteWord = false;
     }
 
     public boolean isInOperation() {
@@ -1284,6 +1321,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         setReleasedKeyGraphics(mCurrentKey, true /* withAnimation */);
         resetKeySelectionByDraggingFinger();
         dismissMoreKeysPanel();
+        mIsLeftSwipeDeleteWord = false;
     }
 
     private boolean isMajorEnoughMoveToBeOnNewKey(final int x, final int y, final long eventTime,
