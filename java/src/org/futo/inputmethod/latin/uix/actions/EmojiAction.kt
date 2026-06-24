@@ -923,12 +923,16 @@ data class LooseShortcut(val emoji: String, val shortcut: String, val score: Int
 
 class PersistentEmojiState : PersistentActionState {
     companion object {
+        const val MAX_EMOJI_SUGGESTIONS = 2
+
         var emojis: MutableState<List<EmojiItem>?> = mutableStateOf(null)
         var emojiMap: HashMap<String, EmojiItem> = HashMap()
 
         // Language name to translations
         private val loadedTranslations: HashMap<String, EmojiTranslations> = hashMapOf()
-        private val loadedTranslatedShortcuts: HashMap<String, Map<String, String>> = hashMapOf()
+
+        // word → ranked emoji list (up to 2), per language
+        private val loadedTranslatedShortcuts: HashMap<String, Map<String, List<String>>> = hashMapOf()
 
         @JvmStatic
         fun getTranslationForLocale(locale: Locale): EmojiTranslations? {
@@ -962,8 +966,8 @@ class PersistentEmojiState : PersistentActionState {
 
 
         @JvmStatic
-        fun getShortcut(locale: Locale, text: String): String? {
-            return loadedTranslatedShortcuts[locale.language]?.get(text)
+        fun getShortcuts(locale: Locale, text: String): List<String> {
+            return loadedTranslatedShortcuts[locale.language]?.get(text) ?: emptyList()
         }
 
         @JvmStatic
@@ -1014,13 +1018,18 @@ class PersistentEmojiState : PersistentActionState {
                         val ttsName = entry.value.names.last()
 
                         val names = entry.value.names.flatMap { it.split(" ") }
-                        names.filter { wordCounts[it] == 1 && it.length > 1 }.map { it.lowercase() to entry.key } +
+
+                        // score: ttsName (1) ranks above word fragments (0)
+                        names.filter { wordCounts[it] == 1 && it.length > 1 }.map { Triple(it.lowercase(), entry.key, 0) } +
                                 if(!ttsName.contains(' ')) {
-                                    listOf(ttsName.lowercase() to entry.key)
+                                    listOf(Triple(ttsName.lowercase(), entry.key, 1))
                                 } else {
                                     emptyList()
                                 }
-                    }.reversed().toMap()
+                    }
+                        .sortedByDescending { it.third }
+                        .groupBy({ it.first }, { it.second })
+                        .mapValues { (_, v) -> v.distinct().take(MAX_EMOJI_SUGGESTIONS) }
 
                     if(language != "en") loadedTranslatedShortcuts.put(language, aliases)
                 }
@@ -1125,10 +1134,11 @@ class PersistentEmojiState : PersistentActionState {
                     }
                 }
 
+                // Dedup by emoji before take: same emoji at multiple scores collapses both strip slots.
                 loadedTranslatedShortcuts["en"] = englishShortcuts
                     .sortedByDescending { it.score }
-                    .distinctBy { it.shortcut }
-                    .associate { it.shortcut to it.emoji }
+                    .groupBy { it.shortcut }
+                    .mapValues { (_, v) -> v.map { it.emoji }.distinct().take(MAX_EMOJI_SUGGESTIONS) }
 
                 loadedTranslations["en_gemoji"] = EmojiTranslations(englishTranslations)
             }
