@@ -440,6 +440,11 @@
     <string name="morekey_settings_spacebar_hold_shortcut">Hold</string>
     <string name="morekey_settings_spacebar_hold_shortcut_cursor">Move cursor</string>
     <string name="morekey_settings_spacebar_hold_shortcut_language">Switch language</string>
+    <string name="morekey_settings_spacebar_language_swipe_distance">Language swipe distance</string>
+    <string name="morekey_settings_spacebar_language_swipe_distance_subtitle">Shorter distance makes the language swipe more sensitive</string>
+
+    <!-- Units abbreviation for a distance in density-independent pixels [CHAR LIMIT=10] -->
+    <string name="abbreviation_unit_dp"><xliff:g id="DPI">%s</xliff:g>dp</string>
 
     <!-- Types of morekeys that can be configured, and examples of them -->
     <string name="morekey_settings_kind_numbers">Numbers</string>

@@ -19,6 +19,7 @@ package org.futo.inputmethod.keyboard;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -97,10 +98,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static PointerTrackerParams sParams;
     private static final int sPointerStep = (int)(16.0 * Resources.getSystem().getDisplayMetrics().density);
     private static final int sPointerBigStep = (int)(32.0 * Resources.getSystem().getDisplayMetrics().density);
-    private static final int sPointerHugeStep = Integer.min(
-            (int)(128.0 * Resources.getSystem().getDisplayMetrics().density),
-            Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 2
-    );
 
     private static GestureStrokeRecognitionParams sGestureStrokeRecognitionParams;
     private static GestureStrokeDrawingParams sGestureStrokeDrawingParams;
@@ -976,7 +973,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             if(allowedBySettings) {
                 int pointerStep = sPointerStep;
                 if (settingsValues.mSpacebarSwipeMode == Settings.SPACEBAR_MODE_LANGUAGE && !mSpacebarLongPressed) {
-                    pointerStep = sPointerHugeStep;
+                    // The language-switch step distance is user-configurable in dp. The
+                    // widthPixels*3/2 clamp is a safety bound for narrow screens.
+                    final DisplayMetrics displayMetrics =
+                            Resources.getSystem().getDisplayMetrics();
+                    pointerStep = Integer.min(
+                            (int)(settingsValues.mSpacebarLanguageSwipeStepDp * displayMetrics.density),
+                            displayMetrics.widthPixels * 3 / 2
+                    );
                 }
 
                 int steps = (x - mStartX) / pointerStep;
