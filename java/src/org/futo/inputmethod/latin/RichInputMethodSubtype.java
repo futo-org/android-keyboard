@@ -164,7 +164,7 @@ public class RichInputMethodSubtype {
 
     @Nonnull
     public List<Locale> getMultilingualTypingLanguages(Context context) {
-        return Subtypes.INSTANCE.getMultilingualBucket(context, mLocale);
+        return Subtypes.INSTANCE.getMultilingualBucket(context, mLocale, getKeyboardLayoutSetName());
     }
 
     public static RichInputMethodSubtype getRichInputMethodSubtype(

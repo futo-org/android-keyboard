@@ -52,6 +52,7 @@ import org.futo.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import org.futo.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import org.futo.inputmethod.keyboard.internal.TimerHandler;
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager;
+import org.futo.inputmethod.latin.RichInputMethodManager;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.SuggestedWords;
@@ -875,6 +876,25 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         return "";
     }
 
+    private String layoutMultilingualLanguagesOnSpacebar(final List<Locale> locales) {
+        final StringBuilder builder = new StringBuilder();
+
+        for (final Locale locale : locales) {
+            final String language = locale.getLanguage();
+            if (language == null || language.isEmpty()) {
+                continue;
+            }
+
+            if (builder.length() > 0) {
+                builder.append('/');
+            }
+
+            builder.append(language.toUpperCase(Locale.ROOT));
+        }
+
+        return builder.toString();
+    }
+
     private void drawLanguageOnSpacebar(final Key key, final Canvas canvas, final Paint paint, final int color) {
         final Keyboard keyboard = getKeyboard();
         if (keyboard == null) {
@@ -885,7 +905,10 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         paint.setTextAlign(Align.CENTER);
         paint.setTypeface(mDrawableProvider.selectKeyTypeface(Typeface.DEFAULT));
         paint.setTextSize(mLanguageOnSpacebarTextSize);
-        final String language = layoutLanguageOnSpacebar(paint, keyboard.mId.mLocale, width);
+        final List<Locale> currentSubtypeLocales = RichInputMethodManager.getInstance().getCurrentSubtypeLocales();
+        final String language = currentSubtypeLocales.size() > 1
+                ? layoutMultilingualLanguagesOnSpacebar(currentSubtypeLocales)
+                : layoutLanguageOnSpacebar(paint, keyboard.mId.mLocale, width);
         // Draw language text with shadow
         final float descent = paint.descent();
         final float textHeight = -paint.ascent() + descent;

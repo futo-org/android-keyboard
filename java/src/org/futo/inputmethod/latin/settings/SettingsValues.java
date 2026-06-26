@@ -35,6 +35,7 @@ import org.futo.inputmethod.latin.uix.actions.RegistryKt;
 import org.futo.inputmethod.latin.utils.AsyncResultHolder;
 import org.futo.inputmethod.latin.utils.ResourceUtils;
 import org.futo.inputmethod.latin.utils.ScriptUtils2;
+import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 import org.futo.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 
 import java.util.Arrays;
@@ -271,7 +272,10 @@ public class SettingsValues {
                 prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE,
                 defaultKeyPreviewDismissEndScale);
 
-        mMultilingualLocales = Subtypes.INSTANCE.getMultilingualBucket(context, mLocale);
+        final String currentKeyboardLayoutSet = SubtypeLocaleUtils.getKeyboardLayoutSetName(
+                Subtypes.INSTANCE.getActiveSubtype(context));
+        mMultilingualLocales = Subtypes.INSTANCE.getMultilingualBucket(
+                context, mLocale, currentKeyboardLayoutSet);
 
         mDisplayOrientation = res.getConfiguration().orientation;
         mAppWorkarounds = new AsyncResultHolder<>("AppWorkarounds");
