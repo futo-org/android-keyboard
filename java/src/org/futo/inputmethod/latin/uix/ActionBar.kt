@@ -887,6 +887,12 @@ fun ActionBar(
                         .fillMaxHeight()) {
                         ActionItems(onActionActivated, onActionAltActivated)
                     }
+                    if(showTouchKeyboardToggle) {
+                        TouchKeyboardToggleButton(
+                            touchKeyboardShown = touchKeyboardShown,
+                            onToggle = onTouchKeyboardToggle
+                        )
+                    }
                 } else {
                     if (importantNotice != null) {
                         ImportantNoticeView(importantNotice)

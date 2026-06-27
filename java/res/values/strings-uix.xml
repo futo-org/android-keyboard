@@ -501,7 +501,7 @@
     <string name="keyboard_settings_number_row_dont_use_script_digits">Always use Western numerals</string>
 
     <string name="keyboard_settings_hide_when_hardware_keyboard_is_connected">Hide when USB keyboard is detected</string>
-    <string name="keyboard_settings_show_toolbar_when_hardware_keyboard_is_connected">Show toolbar when USB keyboard is detected</string>
+    <string name="keyboard_settings_show_toolbar_when_hardware_keyboard_is_connected">Show toolbar when hardware keyboard is detected</string>
     <string name="keyboard_settings_show_toolbar_when_hardware_keyboard_is_connected_subtitle">When the keyboard is hidden because a physical keyboard is connected, keep the action/suggestions bar visible and add a button to show the touch keyboard.</string>
     <string name="keyboard_actionbar_show_touch_keyboard">Show touch keyboard</string>
     <string name="keyboard_actionbar_hide_touch_keyboard">Hide touch keyboard</string>

@@ -853,7 +853,8 @@ val KeyboardSettingsMenu = UserSettingsMenu(
         userSettingToggleDataStore(
             title = R.string.keyboard_settings_show_toolbar_when_hardware_keyboard_is_connected,
             subtitle = R.string.keyboard_settings_show_toolbar_when_hardware_keyboard_is_connected_subtitle,
-            setting = ShowToolbarWhenHardKeyboardConnected
+            setting = ShowToolbarWhenHardKeyboardConnected,
+            disabled = { !useDataStore(HideKeyboardWhenHardKeyboardConnected).value }
         )
     )
 )

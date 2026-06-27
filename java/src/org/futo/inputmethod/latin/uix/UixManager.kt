@@ -672,6 +672,18 @@ class UixManager(private val latinIME: LatinIME) {
         }
     }
 
+    private fun expandActionWindowKeyboard() {
+        if (isHardwareToolbarModeEffective) {
+            forceTouchKeyboardForCurrentInput.value = true
+        }
+
+        if (mainKeyboardHidden.value) {
+            toggleExpandAction(false)
+        } else if (!effectiveMainKeyboardHidden) {
+            latinIME.onKeyboardShown()
+        }
+    }
+
     private fun onActionActivatedInternal(rawAction: Action) {
         resizers.hideResizer()
 
@@ -854,7 +866,7 @@ class UixManager(private val latinIME: LatinIME) {
                     ActionWindowBar(
                         onBack = { closeActionWindow(true) },
                         canExpand = currWindowAction.value!!.canShowKeyboard,
-                        onExpand = { toggleExpandAction() },
+                        onExpand = { expandActionWindowKeyboard() },
                         windowTitleBar = { windowImpl.WindowTitleBar(this) }
                     )
                 }
@@ -1757,4 +1769,3 @@ class UixManager(private val latinIME: LatinIME) {
     val extraTopTouchHeight: Int
         get() = if(floatingPreeditShown) floatingPreeditHeight.value else 0
 }
-
