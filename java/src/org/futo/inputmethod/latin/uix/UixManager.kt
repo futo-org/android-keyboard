@@ -603,6 +603,14 @@ class UixManager(private val latinIME: LatinIME) {
     private val keyboardManagerForAction = UixActionKeyboardManager(this, latinIME)
 
     private var mainKeyboardHidden = mutableStateOf(false)
+    private val hardwareToolbarMode = mutableStateOf(false)
+    private val forceTouchKeyboardForCurrentInput = mutableStateOf(false)
+
+    val isHardwareToolbarModeEffective: Boolean
+        get() = hardwareToolbarMode.value && !forceTouchKeyboardForCurrentInput.value
+
+    private val effectiveMainKeyboardHidden: Boolean
+        get() = mainKeyboardHidden.value || isHardwareToolbarModeEffective
 
     fun getCurrentLayoutName(): String =
         getPrimaryLayoutOverride(latinIME.currentInputEditorInfo)
@@ -646,7 +654,35 @@ class UixManager(private val latinIME: LatinIME) {
     val touchableHeight: Int
         get() = measuredTouchableHeight
 
-    val isMainKeyboardHidden get() = mainKeyboardHidden.value
+    val isMainKeyboardHidden get() = effectiveMainKeyboardHidden
+
+    fun refreshHardwareToolbarMode() {
+        val newValue = latinIME.shouldUseHardwareKeyboardToolbarMode()
+        if (!newValue) {
+            forceTouchKeyboardForCurrentInput.value = false
+        }
+        hardwareToolbarMode.value = newValue
+    }
+
+    fun toggleTouchKeyboardForHardwareToolbarMode() {
+        if (!hardwareToolbarMode.value) return
+        forceTouchKeyboardForCurrentInput.value = !forceTouchKeyboardForCurrentInput.value
+        if (!effectiveMainKeyboardHidden) {
+            latinIME.onKeyboardShown()
+        }
+    }
+
+    private fun expandActionWindowKeyboard() {
+        if (isHardwareToolbarModeEffective) {
+            forceTouchKeyboardForCurrentInput.value = true
+        }
+
+        if (mainKeyboardHidden.value) {
+            toggleExpandAction(false)
+        } else if (!effectiveMainKeyboardHidden) {
+            latinIME.onKeyboardShown()
+        }
+    }
 
     private fun onActionActivatedInternal(rawAction: Action) {
         resizers.hideResizer()
@@ -688,7 +724,11 @@ class UixManager(private val latinIME: LatinIME) {
 
     @Composable
     private fun MainKeyboardViewWithActionBar(
-        needToUseExpandableSuggestionUi: Boolean
+        needToUseExpandableSuggestionUi: Boolean,
+        forceActionBarShown: Boolean = false,
+        showTouchKeyboardToggle: Boolean = false,
+        touchKeyboardShown: Boolean = false,
+        onTouchKeyboardToggle: () -> Unit = {}
     ) {
         val view = LocalView.current
 
@@ -706,7 +746,7 @@ class UixManager(private val latinIME: LatinIME) {
                 if(!inlineStuffHiddenByTyping.value) inlineSuggestions.value else emptyList()
             }
 
-            if(actionBarShown.value || inlineSuggestions.isNotEmpty()) {
+            if(forceActionBarShown || actionBarShown.value || inlineSuggestions.isNotEmpty()) {
                 ActionBar(
                     suggestedWordsOrNull,
                     suggestionStripListener,
@@ -737,7 +777,10 @@ class UixManager(private val latinIME: LatinIME) {
                     },
                     onQuickClipDismiss = { quickClipState.value = null },
                     needToUseExpandableSuggestionUi = needToUseExpandableSuggestionUi,
-                    loading = latinIME.imeManager.isImeLoading()
+                    loading = latinIME.imeManager.isImeLoading(),
+                    showTouchKeyboardToggle = showTouchKeyboardToggle,
+                    touchKeyboardShown = touchKeyboardShown,
+                    onTouchKeyboardToggle = onTouchKeyboardToggle
                 )
             }
         }
@@ -801,13 +844,14 @@ class UixManager(private val latinIME: LatinIME) {
     @Composable
     private fun ActionViewWithHeader(windowImpl: ActionWindow,
                                      needToUseExpandableSuggestionUi: Boolean) {
-        val heightDiv = if(mainKeyboardHidden.value) {
+        val touchKeyboardHidden = effectiveMainKeyboardHidden
+        val heightDiv = if(touchKeyboardHidden) {
             1
         } else {
             1.5
         }
 
-        val showingAboveKeyboard = !mainKeyboardHidden.value
+        val showingAboveKeyboard = !touchKeyboardHidden
         Column {
             Column(
                 Modifier.background(
@@ -818,11 +862,11 @@ class UixManager(private val latinIME: LatinIME) {
                     }
                 )
             ) {
-                if (mainKeyboardHidden.value || isInputOverridden.value) {
+                if (touchKeyboardHidden || isInputOverridden.value) {
                     ActionWindowBar(
                         onBack = { closeActionWindow(true) },
                         canExpand = currWindowAction.value!!.canShowKeyboard,
-                        onExpand = { toggleExpandAction() },
+                        onExpand = { expandActionWindowKeyboard() },
                         windowTitleBar = { windowImpl.WindowTitleBar(this) }
                     )
                 }
@@ -838,11 +882,11 @@ class UixManager(private val latinIME: LatinIME) {
                         })
                         .safeKeyboardPadding()
                 ) {
-                    windowImpl.WindowContents(keyboardShown = !mainKeyboardHidden.value)
+                    windowImpl.WindowContents(keyboardShown = !touchKeyboardHidden)
                 }
             }
 
-            if((!mainKeyboardHidden.value && !latinIME.isInputConnectionOverridden)
+            if((!touchKeyboardHidden && !latinIME.isInputConnectionOverridden)
                 || (latinIME.inputConnectionOverridenWithSuggestions)) {
                 val suggestedWordsOrNull = if (shouldShowSuggestionStrip.value) {
                     suggestedWords.value
@@ -1281,7 +1325,7 @@ class UixManager(private val latinIME: LatinIME) {
                     // TODO: Refactor how we handle expandable suggestions here to not be a mess
                     val needToUseExpandableSuggestionUi =
                         expandableSuggestionCfg.value.useExpandableUi && suggestedWords.value?.size()?.equals(0) != true
-                                && mainKeyboardHidden.value == false
+                                && !effectiveMainKeyboardHidden
                                 && (quickClipState.value == null || inlineStuffHiddenByTyping.value)
                                 && currentNotice.value == null
                                 && (inlineSuggestions.value.isEmpty() || inlineStuffHiddenByTyping.value)
@@ -1292,7 +1336,11 @@ class UixManager(private val latinIME: LatinIME) {
                         )
 
                         else -> MainKeyboardViewWithActionBar(
-                            needToUseExpandableSuggestionUi
+                            needToUseExpandableSuggestionUi,
+                            forceActionBarShown = hardwareToolbarMode.value,
+                            showTouchKeyboardToggle = hardwareToolbarMode.value,
+                            touchKeyboardShown = !isHardwareToolbarModeEffective,
+                            onTouchKeyboardToggle = { toggleTouchKeyboardForHardwareToolbarMode() }
                         )
                     }
 
@@ -1303,7 +1351,9 @@ class UixManager(private val latinIME: LatinIME) {
                     val kbHeight = remember { mutableIntStateOf(latinIME.size.value!!.height) }
                     val keyboardViewOffset = remember(needToUseExpandableSuggestionUi) { mutableIntStateOf(0) }
                     Box(Modifier.let {
-                        if(needToUseExpandableSuggestionUi) {
+                        if(isHardwareToolbarModeEffective) {
+                            it.height(0.dp)
+                        } else if(needToUseExpandableSuggestionUi) {
                             it.height(
                                 with(LocalDensity.current) { kbHeight.intValue.toDp() }
                                         + latinIME.sizingCalculator.calculateSuggestionBarHeightDp().dp
@@ -1338,7 +1388,7 @@ class UixManager(private val latinIME: LatinIME) {
                                 }
                             }
                             .absoluteOffset { IntOffset(0, keyboardViewOffset.intValue) },
-                            hidden = mainKeyboardHidden.value)
+                            hidden = effectiveMainKeyboardHidden)
                     }
 
                     if(latinIME.size.value !is FloatingKeyboardSize) {
@@ -1608,6 +1658,8 @@ class UixManager(private val latinIME: LatinIME) {
     private val quickClipState: MutableState<QuickClipState?> = mutableStateOf(null)
     fun dismissQuickClips() { quickClipState.value = null }
     fun inputStarted(editorInfo: EditorInfo?) {
+        forceTouchKeyboardForCurrentInput.value = false
+        refreshHardwareToolbarMode()
         try {
             checkIfDictInstalled()
         } catch(e: Exception) {
@@ -1632,6 +1684,8 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     fun onInputFinishing() {
+        forceTouchKeyboardForCurrentInput.value = false
+        refreshHardwareToolbarMode()
         closeActionWindow()
         languageSwitcherDialog?.dismiss()
         isShowingActionEditor.value = false
@@ -1715,5 +1769,3 @@ class UixManager(private val latinIME: LatinIME) {
     val extraTopTouchHeight: Int
         get() = if(floatingPreeditShown) floatingPreeditHeight.value else 0
 }
-
-
