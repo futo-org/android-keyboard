@@ -319,6 +319,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
     }
 
     var decoder: SwipeDecoder? = null
+    private var decoderUnavailable = false
 
     object BeamValues {
         const val shortBeam = 32
@@ -327,19 +328,29 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         const val highestBeam = 300
     }
 
-    private fun getOrInitDecoder(): SwipeDecoder = decoder ?: run {
-        val swipeModelPath = getFilePath(context, SWIPE_MODEL)
+    private fun getOrInitDecoder(): SwipeDecoder? {
+        if(decoderUnavailable) return null
 
-        val decoder = SwipeDecoder(
-            encoderPath = swipeModelPath,
-            beamWidth = BeamValues.highestBeam,
-            useExpansion = false, // ITrie contains expanded entries already
-        )
+        return decoder ?: run {
+            val swipeModelPath = getFilePath(context, SWIPE_MODEL)
 
-        this.decoder = decoder
-        applyPendingLayoutInfo()
+            try {
+                val decoder = SwipeDecoder(
+                    encoderPath = swipeModelPath,
+                    beamWidth = BeamValues.highestBeam,
+                    useExpansion = false, // ITrie contains expanded entries already
+                )
 
-        return decoder
+                this.decoder = decoder
+                applyPendingLayoutInfo()
+
+                if(decoderUnavailable) null else decoder
+            } catch(e: RuntimeException) {
+                Log.e("SwipeDecoderDictionary", "Failed to initialize swipe decoder", e)
+                decoderUnavailable = true
+                null
+            }
+        }
     }
 
     override fun getNextValidCodePoints(composedData: ComposedData?): ArrayList<Int> {
@@ -352,7 +363,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
     ): ArrayList<SuggestedWords.SuggestedWordInfo>? {
         if(true) return null
 
-        val decoder = getOrInitDecoder()
+        val decoder = getOrInitDecoder() ?: return null
         val wordsContext = ngramContext?.fullContext?.split(' ')?.takeLast(10) ?: emptyList()
         decoder.setContext(wordsContext)
 
@@ -446,7 +457,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             ?.takeLast(10)
             ?: emptyList()
 
-        val decoder = getOrInitDecoder()
+        val decoder = getOrInitDecoder() ?: return null
         decoder.setContext(wordsContext)
         appliedTrieWeights = trieWeights
 
@@ -459,17 +470,24 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
 
         val topK = if(useHighBeam) 4 else 1
 
-        val results = synchronized(BinaryDictionary.sTrieUsageLock) {
-            if(appliedTries?.isEmpty() != false) {
-                Log.e("SwipeDecoderDictionary", "Applied tries are blank! $appliedTries")
-                return null
+        val results = try {
+            synchronized(BinaryDictionary.sTrieUsageLock) {
+                if(appliedTries?.isEmpty() != false) {
+                    Log.e("SwipeDecoderDictionary", "Applied tries are blank! $appliedTries")
+                    return null
+                }
+                decoder.recognize(
+                     left.toTypedArray(), right.toTypedArray(),
+                     topK = topK,
+                     beamWidth = beamWidth,
+                     trieWeights = trieWeights
+                )
             }
-            decoder.recognize(
-                 left.toTypedArray(), right.toTypedArray(),
-                 topK = topK,
-                 beamWidth = beamWidth,
-                 trieWeights = trieWeights
-            )
+        } catch(e: RuntimeException) {
+            Log.e("SwipeDecoderDictionary", "Swipe recognition failed", e)
+            decoderUnavailable = true
+            this.decoder = null
+            return null
         }
 
         // basically update it at end of swiping
@@ -526,18 +544,24 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         decoder?.let { d ->
             pendingLayoutInfo?.let { pend ->
                 //Log.d("SwipeDecoderDictionary", "Applying layout info: $pend")
-                d.setMode(
-                    letters=pend.layout.letters,
-                    cx=pend.layout.xs.toFloatArray(),
-                    cy=pend.layout.ys.toFloatArray(),
-                    tries=pend.tries.toLongArray(),
-                    decoderPath=getFilePath(context, pend.layout.decoder),
-                    lmModelPath=getFilePath(context, pend.layout.lm),
-                    lmVocabPath=getFilePath(context, vocabFor(pend.layout.lm))
-                )
-                appliedScoring.value = d.scoring
-                appliedLayoutInfo = pend.layout
-                appliedTries = pend.tries.toLongArray()
+                try {
+                    d.setMode(
+                        letters=pend.layout.letters,
+                        cx=pend.layout.xs.toFloatArray(),
+                        cy=pend.layout.ys.toFloatArray(),
+                        tries=pend.tries.toLongArray(),
+                        decoderPath=getFilePath(context, pend.layout.decoder),
+                        lmModelPath=getFilePath(context, pend.layout.lm),
+                        lmVocabPath=getFilePath(context, vocabFor(pend.layout.lm))
+                    )
+                    appliedScoring.value = d.scoring
+                    appliedLayoutInfo = pend.layout
+                    appliedTries = pend.tries.toLongArray()
+                } catch(e: RuntimeException) {
+                    Log.e("SwipeDecoderDictionary", "Failed to apply swipe decoder layout", e)
+                    decoderUnavailable = true
+                    this.decoder = null
+                }
             }
             pendingLayoutInfo = null
         }
