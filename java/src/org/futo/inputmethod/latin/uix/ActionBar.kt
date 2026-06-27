@@ -825,6 +825,9 @@ fun ActionBar(
     onQuickClipDismiss: () -> Unit = {},
     needToUseExpandableSuggestionUi: Boolean = false,
     loading: Boolean = false,
+    showTouchKeyboardToggle: Boolean = false,
+    touchKeyboardShown: Boolean = false,
+    onTouchKeyboardToggle: () -> Unit = {},
 ) {
     val view = LocalView.current
     val context = LocalContext.current
@@ -922,6 +925,13 @@ fun ActionBar(
                             Spacer(modifier = Modifier.weight(1.0f))
                         }
 
+                        if(showTouchKeyboardToggle) {
+                            TouchKeyboardToggleButton(
+                                touchKeyboardShown = touchKeyboardShown,
+                                onToggle = onTouchKeyboardToggle
+                            )
+                        }
+
                         if(inlineSuggestions.isEmpty()) {
                             PinnedActionItems(onActionActivated, onActionAltActivated)
                         }
@@ -931,6 +941,33 @@ fun ActionBar(
         }
 
         ActionSep(true)
+    }
+}
+
+@Composable
+private fun TouchKeyboardToggleButton(
+    touchKeyboardShown: Boolean,
+    onToggle: () -> Unit
+) {
+    IconButton(
+        onClick = onToggle,
+        modifier = Modifier
+            .width(42.dp)
+            .fillMaxHeight(),
+        colors = IconButtonDefaults.iconButtonColors(contentColor = LocalKeyboardScheme.current.onBackground)
+    ) {
+        Icon(
+            painter = painterResource(
+                id = if (touchKeyboardShown) R.drawable.arrow_down else R.drawable.keyboard_regular
+            ),
+            contentDescription = stringResource(
+                if (touchKeyboardShown) {
+                    R.string.keyboard_actionbar_hide_touch_keyboard
+                } else {
+                    R.string.keyboard_actionbar_show_touch_keyboard
+                }
+            )
+        )
     }
 }
 
