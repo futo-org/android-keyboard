@@ -19,6 +19,7 @@ package org.futo.inputmethod.keyboard;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -97,10 +98,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static PointerTrackerParams sParams;
     private static final int sPointerStep = (int)(16.0 * Resources.getSystem().getDisplayMetrics().density);
     private static final int sPointerBigStep = (int)(32.0 * Resources.getSystem().getDisplayMetrics().density);
-    private static final int sPointerHugeStep = Integer.min(
-            (int)(128.0 * Resources.getSystem().getDisplayMetrics().density),
-            Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 2
-    );
 
     private static GestureStrokeRecognitionParams sGestureStrokeRecognitionParams;
     private static GestureStrokeDrawingParams sGestureStrokeDrawingParams;
@@ -157,6 +154,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private boolean mStartedOnFastLongPress;
     private boolean mCursorMoved = false;
     private boolean mSpacebarLongPressed = false;
+    // A spacebar language swipe may only switch the language once per gesture, regardless of how
+    // far the finger travels. Changing two languages requires lifting and swiping again.
+    private boolean mLanguageSwiped = false;
 
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
@@ -760,6 +760,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mStartTime = System.currentTimeMillis();
             mStartedOnFastLongPress = key.isFastLongPress();
             mSpacebarLongPressed = false;
+            mLanguageSwiped = false;
 
             mIsSlidingCursor = key.getCode() == Constants.CODE_DELETE || key.getCode() == Constants.CODE_SPACE;
             mIsFlickingKey = !mIsSlidingCursor && key.getHasFlick();
@@ -976,7 +977,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             if(allowedBySettings) {
                 int pointerStep = sPointerStep;
                 if (settingsValues.mSpacebarSwipeMode == Settings.SPACEBAR_MODE_LANGUAGE && !mSpacebarLongPressed) {
-                    pointerStep = sPointerHugeStep;
+                    // The language-switch step distance is user-configurable in dp. The
+                    // widthPixels*3/2 clamp is a safety bound for narrow screens.
+                    final DisplayMetrics displayMetrics =
+                            Resources.getSystem().getDisplayMetrics();
+                    pointerStep = Integer.min(
+                            (int)(settingsValues.mSpacebarLanguageSwipeStepDp * displayMetrics.density),
+                            displayMetrics.widthPixels * 3 / 2
+                    );
                 }
 
                 int steps = (x - mStartX) / pointerStep;
@@ -986,7 +994,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                     mStartX += steps * pointerStep;
 
                     if (settingsValues.mSpacebarSwipeMode == Settings.SPACEBAR_MODE_LANGUAGE && !mSpacebarLongPressed) {
-                        sListener.onSwipeLanguage(steps);
+                        // Cap the switch at one language per gesture, in the swipe's direction,
+                        // independent of swipe distance/sensitivity.
+                        if (!mLanguageSwiped) {
+                            mLanguageSwiped = true;
+                            sListener.onSwipeLanguage(Integer.signum(steps));
+                        }
                     } else {
                         sListener.onMovePointer(steps);
                     }
