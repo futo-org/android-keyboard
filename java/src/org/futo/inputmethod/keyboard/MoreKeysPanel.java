@@ -90,6 +90,11 @@ public interface MoreKeysPanel {
     public void onDownEvent(final int x, final int y, final int pointerId, final long eventTime);
 
     /**
+     * Select the default key if no key is currently selected.
+     */
+    public void selectDefaultKeyIfNone();
+
+    /**
      * Process an up event on the more keys panel.
      *
      * @param x translated x coordinate of the touch point

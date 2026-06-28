@@ -1258,6 +1258,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final int translatedX = moreKeysPanel.translateX(mLastX);
         final int translatedY = moreKeysPanel.translateY(mLastY);
         moreKeysPanel.onDownEvent(translatedX, translatedY, mPointerId, SystemClock.uptimeMillis());
+        moreKeysPanel.selectDefaultKeyIfNone();
         mMoreKeysPanel = moreKeysPanel;
     }
 
