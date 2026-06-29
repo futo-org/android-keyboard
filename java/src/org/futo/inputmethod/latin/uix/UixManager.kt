@@ -75,6 +75,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -808,7 +809,7 @@ class UixManager(private val latinIME: LatinIME) {
         }
 
         val showingAboveKeyboard = !mainKeyboardHidden.value
-        Column {
+        Column(Modifier.onPreviewKeyEvent { windowImpl.onKeyEvent(it) }) {
             Column(
                 Modifier.background(
                     if (showingAboveKeyboard) {

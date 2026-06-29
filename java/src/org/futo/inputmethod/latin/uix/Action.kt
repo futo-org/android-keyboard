@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -149,6 +150,14 @@ abstract class ActionWindow {
     open fun close(): CloseResult {
         return CloseResult.Default
     }
+
+    /**
+     * Called for a hardware key event while this window is open, before the event reaches focused
+     * composables in the window. This lets a window respond to e.g. a TV remote's D-pad center /
+     * Enter, where there is no touchscreen to tap the window. Return true to consume the event;
+     * the default implementation ignores all key events.
+     */
+    open fun onKeyEvent(event: KeyEvent): Boolean = false
 }
 
 interface PersistentActionState {

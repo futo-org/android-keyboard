@@ -13,6 +13,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -234,6 +239,22 @@ private class VoiceInputActionWindow(
         recognizerView.value?.cancel()
         state.modelManager.cancelAll()
         return CloseResult.Default
+    }
+
+    override fun onKeyEvent(event: KeyEvent): Boolean {
+        // On a device driven by a D-pad / remote (e.g. Android TV) there is no touchscreen to tap
+        // the window to finish, and the D-pad center would otherwise activate the focused "back"
+        // button in the action bar and cancel dictation. Treat center/enter as a tap on the
+        // window: finish recognition and submit the result.
+        return when (event.key) {
+            Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
+                if (event.type == KeyEventType.KeyUp) {
+                    recognizerView.value?.finish()
+                }
+                true
+            }
+            else -> false
+        }
     }
 
     private var wasFinished = false
