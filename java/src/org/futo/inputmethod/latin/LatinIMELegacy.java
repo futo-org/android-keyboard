@@ -41,6 +41,7 @@ import android.util.Printer;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -644,9 +645,31 @@ public class LatinIMELegacy implements KeyboardActionListener,
         ).onUpWithPointerActive();
     }
 
+    private float mSwipeLanguageProgress = 0.0f;
     @Override
-    public void onSwipeLanguage(int direction) {
-        Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, direction);
+    public void onSwipeLanguageReleased() {
+        mKeyboardSwitcher.getMainKeyboardView().updateSwipeLanguageProgress(0.0f);
+        if(Math.abs(mSwipeLanguageProgress) >= 1.0f) {
+            String newSubtype = Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, mSwipeLanguageProgress > 0.0f ? 1 : -1);
+            if(newSubtype != null && !newSubtype.isEmpty()) {
+                getLatinIME().changeSubtype(newSubtype);
+            }
+        }
+        mSwipeLanguageProgress = 0.0f;
+    }
+
+    @Override
+    public void onSwipeLanguageProgress(float progress) {
+        MainKeyboardView view = mKeyboardSwitcher.getMainKeyboardView();
+        if(mSettings.getCurrent().mVibrateOn && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (Math.abs(progress) >= 1.0f && Math.abs(mSwipeLanguageProgress) < 1.0f) {
+                view.performHapticFeedback(HapticFeedbackConstants.GESTURE_THRESHOLD_ACTIVATE);
+            } else if(Math.abs(progress) < 1.0f && Math.abs(mSwipeLanguageProgress) >= 1.0f) {
+                view.performHapticFeedback(HapticFeedbackConstants.GESTURE_THRESHOLD_DEACTIVATE);
+            }
+        }
+        view.updateSwipeLanguageProgress(progress);
+        mSwipeLanguageProgress = progress;
     }
 
     @Override

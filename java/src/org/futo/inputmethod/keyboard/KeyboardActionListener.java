@@ -105,10 +105,12 @@ public interface KeyboardActionListener {
     public void onMoveDeletePointer(int steps);
     public void onUpWithDeletePointerActive();
     public void onUpWithPointerActive();
-    public void onSwipeLanguage(int direction);
     public void onMovingCursorLockEvent(boolean canMoveCursor);
 
     public static final KeyboardActionListener EMPTY_LISTENER = new Adapter();
+
+    public void onSwipeLanguageProgress(float progress);
+    public void onSwipeLanguageReleased();
 
     public static class Adapter implements KeyboardActionListener {
         @Override
@@ -142,7 +144,9 @@ public interface KeyboardActionListener {
         @Override
         public void onUpWithPointerActive() {}
         @Override
-        public void onSwipeLanguage(int direction) {}
+        public void onSwipeLanguageReleased() {}
+        @Override
+        public void onSwipeLanguageProgress(float progress) {}
         @Override
         public void onMovingCursorLockEvent(boolean canMoveCursor) {}
     }

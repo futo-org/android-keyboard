@@ -447,12 +447,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 }
 
                 if(activeSubtype != null && activeSubtype != currentSubtype) {
-                    currentSubtype = activeSubtype
-
                     withContext(Dispatchers.Main) {
-                        val subtype = Subtypes.convertToSubtype(activeSubtype)
-                        changeInputMethodSubtype(subtype)
-                        uixManager.updateLocale(Subtypes.getLocale(subtype))
+                        changeSubtype(activeSubtype)
                     }
                 }
             }
@@ -495,6 +491,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 invalidateKeyboard(refreshSettings = true)
             }
         }
+    }
+
+    fun changeSubtype(subtypeString: String) {
+        if(currentSubtype == subtypeString) return
+        currentSubtype = subtypeString
+
+        val subtype = Subtypes.convertToSubtype(subtypeString)
+        changeInputMethodSubtype(subtype)
+        uixManager.updateLocale(Subtypes.getLocale(subtype))
     }
 
     private var destroying = false

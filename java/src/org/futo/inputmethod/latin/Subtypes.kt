@@ -278,19 +278,71 @@ object Subtypes {
         return layouts
     }
 
+    fun getSurroundingLanguages(context: Context): Pair<String, String>? {
+        val enabledSubtypes = context.getSettingBlocking(SubtypesSetting).toList()
+        val currentSubtype = context.getSettingBlocking(ActiveSubtype)
+
+        if(enabledSubtypes.isEmpty()) return null
+
+        if(enabledSubtypes.size == 1 && currentSubtype == enabledSubtypes.first()) {
+            return null
+        }
+
+        val index = enabledSubtypes.indexOf(currentSubtype)
+        val (prevIdx, nextIdx) = if(index == -1) {
+            0 to 0
+        } else {
+            (index - 1).mod(enabledSubtypes.size) to (index + 1).mod(enabledSubtypes.size)
+        }
+
+        val prevSubtype = convertToSubtype(enabledSubtypes[prevIdx])
+        val currSubtype = if(index != -1) convertToSubtype(enabledSubtypes[index]) else null
+        val nextSubtype = convertToSubtype(enabledSubtypes[nextIdx])
+
+        var prevName = getLanguageOnSpaceBar(getLocale(prevSubtype))
+        var currName = currSubtype?.let { getLanguageOnSpaceBar(getLocale(it)) }
+        var nextName = getLanguageOnSpaceBar(getLocale(nextSubtype))
+
+        if(prevName == currName) {
+            prevName += " " + LayoutManager.getLayout(context, RichInputMethodSubtype(prevSubtype).keyboardLayoutSetName).name
+        }
+
+        if(nextName == currName) {
+            nextName += " " + LayoutManager.getLayout(context, RichInputMethodSubtype(nextSubtype).keyboardLayoutSetName).name
+        }
+
+        return prevName to nextName
+    }
+
+    @JvmStatic
+    fun getLanguageOnSpaceBar(locale: Locale): String {
+        // TODO: We have two different exceptional locale systems now, should probably just stick
+        //  with the LayoutManager one.
+        val definedName = LayoutManager.getExceptionalNameForLocale(locale, locale)
+        if(definedName != null) return definedName
+
+        if(SubtypeLocaleUtils.isExceptionalLocale(locale.toString())
+                || locale.toString().equals(SubtypeLocaleUtils.NO_LANGUAGE)) {
+            return SubtypeLocaleUtils.getSubtypeLanguageDisplayName(locale.toString())
+        }
+
+        val middleText = Locale(locale.language).getDisplayName(locale)
+        return middleText
+    }
+
     fun switchToNextLanguage(
         context: Context,
         direction: Int
-    ): Boolean {
-        if(direction == 0) return true
+    ): String? {
+        if(direction == 0) return null
 
         val enabledSubtypes = context.getSettingBlocking(SubtypesSetting).toList()
         val currentSubtype = context.getSettingBlocking(ActiveSubtype)
 
-        if(enabledSubtypes.isEmpty()) return false
+        if(enabledSubtypes.isEmpty()) return null
 
         if(enabledSubtypes.size == 1 && currentSubtype == enabledSubtypes.first()) {
-            return false
+            return null
         }
 
         val index = enabledSubtypes.indexOf(currentSubtype)
@@ -301,7 +353,7 @@ object Subtypes {
         }
 
         context.setSettingBlocking(ActiveSubtype.key, enabledSubtypes[nextIndex])
-        return true
+        return enabledSubtypes[nextIndex]
     }
 
     fun getMultilingualBucket(context: Context, locale: Locale): List<Locale> {
