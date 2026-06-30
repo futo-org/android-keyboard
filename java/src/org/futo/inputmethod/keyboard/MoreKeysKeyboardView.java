@@ -55,6 +55,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     private Key mCurrentKey;
 
     private int mActivePointerId;
+    private boolean mDefaultKeySelectionFallback;
 
     private final float sideAllowance;
 
@@ -189,7 +190,22 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     @Override
     public void onDownEvent(final int x, final int y, final int pointerId, final long eventTime) {
         mActivePointerId = pointerId;
+        mDefaultKeySelectionFallback = false;
         mCurrentKey = detectKey(x, y);
+    }
+
+    @Override
+    public void selectDefaultKeyIfNone() {
+        if (mCurrentKey != null) {
+            return;
+        }
+        final Key defaultKey = ((MoreKeysKeyboard)getKeyboard()).getDefaultKey();
+        if (defaultKey == null) {
+            return;
+        }
+        mDefaultKeySelectionFallback = true;
+        mCurrentKey = defaultKey;
+        updatePressKeyGraphics(defaultKey);
     }
 
     @Override
@@ -197,6 +213,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         if (mActivePointerId != pointerId) {
             return;
         }
+        if (mDefaultKeySelectionFallback && mKeyDetector.detectHitKey(x, y) == null) {
+            return;
+        }
+        mDefaultKeySelectionFallback = false;
         final boolean hasOldKey = (mCurrentKey != null);
         mCurrentKey = detectKey(x, y);
         if (hasOldKey && mCurrentKey == null) {
@@ -210,14 +230,18 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         if (mActivePointerId != pointerId) {
             return;
         }
-        // Calling {@link #detectKey(int,int,int)} here is harmless because the last move event and
-        // the following up event share the same coordinates.
-        mCurrentKey = detectKey(x, y);
+        if (!mDefaultKeySelectionFallback || mKeyDetector.detectHitKey(x, y) != null) {
+            // Calling {@link #detectKey(int,int,int)} here is harmless because the last move event and
+            // the following up event share the same coordinates.
+            mDefaultKeySelectionFallback = false;
+            mCurrentKey = detectKey(x, y);
+        }
         if (mCurrentKey != null) {
             updateReleaseKeyGraphics(mCurrentKey);
             onKeyInput(mCurrentKey, x, y);
             mCurrentKey = null;
         }
+        mDefaultKeySelectionFallback = false;
     }
 
     /**
@@ -281,6 +305,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
                 && AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
             accessibilityDelegate.onDismissMoreKeysKeyboard();
         }
+        mDefaultKeySelectionFallback = false;
         mController.onDismissMoreKeysPanel();
     }
 
