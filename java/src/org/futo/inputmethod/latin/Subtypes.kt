@@ -84,6 +84,10 @@ val MultilingualBucketSetting = SettingsKey(
     emptySet()
 )
 
+fun spacebarColorPreferenceKeyFor(locale: String): androidx.datastore.preferences.core.Preferences.Key<String> {
+    return androidx.datastore.preferences.core.stringPreferencesKey("spacebar_color_${locale.replace("#", "H")}")
+}
+
 object Subtypes {
     // Removes extensions from existing existing subtypes which are not meant to be there
     private fun removeExtensionsIfNecessary(context: Context) {

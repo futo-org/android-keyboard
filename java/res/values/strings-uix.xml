@@ -701,4 +701,11 @@ Default is %1$s</string>
     <string name="personal_dictionary_delete_additional_file">Delete extra dictionary file?</string>
     <!-- %1$s will be replaced with the custom dictionary name -->
     <string name="personal_dictionary_delete_additional_file_text">%1$s will be deleted</string>
+
+    <!-- Spacebar Color Setting -->
+    <string name="spacebar_color_setting_title">Spacebar color</string>
+    <string name="spacebar_color_default">Default</string>
+    <string name="spacebar_color_dialog_title">Select spacebar color (%1$s)</string>
+    <string name="spacebar_color_custom_hex">Custom hex color</string>
+    <string name="spacebar_color_apply">Apply</string>
 </resources>

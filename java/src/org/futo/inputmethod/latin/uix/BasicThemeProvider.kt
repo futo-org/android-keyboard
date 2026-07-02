@@ -34,6 +34,9 @@ import org.futo.inputmethod.latin.uix.theme.AdvancedThemeMatcher
 import org.futo.inputmethod.latin.uix.theme.KeyBackground
 import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
+import org.futo.inputmethod.latin.Subtypes
+import org.futo.inputmethod.latin.spacebarColorPreferenceKeyFor
+import org.futo.inputmethod.latin.uix.getSettingBlocking
 
 val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), true)
 val HiddenKeysSetting = SettingsKey(booleanPreferencesKey("hiddenKeys1"), false)
@@ -204,8 +207,59 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         return icons[iconName]
     }
 
+    private var cachedSpaceCornerRadius: Dp = 8.dp
+    private var cachedHighlightColor: Int = 0
+    private var cachedHighlightForeground: Int = 0
+
+    private fun getSpacebarColorForCurrentSubtype(): String? {
+        val activeSubtype = Subtypes.getActiveSubtype(context)
+        val localeString = activeSubtype.locale
+        val key = spacebarColorPreferenceKeyFor(localeString)
+        val color = context.getSettingBlocking(key, "")
+        return if (color.isEmpty()) null else color
+    }
+
+    private fun getContrastColor(@ColorInt color: Int): Int {
+        val red = android.graphics.Color.red(color) / 255.0
+        val green = android.graphics.Color.green(color) / 255.0
+        val blue = android.graphics.Color.blue(color) / 255.0
+
+        val r = if (red <= 0.03928) red / 12.92 else Math.pow((red + 0.055) / 1.055, 2.4)
+        val g = if (green <= 0.03928) green / 12.92 else Math.pow((green + 0.055) / 1.055, 2.4)
+        val b = if (blue <= 0.03928) blue / 12.92 else Math.pow((blue + 0.055) / 1.055, 2.4)
+
+        val luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+        return if (luminance > 0.179) {
+            android.graphics.Color.BLACK
+        } else {
+            android.graphics.Color.WHITE
+        }
+    }
+
+    private fun makeSpacebarStyle(customColorHex: String): VisualStyleDescriptor {
+        val customColor = try {
+            android.graphics.Color.parseColor(customColorHex)
+        } catch (e: Exception) {
+            keyColor
+        }
+        val customForeground = getContrastColor(customColor)
+        return makeVisualStyle(
+            customColor,
+            customForeground,
+            cachedHighlightColor,
+            customForeground,
+            cachedSpaceCornerRadius
+        )
+    }
+
     val keyStyles: Map<KeyVisualStyle, VisualStyleDescriptor>
     override fun getKeyStyleDescriptor(visualStyle: KeyVisualStyle): VisualStyleDescriptor {
+        if (visualStyle == KeyVisualStyle.Spacebar) {
+            val customColor = getSpacebarColorForCurrentSubtype()
+            if (customColor != null) {
+                return makeSpacebarStyle(customColor)
+            }
+        }
         return keyStyles[visualStyle]!!
     }
 
@@ -550,6 +604,10 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         moreKeysTextColor = colorScheme.onKeyboardContainer.toArgb()
         moreKeysKeyboardBackground = kdcMatcher.matchMoreKeysKeyboardBackground("") ?: coloredRoundedRectangle(colorScheme.keyboardPress.toArgb(), dp(keyCornerRadius))
+
+        cachedSpaceCornerRadius = spaceCornerRadius
+        cachedHighlightColor = highlight
+        cachedHighlightForeground = highlightForeground
 
         assert(icons.keys == KeyboardIconsSet.validIcons) {
             "Icons differ. Missing: ${KeyboardIconsSet.validIcons - icons.keys}, extraneous: ${icons.keys - KeyboardIconsSet.validIcons}"
