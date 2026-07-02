@@ -541,6 +541,9 @@
     <string name="swipe_settings_sensitive_swipe">Increase sensitivity</string>
     <string name="swipe_settings_sensitive_swipe_subtitle">Make swipe trigger more often</string>
 
+    <string name="swipe_settings_kasroz">KASROZ</string>
+    <string name="swipe_settings_kasroz_subtitle">The best keyboard layout to swipe</string>
+
     <string name="swipe_settings_suggest_mode">Suggestion bar mode</string>
     <string name="swipe_settings_suggest_mode_tags">show 3 suggestions, used word, accepted word, main word, display 3 alternative, swipe typing, swish input, swype, center middle centre other words</string>
     <string name="swipe_settings_suggest_mode_top4_title">3 alternatives</string>

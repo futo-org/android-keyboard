@@ -607,10 +607,18 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     }
 
+    private boolean canDoLanguageSwitch() {
+        SettingsValues settings = mSettings.getCurrent();
+
+        return settings.mInputAttributes.mLocaleOverride == null
+                && settings.mInputAttributes.mLayoutOverride == null;
+    }
+
     @Override
     public boolean onCustomRequest(final int requestCode) {
         switch (requestCode) {
         case Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER:
+            if(!canDoLanguageSwitch()) return false;
             getLatinIME().getUixManager().showLanguageSwitcher();
             return true;
         }
@@ -649,6 +657,10 @@ public class LatinIMELegacy implements KeyboardActionListener,
     @Override
     public void onSwipeLanguageReleased() {
         mKeyboardSwitcher.getMainKeyboardView().updateSwipeLanguageProgress(0.0f);
+        if(!canDoLanguageSwitch()) {
+            mSwipeLanguageProgress = 0.0f;
+            return;
+        }
         if(Math.abs(mSwipeLanguageProgress) >= 1.0f) {
             String newSubtype = Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, mSwipeLanguageProgress > 0.0f ? 1 : -1);
             if(newSubtype != null && !newSubtype.isEmpty()) {
@@ -660,6 +672,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     @Override
     public void onSwipeLanguageProgress(float progress) {
+        if(!canDoLanguageSwitch()) return;
         MainKeyboardView view = mKeyboardSwitcher.getMainKeyboardView();
         if(mSettings.getCurrent().mVibrateOn && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             if (Math.abs(progress) >= 1.0f && Math.abs(mSwipeLanguageProgress) < 1.0f) {
