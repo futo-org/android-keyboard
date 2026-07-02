@@ -976,12 +976,15 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
             if(allowedBySettings) {
                 int pointerStep = sPointerStep;
+                boolean useY = false;
                 if (settingsValues.mSpacebarSwipeMode == Settings.SPACEBAR_MODE_LANGUAGE && !mSpacebarLongPressed) {
                     pointerStep = sPointerHugeStep;
+                    useY = oldKey.getUseVerticalSwipe();
                 }
 
-                int steps = (x - mStartX) / pointerStep;
-                float stepProgress = (x - mStartX) / ((float)pointerStep);
+
+                float stepProgress = ((useY ? -y : x) - (useY ? -mStartY : mStartX)) / ((float)pointerStep);
+                int steps = (int)stepProgress;
                 final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
                 if (mStartTime + swipeIgnoreTime < System.currentTimeMillis()) {
                     if (settingsValues.mSpacebarSwipeMode == Settings.SPACEBAR_MODE_LANGUAGE && !mSpacebarLongPressed) {

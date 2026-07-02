@@ -303,19 +303,36 @@ object Subtypes {
         var currName = currSubtype?.let { getLanguageOnSpaceBar(getLocale(it)) }
         var nextName = getLanguageOnSpaceBar(getLocale(nextSubtype))
 
+        val canSkipLanguage = getLocale(prevSubtype) == getLocale((nextSubtype)) &&
+                getLocale(prevSubtype) == currSubtype?.let { getLocale(it) }
+
+        val getName = {subtype: InputMethodSubtype ->
+            LayoutManager.getLayout(context, RichInputMethodSubtype(subtype).keyboardLayoutSetName).name
+        }
+
         if(prevName == currName) {
-            prevName += " " + LayoutManager.getLayout(context, RichInputMethodSubtype(prevSubtype).keyboardLayoutSetName).name
+            prevName = buildString {
+                if(!canSkipLanguage) append(prevName, " ")
+                append(getName(prevSubtype))
+            }
         }
 
         if(nextName == currName) {
-            nextName += " " + LayoutManager.getLayout(context, RichInputMethodSubtype(nextSubtype).keyboardLayoutSetName).name
+            nextName = buildString {
+                if(!canSkipLanguage) append(nextName, " ")
+                append(getName(nextSubtype))
+            }
         }
 
         return prevName to nextName
     }
 
     @JvmStatic
-    fun getLanguageOnSpaceBar(locale: Locale): String {
+    fun getLanguageOnSpaceBar(locale: Locale, availableWidth: Float = Float.POSITIVE_INFINITY): String {
+        if(availableWidth <= 5.0f) {
+            return locale.language.uppercase();
+        }
+
         // TODO: We have two different exceptional locale systems now, should probably just stick
         //  with the LayoutManager one.
         val definedName = LayoutManager.getExceptionalNameForLocale(locale, locale)

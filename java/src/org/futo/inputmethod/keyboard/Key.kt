@@ -325,6 +325,9 @@ data class Key(
 
     val altCodeWhileTyping: Boolean = (actionFlags and KeyConsts.ACTION_FLAGS_ALT_CODE_WHILE_TYPING) != 0
 
+    /** Whether to swipe language/cursor vertically for spacebar instead of horizontally */
+    val useVerticalSwipe: Boolean = height > width
+
     val isLongPressEnabled: Boolean =
         // We need not start long press timer on the key which has activated shifted letter.
         ((actionFlags and KeyConsts.ACTION_FLAGS_ENABLE_LONG_PRESS) != 0
