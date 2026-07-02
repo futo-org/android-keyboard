@@ -86,15 +86,48 @@ final def translationsWithoutEngValues = { final String path ->
             include 'values-*/**'
 
             filter { String line ->
-                line
-                // Fix duplicate <string> tags
-                        .replaceAll(/(<string [^>]+>)&lt;string [^&]+&gt;(.+)&lt;\/string&gt;<\/string>/, '$1$2</string>')
-                // Fix malformed xliff:g tags
-                        .replaceAll(/&lt;xliff:g ([^&]+)&gt;([^&]+)&lt;\/xliff:g&gt;/, '<xliff:g $1>$2</xliff:g>')
-                // Fix malformed quotes
-                        .replaceAll(/&amp;quot;/, '&quot;')
-                // Insert xliff binding
-                        .replaceAll(/<resources>/, '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">')
+                def matcher = line =~ /<string name="([^"]+)"[^>]*>(.+)<\/string>/
+
+                if (matcher.find()) {
+                    var stringName = matcher.group(1)
+                    var content = matcher.group(2)
+
+                    content = content
+                    // Fix duplicate string tags
+                            .replaceAll(/<!\[CDATA\[<string [^>]+>(.+)<\\/string>\]\]>/, '$1')
+                            .replaceAll(/<string [^>]+>(.+)<\\/string>/, '$1')
+                            .replaceAll(/&lt;string [^&]+&gt;(.+)&lt;\\/string&gt;/, '$1')
+                    // Remove xliff:g tags entirely, keep only the content
+                            .replaceAll(/<xliff:g [^>]+>(.+?)<\/xliff:g>/, '$1')
+                            .replaceAll(/&lt;xliff:g [^&]+&gt;(.+?)&lt;\/xliff:g&gt;/, '$1')
+                    // Fix escaped quotes
+                            .replaceAll(/&amp;quot;/, '"')
+                            .replaceAll(/&quot;/, '"')
+                            .replaceAll(/\\+/, "\\\\")
+                            .replaceAll(/\\"/, '"')
+                            .replaceAll(/\\'/, "'")
+
+                    if (content.startsWith("&quot;")) {
+                        content = content.substring(6)
+                    } else if (content.startsWith('\\"')) {
+                        content = content.substring(2)
+                    } else if (content.startsWith('"')) {
+                        content = content.substring(1)
+                    }
+                    if (content.endsWith("&quot;")) {
+                        content = content.substring(0, content.length() - 6)
+                    } else if (content.endsWith('\\"')) {
+                        content = content.substring(0, content.length() - 2)
+                    } else if (content.endsWith('"')) {
+                        content = content.substring(0, content.length() - 1)
+                    }
+
+                    content = content.replaceAll('"', '\\\\"')
+
+                    "    <string name=\"" + stringName + "\">\"" + content + "\"</string>\n"
+                } else {
+                    line
+                }
             }
         }
         into(destDir)
