@@ -52,6 +52,7 @@ import org.futo.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import org.futo.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import org.futo.inputmethod.keyboard.internal.TimerHandler;
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager;
+import org.futo.inputmethod.latin.Subtypes;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.SuggestedWords;
@@ -69,6 +70,8 @@ import java.util.WeakHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import kotlin.Pair;
 
 /**
  * A view that is responsible for detecting key presses and touch movements.
@@ -168,6 +171,9 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     public final KeyDetector mKeyDetector;
     private final NonDistinctMultitouchHelper mNonDistinctMultitouchHelper;
+
+    private float mLanguageSwipeProgress;
+    private Pair<String, String> mSurroundingLanguages;
 
     private final TimerHandler mTimerHandler;
     private final int mLanguageOnSpacebarHorizontalMargin;
@@ -805,7 +811,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         }
         super.onDrawKeyTopVisuals(key, canvas, paint, params, kdc);
         final int code = key.getCode();
-        if (code == Constants.CODE_SPACE && key.getIconId().equals("space_key")) {
+        if (code == Constants.CODE_SPACE && (key.getIconId().equals("space_key") || mLanguageSwipeProgress != 0.0f)) {
             drawLanguageOnSpacebar(key, canvas, paint, kdc.getHintColor());
             // Whether space key needs to show the "..." popup hint for special purposes
             if (key.isLongPressEnabled() && mHasMultipleEnabledIMEsOrSubtypes) {
@@ -835,41 +841,15 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     // Layout language name on spacebar.
     private String layoutLanguageOnSpacebar(final Paint paint,
-                                            final Locale locale, final int width) {
+                                            final Locale locale, final int width, final int horizontalWidth) {
         if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_NONE) {
-            final String text = getContext().getString(R.string.keyboard_version_status);
-            if(fitsTextIntoWidth(width, text, paint)) {
-                return text;
-            }
-        }
-        // Choose appropriate language name to fit into the width.
-        // TODO: Disabled for now
-        if (false && mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_FULL_LOCALE) {
-            final String fullText = locale.getDisplayName(locale);
-            if (fitsTextIntoWidth(width, fullText, paint)) {
-                return fullText;
-            }
+            return "";
         }
 
-        // TODO: We have two different exceptional locale systems now, should probably just stick
-        //  with the LayoutManager one.
-
-        final String definedName = LayoutManager.INSTANCE.getExceptionalNameForLocale(
-                locale, locale
-        );
-        if(definedName != null) {
-            return definedName;
-        }
-
-        if(SubtypeLocaleUtils.isExceptionalLocale(locale.toString())
-                || locale.toString().equals(SubtypeLocaleUtils.NO_LANGUAGE)
-        ) {
-            return SubtypeLocaleUtils.getSubtypeLanguageDisplayName(locale.toString());
-        }
-
-        final String middleText = (new Locale(locale.getLanguage())).getDisplayName(locale);
-        if (fitsTextIntoWidth(width, middleText, paint)) {
-            return middleText;
+        paint.setTextScaleX(1.0f);
+        final String name = Subtypes.getLanguageOnSpaceBar(locale, horizontalWidth / paint.measureText("Q"));
+        if (fitsTextIntoWidth(width, name, paint)) {
+            return name;
         }
 
         return "";
@@ -880,12 +860,19 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         if (keyboard == null) {
             return;
         }
-        final int width = key.getWidth();
-        final int height = key.getHeight();
+        int width = key.getWidth();
+        int height = key.getHeight();
+        canvas.save();
+        if(key.getUseVerticalSwipe()) {
+            canvas.rotate(-90.0f);
+            canvas.translate(-height, 0.0f);
+            width = key.getHeight();
+            height = key.getWidth();
+        }
         paint.setTextAlign(Align.CENTER);
         paint.setTypeface(mDrawableProvider.selectKeyTypeface(Typeface.DEFAULT));
         paint.setTextSize(mLanguageOnSpacebarTextSize);
-        final String language = layoutLanguageOnSpacebar(paint, keyboard.mId.mLocale, width);
+        final String language = layoutLanguageOnSpacebar(paint, keyboard.mId.mLocale, width, key.getWidth());
         // Draw language text with shadow
         final float descent = paint.descent();
         final float textHeight = -paint.ascent() + descent;
@@ -903,7 +890,35 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
                 TypefaceUtils.getStringWidth(language, paint));
 
         paint.setTextScaleX(ratio);
-        canvas.drawText(language, width / 2, baseline - descent, paint);
+        canvas.clipRect(0, 0, width, height);
+        if(mLanguageSwipeProgress == 0.0f || mSurroundingLanguages == null) {
+            canvas.drawText(language, width / 2, baseline - descent, paint);
+        } else {
+            float sign = Math.signum(mLanguageSwipeProgress);
+
+            float offs = width * 0.75f;
+            float x = width / 2.0f + Math.clamp((mLanguageSwipeProgress*0.75f + 0.2f * sign) * width / 2.0f, -offs, offs);
+
+            float x2 = x - offs*sign;
+
+            if(language.length() <= 2 && key.getUseVerticalSwipe()) {
+                canvas.save();
+                canvas.rotate(90.0f, x, height / 2);
+                canvas.drawText(language, x, baseline - descent, paint);
+                canvas.restore();
+            } else {
+                canvas.drawText(language, x, baseline - descent, paint);
+            }
+
+            float alpha = Math.clamp((Math.abs(mLanguageSwipeProgress) - 1.0f) / 0.15f, 0.0f, 1.0f) * 175 + 80;
+            paint.setAlpha((int)alpha);
+            if(mLanguageSwipeProgress < 0.0f) {
+                canvas.drawText(mSurroundingLanguages.getFirst(), x2, baseline - descent, paint);
+            } else {
+                canvas.drawText(mSurroundingLanguages.getSecond(), x2, baseline - descent, paint);
+            }
+        }
+        canvas.restore();
         paint.clearShadowLayer();
         paint.setTextScaleX(1.0f);
     }
@@ -916,5 +931,16 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     public void updateStateHint(StateHint stateHint) {
         PointerTracker.setStateHint(stateHint);
+    }
+
+    public void updateSwipeLanguageProgress(float progress) {
+        mLanguageSwipeProgress = progress;
+        if (mLanguageSwipeProgress == 0.0f) {
+            mSurroundingLanguages = null;
+        } else if(mSurroundingLanguages == null) {
+            mSurroundingLanguages = Subtypes.INSTANCE.getSurroundingLanguages(getContext());
+        }
+
+        invalidateKey(mSpaceKey);
     }
 }

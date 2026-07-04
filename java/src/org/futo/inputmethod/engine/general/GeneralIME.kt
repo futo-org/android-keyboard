@@ -335,6 +335,8 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
         val swipeActionPunctuationTransaction = handleSwipeActionTrailingSpacePunctuation(event)
 
+        val cursorBefore = inputLogic.mConnection.mExpectedSelStart
+
         val inputTransaction = swipeActionPunctuationTransaction ?: when (event.eventType) {
             Event.EVENT_TYPE_INPUT_KEYPRESS,
             Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
@@ -390,6 +392,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
 
         inputLogic.mConnection.send()
+
+        val cursorAfter = inputLogic.mConnection.mExpectedSelStart
+
+        inputLogic.afterEventCursorDelta(cursorBefore, cursorAfter - cursorBefore)
 
         when(inputTransaction?.requiredShiftUpdate) {
             InputTransaction.SHIFT_UPDATE_LATER,
@@ -447,9 +453,10 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                         helper.keyboardSwitcher,
                         swipeDistinct
                     )
-                    helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(
-                        HapticFeedbackConstants.VIRTUAL_KEY_RELEASE
-                    )
+
+                    if(settings.current.mVibrateOn) {
+                        helper.keyboardSwitcher.mainKeyboardView?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE)
+                    }
                 }
                 if(Looper.myLooper() != Looper.getMainLooper()) {
                     helper.lifecycleScope.launch(Dispatchers.Main) { updateBatch() }
@@ -1119,7 +1126,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                 ignoreSuggestionUpdate = true
             )
 
-            showDeletedTextUndoSuggestion(selection?.toString())
+            if (settings.current.mInputAttributes.mShouldShowSuggestions) {
+                showDeletedTextUndoSuggestion(selection?.toString())
+            }
         } else {
             onUpWithPointerActive()
         }

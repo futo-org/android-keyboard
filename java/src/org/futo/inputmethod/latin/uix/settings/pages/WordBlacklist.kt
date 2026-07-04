@@ -35,6 +35,7 @@ import org.futo.inputmethod.latin.uix.settings.SettingItem
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleSharedPrefs
 
@@ -51,15 +52,32 @@ private val blockOffensiveWordsSetting =
     userSettingToggleSharedPrefs(
         title = R.string.prefs_block_potentially_offensive_title,
         subtitle = R.string.prefs_block_potentially_offensive_summary,
-        key = Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE,
-        default = { booleanResource(R.bool.config_block_potentially_offensive) }
+        key = Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE_2,
+        default = {
+            useSharedPrefsBool(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE_LEGACY, true).value
+        }
     ).copy(searchTags = R.string.prefs_block_potentially_offensive_tags)
+
+private val blockSlursSetting =
+    userSettingToggleSharedPrefs(
+        title = R.string.prefs_block_slurs_title,
+        subtitle = R.string.prefs_block_slurs_summary,
+        key = Settings.PREF_BLOCK_SLURS,
+        default = {
+            useSharedPrefsBool(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE_LEGACY, true).value
+        }
+    ).copy(searchTags = R.string.prefs_block_potentially_offensive_tags,
+        visibilityCheck = {
+            val legacyVal = useSharedPrefsBool(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE_LEGACY, true).value
+            useSharedPrefsBool(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE_2, legacyVal).value == false
+        })
 
 val BlacklistScreenLite = UserSettingsMenu(
     title = R.string.prediction_settings_word_blacklist,
     navPath = "blacklist", registerNavPath = false,
     settings = listOf(
         blockOffensiveWordsSetting,
+        blockSlursSetting,
 
         userSettingNavigationItem(
             title = R.string.prediction_settings_word_blacklist_edit_blacklisted_words_title,
@@ -82,6 +100,9 @@ fun BlacklistScreen(navController: NavHostController = rememberNavController()) 
         ScreenTitle(stringResource(R.string.prediction_settings_word_blacklist), showBack = true, navController)
 
         blockOffensiveWordsSetting.component()
+        if(blockSlursSetting.visibilityCheck?.invoke() != false) {
+            blockSlursSetting.component()
+        }
 
         Row(modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 0.dp)) {
             TextField(value = newWord, onValueChange = {newWord = it}, modifier = Modifier.weight(1.0f), label = {

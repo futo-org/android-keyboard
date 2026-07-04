@@ -10,6 +10,7 @@ import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
+import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
@@ -234,6 +235,11 @@ data class LayoutEngine(
             } else {
                 regularKeyWidth
             }
+        }.let {
+            if(it.isInfinite() || it.isNaN()) {
+                throwIfDebug(Exception("Infinite or NaN regular key width: ${it}"))
+                1.0f
+            } else it
         }
 
         // Subtract regular keys
@@ -547,7 +553,7 @@ data class LayoutEngine(
     private fun swapOuterKeys(entries: List<LayoutEntry>): List<LayoutEntry> {
         fun isOuter(entry: LayoutEntry): Boolean = when(entry) {
             is LayoutEntry.Gap -> true
-            is LayoutEntry.Key -> entry.data.width != KeyWidth.Regular
+            is LayoutEntry.Key -> entry.data.width != KeyWidth.Regular && entry.data.anchored
         }
 
         val leadingCount = entries.indexOfFirst { !isOuter(it) }.let { if(it == -1) entries.size else it }
@@ -704,7 +710,10 @@ data class LayoutEngine(
             iconOverride = data.flick?.icon,
 
             row = row,
-            column = col
+            column = col,
+            swipeCodeOverride = data.swipeLetter?.let {
+                it.firstNotNullOfOrNull { it.code }
+            }
         )
     }
 

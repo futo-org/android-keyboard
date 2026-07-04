@@ -11,6 +11,7 @@ class DictionaryStructureWithBufferPolicy;
 
 class DicITrieWrapper {
 public:
+    bool badWordsAllowed;
     DictionaryStructureWithBufferPolicy *structure;
     std::string letters;
     std::vector<uint32_t> lettersAsCodePoints;

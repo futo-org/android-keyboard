@@ -70,8 +70,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_KEY_USE_TRANSFORMER_LM = "pref_key_use_transformer_lm";
     public static final String PREF_KEY_USE_DOUBLE_SPACE_PERIOD =
             "pref_key_use_double_space_period";
-    public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE =
+    public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE_LEGACY =
             "pref_key_block_potentially_offensive";
+    public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE_2 =
+            "pref_key_block_potentially_offensive_2";
+    public static final String PREF_BLOCK_SLURS =
+            "pref_block_slurs";
     public static final boolean ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS =
             BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
     public static final boolean SHOULD_SHOW_LXX_SUGGESTION_UI =
@@ -80,7 +84,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
             "pref_include_other_imes_in_language_switch_list";
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
-    public static final String PREF_ENABLE_SPLIT_KEYBOARD = "pref_split_keyboard";
     // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
@@ -90,6 +93,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final int GESTURE_INPUT_MODE_TYPING = 0;
     public static final int GESTURE_INPUT_MODE_ACTIONS = 1;
     public static final int GESTURE_INPUT_MODE_NONE = 2;
+    public static final String PREF_GESTURE_INPUT_SENSITIVITY = "gesture_input_sensitivity";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME = "pref_keypress_sound_volume";
@@ -289,9 +293,15 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public static boolean readBlockPotentiallyOffensive(final SharedPreferences prefs,
-            final Resources res) {
-        return prefs.getBoolean(PREF_BLOCK_POTENTIALLY_OFFENSIVE,
-                res.getBoolean(R.bool.config_block_potentially_offensive));
+                                                        final Resources res) {
+        boolean legacyValue = prefs.getBoolean(PREF_BLOCK_POTENTIALLY_OFFENSIVE_LEGACY, true);
+        return prefs.getBoolean(PREF_BLOCK_POTENTIALLY_OFFENSIVE_2, legacyValue);
+    }
+
+    public static boolean readBlockSlurs(final SharedPreferences prefs,
+                                                        final Resources res) {
+        boolean legacyValue = prefs.getBoolean(PREF_BLOCK_POTENTIALLY_OFFENSIVE_LEGACY, true);
+        return prefs.getBoolean(PREF_BLOCK_SLURS, legacyValue);
     }
 
     public static boolean readFromBuildConfigIfGestureInputEnabled(final Resources res) {

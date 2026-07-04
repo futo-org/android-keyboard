@@ -644,13 +644,13 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
 }
 
 static jlong latinime_BinaryDictionary_getITrieHandleNative(JNIEnv *env, jclass clazz, jlong dict,
-                                                            jstring letters) {
+                                                            jstring letters, jboolean allowBadWords) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return false;
 
     std::string lettersValue = jstring2string(env, letters);
 
-    return (jlong)dictionary->getITrieHandle(lettersValue);
+    return (jlong)dictionary->getITrieHandle(lettersValue, allowBadWords);
 }
 
 static const JNINativeMethod sMethods[] = {
@@ -779,7 +779,7 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("getITrieHandleNative"),
-        const_cast<char *>("(JLjava/lang/String;)J"),
+        const_cast<char *>("(JLjava/lang/String;Z)J"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getITrieHandleNative)
     }
 };

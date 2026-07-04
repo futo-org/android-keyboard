@@ -22,7 +22,7 @@ import org.futo.ml.inference.SwipeDecoder
 import java.io.File
 import java.util.Locale
 import kotlin.math.abs
-import kotlin.math.sqrt
+import kotlin.math.roundToInt
 
 private const val ENCODER_ASSET = "futo-swipe/honorable_sturgeon/model_fp32.pte"
 private const val ENGLISH_LM_ASSET = "futo-swipe/hungry_jellyfish/context_lm.pte"
@@ -55,6 +55,8 @@ internal fun getKeyYBottom(key: Key, keyboard: Keyboard): Float =
             ((1.0f / (keyboard.mBaseHeight - keyboard.mPadding.bottom)) * (4.0f / 3.0f))
 
 
+val Key.swipeCode: Int get() = swipeCodeOverride ?: code
+
 data class LayoutInfoForModel(
     val letters: String,
     val xs: List<Float>,
@@ -82,10 +84,10 @@ data class LayoutInfoForModel(
                 else null
             } ?: run {
                 val keys = keyboard.sortedKeys
-                    .filter { settingsValues.isWordCodePoint(it.code) && !Character.isDigit(it.code) }
-                    .sortedBy { it.code }
-                    .distinctBy { it.code } // The engine currently can't handle letters existing multiple times. Sorry custom layouts!
-                val letters = keys.joinToString(separator="") { Character.toString(Character.toLowerCase(it.code)) }
+                    .filter { settingsValues.isWordCodePoint(it.swipeCode) && !Character.isDigit(it.swipeCode) }
+                    .sortedBy { it.swipeCode }
+                    .distinctBy { it.swipeCode } // The engine currently can't handle letters existing multiple times. Sorry custom layouts!
+                val letters = keys.joinToString(separator="") { Character.toString(Character.toLowerCase(it.swipeCode)) }
 
                 // Guard against non-alphabet keyboards
                 if(!keyboard.mId.mElement.kind.isAlphabet || letters.length < 6) return@run null
@@ -168,7 +170,7 @@ private class SpecialDecoder private constructor(
         internal fun matchLayout(keyboard: Keyboard, settingsValues: SettingsValues): LayoutInfoForModel? {
             if(settingsValues.mMultilingualLocales.isNotEmpty()) return null
 
-            val keys = keyboard.sortedKeys.associate { Character.toLowerCase(it.code) to it }
+            val keys = keyboard.sortedKeys.associate { Character.toLowerCase(it.swipeCode) to it }
 
             return specialDecoders.firstNotNullOfOrNull { decoder ->
                 if(keyboard.mId.mLocale.language != decoder.language) return@firstNotNullOfOrNull null
@@ -176,7 +178,7 @@ private class SpecialDecoder private constructor(
                 // In case the layout has multiple repeated instances of the same letter, let's forget
                 // about using a special decoder, since this should never occur in a regular layout.
                 if(decoder.layoutLetters.any { letter -> keyboard.sortedKeys.count { key ->
-                        Character.toLowerCase(key.code) == letter.code
+                        Character.toLowerCase(key.swipeCode) == letter.code
                 } > 1}) return@firstNotNullOfOrNull null
 
                 // Make sure the letters are a perfect match!
@@ -232,6 +234,13 @@ val DisplayTop4Setting = SettingsKey(booleanPreferencesKey("swipe_use_top4_sugge
 
 val SwipeSpecialDecoderSetting = SettingsKey(booleanPreferencesKey("__experimental_swipe_special_decoder"), true)
 val SwipeLanguageModelSetting = SettingsKey(booleanPreferencesKey("__experimental_swipe_language_model"), true)
+
+@Serializable
+data class SwipePoiSer(
+    val x: Float, val y: Float, val t: Int
+)
+@Serializable
+data class SwipeSegSer(val data: List<SwipePoiSer>)
 
 class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Dictionary("swipe", locale) {
     companion object {
@@ -399,15 +408,13 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         //Log.d("BatchInputSwipeDecoderDictionary", "total count is $count out of ${pointers.gestureSegments.size}")
         if(count == 0) return null
 
-        val keyboardWidth = prevKeyboard?.mOccupiedWidth ?: run {
-            Log.e("SwipeDecoderDictionary", "Could not determine keyboard width!")
-            context.resources.displayMetrics.widthPixels
-        }
-
-        val keyboardHeight = prevKeyboard?.mOccupiedHeight ?: run {
-            Log.e("SwipeDecoderDictionary", "Could not determine keyboard height! Cannot continue.")
+        val kb = prevKeyboard ?: run {
+            Log.e("SwipeDecoderDictionary", "Could not determine keyboard!")
             return null
         }
+
+        val keyboardWidth = kb.mBaseWidth
+        val keyboardHeight = kb.mBaseHeight - kb.mPadding.bottom
 
         val earliestTime = segments[0].t.get(0).toFloat()
         val transformSegment = { seg: InputPointers.GestureSegment -> SwipeDecoder.SwipeSeg(
@@ -472,6 +479,28 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             Log.d("SwipeDecoderDictionary", "Timing: ${decoder.lastTiming()}")
             Log.d("SwipeDecoderDictionary", "Left = $left")
             Log.d("SwipeDecoderDictionary", "Right = $right")
+
+            if(left.size == 1) {
+                val lf = left.first()
+                var lastT = 0
+                val ls = (lf.x.zip(lf.y)).zip(lf.t.toList()).map { v ->
+                    val x = (v.first.first * 100).roundToInt() / 100.0f
+                    val y = (v.first.second * 1000).roundToInt() / 1000.0f
+                    val t = v.second.toInt()
+
+                    SwipePoiSer(x, y, t)
+                }.filter {
+                    if(it.t == 0 || (it.t - lastT) > 33) {
+                        lastT = it.t
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+                val ser = Json.encodeToString(SwipeSegSer.serializer(), SwipeSegSer(ls))
+                Log.d("SwipeDecoderDictionary", "json = $ser")
+            }
 
             Log.d("SwipeDecoderDictionary", "Context = $wordsContext")
             Log.d("SwipeDecoderDictionary", "curr scale is  ${appliedLayoutInfo.sx} ${appliedLayoutInfo.sy}")

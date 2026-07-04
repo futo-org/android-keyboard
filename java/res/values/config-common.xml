@@ -77,12 +77,12 @@
     <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
     <fraction name="config_gesture_detect_fast_move_speed_threshold">150%</fraction>
     <!-- Dynamic threshold for gesture after fast typing (msec) -->
-    <integer name="config_gesture_dynamic_threshold_decay_duration">450</integer>
+    <integer name="config_gesture_dynamic_threshold_decay_duration">260</integer>
     <!-- Time based threshold values for gesture detection (msec) -->
-    <integer name="config_gesture_dynamic_time_threshold_from">300</integer>
+    <integer name="config_gesture_dynamic_time_threshold_from">220</integer>
     <integer name="config_gesture_dynamic_time_threshold_to">20</integer>
     <!-- Distance based threshold values for gesture detection (keyWidth%/sec) -->
-    <fraction name="config_gesture_dynamic_distance_threshold_from">600%</fraction>
+    <fraction name="config_gesture_dynamic_distance_threshold_from">450%</fraction>
     <fraction name="config_gesture_dynamic_distance_threshold_to">50%</fraction>
     <!-- Parameter for gesture sampling (keyWidth%/sec) -->
     <fraction name="config_gesture_sampling_minimum_distance">16.6666%</fraction>

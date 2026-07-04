@@ -80,12 +80,14 @@ public class SettingsValues {
     public final boolean mUsePersonalizedDicts;
     public final boolean mUseDoubleSpacePeriod;
     public final boolean mBlockPotentiallyOffensive;
+    public final boolean mBlockSlurs;
     // Use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
     public final boolean mTransformerPredictionEnabled;
     public final int mGestureInputMode;
     public final boolean mGestureInputEnabled;
     public final boolean mGestureActionsEnabled;
+    public final boolean mGestureInputSensitive;
     public final boolean mGestureTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
     public final boolean mSlidingKeyInputPreviewEnabled;
@@ -189,6 +191,7 @@ public class SettingsValues {
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true)
                 && inputAttributes.mIsGeneralTextInput;
         mBlockPotentiallyOffensive = Settings.readBlockPotentiallyOffensive(prefs, res);
+        mBlockSlurs = Settings.readBlockSlurs(prefs, res);
         mAutoCorrectEnabled = Settings.readAutoCorrectEnabled(prefs, res);
         final String autoCorrectionThresholdRawValue = mAutoCorrectEnabled
                 ? res.getString(R.string.auto_correction_threshold_mode_index_modest)
@@ -237,6 +240,7 @@ public class SettingsValues {
                 && mGestureInputMode == Settings.GESTURE_INPUT_MODE_TYPING;
         mGestureActionsEnabled = gestureInputAllowedByBuild
                 && mGestureInputMode == Settings.GESTURE_INPUT_MODE_ACTIONS;
+        mGestureInputSensitive = prefs.getBoolean(Settings.PREF_GESTURE_INPUT_SENSITIVITY, false);
         mGestureTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mCloudSyncEnabled = prefs.getBoolean(LocalSettingsConstants.PREF_ENABLE_CLOUD_SYNC, false);
         mAccount = prefs.getString(LocalSettingsConstants.PREF_ACCOUNT_NAME,

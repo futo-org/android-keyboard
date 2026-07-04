@@ -16,6 +16,8 @@
 
 package org.futo.inputmethod.latin.utils;
 
+import androidx.annotation.NonNull;
+
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import org.futo.inputmethod.latin.define.ProductionFlags;
 
@@ -30,6 +32,7 @@ import java.util.TreeSet;
  */
 public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
+    private final ArrayList<SuggestedWordInfo> mImportantSuggestions = new ArrayList<>();
     // TODO: Instead of a boolean , we may want to include the context of this suggestion results,
     // such as {@link NgramContext}.
     public final boolean mIsBeginningOfSentence;
@@ -58,6 +61,7 @@ public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
 
     @Override
     public boolean add(final SuggestedWordInfo e) {
+        if(e.isImportantToKeep()) return mImportantSuggestions.add(e);
         if (size() < mCapacity) return super.add(e);
         if (comparator().compare(e, last()) > 0) return false;
         super.add(e);
@@ -69,6 +73,19 @@ public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
     public boolean addAll(final Collection<? extends SuggestedWordInfo> e) {
         if (null == e) return false;
         return super.addAll(e);
+    }
+
+    @NonNull
+    @Override
+    public Object[] toArray() {
+        final int importantSize = mImportantSuggestions.size();
+        final int regularSize   = super.size();
+        final Object[] result   = new Object[importantSize + regularSize];
+
+        System.arraycopy(super.toArray(), 0, result, 0, regularSize);
+        System.arraycopy(mImportantSuggestions.toArray(), 0, result, regularSize, importantSize);
+
+        return result;
     }
 
     static final class SuggestedWordInfoComparator implements Comparator<SuggestedWordInfo> {

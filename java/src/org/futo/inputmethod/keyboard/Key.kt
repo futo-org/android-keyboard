@@ -217,6 +217,9 @@ data class Key(
     /** Row/column indices */
     val row: Int,
     val column: Int,
+
+    /** Override the letter used for swipe */
+    val swipeCodeOverride: Int? = null,
 ) {
     /** Validation */
     init {
@@ -321,6 +324,9 @@ data class Key(
     val noKeyPreview: Boolean = (actionFlags and KeyConsts.ACTION_FLAGS_NO_KEY_PREVIEW) != 0
 
     val altCodeWhileTyping: Boolean = (actionFlags and KeyConsts.ACTION_FLAGS_ALT_CODE_WHILE_TYPING) != 0
+
+    /** Whether to swipe language/cursor vertically for spacebar instead of horizontally */
+    val useVerticalSwipe: Boolean = height > width
 
     val isLongPressEnabled: Boolean =
         // We need not start long press timer on the key which has activated shifted letter.

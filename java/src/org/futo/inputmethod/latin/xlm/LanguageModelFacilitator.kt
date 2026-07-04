@@ -206,7 +206,7 @@ public class LanguageModelFacilitator(
                 proximityInfoHandle,
                 autocorrectThreshold,
                 userDictionary.getWords(listOf(locale)).map { it.word },
-                suggestionBlacklist.currentBlacklist.toTypedArray<String>()
+                arrayOf()
             )
         }catch (e: ModelLoadingException) {
             withContext(Dispatchers.Main) {
@@ -363,7 +363,7 @@ public class LanguageModelFacilitator(
                     it != suggestedWordsDict.typedWordInfo && !filtered.contains(
                         it
                     )
-                }.take(10))
+                })
             }
         }
 

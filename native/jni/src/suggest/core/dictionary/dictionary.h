@@ -118,7 +118,7 @@ class Dictionary {
         return mDictionaryStructureWithBufferPolicy.get();
     }
 
-    ITrie *getITrieHandle(std::string letters);
+    ITrie *getITrieHandle(std::string letters, bool allowBadWords);
 
 private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);

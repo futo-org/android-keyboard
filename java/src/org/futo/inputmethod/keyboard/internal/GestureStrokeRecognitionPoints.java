@@ -21,6 +21,7 @@ import android.util.Log;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.InputPointers;
 import org.futo.inputmethod.latin.common.ResizableIntArray;
+import org.futo.inputmethod.latin.settings.Settings;
 
 /**
  * This class holds event points to recognize a gesture stroke.
@@ -147,6 +148,7 @@ public final class GestureStrokeRecognitionPoints {
 
     // TODO: Make this package private
     public final boolean isStartOfAGesture() {
+        boolean increaseSensitivity = Settings.getInstance().getCurrent().mGestureInputSensitive;
         if (!hasDetectedFastMove()) {
             return false;
         }
@@ -155,15 +157,26 @@ public final class GestureStrokeRecognitionPoints {
             return false;
         }
         final int lastIndex = size - 1;
-        final int deltaTime = mEventTimes.get(lastIndex) - mDetectFastMoveTime;
+        int deltaTime = mEventTimes.get(lastIndex) - mDetectFastMoveTime;
         if (deltaTime < 0) {
             return false;
         }
         final int deltaDistance = getDistance(
                 mXCoordinates.get(lastIndex), mYCoordinates.get(lastIndex),
                 mDetectFastMoveX, mDetectFastMoveY);
-        final int distanceThreshold = getGestureDynamicDistanceThreshold(deltaTime);
-        final int timeThreshold = getGestureDynamicTimeThreshold(deltaTime);
+
+        // Effectively, we are reducing the decay duration by 3x
+        if(increaseSensitivity) deltaTime *= 3;
+
+        int distanceThreshold = getGestureDynamicDistanceThreshold(deltaTime);
+        int timeThreshold = getGestureDynamicTimeThreshold(deltaTime);
+
+        // And reducing thresholds by 2x
+        if(increaseSensitivity) {
+            distanceThreshold /= 2;
+            timeThreshold /= 2;
+        }
+
         final boolean isStartOfAGesture = deltaTime >= timeThreshold
                 && deltaDistance >= distanceThreshold;
         if (DEBUG) {
@@ -238,12 +251,15 @@ public final class GestureStrokeRecognitionPoints {
         final int msecs = time - mEventTimes.get(lastIndex);
         if (msecs > 0) {
             final int pixels = getDistance(lastX, lastY, x, y);
-            final int pixelsPerSec = pixels * MSEC_PER_SEC;
+            int pixelsPerSec = pixels * MSEC_PER_SEC;
             if (DEBUG_SPEED) {
                 final float speed = (float)pixelsPerSec / msecs / mKeyWidth;
                 Log.d(TAG, String.format("[%d] detectFastMove: speed=%5.2f", mPointerId, speed));
             }
             // Equivalent to (pixels / msecs < mStartSpeedThreshold / MSEC_PER_SEC)
+            if(Settings.getInstance().getCurrent().mGestureInputSensitive) {
+                pixelsPerSec *= 2;
+            }
             if (!hasDetectedFastMove() && pixelsPerSec > mDetectFastMoveSpeedThreshold * msecs) {
                 if (DEBUG) {
                     final float speed = (float)pixelsPerSec / msecs / mKeyWidth;

@@ -277,14 +277,20 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         SettingsValues settings = Settings.getInstance().getCurrent();
         if(!settings.isPersonalizationEnabled() || settings.mInputAttributes.mNoLearning) return;
 
-        if(email != null) {
-            if(email.contains("@") && email.contains(".") && mEmailDictionary != null) {
-                String domain = email.split("@")[1];
-                if(domain.contains(".")) {
-                    mEmailDictionary.addEntryNow(NgramContext.BEGINNING_OF_SENTENCE, 32, email);
-                    mEmailDictionary.addEntryNow(NgramContext.EMAIL_DOMAIN, 32, domain);
-                }
-            }
+        if(email == null) return;
+
+        int at = email.indexOf('@');
+        if (at <= 0) return;
+        if (at != email.lastIndexOf('@')) return;
+        if (at == email.length() - 1) return;
+
+        String domain = email.substring(at + 1);
+        if (!domain.contains(".")) return;
+        if (domain.startsWith(".") || domain.endsWith(".")) return;
+
+        if(mEmailDictionary != null) {
+            mEmailDictionary.addEntryNow(NgramContext.BEGINNING_OF_SENTENCE, 32, email);
+            mEmailDictionary.addEntryNow(NgramContext.EMAIL_DOMAIN, 32, domain);
         }
     }
 
@@ -886,6 +892,9 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                         suggestionResults.mRawSuggestions.addAll(dictionarySuggestions);
                     }
 
+                    if(!dictionarySuggestions.isEmpty())
+                        addEmojiSuggestionsForSwipe(suggestionResults, dictionarySuggestions.get(0));
+
                     return suggestionResults;
                 }
             }
@@ -910,6 +919,22 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             }
         }
         return suggestionResults;
+    }
+
+    private void addEmojiSuggestionsForSwipe(SuggestionResults results, SuggestedWordInfo topWord) {
+        for (DictionaryGroup dictionaryGroup : mDictionaryGroups) {
+            final Dictionary emojiDict = dictionaryGroup.getDict(Dictionary.TYPE_EMOJI);
+
+            if (emojiDict == null) continue;
+            if (!(emojiDict instanceof EmojiDictionary)) continue;
+
+            final ArrayList<SuggestedWordInfo> emojiSuggestions = ((EmojiDictionary)emojiDict)
+                    .lookupEmoji(topWord.mWord, null, null);
+
+            if (emojiSuggestions == null) continue;
+
+            results.addAll(emojiSuggestions);
+        }
     }
 
     public boolean isValidSpellingWord(final String word) {
@@ -1033,17 +1058,18 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
     }
 
-    private void addDictionaryTries(List<Dictionary> dictList, String letters, ArrayList<Long> tries) {
+    private void addDictionaryTries(List<Dictionary> dictList, String letters, ArrayList<Long> tries,
+                                    boolean allowBadWords) {
         for(Dictionary dict : dictList) {
             long handle = 0;
             if(dict instanceof BinaryDictionary) {
-                handle = ((BinaryDictionary) dict).getITrie(letters);
+                handle = ((BinaryDictionary) dict).getITrie(letters, allowBadWords);
             } else if(dict instanceof ReadOnlyBinaryDictionary) {
-                handle = ((ReadOnlyBinaryDictionary) dict).getITrie(letters);
+                handle = ((ReadOnlyBinaryDictionary) dict).getITrie(letters, allowBadWords);
             }else if(dict instanceof ExpandableBinaryDictionary) {
-                handle = ((ExpandableBinaryDictionary) dict).getITrie(letters);
+                handle = ((ExpandableBinaryDictionary) dict).getITrie(letters, allowBadWords);
             }else if(dict instanceof DictionaryCollection) {
-                addDictionaryTries(((DictionaryCollection) dict).getDictionaries(), letters, tries);
+                addDictionaryTries(((DictionaryCollection) dict).getDictionaries(), letters, tries, allowBadWords);
             }
 
             if(handle == 0) continue;
@@ -1051,7 +1077,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
     }
 
-
+    private boolean mPrevBadWordsAllowed = false;
     private Keyboard mPrevKeyboard = null;
     private ArrayList<DictionaryGroup> mTrieCorrespondingGroups;
 
@@ -1068,6 +1094,10 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         return result;
     }
 
+    private boolean areBadWordsAllowed() {
+        return !Settings.getInstance().getCurrent().mBlockPotentiallyOffensive;
+    }
+
     @Override
     public void updateSwipeLayoutAndDictsIfNeeded(SettingsValues values, Keyboard keyboard) {
         if(swipeDecoderDictionary == null) return;
@@ -1080,6 +1110,11 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
             needsToRecreate = true;
         }
 
+        boolean allowBadWords = areBadWordsAllowed();
+        if(mPrevBadWordsAllowed != allowBadWords) {
+            needsToRecreate = true;
+        }
+
         if(!needsToRecreate) return;
 
         if(!hasAtLeastOneInitializedMainDictionary()) return;
@@ -1088,7 +1123,6 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         if(layout == null) return;
 
         mPrevKeyboard = keyboard;
-
         final LayoutInfoForModel info = LayoutInfoForModel.buildLayoutInfo(swipeDecoderDictionary.getContext(), keyboard, values);
         // Log.d("DictionaryFacilitatorImpl", "Keyboard updated... New info: " + info);
 
@@ -1105,7 +1139,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 dicts.add(group.getDict(Dictionary.TYPE_USER));
                 dicts.add(group.getDict(Dictionary.TYPE_USER_HISTORY));
 
-                addDictionaryTries(dicts, info.getLetters(), trieArray);
+                addDictionaryTries(dicts, info.getLetters(), trieArray, allowBadWords);
                 int newLength = trieArray.size();
 
                 for(int i=0; i<(newLength - prevLength); i++) {
@@ -1113,6 +1147,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
                 }
             }
 
+            mPrevBadWordsAllowed = allowBadWords;
             swipeDecoderDictionary.updateKeyboard(new SwipeDecoderDictionary.PendingLayoutInfo(info, trieArray));
             sTriesAreInvalid = trieArray.isEmpty();
         }

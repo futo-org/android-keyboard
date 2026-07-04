@@ -101,7 +101,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static final float SWIPE_ACTION_HORIZONTAL_DOMINANCE_RATIO = 1.0f;
     private static final float SWIPE_ACTION_VERTICAL_DOMINANCE_RATIO = 0.70f;
     private static final int sPointerHugeStep = Integer.min(
-            (int)(128.0 * Resources.getSystem().getDisplayMetrics().density),
+            (int)(64.0 * Resources.getSystem().getDisplayMetrics().density),
             Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 2
     );
 
@@ -159,6 +159,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private long mStartTime;
     private boolean mStartedOnFastLongPress;
     private boolean mCursorMoved = false;
+    private boolean mProgressReported = false;
     private boolean mSpacebarLongPressed = false;
     private boolean mSwipeActionTriggered = false;
 
@@ -567,6 +568,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     // Implements {@link BatchInputArbiterListener}.
     @Override
     public void onUpdateBatchInput(final InputPointers aggregatedPointers, final long eventTime) {
+        if(!mIsDetectingGesture && !sInGesture) return;
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onUpdateBatchInput: batchPoints=%d", mPointerId,
                     aggregatedPointers.getPointerSize()));
@@ -596,7 +598,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     private void cancelBatchInput() {
-        cancelAllPointerTrackers();
+        if(!mProgressReported && !mCursorMoved) cancelAllPointerTrackers();
         mIsDetectingGesture = false;
         if (!sInGesture) {
             return;
@@ -605,6 +607,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onCancelBatchInput", mPointerId));
         }
+        mBatchInputArbiter.onCancelBatchInput();
         sListener.onCancelBatchInput();
     }
 
@@ -1029,19 +1032,26 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
             if(allowedBySettings) {
                 int pointerStep = sPointerStep;
+                boolean useY = false;
                 if (settingsValues.mSpacebarSwipeMode == Settings.SPACEBAR_MODE_LANGUAGE && !mSpacebarLongPressed) {
                     pointerStep = sPointerHugeStep;
+                    useY = oldKey.getUseVerticalSwipe();
                 }
 
-                int steps = (x - mStartX) / pointerStep;
-                final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
-                if (steps != 0 && mStartTime + swipeIgnoreTime < System.currentTimeMillis()) {
-                    mCursorMoved = true;
-                    mStartX += steps * pointerStep;
 
+                float stepProgress = ((useY ? -y : x) - (useY ? -mStartY : mStartX)) / ((float)pointerStep);
+                int steps = (int)stepProgress;
+                final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
+                if (mStartTime + swipeIgnoreTime < System.currentTimeMillis()) {
                     if (settingsValues.mSpacebarSwipeMode == Settings.SPACEBAR_MODE_LANGUAGE && !mSpacebarLongPressed) {
-                        sListener.onSwipeLanguage(steps);
-                    } else {
+                        if(mProgressReported || Math.abs(stepProgress) > 0.25f) {
+                            sListener.onSwipeLanguageProgress(stepProgress);
+                            mProgressReported = true;
+                            mCursorMoved = true;
+                        }
+                    } else if(steps != 0) {
+                        mCursorMoved = true;
+                        mStartX += steps * pointerStep;
                         sListener.onMovePointer(steps);
                     }
                 }
@@ -1184,6 +1194,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         // Release the last pressed key.
         setReleasedKeyGraphics(currentKey, true /* withAnimation */);
 
+        if(mProgressReported) {
+            sListener.onSwipeLanguageReleased();
+            mProgressReported = false;
+        }
         if(mCursorMoved && currentKey != null && currentKey.getCode() == Constants.CODE_DELETE) {
             sListener.onUpWithDeletePointerActive();
         } else if(mCursorMoved) {

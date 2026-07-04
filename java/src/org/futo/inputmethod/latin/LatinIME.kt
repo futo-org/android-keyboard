@@ -317,6 +317,12 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         }
     }
 
+    private fun onSizeMaybeUpdated() {
+        if(sizingCalculator.didMaybeChange(size.value)) {
+            onSizeUpdated()
+        }
+    }
+
     fun onSizeUpdated() {
         val newSize = calculateSize() ?: return
         val shouldInvalidateKeyboard = size.value?.let { oldSize ->
@@ -441,12 +447,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 }
 
                 if(activeSubtype != null && activeSubtype != currentSubtype) {
-                    currentSubtype = activeSubtype
-
                     withContext(Dispatchers.Main) {
-                        val subtype = Subtypes.convertToSubtype(activeSubtype)
-                        changeInputMethodSubtype(subtype)
-                        uixManager.updateLocale(Subtypes.getLocale(subtype))
+                        changeSubtype(activeSubtype)
                     }
                 }
             }
@@ -491,6 +493,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         }
     }
 
+    fun changeSubtype(subtypeString: String) {
+        if(currentSubtype == subtypeString) return
+        currentSubtype = subtypeString
+
+        val subtype = Subtypes.convertToSubtype(subtypeString)
+        changeInputMethodSubtype(subtype)
+        uixManager.updateLocale(Subtypes.getLocale(subtype))
+    }
+
     private var destroying = false
     override fun onDestroy() {
         destroying = true
@@ -526,8 +537,11 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         uixManager.setContent()
 
+        // Due to annoying Android animation nonsense, we may never receive a notification of the
+        // correct insets, a 250ms delay to recheck is the best solution I could come up with
         window.window?.decorView?.setOnApplyWindowInsetsListener { v, insets ->
-            onSizeUpdated()
+            window.window!!.decorView.post { onSizeUpdated() }
+            window.window!!.decorView.postDelayed({ onSizeMaybeUpdated() }, 250L)
             v.onApplyWindowInsets(insets)
         }
 
@@ -606,6 +620,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
+        onSizeMaybeUpdated()
         imeManager.onStartInput()
         latinIMELegacy.onStartInputView(info, restarting)
         lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }

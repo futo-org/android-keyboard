@@ -642,14 +642,15 @@ fun SettingSliderSharedPrefsInt(
 }
 
 @Composable
-fun ScrollableList(modifier: Modifier = Modifier, spacing: Dp = 0.dp, content: @Composable () -> Unit) {
+fun ScrollableList(modifier: Modifier = Modifier, spacing: Dp = 0.dp, horizontalAlignment: Alignment.Horizontal = Alignment.Start, content: @Composable () -> Unit) {
     val scrollState = rememberScrollState()
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(spacing)
+        verticalArrangement = Arrangement.spacedBy(spacing),
+        horizontalAlignment = horizontalAlignment
     ) {
         content()
     }
