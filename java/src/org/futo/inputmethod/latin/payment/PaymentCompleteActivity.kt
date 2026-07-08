@@ -106,6 +106,12 @@ class PaymentCompleteActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val targetData = intent.dataString
+        if(targetData == "futo-keyboard://kasroz") {
+            SettingsActivity.openToNavDest(this, "kasroz")
+            finish()
+            return
+        }
+
         if((targetData?.startsWith("futo-keyboard://license/") == true) || (targetData?.startsWith("futo-voice-input://license/") == true)) {
             onPaid("activate")
         } else {

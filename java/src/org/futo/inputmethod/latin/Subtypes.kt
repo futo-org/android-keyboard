@@ -514,14 +514,7 @@ fun LanguageSwitcherDialog(
                     Text(stringResource(R.string.keyboard_switch_keyboard))
                 }
                 TextButton(onClick = {
-                    val intent = Intent()
-                    intent.setClass(context, SettingsActivity::class.java)
-                    intent.setFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    )
-                    intent.putExtra("navDest", "languages")
-                    context.startActivity(intent)
-
+                    SettingsActivity.openToNavDest(context, null)
                     onDismiss()
                 }) {
                     Text(stringResource(R.string.keyboard_language_settings))

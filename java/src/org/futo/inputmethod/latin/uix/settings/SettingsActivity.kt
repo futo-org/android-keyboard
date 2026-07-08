@@ -102,6 +102,17 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
 
     companion object {
         private var pollJob: Job? = null
+
+        @JvmStatic
+        fun openToNavDest(context: Context, navDest: String?) {
+            val intent = Intent()
+            intent.setClass(context, SettingsActivity::class.java)
+            intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            )
+            if(navDest != null) intent.putExtra("navDest", navDest)
+            context.startActivity(intent)
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -178,6 +189,29 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
         }
     }
 
+    private fun handleIntent(intent: Intent) {
+        val destination = intent.getStringExtra("navDest")
+        if(destination != null) {
+            lifecycleScope.launch {
+                // The navigation graph has to initialize, and this can take some time.
+                // For now, just keep trying every 100ms until it doesn't throw an exception
+                // for up to 10 seconds
+                var navigated = false
+                for(i in 0 until 100) {
+                    delay(100L)
+                    try {
+                        navController.navigate(destination)
+                        navigated = true
+                    } catch (ignored: Exception) {
+
+                    }
+
+                    if(navigated) break
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -222,29 +256,13 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
             updateEdgeToEdge()
         }
 
-        val intent = intent
-        if(intent != null) {
-            val destination = intent.getStringExtra("navDest")
-            if(destination != null) {
-                lifecycleScope.launch {
-                    // The navigation graph has to initialize, and this can take some time.
-                    // For now, just keep trying every 100ms until it doesn't throw an exception
-                    // for up to 10 seconds
-                    var navigated = false
-                    for(i in 0 until 100) {
-                        delay(100L)
-                        try {
-                            navController.navigate(destination)
-                            navigated = true
-                        } catch (ignored: Exception) {
+        intent?.let { handleIntent(it) }
+    }
 
-                        }
-
-                        if(navigated) break
-                    }
-                }
-            }
-        }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
     }
 
     override fun onResume() {

@@ -156,6 +156,23 @@ fun KASROZMenu() {
 
     ScrollableList(horizontalAlignment = Alignment.CenterHorizontally) {
         ScreenTitle(stringResource(R.string.swipe_settings_kasroz), showBack = true)
+
+        SettingToggleRaw(
+            "Enable KASROZ Layout",
+            enabled = kasrozEnabled,
+            setValue = {
+                if(it) {
+                    Subtypes.addLanguage(context, englishLocale, "kasroz")
+                } else {
+                    context.getSetting(SubtypesSetting).filter {
+                        it.startsWith("en", ignoreCase = true) && "KeyboardLayoutSet=kasroz" in it
+                    }.forEach {
+                        Subtypes.removeLanguage(context, Subtypes.convertToSubtype(it))
+                    }
+                }
+            }
+        )
+
         Spacer(Modifier.height(16.dp))
         AnimatedVisibility(!showingKeyboard.value, exit = shrinkVertically()) {
             KeyboardLayoutPreview(
@@ -175,21 +192,6 @@ fun KASROZMenu() {
         }
         Text("KASROZ is the best way to swipe type, being specifically optimized to reduce mistakes in English.\n\nAfter enabling, ${switchingInstruction} to switch between KASROZ and ${nonKasrozLayout}.", modifier = Modifier.padding(24.dp))
 
-        SettingToggleRaw(
-            "Enable KASROZ Layout",
-            enabled = kasrozEnabled,
-            setValue = {
-                if(it) {
-                    Subtypes.addLanguage(context, englishLocale, "kasroz")
-                } else {
-                    context.getSetting(SubtypesSetting).filter {
-                        it.startsWith("en", ignoreCase = true) && "KeyboardLayoutSet=kasroz" in it
-                    }.forEach {
-                        Subtypes.removeLanguage(context, Subtypes.convertToSubtype(it))
-                    }
-                }
-            }
-        )
 
         NavigationItem("Try it",
             style = NavigationItemStyle.Misc,
