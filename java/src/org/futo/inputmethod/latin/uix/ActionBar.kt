@@ -525,16 +525,37 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
         }
 
         else -> {
+            val centerWord = layout.sortedMatches.getOrNull(0)
+
+            // Present the verbatim typed word on the right so the user can tap it
+            // to commit-and-learn. Skip it when there is none, or when it would
+            // duplicate the center suggestion (the default commit target), in
+            // which case we fall back to the next dictionary suggestion below.
+            val verbatimWord = layout.verbatimWord
+            val showVerbatim = verbatimWord != null && verbatimWord.mWord != centerWord?.mWord
+
             var supplementalSuggestionIndex = 1
             if(layout.emojiMatches.isEmpty()) {
-                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex++))
+                var leftIndex = supplementalSuggestionIndex
+                // Don't show the same text twice: if the next dictionary word is
+                // the verbatim word already shown on the right, advance past it.
+                if(showVerbatim && layout.sortedMatches.getOrNull(leftIndex)?.mWord == verbatimWord?.mWord) {
+                    leftIndex++
+                }
+                suggestionItem(layout.sortedMatches.getOrNull(leftIndex))
+                supplementalSuggestionIndex = leftIndex + 1
             } else {
                 suggestionItem(layout.emojiMatches[0])
             }
             SuggestionSeparator()
-            suggestionItem(layout.sortedMatches.getOrNull(0))
+            // Center slot is the default commit target and must never be altered.
+            suggestionItem(centerWord)
             SuggestionSeparator()
-            suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex))
+            if(showVerbatim) {
+                suggestionItem(verbatimWord)
+            } else {
+                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex))
+            }
         }
     }
 }
