@@ -59,6 +59,7 @@ import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleSharedPrefs
 import org.futo.inputmethod.latin.uix.suggestionStyleAlternative
 import org.futo.inputmethod.latin.uix.suggestionStylePrimary
+import org.futo.inputmethod.updates.openURI
 import org.futo.inputmethod.v2keyboard.LayoutManager
 import java.util.Locale
 
@@ -198,7 +199,9 @@ fun KASROZMenu() {
             })
         NavigationItem("Read our blog",
             style = NavigationItemStyle.ExternalLink,
-            navigate = { })
+            navigate = {
+                context.openURI("https://futo.tech/blog/swipe-keyboard")
+            })
 
     }
 }
