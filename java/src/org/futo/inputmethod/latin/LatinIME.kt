@@ -119,6 +119,11 @@ val HideKeyboardWhenHardKeyboardConnected = SettingsKey(
     false
 )
 
+val ShowToolbarWhenHardKeyboardConnected = SettingsKey(
+    booleanPreferencesKey("showToolbarWhenHardKeyboardConnected"),
+    false
+)
+
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_USER_UNLOCKED) {
@@ -425,6 +430,19 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         launchJob {
             combine(
+                getSettingFlow(HideKeyboardWhenHardKeyboardConnected),
+                getSettingFlow(ShowToolbarWhenHardKeyboardConnected)
+            ) { _, _ -> Unit }.collect {
+                withContext(Dispatchers.Main) {
+                    uixManager.refreshHardwareToolbarMode()
+                    updateInputViewShown()
+                    onSizeMaybeUpdated()
+                }
+            }
+        }
+
+        launchJob {
+            combine(
                 getSettingFlow(HiddenKeysSetting),
                 getSettingFlow(KeyBordersSetting),
                 getSettingFlow(KeyHintsSetting)
@@ -521,6 +539,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         updateNavigationBarVisibility()
         latinIMELegacy.onConfigurationChanged(newConfig)
         super.onConfigurationChanged(newConfig)
+        uixManager.refreshHardwareToolbarMode()
         uixManager.updateLocaleOnCfgChanged()
     }
 
@@ -614,6 +633,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
         latinIMELegacy.onStartInput(attribute, restarting)
+        uixManager.refreshHardwareToolbarMode()
         uixManager.inputStarted(attribute)
         //imeManager.onStartInput() // TODO: Is this call needed or not?
     }
@@ -623,6 +643,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         onSizeMaybeUpdated()
         imeManager.onStartInput()
         latinIMELegacy.onStartInputView(info, restarting)
+        uixManager.refreshHardwareToolbarMode()
         lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
         updateColorsIfDynamicChanged()
         uixManager.updateEmojiTranslationsIfNeeded()
@@ -771,7 +792,16 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         return latinIMELegacy.onEvaluateInputViewShown()
                 || super.onEvaluateInputViewShown()
                 || !getSetting(HideKeyboardWhenHardKeyboardConnected)
+                || shouldUseHardwareKeyboardToolbarMode()
     }
+
+    fun hasHardwareKeyboardConnected(): Boolean =
+        Settings.readHasHardwareKeyboard(resources.configuration)
+
+    fun shouldUseHardwareKeyboardToolbarMode(): Boolean =
+        hasHardwareKeyboardConnected()
+                && getSetting(HideKeyboardWhenHardKeyboardConnected)
+                && getSetting(ShowToolbarWhenHardKeyboardConnected)
 
     override fun onEvaluateFullscreenMode(): Boolean {
         // TODO: Revisit fullscreen mode
