@@ -106,20 +106,26 @@ private fun PreviewSuggestions(word1: String, word2: String, word3: String, isAl
 }
 
 @Composable
-@Preview
-fun KASROZMenu() {
-    val context = LocalContext.current
-    val width = (LocalConfiguration.current.screenWidthDp - 64).coerceAtLeast(64).coerceAtMost(500)
-
+private fun englishSubtypes(): List<RichInputMethodSubtype> {
     val subtypes = useDataStoreValue(SubtypesSetting)
-    val showingKeyboard = remember { mutableStateOf(false) }
-
     val englishSubtypes = remember(subtypes) {
         subtypes
             .map { Subtypes.convertToSubtype(it) }
             .map { RichInputMethodSubtype(it) }
             .filter { it.locale.language.equals("en", ignoreCase = true) }
     }
+
+    return englishSubtypes
+}
+
+@Composable
+@Preview
+fun KASROZMenu() {
+    val context = LocalContext.current
+    val width = (LocalConfiguration.current.screenWidthDp - 64).coerceAtLeast(64).coerceAtMost(500)
+
+    val showingKeyboard = remember { mutableStateOf(false) }
+    val englishSubtypes = englishSubtypes()
 
     val englishLocale = remember(englishSubtypes) {
         englishSubtypes.firstOrNull()?.locale ?: Locale("en", "US")
@@ -226,7 +232,11 @@ val SwipeMenu = UserSettingsMenu(
             default = {false},
         ),
 
-        UserSetting(R.string.swipe_settings_kasroz, subtitle = R.string.swipe_settings_kasroz_subtitle) {
+        // KASROZ is primarily for English and the menu isn't translated, so it's hidden if user
+        // doesn't have English layout
+        UserSetting(R.string.swipe_settings_kasroz, subtitle = R.string.swipe_settings_kasroz_subtitle, visibilityCheck = {
+            englishSubtypes().isNotEmpty()
+        }, appearInSearchIfVisibilityCheckFailed = false) {
             val nav = LocalNavController.current
             NavigationItem(
                 stringResource(R.string.swipe_settings_kasroz),
