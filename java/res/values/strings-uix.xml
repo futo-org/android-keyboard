@@ -515,9 +515,11 @@
     <string name="theme_settings_custom_theme_delete_body">Theme: %s</string>
     <string name="theme_settings_custom_theme_delete_confirm">Delete</string>
     <string name="theme_settings_custom_theme_delete_cancel">Cancel</string>
+    <string name="theme_settings_add_new_theme">Add new theme</string>
+    <string name="theme_settings_add_new_theme_question">Create a new theme from a picture, or add a downloaded ZIP theme?</string>
 
     <!-- Theme customizer -->
-    <string name="theme_customizer_select_background_image_button">Select image</string>
+    <string name="theme_customizer_select_background_image_button">Select picture</string>
     <string name="theme_customizer_adjust_background_image_hint">Drag or pinch to adjust image</string>
     <string name="theme_customizer_transparency_slider_name">Transparency</string>
     <string name="theme_customizer_blur_slider_name">Blur</string>
@@ -525,7 +527,7 @@
     <string name="theme_customizer_dark_mode_toggle">Dark mode</string>
     <string name="theme_customizer_light_mode_toggle">Light mode</string>
     <string name="theme_customizer_finish_theme_adjustment">Finish</string>
-    <string name="theme_customizer_load_custom_theme_file">Load from ZIP</string>
+    <string name="theme_customizer_load_custom_theme_file">Load ZIP theme</string>
     <string name="theme_customizer_import_custom_theme_menu_title">Import custom theme</string>
     <string name="theme_customizer_import_custom_theme_name_text">Theme name: %s</string>
     <string name="theme_customizer_import_custom_theme_author_text">Author: %s</string>

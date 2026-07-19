@@ -277,11 +277,11 @@ fun AddCustomThemeButton(short: Boolean = false, onClick: () -> Unit = { }) {
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Icon(
-                Icons.Default.Add, contentDescription = null, modifier = Modifier
+                Icons.Default.Add,
+                contentDescription = stringResource(R.string.theme_settings_add_new_theme),
+                modifier = Modifier
                     .size(if(short) 32.dp else 48.dp)
-                    .align(
-                        Alignment.Center
-                    )
+                    .align(Alignment.Center)
             )
         }
     }
