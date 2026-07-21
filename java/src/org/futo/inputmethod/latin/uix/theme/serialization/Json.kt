@@ -1,6 +1,8 @@
-package org.futo.inputmethod.latin.uix.theme
+package org.futo.inputmethod.latin.uix.theme.serialization
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.Rect
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
@@ -11,6 +13,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.get
 import com.google.android.material.color.utilities.DynamicScheme
 import com.google.android.material.color.utilities.MaterialDynamicColors
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -18,113 +21,183 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
 import org.futo.inputmethod.latin.uix.ExtraColors
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
-import org.futo.inputmethod.latin.uix.utils.toNinePatchDrawable
+import org.futo.inputmethod.latin.uix.theme.AdvancedThemeOptions
+import org.futo.inputmethod.latin.uix.theme.KeyBackground
+import org.futo.inputmethod.latin.uix.theme.KeyIcon
+import org.futo.inputmethod.latin.uix.theme.ThemeDecodingContext
+import org.futo.inputmethod.latin.uix.theme.decodeKeyedBitmaps
+import org.futo.inputmethod.latin.uix.theme.decodeOptionalFont
+import org.futo.inputmethod.latin.uix.theme.decodeOptionalImage
+import org.futo.inputmethod.latin.uix.utils.createNinePatchDrawable
 import kotlin.math.roundToInt
 
-private object ColorAsStringSerializer : KSerializer<SerializableColor> {
+private object ColorAsStringSerializer : KSerializer<SerializableJsonColor> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("ColorAsString", PrimitiveKind.STRING)
 
-    override fun serialize(encoder: Encoder, value: SerializableColor) {
-        val argb = value.c
-        val a = (argb shr 24) and 0xFF
-        val r = (argb shr 16) and 0xFF
-        val g = (argb shr 8)  and 0xFF
-        val b =  argb         and 0xFF
-
-        val hex = buildString {
-            if (a.toInt() != 0xFF) append("%02X".format(a))
-            append("%02X".format(r))
-            append("%02X".format(g))
-            append("%02X".format(b))
-        }
-        encoder.encodeString("#$hex")
+    override fun serialize(encoder: Encoder, value: SerializableJsonColor) {
+        encoder.encodeString(argbLongToHexColorString(value.c, AlphaOrder.ARGB))
     }
 
-    override fun deserialize(decoder: Decoder): SerializableColor {
-        val str = decoder.decodeString().removePrefix("#").uppercase()
-        val len = str.length
-
-        val (a, r, g, b) = when (len) {
-            6 -> listOf("FF", str.substring(0,2), str.substring(2,4), str.substring(4,6))
-            8 -> listOf(str.substring(0,2), str.substring(2,4), str.substring(4,6), str.substring(6,8))
-            else -> throw IllegalArgumentException("Invalid color string: #$str")
-        }
-        val color = (a.toLong(16) shl 24) or
-                (r.toLong(16) shl 16) or
-                (g.toLong(16) shl 8)  or
-                b.toLong(16)
-        return SerializableColor(color and 0xFFFFFFFFL)
+    override fun deserialize(decoder: Decoder): SerializableJsonColor {
+        return SerializableJsonColor(parseHexColorStringToARGBLong(decoder.decodeString(),
+            AlphaOrder.ARGB))
     }
 }
 
 @Serializable(with = ColorAsStringSerializer::class)
-data class SerializableColor(val c: Long) {
+data class SerializableJsonColor(val c: Long) {
     fun toColor(): Color = Color(c)
 }
 
-fun Color.toSColor() = SerializableColor(this.toArgb().toUInt().toLong())
+fun Color.toSColor() = SerializableJsonColor(this.toArgb().toUInt().toLong())
 
 // Require this color not be invisible
-internal fun Int?.argbNotInvisible(): Int? = this?.let {
+private fun Int?.argbNotInvisible(): Int? = this?.let {
     if((it shr 24) and 0xff == 0) null else it
 }
 
+/**
+ * Reads the 1-pixel 9-patch border and returns a NinePatchDrawable.
+ * The supplied bitmap must still contain the 1-pixel frame.
+ * Input bitmap is assumed to be 640dp and gets scaled according to resources screen density
+ */
+internal fun Bitmap.toNinePatchDrawable(res: Resources): KeyBackground? {
+    val targetDensity = 640.0f
+    val w = width
+    val h = height
+
+    val scale = res.displayMetrics.densityDpi / targetDensity
+    fun sc(v: Int) = (v * scale).roundToInt()
+
+    val xRegions = mutableListOf<Pair<Int, Int>>()
+    val yRegions = mutableListOf<Pair<Int, Int>>()
+    val padding = Rect(0, 0, 0, 0)
+
+    val black = 0xFF000000.toInt()
+
+    // top line -> horizontal stretch
+    var stretchStart = -1
+    for (x in 1 until w - 1) {
+        val c = this[x, 0]
+        val isBlack = c == black
+        if (isBlack && stretchStart == -1) stretchStart = x - 1
+        if (!isBlack && stretchStart != -1) {
+            xRegions.add(sc(stretchStart) to sc(x - 1))
+            stretchStart = -1
+        }
+    }
+    if (stretchStart != -1) xRegions.add(sc(stretchStart) to sc(w - 2))
+
+    // left line -> vertical stretch
+    stretchStart = -1
+    for (y in 1 until h - 1) {
+        val c = this[0, y]
+        val isBlack = c == black
+        if (isBlack && stretchStart == -1) stretchStart = y - 1
+        if (!isBlack && stretchStart != -1) {
+            yRegions.add(sc(stretchStart) to sc(y - 1))
+            stretchStart = -1
+        }
+    }
+    if (stretchStart != -1) yRegions.add(sc(stretchStart) to sc(h - 2))
+
+    var paddingStart = -1
+    for (x in 1 until w) {
+        val c = this[x, h - 1]
+        val isBlack = c == black
+        if (isBlack && paddingStart == -1) paddingStart = x - 1
+        if (!isBlack && paddingStart != -1) {
+            padding.left = sc(paddingStart)
+            padding.right = sc(x - 1)
+            paddingStart = -1
+            break
+        }
+    }
+    if (paddingStart != -1) {
+        padding.left = sc(paddingStart)
+        padding.right = sc(w - 1)
+    }
+
+    paddingStart = -1
+    for (y in 1 until h) {
+        val c = this[w - 1, y]
+        val isBlack = c == black
+        if (isBlack && paddingStart == -1) paddingStart = y - 1
+        if (!isBlack && paddingStart != -1) {
+            padding.top = sc(paddingStart)
+            padding.bottom = sc(y - 1)
+            paddingStart = -1
+            break
+        }
+    }
+    if (paddingStart != -1) {
+        padding.top = sc(paddingStart)
+        padding.bottom = sc(h - 1)
+    }
+
+    val fgColor = this[0, 0].argbNotInvisible()
+
+    return createNinePatchDrawable(this, scale, res, fgColor, android.graphics.Color.WHITE, xRegions, yRegions, padding,
+        removeMargin = 1)
+}
+
 @Serializable
-data class SerializableCustomTheme(
-    val primary: SerializableColor,
-    val onPrimary: SerializableColor,
-    val primaryContainer: SerializableColor,
-    val onPrimaryContainer: SerializableColor,
-    val inversePrimary: SerializableColor,
-    val secondary: SerializableColor,
-    val onSecondary: SerializableColor,
-    val secondaryContainer: SerializableColor,
-    val onSecondaryContainer: SerializableColor,
-    val tertiary: SerializableColor,
-    val onTertiary: SerializableColor,
-    val tertiaryContainer: SerializableColor,
-    val onTertiaryContainer: SerializableColor,
-    val background: SerializableColor,
-    val onBackground: SerializableColor,
-    val surface: SerializableColor,
-    val onSurface: SerializableColor,
-    val surfaceVariant: SerializableColor,
-    val onSurfaceVariant: SerializableColor,
-    val surfaceTint: SerializableColor,
-    val inverseSurface: SerializableColor,
-    val inverseOnSurface: SerializableColor,
-    val error: SerializableColor,
-    val onError: SerializableColor,
-    val errorContainer: SerializableColor,
-    val onErrorContainer: SerializableColor,
-    val outline: SerializableColor,
-    val outlineVariant: SerializableColor,
-    val scrim: SerializableColor,
-    val surfaceBright: SerializableColor,
-    val surfaceDim: SerializableColor,
-    val surfaceContainer: SerializableColor,
-    val surfaceContainerHigh: SerializableColor,
-    val surfaceContainerHighest: SerializableColor,
-    val surfaceContainerLow: SerializableColor,
-    val surfaceContainerLowest: SerializableColor,
-    val keyboardSurface: SerializableColor,
-    val keyboardSurfaceDim: SerializableColor,
-    val keyboardContainer: SerializableColor,
-    val keyboardContainerVariant: SerializableColor,
-    val onKeyboardContainer: SerializableColor,
-    val keyboardPress: SerializableColor,
-    val primaryTransparent: SerializableColor,
-    val onSurfaceTransparent: SerializableColor,
-    val keyboardContainerPressed: SerializableColor,
-    val onKeyboardContainerPressed: SerializableColor,
+data class SerializableJsonTheme(
+    val primary: SerializableJsonColor,
+    val onPrimary: SerializableJsonColor,
+    val primaryContainer: SerializableJsonColor,
+    val onPrimaryContainer: SerializableJsonColor,
+    val inversePrimary: SerializableJsonColor,
+    val secondary: SerializableJsonColor,
+    val onSecondary: SerializableJsonColor,
+    val secondaryContainer: SerializableJsonColor,
+    val onSecondaryContainer: SerializableJsonColor,
+    val tertiary: SerializableJsonColor,
+    val onTertiary: SerializableJsonColor,
+    val tertiaryContainer: SerializableJsonColor,
+    val onTertiaryContainer: SerializableJsonColor,
+    val background: SerializableJsonColor,
+    val onBackground: SerializableJsonColor,
+    val surface: SerializableJsonColor,
+    val onSurface: SerializableJsonColor,
+    val surfaceVariant: SerializableJsonColor,
+    val onSurfaceVariant: SerializableJsonColor,
+    val surfaceTint: SerializableJsonColor,
+    val inverseSurface: SerializableJsonColor,
+    val inverseOnSurface: SerializableJsonColor,
+    val error: SerializableJsonColor,
+    val onError: SerializableJsonColor,
+    val errorContainer: SerializableJsonColor,
+    val onErrorContainer: SerializableJsonColor,
+    val outline: SerializableJsonColor,
+    val outlineVariant: SerializableJsonColor,
+    val scrim: SerializableJsonColor,
+    val surfaceBright: SerializableJsonColor,
+    val surfaceDim: SerializableJsonColor,
+    val surfaceContainer: SerializableJsonColor,
+    val surfaceContainerHigh: SerializableJsonColor,
+    val surfaceContainerHighest: SerializableJsonColor,
+    val surfaceContainerLow: SerializableJsonColor,
+    val surfaceContainerLowest: SerializableJsonColor,
+    val keyboardSurface: SerializableJsonColor,
+    val keyboardSurfaceDim: SerializableJsonColor,
+    val keyboardContainer: SerializableJsonColor,
+    val keyboardContainerVariant: SerializableJsonColor,
+    val onKeyboardContainer: SerializableJsonColor,
+    val keyboardPress: SerializableJsonColor,
+    val primaryTransparent: SerializableJsonColor,
+    val onSurfaceTransparent: SerializableJsonColor,
+    val keyboardContainerPressed: SerializableJsonColor,
+    val onKeyboardContainerPressed: SerializableJsonColor,
 
-    val hintColor: SerializableColor?,
-    val hintHiVis: Boolean,
+    val hintColor: SerializableJsonColor?,
+    val hintHiVis: Boolean = false,
 
-    val navigationBarColor: SerializableColor? = null,
+    val navigationBarColor: SerializableJsonColor? = null,
     val keyboardBackgroundShader: String? = null,
 
     val thumbnailImage: String? = null,
@@ -145,7 +218,7 @@ data class SerializableCustomTheme(
 
     val keyBackgrounds: Map<String, String> = mapOf(),
     val keyIcons: Map<String, String> = mapOf()
-) {
+)  {
     fun toKeyboardScheme(ctx: ThemeDecodingContext): KeyboardColorScheme {
         return KeyboardColorScheme(
             base = ColorScheme(
@@ -201,8 +274,6 @@ data class SerializableCustomTheme(
                 hintColor          = hintColor?.toColor(),
                 navigationBarColor = navigationBarColor?.toColor(),
 
-                hintHiVis = hintHiVis,
-
                 keyboardBackgroundGradient = backgroundImage?.let {
                     SolidColor(keyboardSurface.toColor().copy(alpha = 1.0f - backgroundImageOpacity))
                 },
@@ -221,15 +292,11 @@ data class SerializableCustomTheme(
                             null
                         }
                     },
-                    keyBackgrounds = decodeKeyedBitmaps(ctx, keyBackgrounds) {
+                    keyBackgrounds = decodeKeyedBitmaps(ctx, keyBackgrounds.entries, keyFn={it.key}, valFn={it.value}) { _, it ->
                         val bitmap = it.asAndroidBitmap()
-                        val fgColor = bitmap[0, 0].argbNotInvisible()
-
-                        bitmap.toNinePatchDrawable(ctx.context.resources)?.let {
-                            KeyBackground(fgColor, it.first, it.second)
-                        }
+                        bitmap.toNinePatchDrawable(ctx.context.resources)
                     },
-                    keyIcons = decodeKeyedBitmaps(ctx, keyIcons) {
+                    keyIcons = decodeKeyedBitmaps(ctx, keyIcons.entries, keyFn={it.key}, valFn={it.value}) { _, it ->
                         KeyIcon(it.asAndroidBitmap().toDrawable(ctx.context.resources))
                     },
                     font = decodeOptionalFont(ctx, keysFont),
@@ -241,10 +308,33 @@ data class SerializableCustomTheme(
         )
     }
 }
+@OptIn(ExperimentalSerializationApi::class)
+val themeJson = Json {
+    allowComments = true
+    allowTrailingComma = true
+    prettyPrint = true
+    //encodeDefaults = true
+}
+class JsonZipTheme(val json: String) : SerializableTheme {
+    private val parsed = themeJson.decodeFromString<SerializableJsonTheme>(json)
+    override fun toKeyboardScheme(ctx: ThemeDecodingContext): KeyboardColorScheme {
+        return parsed.toKeyboardScheme(ctx)
+    }
+
+    override fun validate(): Boolean {
+        return true
+    }
+    override val id: String? get() = parsed.id
+    override val thumbnailImage: String? get() = parsed.thumbnailImage
+
+    override val name: String get() = parsed.name ?: "Unknown name"
+    override val author: String get() = parsed.author ?: "Unknown author"
+}
 
 
-fun initBasicSerializableThemeFromKeyboardScheme(scheme: KeyboardColorScheme): SerializableCustomTheme {
-    return SerializableCustomTheme(
+
+fun initBasicSerializableThemeFromKeyboardScheme(scheme: KeyboardColorScheme): SerializableJsonTheme {
+    return SerializableJsonTheme(
         primary                    = scheme.primary.toSColor(),
         onPrimary                  = scheme.onPrimary.toSColor(),
         primaryContainer           = scheme.primaryContainer.toSColor(),
@@ -294,7 +384,6 @@ fun initBasicSerializableThemeFromKeyboardScheme(scheme: KeyboardColorScheme): S
 
         hintColor                  = scheme.hintColor?.toSColor(),
         navigationBarColor         = scheme.navigationBarColor?.toSColor(),
-        hintHiVis                  = scheme.hintHiVis,
     )
 }
 

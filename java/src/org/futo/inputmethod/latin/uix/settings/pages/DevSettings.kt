@@ -45,6 +45,7 @@ import org.futo.inputmethod.latin.uix.UixManagerInstanceForDebug
 import org.futo.inputmethod.latin.uix.actions.BugViewerAction
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
 import org.futo.inputmethod.latin.uix.actions.clipboard.clipboardFile
+import org.futo.inputmethod.latin.uix.findActivity
 import org.futo.inputmethod.latin.uix.getPreferencesDataStoreFile
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -82,7 +83,7 @@ private fun triggerImportTheme(context: Context) {
         addCategory(Intent.CATEGORY_OPENABLE)
         type = "application/zip"
     }
-    (context as Activity).startActivityForResult(intent, IMPORT_SETTINGS_REQUEST)
+    findActivity(context)!!.startActivityForResult(intent, IMPORT_SETTINGS_REQUEST)
 }
 
 var DevAutoAcceptThemeImport = false

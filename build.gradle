@@ -434,6 +434,8 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.7.1'
 
+    implementation 'com.akuleshov7:ktoml-core:0.7.1'
+
     //def work_version = "2.9.0"
     //implementation "androidx.work:work-runtime-ktx:$work_version"
     //implementation "androidx.work:work-runtime:$work_version"

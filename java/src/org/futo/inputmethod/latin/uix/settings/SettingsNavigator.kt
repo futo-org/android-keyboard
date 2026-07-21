@@ -64,6 +64,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.pdict.ConfirmDeleteExtraDic
 import org.futo.inputmethod.latin.uix.settings.pages.pdict.PersonalDictionaryLanguageList
 import org.futo.inputmethod.latin.uix.settings.pages.pdict.PersonalDictionaryLanguageListForLocale
 import org.futo.inputmethod.latin.uix.settings.pages.pdict.WordPopupDialogF
+import org.futo.inputmethod.latin.uix.settings.pages.themes.CustomThemeDialog
 import org.futo.inputmethod.latin.uix.settings.pages.themes.CustomThemeScreen
 import org.futo.inputmethod.latin.uix.settings.pages.themes.DeleteCustomThemeDialog
 import org.futo.inputmethod.latin.uix.settings.pages.themes.ThemeScreen
@@ -188,6 +189,9 @@ fun SettingsNavigator(
             }
             dialog("alreadyPaid") {
                 AlreadyPaidDialog(navController = navController)
+            }
+            dialog("customThemeDialog") {
+                CustomThemeDialog(navController = navController)
             }
             addModelManagerNavigation(navController)
         }

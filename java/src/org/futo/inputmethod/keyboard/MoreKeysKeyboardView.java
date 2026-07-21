@@ -95,13 +95,12 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     @Override
     protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
-           final KeyDrawParams params, final KeyDrawingConfiguration kdc) {
+           final KeyDrawParams params, final KeyDrawingConfiguration kdc,
+                                       final int keyWidth, final int keyHeight) {
         if (!key.isSpacer() || mDivider == null) {
-            super.onDrawKeyTopVisuals(key, canvas, paint, params, kdc);
+            super.onDrawKeyTopVisuals(key, canvas, paint, params, kdc, keyWidth, keyHeight);
             return;
         }
-        final int keyWidth = key.getDrawWidth();
-        final int keyHeight = key.getHeight();
         final int iconWidth = Math.min(mDivider.getIntrinsicWidth(), keyWidth);
         final int iconHeight = mDivider.getIntrinsicHeight();
         final int iconX = (keyWidth - iconWidth) / 2; // Align horizontally center

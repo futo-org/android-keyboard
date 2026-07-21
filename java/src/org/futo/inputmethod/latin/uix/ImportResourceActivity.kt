@@ -45,7 +45,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
-import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
@@ -62,10 +61,10 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.pages.DevAutoAcceptThemeImport
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.utils.Dictionaries
@@ -792,14 +791,14 @@ class ImportResourceActivity : ComponentActivity() {
                     Text(
                         stringResource(
                             R.string.theme_customizer_import_custom_theme_name_text,
-                            item.v.config.id ?: "?"
+                            item.v.config.name
                         )
                     )
 
                     Text(
                         stringResource(
                             R.string.theme_customizer_import_custom_theme_author_text,
-                            item.v.config.author ?: "?"
+                            item.v.config.author
                         )
                     )
 

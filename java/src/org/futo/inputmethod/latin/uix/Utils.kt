@@ -1,21 +1,23 @@
 package org.futo.inputmethod.latin.uix
 
+import android.app.Activity
 import android.app.Dialog
 import android.app.KeyguardManager
 import android.content.Context
 import android.util.TypedValue
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.settings.SettingsActivity
 import java.net.URLDecoder
 import java.net.URLEncoder
 
@@ -119,3 +121,11 @@ val Context.isDeviceLocked: Boolean
 
         return keyguardManager?.let { it.isDeviceLocked || it.isKeyguardLocked } ?: false
     }
+
+fun findActivity(context: Context): Activity? =
+    (context as? Activity) ?:
+        (context as? ContextThemeWrapper)?.baseContext?.let {
+            if(it == context) null else findActivity(it)
+        }
+
+fun findSettingsActivity(context: Context): SettingsActivity? = findActivity(context) as? SettingsActivity

@@ -805,11 +805,12 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     @Override
     protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
-           final KeyDrawParams params, final KeyDrawingConfiguration kdc) {
+           final KeyDrawParams params, final KeyDrawingConfiguration kdc,
+                                       final int keyWidth, final int keyHeight) {
         if (key.getAltCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
         }
-        super.onDrawKeyTopVisuals(key, canvas, paint, params, kdc);
+        super.onDrawKeyTopVisuals(key, canvas, paint, params, kdc, keyWidth, keyHeight);
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE && (key.getIconId().equals("space_key") || mLanguageSwipeProgress != 0.0f)) {
             drawLanguageOnSpacebar(key, canvas, paint, kdc.getHintColor());

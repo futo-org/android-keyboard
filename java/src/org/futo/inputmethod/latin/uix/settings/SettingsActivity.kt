@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -44,7 +45,6 @@ import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
-import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
@@ -82,7 +82,7 @@ private fun Context.isDoublePackage(): Boolean {
     return (value.startsWith("$standalonePackage/") && packageName == playstorePackage) || (value.startsWith("$playstorePackage/") && packageName == standalonePackage)
 }
 
-public const val IMPORT_GGUF_MODEL_REQUEST = 71067309
+public const val IMPORT_RESOURCE_FILE_REQUEST = 71067309
 public const val EXPORT_GGUF_MODEL_REQUEST = 80595439
 
 
@@ -289,7 +289,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
             return
         }
 
-        if(requestCode == IMPORT_GGUF_MODEL_REQUEST || requestCode == IMPORT_SETTINGS_REQUEST) {
+        if(requestCode == IMPORT_RESOURCE_FILE_REQUEST || requestCode == IMPORT_SETTINGS_REQUEST) {
             data?.data?.also { uri ->
                 val intent = Intent()
                 intent.setClass(this, ImportResourceActivity::class.java)
@@ -330,7 +330,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
 
     fun updateEdgeToEdge() {
         themeProvider?.let {
-            val color = it.keyboardColor
+            val color = it.colorScheme.background.toArgb()
 
             val luminance = sqrt(
                 0.299 * Color.red(color) / 255.0

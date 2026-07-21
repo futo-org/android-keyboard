@@ -12,6 +12,10 @@ import com.google.android.material.color.utilities.TemperatureCache
 import com.google.android.material.color.utilities.TonalPalette
 import com.google.android.material.color.utilities.Variant
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
+import org.futo.inputmethod.latin.uix.theme.serialization.SerializableJsonTheme
+import org.futo.inputmethod.latin.uix.theme.serialization.getColorSchemeFromDynamicScheme
+import org.futo.inputmethod.latin.uix.theme.serialization.initBasicSerializableThemeFromKeyboardScheme
+import org.futo.inputmethod.latin.uix.theme.serialization.toSColor
 import org.futo.inputmethod.latin.uix.wrapDarkColorScheme
 import org.futo.inputmethod.latin.uix.wrapLightColorScheme
 import kotlin.math.pow
@@ -100,7 +104,7 @@ data class CustomThemeBuilderConfiguration(
         )
     }
 
-    fun build(): SerializableCustomTheme {
+    fun build(): SerializableJsonTheme {
         val colorScheme = buildScheme()
         return initBasicSerializableThemeFromKeyboardScheme(colorScheme).let {
             if(backgroundImagePath != null) {

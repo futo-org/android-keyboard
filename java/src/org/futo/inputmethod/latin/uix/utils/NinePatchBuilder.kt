@@ -2,15 +2,22 @@ package org.futo.inputmethod.latin.uix.utils
 
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.NinePatch
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.NinePatchDrawable
 import android.util.Log
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
+import org.futo.inputmethod.latin.uix.theme.KeyBackground
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import androidx.core.graphics.get
 import kotlin.math.roundToInt
-import androidx.core.graphics.scale
 
 // Source - https://stackoverflow.com/a/37785598
 // Posted by Diljeet, modified by community. See post 'Timeline' for change history
@@ -129,77 +136,55 @@ class NinePatchBuilder {
     }
 }
 
+fun tintBitmap(bitmap: Bitmap, color: Int): Bitmap {
+    // white tint won't have any change on bitmap
+    if(color == Color.WHITE) return bitmap
 
+    val tintedBitmap = createBitmap(bitmap.width, bitmap.height, bitmap.config ?: Bitmap.Config.ARGB_8888)
 
-/**
- * Reads the 1-pixel 9-patch border and returns a NinePatchDrawable.
- * The supplied bitmap must still contain the 1-pixel frame.
- * Input bitmap is assumed to be 640dp and gets scaled according to resources screen density
- */
-fun Bitmap.toNinePatchDrawable(res: Resources): Pair<Rect, NinePatchDrawable>? {
-    val w = width
-    val h = height
+    val canvas = Canvas(tintedBitmap)
+    val paint = Paint()
+    paint.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
+    canvas.drawBitmap(bitmap, 0f, 0f, paint)
 
-    val scale = res.displayMetrics.densityDpi / 640f
+    return tintedBitmap
+}
+
+fun createNinePatchDrawable(
+    bitmap: Bitmap, scale: Float,
+    res: Resources,
+    foregroundColor: Int?,
+    backgroundTint: Int,
+    xRegions: List<Pair<Int, Int>>,
+    yRegions: List<Pair<Int, Int>>,
+    padding: Rect = Rect(0, 0, 0, 0),
+    gap: RectF = RectF(1.0f, 1.0f, 1.0f, 1.0f),
+    removeMargin: Int = 0,
+): KeyBackground? {
+    val w = bitmap.width
+    val h = bitmap.height
+    val m = removeMargin
+    val m2 = removeMargin * 2
+
     fun sc(v: Int) = (v * scale).roundToInt()
 
-    val content = Bitmap.createBitmap(this, 1, 1, w - 2, h - 2).scale(sc(w - 2), sc(h - 2))
+    val tintedBitmap = tintBitmap(bitmap, backgroundTint)
+
+    val content = Bitmap.createBitmap(tintedBitmap, m, m, w - m2, h - m2).scale(sc(w - m2), sc(h - m2))
 
     val builder = NinePatchBuilder(res, content)
 
-    val black = 0xFF000000.toInt()
+    xRegions.forEach { builder.addXRegionPoints(it.first, it.second) }
+    yRegions.forEach { builder.addYRegionPoints(it.first, it.second) }
+    builder.setXPadding(padding.left, padding.right)
+    builder.setYPadding(padding.top, padding.bottom)
 
-    // top line -> horizontal stretch
-    var stretchStart = -1
-    for (x in 1 until w - 1) {
-        val c = this[x, 0]
-        val isBlack = c == black
-        if (isBlack && stretchStart == -1) stretchStart = x - 1
-        if (!isBlack && stretchStart != -1) {
-            builder.addXRegionPoints(sc(stretchStart), sc(x - 1))
-            stretchStart = -1
-        }
+    return builder.build()?.let {
+        KeyBackground(
+            padding = builder.padding,
+            gap = gap,
+            foregroundColor = foregroundColor,
+            background = it
+        )
     }
-    if (stretchStart != -1) builder.addXRegionPoints(sc(stretchStart), sc(w - 2))
-
-    // left line -> vertical stretch
-    stretchStart = -1
-    for (y in 1 until h - 1) {
-        val c = this[0, y]
-        val isBlack = c == black
-        if (isBlack && stretchStart == -1) stretchStart = y - 1
-        if (!isBlack && stretchStart != -1) {
-            builder.addYRegionPoints(sc(stretchStart), sc(y - 1))
-            stretchStart = -1
-        }
-    }
-    if (stretchStart != -1) builder.addYRegionPoints(sc(stretchStart), sc(h - 2))
-
-    var paddingStart = -1
-    for (x in 1 until w) {
-        val c = this[x, h - 1]
-        val isBlack = c == black
-        if (isBlack && paddingStart == -1) paddingStart = x - 1
-        if (!isBlack && paddingStart != -1) {
-            builder.setXPadding(sc(paddingStart), sc(x - 1))
-            paddingStart = -1
-            break
-        }
-    }
-    if (paddingStart != -1) builder.setXPadding(sc(paddingStart), sc(w - 1))
-
-    paddingStart = -1
-    for (y in 1 until h) {
-        val c = this[w - 1, y]
-        val isBlack = c == black
-        if (isBlack && paddingStart == -1) paddingStart = y - 1
-        if (!isBlack && paddingStart != -1) {
-            builder.setYPadding(sc(paddingStart), sc(y - 1))
-            paddingStart = -1
-            break
-        }
-    }
-    if (paddingStart != -1) builder.setYPadding(sc(paddingStart), sc(h - 1))
-
-    return builder.build()?.let { builder.padding to it }
 }

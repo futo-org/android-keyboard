@@ -386,16 +386,12 @@ data class Key(
             params.mHintLetterSize
         }
 
-        if(provider.hintHiVis) {
-            value = (value * 1.3).roundToInt()
-        }
-
         return value
     }
 
     fun selectHintTypeface(provider: DynamicThemeProvider, params: KeyDrawParams): Typeface {
         return when {
-            hasHintLabel || provider.hintHiVis -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            hasHintLabel -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 Typeface.create(provider.selectKeyTypeface(Typeface.DEFAULT), 700, false)
             } else {
                 provider.selectKeyTypeface(Typeface.DEFAULT_BOLD)

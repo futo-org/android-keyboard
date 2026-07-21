@@ -36,6 +36,7 @@ data class VisualStyleDescriptor(
 )
 
 interface DynamicThemeProvider {
+    val layers: List<Int>
     val keyBorders: Boolean
 
     val keyboardColor: Int
@@ -50,7 +51,6 @@ interface DynamicThemeProvider {
     val displayDpi: Int
 
     val hintColor: Int?
-    val hintHiVis: Boolean
 
     @ColorInt
     fun getColor(i: Int): Int?
@@ -66,7 +66,7 @@ interface DynamicThemeProvider {
     fun selectKeyTypeface(defaultTypeface: Typeface): Typeface =
         typefaceOverride ?: themeTypeface ?: defaultTypeface
 
-    fun selectKeyDrawingConfiguration(keyboard: Keyboard?, params: KeyDrawParams, key: Key): KeyDrawingConfiguration
+    fun selectKeyDrawingConfiguration(keyboard: Keyboard?, params: KeyDrawParams, key: Key, layer: Int): KeyDrawingConfiguration?
     fun getPreviewBackground(keyboard: Keyboard?, key: Key): KeyBackground
 
     companion object {
