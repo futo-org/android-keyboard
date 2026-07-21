@@ -136,52 +136,63 @@ public final class InputLogic {
 
     final ArrayDeque<RememberedSuggestedWords> mRememberedSuggestedWords = new ArrayDeque<>();
 
+    private void clearRememberedSuggestedWords() {
+        synchronized(mRememberedSuggestedWords) {
+            mRememberedSuggestedWords.clear();
+        }
+    }
+
     @Nullable
     private SuggestedWords lookupSuggestedWords(int cursor, String word) {
-        for (Iterator<RememberedSuggestedWords> it = mRememberedSuggestedWords.descendingIterator(); it.hasNext(); ) {
-            RememberedSuggestedWords candidate = it.next();
+        synchronized(mRememberedSuggestedWords) {
+            for (Iterator<RememberedSuggestedWords> it = mRememberedSuggestedWords.descendingIterator(); it.hasNext(); ) {
+                RememberedSuggestedWords candidate = it.next();
 
-            if(cursor > candidate.endPosition || cursor < candidate.startPosition) {
-                continue;
-            }
-            if(!candidate.word.equals(word)) {
-                SuggestedWordInfo info = candidate.suggestions.getAutoCorrectCandidate();
-                if(info == null) {
+                if (cursor > candidate.endPosition || cursor < candidate.startPosition) {
                     continue;
                 }
-                if(!info.mWord.equals(word)) {
-                    continue;
+                if (!candidate.word.equals(word)) {
+                    SuggestedWordInfo info = candidate.suggestions.getAutoCorrectCandidate();
+                    if (info == null) {
+                        continue;
+                    }
+                    if (!info.mWord.equals(word)) {
+                        continue;
+                    }
                 }
-            }
 
-            return candidate.suggestions.copyWithoutWord(word);
+                return candidate.suggestions.copyWithoutWord(word);
+            }
         }
-
         return null;
     }
 
     private void rememberSuggestedWords(int cursor, String word, SuggestedWords suggestions) {
         if(suggestions.isEmpty()) return;
 
-        if(!mRememberedSuggestedWords.isEmpty()) {
-            RememberedSuggestedWords last = mRememberedSuggestedWords.getLast();
-            if(last.startPosition == cursor) {
-                mRememberedSuggestedWords.removeLast();
+        synchronized(mRememberedSuggestedWords) {
+            if (!mRememberedSuggestedWords.isEmpty()) {
+                RememberedSuggestedWords last = mRememberedSuggestedWords.getLast();
+                if (last.startPosition == cursor) {
+                    mRememberedSuggestedWords.removeLast();
+                }
             }
-        }
-        mRememberedSuggestedWords.add(new RememberedSuggestedWords(cursor, word, suggestions));
+            mRememberedSuggestedWords.add(new RememberedSuggestedWords(cursor, word, suggestions));
 
-        while(mRememberedSuggestedWords.size() > 12) {
-            mRememberedSuggestedWords.removeFirst();
+            while (mRememberedSuggestedWords.size() > 12) {
+                mRememberedSuggestedWords.removeFirst();
+            }
         }
     }
 
     private void offsetRememberedWords(int cursor, int delta) {
-        for (Iterator<RememberedSuggestedWords> it = mRememberedSuggestedWords.descendingIterator(); it.hasNext(); ) {
-            RememberedSuggestedWords words = it.next();
-            if(words.endPosition >= cursor) {
-                if(delta > 0) words.endPosition += delta;
-                else words.startPosition += delta;
+        synchronized(mRememberedSuggestedWords) {
+            for (Iterator<RememberedSuggestedWords> it = mRememberedSuggestedWords.descendingIterator(); it.hasNext(); ) {
+                RememberedSuggestedWords words = it.next();
+                if (words.endPosition >= cursor) {
+                    if (delta > 0) words.endPosition += delta;
+                    else words.startPosition += delta;
+                }
             }
         }
     }
@@ -240,8 +251,11 @@ public final class InputLogic {
         mRecapitalizeStatus.disable(); // Do not perform recapitalize until the cursor is moved once
         mCurrentlyPressedHardwareKeys.clear();
         mSuggestedWords = SuggestedWords.getEmptyInstance();
-        mLastEvents.clear();
-        mRememberedSuggestedWords.clear();
+
+        synchronized(mLastEvents) {
+            mLastEvents.clear();
+        }
+        clearRememberedSuggestedWords();
 
         final EditorInfo ei = getCurrentInputEditorInfo();
         if(ei != null && !mConnection.resetCachesUponCursorMoveAndReturnSuccess(
@@ -310,7 +324,7 @@ public final class InputLogic {
     public void finishInput() {
         rememberCommittedEmail();
         resetInput();
-        mRememberedSuggestedWords.clear();
+        clearRememberedSuggestedWords();
     }
 
     private void resetInput() {
@@ -632,11 +646,13 @@ public final class InputLogic {
         mWordBeingCorrectedByCursor = null;
 
         if(settingsValues.needsToLookupSuggestions()) {
-            if (mLastEvents.size() >= 8) mLastEvents.removeFirst();
-            if(event.mKeyCode == Constants.CODE_DELETE) {
-                mLastEvents.pollLast();
-            } else {
-                mLastEvents.addLast(event);
+            synchronized (mLastEvents) {
+                if (mLastEvents.size() >= 8) mLastEvents.removeFirst();
+                if (event.mKeyCode == Constants.CODE_DELETE) {
+                    mLastEvents.pollLast();
+                } else {
+                    mLastEvents.addLast(event);
+                }
             }
         }
 
@@ -1348,33 +1364,35 @@ public final class InputLogic {
                 if(codePoint == Constants.CODE_PERIOD && canInsertAutoSpace(settingsValues)
                         && settingsValues.mLocale.getLanguage() == "en" && mLastEvents.size() >= 4) {
 
-                    final Iterator<Event> it = mLastEvents.descendingIterator();
-                    int c3 = it.next().mCodePoint;
-                    int c2 = it.next().mCodePoint;
-                    int c1 = it.next().mCodePoint;
-                    int c0 = it.next().mCodePoint;
+                    synchronized(mLastEvents) {
+                        final Iterator<Event> it = mLastEvents.descendingIterator();
+                        int c3 = it.next().mCodePoint;
+                        int c2 = it.next().mCodePoint;
+                        int c1 = it.next().mCodePoint;
+                        int c0 = it.next().mCodePoint;
 
-                    if(settingsValues.mAutoCap) {
-                        c0 = Character.toLowerCase(c0);
-                        c2 = Character.toLowerCase(c2);
-                    }
+                        if (settingsValues.mAutoCap) {
+                            c0 = Character.toLowerCase(c0);
+                            c2 = Character.toLowerCase(c2);
+                        }
 
-                    String regex = null;
-                    String replacement = null;
+                        String regex = null;
+                        String replacement = null;
 
-                    if (c0 == 'e' && c1 == '.' && c2 == 'g' && c3 == '.') {
-                        regex = "\\W[Ee]\\. [Gg]\\.";
-                        replacement = "e.g.";
-                    } else if (c0 == 'i' && c1 == '.' && c2 == 'e' && c3 == '.') {
-                        regex = "\\W[Ii]\\. [Ee]\\.";
-                        replacement = "i.e.";
-                    }
+                        if (c0 == 'e' && c1 == '.' && c2 == 'g' && c3 == '.') {
+                            regex = "\\W[Ee]\\. [Gg]\\.";
+                            replacement = "e.g.";
+                        } else if (c0 == 'i' && c1 == '.' && c2 == 'e' && c3 == '.') {
+                            regex = "\\W[Ii]\\. [Ee]\\.";
+                            replacement = "i.e.";
+                        }
 
-                    if (regex != null) {
-                        final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(6, 0);
-                        if (textBeforeCursor != null && Pattern.matches(regex, textBeforeCursor.toString())) {
-                            mConnection.deleteTextBeforeCursor(5);
-                            mConnection.commitText(replacement, 1);
+                        if (regex != null) {
+                            final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(6, 0);
+                            if (textBeforeCursor != null && Pattern.matches(regex, textBeforeCursor.toString())) {
+                                mConnection.deleteTextBeforeCursor(5);
+                                mConnection.commitText(replacement, 1);
+                            }
                         }
                     }
                 }
