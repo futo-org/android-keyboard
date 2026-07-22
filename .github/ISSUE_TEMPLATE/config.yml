@@ -4,11 +4,11 @@ contact_links:
     url: https://github.com/futo-org/futo-keyboard-layouts/issues
     about: Open it on a dedicated keyboard layouts repository.
   - name: Need a FUTO Keyboard license?
-    url: https://pay.futo.org/api/PaymentPortal
+    url: https://pay2.futo.org/
     about: Purchase a FUTO Keyboard license with FutoPay
   - name: Zulip Chat
     url: https://chat.futo.org/#narrow/stream/53-Keyboard
     about: FUTO Keyboard community chat
   - name: Discord Chat (if you don't like Zulip)
-    url: https://keyboard.futo.org/discord
+    url: https://keyboard.futo.tech/discord
     about: FUTO Keyboard community chat

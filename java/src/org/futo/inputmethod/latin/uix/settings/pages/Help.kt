@@ -93,7 +93,7 @@ val HelpMenu = UserSettingsMenu(
             subtitle = R.string.help_menu_website_subtitle,
             style = NavigationItemStyle.Misc,
             navigate = { nav ->
-                nav.context.openURI("https://futo.org/")
+                nav.context.openURI("https://futo.tech/")
             }
         ).copy(searchTags = R.string.help_menu_website_tags),
 
@@ -102,7 +102,7 @@ val HelpMenu = UserSettingsMenu(
             subtitle = R.string.help_menu_documentation_subtitle,
             style = NavigationItemStyle.Misc,
             navigate = { nav ->
-                nav.context.openURI("https://docs.keyboard.futo.org/")
+                nav.context.openURI("https://docs.keyboard.futo.tech/")
             }
         ),
         userSettingNavigationItem(
@@ -110,7 +110,7 @@ val HelpMenu = UserSettingsMenu(
             subtitle = R.string.help_menu_discord_subtitle,
             style = NavigationItemStyle.Misc,
             navigate = { nav ->
-                nav.context.openURI("https://keyboard.futo.org/discord")
+                nav.context.openURI("https://keyboard.futo.tech/discord")
             }
         ),
         userSettingNavigationItem(

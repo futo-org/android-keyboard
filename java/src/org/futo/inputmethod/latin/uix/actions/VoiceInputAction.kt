@@ -82,7 +82,7 @@ fun NoModelInstalled(locale: Locale) {
             enabled = true,
             onClickLabel = null,
             onClick = {
-                context.openURI("https://keyboard.futo.org/voice-input-models", true)
+                context.openURI("https://keyboard.futo.tech/voice-input-models", true)
             },
             role = null,
             indication = null,

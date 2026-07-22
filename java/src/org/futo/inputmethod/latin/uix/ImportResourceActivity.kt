@@ -249,10 +249,10 @@ enum class FileKind {
 
     fun getAddonUrlForLocale(locale: Locale?): String {
         return when(this) {
-            VoiceInput -> "https://keyboard.futo.org/voice-input-models?locale=${locale?.toLanguageTag() ?: ""}"
-            Transformer -> "https://keyboard.futo.org/models?locale=${locale?.toLanguageTag() ?: ""}"
-            Dictionary -> "https://keyboard.futo.org/dictionaries?locale=${locale?.toLanguageTag() ?: ""}"
-            Invalid -> "https://keyboard.futo.org/"
+            VoiceInput -> "https://keyboard.futo.tech/voice-input-models?locale=${locale?.toLanguageTag() ?: ""}"
+            Transformer -> "https://keyboard.futo.tech/models?locale=${locale?.toLanguageTag() ?: ""}"
+            Dictionary -> "https://keyboard.futo.tech/dictionaries?locale=${locale?.toLanguageTag() ?: ""}"
+            Invalid -> "https://keyboard.futo.tech/"
         }
     }
 }
@@ -994,7 +994,7 @@ object MissingDictionaryHelper {
         ) != null
         val hasBuiltInDict = Dictionaries.getDictionaryIfExists(context, locale, Dictionaries.DictionaryKind.Any) != null
 
-        // These languages have an automatic prompt to download the right file on keyboard.futo.org
+        // These languages have an automatic prompt to download the right file on keyboard.futo.tech
         val langsWithDownloadableDictionaries = setOf(
             "ar", "hy", "as", "bn", "eu", "be", "bg", "ca", "hr", "cs", "da", "nl", "en", "eo", "fi",
             "fr", "gl", "ka", "de", "gom", "el", "gu", "he", "iw", "hi", "hu", "it", "kn", "ks", "lv",

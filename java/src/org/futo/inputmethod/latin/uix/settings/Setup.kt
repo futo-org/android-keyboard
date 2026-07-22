@@ -212,7 +212,7 @@ fun SetupDirectBootWarning() {
 
             Button(
                 onClick = {
-                    context.openURI("https://docs.keyboard.futo.org/improvements/nightly#risk-of-using-nightly-with-password-screen-lock-type")
+                    context.openURI("https://docs.keyboard.futo.tech/improvements/nightly#risk-of-using-nightly-with-password-screen-lock-type")
                 },
                 modifier = Modifier
                     .fillMaxWidth()

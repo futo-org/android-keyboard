@@ -613,7 +613,7 @@ fun PaymentScreen(
 
         ScreenTitle(stringResource(R.string.payment_screen_other_options))
         NavigationItem(title = stringResource(R.string.payment_screen_need_help_title), subtitle = stringResource(R.string.payment_screen_need_help_subtitle), style = NavigationItemStyle.ExternalLink, navigate = {
-            context.openURI("https://keyboard.futo.org/")
+            context.openURI("https://keyboard.futo.tech/")
         })
     }
 }
