@@ -308,6 +308,14 @@ val MemoryDebugAction = Action(
                     }
                 }
                 ScrollableList {
+                    if(BugViewerState.bugs.isNotEmpty()) {
+                        Button(onClick = {
+                            manager.activateAction(BugViewerAction)
+                        }) {
+                            Text("View ${BugViewerState.bugs.size} errors")
+                        }
+                    }
+
                     Text("Swipe Info", style = DebugTitle)
                     SwipeDecoderDictionary.appliedLayoutInfo.let { layout ->
                         if(useDataStoreValue(LegacySwipeSetting) == true) {
@@ -405,7 +413,6 @@ val MemoryDebugAction = Action(
                             "One other type of sentence?",
                             "[Three kinds now! Okay, this text should appear identically 5 times]"
                         )
-
 
                         val txn = manager.createInputTransaction()
                         testTexts.forEach { txn.updatePartial(it) }
