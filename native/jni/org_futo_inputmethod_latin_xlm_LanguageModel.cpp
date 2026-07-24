@@ -732,13 +732,13 @@ struct LanguageModelState {
                                index_value[i].first);
                     }
 
-                    if (sequences[i].first > 1.0f || sequences[i].first < 0.0f) {
+                    if (parent_seq.first > 1.0f || parent_seq.first < 0.0f) {
                         AKLOGE("Expected sequences value to be probability [%.2f]",
-                               sequences[i].first);
+                               parent_seq.first);
                     }
 
                     next_sequences.emplace_back(
-                            index_value[i].first * sequences[i].first,
+                            index_value[i].first * parent_seq.first,
                             potential_sequence_data{
                                     new_sequence,
                                     parent_seq.second.seq_id
