@@ -84,7 +84,9 @@ public class SettingsValues {
     // Use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
     public final boolean mTransformerPredictionEnabled;
+    public final int mGestureInputMode;
     public final boolean mGestureInputEnabled;
+    public final boolean mGestureActionsEnabled;
     public final boolean mGestureInputSensitive;
     public final boolean mGestureTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
@@ -231,7 +233,13 @@ public class SettingsValues {
         mAutoCorrectionThreshold = readAutoCorrectionThreshold(res,
                 autoCorrectionThresholdRawValue);
         mPlausibilityThreshold = Settings.readPlausibilityThreshold(res);
-        mGestureInputEnabled = Settings.readGestureInputEnabled(prefs, res);
+        mGestureInputMode = Settings.readGestureInputMode(prefs, res);
+        final boolean gestureInputAllowedByBuild =
+                Settings.readFromBuildConfigIfGestureInputEnabled(res);
+        mGestureInputEnabled = gestureInputAllowedByBuild
+                && mGestureInputMode == Settings.GESTURE_INPUT_MODE_TYPING;
+        mGestureActionsEnabled = gestureInputAllowedByBuild
+                && mGestureInputMode == Settings.GESTURE_INPUT_MODE_ACTIONS;
         mGestureInputSensitive = prefs.getBoolean(Settings.PREF_GESTURE_INPUT_SENSITIVITY, false);
         mGestureTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mCloudSyncEnabled = prefs.getBoolean(LocalSettingsConstants.PREF_ENABLE_CLOUD_SYNC, false);
