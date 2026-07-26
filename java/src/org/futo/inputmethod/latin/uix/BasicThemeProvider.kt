@@ -34,8 +34,6 @@ import org.futo.inputmethod.latin.uix.theme.AdvancedThemeMatcher
 import org.futo.inputmethod.latin.uix.theme.KeyBackground
 import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
-import org.futo.inputmethod.latin.Subtypes
-import org.futo.inputmethod.latin.spacebarColorPreferenceKeyFor
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 
 val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), true)
@@ -209,15 +207,8 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
     private var cachedSpaceCornerRadius: Dp = 8.dp
     private var cachedHighlightColor: Int = 0
-    private var cachedHighlightForeground: Int = 0
-
-    private fun getSpacebarColorForCurrentSubtype(): String? {
-        val activeSubtype = Subtypes.getActiveSubtype(context)
-        val localeString = activeSubtype.locale
-        val key = spacebarColorPreferenceKeyFor(localeString)
-        val color = context.getSettingBlocking(key, "")
-        return if (color.isEmpty()) null else color
-    }
+    private var customSpacebarColor: String? = null
+    private var customSpacebarStyle: VisualStyleDescriptor? = null
 
     private fun getContrastColor(@ColorInt color: Int): Int {
         val red = android.graphics.Color.red(color) / 255.0
@@ -252,14 +243,26 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         )
     }
 
+    /**
+     * Updates the cached style used while drawing the spacebar.
+     *
+     * Preference reads must happen outside the drawing path. Building the descriptor here also
+     * avoids allocating drawables every time the spacebar is redrawn.
+     *
+     * @return true when the effective custom color changed.
+     */
+    fun setSpacebarColor(customColorHex: String?): Boolean {
+        val normalizedColor = customColorHex?.takeIf { it.isNotEmpty() }
+        if (normalizedColor == customSpacebarColor) return false
+
+        customSpacebarColor = normalizedColor
+        customSpacebarStyle = normalizedColor?.let(::makeSpacebarStyle)
+        return true
+    }
+
     val keyStyles: Map<KeyVisualStyle, VisualStyleDescriptor>
     override fun getKeyStyleDescriptor(visualStyle: KeyVisualStyle): VisualStyleDescriptor {
-        if (visualStyle == KeyVisualStyle.Spacebar) {
-            val customColor = getSpacebarColorForCurrentSubtype()
-            if (customColor != null) {
-                return makeSpacebarStyle(customColor)
-            }
-        }
+        if (visualStyle == KeyVisualStyle.Spacebar) customSpacebarStyle?.let { return it }
         return keyStyles[visualStyle]!!
     }
 
@@ -607,7 +610,6 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         cachedSpaceCornerRadius = spaceCornerRadius
         cachedHighlightColor = highlight
-        cachedHighlightForeground = highlightForeground
 
         assert(icons.keys == KeyboardIconsSet.validIcons) {
             "Icons differ. Missing: ${KeyboardIconsSet.validIcons - icons.keys}, extraneous: ${icons.keys - KeyboardIconsSet.validIcons}"
