@@ -57,7 +57,7 @@ val HomeScreenLite = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = R.string.language_settings_title,
-            style = NavigationItemStyle.HomePrimary,
+            style = NavigationItemStyle.HomeSecondary,
             navigateTo = "languages",
             icon = R.drawable.globe
         ),
@@ -71,14 +71,14 @@ val HomeScreenLite = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = SwipeMenu.title,
-            style = NavigationItemStyle.HomePrimary,
+            style = NavigationItemStyle.HomeSecondary,
             navigateTo = SwipeMenu.navPath,
             icon = R.drawable.swipe_icon
         ),
 
         userSettingNavigationItem(
             title = R.string.prediction_settings_title,
-            style = NavigationItemStyle.HomeTertiary,
+            style = NavigationItemStyle.HomeSecondary,
             navigateTo = PredictiveTextMenu.navPath,
             icon = R.drawable.text_prediction
         ),
@@ -89,7 +89,7 @@ val HomeScreenLite = UserSettingsMenu(
             val navController = LocalNavController.current
             NavigationItem(
                 title = stringResource(R.string.voice_input_settings_title),
-                style = NavigationItemStyle.HomePrimary,
+                style = NavigationItemStyle.HomeSecondary,
                 subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) {
                     stringResource(R.string.voice_input_settings_builtin_disabled_notice)
                 } else { null },
@@ -107,7 +107,7 @@ val HomeScreenLite = UserSettingsMenu(
 
         userSettingNavigationItem(
             title = R.string.theme_settings_title,
-            style = NavigationItemStyle.HomeTertiary,
+            style = NavigationItemStyle.HomeSecondary,
             navigateTo = "themes",
             icon = R.drawable.themes
         ),
@@ -115,7 +115,7 @@ val HomeScreenLite = UserSettingsMenu(
         //if(!isPaid) {
         userSettingNavigationItem(
             title = R.string.payment_screen_short_title,
-            style = NavigationItemStyle.HomePrimary,
+            style = NavigationItemStyle.HomeSecondary,
             navigateTo = "payment",
             icon = R.drawable.dollar_sign,
         ).copy(visibilityCheck = {
@@ -133,7 +133,7 @@ val HomeScreenLite = UserSettingsMenu(
         //if(isDeveloper || LocalInspectionMode.current) {
         userSettingNavigationItem(
             title = R.string.dev_settings_title,
-            style = NavigationItemStyle.HomeTertiary,
+            style = NavigationItemStyle.HomeSecondary,
             navigateTo = "developer",
             icon = R.drawable.code
         ).copy(visibilityCheck = {
