@@ -904,17 +904,17 @@ fun SelectSpacebarColorDialog(
         text = {
             val spacebarColorOptions = listOf(
                 SpacebarColorOption(stringResource(R.string.spacebar_color_default), null),
-                SpacebarColorOption("Red", "#EF5350"),
-                SpacebarColorOption("Orange", "#FFA726"),
-                SpacebarColorOption("Yellow", "#FDD835"),
-                SpacebarColorOption("Green", "#66BB6A"),
-                SpacebarColorOption("Teal", "#26A69A"),
-                SpacebarColorOption("Blue", "#42A5F5"),
-                SpacebarColorOption("Indigo", "#5C6BC0"),
-                SpacebarColorOption("Purple", "#AB47BC"),
-                SpacebarColorOption("Pink", "#EC407A"),
-                SpacebarColorOption("Brown", "#8D6E63"),
-                SpacebarColorOption("Grey", "#78909C")
+                SpacebarColorOption(stringResource(R.string.spacebar_color_red), "#EF5350"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_orange), "#FFA726"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_yellow), "#FDD835"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_green), "#66BB6A"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_teal), "#26A69A"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_blue), "#42A5F5"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_indigo), "#5C6BC0"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_purple), "#AB47BC"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_pink), "#EC407A"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_brown), "#8D6E63"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_grey), "#78909C")
             )
 
             val customHexState = remember { mutableStateOf(initialColor ?: "") }
@@ -1009,7 +1009,7 @@ fun SelectSpacebarColorDialog(
                     TextField(
                         value = customHexState.value,
                         onValueChange = { customHexState.value = it },
-                        placeholder = { Text("e.g. #EF5350") },
+                        placeholder = { Text(stringResource(R.string.spacebar_color_hex_example)) },
                         singleLine = true,
                         modifier = Modifier.weight(1.0f),
                         label = { Text(stringResource(R.string.spacebar_color_custom_hex)) },
@@ -1064,7 +1064,7 @@ fun SelectSpacebarColorDialog(
 
 private fun isValidHexColor(hex: String): Boolean {
     val clean = hex.trim().replace("#", "")
-    return clean.matches(Regex("^[0-9a-fA-F]{6}$")) || 
+    return clean.matches(Regex("^[0-9a-fA-F]{6}$")) ||
            clean.matches(Regex("^[0-9a-fA-F]{8}$"))
 }
 
