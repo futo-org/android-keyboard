@@ -36,6 +36,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -220,6 +221,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     )
 
     private var drawableProvider: DynamicThemeProvider? = null
+    private var activeSpacebarColor: String? = null
 
     private var settingsRefreshRequired = false
     private fun recreateKeyboard() {
@@ -284,16 +286,40 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     private fun updateDrawableProvider(colorScheme: KeyboardColorScheme) {
         activeColorScheme.value = colorScheme
-        drawableProvider = BasicThemeProvider(this, colorScheme)
+        drawableProvider = createBasicThemeProvider(colorScheme)
 
         updateNavigationBarVisibility()
         uixManager.onColorSchemeChanged()
     }
 
+    private fun createBasicThemeProvider(colorScheme: KeyboardColorScheme) =
+        BasicThemeProvider(this, colorScheme).apply {
+            setSpacebarColor(activeSpacebarColor)
+        }
+
     override fun getDrawableProvider(): DynamicThemeProvider {
-        return drawableProvider ?: BasicThemeProvider(this, colorScheme).let {
+        return drawableProvider ?: createBasicThemeProvider(colorScheme).let {
             drawableProvider = it
             it
+        }
+    }
+
+    private fun updateSpacebarColor(
+        preferences: Preferences,
+        activeSubtypeSetting: String
+    ) {
+        val subtypeSetting = activeSubtypeSetting.ifEmpty {
+            preferences[SubtypesSetting.key]?.firstOrNull() ?: "en_US:"
+        }
+        val locale = subtypeSetting.substringBefore(':')
+        val nextColor = preferences[spacebarColorPreferenceKeyFor(locale)]?.ifEmpty { null }
+
+        if (nextColor == activeSpacebarColor) return
+        activeSpacebarColor = nextColor
+
+        val provider = drawableProvider as? BasicThemeProvider ?: return
+        if (provider.setSpacebarColor(nextColor)) {
+            latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.invalidateAllKeys()
         }
     }
 
@@ -455,8 +481,10 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
             onNewSubtype(getSetting(ActiveSubtype))
 
-            dataStore.data.collect {
-                onNewSubtype(it[ActiveSubtype.key] ?: ActiveSubtype.default)
+            dataStore.data.collect { preferences ->
+                val activeSubtype = preferences[ActiveSubtype.key] ?: ActiveSubtype.default
+                onNewSubtype(activeSubtype)
+                updateSpacebarColor(preferences, activeSubtype)
             }
         }
 
