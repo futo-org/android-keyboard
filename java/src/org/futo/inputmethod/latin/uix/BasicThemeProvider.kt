@@ -27,6 +27,7 @@ import org.futo.inputmethod.keyboard.Key
 import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.keyboard.internal.KeyDrawParams
 import org.futo.inputmethod.keyboard.internal.KeyboardIconsSet
+import org.futo.inputmethod.latin.DEFAULT_SPACEBAR_TRANSPARENCY
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.actions.AllActions
 import org.futo.inputmethod.latin.uix.actions.AllActionsMap
@@ -208,6 +209,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     private var cachedSpaceCornerRadius: Dp = 8.dp
     private var cachedHighlightColor: Int = 0
     private var customSpacebarColor: String? = null
+    private var customSpacebarTransparency: Float = DEFAULT_SPACEBAR_TRANSPARENCY
     private var customSpacebarStyle: VisualStyleDescriptor? = null
 
     private fun getContrastColor(@ColorInt color: Int): Int {
@@ -227,13 +229,20 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         }
     }
 
-    private fun makeSpacebarStyle(customColorHex: String): VisualStyleDescriptor {
-        val customColor = try {
-            android.graphics.Color.parseColor(customColorHex)
+    private fun makeSpacebarStyle(
+        customColorHex: String,
+        transparency: Float
+    ): VisualStyleDescriptor {
+        val opaqueCustomColor = try {
+            Color(android.graphics.Color.parseColor(customColorHex)).copy(alpha = 1.0f)
         } catch (e: Exception) {
-            keyColor
+            Color(keyColor)
         }
-        val customForeground = getContrastColor(customColor)
+        val customColor = opaqueCustomColor.copy(alpha = 1.0f - transparency).toArgb()
+        val effectiveCustomColor = Color(customColor)
+            .compositeOver(Color(keyboardColor))
+            .toArgb()
+        val customForeground = getContrastColor(effectiveCustomColor)
         return makeVisualStyle(
             customColor,
             customForeground,
@@ -251,12 +260,22 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
      *
      * @return true when the effective custom color changed.
      */
-    fun setSpacebarColor(customColorHex: String?): Boolean {
+    fun setSpacebarColor(
+        customColorHex: String?,
+        transparency: Float = DEFAULT_SPACEBAR_TRANSPARENCY
+    ): Boolean {
         val normalizedColor = customColorHex?.takeIf { it.isNotEmpty() }
-        if (normalizedColor == customSpacebarColor) return false
+        val normalizedTransparency = transparency.coerceIn(0.0f, 1.0f)
+        if (
+            normalizedColor == customSpacebarColor &&
+            normalizedTransparency == customSpacebarTransparency
+        ) return false
 
         customSpacebarColor = normalizedColor
-        customSpacebarStyle = normalizedColor?.let(::makeSpacebarStyle)
+        customSpacebarTransparency = normalizedTransparency
+        customSpacebarStyle = normalizedColor?.let {
+            makeSpacebarStyle(it, normalizedTransparency)
+        }
         return true
     }
 

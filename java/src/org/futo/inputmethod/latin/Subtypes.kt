@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import org.futo.inputmethod.latin.common.Constants
@@ -86,6 +87,12 @@ val MultilingualBucketSetting = SettingsKey(
 
 fun spacebarColorPreferenceKeyFor(locale: String): androidx.datastore.preferences.core.Preferences.Key<String> {
     return androidx.datastore.preferences.core.stringPreferencesKey("spacebar_color_${locale.replace("#", "H")}")
+}
+
+const val DEFAULT_SPACEBAR_TRANSPARENCY = 0.5f
+
+fun spacebarTransparencyPreferenceKeyFor(locale: String): androidx.datastore.preferences.core.Preferences.Key<Float> {
+    return floatPreferencesKey("spacebar_transparency_${locale.replace("#", "H")}")
 }
 
 object Subtypes {

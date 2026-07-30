@@ -222,6 +222,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     private var drawableProvider: DynamicThemeProvider? = null
     private var activeSpacebarColor: String? = null
+    private var activeSpacebarTransparency: Float = DEFAULT_SPACEBAR_TRANSPARENCY
 
     private var settingsRefreshRequired = false
     private fun recreateKeyboard() {
@@ -294,7 +295,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     private fun createBasicThemeProvider(colorScheme: KeyboardColorScheme) =
         BasicThemeProvider(this, colorScheme).apply {
-            setSpacebarColor(activeSpacebarColor)
+            setSpacebarColor(activeSpacebarColor, activeSpacebarTransparency)
         }
 
     override fun getDrawableProvider(): DynamicThemeProvider {
@@ -313,12 +314,18 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         }
         val locale = subtypeSetting.substringBefore(':')
         val nextColor = preferences[spacebarColorPreferenceKeyFor(locale)]?.ifEmpty { null }
+        val nextTransparency = preferences[spacebarTransparencyPreferenceKeyFor(locale)]
+            ?: DEFAULT_SPACEBAR_TRANSPARENCY
 
-        if (nextColor == activeSpacebarColor) return
+        if (
+            nextColor == activeSpacebarColor &&
+            nextTransparency == activeSpacebarTransparency
+        ) return
         activeSpacebarColor = nextColor
+        activeSpacebarTransparency = nextTransparency
 
         val provider = drawableProvider as? BasicThemeProvider ?: return
-        if (provider.setSpacebarColor(nextColor)) {
+        if (provider.setSpacebarColor(nextColor, nextTransparency)) {
             latinIMELegacy.mKeyboardSwitcher?.mainKeyboardView?.invalidateAllKeys()
         }
     }

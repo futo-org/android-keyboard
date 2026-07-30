@@ -706,9 +706,9 @@ Default is %1$s</string>
     <string name="spacebar_color_setting_title">Spacebar color</string>
     <string name="spacebar_color_default">Default</string>
     <string name="spacebar_color_dialog_title">Select spacebar color (%1$s)</string>
-    <string name="spacebar_color_custom_hex">Custom hex color</string>
-    <string name="spacebar_color_hex_example">e.g. #EF5350</string>
     <string name="spacebar_color_apply">Apply</string>
+    <string name="spacebar_color_transparency">Transparency</string>
+    <string name="spacebar_color_transparency_percentage">%1$d%%</string>
     <string name="spacebar_color_red">Red</string>
     <string name="spacebar_color_orange">Orange</string>
     <string name="spacebar_color_yellow">Yellow</string>
@@ -717,7 +717,7 @@ Default is %1$s</string>
     <string name="spacebar_color_blue">Blue</string>
     <string name="spacebar_color_indigo">Indigo</string>
     <string name="spacebar_color_purple">Purple</string>
-    <string name="spacebar_color_pink">Pink</string>
+    <string name="spacebar_color_white">White</string>
     <string name="spacebar_color_brown">Brown</string>
     <string name="spacebar_color_grey">Grey</string>
 </resources>

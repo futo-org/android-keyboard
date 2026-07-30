@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.contentColorFor
@@ -50,6 +51,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.runBlocking
 import org.futo.inputmethod.latin.MultilingualBucketSetting
+import org.futo.inputmethod.latin.DEFAULT_SPACEBAR_TRANSPARENCY
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.Subtypes
 import org.futo.inputmethod.latin.SubtypesSetting
@@ -79,19 +81,18 @@ import org.futo.inputmethod.updates.openURI
 import java.util.Locale
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.ui.text.style.TextAlign
 import org.futo.inputmethod.latin.spacebarColorPreferenceKeyFor
+import org.futo.inputmethod.latin.spacebarTransparencyPreferenceKeyFor
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import org.futo.inputmethod.latin.uix.settings.LocalDataStoreCache
 import org.futo.inputmethod.latin.uix.dataStore
 import androidx.datastore.preferences.core.edit
-import androidx.compose.material3.TextField
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import kotlin.math.roundToInt
 
 private val InputMethodSubtype.layoutSetName
     get() = SubtypeLocaleUtils.getKeyboardLayoutSetName(this)
@@ -281,6 +282,7 @@ fun LanguageSurface(
 
                 SpacebarColorConfigurable(
                     colorHex = item.options.spacebarColor,
+                    transparency = item.options.spacebarTransparency,
                     onSelected = onSpacebarColorSelected
                 )
 
@@ -363,7 +365,8 @@ fun LanguageSurfacePreview() {
                     voiceInputModel = "Model Name",
                     dictionary = "Model Name",
                     transformerModel = "Model Name",
-                    spacebarColor = null
+                    spacebarColor = null,
+                    spacebarTransparency = DEFAULT_SPACEBAR_TRANSPARENCY
                 ),
                 layouts = listOf(
                     InputMethodSubtype.InputMethodSubtypeBuilder().build() to "QWERTY",
@@ -382,7 +385,8 @@ data class LanguageOptions(
     val voiceInputModel: String?,
     val dictionary: String?,
     val transformerModel: String?,
-    val spacebarColor: String?
+    val spacebarColor: String?,
+    val spacebarTransparency: Float
 )
 
 @Composable
@@ -665,17 +669,28 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
     if (spacebarColorDialogLocale.value != null) {
         val (localeString, displayName) = spacebarColorDialogLocale.value!!
         val currentSpacebarColor = cache?.currPreferences?.get(spacebarColorPreferenceKeyFor(localeString))?.ifEmpty { null }
+        val currentSpacebarTransparency =
+            cache?.currPreferences?.get(spacebarTransparencyPreferenceKeyFor(localeString))
+                ?: DEFAULT_SPACEBAR_TRANSPARENCY
         SelectSpacebarColorDialog(
             initialColor = currentSpacebarColor,
+            initialTransparency = currentSpacebarTransparency,
             onDismissRequest = { spacebarColorDialogLocale.value = null },
-            onColorSelected = { newColor ->
+            onColorSelected = { newColor, newTransparency ->
                 scope.launch {
                     context.dataStore.edit { preferences ->
-                        val key = spacebarColorPreferenceKeyFor(localeString)
+                        val colorKey = spacebarColorPreferenceKeyFor(localeString)
+                        val transparencyKey = spacebarTransparencyPreferenceKeyFor(localeString)
                         if (newColor == null) {
-                            preferences.remove(key)
+                            preferences.remove(colorKey)
+                            preferences.remove(transparencyKey)
                         } else {
-                            preferences[key] = newColor
+                            preferences[colorKey] = newColor
+                            if (newTransparency == DEFAULT_SPACEBAR_TRANSPARENCY) {
+                                preferences.remove(transparencyKey)
+                            } else {
+                                preferences[transparencyKey] = newTransparency
+                            }
                         }
                     }
                 }
@@ -736,12 +751,16 @@ fun LanguagesScreen(navController: NavHostController = rememberNavController()) 
                 }
 
             val spacebarColor = cache?.currPreferences?.get(spacebarColorPreferenceKeyFor(localeString))?.ifEmpty { null }
+            val spacebarTransparency =
+                cache?.currPreferences?.get(spacebarTransparencyPreferenceKeyFor(localeString))
+                    ?: DEFAULT_SPACEBAR_TRANSPARENCY
 
             val options = LanguageOptions(
                 voiceInputModel = voiceInputModelName,
                 dictionary = dictionaryName,
                 transformerModel = transformerName,
-                spacebarColor = spacebarColor
+                spacebarColor = spacebarColor,
+                spacebarTransparency = spacebarTransparency
             )
 
 
@@ -816,6 +835,7 @@ data class SpacebarColorOption(val name: String, val hex: String?)
 @Composable
 fun SpacebarColorConfigurable(
     colorHex: String?,
+    transparency: Float,
     onSelected: () -> Unit
 ) {
     Row(
@@ -860,6 +880,7 @@ fun SpacebarColorConfigurable(
                 } else {
                     val parsedColor = try {
                         Color(android.graphics.Color.parseColor(colorHex))
+                            .copy(alpha = 1.0f - transparency.coerceIn(0.0f, 1.0f))
                     } catch (e: Exception) {
                         null
                     }
@@ -870,12 +891,7 @@ fun SpacebarColorConfigurable(
                                 .background(parsedColor, RoundedCornerShape(4.dp))
                                 .border(1.5.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(4.dp))
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
                     }
-                    Text(
-                        colorHex,
-                        style = Typography.Body.RegularMl
-                    )
                 }
             }
         }
@@ -893,10 +909,18 @@ fun SpacebarColorConfigurable(
 @Composable
 fun SelectSpacebarColorDialog(
     initialColor: String?,
+    initialTransparency: Float,
     onDismissRequest: () -> Unit,
-    onColorSelected: (String?) -> Unit,
+    onColorSelected: (String?, Float) -> Unit,
     localeDisplayName: String
 ) {
+    val selectedColor = remember(initialColor) {
+        mutableStateOf(normalizeSpacebarColor(initialColor))
+    }
+    val transparency = remember(initialTransparency) {
+        mutableStateOf(initialTransparency.coerceIn(0.0f, 1.0f))
+    }
+
     AlertDialog(
         title = {
             Text(text = stringResource(R.string.spacebar_color_dialog_title, localeDisplayName))
@@ -912,12 +936,10 @@ fun SelectSpacebarColorDialog(
                 SpacebarColorOption(stringResource(R.string.spacebar_color_blue), "#42A5F5"),
                 SpacebarColorOption(stringResource(R.string.spacebar_color_indigo), "#5C6BC0"),
                 SpacebarColorOption(stringResource(R.string.spacebar_color_purple), "#AB47BC"),
-                SpacebarColorOption(stringResource(R.string.spacebar_color_pink), "#EC407A"),
+                SpacebarColorOption(stringResource(R.string.spacebar_color_white), "#FFFFFF"),
                 SpacebarColorOption(stringResource(R.string.spacebar_color_brown), "#8D6E63"),
                 SpacebarColorOption(stringResource(R.string.spacebar_color_grey), "#78909C")
             )
-
-            val customHexState = remember { mutableStateOf(initialColor ?: "") }
 
             Column {
                 val columns = 4
@@ -931,16 +953,20 @@ fun SelectSpacebarColorDialog(
                             val index = r * columns + c
                             if (index < spacebarColorOptions.size) {
                                 val option = spacebarColorOptions[index]
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                val isSelected = selectedColor.value == option.hex
+                                Box(
+                                    contentAlignment = Alignment.Center,
                                     modifier = Modifier
+                                        .weight(1.0f)
                                         .clip(RoundedCornerShape(8.dp))
+                                        .semantics {
+                                            contentDescription = option.name
+                                            selected = isSelected
+                                        }
                                         .clickable {
-                                            onColorSelected(option.hex)
-                                            onDismissRequest()
+                                            selectedColor.value = option.hex
                                         }
                                         .padding(8.dp)
-                                        .width(56.dp)
                                 ) {
                                     if (option.hex == null) {
                                         Box(
@@ -949,7 +975,7 @@ fun SelectSpacebarColorDialog(
                                                 .border(2.dp, MaterialTheme.colorScheme.onSurface, CircleShape),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            if (initialColor.isNullOrEmpty()) {
+                                            if (isSelected) {
                                                 Box(
                                                     modifier = Modifier
                                                         .size(16.dp)
@@ -958,33 +984,23 @@ fun SelectSpacebarColorDialog(
                                             }
                                         }
                                     } else {
-                                        val color = Color(android.graphics.Color.parseColor(option.hex))
+                                        val color = Color(
+                                            android.graphics.Color.parseColor(option.hex)
+                                        ).copy(alpha = 1.0f - transparency.value)
                                         Box(
                                             modifier = Modifier
                                                 .size(36.dp)
                                                 .background(color, CircleShape)
                                                 .border(
-                                                    width = if (initialColor == option.hex) 3.dp else 1.dp,
-                                                    color = if (initialColor == option.hex) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                                                    width = if (isSelected) 3.dp else 1.dp,
+                                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
                                                     shape = CircleShape
                                                 )
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = option.name,
-                                        style = TextStyle(
-                                            fontFamily = FontFamily.SansSerif,
-                                            fontWeight = FontWeight.Normal,
-                                            fontSize = 9.sp,
-                                            lineHeight = 11.sp
-                                        ),
-                                        textAlign = TextAlign.Center,
-                                        maxLines = 1
-                                    )
                                 }
                             } else {
-                                Spacer(modifier = Modifier.size(56.dp))
+                                Spacer(modifier = Modifier.weight(1.0f))
                             }
                         }
                     }
@@ -992,68 +1008,45 @@ fun SelectSpacebarColorDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                val previewColor = if (isValidHexColor(customHexState.value)) {
-                    try {
-                        Color(android.graphics.Color.parseColor(normalizeHexColor(customHexState.value)))
-                    } catch (e: Exception) {
-                        null
-                    }
-                } else {
-                    null
-                }
-
+                val transparencyLabel =
+                    stringResource(R.string.spacebar_color_transparency)
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    TextField(
-                        value = customHexState.value,
-                        onValueChange = { customHexState.value = it },
-                        placeholder = { Text(stringResource(R.string.spacebar_color_hex_example)) },
-                        singleLine = true,
-                        modifier = Modifier.weight(1.0f),
-                        label = { Text(stringResource(R.string.spacebar_color_custom_hex)) },
-                        leadingIcon = {
-                            if (previewColor != null) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .background(previewColor, CircleShape)
-                                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
-                                )
-                            } else {
-                                Box(
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .border(1.5.dp, MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f), CircleShape),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        "?",
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                                        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                                    )
-                                }
-                            }
-                        }
+                    Text(transparencyLabel)
+                    Text(
+                        stringResource(
+                            R.string.spacebar_color_transparency_percentage,
+                            (transparency.value * 100.0f).roundToInt()
+                        )
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    TextButton(
-                        onClick = {
-                            if (isValidHexColor(customHexState.value)) {
-                                onColorSelected(normalizeHexColor(customHexState.value))
-                                onDismissRequest()
-                            }
-                        },
-                        enabled = isValidHexColor(customHexState.value)
-                    ) {
-                        Text(stringResource(R.string.spacebar_color_apply))
-                    }
                 }
+                Slider(
+                    value = transparency.value,
+                    onValueChange = { transparency.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics {
+                            contentDescription = transparencyLabel
+                        },
+                    enabled = selectedColor.value != null,
+                    valueRange = 0.0f..1.0f,
+                    steps = 99
+                )
             }
         },
         onDismissRequest = onDismissRequest,
-        confirmButton = {},
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onColorSelected(selectedColor.value, transparency.value)
+                    onDismissRequest()
+                }
+            ) {
+                Text(stringResource(R.string.spacebar_color_apply))
+            }
+        },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
                 Text(stringResource(android.R.string.cancel))
@@ -1062,13 +1055,12 @@ fun SelectSpacebarColorDialog(
     )
 }
 
-private fun isValidHexColor(hex: String): Boolean {
-    val clean = hex.trim().replace("#", "")
-    return clean.matches(Regex("^[0-9a-fA-F]{6}$")) ||
-           clean.matches(Regex("^[0-9a-fA-F]{8}$"))
-}
-
-private fun normalizeHexColor(hex: String): String {
-    val clean = hex.trim().replace("#", "")
-    return "#$clean"
+private fun normalizeSpacebarColor(colorHex: String?): String? {
+    if (colorHex.isNullOrEmpty()) return null
+    return try {
+        val color = android.graphics.Color.parseColor(colorHex)
+        String.format(Locale.ROOT, "#%06X", color and 0xFFFFFF)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 }
