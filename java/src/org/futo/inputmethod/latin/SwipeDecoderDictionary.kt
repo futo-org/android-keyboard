@@ -303,7 +303,9 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
 
         @JvmStatic
         fun updateKeyboard(keyboard: Keyboard) {
-            prevKeyboard = keyboard
+            synchronized(BinaryDictionary.sTrieUsageLock) {
+                prevKeyboard = keyboard
+            }
         }
 
         @JvmStatic
@@ -318,7 +320,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         }
     }
 
-    var decoder: SwipeDecoder? = null
+    private var decoder: SwipeDecoder? = null
 
     object BeamValues {
         const val shortBeam = 32
@@ -327,19 +329,21 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         const val highestBeam = 300
     }
 
-    private fun getOrInitDecoder(): SwipeDecoder = decoder ?: run {
-        val swipeModelPath = getFilePath(context, SWIPE_MODEL)
+    private fun getOrInitDecoder(): SwipeDecoder = synchronized(BinaryDictionary.sTrieUsageLock) {
+        decoder ?: run {
+            val swipeModelPath = getFilePath(context, SWIPE_MODEL)
 
-        val decoder = SwipeDecoder(
-            encoderPath = swipeModelPath,
-            beamWidth = BeamValues.highestBeam,
-            useExpansion = false, // ITrie contains expanded entries already
-        )
+            val decoder = SwipeDecoder(
+                encoderPath = swipeModelPath,
+                beamWidth = BeamValues.highestBeam,
+                useExpansion = false, // ITrie contains expanded entries already
+            )
 
-        this.decoder = decoder
-        applyPendingLayoutInfo()
+            this.decoder = decoder
+            applyPendingLayoutInfo()
 
-        return decoder
+            decoder
+        }
     }
 
     override fun getNextValidCodePoints(composedData: ComposedData?): ArrayList<Int> {
@@ -352,11 +356,12 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
     ): ArrayList<SuggestedWords.SuggestedWordInfo>? {
         if(true) return null
 
-        val decoder = getOrInitDecoder()
-        val wordsContext = ngramContext?.fullContext?.split(' ')?.takeLast(10) ?: emptyList()
-        decoder.setContext(wordsContext)
-
-        val results = decoder.predictNext()
+        val results = synchronized(BinaryDictionary.sTrieUsageLock) {
+            val decoder = getOrInitDecoder()
+            val wordsContext = ngramContext?.fullContext?.split(' ')?.takeLast(10) ?: emptyList()
+            decoder.setContext(wordsContext)
+            decoder.predictNext()
+        }
 
         //Log.d("SwipeDecoderDictionary", "getPredictions results=${results}")
         val list = ArrayList<SuggestedWords.SuggestedWordInfo>(results.size)
@@ -447,7 +452,6 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
             ?: emptyList()
 
         val decoder = getOrInitDecoder()
-        decoder.setContext(wordsContext)
         appliedTrieWeights = trieWeights
 
         val isMultiSwipe = (left.size + right.size) > 1
@@ -464,19 +468,22 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
                 Log.e("SwipeDecoderDictionary", "Applied tries are blank! $appliedTries")
                 return null
             }
-            decoder.recognize(
+            decoder.setContext(wordsContext)
+            val results = decoder.recognize(
                  left.toTypedArray(), right.toTypedArray(),
                  topK = topK,
                  beamWidth = beamWidth,
                  trieWeights = trieWeights
             )
+
+            // basically update it at end of swiping
+            if(useHighBeam) appliedScoring.value = decoder.scoring
+            results
         }
 
-        // basically update it at end of swiping
-        if(useHighBeam) appliedScoring.value = decoder.scoring
-
         if(BuildConfig.DEBUG || System.currentTimeMillis() < debugLogUntil) {
-            Log.d("SwipeDecoderDictionary", "Timing: ${decoder.lastTiming()}")
+            val timing = synchronized(BinaryDictionary.sTrieUsageLock) { decoder.lastTiming() }
+            Log.d("SwipeDecoderDictionary", "Timing: $timing")
             Log.d("SwipeDecoderDictionary", "Left = $left")
             Log.d("SwipeDecoderDictionary", "Right = $right")
 
@@ -523,29 +530,33 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
     data class PendingLayoutInfo(val layout: LayoutInfoForModel, val tries: List<Long>)
     private var pendingLayoutInfo: PendingLayoutInfo? = null
     private fun applyPendingLayoutInfo() {
-        decoder?.let { d ->
-            pendingLayoutInfo?.let { pend ->
-                //Log.d("SwipeDecoderDictionary", "Applying layout info: $pend")
-                d.setMode(
-                    letters=pend.layout.letters,
-                    cx=pend.layout.xs.toFloatArray(),
-                    cy=pend.layout.ys.toFloatArray(),
-                    tries=pend.tries.toLongArray(),
-                    decoderPath=getFilePath(context, pend.layout.decoder),
-                    lmModelPath=getFilePath(context, pend.layout.lm),
-                    lmVocabPath=getFilePath(context, vocabFor(pend.layout.lm))
-                )
-                appliedScoring.value = d.scoring
-                appliedLayoutInfo = pend.layout
-                appliedTries = pend.tries.toLongArray()
+        synchronized(BinaryDictionary.sTrieUsageLock) {
+            decoder?.let { d ->
+                pendingLayoutInfo?.let { pend ->
+                    //Log.d("SwipeDecoderDictionary", "Applying layout info: $pend")
+                    d.setMode(
+                        letters=pend.layout.letters,
+                        cx=pend.layout.xs.toFloatArray(),
+                        cy=pend.layout.ys.toFloatArray(),
+                        tries=pend.tries.toLongArray(),
+                        decoderPath=getFilePath(context, pend.layout.decoder),
+                        lmModelPath=getFilePath(context, pend.layout.lm),
+                        lmVocabPath=getFilePath(context, vocabFor(pend.layout.lm))
+                    )
+                    appliedScoring.value = d.scoring
+                    appliedLayoutInfo = pend.layout
+                    appliedTries = pend.tries.toLongArray()
+                }
+                pendingLayoutInfo = null
             }
-            pendingLayoutInfo = null
         }
     }
 
     fun updateKeyboard(pendingLayoutInfo: PendingLayoutInfo) {
-        this.pendingLayoutInfo = pendingLayoutInfo
-        applyPendingLayoutInfo()
+        synchronized(BinaryDictionary.sTrieUsageLock) {
+            this.pendingLayoutInfo = pendingLayoutInfo
+            applyPendingLayoutInfo()
+        }
     }
 
     override fun isInDictionary(word: String?): Boolean {
@@ -553,8 +564,10 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
     }
 
     fun invalidateTries() {
-        if(appliedTries?.isEmpty() != false) return
-        decoder?.setMode(tries = emptyList<Long>().toLongArray())
-        appliedTries = null
+        synchronized(BinaryDictionary.sTrieUsageLock) {
+            if(appliedTries?.isEmpty() != false) return
+            decoder?.setMode(tries = emptyList<Long>().toLongArray())
+            appliedTries = null
+        }
     }
 }
