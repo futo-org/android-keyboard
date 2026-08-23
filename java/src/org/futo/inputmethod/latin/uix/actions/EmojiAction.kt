@@ -114,6 +114,10 @@ import org.futo.inputmethod.latin.uix.PersistentActionState
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
+import org.futo.inputmethod.latin.uix.actions.emoji.HIDDEN_EMOJIS
+import org.futo.inputmethod.latin.uix.actions.emoji.isEmojiHidden
+import org.futo.inputmethod.latin.uix.actions.emoji.normalizeHiddenEmojiSet
+import org.futo.inputmethod.latin.uix.settings.pages.EmojiSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiFamily
@@ -772,24 +776,33 @@ fun EmojiGrid(
     searchFilter: String
 ) {
     val context = LocalContext.current
-
-    val emojiCategoryMap = remember {
-        emojis.associate { it.emoji to it.category }
+    val hiddenEmojis = useDataStoreValue(HIDDEN_EMOJIS)
+    val normalizedHiddenEmojis = remember(hiddenEmojis) {
+        normalizeHiddenEmojiSet(hiddenEmojis)
+    }
+    val visibleEmojis = remember(emojis, normalizedHiddenEmojis) {
+        emojis.filterNot { isEmojiHidden(it.emoji, normalizedHiddenEmojis) }
     }
 
-    val recentEmojis = remember {
-        runBlocking { context.getRecentEmojis() }.map {
-            EmojiItem(it, description = "", category = emojiCategoryMap[it] ?: "", skinTones = false)
-        }
+    val emojiCategoryMap = remember(visibleEmojis) {
+        visibleEmojis.associate { it.emoji to it.category }
+    }
+
+    val recentEmojis = remember(normalizedHiddenEmojis, emojiCategoryMap) {
+        runBlocking { context.getRecentEmojis() }
+            .filterNot { isEmojiHidden(it, normalizedHiddenEmojis) }
+            .map {
+                EmojiItem(it, description = "", category = emojiCategoryMap[it] ?: "", skinTones = false)
+            }
     }
 
     val skinTone = useDataStoreValue(LastUsedSkinTone)
     val emojiTypeface = LocalCompatEmojiTypeface.current
-    val categorizedEmojis = remember(skinTone) {
+    val categorizedEmojis = remember(skinTone, visibleEmojis) {
         var prevCategory = ""
 
         buildList {
-            for(emoji in emojis) {
+            for(emoji in visibleEmojis) {
                 if (emoji.category != prevCategory) {
                     prevCategory = emoji.category
                     add(CategoryItem(emoji.category))
@@ -1151,6 +1164,7 @@ val EmojiAction = Action(
     name = R.string.action_emoji_title,
     canShowKeyboard = true,
     simplePressImpl = null,
+    settingsMenu = EmojiSettingsMenu,
     persistentState = { manager ->
         val state = PersistentEmojiState()
         manager.getLifecycleScope().launch {
