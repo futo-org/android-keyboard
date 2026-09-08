@@ -1613,9 +1613,9 @@ public final class InputLogic {
                         BreakIterator breakIterator;
 
                         if(deleteWholeWords) {
-                            breakIterator = BreakIterator.getWordInstance();
+                            breakIterator = BreakIterator.getWordInstance(inputTransaction.mSettingsValues.mLocale);
                         } else {
-                            breakIterator = BreakIterator.getCharacterInstance();
+                            breakIterator = BreakIterator.getCharacterInstance(inputTransaction.mSettingsValues.mLocale);
                         }
                         breakIterator.setText(textBeforeCursor.toString());
                         int end = breakIterator.last();
