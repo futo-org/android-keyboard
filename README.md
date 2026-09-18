@@ -24,6 +24,28 @@ If you want to contribute layouts, check out the [layouts repo](https://github.c
 
 ## Building
 
+### Git LFS is required
+
+Some submodules (the swipe typing models in `java/assets/futo-swipe` and the voice input models in `voiceinput-shared/src/main/ml`) are hosted on Hugging Face and store their model files with git-lfs.
+
+```
+# macOS:
+brew install git-lfs
+
+# Debian/Ubuntu:
+apt install git-lfs
+
+# followed by
+git lfs install
+```
+
+Download the real files:
+```
+git submodule foreach --recursive git lfs pull
+```
+
+### Cloning
+
 When cloning the repository, you must perform a recursive clone to fetch all dependencies:
 ```
 git clone --recursive https://gitlab.futo.org/keyboard/latinime.git

@@ -47,8 +47,7 @@ fun usePackageReadableName(pkg: String): String? {
         } catch(e: Exception) {
             null
         }?.applicationInfo?.let {
-                context.packageManager.getApplicationLabel(it).toString()
-            }
+            context.packageManager.getApplicationLabel(it).toString()
         }
     }
 }
