@@ -405,6 +405,49 @@ public final class StringUtils {
         return true;
     }
 
+    /**
+     * Finds the word at or immediately before the cursor.
+     *
+     * The word is the maximal run of code points which are not in sortedWordSeparators that
+     * contains the cursor, starts right at the cursor, or ends right at the cursor.
+     *
+     * @param textBeforeCursor the text ending right at the cursor position.
+     * @param textAfterCursor the text starting right at the cursor position.
+     * @param sortedWordSeparators a sorted array of word separator code points.
+     * @return int[]{index where the word starts in textBeforeCursor,
+     *         index just past where the word ends in textAfterCursor}, or null if the cursor
+     *         is not adjacent to a word.
+     */
+    @Nullable
+    public static int[] getWordRangeAtCursor(@Nullable final CharSequence textBeforeCursor,
+            @Nullable final CharSequence textAfterCursor,
+            @Nonnull final int[] sortedWordSeparators) {
+        final int beforeLength = null == textBeforeCursor ? 0 : textBeforeCursor.length();
+        int start = beforeLength;
+        while (start > 0) {
+            final int codePoint = Character.codePointBefore(textBeforeCursor, start);
+            if (Arrays.binarySearch(sortedWordSeparators, codePoint) >= 0) {
+                break;
+            }
+            start -= Character.charCount(codePoint);
+        }
+        int end = 0;
+        if (null != textAfterCursor) {
+            final int afterLength = textAfterCursor.length();
+            while (end < afterLength) {
+                final int codePoint = Character.codePointAt(textAfterCursor, end);
+                if (Arrays.binarySearch(sortedWordSeparators, codePoint) >= 0) {
+                    break;
+                }
+                end += Character.charCount(codePoint);
+            }
+        }
+        if (start == beforeLength && end == 0) {
+            return null; // The cursor is not adjacent to a word on either side.
+        }
+        return new int[] { start, end };
+    }
+
     // TODO: like capitalizeFirst*, this does not work perfectly for Dutch because of the IJ digraph
     // which should be capitalized together in *some* cases.
     @Nonnull
