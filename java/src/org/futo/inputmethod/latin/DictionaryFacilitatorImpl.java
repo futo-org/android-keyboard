@@ -100,7 +100,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private LruCache<String, Boolean> mValidSpellingWordReadCache;
     private LruCache<String, Boolean> mValidSpellingWordWriteCache;
 
-    private static boolean sTriesAreInvalid = false;
+    private static volatile boolean sTriesAreInvalid = false;
     public static void onAnyBinaryDictionaryClosed() {
         sTriesAreInvalid = true;
         swipeDecoderDictionary.invalidateTries();
@@ -878,25 +878,33 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
         }
 
         if(DictionaryFacilitatorImpl.swipeDecoderDictionary != null) {
-            SwipeDecoderDictionary.updateKeyboard(keyboard);
-            updateSwipeLayoutAndDictsIfNeeded(Settings.getInstance().getCurrent(), keyboard);
+            final ArrayList<SuggestedWordInfo> dictionarySuggestions;
+            // Keep the selected layout, trie handles, trie weights, and recognition together.
+            synchronized (BinaryDictionary.sTrieUsageLock) {
+                SwipeDecoderDictionary.updateKeyboard(keyboard);
+                updateSwipeLayoutAndDictsIfNeeded(Settings.getInstance().getCurrent(), keyboard);
 
-            if(SwipeDecoderDictionary.canBeUsed()) {
-                final ArrayList<SuggestedWordInfo> dictionarySuggestions =
-                        DictionaryFacilitatorImpl.swipeDecoderDictionary.getSuggestions(composedData, ngramContext,
-                            inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH, getTrieWeights());
-
-                if (dictionarySuggestions != null) {
-                    suggestionResults.addAll(dictionarySuggestions);
-                    if (null != suggestionResults.mRawSuggestions) {
-                        suggestionResults.mRawSuggestions.addAll(dictionarySuggestions);
-                    }
-
-                    if(!dictionarySuggestions.isEmpty())
-                        addEmojiSuggestionsForSwipe(suggestionResults, dictionarySuggestions.get(0));
-
-                    return suggestionResults;
+                if(SwipeDecoderDictionary.canBeUsed()) {
+                    dictionarySuggestions =
+                            DictionaryFacilitatorImpl.swipeDecoderDictionary.getSuggestions(
+                                    composedData, ngramContext,
+                                    inputStyle == SuggestedWords.INPUT_STYLE_TAIL_BATCH,
+                                    getTrieWeightsLocked());
+                } else {
+                    dictionarySuggestions = null;
                 }
+            }
+
+            if (dictionarySuggestions != null) {
+                suggestionResults.addAll(dictionarySuggestions);
+                if (null != suggestionResults.mRawSuggestions) {
+                    suggestionResults.mRawSuggestions.addAll(dictionarySuggestions);
+                }
+
+                if(!dictionarySuggestions.isEmpty())
+                    addEmojiSuggestionsForSwipe(suggestionResults, dictionarySuggestions.get(0));
+
+                return suggestionResults;
             }
         }
 
@@ -1081,7 +1089,7 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     private Keyboard mPrevKeyboard = null;
     private ArrayList<DictionaryGroup> mTrieCorrespondingGroups;
 
-    private float[] getTrieWeights() {
+    private float[] getTrieWeightsLocked() {
         if(mTrieCorrespondingGroups == null) return new float[0];
 
         int size = mTrieCorrespondingGroups.size();
@@ -1102,54 +1110,57 @@ public class DictionaryFacilitatorImpl implements DictionaryFacilitator {
     public void updateSwipeLayoutAndDictsIfNeeded(SettingsValues values, Keyboard keyboard) {
         if(swipeDecoderDictionary == null) return;
 
-        // TODO: This could be more optimized by avoiding unnecessary recreations when
-        //  isMultiLine is changed, or something else trivial has changed. Maybe also cache the
-        //  resulting LayoutInfos
-        boolean needsToRecreate = keyboard != mPrevKeyboard;
-        if(sTriesAreInvalid) {
-            needsToRecreate = true;
-        }
-
-        boolean allowBadWords = areBadWordsAllowed();
-        if(mPrevBadWordsAllowed != allowBadWords) {
-            needsToRecreate = true;
-        }
-
-        if(!needsToRecreate) return;
-
-        if(!hasAtLeastOneInitializedMainDictionary()) return;
-        if(keyboard == null) return;
-        KeyboardLayout layout = keyboard.getKeyboardLayout();
-        if(layout == null) return;
-
-        mPrevKeyboard = keyboard;
-        final LayoutInfoForModel info = LayoutInfoForModel.buildLayoutInfo(swipeDecoderDictionary.getContext(), keyboard, values);
-        // Log.d("DictionaryFacilitatorImpl", "Keyboard updated... New info: " + info);
-
-        if(info != null) {
-            // Make sure to update tries
-            ArrayList<Long> trieArray = new ArrayList<>();
-
-            mTrieCorrespondingGroups = new ArrayList<>();
-
-            for(DictionaryGroup group : mDictionaryGroups) {
-                int prevLength = trieArray.size();
-                ArrayList<Dictionary> dicts = new ArrayList<Dictionary>();
-                dicts.add(group.getDict(Dictionary.TYPE_MAIN));
-                dicts.add(group.getDict(Dictionary.TYPE_USER));
-                dicts.add(group.getDict(Dictionary.TYPE_USER_HISTORY));
-
-                addDictionaryTries(dicts, info.getLetters(), trieArray, allowBadWords);
-                int newLength = trieArray.size();
-
-                for(int i=0; i<(newLength - prevLength); i++) {
-                    mTrieCorrespondingGroups.add(group);
-                }
+        synchronized (BinaryDictionary.sTrieUsageLock) {
+            // TODO: This could be more optimized by avoiding unnecessary recreations when
+            //  isMultiLine is changed, or something else trivial has changed. Maybe also cache the
+            //  resulting LayoutInfos
+            boolean needsToRecreate = keyboard != mPrevKeyboard;
+            if(sTriesAreInvalid) {
+                needsToRecreate = true;
             }
 
-            mPrevBadWordsAllowed = allowBadWords;
-            swipeDecoderDictionary.updateKeyboard(new SwipeDecoderDictionary.PendingLayoutInfo(info, trieArray));
-            sTriesAreInvalid = trieArray.isEmpty();
+            boolean allowBadWords = areBadWordsAllowed();
+            if(mPrevBadWordsAllowed != allowBadWords) {
+                needsToRecreate = true;
+            }
+
+            if(!needsToRecreate) return;
+
+            if(!hasAtLeastOneInitializedMainDictionary()) return;
+            if(keyboard == null) return;
+            KeyboardLayout layout = keyboard.getKeyboardLayout();
+            if(layout == null) return;
+
+            mPrevKeyboard = keyboard;
+            final LayoutInfoForModel info = LayoutInfoForModel.buildLayoutInfo(
+                    swipeDecoderDictionary.getContext(), keyboard, values);
+            // Log.d("DictionaryFacilitatorImpl", "Keyboard updated... New info: " + info);
+
+            if(info != null) {
+                // Make sure to update tries
+                ArrayList<Long> trieArray = new ArrayList<>();
+
+                mTrieCorrespondingGroups = new ArrayList<>();
+
+                for(DictionaryGroup group : mDictionaryGroups) {
+                    int prevLength = trieArray.size();
+                    ArrayList<Dictionary> dicts = new ArrayList<Dictionary>();
+                    dicts.add(group.getDict(Dictionary.TYPE_MAIN));
+                    dicts.add(group.getDict(Dictionary.TYPE_USER));
+                    dicts.add(group.getDict(Dictionary.TYPE_USER_HISTORY));
+
+                    addDictionaryTries(dicts, info.getLetters(), trieArray, allowBadWords);
+                    int newLength = trieArray.size();
+
+                    for(int i=0; i<(newLength - prevLength); i++) {
+                        mTrieCorrespondingGroups.add(group);
+                    }
+                }
+
+                mPrevBadWordsAllowed = allowBadWords;
+                swipeDecoderDictionary.updateKeyboard(new SwipeDecoderDictionary.PendingLayoutInfo(info, trieArray));
+                sTriesAreInvalid = trieArray.isEmpty();
+            }
         }
     }
 

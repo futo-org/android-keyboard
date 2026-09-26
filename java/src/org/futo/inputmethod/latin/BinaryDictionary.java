@@ -53,9 +53,9 @@ import javax.annotation.Nonnull;
 public final class BinaryDictionary extends Dictionary {
     private static final String TAG = BinaryDictionary.class.getSimpleName();
 
-    // To prevent free-during-use by external libraries referencing the dictionary handle
-    // (swipe integration)
-    public static Object sTrieUsageLock = new Object();
+    // To prevent free-during-use by external libraries referencing the dictionary handle and to
+    // serialize access to the swipe decoder's native state.
+    public static final Object sTrieUsageLock = new Object();
 
     // The cutoff returned by native for auto-commit confidence.
     // Must be equal to CONFIDENCE_TO_AUTO_COMMIT in native/jni/src/defines.h
