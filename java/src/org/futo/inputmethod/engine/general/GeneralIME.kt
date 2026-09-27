@@ -686,6 +686,34 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         }
     }
 
+    override fun onSurfaceSwipeDelete(steps: Int) {
+        setNeutralSuggestionStrip()
+        if (inputLogic.mConnection.hasCursorPosition()) {
+            val count = kotlin.math.abs(steps)
+            repeat(count) {
+                if (steps < 0) {
+                    inputLogic.cursorLeft(-1, true, true)
+                } else {
+                    inputLogic.cursorRight(1, true, true)
+                }
+            }
+        } else {
+            var remaining = steps
+            while (remaining < 0) {
+                onEvent(
+                    Event.createSoftwareKeypressEvent(
+                        Event.NOT_A_CODE_POINT,
+                        Constants.CODE_DELETE,
+                        Constants.NOT_A_COORDINATE,
+                        Constants.NOT_A_COORDINATE,
+                        false
+                    )
+                )
+                remaining++
+            }
+        }
+    }
+
     override fun onUpWithDeletePointerActive() {
         if (inputLogic.mConnection.hasSelection()) {
             val selection: CharSequence? = inputLogic.mConnection.getSelectedText(0)
