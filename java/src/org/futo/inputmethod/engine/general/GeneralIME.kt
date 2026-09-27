@@ -42,6 +42,7 @@ import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.throwIfDebug
@@ -88,15 +89,19 @@ object FutoDictionaryBridge {
 
         return try {
             val composed = ComposedData(
-                InputPointers(),
+                InputPointers(0), // defaultCapacity krävs
                 false,
                 prefix
+            )
+            val settingsForSuggestion = SettingsValuesForSuggestion(
+                settings.mBlockPotentiallyOffensive,
+                settings.mTransformerPredictionEnabled
             )
             val results = dict.getSuggestionResults(
                 composed,
                 NgramContext.EMPTY_PREV_WORDS_INFO,
                 keyboard,
-                settings.mSettingsValuesForSuggestion,
+                settingsForSuggestion,
                 0,
                 SuggestedWords.INPUT_STYLE_TYPING
             )
