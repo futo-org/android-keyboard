@@ -114,7 +114,7 @@ public final class MoreKeySpec {
         if (o instanceof MoreKeySpec) {
             final MoreKeySpec other = (MoreKeySpec)o;
             return mCode == other.mCode
-                    && mIconId == other.mIconId
+                    && TextUtils.equals(mIconId, other.mIconId)
                     && TextUtils.equals(mLabel, other.mLabel)
                     && TextUtils.equals(mOutputText, other.mOutputText)
                     && mDeduplicatable == other.mDeduplicatable;
