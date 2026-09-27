@@ -37,12 +37,10 @@ import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.WordComposer
-import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.inputlogic.InputLogic
 import org.futo.inputmethod.latin.settings.Settings
-import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.throwIfDebug
@@ -52,73 +50,6 @@ import org.futo.inputmethod.latin.utils.AsyncResultHolder
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import java.util.concurrent.atomic.AtomicInteger
-
-/**
- * Delad brygga så T9Engine kan använda samma FUTO-ordlista
- * (Språk & modeller → Ordlista) för prefix-komplettering på multi-tap-text.
- */
-object FutoDictionaryBridge {
-    @Volatile
-    private var facilitator: DictionaryFacilitator? = null
-
-    fun attach(dict: DictionaryFacilitator) {
-        facilitator = dict
-    }
-
-    fun get(): DictionaryFacilitator? = facilitator
-
-    /**
-     * Prefix-förslag från FUTO:s binary/user-ordlista.
-     * Kräver att ordlistan är laddad för aktiv locale.
-     */
-    fun getPrefixSuggestions(
-        prefix: String,
-        helper: IMEHelper,
-        maxResults: Int = 8
-    ): List<String> {
-        if (prefix.length < 2) return emptyList()
-        val dict = facilitator ?: return emptyList()
-        val settings = try {
-            Settings.getInstance().current
-        } catch (_: Exception) {
-            return emptyList()
-        }
-        if (!settings.needsToLookupSuggestions()) return emptyList()
-
-        val keyboard = helper.keyboardSwitcher.keyboard ?: return emptyList()
-
-        return try {
-            val composed = ComposedData(
-                InputPointers(0), // defaultCapacity krävs
-                false,
-                prefix
-            )
-            val settingsForSuggestion = SettingsValuesForSuggestion(
-                settings.mBlockPotentiallyOffensive,
-                settings.mTransformerPredictionEnabled
-            )
-            val results = dict.getSuggestionResults(
-                composed,
-                NgramContext.EMPTY_PREV_WORDS_INFO,
-                keyboard,
-                settingsForSuggestion,
-                0,
-                SuggestedWords.INPUT_STYLE_TYPING
-            )
-            results
-                .asSequence()
-                .mapNotNull { it?.mWord }
-                .filter { it.isNotBlank() && it.any { ch -> ch.isLetter() } }
-                .filter { it.startsWith(prefix, ignoreCase = true) }
-                .filter { !it.all { ch -> ch.isDigit() } }
-                .distinct()
-                .take(maxResults)
-                .toList()
-        } catch (_: Exception) {
-            emptyList()
-        }
-    }
-}
 
 interface WordLearner {
     fun addToHistory(
@@ -255,7 +186,6 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             && dictionaryFacilitator.isForLocales(locales)
             && dictionaryFacilitator.isForAccount(settings.mAccount)
         ) {
-            FutoDictionaryBridge.attach(dictionaryFacilitator)
             return
         }
 
@@ -276,13 +206,9 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         inputLogic.mSuggest.setPlausibilityThreshold(
             settings.mPlausibilityThreshold
         )
-
-        FutoDictionaryBridge.attach(dictionaryFacilitator)
     }
 
     override fun onCreate() {
-        FutoDictionaryBridge.attach(dictionaryFacilitator)
-
         languageModelFacilitator.launchProcessor()
         if (context.isDirectBootUnlocked) onDeviceUnlocked()
 
