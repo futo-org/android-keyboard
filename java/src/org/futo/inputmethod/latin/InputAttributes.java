@@ -27,6 +27,7 @@ import android.view.inputmethod.EditorInfo;
 import androidx.annotation.Nullable;
 
 import org.futo.inputmethod.latin.common.StringUtils;
+import org.futo.inputmethod.latin.settings.Settings;
 import org.futo.inputmethod.latin.utils.InputTypeUtils;
 
 import java.util.ArrayList;
@@ -130,6 +131,9 @@ public final class InputAttributes {
         final boolean forceNoSuggestionsByPrivateFlag = editorInfo.privateImeOptions != null
                 && editorInfo.privateImeOptions.contains("org.futo.inputmethod.latin.NoSuggestions=1");
 
+        final Settings settings = Settings.getInstance();
+        final boolean forceAutocorrectInAddressBars = settings.getCurrent().isAutoCorrectAddressBarsEnabled();
+
         // TODO: Have a helper method in InputTypeUtils
         // Make sure that passwords are not displayed in {@link SuggestionStripView}.
         final boolean shouldSuppressSuggestions = mIsPasswordField
@@ -148,8 +152,8 @@ public final class InputAttributes {
         // TODO: This may need adjustment
         mInputTypeNoAutoCorrect = shouldSuppressSuggestions
                 //|| (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !flagAutoCorrect)
-                || InputTypeUtils.isEmailVariation(variation)
-                || InputType.TYPE_TEXT_VARIATION_URI == variation
+                || (InputTypeUtils.isEmailVariation(variation) && !forceAutocorrectInAddressBars)
+                || (InputType.TYPE_TEXT_VARIATION_URI == variation && !forceAutocorrectInAddressBars)
                 || InputType.TYPE_TEXT_VARIATION_FILTER == variation
                 || (flagNoSuggestions && !flagAutoCorrect && variation != InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT)
                 || mIsCodeField;
@@ -171,12 +175,12 @@ public final class InputAttributes {
         mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
 
         // If we come here, inputClass is always TYPE_CLASS_TEXT
-        mIsGeneralTextInput = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS != variation
+        mIsGeneralTextInput = (InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS != variation || forceAutocorrectInAddressBars)
                 && InputType.TYPE_TEXT_VARIATION_PASSWORD != variation
                 && InputType.TYPE_TEXT_VARIATION_PHONETIC != variation
-                && InputType.TYPE_TEXT_VARIATION_URI != variation
+                && (InputType.TYPE_TEXT_VARIATION_URI != variation || forceAutocorrectInAddressBars)
                 && InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD != variation
-                && InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS != variation
+                && (InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS != variation || forceAutocorrectInAddressBars)
                 && InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD != variation;
 
         boolean noLearning = false;
