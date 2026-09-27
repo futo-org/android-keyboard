@@ -182,9 +182,14 @@
     <string name="autoupdater_perform_update">Update</string>
 
     <!-- These strings can appear in the keyboard itself -->
+    <string name="keyboard_suggest_manage_word_body">Manage the word \"<xliff:g name="wordToManage" example="crane">%s</xliff:g>\"</string>
     <string name="keyboard_suggest_blacklist_body">Blacklist the word \"<xliff:g name="wordToBlacklist" example="crane">%s</xliff:g>\" from being suggested?</string>
     <!-- Must be fairly short -->
+    <string name="keyboard_suggest_add_to_dictionary">Add to dictionary</string>
+    <!-- Must be fairly short -->
     <string name="keyboard_suggest_add_word_to_blacklist">Blacklist</string>
+    <string name="keyboard_suggest_added_to_dictionary">Added to dictionary</string>
+    <string name="keyboard_suggest_already_in_dictionary">Already in dictionary</string>
     <!-- Must be fairly short -->
     <string name="keyboard_suggest_disable_emojis">Disable emoji suggestions</string>
     <!-- Must be fairly short -->
