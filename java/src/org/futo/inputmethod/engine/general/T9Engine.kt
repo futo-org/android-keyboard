@@ -21,6 +21,9 @@ package org.futo.inputmethod.engine.general
  * Auto-caps: respekterar FUTO:s "Automatisk användning av stora bokstäver"
  * via getCurrentAutoCapsState() + helper.keyboardShiftMode. Efter mellanslag
  * / skiljetecken uppdateras shift-läget så nästa ord börjar med versal.
+ *
+ * OBS: requestUpdatingShiftState får INTE anropas i onStartInput — då är
+ * KeyboardLayoutSetV2 fortfarande null → NPE och tangentbordet försvinner.
  */
 
 import android.text.InputType
@@ -120,14 +123,19 @@ class T9Engine(
         wordDigits.clear()
         lastMultiTapDigit = -1
         setNeutralSuggestionStrip()
-        helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
+        // Viktigt: anropa INTE requestUpdatingShiftState här.
+        // KeyboardLayoutSetV2 är fortfarande null → NPE → IME dör.
     }
 
     override fun onFinishInput() {
         finalizeWord()
     }
 
-    override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {}
+    override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
+        // Layouten finns nu — säkert att spegla auto-caps i shift-UI.
+        refreshShiftState()
+    }
+
     override fun onOrientationChanged() {}
 
     override fun onUpdateSelection(
@@ -202,9 +210,11 @@ class T9Engine(
 
     private fun refreshShiftState() {
         try {
+            // Layout måste finnas, annars NPE i KeyboardState.setLayout
+            if (helper.keyboardSwitcher.keyboard == null) return
             helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
         } catch (_: Exception) {
-            // ignore
+            // ignore — t.ex. under uppstart innan layout är klar
         }
     }
 
