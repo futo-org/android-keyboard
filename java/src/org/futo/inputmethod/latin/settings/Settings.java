@@ -125,6 +125,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_backspace_delete_inserted_text";
     public static final String PREF_BACKSPACE_UNDO_AUTOCORRECT =
             "pref_backspace_undo_autocorrect";
+    public static final String PREF_BACKSPACE_DELETE_SWIPE_WORD =
+            "pref_backspace_delete_swipe_word";
 
     public static final String PREF_SPACEBAR_MODE_LEGACY = "pref_spacebar_mode";
     public static final int SPACEBAR_MODE_SWIPE_CURSOR_LEGACY = 0; // Long-Press switches language, swipe moves cursor

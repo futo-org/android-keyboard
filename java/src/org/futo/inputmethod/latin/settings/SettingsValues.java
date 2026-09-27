@@ -106,6 +106,7 @@ public class SettingsValues {
 
     public final boolean mBackspaceDeletesInsertedText;
     public final boolean mBackspaceUndoesAutocorrect;
+    public final boolean mBackspaceDeletesSwipeWord;
     public final int mSpacebarSwipeMode;
     public final int mSpacebarHoldMode;
     public final int mBackspaceMode;
@@ -203,6 +204,7 @@ public class SettingsValues {
 
         mBackspaceDeletesInsertedText = prefs.getBoolean(Settings.PREF_BACKSPACE_DELETE_INSERTED_TEXT, true);
         mBackspaceUndoesAutocorrect = prefs.getBoolean(Settings.PREF_BACKSPACE_UNDO_AUTOCORRECT, true);
+        mBackspaceDeletesSwipeWord = prefs.getBoolean(Settings.PREF_BACKSPACE_DELETE_SWIPE_WORD, true);
 
         int legacySpacebarMode = prefs.getInt(Settings.PREF_SPACEBAR_MODE_LEGACY, Settings.SPACEBAR_MODE_SWIPE_CURSOR_LEGACY);
         mSpacebarSwipeMode = prefs.getInt(Settings.PREF_SPACEBAR_SWIPE_MODE,

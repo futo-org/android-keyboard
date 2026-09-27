@@ -1445,7 +1445,7 @@ public final class InputLogic {
                 && inputTransaction.mSettingsValues.mBackspaceModeHold == Settings.BACKSPACE_MODE_WORDS;
 
         if (mWordComposer.isComposingWord() && !mConnection.hasSelection()) {
-            if (mWordComposer.isBatchMode()) {
+            if (mWordComposer.isBatchMode() && inputTransaction.mSettingsValues.mBackspaceDeletesSwipeWord) {
                 final String rejectedSuggestion = mWordComposer.getTypedWord();
                 mWordComposer.reset(true);
                 mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
@@ -1463,6 +1463,11 @@ public final class InputLogic {
                 }
             } else {
                 mWordComposer.applyProcessedEvent(event);
+                // Exit batch mode after the first backspace
+                if (mWordComposer.isBatchMode()) {
+                    final int[] codePoints = StringUtils.toCodePointArray(mWordComposer.getTypedWord());
+                    mWordComposer.setComposingWord(codePoints, mImeHelper.getCodepointCoordinates(codePoints));
+                }
                 StatsUtils.onBackspacePressed(1);
             }
             if (mWordComposer.isComposingWord()) {
