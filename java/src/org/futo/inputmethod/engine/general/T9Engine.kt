@@ -14,13 +14,13 @@ package org.futo.inputmethod.engine.general
  *      ALTERNATIV till vad multi-tap redan skrivit. Trycker man på ett
  *      förslag ersätts de redan inskrivna bokstäverna med det valda ordet.
  *
+ * Ordförslag: filtrerar bort rena siffror och nollställer stripen vid varje
+ * ny siffra så gamla enstaka bokstäver (t.ex. "H") inte ligger kvar och
+ * blandas med nästa tryck.
+ *
  * Auto-caps: respekterar FUTO:s "Automatisk användning av stora bokstäver"
  * via getCurrentAutoCapsState() + helper.keyboardShiftMode. Efter mellanslag
  * / skiljetecken uppdateras shift-läget så nästa ord börjar med versal.
- *
- * '*' och '#' är egna, vanliga tecken (inga lägesväxlare):
- *   - Långtryck '*' öppnar FUTO:s emoji-panel (helper.triggerAction).
- *   - Långtryck '#' visar specialtecken via layoutfilen t9.yaml.
  */
 
 import android.text.InputType
@@ -93,6 +93,7 @@ class T9Engine(
 
         return LanguageCollection.getByLocale(locale.toLanguageTag())
             ?: LanguageCollection.getByLanguageCode(locale.language)
+            ?: LanguageCollection.getByLanguageCode("sv")
     }
 
     private val checkedLanguageIds = mutableSetOf<Int>()
@@ -102,7 +103,9 @@ class T9Engine(
         if (!checkedLanguageIds.add(id)) return
         DataStore.exists({ existingIds ->
             if (!existingIds.contains(id)) {
-                io.github.sspanak.tt9.db.words.DictionaryLoader.load(helper.context, settingsStore, language)
+                io.github.sspanak.tt9.db.words.DictionaryLoader.load(
+                    helper.context, settingsStore, language
+                )
             }
         }, arrayListOf(language))
     }
@@ -117,7 +120,6 @@ class T9Engine(
         wordDigits.clear()
         lastMultiTapDigit = -1
         setNeutralSuggestionStrip()
-        // Se till att shift-läge speglar auto-caps vid fältstart
         helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
     }
 
@@ -139,13 +141,8 @@ class T9Engine(
     override fun isGestureHandlingAvailable(): Boolean = false
     override fun getStateHint(imeHint: String?): StateHint = DefaultStateHint
 
-    // --- Auto-caps (FUTO "Automatisk användning av stora bokstäver") ----
+    // --- Auto-caps -------------------------------------------------------
 
-    /**
-     * Måste implementeras — default i IMEInterface är alltid CAP_MODE_OFF,
-     * vilket gör att KeyboardState aldrig auto-shiftar och keyboardShiftMode
-     * förblir OFF. Då blir multi-tap alltid små bokstäver.
-     */
     override fun getCurrentAutoCapsState(): Int {
         val settings = try {
             Settings.getInstance().current
@@ -158,7 +155,6 @@ class T9Engine(
 
         val editorInfo = helper.getCurrentEditorInfo() ?: return Constants.TextUtils.CAP_MODE_OFF
         val inputType = editorInfo.inputType
-        // Fält som inte ska ha auto-caps (lösenord, e-post, URL, etc.)
         val variation = inputType and InputType.TYPE_MASK_VARIATION
         if (variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
             variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ||
@@ -172,8 +168,6 @@ class T9Engine(
 
         val ic = connect ?: return Constants.TextUtils.CAP_MODE_OFF
         return try {
-            // Enkel, stabil heuristik utifrån text före markören.
-            // CAP_MODE_WORDS = stor bokstav i början av mening/ord.
             val before = ic.getTextBeforeCursor(4, 0)?.toString() ?: ""
             when {
                 before.isEmpty() -> TextUtils.CAP_MODE_WORDS
@@ -182,8 +176,7 @@ class T9Engine(
                 before.endsWith(".\n") || before.endsWith("!\n") || before.endsWith("?\n") ->
                     TextUtils.CAP_MODE_WORDS
                 before.endsWith("\n") -> TextUtils.CAP_MODE_WORDS
-                // Efter skiljetecken utan mellanslag ännu (vanligt i vissa fält)
-                before.length >= 1 && before.last() in ".!?" -> TextUtils.CAP_MODE_WORDS
+                before.isNotEmpty() && before.last() in ".!?" -> TextUtils.CAP_MODE_WORDS
                 else -> Constants.TextUtils.CAP_MODE_OFF
             }
         } catch (_: Exception) {
@@ -191,7 +184,6 @@ class T9Engine(
         }
     }
 
-    /** True om manuell shift, caps lock eller auto-caps kräver versal. */
     private fun shouldUppercaseLetter(): Boolean {
         val shiftMode = helper.keyboardShiftMode
         if (shiftMode != WordComposer.CAPS_MODE_OFF) {
@@ -372,7 +364,6 @@ class T9Engine(
             event.mCodePoint == ' '.code || event.mKeyCode == Constants.CODE_SPACE -> {
                 finalizeWord()
                 connect?.commitText(" ", 1)
-                // Efter mellanslag: uppdatera auto-caps (t.ex. efter ". ")
                 refreshShiftState()
             }
 
@@ -387,8 +378,6 @@ class T9Engine(
                 }
                 finalizeWord()
                 val ch = String(Character.toChars(event.mCodePoint))
-                // Stor bokstav även för vanliga tecken om auto-caps gäller
-                // (t.ex. bokstäver från other keys) — siffror/symboler oförändrade
                 val out = if (ch.length == 1 && ch[0].isLetter()) applyCase(ch) else ch
                 connect?.commitText(out, 1)
                 refreshShiftState()
@@ -396,10 +385,6 @@ class T9Engine(
         }
     }
 
-    /**
-     * Multi-tap + parallell prediktion.
-     * Respekterar FUTO auto-caps + manuell shift/caps lock.
-     */
     private fun handleMultiTapDigit(digit: Int, language: Language) {
         val letters = language.getKeyCharacters(digit)
         if (letters.isEmpty()) {
@@ -422,13 +407,9 @@ class T9Engine(
         }
 
         val raw = letters[multiTapCycleIndex]
-        // Vid cykling inom samma position behåll samma "ska versalisera"-beslut
-        // som för första tecknet i den positionen: auto-caps gäller bara
-        // första bokstaven i ordet (wordDigits.size == 1 efter add).
         val letter = if (wordDigits.size <= 1 || (isContinuingCycle && wordDigits.size == 1)) {
             applyCase(raw)
         } else {
-            // Fortsättning av ord → alltid gemen (om inte manuell caps lock)
             val shiftMode = helper.keyboardShiftMode
             if (shiftMode == WordComposer.CAPS_MODE_MANUAL_SHIFT_LOCKED ||
                 shiftMode == WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED
@@ -446,26 +427,65 @@ class T9Engine(
         reloadPredictions(language)
     }
 
+    /**
+     * Nollställ strip direkt så gamla förslag (t.ex. "H" efter första 4:an)
+     * inte ligger kvar medan DB laddar nästa sekvens — det var det som
+     * gjorde att nästa tryck såg ut som en siffra i förslagsmenyn.
+     */
     private fun reloadPredictions(language: Language) {
         if (wordDigits.isEmpty()) {
             setNeutralSuggestionStrip()
             return
         }
+        setNeutralSuggestionStrip()
         predictions
             .setLanguage(language)
             .setDigitSequence(digitSequence)
             .load()
     }
 
+    /**
+     * Visa bara riktiga ord/bokstäver — aldrig rena siffror.
+     * Enstaka bokstäver tillåts bara vid första sifferpositionen
+     * (TT9 visar då t.ex. g/h/i för knappen 4).
+     */
     private fun onPredictionsChanged() {
+        // Ignorera sena callback om ordet redan avslutats
+        if (wordDigits.isEmpty()) {
+            setNeutralSuggestionStrip()
+            return
+        }
+
+        val seqLen = wordDigits.size
         val words = predictions.getList()
+            .asSequence()
+            .filter { w -> w.isNotBlank() }
+            // Aldrig rena siffror i stripen
+            .filter { w -> w.any { ch -> ch.isLetter() } }
+            .filter { w -> !w.all { ch -> ch.isDigit() } }
+            // Enstaka bokstäver bara när sekvensen är 1 siffra lång
+            .filter { w -> w.length >= 2 || (seqLen == 1 && w.length == 1) }
+            .distinct()
+            .take(8)
+            .toList()
+
         if (words.isEmpty()) {
             setNeutralSuggestionStrip()
             return
         }
 
-        val infoList = ArrayList<SuggestedWordInfo>(words.size)
-        words.forEachIndexed { index, word ->
+        val capped = words.map { w ->
+            if (shouldUppercaseLetter() && w.isNotEmpty()) {
+                w.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                }
+            } else {
+                w
+            }
+        }
+
+        val infoList = ArrayList<SuggestedWordInfo>(capped.size)
+        capped.forEachIndexed { index, word ->
             infoList.add(
                 SuggestedWordInfo(
                     word,
@@ -488,8 +508,6 @@ class T9Engine(
         if (wordDigits.isNotEmpty()) {
             connect?.deleteSurroundingText(wordDigits.size, 0)
         }
-        // Förslag från TT9 kan behålla sin egen casing; vid auto-caps
-        // i början av mening → versalisera första bokstaven.
         val out = if (shouldUppercaseLetter() && word.isNotEmpty()) {
             word.replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
