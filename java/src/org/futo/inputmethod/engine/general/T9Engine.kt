@@ -1,49 +1,36 @@
 package org.futo.inputmethod.engine.general
 
 /**
- * T9Engine — kopplar samman TT9:s (io.github.sspanak.tt9) SQLite-baserade
- * ordboks-/prediktionslager med FUTO:s IMEInterface.
+ * T9Engine — multi-tap + ordförslag från FUTO:s ordlista (prefix).
  *
- * OMDESIGNAD (2026-09): multi-tap är nu DEFAULT-beteendet för varje
- * sifferknapp — ingen separat "läges-knapp" behövs. Varje knapptryckning:
- *   1. Sätter/cyklar direkt in en bokstav i texten (multi-tap: samma knapp
- *      igen inom kort tid = nästa bokstav på den knappen, t.ex. 4,4,3,3,5
- *      ger "hej": 4-4→h, 3-3→e, 5→j).
- *   2. Bygger SAMTIDIGT upp en siffersekvens som skickas till TT9:s
- *      prediktionsmotor, vars ordförslag visas i förslagsraden som
- *      ALTERNATIV till vad multi-tap redan skrivit. Trycker man på ett
- *      förslag ersätts de redan inskrivna bokstäverna med det valda ordet.
- *
- * Ordförslag: filtrerar bort rena siffror och nollställer stripen vid varje
- * ny siffra så gamla enstaka bokstäver (t.ex. "H") inte ligger kvar och
- * blandas med nästa tryck.
- *
- * Auto-caps: respekterar FUTO:s "Automatisk användning av stora bokstäver"
- * via getCurrentAutoCapsState() + helper.keyboardShiftMode. Efter mellanslag
- * / skiljetecken uppdateras shift-läget så nästa ord börjar med versal.
+ * Multi-tap skriver bokstäver direkt. Förslag hämtas via FutoDictionaryBridge
+ * mot samma DictionaryFacilitator som GeneralIME (Språk & modeller → Ordlista).
+ * TT9 Language används bara för digit→bokstav (getKeyCharacters).
  */
 
 import android.text.InputType
 import android.text.TextUtils
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import io.github.sspanak.tt9.db.DataStore
-import io.github.sspanak.tt9.ime.modes.predictions.WordPredictions
 import io.github.sspanak.tt9.languages.Language
 import io.github.sspanak.tt9.languages.LanguageCollection
-import io.github.sspanak.tt9.preferences.settings.SettingsStore
 import org.futo.inputmethod.engine.DefaultStateHint
 import org.futo.inputmethod.engine.IMEHelper
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.engine.StateHint
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.keyboard.KeyboardId
+import org.futo.inputmethod.latin.DictionaryFacilitator
+import org.futo.inputmethod.latin.DictionaryFacilitatorProvider
+import org.futo.inputmethod.latin.NgramContext
+import org.futo.inputmethod.latin.RichInputMethodManager
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.WordComposer
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import java.util.Locale
 
@@ -53,12 +40,15 @@ class T9Engine(
 
     private val connect get() = helper.getCurrentInputConnection()
 
-    private lateinit var predictions: WordPredictions
-    private lateinit var settingsStore: SettingsStore
+    /** Egen facilitator om GeneralIME inte hunnit attach:a (T9 som enda motor). */
+    private val localDictionary: DictionaryFacilitator =
+        DictionaryFacilitatorProvider.getDictionaryFacilitator(false)
+
     private var currentLanguage: Language? = null
 
     private val wordDigits = mutableListOf<Int>()
-    private val digitSequence get() = wordDigits.joinToString("")
+    /** Det multi-tap skrivit hittills (prefix för FUTO-ordlistan). */
+    private val currentWord = StringBuilder()
 
     private var lastMultiTapDigit = -1
     private var multiTapCycleIndex = 0
@@ -70,24 +60,37 @@ class T9Engine(
     private val loadingState: MutableState<Boolean> = mutableStateOf(false)
     override fun getLoadingState(): MutableState<Boolean> = loadingState
 
-    // --- Livscykel -----------------------------------------------------
-
     override fun onCreate() {
-        val context = helper.context
-        DataStore.init(context)
-        settingsStore = SettingsStore(context)
-        LanguageCollection.init(context)
+        LanguageCollection.init(helper.context)
+        ensureFutoDictionary()
+    }
 
-        predictions = WordPredictions(settingsStore).apply {
-            setWordsChangedHandler { onPredictionsChanged() }
-        }
+    private fun ensureFutoDictionary() {
+        if (!helper.context.isDirectBootUnlocked) return
+        // Preferera GeneralIME:s delade facilitator om den finns
+        if (FutoDictionaryBridge.get() != null) return
+
+        val settings = Settings.getInstance().current
+        val locales = settings.mInputAttributes.mLocaleOverride?.let { listOf(it) }
+            ?: RichInputMethodManager.getInstance().currentSubtypeLocales
+
+        localDictionary.resetDictionaries(
+            helper.context,
+            locales,
+            settings.mUseContactsDict,
+            settings.mUsePersonalizedDicts,
+            false,
+            settings.mAccount,
+            "",
+            null
+        )
+        FutoDictionaryBridge.attach(localDictionary)
     }
 
     private fun resolveLanguage(): Language? {
         val locale = try {
-            org.futo.inputmethod.latin.RichInputMethodManager.getInstance()
-                .getCurrentSubtypeLocale()
-        } catch (e: Exception) {
+            RichInputMethodManager.getInstance().getCurrentSubtypeLocale()
+        } catch (_: Exception) {
             null
         } ?: return null
 
@@ -96,30 +99,21 @@ class T9Engine(
             ?: LanguageCollection.getByLanguageCode("sv")
     }
 
-    private val checkedLanguageIds = mutableSetOf<Int>()
-
-    private fun ensureDictionaryLoaded(language: Language) {
-        val id = language.id
-        if (!checkedLanguageIds.add(id)) return
-        DataStore.exists({ existingIds ->
-            if (!existingIds.contains(id)) {
-                io.github.sspanak.tt9.db.words.DictionaryLoader.load(
-                    helper.context, settingsStore, language
-                )
-            }
-        }, arrayListOf(language))
-    }
-
     override fun onDestroy() {
         wordDigits.clear()
+        currentWord.clear()
     }
 
-    override fun onDeviceUnlocked() {}
+    override fun onDeviceUnlocked() {
+        ensureFutoDictionary()
+    }
 
     override fun onStartInput() {
         wordDigits.clear()
+        currentWord.clear()
         lastMultiTapDigit = -1
         setNeutralSuggestionStrip()
+        ensureFutoDictionary()
         helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
     }
 
@@ -134,9 +128,7 @@ class T9Engine(
         oldSelStart: Int, oldSelEnd: Int,
         newSelStart: Int, newSelEnd: Int,
         composingSpanStart: Int, composingSpanEnd: Int
-    ) {
-        // Medvetet tom — nollställning här bröt flersiffriga sekvenser.
-    }
+    ) {}
 
     override fun isGestureHandlingAvailable(): Boolean = false
     override fun getStateHint(imeHint: String?): StateHint = DefaultStateHint
@@ -149,13 +141,10 @@ class T9Engine(
         } catch (_: Exception) {
             return Constants.TextUtils.CAP_MODE_OFF
         }
-        if (!settings.mAutoCap) {
-            return Constants.TextUtils.CAP_MODE_OFF
-        }
+        if (!settings.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF
 
         val editorInfo = helper.getCurrentEditorInfo() ?: return Constants.TextUtils.CAP_MODE_OFF
-        val inputType = editorInfo.inputType
-        val variation = inputType and InputType.TYPE_MASK_VARIATION
+        val variation = editorInfo.inputType and InputType.TYPE_MASK_VARIATION
         if (variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
             variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ||
             variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD ||
@@ -185,68 +174,43 @@ class T9Engine(
     }
 
     private fun shouldUppercaseLetter(): Boolean {
-        val shiftMode = helper.keyboardShiftMode
-        if (shiftMode != WordComposer.CAPS_MODE_OFF) {
-            return true
-        }
+        if (helper.keyboardShiftMode != WordComposer.CAPS_MODE_OFF) return true
         return getCurrentAutoCapsState() != Constants.TextUtils.CAP_MODE_OFF
     }
 
-    private fun applyCase(letter: String): String {
-        return if (shouldUppercaseLetter()) {
-            letter.uppercase(Locale.getDefault())
-        } else {
-            letter
-        }
-    }
+    private fun applyCase(letter: String): String =
+        if (shouldUppercaseLetter()) letter.uppercase(Locale.getDefault()) else letter
 
     private fun refreshShiftState() {
         try {
             helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
-        } catch (_: Exception) {
-            // ignore
-        }
+        } catch (_: Exception) {}
     }
 
     // --- Input -----------------------------------------------------------
 
     private fun handleFutoAction(event: Event): Boolean {
         val keyCode = event.mKeyCode
-
         if (keyCode in Constants.CODE_ACTION_0..Constants.CODE_ACTION_MAX) {
             finalizeWord()
             helper.triggerAction(keyCode - Constants.CODE_ACTION_0, false)
             return true
         }
-
         if (keyCode in Constants.CODE_ALT_ACTION_0..Constants.CODE_ALT_ACTION_MAX) {
             finalizeWord()
             helper.triggerAction(keyCode - Constants.CODE_ALT_ACTION_0, true)
             return true
         }
-
         return false
     }
 
     private fun isNumberRowPress(event: Event): Boolean {
-        if (event.mCodePoint !in '0'.code..'9'.code) {
-            return false
-        }
-
+        if (event.mCodePoint !in '0'.code..'9'.code) return false
         val keyboard = helper.keyboardSwitcher.keyboard
-        if (keyboard?.mId?.mNumberRow != true) {
-            return false
-        }
-
-        if (event.mY < 0) {
-            return false
-        }
-
+        if (keyboard?.mId?.mNumberRow != true) return false
+        if (event.mY < 0) return false
         val keyboardHeight = helper.keyboardRect.height()
-        if (keyboardHeight <= 0) {
-            return false
-        }
-
+        if (keyboardHeight <= 0) return false
         return event.mY < keyboardHeight * 0.20f
     }
 
@@ -255,47 +219,32 @@ class T9Engine(
         return keyboard.mId.mElementId == KeyboardId.ELEMENT_NUMBER
     }
 
-    override fun onEvent(event: Event) {
-        helper.requestCursorUpdate()
-
-        when (event.eventType) {
-            Event.EVENT_TYPE_INPUT_KEYPRESS,
-            Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> {
-                handleKeypress(event)
-            }
-
-            Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> {
-                handleSoftwareGeneratedText(event)
-            }
-
-            Event.EVENT_TYPE_SUGGESTION_PICKED -> {
-                event.mSuggestedWordInfo?.let { replaceCurrentWordWith(it.word) }
-            }
-
-            Event.EVENT_TYPE_DOWN_UP_KEYEVENT -> {
-                // Fysiska knappar
-            }
-
-            else -> {
-            }
-        }
-    }
-
-    private fun handleSoftwareGeneratedText(event: Event) {
-        val text = event.mText ?: return
-        if (text.isEmpty()) return
-
-        finalizeWord()
-        connect?.commitText(text, 1)
-        refreshShiftState()
-    }
-
     private fun isNumericInputField(): Boolean {
         val inputType = helper.getCurrentEditorInfo()?.inputType ?: return false
         val fieldClass = inputType and InputType.TYPE_MASK_CLASS
         return fieldClass == InputType.TYPE_CLASS_NUMBER ||
             fieldClass == InputType.TYPE_CLASS_PHONE ||
             fieldClass == InputType.TYPE_CLASS_DATETIME
+    }
+
+    override fun onEvent(event: Event) {
+        helper.requestCursorUpdate()
+        when (event.eventType) {
+            Event.EVENT_TYPE_INPUT_KEYPRESS,
+            Event.EVENT_TYPE_INPUT_KEYPRESS_RESUMED -> handleKeypress(event)
+            Event.EVENT_TYPE_SOFTWARE_GENERATED_STRING -> handleSoftwareGeneratedText(event)
+            Event.EVENT_TYPE_SUGGESTION_PICKED ->
+                event.mSuggestedWordInfo?.let { replaceCurrentWordWith(it.word) }
+            else -> {}
+        }
+    }
+
+    private fun handleSoftwareGeneratedText(event: Event) {
+        val text = event.mText ?: return
+        if (text.isEmpty()) return
+        finalizeWord()
+        connect?.commitText(text, 1)
+        refreshShiftState()
     }
 
     private fun handleKeypress(event: Event) {
@@ -311,9 +260,7 @@ class T9Engine(
             return
         }
 
-        if (handleFutoAction(event)) {
-            return
-        }
+        if (handleFutoAction(event)) return
 
         if (isNumberRowPress(event)) {
             finalizeWord()
@@ -330,15 +277,15 @@ class T9Engine(
         }
 
         val language = currentLanguage ?: resolveLanguage()?.also { currentLanguage = it } ?: return
-        ensureDictionaryLoaded(language)
 
         when {
             event.mKeyCode == Constants.CODE_DELETE -> {
-                if (wordDigits.isNotEmpty()) {
+                if (currentWord.isNotEmpty()) {
                     connect?.deleteSurroundingText(1, 0)
-                    wordDigits.removeAt(wordDigits.size - 1)
+                    currentWord.deleteCharAt(currentWord.length - 1)
+                    if (wordDigits.isNotEmpty()) wordDigits.removeAt(wordDigits.size - 1)
                     lastMultiTapDigit = -1
-                    reloadPredictions(language)
+                    reloadFutoSuggestions()
                 } else {
                     connect?.deleteSurroundingText(1, 0)
                 }
@@ -362,6 +309,18 @@ class T9Engine(
             }
 
             event.mCodePoint == ' '.code || event.mKeyCode == Constants.CODE_SPACE -> {
+                // Lär in ordet i FUTO user history om möjligt
+                if (currentWord.isNotEmpty()) {
+                    try {
+                        FutoDictionaryBridge.get()?.addToUserHistory(
+                            currentWord.toString(),
+                            currentWord.first().isUpperCase(),
+                            NgramContext.EMPTY_PREV_WORDS_INFO,
+                            System.currentTimeMillis() / 1000,
+                            true
+                        )
+                    } catch (_: Exception) {}
+                }
                 finalizeWord()
                 connect?.commitText(" ", 1)
                 refreshShiftState()
@@ -373,9 +332,7 @@ class T9Engine(
             }
 
             else -> {
-                if (event.isFunctionalKeyEvent()) {
-                    return
-                }
+                if (event.isFunctionalKeyEvent()) return
                 finalizeWord()
                 val ch = String(Character.toChars(event.mCodePoint))
                 val out = if (ch.length == 1 && ch[0].isLetter()) applyCase(ch) else ch
@@ -401,13 +358,14 @@ class T9Engine(
         if (isContinuingCycle) {
             multiTapCycleIndex = (multiTapCycleIndex + 1) % letters.size
             connect?.deleteSurroundingText(1, 0)
+            if (currentWord.isNotEmpty()) currentWord.deleteCharAt(currentWord.length - 1)
         } else {
             multiTapCycleIndex = 0
             wordDigits.add(digit)
         }
 
         val raw = letters[multiTapCycleIndex]
-        val letter = if (wordDigits.size <= 1 || (isContinuingCycle && wordDigits.size == 1)) {
+        val letter = if (currentWord.isEmpty()) {
             applyCase(raw)
         } else {
             val shiftMode = helper.keyboardShiftMode
@@ -416,59 +374,29 @@ class T9Engine(
             ) {
                 raw.uppercase(Locale.getDefault())
             } else {
-                raw
+                raw.lowercase(Locale.getDefault())
             }
         }
 
         connect?.commitText(letter, 1)
+        currentWord.append(letter.lowercase(Locale.getDefault()))
         lastMultiTapDigit = digit
         lastMultiTapTimeMs = now
 
-        reloadPredictions(language)
+        reloadFutoSuggestions()
     }
 
-    /**
-     * Nollställ strip direkt så gamla förslag (t.ex. "H" efter första 4:an)
-     * inte ligger kvar medan DB laddar nästa sekvens — det var det som
-     * gjorde att nästa tryck såg ut som en siffra i förslagsmenyn.
-     */
-    private fun reloadPredictions(language: Language) {
-        if (wordDigits.isEmpty()) {
+    /** Ordförslag från FUTO:s ordlista utifrån multi-tap-prefix. */
+    private fun reloadFutoSuggestions() {
+        val prefix = currentWord.toString()
+        if (prefix.length < 2) {
             setNeutralSuggestionStrip()
             return
         }
+
         setNeutralSuggestionStrip()
-        predictions
-            .setLanguage(language)
-            .setDigitSequence(digitSequence)
-            .load()
-    }
 
-    /**
-     * Visa bara riktiga ord/bokstäver — aldrig rena siffror.
-     * Enstaka bokstäver tillåts bara vid första sifferpositionen
-     * (TT9 visar då t.ex. g/h/i för knappen 4).
-     */
-    private fun onPredictionsChanged() {
-        // Ignorera sena callback om ordet redan avslutats
-        if (wordDigits.isEmpty()) {
-            setNeutralSuggestionStrip()
-            return
-        }
-
-        val seqLen = wordDigits.size
-        val words = predictions.getList()
-            .asSequence()
-            .filter { w -> w.isNotBlank() }
-            // Aldrig rena siffror i stripen
-            .filter { w -> w.any { ch -> ch.isLetter() } }
-            .filter { w -> !w.all { ch -> ch.isDigit() } }
-            // Enstaka bokstäver bara när sekvensen är 1 siffra lång
-            .filter { w -> w.length >= 2 || (seqLen == 1 && w.length == 1) }
-            .distinct()
-            .take(8)
-            .toList()
-
+        val words = FutoDictionaryBridge.getPrefixSuggestions(prefix, helper)
         if (words.isEmpty()) {
             setNeutralSuggestionStrip()
             return
@@ -479,9 +407,7 @@ class T9Engine(
                 w.replaceFirstChar {
                     if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
                 }
-            } else {
-                w
-            }
+            } else w
         }
 
         val infoList = ArrayList<SuggestedWordInfo>(capped.size)
@@ -489,9 +415,9 @@ class T9Engine(
             infoList.add(
                 SuggestedWordInfo(
                     word,
-                    "",
+                    prefix,
                     Int.MAX_VALUE - index,
-                    SuggestedWordInfo.KIND_PREDICTION,
+                    SuggestedWordInfo.KIND_COMPLETION,
                     null,
                     SuggestedWordInfo.NOT_AN_INDEX,
                     SuggestedWordInfo.NOT_A_CONFIDENCE
@@ -505,19 +431,29 @@ class T9Engine(
     }
 
     private fun replaceCurrentWordWith(word: String) {
-        if (wordDigits.isNotEmpty()) {
-            connect?.deleteSurroundingText(wordDigits.size, 0)
-        }
+        val len = currentWord.length
+        if (len > 0) connect?.deleteSurroundingText(len, 0)
+
         val out = if (shouldUppercaseLetter() && word.isNotEmpty()) {
             word.replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
             }
-        } else {
-            word
-        }
+        } else word
+
         connect?.commitText(out, 1)
-        predictions.onAccept(word, digitSequence)
+
+        try {
+            FutoDictionaryBridge.get()?.addToUserHistory(
+                word,
+                out.firstOrNull()?.isUpperCase() == true,
+                NgramContext.EMPTY_PREV_WORDS_INFO,
+                System.currentTimeMillis() / 1000,
+                true
+            )
+        } catch (_: Exception) {}
+
         wordDigits.clear()
+        currentWord.clear()
         lastMultiTapDigit = -1
         setNeutralSuggestionStrip()
         refreshShiftState()
@@ -525,6 +461,7 @@ class T9Engine(
 
     private fun finalizeWord() {
         wordDigits.clear()
+        currentWord.clear()
         lastMultiTapDigit = -1
         setNeutralSuggestionStrip()
     }
@@ -532,8 +469,6 @@ class T9Engine(
     private fun setNeutralSuggestionStrip() {
         helper.setNeutralSuggestionStrip()
     }
-
-    // --- IMEInterface stubs -----------------------------------------------
 
     override fun onStartBatchInput() {}
     override fun onUpdateBatchInput(batchPointers: InputPointers?) {}
@@ -548,6 +483,8 @@ class T9Engine(
     override fun onUpWithPointerActive() {}
     override fun onSwipeLanguage(direction: Int) {}
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {}
-    override fun clearUserHistoryDictionaries() {}
-    override fun requestSuggestionRefresh() { onPredictionsChanged() }
+    override fun clearUserHistoryDictionaries() {
+        FutoDictionaryBridge.get()?.clearUserHistoryDictionary(helper.context)
+    }
+    override fun requestSuggestionRefresh() { reloadFutoSuggestions() }
 }
