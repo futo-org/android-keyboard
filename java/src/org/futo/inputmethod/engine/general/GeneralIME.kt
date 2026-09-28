@@ -51,16 +51,14 @@ import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.utils.AsyncResultHolder
 import org.futo.inputmethod.latin.xlm.LanguageModelFacilitator
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
-import java.util.Locale
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * Delad brygga så T9Engine kan använda FUTO-ordlista
+ * Delad brygga så T9Engine kan använda samma FUTO-ordlista
  * (Språk & modeller → Ordlista) för prefix-komplettering.
  *
- * T9 kan attach:a sin egen DictionaryFacilitator (när T9 är aktiv motor
- * startas inte alltid GeneralIME). getSuggestionResults med T9-layout
- * kan ge tom lista eller native-fel — alltid try/catch.
+ * OBS: getSuggestionResults med T9-layout kan native-krascha.
+ * Anropet är try/catch:at; vid fel returneras tom lista så IME överlever.
  */
 object FutoDictionaryBridge {
     @Volatile
@@ -72,21 +70,6 @@ object FutoDictionaryBridge {
 
     fun get(): DictionaryFacilitator? = facilitator
 
-    /** Finns ordet i FUTO:s binary/user-ordlista? */
-    fun isValidWord(word: String): Boolean {
-        if (word.isBlank()) return false
-        val dict = facilitator ?: return false
-        return try {
-            dict.isValidSpellingWord(word) || dict.isValidSuggestionWord(word)
-        } catch (_: Throwable) {
-            false
-        }
-    }
-
-    /**
-     * Prefix-förslag från FUTO:s ordlista.
-     * Kräver att någon (GeneralIME eller T9Engine) har attach:at en laddad facilitator.
-     */
     fun getPrefixSuggestions(
         prefix: String,
         helper: IMEHelper,
@@ -94,8 +77,6 @@ object FutoDictionaryBridge {
     ): List<String> {
         if (prefix.length < 2) return emptyList()
         val dict = facilitator ?: return emptyList()
-        if (!dict.hasAtLeastOneInitializedMainDictionary()) return emptyList()
-
         val settings = try {
             Settings.getInstance().current
         } catch (_: Exception) {
@@ -104,13 +85,12 @@ object FutoDictionaryBridge {
         if (!settings.needsToLookupSuggestions()) return emptyList()
 
         val keyboard = helper.keyboardSwitcher.keyboard ?: return emptyList()
-        val query = prefix.lowercase(Locale.getDefault())
 
         return try {
             val composed = ComposedData(
                 InputPointers(0),
                 false,
-                query
+                prefix
             )
             val settingsForSuggestion = SettingsValuesForSuggestion(
                 settings.mBlockPotentiallyOffensive,
@@ -128,7 +108,7 @@ object FutoDictionaryBridge {
                 .asSequence()
                 .mapNotNull { it?.mWord }
                 .filter { it.isNotBlank() && it.any { ch -> ch.isLetter() } }
-                .filter { it.startsWith(query, ignoreCase = true) }
+                .filter { it.startsWith(prefix, ignoreCase = true) }
                 .filter { !it.all { ch -> ch.isDigit() } }
                 .distinct()
                 .take(maxResults)
