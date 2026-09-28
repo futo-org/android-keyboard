@@ -1,26 +1,16 @@
 package org.futo.inputmethod.engine.general
 
 /**
- * T9Engine — kopplar samman TT9:s (io.github.sspanak.tt9) SQLite-baserade
- * ordboks-/prediktionslager med FUTO:s IMEInterface.
+ * T9Engine — multi-tap T9 med FUTO:s ordlista (Språk & modeller → Ordlista)
+ * för prefix-förslag, plus TT9 för siffersekvens / bokstavskartor.
  *
- * OMDESIGNAD (2026-09): multi-tap är nu DEFAULT-beteendet för varje
- * sifferknapp — ingen separat "läges-knapp" behövs. Varje knapptryckning:
- *   1. Sätter/cyklar direkt in en bokstav i texten (multi-tap: samma knapp
- *      igen inom kort tid = nästa bokstav på den knappen, t.ex. 4,4,3,3,5
- *      ger "hej": 4-4→h, 3-3→e, 5→j).
- *   2. Bygger SAMTIDIGT upp en siffersekvens som skickas till TT9:s
- *      prediktionsmotor, vars ordförslag visas i förslagsraden som
- *      ALTERNATIV till vad multi-tap redan skrivit. Trycker man på ett
- *      förslag ersätts de redan inskrivna bokstäverna med det valda ordet.
+ * Multi-tap är DEFAULT på varje sifferknapp:
+ *   1. Sätter/cyklar bokstav i texten (t.ex. 4,4,3,3,5 → "hej").
+ *   2. Bygger upp currentWord (prefix) som frågas mot FUTO DictionaryFacilitator.
+ *   3. TT9 WordPredictions körs parallellt; träffar slås ihop och filtreras.
  *
- * Ordförslag: filtrerar bort rena siffror och nollställer stripen vid varje
- * ny siffra så gamla enstaka bokstäver (t.ex. "H") inte ligger kvar och
- * blandas med nästa tryck.
- *
- * Auto-caps: respekterar FUTO:s "Automatisk användning av stora bokstäver"
- * via getCurrentAutoCapsState() + helper.keyboardShiftMode. Efter mellanslag
- * / skiljetecken uppdateras shift-läget så nästa ord börjar med versal.
+ * T9 laddar ordlistan SJÄLV (ensureFutoDictionary) — beror inte på att
+ * GeneralIME har körts först.
  *
  * OBS: requestUpdatingShiftState får INTE anropas i onStartInput — då är
  * KeyboardLayoutSetV2 fortfarande null → NPE och tangentbordet försvinner.
@@ -28,6 +18,7 @@ package org.futo.inputmethod.engine.general
 
 import android.text.InputType
 import android.text.TextUtils
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import io.github.sspanak.tt9.db.DataStore
@@ -41,12 +32,16 @@ import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.engine.StateHint
 import org.futo.inputmethod.event.Event
 import org.futo.inputmethod.keyboard.KeyboardId
+import org.futo.inputmethod.latin.DictionaryFacilitator
+import org.futo.inputmethod.latin.DictionaryFacilitatorProvider
+import org.futo.inputmethod.latin.NgramContext
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.WordComposer
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import java.util.Locale
 
@@ -60,6 +55,13 @@ class T9Engine(
     private lateinit var settingsStore: SettingsStore
     private var currentLanguage: Language? = null
 
+    /** FUTO binary/user-ordlista — samma typ som GeneralIME använder. */
+    private val dictionaryFacilitator: DictionaryFacilitator =
+        DictionaryFacilitatorProvider.getDictionaryFacilitator(false)
+
+    /** Bokstäverna som multi-tap skrivit in (prefix för FUTO-förslag). */
+    private val currentWord = StringBuilder()
+
     private val wordDigits = mutableListOf<Int>()
     private val digitSequence get() = wordDigits.joinToString("")
 
@@ -69,6 +71,7 @@ class T9Engine(
     private val MULTI_TAP_TIMEOUT_MS = 1200L
 
     private val EMOJI_ACTION_ID = 0
+    private val TAG = "T9Suggest"
 
     private val loadingState: MutableState<Boolean> = mutableStateOf(false)
     override fun getLoadingState(): MutableState<Boolean> = loadingState
@@ -84,6 +87,8 @@ class T9Engine(
         predictions = WordPredictions(settingsStore).apply {
             setWordsChangedHandler { onPredictionsChanged() }
         }
+
+        FutoDictionaryBridge.attach(dictionaryFacilitator)
     }
 
     private fun resolveLanguage(): Language? {
@@ -101,7 +106,7 @@ class T9Engine(
 
     private val checkedLanguageIds = mutableSetOf<Int>()
 
-    private fun ensureDictionaryLoaded(language: Language) {
+    private fun ensureTt9DictionaryLoaded(language: Language) {
         val id = language.id
         if (!checkedLanguageIds.add(id)) return
         DataStore.exists({ existingIds ->
@@ -113,26 +118,76 @@ class T9Engine(
         }, arrayListOf(language))
     }
 
-    override fun onDestroy() {
-        wordDigits.clear()
+    /**
+     * Ladda FUTO:s ordlista för aktiv locale (t.ex. Svenska importerad).
+     * Måste köras från T9 — GeneralIME startas inte när T9 är aktiv motor.
+     */
+    private fun ensureFutoDictionary() {
+        if (!helper.context.isDirectBootUnlocked) return
+        try {
+            val settings = Settings.getInstance().current
+            val locales = settings.mInputAttributes.mLocaleOverride?.let { listOf(it) }
+                ?: org.futo.inputmethod.latin.RichInputMethodManager.getInstance()
+                    .currentSubtypeLocales
+
+            if (dictionaryFacilitator.isForLocales(locales) &&
+                dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()
+            ) {
+                FutoDictionaryBridge.attach(dictionaryFacilitator)
+                return
+            }
+
+            dictionaryFacilitator.resetDictionaries(
+                helper.context,
+                locales,
+                settings.mUseContactsDict,
+                settings.mUsePersonalizedDicts,
+                false,
+                settings.mAccount,
+                "",
+                null
+            )
+            FutoDictionaryBridge.attach(dictionaryFacilitator)
+            Log.d(
+                TAG,
+                "dict loaded=${dictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()} locales=$locales"
+            )
+        } catch (t: Throwable) {
+            Log.e(TAG, "ensureFutoDictionary failed", t)
+        }
     }
 
-    override fun onDeviceUnlocked() {}
+    override fun onDestroy() {
+        wordDigits.clear()
+        currentWord.clear()
+        try {
+            dictionaryFacilitator.closeDictionaries()
+        } catch (_: Exception) {
+        }
+    }
+
+    override fun onDeviceUnlocked() {
+        ensureFutoDictionary()
+    }
 
     override fun onStartInput() {
         wordDigits.clear()
+        currentWord.clear()
         lastMultiTapDigit = -1
         setNeutralSuggestionStrip()
-        // Viktigt: anropa INTE requestUpdatingShiftState här.
-        // KeyboardLayoutSetV2 är fortfarande null → NPE → IME dör.
+        ensureFutoDictionary()
+        // INTE requestUpdatingShiftState här — layout-set är null → NPE.
     }
 
     override fun onFinishInput() {
         finalizeWord()
+        try {
+            dictionaryFacilitator.onFinishInput(helper.context)
+        } catch (_: Exception) {
+        }
     }
 
     override fun onLayoutUpdated(layout: KeyboardLayoutSetV2) {
-        // Layouten finns nu — säkert att spegla auto-caps i shift-UI.
         refreshShiftState()
     }
 
@@ -210,11 +265,9 @@ class T9Engine(
 
     private fun refreshShiftState() {
         try {
-            // Layout måste finnas, annars NPE i KeyboardState.setLayout
             if (helper.keyboardSwitcher.keyboard == null) return
             helper.keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState())
         } catch (_: Exception) {
-            // ignore — t.ex. under uppstart innan layout är klar
         }
     }
 
@@ -283,7 +336,6 @@ class T9Engine(
             }
 
             Event.EVENT_TYPE_DOWN_UP_KEYEVENT -> {
-                // Fysiska knappar
             }
 
             else -> {
@@ -340,15 +392,18 @@ class T9Engine(
         }
 
         val language = currentLanguage ?: resolveLanguage()?.also { currentLanguage = it } ?: return
-        ensureDictionaryLoaded(language)
+        ensureTt9DictionaryLoaded(language)
 
         when {
             event.mKeyCode == Constants.CODE_DELETE -> {
                 if (wordDigits.isNotEmpty()) {
                     connect?.deleteSurroundingText(1, 0)
                     wordDigits.removeAt(wordDigits.size - 1)
+                    if (currentWord.isNotEmpty()) {
+                        currentWord.deleteCharAt(currentWord.length - 1)
+                    }
                     lastMultiTapDigit = -1
-                    reloadPredictions(language)
+                    reloadSuggestions(language)
                 } else {
                     connect?.deleteSurroundingText(1, 0)
                 }
@@ -411,6 +466,9 @@ class T9Engine(
         if (isContinuingCycle) {
             multiTapCycleIndex = (multiTapCycleIndex + 1) % letters.size
             connect?.deleteSurroundingText(1, 0)
+            if (currentWord.isNotEmpty()) {
+                currentWord.deleteCharAt(currentWord.length - 1)
+            }
         } else {
             multiTapCycleIndex = 0
             wordDigits.add(digit)
@@ -431,59 +489,82 @@ class T9Engine(
         }
 
         connect?.commitText(letter, 1)
+        currentWord.append(letter)
         lastMultiTapDigit = digit
         lastMultiTapTimeMs = now
 
-        reloadPredictions(language)
+        reloadSuggestions(language)
     }
 
-    /**
-     * Nollställ strip direkt så gamla förslag (t.ex. "H" efter första 4:an)
-     * inte ligger kvar medan DB laddar nästa sekvens — det var det som
-     * gjorde att nästa tryck såg ut som en siffra i förslagsmenyn.
-     */
-    private fun reloadPredictions(language: Language) {
-        if (wordDigits.isEmpty()) {
+    // --- Ordförslag: FUTO-prefix + TT9 ------------------------------------
+
+    private fun reloadSuggestions(language: Language) {
+        if (wordDigits.isEmpty() || currentWord.isEmpty()) {
             setNeutralSuggestionStrip()
             return
         }
         setNeutralSuggestionStrip()
+
+        // TT9 (siffersekvens) → asynkron onPredictionsChanged
         predictions
             .setLanguage(language)
             .setDigitSequence(digitSequence)
             .load()
+
+        // FUTO (textprefix) — visa direkt; uppdateras igen när TT9 svarar
+        showMergedSuggestions(emptyList())
     }
 
-    /**
-     * Visa bara riktiga ord/bokstäver — aldrig rena siffror.
-     * Enstaka bokstäver tillåts bara vid första sifferpositionen
-     * (TT9 visar då t.ex. g/h/i för knappen 4).
-     */
     private fun onPredictionsChanged() {
-        // Ignorera sena callback om ordet redan avslutats
         if (wordDigits.isEmpty()) {
             setNeutralSuggestionStrip()
             return
         }
+        val tt9 = predictions.getList()
+            .filter { it.isNotBlank() && it.any { ch -> ch.isLetter() } }
+            .filter { !it.all { ch -> ch.isDigit() } }
+        showMergedSuggestions(tt9)
+    }
 
+    private fun showMergedSuggestions(tt9Words: List<String>) {
+        val prefix = currentWord.toString()
         val seqLen = wordDigits.size
-        val words = predictions.getList()
-            .asSequence()
-            .filter { w -> w.isNotBlank() }
-            // Aldrig rena siffror i stripen
-            .filter { w -> w.any { ch -> ch.isLetter() } }
-            .filter { w -> !w.all { ch -> ch.isDigit() } }
-            // Enstaka bokstäver bara när sekvensen är 1 siffra lång
-            .filter { w -> w.length >= 2 || (seqLen == 1 && w.length == 1) }
-            .distinct()
-            .take(8)
-            .toList()
 
-        if (words.isEmpty()) {
-            setNeutralSuggestionStrip()
+        if (prefix.length < 2) {
+            val letters = tt9Words
+                .filter { it.length >= 2 || (seqLen == 1 && it.length == 1) }
+                .distinct()
+                .take(8)
+            if (letters.isEmpty()) {
+                setNeutralSuggestionStrip()
+                return
+            }
+            publishStrip(letters)
             return
         }
 
+        val futo = FutoDictionaryBridge.getPrefixSuggestions(prefix, helper, 8)
+        val tt9Validated = tt9Words
+            .filter { it.length >= 2 }
+            .filter {
+                it.startsWith(prefix, ignoreCase = true) ||
+                    FutoDictionaryBridge.isValidWord(it)
+            }
+
+        val merged = (futo + tt9Validated)
+            .distinctBy { it.lowercase(Locale.getDefault()) }
+            .take(8)
+
+        Log.d(TAG, "prefix=$prefix futo=${futo.size} tt9=${tt9Words.size} merged=${merged.size} $merged")
+
+        if (merged.isEmpty()) {
+            setNeutralSuggestionStrip()
+            return
+        }
+        publishStrip(merged)
+    }
+
+    private fun publishStrip(words: List<String>) {
         val capped = words.map { w ->
             if (shouldUppercaseLetter() && w.isNotEmpty()) {
                 w.replaceFirstChar {
@@ -515,8 +596,9 @@ class T9Engine(
     }
 
     private fun replaceCurrentWordWith(word: String) {
-        if (wordDigits.isNotEmpty()) {
-            connect?.deleteSurroundingText(wordDigits.size, 0)
+        val len = currentWord.length.coerceAtLeast(wordDigits.size)
+        if (len > 0) {
+            connect?.deleteSurroundingText(len, 0)
         }
         val out = if (shouldUppercaseLetter() && word.isNotEmpty()) {
             word.replaceFirstChar {
@@ -526,8 +608,25 @@ class T9Engine(
             word
         }
         connect?.commitText(out, 1)
-        predictions.onAccept(word, digitSequence)
+
+        try {
+            predictions.onAccept(word, digitSequence)
+        } catch (_: Exception) {
+        }
+
+        try {
+            dictionaryFacilitator.addToUserHistory(
+                word,
+                out.firstOrNull()?.isUpperCase() == true,
+                NgramContext.EMPTY_PREV_WORDS_INFO,
+                System.currentTimeMillis() / 1000,
+                false
+            )
+        } catch (_: Exception) {
+        }
+
         wordDigits.clear()
+        currentWord.clear()
         lastMultiTapDigit = -1
         setNeutralSuggestionStrip()
         refreshShiftState()
@@ -535,6 +634,7 @@ class T9Engine(
 
     private fun finalizeWord() {
         wordDigits.clear()
+        currentWord.clear()
         lastMultiTapDigit = -1
         setNeutralSuggestionStrip()
     }
@@ -558,6 +658,14 @@ class T9Engine(
     override fun onUpWithPointerActive() {}
     override fun onSwipeLanguage(direction: Int) {}
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {}
-    override fun clearUserHistoryDictionaries() {}
-    override fun requestSuggestionRefresh() { onPredictionsChanged() }
+    override fun clearUserHistoryDictionaries() {
+        try {
+            dictionaryFacilitator.clearUserHistoryDictionary(helper.context)
+            ensureFutoDictionary()
+        } catch (_: Exception) {
+        }
+    }
+    override fun requestSuggestionRefresh() {
+        currentLanguage?.let { reloadSuggestions(it) } ?: onPredictionsChanged()
+    }
 }
