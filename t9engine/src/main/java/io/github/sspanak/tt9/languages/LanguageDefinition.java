@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import io.github.sspanak.tt9.BuildConfig;
@@ -18,7 +19,10 @@ public class LanguageDefinition {
 	private static final String LOG_TAG = LanguageDefinition.class.getSimpleName();
 
 	private static final String LANGUAGES_DIR = "languages";
-	private static final String DEFINITIONS_PATH = LANGUAGES_DIR + "/definitions.yml";
+	/** Mapp med en .yml per språk (t.ex. Swedish.yml). */
+	private static final String DEFINITIONS_DIR = LANGUAGES_DIR + "/definitions";
+	/** Bakåtkompatibilitet: sammanslagen fil om mappen saknas/är tom. */
+	private static final String DEFINITIONS_FILE = LANGUAGES_DIR + "/definitions.yml";
 	private static final String YAML_SEPARATOR = "---";
 
 	public String abcString = "";
@@ -39,52 +43,101 @@ public class LanguageDefinition {
 
 	private boolean inLayout = false;
 
-
-
 	/**
-	 * Converts YAML definitions to a LanguageDefinition objects. All properties in the YAML are
+	 * Converts YAML definitions to LanguageDefinition objects. All properties in the YAML are
 	 * considered optional, so the LanguageDefinition defaults will be used when some property is omitted.
 	 * Had to write all this, because the only usable library, SnakeYAML, works fine on Android 10+,
 	 * but causes crashes on older devices.
 	 */
 	private LanguageDefinition() {}
 
-
 	/**
-	 * Returns a list of all language definitions contained in the asset at DEFINITIONS_PATH,
-	 * or an empty list on error.
+	 * Returns all language definitions from assets.
+	 * <p>
+	 * Preferred: {@code languages/definitions/*.yml} (one file per language).<br>
+	 * Fallback: {@code languages/definitions.yml} with {@code ---} between languages.
 	 */
 	public static ArrayList<LanguageDefinition> getAll(AssetManager assets) {
-		String[] definitionLines = readDefinitions(assets);
-		if (definitionLines.length == 0) {
-			return new ArrayList<>();
-		}
-
 		ArrayList<LanguageDefinition> definitions = new ArrayList<>();
 
-		LanguageDefinition definition = new LanguageDefinition();
-		for (String line : definitionLines) {
-			if (YAML_SEPARATOR.equals(line)) {
-				definitions.add(definition);
-				definition = new LanguageDefinition();
-			} else if (!definition.setLayoutEntry(line)) {
-				definition.setProperty(line);
+		// 1) languages/definitions/*.yml
+		String[] files = null;
+		try {
+			files = assets.list(DEFINITIONS_DIR);
+		} catch (IOException e) {
+			Logger.e(LOG_TAG, "Failed listing '" + DEFINITIONS_DIR + "'. " + e.getMessage());
+		}
+
+		if (files != null && files.length > 0) {
+			Arrays.sort(files);
+			for (String name : files) {
+				if (name == null || !name.endsWith(".yml")) {
+					continue;
+				}
+				String path = DEFINITIONS_DIR + "/" + name;
+				String[] lines = readAssetLines(assets, path);
+				if (lines.length == 0) {
+					continue;
+				}
+				definitions.addAll(parseDefinitionBlocks(lines));
 			}
 		}
 
-		definitions.add(definition);
+		// 2) Fallback: languages/definitions.yml
+		if (definitions.isEmpty()) {
+			String[] lines = readAssetLines(assets, DEFINITIONS_FILE);
+			if (lines.length > 0) {
+				definitions.addAll(parseDefinitionBlocks(lines));
+			}
+		}
 
 		Logger.d("tt9.LanguageCollection", "Found " + definitions.size() + " languages");
 		return definitions;
 	}
 
-
 	/**
-	 * Reads the language definitions from DEFINITIONS_PATH and returns them as an array of strings.
+	 * Parses one or more definition blocks from YAML lines.
+	 * Blocks are separated by {@code ---}; a single-language file is one block.
 	 */
-	private static String[] readDefinitions(AssetManager assets) {
+	private static ArrayList<LanguageDefinition> parseDefinitionBlocks(String[] lines) {
+		ArrayList<LanguageDefinition> out = new ArrayList<>();
+		LanguageDefinition definition = new LanguageDefinition();
+		boolean hasContent = false;
+
+		for (String raw : lines) {
+			if (raw == null) {
+				continue;
+			}
+			// Strip end-of-line comments
+			String line = raw.replaceFirst("\\s*#.*$", "").trim();
+			if (line.isEmpty()) {
+				continue;
+			}
+
+			if (YAML_SEPARATOR.equals(line)) {
+				if (hasContent) {
+					out.add(definition);
+				}
+				definition = new LanguageDefinition();
+				hasContent = false;
+				continue;
+			}
+
+			if (!definition.setLayoutEntry(line)) {
+				definition.setProperty(line);
+			}
+			hasContent = true;
+		}
+
+		if (hasContent) {
+			out.add(definition);
+		}
+		return out;
+	}
+
+	private static String[] readAssetLines(AssetManager assets, String path) {
 		try {
-			BufferedReader reader = new AssetFile(assets, DEFINITIONS_PATH).getReader();
+			BufferedReader reader = new AssetFile(assets, path).getReader();
 			StringBuilder contents = new StringBuilder();
 			char[] buffer = new char[10000];
 			int read;
@@ -92,14 +145,14 @@ public class LanguageDefinition {
 			while ((read = reader.read(buffer)) != -1) {
 				contents.append(buffer, 0, read);
 			}
+			reader.close();
 
-			return contents.toString().split("\n");
+			return contents.toString().split("\n", -1);
 		} catch (IOException e) {
-			Logger.e(LOG_TAG, "Failed reading language definitions from: '" + DEFINITIONS_PATH + "'. " + e.getMessage());
+			Logger.e(LOG_TAG, "Failed reading language definitions from: '" + path + "'. " + e.getMessage());
 			return new String[0];
 		}
 	}
-
 
 	/**
 	 * Normalizes a YAML boolean to a Java boolean.
@@ -114,7 +167,6 @@ public class LanguageDefinition {
 			default -> false;
 		};
 	}
-
 
 	/**
 	 * Sets a property based on the key-value pair in a YAML line. If the key does not match any
@@ -137,6 +189,7 @@ public class LanguageDefinition {
 				currency = value;
 				return;
 			case "dictionaryFile":
+				// t.ex. sv-utf8.csv → sv-utf8.zip när DICTIONARY_EXTENSION = "zip"
 				dictionaryFile = value.replaceFirst("\\.\\w+$", "." + BuildConfig.DICTIONARY_EXTENSION);
 				return;
 			case "filterBySounds":
@@ -175,7 +228,6 @@ public class LanguageDefinition {
 		}
 	}
 
-
 	/**
 	 * Builds the key layout line by line. Returns true when a layout entry is successfully set.
 	 */
@@ -195,7 +247,6 @@ public class LanguageDefinition {
 		return false;
 	}
 
-
 	private void setNumerals(@NonNull String yamlList) {
 		ArrayList<String> numberList = parseList(yamlList);
 		if (numberList == null || numberList.size() != 10) {
@@ -206,8 +257,6 @@ public class LanguageDefinition {
 			numerals.put(i, numberList.get(i));
 		}
 	}
-
-
 
 	/**
 	 * Validates a YAML line as an array and returns the character list to be assigned to a given key (a layout entry).
@@ -240,11 +289,9 @@ public class LanguageDefinition {
 		return entry;
 	}
 
-
 	public String getDictionaryFile() {
 		return LANGUAGES_DIR + "/dictionaries/" + dictionaryFile;
 	}
-
 
 	public String getNgramsFile() {
 		return LANGUAGES_DIR + "/ngrams/" + ngramFile;

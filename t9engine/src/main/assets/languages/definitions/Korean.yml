@@ -1,0 +1,75 @@
+locale: ko-KR
+currency: ₩
+dictionaryFile: ko-utf8.csv
+iconT9: ic_lang_ko
+hasABC: no
+hasUpperCase: no
+layout: # only used for the virtual key labels
+  - [ㅇ,ㅁ,SPECIAL] # 0
+  - [ㅣ,PUNCTUATION_KR] # 1
+  - [ㆍ,：] # 2
+  - [ㅡ] # 3
+  - [ㄱ,ㅋ,ㄲ] # 4
+  - [ㄴ,ㄹ] # 5
+  - [ㄷ,ㅌ,ㄸ] # 6
+  - [ㅂ,ㅍ,ㅃ] # 7
+  - [ㅅ,ㅎ,ㅆ] # 8
+  - [ㅈ,ㅊ,ㅉ] # 9
+sounds:
+  ########## initial consonants ##########
+  - [G,4]
+  - [K,44]
+  - [Gg,444]
+  - [N,5]
+  - [L,55] # also: "R", but we need a unique identifier, so we use "L"
+  - [D,6]
+  - [T,66]
+  - [Dd,666]
+  - [B,7]
+  - [P,77]
+  - [Bb,777]
+  - [S,8]
+  - [H,88]
+  - [Ss,888]
+  - [J,9]
+  - [C,99] # also transcribed as "Ch"
+  - [Jj,999]
+  - [Z,0] # "ㅇ" when zero initial consonant
+  - [Ng,0]
+  - [M,00]
+  ########## vowels ##########
+  - [I,1]
+  - [A,12]
+  - [Ae,121]
+  - [Ya,122]
+  - [Yae,1221]
+  - [Q,2] # "Q" is just some random unique identifier
+  - [Qq, 22]
+  - [Eo,21]
+  - [E,211]
+  - [Yeo,221]
+  - [Ye,2211]
+  - [Yo,223]
+  - [O,23]
+  - [Oe,231]
+  - [Wa,2312]
+  - [Wae,23121]
+  - [Eu,3]
+  - [Ui,31]
+  - [U,32]
+  - [Wi,321]
+  - [Yu,322]
+  - [Wo,3221]
+  - [We,32211]
+  ########## final consonants ##########
+  - [Gs,48]
+  - [Lg,554]
+  - [Lb,557]
+  - [Ls,558]
+  - [Lt,5566]
+  - [Lp,5577]
+  - [Lh,5588]
+  - [Lm,5500]
+  - [Nh,588]
+  - [Nj,59]
+  - [Bs,78]

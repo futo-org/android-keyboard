@@ -1,0 +1,17 @@
+locale: sk-SK
+dictionaryFile: sk-utf8.csv
+ngramFile: sk-ngrams.zip
+iconABC: ic_lang_latin
+iconT9: ic_lang_sk
+abcString: abc
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION] # 1
+  - [a, á, ä, b, c, č] # 2
+  - [d, ď, e, é, f] # 3
+  - [g, h, i, í] # 4
+  - [j, k, l, ĺ, ľ] # 5
+  - [m, n, ň, o, ó, ô] # 6
+  - [p, q, r, ŕ, s, š] # 7
+  - [t, ť, u, ú, v] # 8
+  - [w, x, y, ý, z, ž] # 9

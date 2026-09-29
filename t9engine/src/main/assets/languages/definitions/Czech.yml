@@ -1,0 +1,16 @@
+locale: cs-CZ
+dictionaryFile: cz-utf8.csv
+ngramFile: cz-ngrams.zip
+iconABC: ic_lang_latin
+iconT9: ic_lang_cz
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_DE] # 1
+  - [a, b, c, á, č] # 2
+  - [d, e, f, é, ě, ď] # 3
+  - [g, h, i, í] # 4
+  - [j, k, l] # 5
+  - [m, n, o, ó, ň] # 6
+  - [p, q, r, s, ř, š] # 7
+  - [t, u, v, ť, ů, ú] # 8
+  - [w, x, y, z, ý, ž] # 9

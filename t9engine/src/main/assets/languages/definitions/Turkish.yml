@@ -1,0 +1,17 @@
+locale: tr-TR
+currency: ₺
+dictionaryFile: tr-utf8.csv
+ngramFile: tr-ngrams.zip
+iconABC: ic_lang_latin
+iconT9: ic_lang_tr
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION] # 1
+  - [a, b, c, ç, â] # 2
+  - [d, e, f] # 3
+  - [g, h, i, ı, ğ, î] # 4
+  - [j, k, l] # 5
+  - [m, n, o, ö] # 6
+  - [p, q, r, s, ş] # 7
+  - [t, u, v, ü, û] # 8
+  - [w, x, y, z] # 9

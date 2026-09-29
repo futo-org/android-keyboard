@@ -1,0 +1,21 @@
+locale: th-TH
+currency: ฿
+dictionaryFile: th-utf8.csv
+ngramFile: th-ngrams.zip
+iconABC: ic_lang_th_abc
+iconT9: ic_lang_th
+abcString: กขค
+hasSpaceBetweenWords: no
+hasUpperCase: no
+name: ภาษาไทย
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION] # 1
+  - [ก, ข, ฃ, ค, ฅ, ฆ, ง, จ, ฉ] # 2
+  - [ช, ซ, ฌ, ญ, ฎ, ฏ, ฐ, ฑ, ฒ, ณ] # 3
+  - [ด, ต, ถ, ท, ธ, น] # 4
+  - [บ, ป, ผ, ฝ, พ, ฟ] # 5
+  - [ภ, ม, ย, ร, ล, ว] # 6
+  - [ศ, ษ, ส, ห, ฬ, อ, ฮ] # 7
+  - [ิ, ี, ึ, ื, ุ, ู, ั, ่, ้, ๊, ๋, ็, ์] # 8
+  - [ะ, า, โ, ไ, ใ, เ, แ, ำ, ๅ, ๆ, ฯ, ฤ, ฦ] # 9

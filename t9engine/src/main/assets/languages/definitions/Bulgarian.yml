@@ -1,0 +1,16 @@
+locale: bg-BG
+dictionaryFile: bg-utf8.csv
+ngramFile: bg-ngrams.zip
+iconABC: ic_lang_cyrillic
+iconT9: ic_lang_bg
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_DE] # 1
+  - [а, б, в, г] # 2
+  - [д, е, ж, з] # 3
+  - [и, й, к, л, ѝ] # 4
+  - [м, н, о, п] # 5
+  - [р, с, т, у] # 6
+  - [ф, х, ц, ч] # 7
+  - [ш, щ, ъ, ь] # 8
+  - [ю, я] # 9

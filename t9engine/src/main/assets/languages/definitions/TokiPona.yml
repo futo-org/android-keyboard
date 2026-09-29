@@ -1,0 +1,16 @@
+locale: tp-TP # no real locale, but use a made-up one for proper sorting and to avoid conflicts
+dictionaryFile: tp-utf8.txt
+iconABC: ic_lang_latin
+iconT9: ic_lang_tp
+name: Toki Pona
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION, ·] # 1
+  - [a, b, c] # 2
+  - [d, e, f] # 3
+  - [g, h, i] # 4
+  - [j, k, l] # 5
+  - [m, n, o] # 6
+  - [p, q, r, s] # 7
+  - [t, u, v] # 8
+  - [w, x, y, z] # 9

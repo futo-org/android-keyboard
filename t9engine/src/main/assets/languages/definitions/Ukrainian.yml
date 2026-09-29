@@ -1,0 +1,17 @@
+locale: uk-UA
+currency: ₴
+dictionaryFile: uk-utf8.csv
+ngramFile: uk-ngrams.zip
+iconABC: ic_lang_cyrillic
+iconT9: ic_lang_uk
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_FR] # 1
+  - [а, б, в, г, ґ] # 2
+  - [д, е, є, ж, з] # 3
+  - [и, і, ї, й, к, л] # 4
+  - [м, н, о, п] # 5
+  - [р, с, т, у] # 6
+  - [ф, х, ц, ч] # 7
+  - [ш, щ] # 8
+  - [ь, ю, я] # 9

@@ -1,0 +1,16 @@
+locale: mk-MK
+dictionaryFile: mk-utf8.csv
+ngramFile: mk-ngrams.zip
+iconABC: ic_lang_cyrillic
+iconT9: ic_lang_mk
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_DE] # 1
+  - [а, б, в, г] # 2
+  - [д, ѓ, е, ж, з, ѕ, ѐ] # 3
+  - [и, ј, к, л, љ, ѝ] # 4
+  - [м, н, њ, о] # 5
+  - [п, р, с] # 6
+  - [т, ќ, у, ф, х] # 7
+  - [ц, ч, џ, ш] # 8
+  - [] # 9

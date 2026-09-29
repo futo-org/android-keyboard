@@ -1,0 +1,17 @@
+locale: sr-HR
+dictionaryFile: srl-utf8.csv
+ngramFile: srl-ngrams.zip
+name: Srpski
+iconABC: ic_lang_latin
+iconT9: ic_lang_srl
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_DE] # 1
+  - [a, b, c, č, ć] # 2
+  - [d, e, f, đ] # 3
+  - [g, h, i] # 4
+  - [j, k, l] # 5
+  - [m, n, o] # 6
+  - [p, q, r, s, š] # 7
+  - [t, u, v] # 8
+  - [w, x, y, z, ž] # 9

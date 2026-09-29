@@ -1,0 +1,20 @@
+locale: fa-IR
+currency: ﷼
+dictionaryFile: fa-utf8.csv
+ngramFile: fa-ngrams.zip
+iconABC: ic_lang_alifba
+iconT9: ic_lang_fa
+abcString: أﺏﺕ
+hasUpperCase: no
+numerals: [۰,۱,۲,۳,۴,۵,۶,۷,۸,۹]
+layout:
+  - [SPECIAL] # 0
+  - [ً,PUNCTUATION_FA] # 1
+  - [ب,پ,ت,ث,ة] # 2
+  - [ا,أ,إ,آ,ى,ؤ,ئ,ء] # 3
+  - [س,ش,ص,ض] # 4
+  - [د,ذ,ر,ز,ژ] # 5
+  - [ج,چ,ح,خ] # 6
+  - [ن,ه,و,ي,ی] # 7
+  - [ف,ق,ك,ک,گ,ل,م] # 8
+  - [ط,ظ,ع,غ] # 9

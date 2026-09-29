@@ -1,0 +1,51 @@
+locale: ja-JP
+dictionaryFile: ja-romaji.csv
+ngramFile: ja-ngrams.zip
+name: 日本語 / ローマ字
+iconT9: ic_lang_kanji
+hasABC: no
+hasSpaceBetweenWords: no
+hasUpperCase: no
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_ZH] # 1
+  - [a, b, c] # 2
+  - [d, e, f] # 3
+  - [g, h, i] # 4
+  - [j, k, l] # 5
+  - [m, n, o] # 6
+  - [p, q, r, s] # 7
+  - [t, u, v] # 8
+  - [w, x, y, z] # 9
+filterBySounds: yes
+sounds:
+  - [Qh,01] # Hiragana prefix. For identifying and loading only the specific characters in Hiragana mode.
+  - [Qk,0] # Katakana prefix. The prefixed ones will appear only in Katakana mode.
+  # All others will appear in Predictive mode
+  - [Ql,1] # ー
+  - [A,2]
+  - [B,2]
+  - [C,2]
+  - [D,3]
+  - [E,3]
+  - [F,3]
+  - [G,4]
+  - [H,4]
+  - [I,4]
+  - [J,5]
+  - [K,5]
+  - [L,5]
+  - [M,6]
+  - [N,6]
+  - [O,6]
+  - [P,7]
+  - [Q,7]
+  - [R,7]
+  - [S,7]
+  - [T,8]
+  - [U,8]
+  - [V,8]
+  - [W,9]
+  - [X,9]
+  - [Y,9]
+  - [Z,9]

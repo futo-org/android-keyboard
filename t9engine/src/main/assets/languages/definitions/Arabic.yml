@@ -1,0 +1,20 @@
+locale: ar-JO
+currency: ﷼
+dictionaryFile: ar-utf8.csv
+ngramFile: ar-ngrams.zip
+iconABC: ic_lang_alifba
+iconT9: ic_lang_ar
+abcString: أﺏﺕ
+hasUpperCase: no
+numerals: [٠,١,٢,٣,٤,٥,٦,٧,٨,٩]
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_AR] # 1
+  - [ب,ت,ة,ث] # 2
+  - [ا,أ,إ,آ,ى,ؤ,ئ,ء] # 3
+  - [س,ش,ص,ض] # 4
+  - [د,ذ,ر,ز] # 5
+  - [ج,ح,خ] # 6
+  - [ن,ه,و,ي] # 7
+  - [ف,ق,ك,ل,م] # 8
+  - [ط,ظ,ع,غ] # 9

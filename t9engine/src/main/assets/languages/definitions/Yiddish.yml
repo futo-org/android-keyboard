@@ -1,0 +1,17 @@
+locale: ji-JI
+dictionaryFile: ji-utf8.csv
+iconABC: ic_lang_alefbet
+iconT9: ic_lang_ji
+abcString: אבג
+hasUpperCase: no
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION] # 1
+  - [ד, ה, ו] # 2
+  - [א, ב, ג] # 3
+  - [מ, ם, נ, ן] # 4
+  - [י, כ, ך, ל] # 5
+  - [ז, ח, ט] # 6
+  - [ר, ש, ת] # 7
+  - [צ, ץ, ק] # 8
+  - [ס, ע, פ, ף] # 9

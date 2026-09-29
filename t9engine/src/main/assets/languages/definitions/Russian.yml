@@ -1,0 +1,17 @@
+locale: ru-RU
+currency: ₽
+dictionaryFile: ru-utf8.csv
+ngramFile: ru-ngrams.zip
+iconABC: ic_lang_cyrillic
+iconT9: ic_lang_ru
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_FR] # 1
+  - [а, б, в, г] # 2
+  - [д, е, ё, ж, з] # 3
+  - [и, й, к, л] # 4
+  - [м, н, о, п] # 5
+  - [р, с, т, у] # 6
+  - [ф, х, ц, ч] # 7
+  - [ш, щ, ъ, ы] # 8
+  - [ь, э, ю, я] # 9

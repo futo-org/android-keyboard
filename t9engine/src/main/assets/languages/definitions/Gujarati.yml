@@ -1,0 +1,18 @@
+locale: gu-IN
+currency: ૱
+dictionaryFile: gu-utf8.csv
+iconABC: ic_lang_gu_abc
+iconT9: ic_lang_gu
+abcString: કખગ
+hasUpperCase: no
+layout:
+  - [SPECIAL] # 0
+  - [્, ઼, ઃ, ઽ, ૐ, PUNCTUATION_IN] # 1 ==> [halant, nuqta, avagraha, visarga, om]
+  - [અ, આ, બ, ભ, ચ, છ, ા] # 2 ==> [a, aa, b, bh, c, ch, aa (m)]
+  - [દ, ધ, ડ, ઢ, એ, ઐ, ઍ, ફ, ે, ૈ, ૅ] # 3 ==> [d, dh, ḍ (dd), ḍh (ddh), e, ai, ae, ph, e (m), ai (m), ae (m)]
+  - [ગ, ઘ, હ, ઇ, ઈ, િ, ી] # 4 ==> [g, gh, h, i, ii, i (m), ii (m) ]
+  - [જ, ઝ, ક, ખ, લ, ળ, ઌ, ૢ] # 5 ==> [j, jh, k, kh, l, ḷ (ll), l̥, l̥ (m)]
+  - [મ, ઙ, ઞ, ણ, ન, ઓ, ઑ, ઔ, ો, ૉ, ૌ, ં, ઁ] # 6 ==> [m, ṅ (ng), ñ, ṇ (nn), n, o, ŏ, au, o (m), ŏ (m), au (m), anusvara, m̐ (m-combining with vowel, e.g. "am", "em")]
+  - [પ, ર, ઋ, સ, શ, ષ, ૃ, ૄ] # 7 ==> [p, r, r̥, s, sh, ss, r̥ (m), rr (m)]
+  - [ત, થ, ટ, ઠ, ઉ, ઊ, વ, ુ, ૂ] # 8 ==> [t, th, ṭ (tt), ṭh, u, uu, v, u (m), uu (m)]
+  - [ય] # 9 ==> [y]

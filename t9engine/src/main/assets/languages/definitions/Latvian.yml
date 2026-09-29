@@ -1,0 +1,17 @@
+locale: lv-LV
+dictionaryFile: lv-utf8.csv
+ngramFile: lv-ngrams.zip
+iconABC: ic_lang_latin
+iconT9: ic_lang_lv
+abcString: abc
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION] # 1
+  - [a, ā, b, c, č] # 2
+  - [d, e, ē, f] # 3
+  - [g, ģ, h, i, ī] # 4
+  - [j, k, ķ, l, ļ] # 5
+  - [m, n, ņ, o] # 6
+  - [p, q, r, s, š] # 7
+  - [t, u, ū, v] # 8
+  - [w, x, y, z, ž] # 9

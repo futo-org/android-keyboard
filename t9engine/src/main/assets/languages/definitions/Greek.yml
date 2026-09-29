@@ -1,0 +1,16 @@
+locale: el-GR
+dictionaryFile: gr-utf8.csv
+ngramFile: gr-ngrams.zip
+iconABC: ic_lang_alfabeta
+iconT9: ic_lang_el
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_GR] # 1
+  - [α, β, γ, ά] # 2
+  - [δ, ε, ζ, έ] # 3
+  - [η, θ, ι, ή, ί, ϊ, ΐ] # 4
+  - [κ, λ, μ] # 5
+  - [ν, ξ, ο, ό] # 6
+  - [π, ρ, σ, ς] # 7
+  - [τ, υ, φ, ύ, ϋ, ΰ] # 8
+  - [χ, ψ, ω, ώ] # 9

@@ -1,0 +1,16 @@
+locale: ro-RO
+dictionaryFile: ro-utf8.csv
+ngramFile: ro-ngrams.zip
+iconABC: ic_lang_latin
+iconT9: ic_lang_ro
+layout:
+  - [SPECIAL] # 0
+  - [PUNCTUATION_FR] # 1
+  - [a, b, c, ă, â, á] # 2
+  - [d, e, f, é, è] # 3
+  - [g, h, i, î] # 4
+  - [j, k, l] # 5
+  - [m, n, o] # 6
+  - [p, q, r, s, ș] # 7
+  - [t, u, v, ț] # 8
+  - [w, x, y, z] # 9

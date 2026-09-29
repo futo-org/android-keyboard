@@ -1,23 +1,72 @@
 // t9engine/build.gradle
 //
-// Egen liten Android-library-modul för den porterade delen av TT9:s
-// (io.github.sspanak.tt9) SQLite-baserade ordboks-/prediktionsmotor.
+// Android-library för porterad TT9 (io.github.sspanak.tt9).
 //
-// Varför en egen modul och inte bara källfiler direkt i FUTO:s app-modul?
-// Koden refererar "io.github.sspanak.tt9.R" för sina strängresurser. Om den
-// bara låg i FUTO:s app-modul (namespace org.futo.inputmethod.latin) skulle
-// R-klassen som genereras heta org.futo.inputmethod.latin.R och importerna
-// skulle inte resolva. Genom att göra detta till en egen modul med sitt eget
-// "namespace" genererar Android Gradle Plugin en riktig io.github.sspanak.tt9.R
-// — exakt vad koden redan förväntar sig, helt utan att ändra importerna.
+// Språkdata ligger DIREKT under assets (ingen separat languages/-källa):
 //
-// SDK-nivåer och Kotlin-version kopierade rakt av från rot-build.gradle så de
-// stämmer överens med resten av projektet.
+//   src/main/assets/languages/
+//     definitions/*.yml          ← oförändrade (LanguageDefinition läser mappen)
+//     dictionaries/*.csv|*.txt   ← konverteras → *.zip i samma mapp
+//     ngrams/*ngrams.zip         ← oförändrade
+//
+// Runtime (LanguageDefinition + DictionaryLoader):
+//   languages/definitions/Swedish.yml
+//   languages/dictionaries/sv-utf8.zip
+//   languages/ngrams/sv-ngrams.zip
 
 plugins {
-    // Använder apply false utan explicit version för att ärva AGP-versionen (8.2.2) 
-    // från rotprojektets classpath och undvika versionskonflikter.
     id 'com.android.library'
+}
+
+def MODULE_ROOT = project.projectDir
+def MAIN_ASSETS_DIR = "${MODULE_ROOT}/src/main/assets"
+def ASSETS_LANGUAGES = "${MAIN_ASSETS_DIR}/languages"
+
+ext.LANGUAGES_DIR_NAME = 'languages'
+ext.DEFINITIONS_DIR_NAME = 'definitions'
+ext.DICTIONARIES_DIR_NAME = 'dictionaries'
+ext.NGRAMS_DIR_NAME = 'ngrams'
+ext.DICTIONARIES_DOWNLOAD_DIR_NAME = 'downloads'
+
+// INPUT = OUTPUT (allt under assets)
+ext.LANGUAGES_INPUT_DIR = ASSETS_LANGUAGES
+ext.DEFINITIONS_INPUT_DIR = "${ASSETS_LANGUAGES}/definitions"
+ext.DICTIONARIES_INPUT_DIR = "${ASSETS_LANGUAGES}/dictionaries"
+ext.NGRAMS_INPUT_DIR = "${ASSETS_LANGUAGES}/ngrams"
+
+// Tillfällig mapp för konverterade zippar innan de kopieras tillbaka
+ext.DICTIONARIES_DOWNLOAD_DIR = "${MODULE_ROOT}/${DICTIONARIES_DOWNLOAD_DIR_NAME}"
+
+// Meta/props under build (inte nödvändigtvis assets)
+ext.LANGUAGES_OUTPUT_DIR = ASSETS_LANGUAGES
+ext.DICTIONARY_META_OUTPUT_DIR = "${MODULE_ROOT}/build/dictionary-meta"
+ext.DICTIONARIES_OUTPUT_DIR = "${ASSETS_LANGUAGES}/dictionaries"
+ext.NGRAMS_META_OUTPUT_DIR = "${MODULE_ROOT}/build/ngrams-meta"
+ext.NGRAMS_OUTPUT_DIR = "${ASSETS_LANGUAGES}/ngrams"
+
+ext.LANGUAGE_VALIDATION_DIR = layout.buildDirectory.dir("langValidation")
+
+// Ikoner (validate kan kräva dem om iconABC/iconT9 finns i yml)
+ext.ICONS_DIR = "${MODULE_ROOT}/src/main/res/drawable"
+ext.ICONS_JAVA_FILE = "${MODULE_ROOT}/src/main/java/io/github/sspanak/tt9/ui/StatusIcon.java"
+
+ext.CSV_DELIMITER = '\t'
+ext.DICTIONARY_OUTPUT_EXTENSION = 'zip'
+ext.MAX_WORD_FREQUENCY = 9999
+ext.MAX_ERRORS = 50
+
+def hasLangScripts = file('build-dictionaries.gradle').exists() &&
+        file('dictionary-tools.gradle').exists()
+
+if (hasLangScripts) {
+    apply from: 'dictionary-tools.gradle'
+    apply from: 'build-dictionaries.gradle'
+    if (file('validate-languages.gradle').exists()) {
+        apply from: 'validate-languages.gradle'
+    }
+    if (file('build-ngrams.gradle').exists()) {
+        apply from: 'build-ngrams.gradle'
+    }
 }
 
 android {
@@ -27,11 +76,9 @@ android {
     defaultConfig {
         minSdk 24
         buildConfigField "boolean", "DEBUG", "true"
-        // TODO: koppla till samma versionCode-logik som rot-build.gradle använder
-        // (getVersionCode()) om du vill hålla dem synkade, annars räcker ett
-        // statiskt värde för egen bruk.
         buildConfigField "int", "VERSION_CODE", "1"
-        buildConfigField "String", "DICTIONARY_EXTENSION", "\".dict\""
+        // LanguageDefinition byter dictionaryFile-ändelse till detta → sv-utf8.zip
+        buildConfigField "String", "DICTIONARY_EXTENSION", "\"${DICTIONARY_OUTPUT_EXTENSION}\""
     }
 
     compileOptions {
@@ -39,12 +86,133 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    // BuildConfig.DEBUG / VERSION_CODE / DICTIONARY_EXTENSION används av den
-    // porterade koden (db/words/DictionaryLoader.java m.fl.). buildConfigField
-    // ger oss dessa utan att behöva patcha de filerna.
     buildFeatures {
         buildConfig true
     }
+
+    sourceSets {
+        main {
+            assets.srcDirs += ["src/main/assets"]
+        }
+    }
+}
+
+if (hasLangScripts) {
+
+    tasks.register('ensureLanguageDirs') {
+        doLast {
+            [
+                DEFINITIONS_INPUT_DIR,
+                DICTIONARIES_INPUT_DIR,
+                NGRAMS_INPUT_DIR,
+                DICTIONARIES_DOWNLOAD_DIR,
+                DICTIONARY_META_OUTPUT_DIR
+            ].each { path ->
+                def d = file(path)
+                if (!d.exists()) {
+                    d.mkdirs()
+                }
+            }
+        }
+    }
+
+    /**
+     * Validera definitions + käll-dict (csv/txt).
+     * Hoppar över om validate-languages.gradle saknas.
+     */
+    tasks.register('validateLanguages') {
+        dependsOn ensureLanguageDirs
+        inputs.dir DEFINITIONS_INPUT_DIR
+        inputs.dir DICTIONARIES_INPUT_DIR
+        outputs.dir LANGUAGE_VALIDATION_DIR
+
+        doLast {
+            if (!file('validate-languages.gradle').exists()) {
+                logger.warn("validate-languages.gradle saknas — hoppar över validering")
+                return
+            }
+            // Ikoner saknas ofta i t9engine; validering kan klaga på iconABC/iconT9.
+            // Kör ändå — rätta ikoner eller kommentera bort icon*-rader i yml vid behov.
+            validateLanguageFiles(
+                    DEFINITIONS_INPUT_DIR,
+                    DICTIONARIES_INPUT_DIR,
+                    LANGUAGE_VALIDATION_DIR.get().asFile,
+                    ICONS_DIR,
+                    NGRAMS_INPUT_DIR
+            )
+        }
+    }
+
+    /**
+     * CSV/TXT i assets/…/dictionaries → zip i downloads/, sedan tillbaka till assets.
+     * Definitions och ngrams rörs inte (redan rätt plats).
+     */
+    tasks.register('buildDictionaryDownloads') {
+        dependsOn ensureLanguageDirs
+        // validateLanguages är valfri: mustRunAfter så bygget inte dör om validate saknas
+        mustRunAfter validateLanguages
+        inputs.dir DEFINITIONS_INPUT_DIR
+        inputs.dir DICTIONARIES_INPUT_DIR
+        outputs.dir DICTIONARIES_DOWNLOAD_DIR
+        outputs.dir DICTIONARY_META_OUTPUT_DIR
+
+        doLast {
+            convertDictionaries(
+                    DEFINITIONS_INPUT_DIR,
+                    DICTIONARIES_INPUT_DIR,
+                    DICTIONARIES_DOWNLOAD_DIR,
+                    DICTIONARY_META_OUTPUT_DIR,
+                    ICONS_DIR,
+                    NGRAMS_INPUT_DIR
+            )
+            logger.lifecycle("Konverterade dictionaries → ${DICTIONARIES_DOWNLOAD_DIR}")
+        }
+    }
+
+    tasks.register('copyDownloadsToAssets', Copy) {
+        dependsOn buildDictionaryDownloads
+        mustRunAfter buildDictionaryDownloads
+        from DICTIONARIES_DOWNLOAD_DIR
+        include '**/*.zip'
+        exclude '**/*ngrams.zip'
+        into DICTIONARIES_OUTPUT_DIR
+    }
+
+    // Inget merge av definitions — LanguageDefinition läser definitions/*.yml direkt.
+    // Inget copy av ngrams — de ligger redan under assets/languages/ngrams/.
+
+    tasks.matching { it.name.startsWith('merge') && it.name.endsWith('Assets') }.configureEach {
+        dependsOn copyDownloadsToAssets
+    }
+
+    tasks.named('preBuild').configure {
+        dependsOn copyDownloadsToAssets
+    }
+
+    // Valfritt: kör validate före convert när skriptet finns
+    if (file('validate-languages.gradle').exists()) {
+        tasks.named('buildDictionaryDownloads').configure {
+            dependsOn validateLanguages
+        }
+    }
+
+    clean {
+        delete DICTIONARIES_DOWNLOAD_DIR
+        delete DICTIONARY_META_OUTPUT_DIR
+        // Radera inte definitions/*.yml eller ngrams — de är källfiler i assets
+        // Radera genererade dict-zippar om du vill tvinga ombyggnad:
+        // delete fileTree(DICTIONARIES_OUTPUT_DIR) { include '**/*.zip' }
+    }
+
+} else {
+    logger.warn("""
+        |t9engine: saknar build-dictionaries.gradle / dictionary-tools.gradle.
+        |Utan dem konverteras inte CSV/TXT → ZIP.
+        |Antingen:
+        |  1) Kopiera TT9:s build-dictionaries.gradle + dictionary-tools.gradle hit, eller
+        |  2) Lägg färdiga *.zip i src/main/assets/languages/dictionaries/
+        |Definitions (*.yml) och ngrams (*.zip) under assets används som de är.
+        """.stripMargin())
 }
 
 dependencies {

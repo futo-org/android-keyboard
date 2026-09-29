@@ -1,0 +1,58 @@
+locale: zh-TW
+dictionaryFile: zh-bopomofo.csv
+iconABC: ic_lang_zh_bopomofo
+iconT9: ic_lang_zh_traditional
+name: 繁中 / 注音
+abcString: ㄅㄆㄇ
+hasSpaceBetweenWords: no
+hasUpperCase: no
+layout:
+  - [ㄧ, ㄨ, ㄩ, SPECIAL] # 0
+  - [ㄅ, ㄆ, ㄇ, ㄈ, PUNCTUATION_BP] # 1
+  - [ㄉ, ㄊ, ㄋ, ㄌ] # 2
+  - [ㄍ, ㄎ, ㄏ] # 3
+  - [ㄐ, ㄑ, ㄒ] # 4
+  - [ㄓ, ㄔ, ㄕ, ㄖ] # 5
+  - [ㄗ, ㄘ, ㄙ] # 6
+  - [ㄚ, ㄛ, ㄜ, ㄝ] # 7
+  - [ㄞ, ㄟ, ㄠ, ㄡ] # 8
+  - [ㄢ, ㄣ, ㄤ, ㄥ, ㄦ] # 9
+filterBySounds: yes
+sounds:
+  - [I,0] # ㄧ
+  - [U,0] # ㄨ
+  - [Yu,0] # ㄩ
+  - [B,1] # ㄅ
+  - [P,1] # ㄆ
+  - [M,1] # ㄇ
+  - [F,1] # ㄈ
+  - [D,2] # ㄉ
+  - [T,2] # ㄊ
+  - [N,2] # ㄋ
+  - [L,2] # ㄌ
+  - [G,3] # ㄍ
+  - [K,3] # ㄎ
+  - [H,3] # ㄏ
+  - [J,4] # ㄐ
+  - [Q,4] # ㄑ
+  - [X,4] # ㄒ
+  - [Zh,5] # ㄓ
+  - [Ch,5] # ㄔ
+  - [Sh,5] # ㄕ
+  - [R,5] # ㄖ
+  - [Z,6] # ㄗ
+  - [C,6] # ㄘ
+  - [S,6] # ㄙ
+  - [A,7] # ㄚ
+  - [O,7] # ㄛ
+  - [E,7] # ㄜ
+  - [Ie,7] # ㄝ
+  - [Ai,8] # ㄞ
+  - [Ei,8] # ㄟ
+  - [Ao,8] # ㄠ
+  - [Ou,8] # ㄡ
+  - [An,9] # ㄢ
+  - [En,9] # ㄣ
+  - [Ang,9] # ㄤ
+  - [Eng,9] # ㄥ
+  - [Er,9] # ㄦ

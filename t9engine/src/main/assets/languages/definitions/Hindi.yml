@@ -1,0 +1,19 @@
+locale: hi-IN
+currency: ₹
+dictionaryFile: hi-utf8.csv
+ngramFile: hi-ngrams.zip
+iconABC: ic_lang_hi_abc
+iconT9: ic_lang_hi
+abcString: कखग
+hasUpperCase: no
+layout:
+  - [SPECIAL, ॐ] # 0 ==> [SPECIAL, Om]
+  - [्, ़, ऽ, ः, PUNCTUATION_IN] # 1 ==> [halant (cancel vowel sign), nuqta (converts k -> q, ph -> f, etc), avagraha, visarga]
+  - [अ, आ, ब, भ, च, छ, ा] # 2 ==> [a, ā, b, bh, c, ch, ā (combining)]
+  - [द, ध, ड, ढ, ए, ऐ, फ, े, ै, ॆ, ॅ] # 3 ==> [d, dh, ḍ, ḍh, ē, ai, ph, ē (combining), ai (combining), e (combining), ê (ae-combining)];
+  - [ग, घ, ह, इ, ई, ि, ी] # 4 ==> [g, gh, h, i, ī, i (combining), ī (combining)]
+  - [ज, झ, क, ख, ल, ळ, ऌ, ॢ] # 5 ==> [j, jh, k, kh, l, ḷ, l̥, l̥ (combining)]
+  - [म, ङ, ञ, ण, न, ओ, औ, ऑ, ं, ँ, ो, ौ, ॊ, ॉ] # 6 ==> [m, ṅ, ñ, ṇ, n, o, au, ŏ, ṁ (n-combining with consonant, e.g. "ng", "nd"), m̐ (m-combining with vowel, e.g. "am", "em"), ō (combining), au (combining), o (combining), ŏ (combining)]
+  - [प, र, ऋ, स, श, ष, ृ] # 7 ==> [p, r, r̥ (ri), s, sh, rsh (like "norsk"), r̥ (ri-combining)]
+  - [त, थ, ट, ठ, उ, ऊ, व, ु, ू] # 8 ==> [t, th, ṭ, ṭh, u, ū, v, u (combining), ū (combining)]
+  - [य] # 9 ==> [y]
