@@ -554,7 +554,7 @@ data class Key(
             val dirs = computeDirectionsFromDeltaPos(
                 dx = dx.toDouble(),
                 dy = dy.toDouble(),
-                threshold = (width / 3).toDouble()
+                threshold = (width * flickThresholdRatio).toDouble()
             )
             dirs.firstOrNull { flickKeys.contains(it) }
         }
@@ -569,6 +569,10 @@ data class Key(
         get() = mFlickDirection
 
     companion object {
+        @Volatile
+        @JvmStatic
+        var flickThresholdRatio: Float = 1.0f / 3.0f
+
         @JvmStatic
         fun removeRedundantMoreKeys(
             key: Key,

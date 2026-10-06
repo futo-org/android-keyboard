@@ -425,6 +425,10 @@
     <string name="morekey_settings_show_hints_tags">additional characters, alt keys, symbols, popup keys</string>
     <string name="morekey_settings_duration">Long Press Duration</string>
     <string name="morekey_settings_duration_subtitle">How long a key needs to be pressed to be considered a long-press</string>
+    <string name="morekey_settings_flick_threshold">Flick sensitivity</string>
+    <string name="morekey_settings_flick_threshold_subtitle">Adjust how far you need to swipe to trigger a flick action. Lower values make flick easier to trigger.</string>
+    <string name="morekey_settings_flick_threshold_default">Default</string>
+    <string name="morekey_settings_flick_threshold_tags">flick, swipe, gesture, sensitivity, threshold, distance</string>
 
     <string name="morekey_settings_backspace_title">Backspace</string>
     <string name="morekey_settings_backspace_hold_delete_words">Hold to delete words</string>
