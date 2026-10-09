@@ -712,4 +712,6 @@ Default is %1$s</string>
     <string name="personal_dictionary_delete_additional_file">Delete extra dictionary file?</string>
     <!-- %1$s will be replaced with the custom dictionary name -->
     <string name="personal_dictionary_delete_additional_file_text">%1$s will be deleted</string>
+    <string name="keyboard_settings_key_hint_size">Key hint size</string>
+    <string name="keyboard_settings_key_hint_size_subtitle">Scale the small hint characters on keys. 100% is unchanged, which is the default.</string>
 </resources>
