@@ -340,19 +340,25 @@ data class TonedEmoji(
     val skinTone: String?
 )
 
+// #2316 - writing hand emoji is U+270D U+FE0F, to apply a dark skin tone
+// correctly it needs to be stripped to produce U+270D U+1F3FF, some apps
+// won't render U+270D U+FE0F U+1F3FF correctly
+fun String.stripVariationSelector16() =
+    replace("\uFE0F", "")
+
 fun generateSkinToneVariantOf(emoji: String, modifier: String, emojiMap: Map<String, EmojiItem>): String {
     if(modifier.isEmpty()) return emoji
 
     val humanEmojis = emoji.split("\u200D")
     val variant = humanEmojis.joinToString("\u200D") { part ->
         if (emojiMap[part]?.category == "People & Body") {
-            part + modifier
+            part.stripVariationSelector16() + modifier
         } else {
             part
         }
     }
 
-    return variant // This used to have .replace("\uFE0F", "")
+    return variant
 }
 
 fun generateSkinToneVariants(emoji: String, emojiMap: Map<String, EmojiItem>): List<TonedEmoji> {
