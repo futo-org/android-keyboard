@@ -2,6 +2,7 @@ package org.futo.inputmethod.latin.uix.settings.pages
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -67,6 +69,7 @@ import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
+import org.futo.inputmethod.latin.uix.settings.SettingsMenus
 import org.futo.inputmethod.latin.uix.settings.VoiceInputSwitchActivity
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
@@ -147,6 +150,28 @@ fun DevPaletteScreen(navController: NavHostController = rememberNavController())
         VerticalGrid(items=palette.otherDynamicColors.keys.toList(), columns=4) {
             ShowColor(palette.otherDynamicColors[it], it)
         }
+        Button(onClick = {
+            val json = buildString {
+                append("{")
+                listOf("primary", "secondary", "tertiary", "neutral", "neutralVariant", "error").forEach { name ->
+                    listOf(100, 99, 98, 96, 95, 94, 92, 90, 87, 80, 70, 60, 50, 40, 30, 20, 10, 0).forEach { tone ->
+                        val col = palette.resolve("$name$tone")
+                        append("\n    \"system_$name$tone\": \"${argbLongToHexColorString(col!!.toArgb().toLong(), AlphaOrder.RGBA)}\",")
+                    }
+                }
+
+                palette.otherDynamicColors.forEach { (name, col) ->
+                    append("\n    \"system_$name\": \"${argbLongToHexColorString(col.toArgb().toLong(), AlphaOrder.RGBA)}\",")
+                }
+
+                deleteCharAt(length - 1) // trailing comma
+                append("\n}")
+            }
+
+            context.copyToClipboard(json)
+        }) {
+            Text("Copy all to clipboard")
+        }
     }
 }
 
@@ -195,6 +220,7 @@ fun DevThemeImportScreen(navController: NavHostController = rememberNavControlle
 @Composable
 fun DeveloperScreen(navController: NavHostController = rememberNavController()) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val scope = LocalLifecycleOwner.current
 
     ScrollableList {
@@ -355,6 +381,19 @@ fun DeveloperScreen(navController: NavHostController = rememberNavController()) 
                 intent.putExtra("targetPackage", context.packageName)
                 intent.putExtra("mode", "popup")
                 context.startActivity(intent)
+            }
+        )
+
+        NavigationItem(
+            title = "Copy settings menu layout to clipboard",
+            style = NavigationItemStyle.Misc,
+            navigate = {
+                val s = SettingsMenus.flatMap { it.settings }.filter { it.name != 0 }.map {
+                    resources.getString(it.name) + (it.subtitle?.let {
+                        ": " + resources.getString(it)
+                    } ?: "") + if(!it.appearsInSearch) { " (hidden)" } else ""
+                }.joinToString("\n")
+                context.copyToClipboard(s)
             }
         )
 
