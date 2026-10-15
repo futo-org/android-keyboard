@@ -108,7 +108,7 @@ import kotlin.math.roundToInt
 /** Whether or not we can render into the navbar */
 val SupportsNavbarExtension = Build.VERSION.SDK_INT >= 28
 
-val SupportsNonComposing = Build.VERSION.SDK_INT >= 31
+val SupportsNonComposing = true
 
 val UseTransparentNavbar =
     // https://github.com/futo-org/android-keyboard/issues/772
