@@ -12,20 +12,24 @@ object ATLCompat {
     val IsATL = BuildConfig.DEBUG && Build.PRODUCT == "atl"
 
     fun launchKeyboard(context: Context, layershell: Boolean) {
+        if(!BuildConfig.DEBUG) return
         if(!IsATL) return
 
         val ime = LatinIME()
 
         try {
-            val baseField = ContextWrapper::class.java.getDeclaredField("baseContext")
-            baseField.isAccessible = true
-            baseField.set(ime, context)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            println("Setting mBase failed: $e")
-        }
+            val attachMethod: Method? =
+                ime.javaClass.asSubclass(ContextWrapper::class.java)
+                    .getMethod("atl_attach_base_context", Context::class.java)
 
-        try {
+            if(attachMethod != null) {
+                attachMethod.invoke(ime, context)
+                println("atl_attach_base_context invoked $attachMethod")
+            } else {
+                println("atl_attach_base_context method not found")
+                return
+            }
+
             val launchMethod: Method? =
                 ime.javaClass.asSubclass(InputMethodService::class.java)
                     .getMethod("launch_keyboard", Boolean::class.javaPrimitiveType)
@@ -36,8 +40,6 @@ object ATLCompat {
             } else {
                 println("launch_keyboard method not found")
             }
-
-            ime.uixManager
         } catch(e: Exception) {
             e.printStackTrace()
             println("Launching failed: $e")
