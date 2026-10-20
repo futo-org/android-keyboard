@@ -775,7 +775,10 @@ public final class InputLogic {
         }
         final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
         if (Character.isLetterOrDigit(codePointBeforeCursor)
-                || settingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
+                || (settingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)
+                        // skipping :; here ( to avoid space when swiping an emoticon like :happy: )
+                        && !settingsValues.isOptionallyPrecededBySpace(codePointBeforeCursor))
+        ) {
             final boolean autoShiftHasBeenOverriden = keyboardSwitcher.getKeyboardShiftMode() !=
                     getCurrentAutoCapsState(settingsValues);
             if(settingsValues.mAltSpacesMode != Settings.SPACES_MODE_NONE) mSpaceState = SpaceState.PHANTOM;

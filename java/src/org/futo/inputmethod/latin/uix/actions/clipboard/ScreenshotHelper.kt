@@ -210,6 +210,13 @@ class ScreenshotHelper(
                 }
             }
         }catch(e: Exception) {
+            if (e.message?.let {
+                it.contains("volume", ignoreCase = true)
+                    && it.contains("not found", ignoreCase = true)
+            } == true) {
+                return@withContext null
+            }
+
             throwIfDebug(e)
         }
     }
