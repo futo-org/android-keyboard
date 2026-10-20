@@ -34,6 +34,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.latin.ATLCompat
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
@@ -117,6 +118,12 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
 
     @OptIn(DelicateCoroutinesApi::class)
     fun updateSystemState() {
+        if(ATLCompat.IsATL) {
+            this.inputMethodEnabled.value = true
+            this.inputMethodSelected.value = true
+            return
+        }
+
         val inputMethodEnabled = isInputMethodEnabled()
         val inputMethodSelected = isDefaultIMECurrent()
         this.inputMethodEnabled.value = inputMethodEnabled

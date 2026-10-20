@@ -30,6 +30,7 @@ import android.view.Gravity;
 import androidx.annotation.Nullable;
 
 import org.futo.inputmethod.keyboard.Key;
+import org.futo.inputmethod.latin.ATLCompat;
 import org.futo.inputmethod.latin.R;
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider;
 import org.futo.inputmethod.v2keyboard.Direction;
@@ -198,6 +199,10 @@ public class KeyPreviewView extends androidx.appcompat.widget.AppCompatTextView 
         final int len = text.length();
         final float[] widths = new float[len];
         final int count = paint.getTextWidths(text, 0, len, widths);
+
+        // ATL implementation seems wrong.
+        if(ATLCompat.INSTANCE.getIsATL()) return count;
+
         float width = 0;
         for (int i = 0; i < count; i++) {
             width += widths[i];

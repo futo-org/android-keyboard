@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.futo.inputmethod.latin.ATLCompat
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.LocalNavController
@@ -41,6 +42,7 @@ import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.ConditionalMigrateUpdateNotice
@@ -50,6 +52,23 @@ val HomeScreenLite = UserSettingsMenu(
     title = R.string.settings_home_title,
     navPath = "home", registerNavPath = false,
     settings = listOf(
+        userSettingDecorationOnly {
+            val context = LocalContext.current
+            if(ATLCompat.IsATL) {
+                NavigationItem(
+                    title = "Launch keyboard (window)",
+                    style = NavigationItemStyle.Misc,
+                    navigate = { ATLCompat.launchKeyboard(context, false) }
+                )
+                NavigationItem(
+                    title = "Launch keyboard (layershell)",
+                    style = NavigationItemStyle.Misc,
+                    navigate = { ATLCompat.launchKeyboard(context, true) }
+                )
+            }
+
+        },
+
         userSettingNavigationItem(
             title = R.string.settings_check_for_updates_manually,
             style = NavigationItemStyle.Misc,

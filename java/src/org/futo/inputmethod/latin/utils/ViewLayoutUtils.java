@@ -73,6 +73,8 @@ public final class ViewLayoutUtils {
 
     public static void updateLayoutGravityOf(final View view, final int layoutGravity) {
         final ViewGroup.LayoutParams lp = view.getLayoutParams();
+        if(lp == null) return;
+
         if (lp instanceof LinearLayout.LayoutParams) {
             final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)lp;
             if (params.gravity != layoutGravity) {

@@ -60,6 +60,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.futo.inputmethod.latin.ATLCompat
 import java.util.concurrent.Executor
 import java.util.function.Consumer
 import java.util.function.IntConsumer
@@ -243,7 +244,7 @@ private fun GenericEditTextCompose(
                 }
                 onCreateInputConnection(editorInfo)
 
-                onOverride.invoke(inputConnection!!, editorInfo)
+                if(!ATLCompat.IsATL) onOverride.invoke(inputConnection!!, editorInfo)
             }
 
             // Remove underline and padding

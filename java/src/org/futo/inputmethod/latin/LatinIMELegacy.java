@@ -570,8 +570,12 @@ public class LatinIMELegacy implements KeyboardActionListener,
             final int layoutHeight = mInputMethodService.isFullscreenMode()
                     ? LayoutParams.WRAP_CONTENT : LayoutParams.MATCH_PARENT;
             final View inputArea = window.findViewById(android.R.id.inputArea);
-            ViewLayoutUtils.updateLayoutHeightOf(inputArea, layoutHeight);
-            ViewLayoutUtils.updateLayoutGravityOf(inputArea, Gravity.BOTTOM);
+
+            if(inputArea != null) {
+                ViewLayoutUtils.updateLayoutHeightOf(inputArea, layoutHeight);
+                ViewLayoutUtils.updateLayoutGravityOf(inputArea, Gravity.BOTTOM);
+            }
+
             ViewLayoutUtils.updateLayoutHeightOf(mComposeInputView, layoutHeight);
         }
     }

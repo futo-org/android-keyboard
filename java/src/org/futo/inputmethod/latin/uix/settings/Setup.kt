@@ -185,7 +185,7 @@ fun needsToShowDirectBootWarning(): Boolean {
     val isGraphene = remember {
         context.packageManager.systemAvailableFeatures.any { it.name?.contains("grapheneos") == true }
                 || Build.HOST == "r-0123456789abcdef-0123"
-    } || BuildConfig.DEBUG // show it on debug build for testing
+    }
     if(!isGraphene) return false
 
     return !useDataStoreValue(DirectBootWarningDismissed)

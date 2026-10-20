@@ -30,6 +30,7 @@ import kotlinx.serialization.json.Json
 import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
+import org.futo.inputmethod.latin.ATLCompat
 import org.futo.inputmethod.latin.LatinIME
 import org.futo.inputmethod.latin.LegacySwipeSetting
 import org.futo.inputmethod.latin.R
@@ -280,7 +281,7 @@ val MemoryDebugAction = Action(
             override fun WindowContents(keyboardShown: Boolean) {
                 val state: MutableState<Map<String, String>> = remember { mutableStateOf(mapOf()) }
                 LaunchedEffect(Unit) {
-                    while (true) {
+                    while (!ATLCompat.IsATL) {
                         delay(250)
 
                         val newInfo = Debug.MemoryInfo()
@@ -389,6 +390,7 @@ val MemoryDebugAction = Action(
 
                     Text("Screen State Info", style = DebugTitle)
                     Text("size mode     = ${(manager.getContext() as KeyboardSizeStateProvider).currentSizeState}", style = DebugLabel)
+                    Text("size          = ${(manager.getContext() as LatinIME).size.value}", style = DebugLabel)
                     Text("Fold State", style = DebugTitle)
                     Text("state         = ${foldingState.feature?.state}",          style = DebugLabel)
                     Text("orientation   = ${foldingState.feature?.orientation}",    style = DebugLabel)

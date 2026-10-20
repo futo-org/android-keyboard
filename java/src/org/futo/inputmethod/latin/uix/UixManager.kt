@@ -107,6 +107,7 @@ import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEInterface
 import org.futo.inputmethod.engine.NonExpandableSuggestionBar
 import org.futo.inputmethod.event.Event
+import org.futo.inputmethod.latin.ATLCompat
 import org.futo.inputmethod.latin.AudioAndHapticFeedbackManager
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.FoldingOptions
@@ -618,6 +619,9 @@ class UixManager(private val latinIME: LatinIME) {
     private fun toggleActionsExpanded() {
         isActionsExpanded.value = !isActionsExpanded.value
         latinIME.deferSetSetting(latinIME, ActionBarExpanded, isActionsExpanded.value)
+
+        // invalidation strangeness (needs fixing)
+        if(ATLCompat.IsATL) latinIME.invalidateKeyboard(true)
     }
 
 
