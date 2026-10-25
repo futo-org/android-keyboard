@@ -660,6 +660,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun onWindowHidden() {
         super.onWindowHidden()
         latinIMELegacy.onWindowHidden()
+        uixManager.resetDismissState()
         uixManager.onInputFinishing()
     }
 

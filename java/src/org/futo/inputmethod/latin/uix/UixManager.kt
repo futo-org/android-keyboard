@@ -25,6 +25,18 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.util.VelocityTracker
+import kotlin.math.abs
+import androidx.compose.ui.layout.layout
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -648,6 +660,110 @@ class UixManager(private val latinIME: LatinIME) {
 
     val isMainKeyboardHidden get() = mainKeyboardHidden.value
 
+    private val dismissOffset = mutableFloatStateOf(0.0f)
+    private var dismissLayoutOffset = 0.0f
+    private var dismissFullHeight = 0
+    private var dismissNavBarPx = 0.0f
+    private val dismissMaxOffset get() = (dismissFullHeight - dismissNavBarPx).coerceAtLeast(0.0f)
+    private var dismissJob: Job? = null
+
+    fun resetDismissState() {
+        dismissJob?.cancel()
+        dismissJob = null
+        dismissOffset.floatValue = 0.0f
+    }
+
+    private fun Modifier.dismissResize(): Modifier = this
+        .layout { measurable, constraints ->
+            val placeable = measurable.measure(constraints)
+            dismissFullHeight = placeable.height
+
+            val offset = dismissOffset.floatValue.coerceIn(0.0f, placeable.height.toFloat())
+            dismissLayoutOffset = offset
+
+            val height = if (offset > 0.0f) {
+                (placeable.height - offset.roundToInt()).coerceAtLeast(1)
+            } else {
+                placeable.height
+            }
+            layout(placeable.width, height) { placeable.place(0, 0) }
+        }
+        .clipToBounds()
+
+    @Composable
+    private fun rememberSwipeDownToDismiss(enabled: Boolean): Modifier {
+        val scope = rememberCoroutineScope()
+        val density = LocalDensity.current
+        val flingVelocity = with(density) { 700.dp.toPx() }
+        dismissNavBarPx = with(density) { navBarHeight().toPx() }
+
+        return Modifier.pointerInput(enabled) {
+            if (!enabled) return@pointerInput
+            awaitEachGesture {
+                val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                val slopPx = viewConfiguration.touchSlop
+
+                var started = false
+                while (!started) {
+                    val event = awaitPointerEvent(PointerEventPass.Initial)
+                    val change = event.changes.firstOrNull { it.id == down.id }
+                    if (change == null || change.isConsumed || !change.pressed) return@awaitEachGesture
+
+                    val dx = change.position.x - down.position.x
+                    val dy = change.position.y - down.position.y
+                    if (abs(dx) > slopPx && abs(dx) > abs(dy)) return@awaitEachGesture
+                    if (dy < -slopPx) return@awaitEachGesture
+                    if (dy > slopPx) {
+                        started = true
+                        change.consume()
+                    }
+                }
+
+                dismissJob?.cancel()
+                dismissJob = null
+
+                val tracker = VelocityTracker()
+                var completed = false
+                while (true) {
+                    val event = awaitPointerEvent(PointerEventPass.Initial)
+                    val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                    val y = change.position.y + dismissLayoutOffset
+                    tracker.addPosition(change.uptimeMillis, Offset(0.0f, y))
+                    dismissOffset.floatValue =
+                        (y - down.position.y).coerceIn(0.0f, dismissMaxOffset)
+                    change.consume()
+                    if (!change.pressed) {
+                        completed = true
+                        break
+                    }
+                }
+
+                val velocity = if (completed) tracker.calculateVelocity().y else 0.0f
+                val from = dismissOffset.floatValue
+                val full = dismissMaxOffset
+                val shouldDismiss = completed && full > 0.0f &&
+                        (velocity > flingVelocity || (velocity > -flingVelocity && from > full * 0.2f))
+
+                dismissJob = scope.launch {
+                    if (shouldDismiss) {
+                        latinIME.requestHideSelf(0)
+
+                        delay(600)
+                        if (latinIME.isInputViewShown) {
+                            animate(dismissOffset.floatValue, 0.0f, animationSpec = spring(stiffness = 500.0f)) { v, _ ->
+                                dismissOffset.floatValue = v
+                            }
+                        }
+                    } else {
+                        animate(from, 0.0f, animationSpec = spring(stiffness = 500.0f)) { v, _ ->
+                            dismissOffset.floatValue = v
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun onActionActivatedInternal(rawAction: Action, skipOverride: Boolean = false) {
         resizers.hideResizer()
 
@@ -697,7 +813,8 @@ class UixManager(private val latinIME: LatinIME) {
 
         val actionBarShown = useDataStore(ActionBarDisplayedSetting)
 
-        Column {
+        // Swiping down on suggestions expands them when using the expandable suggestion UI
+        Column(rememberSwipeDownToDismiss(enabled = !needToUseExpandableSuggestionUi)) {
             // Don't show suggested words when it's not meant to be shown
             val suggestedWordsOrNull = if(shouldShowSuggestionStrip.value) {
                 suggestedWords.value
@@ -1015,11 +1132,13 @@ class UixManager(private val latinIME: LatinIME) {
         modifier: Modifier = Modifier,
         shape: Shape = RectangleShape,
         padding: Rect = Rect(),
+        resizeModifier: Modifier = Modifier,
         content: @Composable BoxScope.() -> Unit
     ) = with(LocalDensity.current) {
 
         Box(modifier
             .onSizeChanged { measuredTouchableHeight = it.height }
+            .then(resizeModifier)
             .requiredWidth(requiredWidthPx.toDp())
             .absolutePadding(
                 //top = padding.top.toDp().coerceAtLeast(0.dp),
@@ -1200,7 +1319,8 @@ class UixManager(private val latinIME: LatinIME) {
             KeyboardSurface(
                 requiredWidthPx = size.width,
                 backgroundColor = latinIME.keyboardColor,
-                padding = size.padding
+                padding = size.padding,
+                resizeModifier = Modifier.dismissResize()
             ) {
                 val paddingOverride = when(size) {
                     is OneHandedKeyboardSize -> {
