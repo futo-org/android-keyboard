@@ -902,6 +902,8 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         switchToNextLanguage(helper.context, direction)
     }
 
+    override fun onSwipeAction(direction: Int) {}
+
     private var prevSuggest: SuggestedWords? = null
     private val blacklist = SuggestionBlacklist(Settings.getInstance(), helper.context, helper.lifecycleScope)
     override fun setNeutralSuggestionStrip() {

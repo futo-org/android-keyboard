@@ -1207,6 +1207,10 @@ class JapaneseIME(val helper: IMEHelper) : IMEInterface {
 
     }
 
+    override fun onSwipeAction(direction: Int) {
+
+    }
+
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {
 
     }
