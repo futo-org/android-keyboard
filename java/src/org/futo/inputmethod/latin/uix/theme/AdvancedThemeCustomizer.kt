@@ -14,6 +14,8 @@ import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.keyboard.internal.KeyDrawParams
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
+import org.futo.inputmethod.latin.uix.KEY_HINT_SCALE
+import org.futo.inputmethod.latin.uix.getSetting
 import kotlin.math.roundToInt
 
 data class KeyOutline(
@@ -63,6 +65,7 @@ class AdvancedThemeMatcher(
     val scheme: KeyboardColorScheme
 ) {
     val theme = scheme.extended.advancedThemeOptions
+    private val extraHintScale get() = context.getSetting(KEY_HINT_SCALE.key, KEY_HINT_SCALE.default)
 
     val backgroundList = theme.keyBackgrounds?.v ?: emptyList()
     val layers = (listOf(0) + backgroundList.map { getLayer(it.qualifiers) })
@@ -164,7 +167,7 @@ class AdvancedThemeMatcher(
         var hintLabel: String? = if(hintIcon == null) key.effectiveHintLabel else null
 
         val textSize = key.selectTextSize(params).toFloat() * scheme.extended.advancedThemeOptions.textSizeMultiplier
-        val hintSize = key.selectHintTextSize(drawableProvider, params).toFloat() * scheme.extended.advancedThemeOptions.hintSizeMultiplier
+        val hintSize = key.selectHintTextSize(drawableProvider, params).toFloat() * scheme.extended.advancedThemeOptions.hintSizeMultiplier * extraHintScale
 
         var textTypeface = drawableProvider.selectKeyTypeface(key.selectTypeface(params))
         var hintTypeface = drawableProvider.selectKeyTypeface(key.selectHintTypeface(drawableProvider, params))
