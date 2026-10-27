@@ -16,6 +16,8 @@
 
 package org.futo.inputmethod.latin.inputlogic;
 
+import android.icu.lang.UCharacter;
+import android.icu.lang.UProperty;
 import android.os.SystemClock;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -1610,27 +1612,38 @@ public final class InputLogic {
                     int lengthToDelete =
                             Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
 
-                    // Handle emoji sequences (flags, etc)
-                    CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(deleteWholeWords ? 48 : 8, 0);
-                    if (textBeforeCursor != null && textBeforeCursor.length() > 0) {
-                        BreakIterator breakIterator;
+                    if (deleteWholeWords) {
+                        CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(48, 0);
+                        if (textBeforeCursor != null && textBeforeCursor.length() > 0) {
+                            BreakIterator breakIterator = BreakIterator.getWordInstance(inputTransaction.mSettingsValues.mLocale);
+                            breakIterator.setText(textBeforeCursor.toString());
 
-                        if(deleteWholeWords) {
-                            breakIterator = BreakIterator.getWordInstance();
-                        } else {
-                            breakIterator = BreakIterator.getCharacterInstance();
+                            int end = breakIterator.last();
+                            int start = breakIterator.previous();
+
+                            if (textBeforeCursor.subSequence(start, end).toString().equals(" ")) {
+                                start = breakIterator.previous();
+                            }
+
+                            if (start != BreakIterator.DONE) {
+                                lengthToDelete = end - start;
+                                textDeleted = textBeforeCursor.subSequence(start, end).toString();
+                            }
                         }
-                        breakIterator.setText(textBeforeCursor.toString());
-                        int end = breakIterator.last();
-                        int start = breakIterator.previous();
+                    } else if (UCharacter.hasBinaryProperty(codePointBeforeCursor, UProperty.EMOJI)
+                            || UCharacter.hasBinaryProperty(codePointBeforeCursor, UProperty.EMOJI_COMPONENT)) {
+                        CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(32, 0);
+                        if (textBeforeCursor != null && textBeforeCursor.length() > 0) {
+                            BreakIterator breakIterator = BreakIterator.getCharacterInstance(inputTransaction.mSettingsValues.mLocale);
+                            breakIterator.setText(textBeforeCursor.toString());
 
-                        if(deleteWholeWords && textBeforeCursor.subSequence(start, end).toString().equals(" ")) {
-                            start = breakIterator.previous();
-                        }
+                            int end = breakIterator.last();
+                            int start = breakIterator.previous();
 
-                        if (start != BreakIterator.DONE) {
-                            lengthToDelete = end - start;
-                            textDeleted = textBeforeCursor.subSequence(start, end).toString();
+                            if (start != BreakIterator.DONE) {
+                                lengthToDelete = end - start;
+                                textDeleted = textBeforeCursor.subSequence(start, end).toString();
+                            }
                         }
                     }
 
