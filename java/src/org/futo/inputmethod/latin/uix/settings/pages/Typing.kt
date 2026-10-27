@@ -145,6 +145,15 @@ val keySoundVolumeSetting = SettingsKey(
     0.0f
 )
 
+// Percentage of the key width a swipe has to cover to trigger a flick.
+// -1 means "use the built-in default", see FLICK_THRESHOLD_DEFAULT.
+val flickThresholdSetting = SettingsKey(
+    intPreferencesKey("flick_threshold_percent"),
+    -1
+)
+
+const val FLICK_THRESHOLD_DEFAULT = 1.0f / 3.0f
+
 val ActionBarDisplayedSetting = SettingsKey(
     booleanPreferencesKey("enable_action_bar"),
     true
@@ -661,6 +670,29 @@ val LongPressMenu = UserSettingsMenu(
                 transform = { it.roundToInt() },
                 indicator = { resources.getString(R.string.abbreviation_unit_milliseconds, "$it") },
                 steps = 23
+            )
+        },
+
+        UserSetting(
+            name = R.string.morekey_settings_flick_threshold,
+            subtitle = R.string.morekey_settings_flick_threshold_subtitle,
+            searchTags = R.string.morekey_settings_flick_threshold_tags,
+        ) {
+            val resources = LocalResources.current
+            SettingSlider(
+                title = stringResource(R.string.morekey_settings_flick_threshold),
+                subtitle = stringResource(R.string.morekey_settings_flick_threshold_subtitle),
+                setting = flickThresholdSetting,
+                range = -1.0f .. 100.0f,
+                hardRange = -1.0f .. 100.0f,
+                transform = { if(it < 1.0f) -1 else it.roundToInt() },
+                indicator = {
+                    if(it < 0) {
+                        resources.getString(R.string.morekey_settings_flick_threshold_default)
+                    } else {
+                        "$it%"
+                    }
+                }
             )
         },
     )
