@@ -562,6 +562,9 @@
     <string name="swipe_settings_configure_shortcuts">Shortcuts</string>
     <string name="swipe_settings_configure_shortcuts_subtitle">Configure spacebar and delete key gestures in long-press settings</string>
 
+    <string name="swipe_settings_surface_swipe_delete">Swipe to delete words</string>
+    <string name="swipe_settings_surface_swipe_delete_subtitle">Swipe left on the keyboard to delete the previous word. Keep holding after the swipe and move left or right to select more or fewer words before releasing.</string>
+
     <string name="swipe_settings_show_unsupported">Show unsupported settings…</string>
     <string name="swipe_settings_use_old_swipe">Use legacy swipe algorithm</string>
     <string name="swipe_settings_use_old_swipe_subtitle_short">The legacy algorithm is very inaccurate and not recommended.</string>

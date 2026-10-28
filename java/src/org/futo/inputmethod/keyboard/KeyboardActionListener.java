@@ -103,6 +103,7 @@ public interface KeyboardActionListener {
 
     public void onMovePointer(int steps);
     public void onMoveDeletePointer(int steps);
+    public void onSurfaceSwipeDelete(int steps);
     public void onUpWithDeletePointerActive();
     public void onUpWithPointerActive();
     public void onMovingCursorLockEvent(boolean canMoveCursor);
@@ -139,6 +140,8 @@ public interface KeyboardActionListener {
         public void onMovePointer(int steps) {}
         @Override
         public void onMoveDeletePointer(int steps) {}
+        @Override
+        public void onSurfaceSwipeDelete(int steps) {}
         @Override
         public void onUpWithDeletePointerActive() {}
         @Override
