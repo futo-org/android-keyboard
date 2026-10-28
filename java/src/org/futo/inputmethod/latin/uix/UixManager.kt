@@ -1510,23 +1510,34 @@ class UixManager(private val latinIME: LatinIME) {
     }
 
     fun requestForgetWord(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {
+        val isEmojiSuggestion = suggestedWordInfo.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION
         keyboardManagerForAction.requestDialog(
-            latinIME.getString(R.string.keyboard_suggest_blacklist_body, suggestedWordInfo.mWord),
-            listOf(
-                DialogRequestItem(latinIME.getString(R.string.cancel)) { },
-                DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_add_word_to_blacklist)) {
-                    latinIME.blacklistWord(suggestedWordInfo)
-                },
-            ) + if(suggestedWordInfo.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
-                listOf(
-                    DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_disable_emojis)) {
-                        runBlocking { latinIME.setSetting(SHOW_EMOJI_SUGGESTIONS, false) }
-                        latinIME.blacklistWord(null)
-                    }
-                )
-            } else {
-                listOf()
-            }
+            latinIME.getString(
+                if (isEmojiSuggestion) R.string.keyboard_suggest_blacklist_body
+                else R.string.keyboard_suggest_manage_word_body,
+                suggestedWordInfo.mWord
+            ),
+            listOf(DialogRequestItem(latinIME.getString(R.string.cancel)) { }) +
+                if (isEmojiSuggestion) {
+                    listOf(
+                        DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_add_word_to_blacklist)) {
+                            latinIME.blacklistWord(suggestedWordInfo)
+                        },
+                        DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_disable_emojis)) {
+                            runBlocking { latinIME.setSetting(SHOW_EMOJI_SUGGESTIONS, false) }
+                            latinIME.blacklistWord(null)
+                        }
+                    )
+                } else {
+                    listOf(
+                        DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_add_to_dictionary)) {
+                            latinIME.addSuggestedWordToDictionary(suggestedWordInfo)
+                        },
+                        DialogRequestItem(latinIME.getString(R.string.keyboard_suggest_add_word_to_blacklist)) {
+                            latinIME.blacklistWord(suggestedWordInfo)
+                        }
+                    )
+                }
         ) { }
 
         val v = latinIME.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
