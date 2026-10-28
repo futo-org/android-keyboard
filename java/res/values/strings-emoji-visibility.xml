@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="emoji_settings_hidden_title">Hidden emojis</string>
+    <string name="emoji_settings_hidden_subtitle">Hide selected emojis from the emoji picker, search, recents, and emoji suggestions.</string>
+    <string name="emoji_settings_hidden_add">Emojis to hide</string>
+    <string name="emoji_settings_hidden_invalid">Enter supported emojis only</string>
+    <string name="emoji_settings_hidden_none">No emojis are hidden.</string>
+    <string name="emoji_settings_hidden_remove">Show this emoji again</string>
+</resources>
