@@ -584,7 +584,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
 
             // Fuzzy pinyin only added to pinyin layouts
             if(schema.startsWith("luna_pinyin")) {
-                appendLine("    speller/algebra:")
+                appendLine("    speller/algebra/+:")
                 cfg.fuzzyMode.forEach {
                     it.schemePatch.forEach {
                         appendLine("        - $it")
