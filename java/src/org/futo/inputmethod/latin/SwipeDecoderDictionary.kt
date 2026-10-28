@@ -383,7 +383,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         throw UnsupportedOperationException("Use the non-dictionary method instead")
     }
 
-    val whitespaceRegex = Regex("\\W+")
+    val whitespaceRegex = Regex("[^\\w']+")
     fun getSuggestions(
         composedData: ComposedData,
         ngramContext: NgramContext?,
@@ -476,6 +476,7 @@ class SwipeDecoderDictionary(val context: Context, val locale: Locale) : Diction
         if(useHighBeam) appliedScoring.value = decoder.scoring
 
         if(BuildConfig.DEBUG || System.currentTimeMillis() < debugLogUntil) {
+            Log.d("SwipeDecoderDictionary", "Beam width: ${beamWidth} (multiswipe=$isMultiSwipe useHighBeam=$useHighBeam)")
             Log.d("SwipeDecoderDictionary", "Timing: ${decoder.lastTiming()}")
             Log.d("SwipeDecoderDictionary", "Left = $left")
             Log.d("SwipeDecoderDictionary", "Right = $right")
