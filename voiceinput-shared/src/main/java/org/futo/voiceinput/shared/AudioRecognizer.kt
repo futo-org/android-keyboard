@@ -587,6 +587,8 @@ class AudioRecognizer(
         isRecording = false
         recorder?.stop()
 
+        unfocusAudio()
+
         listener.processing()
 
         modelJob = lifecycleScope.launch {
