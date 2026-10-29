@@ -1,4 +1,99 @@
-- name: Prepare APK for Release
+name: Auto Release on Upstream Update
+
+on:
+  workflow_dispatch: # Ручной запуск при необходимости
+  schedule:
+    - cron: '0 */12 * * *' # Автоматическая проверка каждые 12 часов
+
+jobs:
+  check_and_release:
+    name: Check Upstream Release & Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check latest upstream release
+        id: check_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          UPSTREAM_TAG=$(gh api repos/futo-org/android-keyboard/releases/latest --jq .tag_name 2>/dev/null || echo "")
+          if [ -z "$UPSTREAM_TAG" ]; then
+            echo "::error::Не удалось получить последний релиз upstream"
+            exit 1
+          fi
+          echo "Последний релиз оригинальной клавиатуры: $UPSTREAM_TAG"
+          echo "upstream_tag=$UPSTREAM_TAG" >> "$GITHUB_OUTPUT"
+
+          MY_TARGET_TAG="${UPSTREAM_TAG}-mod"
+          echo "target_tag=$MY_TARGET_TAG" >> "$GITHUB_OUTPUT"
+
+          if git rev-parse "$MY_TARGET_TAG" >/dev/null 2>&1; then
+            echo "Релиз $MY_TARGET_TAG уже существует у нас."
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "Запуск вручную: продолжаем сборку."
+              echo "should_build=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "Автозапуск: сборка не требуется."
+              echo "should_build=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "Обнаружен НОВЫЙ релиз ($UPSTREAM_TAG)! Запускаем слияние и релиз."
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stop if up-to-date
+        if: ${{ steps.check_release.outputs.should_build != 'true' }}
+        run: |
+          echo "Репозиторий актуален, новый релиз не требуется."
+          exit 0
+
+      - name: Merge Upstream Release Tag
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/futo-org/android-keyboard.git || true
+          
+          # Запрещаем рекурсивный фетч подмодулей, чтобы избежать ошибки "not our ref"
+          git fetch upstream --tags --no-recurse-submodules
+
+          TAG="${{ steps.check_release.outputs.upstream_tag }}"
+          echo "Объединяем код с тегом $TAG..."
+          if git merge "$TAG" -m "auto: merge upstream release $TAG"; then
+            # Синхронизируем подмодули только ПОСЛЕ успешного слияния
+            git submodule update --init --recursive
+            git push origin master
+          else
+            echo "::warning::Обнаружен конфликт слияния с тегом $TAG! Сборка отменена."
+            exit 1
+          fi
+
+      - name: Set up JDK 17
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Prepare APK for Release
         if: ${{ steps.check_release.outputs.should_build == 'true' }}
         run: |
           mkdir -p release-apk
@@ -11,7 +106,6 @@
             exit 1
           fi
 
-      # 4. Публикуем релиз с готовым APK
       - name: Create GitHub Release
         if: ${{ steps.check_release.outputs.should_build == 'true' }}
         uses: softprops/action-gh-release@v2
