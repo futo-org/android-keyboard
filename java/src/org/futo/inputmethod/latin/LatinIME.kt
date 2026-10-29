@@ -482,4 +482,547 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 KeyboardSizeSettingKind.entries.associateWith { null }.toMutableMap()
 
             dataStore.data.collect { data ->
-                prev.keys
+                prev.keys.toList().forEach {
+                    if(data[KeyboardSettings[it]!!.key] != prev[it]) {
+                        prev[it] = data[KeyboardSettings[it]!!.key]
+                        onSizeUpdated()
+                    }
+                }
+            }
+        }
+
+        uixManager.onCreate()
+
+        Settings.getInstance().settingsChangedListeners.add { oldSettings, newSettings ->
+            val differs = (oldSettings.mActionKeyId != newSettings.mActionKeyId)
+                    || (oldSettings.mShowsActionKey != newSettings.mShowsActionKey)
+
+            if (differs) {
+                invalidateKeyboard(refreshSettings = true)
+            }
+        }
+    }
+
+    fun changeSubtype(subtypeString: String) {
+        if(currentSubtype == subtypeString) return
+        currentSubtype = subtypeString
+
+        val subtype = Subtypes.convertToSubtype(subtypeString)
+        changeInputMethodSubtype(subtype)
+        uixManager.updateLocale(Subtypes.getLocale(subtype))
+    }
+
+    private var destroying = false
+    override fun onDestroy() {
+        destroying = true
+        unregisterReceiver(unlockReceiver)
+        stopJobs()
+        viewModelStore.clear()
+        uixManager.onDestroy()
+        imeManager.onDestroy()
+        Settings.getInstance().settingsChangedListeners.clear()
+        latinIMELegacy.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        Log.w("LatinIME", "Configuration changed")
+        size.value = calculateSize()
+        updateNavigationBarVisibility()
+        latinIMELegacy.onConfigurationChanged(newConfig)
+        super.onConfigurationChanged(newConfig)
+        uixManager.updateLocaleOnCfgChanged()
+    }
+
+    override fun onInitializeInterface() {
+        latinIMELegacy.onInitializeInterface()
+    }
+
+    private var legacyInputView: MutableState<View?> = mutableStateOf(null)
+    override fun onCreateInputView(): View {
+        val composeView = super.onCreateInputView()
+
+        legacyInputView.value = latinIMELegacy.onCreateInputView()
+        latinIMELegacy.setComposeInputView(composeView)
+
+        uixManager.setContent()
+
+        // Due to annoying Android animation nonsense, we may never receive a notification of the
+        // correct insets, a 250ms delay to recheck is the best solution I could come up with
+        window.window?.decorView?.setOnApplyWindowInsetsListener { v, insets ->
+            window.window!!.decorView.post { onSizeUpdated() }
+            window.window!!.decorView.postDelayed({ onSizeMaybeUpdated() }, 250L)
+            v.onApplyWindowInsets(insets)
+        }
+
+        return composeView
+    }
+
+    private var inputViewHeight: Int = -1
+
+    fun getInputViewHeight(): Int = inputViewHeight
+    fun getViewHeight(): Int = composeView?.height ?: resources.displayMetrics.heightPixels
+    fun getViewWidth(): Int = composeView?.width ?: resources.displayMetrics.widthPixels
+
+    private var isInputModal = false
+    fun setInputModal(to: Boolean) {
+        isInputModal = to
+    }
+
+    // The keyboard view really doesn't like being detached, so it's always
+    // shown, but resized to 0 if an action window is open
+    @Composable
+    internal fun LegacyKeyboardView(modifier: Modifier, hidden: Boolean) {
+        val modifier = if(hidden) {
+            modifier
+                .clipToBounds()
+                .size(0.dp)
+        } else {
+            modifier.onSizeChanged {
+                inputViewHeight = it.height
+            }
+        }.safeKeyboardPadding()
+
+        val legacyInputView = legacyInputView.value
+        key(legacyInputView) {
+            AndroidView(factory = {
+                legacyInputView!!.also {
+                    if(it.parent != null) (it.parent as ViewGroup).removeView(it)
+                }
+            }, modifier = modifier, onRelease = {
+                val view = it as InputView
+                view.deallocateMemory()
+                view.removeAllViews()
+            })
+        }
+    }
+
+    // necessary for when KeyboardSwitcher updates the theme
+    fun updateLegacyView(newView: View) {
+        legacyInputView.value = newView
+        composeView?.let {
+            latinIMELegacy.setComposeInputView(it)
+        }
+
+        latinIMELegacy.setInputView(newView)
+    }
+
+    override fun setInputView(view: View?) {
+        super.setInputView(view)
+
+        composeView?.let {
+            latinIMELegacy.setComposeInputView(it)
+        }
+
+        latinIMELegacy.setInputView(legacyInputView.value)
+    }
+
+    override fun setCandidatesView(view: View?) {
+        return latinIMELegacy.setCandidatesView(view)
+    }
+
+    override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
+        super.onStartInput(attribute, restarting)
+        latinIMELegacy.onStartInput(attribute, restarting)
+        uixManager.inputStarted(attribute)
+        //imeManager.onStartInput() // TODO: Is this call needed or not?
+    }
+
+    override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
+        super.onStartInputView(info, restarting)
+        onSizeMaybeUpdated()
+        imeManager.onStartInput()
+        latinIMELegacy.onStartInputView(info, restarting)
+        lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
+        updateColorsIfDynamicChanged()
+        uixManager.updateEmojiTranslationsIfNeeded()
+    }
+
+    override fun onFinishInputView(finishingInput: Boolean) {
+        super.onFinishInputView(finishingInput)
+        latinIMELegacy.onFinishInputView(finishingInput)
+        uixManager.onInputFinishing()
+        imeManager.onFinishInput()
+    }
+
+    override fun onFinishInput() {
+        super.onFinishInput()
+        latinIMELegacy.onFinishInput()
+        uixManager.onInputFinishing()
+    }
+
+    private fun changeInputMethodSubtype(newSubtype: InputMethodSubtype?) {
+        latinIMELegacy.onCurrentInputMethodSubtypeChanged(newSubtype)
+    }
+
+    override fun onWindowShown() {
+        super.onWindowShown()
+        latinIMELegacy.onWindowShown()
+        updateColorsIfDynamicChanged()
+    }
+
+    override fun onWindowHidden() {
+        super.onWindowHidden()
+        latinIMELegacy.onWindowHidden()
+        uixManager.onInputFinishing()
+    }
+
+    override fun onUpdateSelection(
+        oldSelStart: Int,
+        oldSelEnd: Int,
+        newSelStart: Int,
+        newSelEnd: Int,
+        candidatesStart: Int,
+        candidatesEnd: Int
+    ) {
+        super.onUpdateSelection(
+            oldSelStart,
+            oldSelEnd,
+            newSelStart,
+            newSelEnd,
+            candidatesStart,
+            candidatesEnd
+        )
+
+        latinIMELegacy.onUpdateSelection(
+            oldSelStart,
+            oldSelEnd,
+            newSelStart,
+            newSelEnd,
+            candidatesStart,
+            candidatesEnd
+        )
+    }
+
+    override fun onExtractedTextClicked() {
+        latinIMELegacy.onExtractedTextClicked()
+        super.onExtractedTextClicked()
+    }
+
+    override fun onExtractedCursorMovement(dx: Int, dy: Int) {
+        latinIMELegacy.onExtractedCursorMovement(dx, dy)
+        super.onExtractedCursorMovement(dx, dy)
+    }
+
+    override fun hideWindow() {
+        latinIMELegacy.hideWindow()
+        super.hideWindow()
+    }
+
+    override fun onDisplayCompletions(completions: Array<out CompletionInfo>?) {
+
+    }
+
+    fun getNavigationBarBottomInset(view: View): Int {
+        val windowInsets: WindowInsetsCompat? = ViewCompat.getRootWindowInsets(view)
+        if (windowInsets != null) {
+            val navBarInsets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            return navBarInsets.bottom
+        }
+        return 0
+    }
+
+    override fun onComputeInsets(outInsets: Insets?) {
+        // This method may be called before {@link #setInputView(View)}.
+        if (legacyInputView.value == null || composeView == null) {
+            return
+        }
+
+        val viewHeight = composeView!!.height
+        val size = size.value ?: return
+        latinIMELegacy.setInsets(outInsets!!.apply {
+            when(size) {
+                is FloatingKeyboardSize -> {
+                    val bottomInset = getNavigationBarBottomInset(composeView!!)
+                    val height = uixManager.touchableHeight
+
+                    val left   = uixManager.floatingPosition.x.toInt()
+                    val right  = (uixManager.floatingPosition.x + size.width).roundToInt()
+                    val top    = uixManager.floatingPosition.y.toInt() - uixManager.extraTopTouchHeight
+                    val bottom = (uixManager.floatingPosition.y + height).roundToInt()
+
+                    touchableInsets = Insets.TOUCHABLE_INSETS_REGION
+                    touchableRegion.set(left, top, right, bottom)
+                    contentTopInsets = viewHeight - bottomInset
+                    visibleTopInsets = viewHeight - bottomInset
+                }
+                else -> {
+                    touchableInsets = Insets.TOUCHABLE_INSETS_VISIBLE
+
+                    val touchableHeight = uixManager.touchableHeight
+                    val topInset = if(touchableHeight < 1 || touchableHeight >= viewHeight - 1) {
+                        val actionBarHeight = sizingCalculator.calculateTotalActionBarHeightPx()
+
+                        viewHeight - size.height - actionBarHeight
+                    } else {
+                        viewHeight - touchableHeight
+                    }
+
+                    contentTopInsets = topInset
+                    visibleTopInsets = topInset - uixManager.extraTopTouchHeight
+                }
+            }
+
+            if(isInputModal || latinIMELegacy.mKeyboardSwitcher?.isShowingMoreKeysPanel == true) {
+                touchableInsets = Insets.TOUCHABLE_INSETS_REGION
+                touchableRegion.set(0, 0, composeView!!.width, composeView!!.height)
+            }
+        })
+    }
+
+    override fun onShowInputRequested(flags: Int, configChange: Boolean): Boolean {
+        return latinIMELegacy.onShowInputRequested(
+            flags,
+            configChange
+        ) || super.onShowInputRequested(flags, configChange)
+    }
+
+    override fun onEvaluateInputViewShown(): Boolean {
+        return latinIMELegacy.onEvaluateInputViewShown()
+                || super.onEvaluateInputViewShown()
+                || !getSetting(HideKeyboardWhenHardKeyboardConnected)
+    }
+
+    override fun onEvaluateFullscreenMode(): Boolean {
+        // TODO: Revisit fullscreen mode
+        return false //latinIMELegacy.onEvaluateFullscreenMode(super.onEvaluateFullscreenMode())
+    }
+
+    override fun updateFullscreenMode() {
+        super.updateFullscreenMode()
+        latinIMELegacy.updateFullscreenMode()
+    }
+
+    // Вспомогательная функция для переключения языков FUTO с физической клавиатуры
+    private fun cycleHardwareKeyboardLanguage() {
+        lifecycleScope.launch {
+            val subtypes = getSettingBlocking(SubtypesSetting).toList()
+            if (subtypes.size > 1) {
+                val current = currentSubtype.ifEmpty { getSettingBlocking(ActiveSubtype) }
+                val idx = subtypes.indexOf(current)
+                val nextIdx = if (idx != -1) (idx + 1) % subtypes.size else 0
+                val nextSubtypeStr = subtypes[nextIdx]
+
+                setSetting(ActiveSubtype, nextSubtypeStr)
+                withContext(Dispatchers.Main) {
+                    changeSubtype(nextSubtypeStr)
+                    val locale = Subtypes.getLocale(Subtypes.convertToSubtype(nextSubtypeStr))
+                    Toast.makeText(
+                        this@LatinIME,
+                        "Язык: ${locale.displayLanguage.uppercase()} (${locale.language.uppercase()})",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@LatinIME,
+                        "Добавьте второй язык в настройках приложения FUTO!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event != null) {
+            // 1. Shift + Space или Ctrl + Space или кнопка Language Switch -> переключение языка внутри FUTO
+            val isSwitchCombo = (keyCode == KeyEvent.KEYCODE_SPACE && (event.isShiftPressed || event.isCtrlPressed)) ||
+                    keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH
+
+            if (isSwitchCombo) {
+                if (event.repeatCount == 0) {
+                    cycleHardwareKeyboardLanguage()
+                }
+                return true
+            }
+
+            // 2. Alt + Space или кнопка Голосового ввода -> запуск локального голосового ввода FUTO
+            val isVoiceCombo = (keyCode == KeyEvent.KEYCODE_SPACE && event.isAltPressed) ||
+                    keyCode == KeyEvent.KEYCODE_VOICE_ASSIST ||
+                    keyCode == KeyEvent.KEYCODE_SEARCH
+
+            if (isVoiceCombo) {
+                if (event.repeatCount == 0) {
+                    requestShowSelf(InputMethodManager.SHOW_FORCED)
+                    uixManager.activateInternalVoiceIME()
+                }
+                return true
+            }
+        }
+        return latinIMELegacy.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event != null && keyCode == KeyEvent.KEYCODE_SPACE && (event.isShiftPressed || event.isCtrlPressed || event.isAltPressed)) {
+            return true
+        }
+        return latinIMELegacy.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event)
+    }
+
+    override fun updateVisibility(shouldShowSuggestionsStrip: Boolean, fullscreenMode: Boolean) {
+        uixManager.updateVisibility(shouldShowSuggestionsStrip, fullscreenMode)
+    }
+
+    override fun setSuggestions(
+        suggestedWords: SuggestedWords,
+        rtlSubtype: Boolean,
+        cfg: ExpandableSuggestionBarConfiguration
+    ) {
+        uixManager.setSuggestions(suggestedWords, rtlSubtype, cfg)
+
+        // Cache the auto-correction in accessibility code so we can speak it if the user
+        // touches a key that will insert it.
+        AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords)
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        uixManager.cleanUpPersistentStates()
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        uixManager.cleanUpPersistentStates()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onCreateInlineSuggestionsRequest(uiExtras: Bundle): InlineSuggestionsRequest? {
+        return createInlineSuggestionsRequest(this, colorScheme)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
+        return uixManager.onInlineSuggestionsResponse(response)
+    }
+
+    fun requestForgetWord(suggestedWordInfo: SuggestedWordInfo) {
+        uixManager.requestForgetWord(suggestedWordInfo)
+    }
+
+    fun blacklistWord(suggestedWordInfo: SuggestedWordInfo?) = lifecycleScope.launch {
+        val word = suggestedWordInfo?.mWord
+        if(word != null) {
+            SuggestionBlacklist.addToBlacklistSetting(this@LatinIME, word)
+
+            val settings = Settings.getInstance().current
+            imeManager.getActiveIME(settings).let { ime ->
+                if (ime is WordLearner) {
+                    SuggestionBlacklist.getCapitalVariants(word, settings.mLocale).forEach {
+                        ime.removeFromHistory(
+                            it,
+                            NgramContext.EMPTY_PREV_WORDS_INFO,
+                            -1,
+                            Constants.NOT_A_CODE
+                        )
+                    }
+                }
+
+                withContext(Dispatchers.Main) {
+                    ime.requestSuggestionRefresh()
+                }
+            }
+        }
+    }
+
+    fun rememberEmojiSuggestion(suggestion: SuggestedWordInfo) {
+        if(suggestion.mKindAndFlags == SuggestedWordInfo.KIND_EMOJI_SUGGESTION) {
+            lifecycleScope.launch {
+                withContext(Dispatchers.Default) {
+                    useEmoji(suggestion.mWord)
+                }
+            }
+        }
+    }
+
+    private var overrideInputConnection: InputConnection? = null
+    private var overrideEditorInfo: EditorInfo? = null
+    fun overrideInputConnection(to: InputConnection?, editorInfo: EditorInfo?) {
+        if(to == this.overrideInputConnection && editorInfo == overrideEditorInfo) return
+
+        imeManager.onFinishInput()
+        this.overrideInputConnection = to
+        this.overrideEditorInfo = editorInfo
+
+        latinIMELegacy.loadSettings()
+
+        imeManager.onStartInput()
+
+        val currentIC = currentInputConnection
+        currentIC?.requestCursorUpdates(InputConnection.CURSOR_UPDATE_IMMEDIATE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            super.getCurrentInputConnection()?.setImeConsumesInput(to != null)
+        }
+    }
+
+    val isInputConnectionOverridden
+        get() = overrideInputConnection != null
+
+    val inputConnectionOverridenWithSuggestions
+        get() = isInputConnectionOverridden && overrideEditorInfo?.let {
+            !it.privateImeOptions.contains("org.futo.inputmethod.latin.NoSuggestions=1")
+        } ?: false
+
+    override fun getCurrentInputConnection(): InputConnection? {
+        return overrideInputConnection ?: super.getCurrentInputConnection()
+    }
+
+    override fun getCurrentInputEditorInfo(): EditorInfo? {
+        return overrideEditorInfo ?: super.getCurrentInputEditorInfo()
+    }
+
+    fun getBaseInputConnection(): InputConnection? {
+        return super.getCurrentInputConnection()
+    }
+
+    fun getBaseInputEditorInfo(): EditorInfo? {
+        return super.getCurrentInputEditorInfo()
+    }
+
+    private fun onDeviceUnlocked() {
+        forceUnlockDatastore(this)
+
+        Log.i("LatinIME", "Device has been unlocked, reloading settings")
+
+        // Every place that called getDefaultSharedPreferences now needs to be refreshed or call it again
+        UserBinaryDictionary.resetUserDictionariesRequiringRecreation()
+
+        // Mainly Settings singleton needs to be refreshed
+        Settings.init(applicationContext)
+        Settings.getInstance().onSharedPreferenceChanged(null /* unused */, "")
+        latinIMELegacy.loadSettings()
+        recreateKeyboard()
+
+        imeManager.onDeviceUnlocked()
+
+        uixManager.onPersistentStatesUnlocked()
+
+        CanThrowIfDebug = true
+
+        // TODO: Spell checker service
+    }
+
+    /// Switch to voice IME or to internal one if it's no longer present.
+    fun trySwitchToShortcutIMEorInternal() {
+        if(!latinIMELegacy.mRichImm.switchToShortcutIme(this)) {
+            uixManager.activateInternalVoiceIME()
+        }
+    }
+
+    override val foldState: FoldingOptions
+        get() = uixManager.foldingOptions.value
+
+    override val currentSizeState: KeyboardSizeSettingKind
+        get() = when {
+            (foldState.feature != null && isFoldableInnerDisplayAllowed()) ->
+                KeyboardSizeSettingKind.FoldableInnerDisplay
+
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE ->
+                KeyboardSizeSettingKind.Landscape
+
+            else ->
+                KeyboardSizeSettingKind.Portrait
+        }
+}
