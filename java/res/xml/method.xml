@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
     android:settingsActivity="org.futo.inputmethod.latin.uix.settings.SettingsActivity"
     android:isDefault="true"
     android:supportsSwitchingToNextInputMethod="true"
     android:supportsInlineSuggestions="true"
     android:suppressesSpellChecker="true">
-    <subtype android:icon="@drawable/ic_launcher_foreground"
+
+    <!-- Английская раскладка -->
+    <subtype 
+        android:icon="@drawable/ic_launcher_foreground"
         android:label="@string/english_ime_name"
+        android:imeSubtypeLocale="en_US"
+        android:languageTag="en-US"
         android:imeSubtypeMode="keyboard"
         android:isAsciiCapable="true"
         android:overridesImplicitlyEnabledSubtype="true" />
+
+    <!-- Русская раскладка -->
+    <subtype 
+        android:icon="@drawable/ic_launcher_foreground"
+        android:label="Русский"
+        android:imeSubtypeLocale="ru_RU"
+        android:languageTag="ru-RU"
+        android:imeSubtypeMode="keyboard"
+        android:isAsciiCapable="false" />
+
 </input-method>
