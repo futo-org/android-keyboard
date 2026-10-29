@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          submodules: recursive # Обязательно для FUTO, у них есть подмодули
+          submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # 1. Получаем тег последнего официального релиза FUTO и сравниваем с нашим
@@ -26,7 +26,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Получаем последний релиз оригинала FUTO
           UPSTREAM_TAG=$(gh api repos/futo-org/android-keyboard/releases/latest --jq .tag_name 2>/dev/null || echo "")
           if [ -z "$UPSTREAM_TAG" ]; then
             echo "::error::Не удалось получить последний релиз upstream"
@@ -35,11 +34,9 @@ jobs:
           echo "Последний релиз оригинальной клавиатуры: $UPSTREAM_TAG"
           echo "upstream_tag=$UPSTREAM_TAG" >> "$GITHUB_OUTPUT"
 
-          # Формируем имя нашего целевого тега
           MY_TARGET_TAG="${UPSTREAM_TAG}-mod"
           echo "target_tag=$MY_TARGET_TAG" >> "$GITHUB_OUTPUT"
 
-          # Проверяем, выпускали ли мы уже этот релиз
           if git rev-parse "$MY_TARGET_TAG" >/dev/null 2>&1; then
             echo "Релиз $MY_TARGET_TAG уже существует у нас."
             if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -61,18 +58,22 @@ jobs:
           echo "Репозиторий актуален, новый релиз не требуется."
           exit 0
 
-      # 3. Вливаем код из тега нового релиза
+      # 3. Вливаем код из тега нового релиза (ИСПРАВЛЕНО ДЛЯ ПОДМОДУЛЕЙ)
       - name: Merge Upstream Release Tag
         if: ${{ steps.check_release.outputs.should_build == 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote add upstream https://github.com/futo-org/android-keyboard.git || true
-          git fetch upstream --tags
+          
+          # Запрещаем рекурсивный фетч подмодулей, чтобы избежать ошибки "not our ref"
+          git fetch upstream --tags --no-recurse-submodules
 
           TAG="${{ steps.check_release.outputs.upstream_tag }}"
           echo "Объединяем код с тегом $TAG..."
           if git merge "$TAG" -m "auto: merge upstream release $TAG"; then
+            # Синхронизируем подмодули только ПОСЛЕ успешного слияния
+            git submodule update --init --recursive
             git push origin master
           else
             echo "::warning::Обнаружен конфликт слияния с тегом $TAG! Сборка отменена."
@@ -95,7 +96,6 @@ jobs:
         if: ${{ steps.check_release.outputs.should_build == 'true' }}
         run: ./gradlew assembleDebug --no-daemon
 
-      # Динамический поиск APK решает проблему из предыдущей сборки
       - name: Prepare APK for Release
         if: ${{ steps.check_release.outputs.should_build == 'true' }}
         run: |
