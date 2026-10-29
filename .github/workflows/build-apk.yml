@@ -1,34 +1,119 @@
-name: Build Debug APK
+name: Auto Release on Upstream Update
 
-# Эта строчка создает ту самую кнопку для ручного запуска
-on: 
-  workflow_dispatch: 
+on:
+  workflow_dispatch: # Ручной запуск при необходимости
+  schedule:
+    - cron: '0 */12 * * *' # Автоматическая проверка каждые 12 часов
 
 jobs:
-  build:
+  check_and_release:
+    name: Check Upstream Release & Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        submodules: recursive # На случай, если в проекте есть подмодули
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive # Обязательно для FUTO, у них есть подмодули
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
+      # 1. Получаем тег последнего официального релиза FUTO и сравниваем с нашим
+      - name: Check latest upstream release
+        id: check_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Получаем последний релиз оригинала FUTO
+          UPSTREAM_TAG=$(gh api repos/futo-org/android-keyboard/releases/latest --jq .tag_name 2>/dev/null || echo "")
+          if [ -z "$UPSTREAM_TAG" ]; then
+            echo "::error::Не удалось получить последний релиз upstream"
+            exit 1
+          fi
+          echo "Последний релиз оригинальной клавиатуры: $UPSTREAM_TAG"
+          echo "upstream_tag=$UPSTREAM_TAG" >> "$GITHUB_OUTPUT"
 
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew
+          # Формируем имя нашего целевого тега
+          MY_TARGET_TAG="${UPSTREAM_TAG}-mod"
+          echo "target_tag=$MY_TARGET_TAG" >> "$GITHUB_OUTPUT"
 
-    - name: Build Debug APK
-      run: ./gradlew assembleDebug
+          # Проверяем, выпускали ли мы уже этот релиз
+          if git rev-parse "$MY_TARGET_TAG" >/dev/null 2>&1; then
+            echo "Релиз $MY_TARGET_TAG уже существует у нас."
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "Запуск вручную: продолжаем сборку."
+              echo "should_build=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "Автозапуск: сборка не требуется."
+              echo "should_build=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "Обнаружен НОВЫЙ релиз ($UPSTREAM_TAG)! Запускаем слияние и релиз."
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+          fi
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: futo-keyboard-debug
-        path: app/build/outputs/apk/debug/*.apk
+      # 2. Если сборка не требуется — останавливаемся
+      - name: Stop if up-to-date
+        if: ${{ steps.check_release.outputs.should_build != 'true' }}
+        run: |
+          echo "Репозиторий актуален, новый релиз не требуется."
+          exit 0
+
+      # 3. Вливаем код из тега нового релиза
+      - name: Merge Upstream Release Tag
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/futo-org/android-keyboard.git || true
+          git fetch upstream --tags
+
+          TAG="${{ steps.check_release.outputs.upstream_tag }}"
+          echo "Объединяем код с тегом $TAG..."
+          if git merge "$TAG" -m "auto: merge upstream release $TAG"; then
+            git push origin master
+          else
+            echo "::warning::Обнаружен конфликт слияния с тегом $TAG! Сборка отменена."
+            exit 1
+          fi
+
+      - name: Set up JDK 17
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        run: ./gradlew assembleDebug --no-daemon
+
+      # Динамический поиск APK решает проблему из предыдущей сборки
+      - name: Prepare APK for Release
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        run: |
+          mkdir -p release-apk
+          find app/build/outputs/apk/ -name "*.apk" -exec cp {} release-apk/FUTO-Keyboard-Mod.apk \;
+
+      # 4. Публикуем релиз с готовым APK
+      - name: Create GitHub Release
+        if: ${{ steps.check_release.outputs.should_build == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.check_release.outputs.target_tag }}
+          name: "FUTO Keyboard ${{ steps.check_release.outputs.upstream_tag }} + Hardware Layouts Fix"
+          body: |
+            ### Модифицированный релиз FUTO Keyboard ${{ steps.check_release.outputs.upstream_tag }}
+            - Добавлена регистрация языковых раскладок для физических клавиатур.
+            - Автоматическая синхронизация с официальным апстримом FUTO.
+            - Готовый к установке файл `.apk`.
+          files: release-apk/FUTO-Keyboard-Mod.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
