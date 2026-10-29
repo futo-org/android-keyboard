@@ -97,10 +97,9 @@ jobs:
         if: ${{ steps.check_release.outputs.should_build == 'true' }}
         run: |
           mkdir -p release-apk
-          # Ищем любой собранный APK по всей директории проекта и копируем его в папку релиза
-          find . -type f -name "*.apk" -not -path "*/release-apk/*" -exec cp {} release-apk/FUTO-Keyboard-Mod.apk \;
+          # Ищем строго debug-версию и жестко исключаем тестовые (test/androidTest) пакеты
+          find . -type f -name "*debug.apk" -not -name "*test*.apk" -not -path "*/release-apk/*" -exec cp {} release-apk/FUTO-Keyboard-Mod.apk \;
           
-          # Проверяем, удалось ли скопировать файл
           if [ ! -f release-apk/FUTO-Keyboard-Mod.apk ]; then
             echo "::error::APK файл не найден после сборки!"
             exit 1
