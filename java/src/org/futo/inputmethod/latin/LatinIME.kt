@@ -19,7 +19,6 @@ import android.view.inputmethod.InlineSuggestionsRequest
 import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodSubtype
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -63,6 +62,7 @@ import org.futo.inputmethod.engine.general.WordLearner
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.settings.Settings
+import org.futo.inputmethod.latin.uix.ActiveSubtype
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
@@ -74,6 +74,8 @@ import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.Subtypes
+import org.futo.inputmethod.latin.uix.SubtypesSetting
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.actions.CanThrowIfDebug
@@ -790,7 +792,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.updateFullscreenMode()
     }
 
-    // Таблица физической раскладки ЙЦУКЕН для русского языка
     private fun mapKeyCodeToRussian(keyCode: Int, isUpper: Boolean, isShift: Boolean): Char? {
         if (isShift) {
             when (keyCode) {
@@ -803,47 +804,23 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             }
         }
         val lower = when (keyCode) {
-            KeyEvent.KEYCODE_Q -> 'й'
-            KeyEvent.KEYCODE_W -> 'ц'
-            KeyEvent.KEYCODE_E -> 'у'
-            KeyEvent.KEYCODE_R -> 'к'
-            KeyEvent.KEYCODE_T -> 'е'
-            KeyEvent.KEYCODE_Y -> 'н'
-            KeyEvent.KEYCODE_U -> 'г'
-            KeyEvent.KEYCODE_I -> 'ш'
-            KeyEvent.KEYCODE_O -> 'щ'
-            KeyEvent.KEYCODE_P -> 'з'
-            KeyEvent.KEYCODE_LEFT_BRACKET -> 'х'
-            KeyEvent.KEYCODE_RIGHT_BRACKET -> 'ъ'
-            KeyEvent.KEYCODE_A -> 'ф'
-            KeyEvent.KEYCODE_S -> 'ы'
-            KeyEvent.KEYCODE_D -> 'в'
-            KeyEvent.KEYCODE_F -> 'а'
-            KeyEvent.KEYCODE_G -> 'п'
-            KeyEvent.KEYCODE_H -> 'р'
-            KeyEvent.KEYCODE_J -> 'о'
-            KeyEvent.KEYCODE_K -> 'л'
-            KeyEvent.KEYCODE_L -> 'д'
-            KeyEvent.KEYCODE_SEMICOLON -> 'ж'
-            KeyEvent.KEYCODE_APOSTROPHE -> 'э'
-            KeyEvent.KEYCODE_Z -> 'я'
-            KeyEvent.KEYCODE_X -> 'ч'
-            KeyEvent.KEYCODE_C -> 'с'
-            KeyEvent.KEYCODE_V -> 'м'
-            KeyEvent.KEYCODE_B -> 'и'
-            KeyEvent.KEYCODE_N -> 'т'
-            KeyEvent.KEYCODE_M -> 'ь'
-            KeyEvent.KEYCODE_COMMA -> 'б'
-            KeyEvent.KEYCODE_PERIOD -> 'ю'
-            KeyEvent.KEYCODE_GRAVE -> 'ё'
+            KeyEvent.KEYCODE_Q -> 'й'; KeyEvent.KEYCODE_W -> 'ц'; KeyEvent.KEYCODE_E -> 'у'
+            KeyEvent.KEYCODE_R -> 'к'; KeyEvent.KEYCODE_T -> 'е'; KeyEvent.KEYCODE_Y -> 'н'
+            KeyEvent.KEYCODE_U -> 'г'; KeyEvent.KEYCODE_I -> 'ш'; KeyEvent.KEYCODE_O -> 'щ'
+            KeyEvent.KEYCODE_P -> 'з'; KeyEvent.KEYCODE_LEFT_BRACKET -> 'х'; KeyEvent.KEYCODE_RIGHT_BRACKET -> 'ъ'
+            KeyEvent.KEYCODE_A -> 'ф'; KeyEvent.KEYCODE_S -> 'ы'; KeyEvent.KEYCODE_D -> 'в'
+            KeyEvent.KEYCODE_F -> 'а'; KeyEvent.KEYCODE_G -> 'п'; KeyEvent.KEYCODE_H -> 'р'
+            KeyEvent.KEYCODE_J -> 'о'; KeyEvent.KEYCODE_K -> 'л'; KeyEvent.KEYCODE_L -> 'д'
+            KeyEvent.KEYCODE_SEMICOLON -> 'ж'; KeyEvent.KEYCODE_APOSTROPHE -> 'э'; KeyEvent.KEYCODE_Z -> 'я'
+            KeyEvent.KEYCODE_X -> 'ч'; KeyEvent.KEYCODE_C -> 'с'; KeyEvent.KEYCODE_V -> 'м'
+            KeyEvent.KEYCODE_B -> 'и'; KeyEvent.KEYCODE_N -> 'т'; KeyEvent.KEYCODE_M -> 'ь'
+            KeyEvent.KEYCODE_COMMA -> 'б'; KeyEvent.KEYCODE_PERIOD -> 'ю'; KeyEvent.KEYCODE_GRAVE -> 'ё'
             KeyEvent.KEYCODE_SLASH -> '.'
             else -> null
         } ?: return null
-
         return if (isUpper) lower.uppercaseChar() else lower
     }
 
-    // Вспомогательная функция для переключения языков FUTO с физической клавиатуры
     private fun cycleHardwareKeyboardLanguage() {
         lifecycleScope.launch {
             val subtypes = getSettingBlocking(SubtypesSetting).toList()
@@ -852,23 +829,22 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 val idx = subtypes.indexOf(current)
                 val nextIdx = if (idx != -1) (idx + 1) % subtypes.size else 0
                 val nextSubtypeStr = subtypes[nextIdx]
-
                 setSetting(ActiveSubtype, nextSubtypeStr)
                 withContext(Dispatchers.Main) {
                     changeSubtype(nextSubtypeStr)
                     val locale = Subtypes.getLocale(Subtypes.convertToSubtype(nextSubtypeStr))
-                    Toast.makeText(
+                    android.widget.Toast.makeText(
                         this@LatinIME,
                         "Язык: ${locale.displayLanguage.uppercase()} (${locale.language.uppercase()})",
-                        Toast.LENGTH_SHORT
+                        android.widget.Toast.LENGTH_SHORT
                     ).show()
                 }
             } else {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(
+                    android.widget.Toast.makeText(
                         this@LatinIME,
-                        "Добавьте второй язык в настройках приложения FUTO!",
-                        Toast.LENGTH_SHORT
+                        "Добавьте второй язык в настройках FUTO!",
+                        android.widget.Toast.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -877,22 +853,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (event != null) {
-            // 1. Shift + Space или Ctrl + Space или кнопка Language Switch -> переключение языка
             val isSwitchCombo = (keyCode == KeyEvent.KEYCODE_SPACE && (event.isShiftPressed || event.isCtrlPressed)) ||
                     keyCode == KeyEvent.KEYCODE_LANGUAGE_SWITCH
-
             if (isSwitchCombo) {
-                if (event.repeatCount == 0) {
-                    cycleHardwareKeyboardLanguage()
-                }
+                if (event.repeatCount == 0) cycleHardwareKeyboardLanguage()
                 return true
             }
 
-            // 2. Alt + Space или кнопка Голосового ввода -> запуск локального голосового ввода FUTO
             val isVoiceCombo = (keyCode == KeyEvent.KEYCODE_SPACE && event.isAltPressed) ||
-                    keyCode == KeyEvent.KEYCODE_VOICE_ASSIST ||
-                    keyCode == KeyEvent.KEYCODE_SEARCH
-
+                    keyCode == KeyEvent.KEYCODE_VOICE_ASSIST || keyCode == KeyEvent.KEYCODE_SEARCH
             if (isVoiceCombo) {
                 if (event.repeatCount == 0) {
                     requestShowSelf(2)
@@ -901,10 +870,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 return true
             }
 
-            // 3. Если выбран русский язык в FUTO, переводим нажатия физических кнопок в русские буквы (ЙЦУКЕН)
             if (!event.isCtrlPressed && !event.isAltPressed && !event.isMetaPressed) {
-                val isRussian = currentSubtype.startsWith("ru", ignoreCase = true)
-                if (isRussian) {
+                if (currentSubtype.startsWith("ru", ignoreCase = true)) {
                     val isUpper = event.isShiftPressed xor event.isCapsLockOn
                     val ruChar = mapKeyCodeToRussian(keyCode, isUpper, event.isShiftPressed)
                     if (ruChar != null) {
@@ -923,10 +890,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 return true
             }
             if (!event.isCtrlPressed && !event.isAltPressed && !event.isMetaPressed && currentSubtype.startsWith("ru", ignoreCase = true)) {
-                val ruChar = mapKeyCodeToRussian(keyCode, false, event.isShiftPressed)
-                if (ruChar != null) {
-                    return true
-                }
+                if (mapKeyCodeToRussian(keyCode, false, event.isShiftPressed) != null) return true
             }
         }
         return latinIMELegacy.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event)
@@ -1070,4 +1034,30 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         uixManager.onPersistentStatesUnlocked()
 
-        CanThrowIf
+        CanThrowIfDebug = true
+
+        // TODO: Spell checker service
+    }
+
+    /// Switch to voice IME or to internal one if it's no longer present.
+    fun trySwitchToShortcutIMEorInternal() {
+        if(!latinIMELegacy.mRichImm.switchToShortcutIme(this)) {
+            uixManager.activateInternalVoiceIME()
+        }
+    }
+
+    override val foldState: FoldingOptions
+        get() = uixManager.foldingOptions.value
+
+    override val currentSizeState: KeyboardSizeSettingKind
+        get() = when {
+            (foldState.feature != null && isFoldableInnerDisplayAllowed()) ->
+                KeyboardSizeSettingKind.FoldableInnerDisplay
+
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE ->
+                KeyboardSizeSettingKind.Landscape
+
+            else ->
+                KeyboardSizeSettingKind.Portrait
+        }
+}
