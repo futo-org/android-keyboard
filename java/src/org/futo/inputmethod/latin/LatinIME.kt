@@ -116,7 +116,7 @@ val UseTransparentNavbar =
 
 val HideKeyboardWhenHardKeyboardConnected = SettingsKey(
     booleanPreferencesKey("hideKeyboardWhenHardKeyboardConnected"),
-    false
+    true
 )
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
@@ -773,7 +773,17 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         ) || super.onShowInputRequested(flags, configChange)
     }
 
+    fun shouldHideKeyboardForHardwareKeyboard(): Boolean {
+        val hasHardwareKeyboard = resources.configuration.keyboard != Configuration.KEYBOARD_NOKEYS
+        val isHardKeyboardHidden = resources.configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES
+        return getSetting(HideKeyboardWhenHardKeyboardConnected) && hasHardwareKeyboard && !isHardKeyboardHidden
+    }
+
     override fun onEvaluateInputViewShown(): Boolean {
+        if (shouldHideKeyboardForHardwareKeyboard()) {
+            return false
+        }
+
         return latinIMELegacy.onEvaluateInputViewShown()
                 || super.onEvaluateInputViewShown()
                 || !getSetting(HideKeyboardWhenHardKeyboardConnected)
