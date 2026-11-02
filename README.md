@@ -6,6 +6,12 @@ Check out the [FUTO Keyboard website](https://keyboard.futo.tech/) for downloads
 
 The code is licensed under the [FUTO Source First License 1.1](LICENSE.md).
 
+## Nightly builds
+
+Usually, a build close to the current master is available at [https://dl.keyboard.futo.org/nightly.apk](https://dl.keyboard.futo.org/nightly.apk). Read more about it here: https://docs.keyboard.futo.tech/improvements/nightly
+
+The "Check for updates manually" button in the nightly build will check against the latest nightly, allowing you to get updated this way. It's recommended to check it once immediately after first installation in case an older version got downloaded due to CDN cache.
+
 ## Issue tracking and contributing
 
 Please check the GitHub repository to report issues: [https://github.com/futo-org/android-keyboard/](https://github.com/futo-org/android-keyboard/)
