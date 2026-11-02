@@ -43,17 +43,20 @@ import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.uix.SettingsTextEdit
 import org.futo.inputmethod.latin.uix.SuggestionSeparator
 import org.futo.inputmethod.latin.uix.getSetting
+import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.SettingRadio
 import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStore
+import org.futo.inputmethod.latin.uix.settings.SettingToggleDataStoreItem
 import org.futo.inputmethod.latin.uix.settings.SettingToggleRaw
 import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.settings.useSharedPrefsInt
 import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.settings.userSettingToggleSharedPrefs
@@ -218,12 +221,31 @@ val SwipeMenu = UserSettingsMenu(
     title = R.string.swipe_settings_title,
     navPath = "swipe", registerNavPath = true,
     settings = listOf(
-        userSettingToggleSharedPrefs(
-            title = R.string.swipe_settings_enable_swipe_typing,
+        UserSetting(
+            name = R.string.swipe_settings_enable_swipe_typing,
             subtitle = R.string.swipe_settings_enable_swipe_typing_subtitle,
-            key = Settings.PREF_GESTURE_INPUT,
-            default = {true},
-        ),
+        ) {
+            val gestureInputMode = useSharedPrefsInt(
+                Settings.PREF_GESTURE_INPUT_MODE,
+                Settings.GESTURE_INPUT_MODE_TYPING
+            )
+
+            SettingToggleDataStoreItem(
+                title = stringResource(R.string.swipe_settings_enable_swipe_typing),
+                subtitle = stringResource(R.string.swipe_settings_enable_swipe_typing_subtitle),
+                dataStoreItem = DataStoreItem(
+                    gestureInputMode.value == Settings.GESTURE_INPUT_MODE_TYPING
+                ) { enabled ->
+                    gestureInputMode.setValue(
+                        if (enabled) {
+                            Settings.GESTURE_INPUT_MODE_TYPING
+                        } else {
+                            Settings.GESTURE_INPUT_MODE_NONE
+                        }
+                    )
+                }
+            )
+        },
 
         userSettingToggleSharedPrefs(
             title = R.string.swipe_settings_sensitive_swipe,

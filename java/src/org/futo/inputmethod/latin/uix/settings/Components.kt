@@ -43,6 +43,8 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -127,7 +129,7 @@ fun ScreenTitle(title: String, showBack: Boolean = false, navController: NavHost
         }
         Text(title, style = Typography.Heading.Medium, modifier = Modifier
             .align(CenterVertically)
-            .padding(0.dp, 16.dp))
+            .padding(top = 16.dp, bottom = 10.dp))
     }
 }
 
@@ -140,7 +142,7 @@ fun ScreenTitleWithIcon(title: String, painter: Painter) {
         Spacer(modifier = Modifier.width(18.dp))
         Text(title, style = Typography.Heading.Medium, modifier = Modifier
             .align(CenterVertically)
-            .padding(0.dp, 16.dp))
+            .padding(top = 16.dp, bottom = 10.dp))
     }
 }
 
@@ -442,24 +444,31 @@ fun SettingToggleSharedPrefs(
 
 @Composable
 fun<T> SettingRadio(
-    title: String,
+    title: String? = null,
     options: List<T>,
     optionNames: List<String>,
     setting: DataStoreItem<T>,
+    optionSubtitles: List<String?>? = null,
+    compact: Boolean = false,
     modifier: Modifier = Modifier,
     hints: List<@Composable () -> Unit>? = null,
     subcontent: List<@Composable () -> Unit>? = null,
 ) {
-    ScreenTitle(title, showBack = false)
+    if (!title.isNullOrBlank()) {
+        ScreenTitle(title, showBack = false)
+    }
     Column {
         options.zip(optionNames).forEachIndexed { i, it ->
-            SettingItem(title = it.second, onClick = { setting.setValue(it.first) }, icon = {
+            val subtitle = optionSubtitles?.getOrNull(i)
+            SettingItem(title = it.second, subtitle = subtitle, onClick = { setting.setValue(it.first) }, icon = {
                 RadioButton(selected = setting.value == it.first, onClick = null)
             }, modifier = modifier.clearAndSetSemantics {
-                this.text = AnnotatedString(it.second)
+                this.text = AnnotatedString(
+                    if (subtitle.isNullOrBlank()) it.second else "${it.second}. $subtitle"
+                )
                 this.role = Role.RadioButton
                 this.selected = setting.value == it.first
-            }, subcontent = subcontent?.getOrNull(i)) {
+            }, compact = compact, subcontent = subcontent?.getOrNull(i)) {
                 hints?.getOrNull(i)?.invoke()
             }
         }
@@ -885,7 +894,7 @@ fun<T> DropDownPicker(
                 role = Role.DropdownList
             }
         ) {
-            if(selection != null) {
+            if (selection != null) {
                 Text(
                     text = getDisplayName(selection),
                     style = Typography.Body.Regular,
@@ -941,8 +950,7 @@ fun<T> DropDownPicker(
                                     MaterialTheme.colorScheme.onSurface
                                 } else {
                                     MaterialTheme.colorScheme.onSurfaceVariant
-                                },
-                                modifier = Modifier.align(Alignment.CenterStart)
+                                }
                             )
                         }
                     }

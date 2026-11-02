@@ -86,6 +86,7 @@ interface IMEInterface {
     fun onUpWithDeletePointerActive()
     fun onUpWithPointerActive()
     fun onSwipeLanguage(direction: Int)
+    fun onSwipeAction(direction: Int)
     fun onMovingCursorLockEvent(canMoveCursor: Boolean)
     fun clearUserHistoryDictionaries()
 
