@@ -57,6 +57,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -245,6 +246,29 @@ public class RichInputConnectionAndTextRangeTests {
                 "abc! def", mSpacingAndPunctuations, 2), NgramContext.BEGINNING_OF_SENTENCE);
         assertEquals(NgramContextUtils.getNgramContextFromNthPreviousWord(
                 "abc 'def", mSpacingAndPunctuations, 2), NgramContext.EMPTY_PREV_WORDS_INFO);
+    }
+
+    /**
+     * Some editors, such as terminals, put only spaces before the cursor.
+     */
+    @Test
+    public void testGetNgramContextWithSpacesBeforeCursor() {
+        final char[] chars = new char[4095];
+        Arrays.fill(chars, ' ');
+        final String spaces = new String(chars);
+
+        // Only spaces
+        assertEquals(spaces, getFullContext(" " + spaces));
+        // A partial word followed only by spaces: the word and the space after it are dropped
+        assertEquals(spaces.substring(1), getFullContext("x" + spaces));
+    }
+
+    private String getFullContext(final String textBeforeCursor) {
+        final MockInputMethodService mockInputMethodService = new MockInputMethodService();
+        final RichInputConnection ic = new RichInputConnection(mockInputMethodService);
+        mockInputMethodService.setInputConnection(
+                new MockConnection(textBeforeCursor, "", new ExtractedText()));
+        return ic.getNgramContextFromNthPreviousWord(mSpacingAndPunctuations, 1).fullContext;
     }
 
     @Test
