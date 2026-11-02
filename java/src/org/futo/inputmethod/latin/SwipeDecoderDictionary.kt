@@ -25,8 +25,8 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 private const val ENCODER_ASSET = "futo-swipe/honorable_sturgeon/model_fp32.pte"
-private const val ENGLISH_LM_ASSET = "futo-swipe/hungry_jellyfish/context_lm.pte"
-private const val ENGLISH_LM_VOCAB_ASSET = "futo-swipe/hungry_jellyfish/vocab.txt"
+private const val ENGLISH_LM_ASSET = "futo-swipe/chosen_planarian/context_lm.pte"
+private const val ENGLISH_LM_VOCAB_ASSET = "futo-swipe/chosen_planarian/vocab.txt"
 private const val ENGLISH_DECODER_ASSET = "futo-swipe/magic_macaw/model_fp32.pte"
 private const val SCORING_ASSET = "futo-swipe/scoring.json"
 
