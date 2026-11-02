@@ -34,6 +34,7 @@ import org.futo.inputmethod.keyboard.internal.GestureStrokeDrawingPoints;
 import org.futo.inputmethod.keyboard.internal.GestureStrokeRecognitionParams;
 import org.futo.inputmethod.keyboard.internal.KeyboardState;
 import org.futo.inputmethod.keyboard.internal.PointerTrackerQueue;
+import org.futo.inputmethod.keyboard.internal.SurfaceSwipeDeleteDetector;
 import org.futo.inputmethod.keyboard.internal.TimerProxy;
 import org.futo.inputmethod.keyboard.internal.TypingTimeRecorder;
 import org.futo.inputmethod.latin.R;
@@ -158,6 +159,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private boolean mCursorMoved = false;
     private boolean mProgressReported = false;
     private boolean mSpacebarLongPressed = false;
+
+    private boolean mIsSurfaceSwiping = false;
+    private final SurfaceSwipeDeleteDetector mSurfaceSwipeDeleteDetector =
+            new SurfaceSwipeDeleteDetector();
 
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
@@ -720,6 +725,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     private void onDownEventInternal(final int x, final int y, final long eventTime) {
+        final int surfaceSwipeHoldTimeout =
+                Settings.getInstance().getCurrent().mKeyLongpressTimeout;
         Key key = onDownKey(x, y, eventTime);
         // Key selection by dragging finger is allowed when 1) key selection by dragging finger is
         // enabled by configuration, 2) this pointer starts dragging from modifier key, or 3) this
@@ -730,6 +737,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                 || mKeyDetector.alwaysAllowsKeySelectionByDraggingFinger();
         mKeyboardLayoutHasBeenChanged = false;
         mIsTrackingForActionDisabled = false;
+        mIsSurfaceSwiping = false;
+        mSurfaceSwipeDeleteDetector.cancel();
         resetKeySelectionByDraggingFinger();
         if (key != null) {
             // This onPress call may have changed keyboard layout. Those cases are detected at
@@ -766,6 +775,17 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             mIsFlickingKey = !mIsSlidingCursor && key.getHasFlick();
             mFlickDirection = key.flickDirection(0, 0);
             mCurrentKey = key;
+
+            if (!mIsSlidingCursor && !mIsFlickingKey && !key.isModifier()) {
+                mIsSurfaceSwiping = true;
+                mSurfaceSwipeDeleteDetector.start(x, sPointerBigStep, surfaceSwipeHoldTimeout);
+            }
+        } else {
+            mStartX = x;
+            mStartY = y;
+            mStartTime = System.currentTimeMillis();
+            mIsSurfaceSwiping = true;
+            mSurfaceSwipeDeleteDetector.start(x, sPointerBigStep, surfaceSwipeHoldTimeout);
         }
     }
 
@@ -1029,6 +1049,34 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
 
+        if (!sInGesture && mIsSurfaceSwiping
+                && getActivePointerTrackerCount() == 1
+                && settingsValues.mSurfaceSwipeDeleteEnabled) {
+            final int swipeIgnoreTime = settingsValues.mKeyLongpressTimeout
+                    / MULTIPLIER_FOR_LONG_PRESS_TIMEOUT_IN_SLIDING_INPUT;
+            final boolean pastDeadTime =
+                    mStartTime + swipeIgnoreTime < System.currentTimeMillis();
+            if (mSurfaceSwipeDeleteDetector.isActive() || pastDeadTime) {
+                final int steps =
+                        mSurfaceSwipeDeleteDetector.onMove(x, settingsValues.mIsRTL, eventTime);
+                if (steps != 0) {
+                    if (oldKey != null) {
+                        sTimerProxy.cancelKeyTimersOf(this);
+                        setReleasedKeyGraphics(oldKey, true /* withAnimation */);
+                        mCurrentKey = null;
+                        mIsDetectingGesture = false;
+                    }
+                    mCursorMoved = true;
+                    sListener.onSurfaceSwipeDelete(steps);
+                }
+                if (mSurfaceSwipeDeleteDetector.isActive()) {
+                    mLastX = x;
+                    mLastY = y;
+                    return;
+                }
+            }
+        }
+
         if(mIsFlickingKey && oldKey != null) {
             final Direction prevDirection = mFlickDirection;
             mFlickDirection = oldKey.flickDirection(x - mStartX, y - mStartY);
@@ -1142,7 +1190,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             sListener.onSwipeLanguageReleased();
             mProgressReported = false;
         }
-        if(mCursorMoved && currentKey != null && currentKey.getCode() == Constants.CODE_DELETE) {
+        if(mSurfaceSwipeDeleteDetector.isActive()) {
+            sListener.onUpWithDeletePointerActive();
+            mSurfaceSwipeDeleteDetector.cancel();
+            mIsSurfaceSwiping = false;
+        } else if(mCursorMoved && currentKey != null && currentKey.getCode() == Constants.CODE_DELETE) {
             sListener.onUpWithDeletePointerActive();
         } else if(mCursorMoved) {
             sListener.onUpWithPointerActive();
@@ -1296,6 +1348,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         setReleasedKeyGraphics(mCurrentKey, true /* withAnimation */);
         resetKeySelectionByDraggingFinger();
         dismissMoreKeysPanel();
+        mSurfaceSwipeDeleteDetector.cancel();
+        mIsSurfaceSwiping = false;
     }
 
     private boolean isMajorEnoughMoveToBeOnNewKey(final int x, final int y, final long eventTime,
