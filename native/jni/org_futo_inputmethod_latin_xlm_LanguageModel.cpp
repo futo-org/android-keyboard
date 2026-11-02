@@ -154,13 +154,75 @@ bool hasLowercase(const char* str, bool strict) {
     return false;
 }
 
+// Appends the ASCII normalization of the UTF-8 sequence starting at str[i]
+// to out, and returns the number of bytes consumed (0 if the sequence is
+// not an accented character we normalize). Unmapped sequences keep their
+// original bytes, preserving stock matching behavior for them.
+static int append_diacritic_normalized(const unsigned char *str, size_t len, size_t i, std::string &out) {
+    if(i + 1 >= len) return 0;
+    unsigned char c1 = str[i];
+    unsigned char c2 = str[i + 1];
+
+    // Latin-1 Supplement (U+00C0-U+00FF and uppercase counterparts):
+    // 2-byte UTF-8 sequences starting with 0xC3.
+    if(c1 == 0xC3) {
+        switch(c2) {
+            case 0x80: case 0x81: case 0x82: case 0x83: case 0x84: case 0x85: // À Á Â Ã Ä Å
+            case 0xA0: case 0xA1: case 0xA2: case 0xA3: case 0xA4: case 0xA5: // à á â ã ä å
+                out += 'a'; return 2;
+            case 0x86: case 0xA6:                                             // Æ æ
+                out += "ae"; return 2;
+            case 0x87: case 0xA7:                                             // Ç ç
+                out += 'c'; return 2;
+            case 0x88: case 0x89: case 0x8A: case 0x8B:                       // È É Ê Ë
+            case 0xA8: case 0xA9: case 0xAA: case 0xAB:                       // è é ê ë
+                out += 'e'; return 2;
+            case 0x8C: case 0x8D: case 0x8E: case 0x8F:                       // Ì Í Î Ï
+            case 0xAC: case 0xAD: case 0xAE: case 0xAF:                       // ì í î ï
+                out += 'i'; return 2;
+            case 0x91: case 0xB1:                                             // Ñ ñ
+                out += 'n'; return 2;
+            case 0x92: case 0x93: case 0x94: case 0x95: case 0x96:            // Ò Ó Ô Õ Ö
+            case 0x98:                                                        // Ø
+            case 0xB2: case 0xB3: case 0xB4: case 0xB5: case 0xB6:            // ò ó ô õ ö
+            case 0xB8:                                                        // ø
+                out += 'o'; return 2;
+            case 0x99: case 0x9A: case 0x9B: case 0x9C:                       // Ù Ú Û Ü
+            case 0xB9: case 0xBA: case 0xBB: case 0xBC:                       // ù ú û ü
+                out += 'u'; return 2;
+            case 0x9D: case 0xBD: case 0x9F: case 0xBF:                       // Ý ý Ÿ ÿ
+                out += 'y'; return 2;
+            default:
+                return 0; // Ð × Þ etc.: no ASCII base, keep original bytes
+        }
+    }
+
+    // Latin Extended-A: oe ligatures (U+0152 Œ / U+0153 œ).
+    if(c1 == 0xC5 && (c2 == 0x92 || c2 == 0x93)) {
+        out += "oe"; return 2;
+    }
+
+    return 0;
+}
+
 bool isExactMatch(const std::string &a, const std::string &b){
     auto preprocess = [](const std::string &str) -> std::string {
         std::string result;
-        for(char c : str) {
-            if(c != '\'' && c != '-' && c != ' ') {
-                result += (char)tolower(c);
+        for(size_t i = 0; i < str.size();) {
+            unsigned char c = str[i];
+            if(c == '\'' || c == '-' || c == ' ') {
+                i++;
+                continue;
             }
+            int consumed = append_diacritic_normalized(
+                    reinterpret_cast<const unsigned char *>(str.data()),
+                    str.size(), i, result);
+            if(consumed > 0) {
+                i += consumed;
+                continue;
+            }
+            result += (char)tolower(c);
+            i++;
         }
         return result;
     };
