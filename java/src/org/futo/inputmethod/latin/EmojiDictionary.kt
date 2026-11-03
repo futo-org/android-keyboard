@@ -5,6 +5,7 @@ import org.futo.inputmethod.latin.settings.SettingsValuesForSuggestion
 import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.actions.PersistentEmojiState
+import org.futo.inputmethod.latin.uix.actions.emoji.isEmojiHidden
 import java.util.ArrayList
 import java.util.Locale
 
@@ -38,6 +39,7 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
 
         if(emoji != null) {
             emoji = PersistentEmojiState.transformEmojiToLastSkinTone(emoji)
+            if(isEmojiHidden(emoji)) emoji = null
         }
 
         return if(emoji != null) {
