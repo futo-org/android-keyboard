@@ -35,14 +35,20 @@ import javax.annotation.Nonnull;
 
 public final class MoreKeysKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;
+    private final Key mDefaultKey;
 
     MoreKeysKeyboard(final MoreKeysKeyboardParams params) {
         super(params);
         mDefaultKeyCoordX = params.getDefaultKeyCoordX() + params.mDefaultKeyWidth / 2;
+        mDefaultKey = params.mDefaultKey;
     }
 
     public int getDefaultCoordX() {
         return mDefaultKeyCoordX;
+    }
+
+    public Key getDefaultKey() {
+        return mDefaultKey;
     }
 
     @UsedForTesting
@@ -56,6 +62,7 @@ public final class MoreKeysKeyboard extends Keyboard {
         public int mRightKeys; // includes default key.
         public int mDividerWidth;
         public int mColumnWidth;
+        public Key mDefaultKey;
 
         public MoreKeysKeyboardParams() {
             super();
@@ -354,6 +361,9 @@ public final class MoreKeysKeyboard extends Keyboard {
                 final int x = params.getX(n, row);
                 final int y = params.getY(row);
                 final Key key = moreKeySpec.buildKey(x, y, moreKeyFlags, params);
+                if (n == 0) {
+                    params.mDefaultKey = key;
+                }
                 params.markAsEdgeKey(key, row);
                 params.onAddKey(key);
             }
