@@ -1,6 +1,11 @@
 package org.futo.voiceinput.shared.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
@@ -31,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +49,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -56,6 +61,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.sin
 import org.futo.voiceinput.shared.R
 import org.futo.voiceinput.shared.types.MagnitudeState
 import org.futo.voiceinput.shared.ui.theme.Typography
@@ -68,18 +76,72 @@ data class MicrophoneDeviceState(
     val deviceName: String
 )
 
+/** Number of bars in the equalizer shown during voice dictation. */
+private const val SPECTRUM_BAR_COUNT = 7
+
+/**
+ * Draws a small bar "equalizer" that reacts to the volume of the user's voice,
+ * replacing the old pulsing circle behind the microphone icon.
+ *
+ * Since there's no real per-frequency-band data available (only an aggregate
+ * volume/RMS value, computed in [org.futo.voiceinput.shared.AudioRecognizer]),
+ * the "spectrum" effect is simulated by having each bar chase the same
+ * `magnitude` value with a different weight and response speed, so the bars
+ * never move in perfect sync with one another.
+ */
 @Composable
-fun AnimatedRecognizeCircle(magnitude: MutableFloatState = mutableFloatStateOf(0.5f)) {
-    val radius = animateValueChanges(magnitude.floatValue, 100)
+fun AudioSpectrumBars(magnitude: MutableFloatState = mutableFloatStateOf(0.0f)) {
     val color = MaterialTheme.colorScheme.primaryContainer
 
-    val radiusMod = with(LocalDensity.current) {
-        80.dp.toPx()
+    // Relative max height of each bar: the center ones are taller, the outer
+    // ones a bit shorter, giving a "bell" shape.
+    val barWeights = remember {
+        List(SPECTRUM_BAR_COUNT) { i ->
+            val mid = (SPECTRUM_BAR_COUNT - 1) / 2f
+            1f - (abs(i - mid) / (mid + 1f)) * 0.6f
+        }
     }
 
+    // Each bar chases the volume with its own inertia (in ms), so they
+    // desync from one another.
+    val barSpeeds = remember {
+        List(SPECTRUM_BAR_COUNT) { i -> 90 + (i * 41) % 110 }
+    }
+
+    val animatedLevels = FloatArray(SPECTRUM_BAR_COUNT) { i ->
+        animateValueChanges(magnitude.floatValue, barSpeeds[i])
+    }
+
+    // Subtle continuous "breathing" animation, so the bars aren't flat
+    // while you haven't started talking yet.
+    val infiniteTransition = rememberInfiniteTransition(label = "spectrumIdle")
+    val idlePhase by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = (2 * PI).toFloat(),
+        animationSpec = infiniteRepeatable(tween(1600, easing = LinearEasing)),
+        label = "spectrumIdlePhase"
+    )
+
     Canvas(modifier = Modifier.fillMaxSize()) {
-        val drawRadius = radiusMod * (0.8f + radius * 2.0f)
-        drawCircle(color = color, radius = drawRadius)
+        val spectrumWidth = size.width * 0.55f
+        val maxBarHeight = size.height * 0.4f
+        val minBarHeight = size.height * 0.035f
+        val barGap = spectrumWidth * 0.08f
+        val barWidth = (spectrumWidth - barGap * (SPECTRUM_BAR_COUNT - 1)) / SPECTRUM_BAR_COUNT
+        val startX = center.x - spectrumWidth / 2f
+
+        for (i in 0 until SPECTRUM_BAR_COUNT) {
+            val idle = (sin(idlePhase + i * 0.9f) * 0.5f + 0.5f) * 0.15f
+            val level = (animatedLevels[i] * barWeights[i] + idle).coerceIn(0f, 1f)
+            val barHeight = minBarHeight + (maxBarHeight - minBarHeight) * level
+
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(startX + i * (barWidth + barGap), center.y - barHeight / 2f),
+                size = Size(barWidth, barHeight),
+                cornerRadius = CornerRadius(barWidth / 2f, barWidth / 2f)
+            )
+        }
     }
 }
 
@@ -176,13 +238,15 @@ fun InnerRecognize(
     device: MutableState<MicrophoneDeviceState>? = null
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        AnimatedRecognizeCircle(magnitude = magnitude)
+        AudioSpectrumBars(magnitude = magnitude)
 
         Icon(
             painter = painterResource(R.drawable.mic_2_),
             contentDescription = stringResource(R.string.stop_recording),
-            modifier = Modifier.size(48.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
+            modifier = Modifier
+                .size(28.dp)
+                .offset(y = (-72).dp),
+            tint = MaterialTheme.colorScheme.onSurface
         )
 
         val text = when (state.value) {
@@ -195,7 +259,7 @@ fun InnerRecognize(
             text,
             modifier = Modifier
                 .fillMaxWidth()
-                .offset(x = 0.dp, y = 48.dp),
+                .offset(x = 0.dp, y = 72.dp),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         )
