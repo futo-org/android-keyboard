@@ -121,6 +121,7 @@ import org.futo.inputmethod.latin.SuggestionBlacklist
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewListener
 import org.futo.inputmethod.latin.uix.actions.FavoriteActions
+import org.futo.inputmethod.latin.uix.actions.PersistentEmojiState
 import org.futo.inputmethod.latin.uix.actions.MoreActionsAction
 import org.futo.inputmethod.latin.uix.actions.PinnedActions
 import org.futo.inputmethod.latin.uix.actions.toActionList
@@ -293,7 +294,7 @@ fun TextStyle.withCustomFont(orDefault: FontFamily? = null): TextStyle {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit, forcePrimary: Boolean, isEmoji: Boolean) {
+fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean, onClick: () -> Unit, onLongClick: () -> Unit, forcePrimary: Boolean, isEmoji: Boolean, weight: Float = 1.0f) {
     val wordInfo = words.getInfoOrNull(idx)
     val isVerbatim = wordInfo?.kind == KIND_TYPED
     val word = wordInfo?.mWord
@@ -346,7 +347,7 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
 
     Box(
         modifier = textButtonModifier
-            .weight(1.0f)
+            .weight(weight)
             .fillMaxHeight()
             .combinedClickable(
                 enabled = word != null,
@@ -501,6 +502,33 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
         }
     }
 
+    // Two emoji at half-weight each so together they occupy one normal slot.
+    val emojiItem = @Composable { suggestion: SuggestedWordInfo ->
+        val idx = words.indexOf(suggestion)
+        SuggestionItem(
+            words, idx,
+            isPrimary = false, forcePrimary = false,
+            onClick = { onClick(idx) }, onLongClick = { onLongClick(idx) },
+            isEmoji = true, weight = 0.5f
+        )
+    }
+
+    // Renders the leftmost emoji slot(s), or a word fallback when no emoji is available.
+    // fallback is pre-evaluated so callers can side-effect supplementalSuggestionIndex safely.
+    val emojiSlots = @Composable { fallback: SuggestedWordInfo? ->
+        when {
+            layout.emojiMatches.isEmpty() ->
+                suggestionItem(fallback)
+            layout.emojiMatches.size >= PersistentEmojiState.MAX_EMOJI_SUGGESTIONS -> {
+                emojiItem(layout.emojiMatches[0])
+                SuggestionSeparator()
+                emojiItem(layout.emojiMatches[1])
+            }
+            else ->
+                suggestionItem(layout.emojiMatches[0])
+        }
+    }
+
     when {
         layout.isGestureBatch ||
                 (layout.emojiMatches.isEmpty() && layout.presentableSuggestions.size <= 1) ->
@@ -508,11 +536,11 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
 
         layout.autocorrectMatch != null -> {
             var supplementalSuggestionIndex = 0
-            if(layout.emojiMatches.isEmpty()) {
-                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex++))
-            } else {
-                suggestionItem(layout.emojiMatches[0])
-            }
+
+            emojiSlots(
+                if(layout.emojiMatches.isEmpty()) layout.sortedMatches.getOrNull(supplementalSuggestionIndex++) else null
+            )
+
             SuggestionSeparator()
             suggestionItem(layout.autocorrectMatch)
             SuggestionSeparator()
@@ -526,11 +554,11 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
 
         else -> {
             var supplementalSuggestionIndex = 1
-            if(layout.emojiMatches.isEmpty()) {
-                suggestionItem(layout.sortedMatches.getOrNull(supplementalSuggestionIndex++))
-            } else {
-                suggestionItem(layout.emojiMatches[0])
-            }
+
+            emojiSlots(
+                if(layout.emojiMatches.isEmpty()) layout.sortedMatches.getOrNull(supplementalSuggestionIndex++) else null
+            )
+
             SuggestionSeparator()
             suggestionItem(layout.sortedMatches.getOrNull(0))
             SuggestionSeparator()

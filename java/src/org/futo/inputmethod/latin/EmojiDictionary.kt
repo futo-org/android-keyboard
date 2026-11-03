@@ -24,38 +24,37 @@ class EmojiDictionary(locale: Locale) : Dictionary(TYPE_EMOJI, locale) {
     ): ArrayList<SuggestedWords.SuggestedWordInfo?>? {
         if(DataStoreHelper.getSetting(SHOW_EMOJI_SUGGESTIONS) == false) return arrayListOf()
 
-        var emoji: String? = null
+        var candidates: List<String> = emptyList()
+
         if(!typedWord.isEmpty()) {
-            if(isWordValidForShortcut((typedWord)))
-                emoji = PersistentEmojiState.getShortcut(mLocale, typedWord.lowercase(mLocale))
+            if(isWordValidForShortcut(typedWord))
+                candidates = PersistentEmojiState.getShortcuts(mLocale, typedWord.lowercase(mLocale))
         } else if((ngramContext?.prevWordCount ?: 0) > 0 && isBatchMode == false) {
             val prevWord = ngramContext?.getNthPrevWord(1)?.toString() ?: ""
             if(!prevWord.isEmpty()) {
                 if(isWordValidForShortcut(prevWord))
-                    emoji = PersistentEmojiState.getShortcut(mLocale, prevWord.lowercase(mLocale))
+                    candidates = PersistentEmojiState.getShortcuts(mLocale, prevWord.lowercase(mLocale))
             }
         }
 
-        if(emoji != null) {
-            emoji = PersistentEmojiState.transformEmojiToLastSkinTone(emoji)
-        }
+        // Dedup after skin-tone: two base emojis can collapse to the same toned string.
+        candidates = candidates.map { PersistentEmojiState.transformEmojiToLastSkinTone(it) }.distinct()
 
-        return if(emoji != null) {
-            val score = Suggest.SUPPRESS_SUGGEST_THRESHOLD + 1
-            arrayListOf(
-                SuggestedWords.SuggestedWordInfo(
-                    emoji,
-                    "",
-                    score,
-                    SuggestedWords.SuggestedWordInfo.KIND_EMOJI_SUGGESTION,
-                    null,
-                    SuggestedWords.SuggestedWordInfo.NOT_AN_INDEX,
-                    SuggestedWords.SuggestedWordInfo.NOT_A_CONFIDENCE
-                )
+        // Threshold filter is strict (<), so THRESHOLD+0 survives. Data layer caps at
+        // take(MAX_EMOJI_SUGGESTIONS).
+        val baseScore = Suggest.SUPPRESS_SUGGEST_THRESHOLD + 1
+
+        return ArrayList(candidates.mapIndexed { i, emoji ->
+            SuggestedWords.SuggestedWordInfo(
+                emoji,
+                "",
+                baseScore - i,
+                SuggestedWords.SuggestedWordInfo.KIND_EMOJI_SUGGESTION,
+                null,
+                SuggestedWords.SuggestedWordInfo.NOT_AN_INDEX,
+                SuggestedWords.SuggestedWordInfo.NOT_A_CONFIDENCE
             )
-        } else {
-            arrayListOf()
-        }
+        })
     }
 
     override fun getSuggestions(
