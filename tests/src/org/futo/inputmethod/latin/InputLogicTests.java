@@ -30,16 +30,19 @@ import org.futo.inputmethod.latin.settings.Settings;
 public class InputLogicTests extends InputTestsBase {
 
     private boolean mNextWordPrediction;
+    private boolean mBackspaceDeletesSwipeWord;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
         mNextWordPrediction = getBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, true);
+        mBackspaceDeletesSwipeWord = getBooleanPreference(Settings.PREF_BACKSPACE_DELETE_SWIPE_WORD, true);
     }
 
     @Override
     public void tearDown() throws Exception {
         setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, mNextWordPrediction, true);
+        setBooleanPreference(Settings.PREF_BACKSPACE_DELETE_SWIPE_WORD, mBackspaceDeletesSwipeWord, true);
         super.tearDown();
     }
 
@@ -666,6 +669,25 @@ public class InputLogicTests extends InputTestsBase {
         } else {
             assertEquals("this", mEditText.getText().toString());
         }
+    }
+
+    public void testGestureBackspaceDeletesLastCharacterWhenConfigured() {
+        setBooleanPreference(Settings.PREF_BACKSPACE_DELETE_SWIPE_WORD, false, true);
+        gesture("this");
+        type(Constants.CODE_DELETE);
+        assertEquals("gesture then backspace deletes one character", "thi", mEditText.getText().toString());
+    }
+
+    public void testGestureManualSuggestionSelectionWhenBackspaceModeConfigured() {
+        setBooleanPreference(Settings.PREF_BACKSPACE_DELETE_SWIPE_WORD, false, true);
+        gesture("this");
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS_MILLIS);
+        runMessages();
+        final SuggestedWords suggestedWords = mLatinIMELegacy.getSuggestedWordsForTest();
+        assertTrue("gesture should provide an alternative suggestion", suggestedWords.size() > 1);
+        final String alternative = suggestedWords.getWord(1);
+        pickSuggestionManually(alternative);
+        assertEquals("manual suggestion selection after gesture", alternative, mEditText.getText().toString());
     }
 
     private void typeOrGestureWordAndPutCursorInside(final boolean gesture, final String word,

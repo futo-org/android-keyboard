@@ -544,6 +544,8 @@
 
     <string name="swipe_settings_sensitive_swipe">Increase sensitivity</string>
     <string name="swipe_settings_sensitive_swipe_subtitle">Make swipe trigger more often</string>
+    <string name="swipe_settings_backspace_delete_word">Delete whole word with backspace</string>
+    <string name="swipe_settings_backspace_delete_word_subtitle">After swipe typing, backspace deletes the whole word</string>
 
     <string name="swipe_settings_kasroz">KASROZ</string>
     <string name="swipe_settings_kasroz_subtitle">The best keyboard layout to swipe</string>
