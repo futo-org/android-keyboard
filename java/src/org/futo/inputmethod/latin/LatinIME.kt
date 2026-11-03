@@ -59,6 +59,7 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils
 import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEManager
 import org.futo.inputmethod.engine.general.WordLearner
+import org.futo.inputmethod.keyboard.Key
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.settings.Settings
@@ -86,6 +87,8 @@ import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.settings.pages.FLICK_THRESHOLD_DEFAULT
+import org.futo.inputmethod.latin.uix.settings.pages.flickThresholdSetting
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
@@ -438,6 +441,16 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                         }
                     }
                 }
+        }
+
+        val toFlickThresholdRatio: (Int) -> Float = {
+            if(it < 0) FLICK_THRESHOLD_DEFAULT else it / 100.0f
+        }
+        Key.flickThresholdRatio = toFlickThresholdRatio(getSettingBlocking(flickThresholdSetting))
+        launchJob {
+            getSettingFlow(flickThresholdSetting).collect {
+                Key.flickThresholdRatio = toFlickThresholdRatio(it)
+            }
         }
 
         launchJob {
