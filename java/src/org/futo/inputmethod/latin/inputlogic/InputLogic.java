@@ -1211,6 +1211,17 @@ public final class InputLogic {
         final int codePoint = event.mCodePoint;
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         final boolean wasComposingWord = mWordComposer.isComposingWord();
+        // A recapitalized word is kept selected so that Shift can cycle its case. If a
+        // separator is typed while that selection is active, commit the word first by
+        // collapsing the selection to its end, otherwise the separator would replace the
+        // selection and delete the word.
+        if (mRecapitalizeStatus.isStarted()
+                && mRecapitalizeStatus.isSetAt(mConnection.getExpectedSelectionStart(),
+                        mConnection.getExpectedSelectionEnd())) {
+            mConnection.setSelection(mRecapitalizeStatus.getNewCursorEnd(),
+                    mRecapitalizeStatus.getNewCursorEnd());
+            mRecapitalizeStatus.stop();
+        }
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
                 && !settingsValues.mSpacingAndPunctuations.currentLanguageHasSpaces
@@ -1974,11 +1985,43 @@ public final class InputLogic {
      * @param settingsValues The current settings values.
      */
     private void performRecapitalization(final SettingsValues settingsValues) {
-        if (!mConnection.hasSelection() || !mRecapitalizeStatus.mIsEnabled()) {
-            return; // No selection or recapitalize is disabled for now
+        int selectionStart = mConnection.getExpectedSelectionStart();
+        int selectionEnd = mConnection.getExpectedSelectionEnd();
+        CharSequence textToRecapitalize;
+        if (mConnection.hasSelection()) {
+            if (!mRecapitalizeStatus.mIsEnabled()) return;
+            textToRecapitalize = mConnection.getSelectedText(0 /* flags, 0 for no styles */);
+        } else {
+            if (!mConnection.isCursorPositionKnown()) return;
+            final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(
+                    Constants.MAX_CHARACTERS_FOR_RECAPITALIZATION, 0 /* flags */);
+            final CharSequence textAfterCursor = mConnection.getTextAfterCursor(
+                    Constants.MAX_CHARACTERS_FOR_RECAPITALIZATION, 0 /* flags */);
+            if (textBeforeCursor == null || textAfterCursor == null) return;
+            final int[] wordRange = StringUtils.getWordRangeAtCursor(textBeforeCursor,
+                    textAfterCursor,
+                    settingsValues.mSpacingAndPunctuations.sortedWordSeparators);
+            if (wordRange == null) return;
+            // A full buffer ending inside a word may have omitted part of that word. Refuse to
+            // recapitalize a partial word rather than silently changing only a suffix or prefix.
+            if ((wordRange[0] == 0
+                    && textBeforeCursor.length() == Constants.MAX_CHARACTERS_FOR_RECAPITALIZATION)
+                    || (wordRange[1] == textAfterCursor.length()
+                    && textAfterCursor.length() == Constants.MAX_CHARACTERS_FOR_RECAPITALIZATION)) {
+                return;
+            }
+            // Existing recapitalization waits for a cursor-move callback after starting input.
+            // Cursor-only recapitalization has independently validated the current cursor and
+            // surrounding text, so it is safe to enable without requiring that extra movement.
+            mRecapitalizeStatus.enable();
+            selectionStart -= textBeforeCursor.length() - wordRange[0];
+            selectionEnd += wordRange[1];
+            textToRecapitalize = textBeforeCursor.subSequence(wordRange[0],
+                    textBeforeCursor.length()).toString()
+                    + textAfterCursor.subSequence(0, wordRange[1]);
         }
-        final int selectionStart = mConnection.getExpectedSelectionStart();
-        final int selectionEnd = mConnection.getExpectedSelectionEnd();
+        if (TextUtils.isEmpty(textToRecapitalize)) return; // Race condition with the input connection
+
         final int numCharsSelected = selectionEnd - selectionStart;
         if (numCharsSelected > Constants.MAX_CHARACTERS_FOR_RECAPITALIZATION) {
             // We bail out if we have too many characters for performance reasons. We don't want
@@ -1988,10 +2031,7 @@ public final class InputLogic {
         // If we have a recapitalize in progress, use it; otherwise, start a new one.
         if (!mRecapitalizeStatus.isStarted()
                 || !mRecapitalizeStatus.isSetAt(selectionStart, selectionEnd)) {
-            final CharSequence selectedText =
-                    mConnection.getSelectedText(0 /* flags, 0 for no styles */);
-            if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
-            mRecapitalizeStatus.start(selectionStart, selectionEnd, selectedText.toString(),
+            mRecapitalizeStatus.start(selectionStart, selectionEnd, textToRecapitalize.toString(),
                     settingsValues.mLocale,
                     settingsValues.mSpacingAndPunctuations.sortedWordSeparators);
             // We trim leading and trailing whitespace.
@@ -2005,6 +2045,7 @@ public final class InputLogic {
         mConnection.send();
         mConnection.setSelection(mRecapitalizeStatus.getNewCursorStart(),
                 mRecapitalizeStatus.getNewCursorEnd());
+        resetComposingState(true /* alsoResetLastComposedWord */);
     }
 
     private void performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
