@@ -9,7 +9,9 @@ import android.graphics.Color
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Bundle
+import android.provider.UserDictionary
 import android.util.Log
+import android.widget.Toast
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -56,6 +58,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.compat.UserDictionaryCompatUtils
 import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEManager
 import org.futo.inputmethod.engine.general.WordLearner
@@ -835,6 +838,41 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     fun requestForgetWord(suggestedWordInfo: SuggestedWordInfo) {
         uixManager.requestForgetWord(suggestedWordInfo)
+    }
+
+    fun addSuggestedWordToDictionary(suggestedWordInfo: SuggestedWordInfo) = lifecycleScope.launch {
+        val word = suggestedWordInfo.mWord
+        val settings = Settings.getInstance().current
+        val locale = settings.mLocale
+        val wasAdded = withContext(Dispatchers.Default) {
+            val selection = "${UserDictionary.Words.WORD}=? AND ${UserDictionary.Words.LOCALE}=?" +
+                " AND (${UserDictionary.Words.SHORTCUT} is null OR ${UserDictionary.Words.SHORTCUT}='')"
+            val alreadyPresent = contentResolver.query(
+                UserDictionary.Words.CONTENT_URI,
+                arrayOf(UserDictionary.Words.WORD),
+                selection,
+                arrayOf(word, locale.toString()),
+                null
+            )?.use { it.moveToFirst() } == true
+
+            if (!alreadyPresent) {
+                UserDictionaryCompatUtils.addWord(this@LatinIME, word, 250, null, locale)
+            }
+
+            !alreadyPresent
+        }
+
+        if (wasAdded) {
+            imeManager.getActiveIME(settings).requestSuggestionRefresh()
+        }
+        Toast.makeText(
+            this@LatinIME,
+            getString(
+                if (wasAdded) R.string.keyboard_suggest_added_to_dictionary
+                else R.string.keyboard_suggest_already_in_dictionary
+            ),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     fun blacklistWord(suggestedWordInfo: SuggestedWordInfo?) = lifecycleScope.launch {
