@@ -30,6 +30,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Semaphore
 import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.GlobalIMEMessage
@@ -42,8 +43,12 @@ import org.futo.inputmethod.latin.Subtypes.switchToNextLanguage
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
+import org.futo.inputmethod.latin.common.ComposedData
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
+import org.futo.inputmethod.latin.LayoutInfoForModel
+import org.futo.inputmethod.latin.PinyinSwipeTrie
+import org.futo.inputmethod.latin.SwipeDecoderDictionary
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.suggestions.SuggestionStripViewAccessor
 import org.futo.inputmethod.latin.uix.FileKind
@@ -63,6 +68,7 @@ import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.latin.utils.toEnumOrNull
+import org.futo.inputmethod.keyboard.Keyboard
 import org.futo.inputmethod.v2keyboard.KeyboardLayoutSetV2
 import java.io.File
 import java.util.Locale
@@ -244,6 +250,11 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     private var layoutHint: String? = null
     private val rawInput = InputKeeper()
     private val rimeLoading = mutableStateOf(false)
+
+    // Pinyin swipe: reuse the layout-agnostic swipe encoder with a pinyin syllable trie.
+    private val swipeDecoder = SwipeDecoderDictionary(helper.context, Locale("zh"))
+    private val pinyinTrie = PinyinSwipeTrie()
+    private var appliedSwipeKeyboard: Keyboard? = null
 
     override fun getLoadingState(): MutableState<Boolean>? = rimeLoading
 
@@ -502,6 +513,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }.launchIn(coroScope)
 
     override fun onCreate() {
+        helper.updateGestureAvailability(isGestureHandlingAvailable())
         if (!rime.startup(false))
             Log.e(TAG, "Error occurred!")
         subscribeToRimeMessage()
@@ -918,7 +930,7 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
         showSuggestionStrip(null)
     }
 
-    override fun isGestureHandlingAvailable() : Boolean = false
+    override fun isGestureHandlingAvailable() : Boolean = true
     override fun onCustomRequest(requestCode: Int): Boolean = false
     override fun onMovingCursorLockEvent(canMoveCursor: Boolean) {}
 
@@ -937,9 +949,51 @@ class ChineseIME(val helper: IMEHelper) : IMEInterface, SuggestionStripViewAcces
     }
 
     override fun onStartBatchInput() {}
-    override fun onUpdateBatchInput(batchPointers: InputPointers?) {}
-    override fun onEndBatchInput(batchPointers: InputPointers?) {}
-    override fun onCancelBatchInput() {}
+
+    override fun onUpdateBatchInput(batchPointers: InputPointers?) {
+        // Decoding is deferred to onEndBatchInput, where the full gesture is available.
+    }
+
+    override fun onEndBatchInput(batchPointers: InputPointers?) {
+        if (batchPointers == null) return
+        val keyboard = helper.keyboardSwitcher.keyboard ?: return
+        if (!applyPinyinSwipeLayout(keyboard)) return
+
+        val composed = ComposedData(batchPointers, true /* isBatchMode */, "" /* typedWord */)
+        coroScope.launch(Dispatchers.Default) {
+            val pinyin = swipeDecoder.getSuggestions(
+                composed, null, useHighBeam = true, trieWeights = floatArrayOf(1.0f)
+            )?.firstOrNull()?.word ?: return@launch
+            withContext(Dispatchers.Main) {
+                // Append the decoded syllable (no clear) so consecutive swipes
+                // accumulate multi-syllable pinyin, mirroring tap typing.
+                rime.simulateKeySequence(pinyin)
+                rawInput.replace(rime.preeditFlow.value)
+            }
+        }
+    }
+
+    override fun onCancelBatchInput() {
+        coroScope.launch { rime.clearComposition() }
+    }
+
+    private fun applyPinyinSwipeLayout(keyboard: Keyboard): Boolean {
+        if (keyboard === appliedSwipeKeyboard) return true
+        SwipeDecoderDictionary.updateKeyboard(keyboard)
+
+        val info = LayoutInfoForModel.buildLayoutInfo(
+            helper.context, keyboard, Settings.getInstance().current
+        ) ?: return false
+
+        val trie = pinyinTrie.handle(info.letters)
+        if (trie == 0L) return false
+
+        swipeDecoder.updateKeyboard(
+            SwipeDecoderDictionary.PendingLayoutInfo(info, arrayListOf(trie))
+        )
+        appliedSwipeKeyboard = keyboard
+        return true
+    }
 
 // Non-behavior methods {{
 // NOTE: These methods are scheduled to have no behavior
