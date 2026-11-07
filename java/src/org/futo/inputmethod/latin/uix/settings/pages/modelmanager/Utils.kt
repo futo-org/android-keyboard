@@ -24,9 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.futo.inputmethod.latin.uix.findActivity
+import org.futo.inputmethod.latin.uix.findSettingsActivity
 import org.futo.inputmethod.latin.uix.settings.EXPORT_GGUF_MODEL_REQUEST
-import org.futo.inputmethod.latin.uix.settings.IMPORT_GGUF_MODEL_REQUEST
-import org.futo.inputmethod.latin.uix.settings.SettingsActivity
+import org.futo.inputmethod.latin.uix.settings.IMPORT_RESOURCE_FILE_REQUEST
 import org.futo.inputmethod.latin.xlm.ModelInfo
 import org.futo.inputmethod.latin.xlm.ModelInfoLoader
 import java.io.File
@@ -47,17 +48,6 @@ fun humanReadableByteCountSI(bytes: Long): String {
     return String.format("%.1f %cB", bytes / 1000.0, ci.current())
 }
 
-fun findSettingsActivity(context: Context): SettingsActivity {
-    if(context is SettingsActivity) {
-        return context
-    }else if(context is ContextThemeWrapper){
-        if(context.baseContext == context) throw IllegalStateException("Infinite loop detected in ContextThemeWrapper")
-        return findSettingsActivity(context.baseContext)
-    }else{
-        throw IllegalArgumentException("Context provided is not one of SettingsActivity or ContextThemeWrapper")
-    }
-}
-
 fun triggerModelExport(context: Context, file: File) {
     val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
         addCategory(Intent.CATEGORY_OPENABLE)
@@ -66,8 +56,7 @@ fun triggerModelExport(context: Context, file: File) {
         putExtra(Intent.EXTRA_TITLE, file.name)
     }
 
-    val activity: SettingsActivity = findSettingsActivity(context)
-
+    val activity = findSettingsActivity(context)!!
     activity.updateFileBeingSaved(file)
     activity.startActivityForResult(intent, EXPORT_GGUF_MODEL_REQUEST)
 }
@@ -151,5 +140,5 @@ fun openModelImporter(context: Context) {
         type = "application/octet-stream"
     }
 
-    (context as Activity).startActivityForResult(intent, IMPORT_GGUF_MODEL_REQUEST)
+    findActivity(context)!!.startActivityForResult(intent, IMPORT_RESOURCE_FILE_REQUEST)
 }

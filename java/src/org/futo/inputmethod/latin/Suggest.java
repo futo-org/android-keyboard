@@ -197,12 +197,15 @@ public final class Suggest {
                 ? null : whitelistedWordInfo.mWord;
         final boolean resultsArePredictions = !wordComposer.isComposingWord();
 
+        // normal dictionary has "i" -> "I" shortcut but some experimental ones don't
+        final boolean consideredWordIsLongEnough = (consideredWord.length() > 1) ||
+                (consideredWord.equalsIgnoreCase("i") && locale.getLanguage().equals("en"));
+
         // We allow auto-correction if whitelisting is not required or the word is whitelisted,
         // or if the word had more than one char and was not suggested.
         final boolean allowsToBeAutoCorrected =
                 (SHOULD_AUTO_CORRECT_USING_NON_WHITE_LISTED_SUGGESTION || whitelistedWord != null)
-                || (consideredWord.length() > 1 && (sourceDictionaryOfRemovedWord == null));
-
+                || (consideredWordIsLongEnough && (sourceDictionaryOfRemovedWord == null));
         final boolean hasAutoCorrection;
         // If correction is not enabled, we never auto-correct. This is for example for when
         // the setting "Auto-correction" is "off": we still suggest, but we don't auto-correct.

@@ -1,8 +1,11 @@
 package org.futo.inputmethod.latin.uix.settings.pages.themes
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.view.ContextThemeWrapper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -37,6 +40,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.THEME_KEY
+import org.futo.inputmethod.latin.uix.findActivity
+import org.futo.inputmethod.latin.uix.settings.IMPORT_RESOURCE_FILE_REQUEST
 import org.futo.inputmethod.latin.uix.settings.RotatingChevronIcon
 import org.futo.inputmethod.latin.uix.settings.Route
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -77,6 +82,55 @@ fun DeleteCustomThemeDialog(name: String, navController: NavHostController) {
                 navController.navigateUp()
             }) {
                 Text(stringResource(R.string.theme_settings_custom_theme_delete_cancel), color = MaterialTheme.colorScheme.primary, style = Typography.Body.Medium)
+            }
+        }
+    )
+}
+
+@Composable
+fun CustomThemeDialog(navController: NavHostController = rememberNavController()) {
+    val pickLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            uri ?: return@rememberLauncherForActivityResult
+            navController.navigateUp()
+            navController.navigate(Route.CustomTheme(uri.toString()))
+        }
+    )
+
+    val context = LocalContext.current
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        icon = {
+        },
+        title = {
+            Text(stringResource(R.string.theme_settings_add_new_theme), style = Typography.Body.MediumMl, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        },
+        text = {
+            Text(stringResource(R.string.theme_settings_add_new_theme_question))
+        },
+        onDismissRequest = {
+            navController.navigateUp()
+        },
+        confirmButton = {
+            OutlinedButton(onClick = {
+                pickLauncher.launch("image/*")
+                //navController.navigateUp()
+            }) {
+                Text(stringResource(R.string.theme_customizer_select_background_image_button), color = MaterialTheme.colorScheme.primary, style = Typography.Body.Medium)
+            }
+        },
+        dismissButton = {
+            OutlinedButton(onClick = {
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "application/zip"
+                }
+                findActivity(context)!!.startActivityForResult(intent, IMPORT_RESOURCE_FILE_REQUEST)
+
+                navController.navigateUp()
+            }) {
+                Text(stringResource(R.string.theme_customizer_load_custom_theme_file), color = MaterialTheme.colorScheme.primary, style = Typography.Body.Medium)
             }
         }
     )
@@ -135,14 +189,6 @@ fun ThemeScreen(navController: NavHostController = rememberNavController()) {
         }
     }
 
-    val pickLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? ->
-            uri ?: return@rememberLauncherForActivityResult
-            navController.navigate(Route.CustomTheme(uri.toString()))
-        }
-    )
-
     Scaffold(
         floatingActionButton = {
             if (enableKeyboardPreview) {
@@ -162,8 +208,7 @@ fun ThemeScreen(navController: NavHostController = rememberNavController()) {
             ThemePicker({
                 navController.navigate(Route.DeleteTheme(it))
             }, {
-                pickLauncher.launch("image/*")
-                //navController.navigate("customTheme")
+                navController.navigate("customThemeDialog")
             })
         }
     }

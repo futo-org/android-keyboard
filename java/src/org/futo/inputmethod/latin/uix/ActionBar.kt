@@ -230,7 +230,7 @@ fun actionBarColor(): Color =
     if(LocalInspectionMode.current) {
         LocalKeyboardScheme.current.keyboardSurface
     } else if(LocalKeyboardScheme.current.extended.advancedThemeOptions.backgroundImage != null) {
-        LocalKeyboardScheme.current.keyboardSurface.copy(alpha = 0.5f)
+        LocalKeyboardScheme.current.keyboardSurface.copy(alpha = LocalKeyboardScheme.current.extended.advancedThemeOptions.actionBarOpacity)
     } else if(LocalKeyboardScheme.current.keyboardBackgroundGradient != null) {
         Color.Transparent
     } else {

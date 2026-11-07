@@ -60,6 +60,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.futo.inputmethod.latin.ATLCompat
 import java.util.concurrent.Executor
 import java.util.function.Consumer
 import java.util.function.IntConsumer
@@ -184,6 +185,7 @@ private fun GenericEditTextCompose(
     onEnter: (() -> Unit)? = null,
     autofocus: Boolean = false,
     forceQwerty: Boolean = false,
+    forcedLayout: String? = null,
     inputFilters: Array<InputFilter>? = null,
 ) {
     val context = LocalContext.current
@@ -230,6 +232,7 @@ private fun GenericEditTextCompose(
             privateImeOptions = StringBuilder().apply {
                 if(!autocorrect) append("org.futo.inputmethod.latin.NoSuggestions=1,")
                 if(forceQwerty) append("org.futo.inputmethod.latin.ForceLayout=qwerty,org.futo.inputmethod.latin.ForceLocale=zz,")
+                if(forcedLayout != null) append(forcedLayout)
             }.toString()
 
             setHeight(height.toInt())
@@ -241,7 +244,7 @@ private fun GenericEditTextCompose(
                 }
                 onCreateInputConnection(editorInfo)
 
-                onOverride.invoke(inputConnection!!, editorInfo)
+                if(!ATLCompat.IsATL) onOverride.invoke(inputConnection!!, editorInfo)
             }
 
             // Remove underline and padding
@@ -353,6 +356,7 @@ fun SettingsTextEdit(
     autocorrect: Boolean = true,
     autofocus: Boolean = false,
     forceQwerty: Boolean = false,
+    forcedLayout: String? = null,
     error: Boolean = false,
 ) {
     Surface(
@@ -377,7 +381,8 @@ fun SettingsTextEdit(
                 placeholder = placeholder,
                 autocorrect = autocorrect,
                 autofocus = autofocus,
-                forceQwerty = forceQwerty
+                forceQwerty = forceQwerty,
+                forcedLayout = forcedLayout
             )
         }
     }

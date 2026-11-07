@@ -49,10 +49,12 @@ sealed class KeyQualifier {
     data object Popup : KeyQualifier()
 
     data class AspectRatio(val target: KeyAspectRatio) : KeyQualifier()
+    data class Layer(val layer: Int) : KeyQualifier()
 }
 
-fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, keyboard: Keyboard, key: Key, popup: Boolean = false) =
-    (qualifiers.contains(KeyQualifier.Popup) == popup) && qualifiers.all { when(it) {
+fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, keyboard: Keyboard, key: Key, layer: Int = 0, popup: Boolean = false) =
+    (qualifiers.contains(KeyQualifier.Popup) == popup) && getLayer(qualifiers) == layer
+            && qualifiers.all { when(it) {
         is KeyQualifier.Layout -> layout == it.name
         is KeyQualifier.Code -> key.code == it.code
         is KeyQualifier.Label -> key.label == it.label
@@ -64,7 +66,11 @@ fun matchesKey(qualifiers: Set<KeyQualifier>, layout: String, keyboard: Keyboard
         is KeyQualifier.Popup -> popup
         is KeyQualifier.RowColSelector -> it.selection.match(keyboard, key)
         is KeyQualifier.AspectRatio -> it.target.range.contains(key.height.toFloat() / key.width.toFloat())
+        is KeyQualifier.Layer -> it.layer == layer
     } }
+
+fun getLayer(qualifiers: Set<KeyQualifier>) =
+    qualifiers.filterIsInstance<KeyQualifier.Layer>().firstOrNull()?.layer ?: 0
 
 
 fun matchesHint(qualifiers: Set<KeyQualifier>, layout: String, hintLabel: String?, hintIcon: String?) =

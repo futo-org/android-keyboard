@@ -45,7 +45,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
-import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.latin.Dictionary
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.ReadOnlyBinaryDictionary
@@ -54,6 +53,7 @@ import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
+import org.futo.inputmethod.latin.uix.actions.DebugLabel
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -62,10 +62,10 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.pages.DevAutoAcceptThemeImport
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.utils.Dictionaries
@@ -250,10 +250,10 @@ enum class FileKind {
 
     fun getAddonUrlForLocale(locale: Locale?): String {
         return when(this) {
-            VoiceInput -> "https://keyboard.futo.org/voice-input-models?locale=${locale?.toLanguageTag() ?: ""}"
-            Transformer -> "https://keyboard.futo.org/models?locale=${locale?.toLanguageTag() ?: ""}"
-            Dictionary -> "https://keyboard.futo.org/dictionaries?locale=${locale?.toLanguageTag() ?: ""}"
-            Invalid -> "https://keyboard.futo.org/"
+            VoiceInput -> "https://keyboard.futo.tech/voice-input-models?locale=${locale?.toLanguageTag() ?: ""}"
+            Transformer -> "https://keyboard.futo.tech/models?locale=${locale?.toLanguageTag() ?: ""}"
+            Dictionary -> "https://keyboard.futo.tech/dictionaries?locale=${locale?.toLanguageTag() ?: ""}"
+            Invalid -> "https://keyboard.futo.tech/"
         }
     }
 }
@@ -776,8 +776,13 @@ class ImportResourceActivity : ComponentActivity() {
                     painterResource(R.drawable.themes)
                 )
 
-                if(item.v.meta.isNewer) {
-                    Tip("⚠\uFE0F " + stringResource(R.string.resource_importer_warning_cfg_backup_newer_version))
+                val errors = item.v.config?.errors ?: ""
+                if(item.v.meta.isNewer || errors.isNotEmpty()) {
+                    Tip("⚠\uFE0F " + stringResource(R.string.theme_settings_warning_newer_version))
+                }
+
+                if(errors.isNotEmpty()) {
+                    Text("${errors}", style = DebugLabel)
                 }
 
                 if(item.v.config == null) {
@@ -792,14 +797,14 @@ class ImportResourceActivity : ComponentActivity() {
                     Text(
                         stringResource(
                             R.string.theme_customizer_import_custom_theme_name_text,
-                            item.v.config.id ?: "?"
+                            item.v.config.name
                         )
                     )
 
                     Text(
                         stringResource(
                             R.string.theme_customizer_import_custom_theme_author_text,
-                            item.v.config.author ?: "?"
+                            item.v.config.author
                         )
                     )
 
@@ -954,7 +959,7 @@ class ImportResourceActivity : ComponentActivity() {
         if(item is ItemBeingImported.CustomTheme && DevAutoAcceptThemeImport) {
             if(item.v.config == null) {
                 BugViewerState.pushBug(BugInfo(
-                    name = "your custom theme (invalid metadata json)",
+                    name = "your custom theme (invalid metadata)",
                     details = item.v.error ?: "Unknown error",
                 ))
                 BugViewerState.triggerOpen()
@@ -995,7 +1000,7 @@ object MissingDictionaryHelper {
         ) != null
         val hasBuiltInDict = Dictionaries.getDictionaryIfExists(context, locale, Dictionaries.DictionaryKind.Any) != null
 
-        // These languages have an automatic prompt to download the right file on keyboard.futo.org
+        // These languages have an automatic prompt to download the right file on keyboard.futo.tech
         val langsWithDownloadableDictionaries = setOf(
             "ar", "hy", "as", "bn", "eu", "be", "bg", "ca", "hr", "cs", "da", "nl", "en", "eo", "fi",
             "fr", "gl", "ka", "de", "gom", "el", "gu", "he", "iw", "hi", "hu", "it", "kn", "ks", "lv",

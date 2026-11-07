@@ -41,10 +41,11 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
                 "colmod" -> KeyQualifier.RowColSelector(RowColSelection.ColModN(tokens.removeAt(0).toInt(), tokens.removeAt(0).toInt()))
 
                 "ratio" -> KeyQualifier.AspectRatio(KeyAspectRatio.valueOf(tokens.removeAt(0)))
+                "layer" -> KeyQualifier.Layer(tokens.removeAt(0).toInt())
 
                 else -> {
                     BugViewerState.pushBug(BugInfo(
-                        "your custom theme",
+                        "the custom theme",
                         "Qualifier [$key] has an invalid entry: $next"
                     ))
                     return emptySet()
@@ -54,7 +55,7 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
             result.add(qualifier)
         }catch(e: Exception) {
             BugViewerState.pushBug(BugInfo(
-                "your custom theme",
+                "the custom theme",
                 "Qualifier [$key] has run into an exception for $next: $e"
             ))
             return emptySet()
@@ -64,14 +65,16 @@ internal fun decodeKeyedBitmapKey(key: String): Set<KeyQualifier> {
     return result
 }
 
-internal fun<T> decodeKeyedBitmaps(ctx: ThemeDecodingContext, defs: Map<String, String>, transform: (ImageBitmap) -> T?): KeyedBitmaps<T> {
+internal fun<T, E> decodeKeyedBitmaps(ctx: ThemeDecodingContext, defs: Iterable<E>, keyFn: (E) -> String, valFn: (E) -> String, transform: (E, ImageBitmap) -> T?): KeyedBitmaps<T> {
     val cache = mutableMapOf<String, T?>()
     val result = mutableListOf<KeyedBitmap<T>>()
     defs.forEach {
-        val qualifiers = decodeKeyedBitmapKey(it.key)
+        val key = keyFn(it)
+        val value = valFn(it)
+        val qualifiers = decodeKeyedBitmapKey(key)
         if(qualifiers.isNotEmpty()) {
-            val bitmap = cache.getOrPut(it.value) {
-                decodeOptionalImage(ctx, it.value)?.let(transform)
+            val bitmap = cache.getOrPut(value) {
+                decodeOptionalImage(ctx, value)?.let({ v -> transform(it, v) })
             }
             bitmap?.let { result.add(KeyedBitmap(qualifiers, it)) }
         }

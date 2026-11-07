@@ -1372,7 +1372,8 @@ val ClipboardHistoryAction = Action(
                         }
                     )
                 },
-                visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) }
+                visibilityCheck = { useDataStoreValue(ClipboardHistoryEnabled) && SupportsAddingScreenshots },
+                appearInSearchIfVisibilityCheckFailed = SupportsAddingScreenshots
             ),
             UserSetting(
                 name = R.string.action_clipboard_manager_settings_maximum_clips,

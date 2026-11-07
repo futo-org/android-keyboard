@@ -48,8 +48,14 @@ private val darkScheme = extendedDarkColorScheme(
     keyboardContainerPressed=Color(0xFF777777),
     onKeyboardContainerPressed=Color(0xFFFFFFFF),
     hintColor=Color(0xFF0000FF),
-    hintHiVis=true
-)
+).let {
+    it.copy(extended=it.extended.copy(
+        advancedThemeOptions=it.extended.advancedThemeOptions.copy(
+            hintWeight = 700.0f,
+            hintSizeMultiplier = 1.3f
+        )
+    ))
+}
 
 
 val HighContrastYellow = ThemeOption(

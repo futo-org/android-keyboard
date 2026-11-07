@@ -11,7 +11,8 @@ enum class License {
     CC_BY_SA_4_0,
     GPL_V2,
     Proprietary,
-    PublicDomain
+    PublicDomain,
+    PublicDomainClearflow
 }
 
 @Suppress("HardCodedStringLiteral")
@@ -1150,4 +1151,6 @@ Public License instead of this License.
 In jurisdictions where this is not legally possible, the copyright holder grants anyone the right to use this work for any purpose, without any conditions, unless such conditions are required by law.
 
 No copyright is claimed. This work may be freely reproduced, distributed, transmitted, modified, built upon, or otherwise used by anyone for any lawful purpose."""
+
+    License.PublicDomainClearflow -> """The ClearFlow layout is public information and not subject to any intellectual property restrictions. Please feel free to implement it."""
 }

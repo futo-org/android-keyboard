@@ -10,6 +10,7 @@ import org.futo.inputmethod.keyboard.internal.KeyboardParams
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
+import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
@@ -234,6 +235,11 @@ data class LayoutEngine(
             } else {
                 regularKeyWidth
             }
+        }.let {
+            if(it.isInfinite() || it.isNaN()) {
+                throwIfDebug(Exception("Infinite or NaN regular key width: ${it}"))
+                1.0f
+            } else it
         }
 
         // Subtract regular keys

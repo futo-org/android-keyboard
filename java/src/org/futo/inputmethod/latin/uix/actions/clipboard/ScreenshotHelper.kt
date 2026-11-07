@@ -23,6 +23,8 @@ import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.getSettingFlow
 
+val SupportsAddingScreenshots = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+
 interface ScreenshotListener {
     fun onScreenshotAdded(mime: String, uri: Uri)
     fun onScreenshotChange(uri: Uri, checkTrashed: suspend () -> Boolean)
@@ -45,16 +47,27 @@ class ScreenshotHelper(
     // Returns true if we can confirm that the given URI exists and is not trashed
     internal fun safeQueryExists(uri: Uri): Boolean {
         return try {
-            contentResolver.query(
-                uri,
-                arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.IS_TRASHED),
-                null, null, null
-            )?.use { cursor ->
-                cursor.count > 0 && cursor.moveToFirst() && run {
-                    val idx = cursor.getColumnIndex(MediaStore.MediaColumns.IS_TRASHED)
-                    (idx == -1) || (cursor.getInt(idx) == 0)
-                }
-            } == true
+            if(Build.VERSION.SDK_INT >= 30) {
+                // Using the IS_TRASHED column introduced in API 30
+                contentResolver.query(
+                    uri,
+                    arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.IS_TRASHED),
+                    null, null, null
+                )?.use { cursor ->
+                    cursor.count > 0 && cursor.moveToFirst() && run {
+                        val idx = cursor.getColumnIndex(MediaStore.MediaColumns.IS_TRASHED)
+                        (idx == -1) || (cursor.getInt(idx) == 0)
+                    }
+                } == true
+            } else {
+                contentResolver.query(
+                    uri,
+                    arrayOf(MediaStore.MediaColumns._ID),
+                    null, null, null
+                )?.use { cursor ->
+                    cursor.count > 0 && cursor.moveToFirst()
+                } == true
+            }
         } catch (e: Exception) {
             // Assume IllegalStateException / SecurityException means it's gone
             false
@@ -128,22 +141,21 @@ class ScreenshotHelper(
     }
 
     internal suspend fun handleNewScreenshot(dry: Boolean = false) = withContext(Dispatchers.IO) {
+        if(!SupportsAddingScreenshots) return@withContext null
         if(!context.getSetting(ClipboardSaveScreenshots)) return@withContext null
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return@withContext null
+
+        val pathKey = when {
+            Build.VERSION.SDK_INT >= 29 -> MediaStore.Images.Media.RELATIVE_PATH
+            else -> MediaStore.Images.Media.DATA
+        }
 
         val projection = arrayOf(
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.MIME_TYPE,
-            MediaStore.Images.Media.RELATIVE_PATH
+            pathKey
         )
 
-        val selection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            "${MediaStore.Images.Media.RELATIVE_PATH} LIKE '%/Screenshots/%' " +
-                    "AND ${MediaStore.Images.Media._ID} > ?"
-        } else {
-            "${MediaStore.Images.Media.DISPLAY_NAME} LIKE '%screenshot%' " +
-                    "AND ${MediaStore.Images.Media._ID} > ?"
-        }
+        val selection = "$pathKey LIKE '%/Screenshots/%' AND ${MediaStore.Images.Media._ID} > ?"
 
         try {
             val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -198,6 +210,13 @@ class ScreenshotHelper(
                 }
             }
         }catch(e: Exception) {
+            if (e.message?.let {
+                it.contains("volume", ignoreCase = true)
+                    && it.contains("not found", ignoreCase = true)
+            } == true) {
+                return@withContext null
+            }
+
             throwIfDebug(e)
         }
     }

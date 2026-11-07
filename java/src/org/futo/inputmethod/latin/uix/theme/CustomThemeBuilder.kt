@@ -11,7 +11,12 @@ import com.google.android.material.color.utilities.MathUtils
 import com.google.android.material.color.utilities.TemperatureCache
 import com.google.android.material.color.utilities.TonalPalette
 import com.google.android.material.color.utilities.Variant
+import org.futo.inputmethod.latin.ATLCompat
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
+import org.futo.inputmethod.latin.uix.theme.serialization.SerializableJsonTheme
+import org.futo.inputmethod.latin.uix.theme.serialization.getColorSchemeFromDynamicScheme
+import org.futo.inputmethod.latin.uix.theme.serialization.initBasicSerializableThemeFromKeyboardScheme
+import org.futo.inputmethod.latin.uix.theme.serialization.toSColor
 import org.futo.inputmethod.latin.uix.wrapDarkColorScheme
 import org.futo.inputmethod.latin.uix.wrapLightColorScheme
 import kotlin.math.pow
@@ -47,14 +52,22 @@ data class CustomThemeBuilderConfiguration(
                 MathUtils.sanitizeDegreesDouble(col.hue + 15.0),
                 maxOf(col.chroma - 32.0, col.chroma * 0.5)
             ),
-            TonalPalette.fromHct(
-                DislikeAnalyzer.fixIfDisliked(
-                    TemperatureCache(col).getAnalogousColors(
-                        3,
-                        6
-                    ).get(2)
+            if(ATLCompat.IsATL) {
+                // getAnalogousColors causes BootstrapMethodError on ATL
+                TonalPalette.fromHueAndChroma(
+                    MathUtils.sanitizeDegreesDouble(col.hue - 15.0),
+                    maxOf(col.chroma - 32.0, col.chroma * 0.5)
                 )
-            ),
+            } else {
+                TonalPalette.fromHct(
+                    DislikeAnalyzer.fixIfDisliked(
+                        TemperatureCache(col).getAnalogousColors(
+                            3,
+                            6
+                        ).get(2)
+                    )
+                )
+            },
             TonalPalette.fromHueAndChroma(col.hue, col.chroma / 1.0),
             TonalPalette.fromHueAndChroma(col.hue, col.chroma / 1.0 + 4.0),
         )
@@ -100,7 +113,7 @@ data class CustomThemeBuilderConfiguration(
         )
     }
 
-    fun build(): SerializableCustomTheme {
+    fun build(): SerializableJsonTheme {
         val colorScheme = buildScheme()
         return initBasicSerializableThemeFromKeyboardScheme(colorScheme).let {
             if(backgroundImagePath != null) {

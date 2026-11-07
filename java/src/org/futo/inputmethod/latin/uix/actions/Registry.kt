@@ -68,7 +68,7 @@ private fun List<Action>.verifyNamesAreUnique(): List<Action> {
 }
 
 object ActionRegistry {
-    suspend fun getActionOverride(context: Context, action: Action): Action {
+    fun getActionOverride(context: Context, action: Action): Action {
         return if(action == VoiceInputAction || action == SystemVoiceInputAction) {
             val useSystemVoiceInput = context.getSetting(USE_SYSTEM_VOICE_INPUT)
             if(useSystemVoiceInput) {

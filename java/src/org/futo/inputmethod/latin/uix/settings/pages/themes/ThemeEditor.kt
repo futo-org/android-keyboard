@@ -90,8 +90,10 @@ import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.DataStoreItem
 import org.futo.inputmethod.latin.uix.settings.SettingSliderForDataStoreItem
 import org.futo.inputmethod.latin.uix.theme.CustomThemeBuilderConfiguration
+import org.futo.inputmethod.latin.uix.theme.GenericPalette
 import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.ThemeDecodingContext
+import org.futo.inputmethod.latin.uix.theme.TonalPalette
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.v2keyboard.LayoutManager
 import java.io.ByteArrayOutputStream
@@ -211,6 +213,9 @@ internal fun ThemeEditor(
         object : ThemeDecodingContext {
             override val context: Context
                 get() = context
+
+            override val palette: Lazy<TonalPalette>
+                get() = lazy { GenericPalette }
 
             override fun getFileBytes(path: String): ByteArray? = when {
                 path == "background.jpg" -> {

@@ -46,6 +46,7 @@ import org.futo.inputmethod.latin.uix.LocalNavController
 import org.futo.inputmethod.latin.uix.PersonalWord
 import org.futo.inputmethod.latin.uix.SettingsTextEdit
 import org.futo.inputmethod.latin.uix.UserDictionaryIO
+import org.futo.inputmethod.latin.uix.findActivity
 import org.futo.inputmethod.latin.uix.getImportedUserDictFilesForLocale
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
@@ -241,7 +242,7 @@ fun PersonalDictionaryLanguageListForLocale(
                             addCategory(Intent.CATEGORY_OPENABLE)
                             type = "text/plain"
                         }
-                        (context as Activity).startActivityForResult(intent, IMPORT_SETTINGS_REQUEST)
+                        findActivity(context)!!.startActivityForResult(intent, IMPORT_SETTINGS_REQUEST)
                     },
                     icon = painterResource(R.drawable.plus_circle)
                 )

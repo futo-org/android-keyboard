@@ -5,9 +5,6 @@ import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.graphics.ImageBitmap
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import okio.ByteString.Companion.encodeUtf8
 import org.futo.inputmethod.dictionarypack.MD5Calculator
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
@@ -16,6 +13,11 @@ import org.futo.inputmethod.latin.uix.actions.throwIfDebug
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSetting
 import org.futo.inputmethod.latin.uix.settings.pages.DevAutoAcceptThemeImport
+import org.futo.inputmethod.latin.uix.theme.serialization.JsonZipTheme
+import org.futo.inputmethod.latin.uix.theme.serialization.SerializableJsonTheme
+import org.futo.inputmethod.latin.uix.theme.serialization.SerializableTheme
+import org.futo.inputmethod.latin.uix.theme.serialization.TomlZipTheme
+import org.futo.inputmethod.latin.uix.theme.serialization.themeJson
 import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.latin.utils.readAllBytesCompat
 import java.io.BufferedOutputStream
@@ -28,7 +30,6 @@ import java.nio.ByteOrder
 import java.util.Date
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
-import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 object ZipThemes {
@@ -56,13 +57,12 @@ object ZipThemes {
     val themeCache: MutableMap<ThemeFileName, KeyboardColorScheme> = mutableMapOf()
     val thumbThemeCache: MutableMap<ThemeFileName, KeyboardColorScheme> = mutableMapOf()
 
-    @OptIn(ExperimentalSerializationApi::class)
-    private val json = Json {
-        allowComments = true
-        allowTrailingComma = true
-        prettyPrint = true
-        //encodeDefaults = true
+    private fun invalidateCache(name: ThemeFileName) {
+        themeCache.remove(name)
+        thumbThemeCache.remove(name)
     }
+
+    private val json = themeJson
 
     fun customThemesDir(context: Context) = File(context.filesDir, "themes").also { it.mkdirs() }
 
@@ -75,9 +75,10 @@ object ZipThemes {
         } ?: emptyList()
 
     private const val versionFileName = "FUTOKeyboardTheme_Version"
-    private const val configFileName = "config.json"
+    private const val jsonConfigFileName = "config.json"
+    private const val tomlConfigFileName = "theme.txt"
     private const val currentVersion: Byte = 1
-    fun save(ctx: ThemeDecodingContext, theme: SerializableCustomTheme, name: ThemeFileName) {
+    fun save(ctx: ThemeDecodingContext, theme: SerializableJsonTheme, name: ThemeFileName) {
         if(name.location != ThemeLocation.Custom) throw IllegalArgumentException("Can only save custom themes.")
 
         val dir = customThemesDir(ctx.context)
@@ -108,7 +109,7 @@ object ZipThemes {
         }.array())
         zos.closeEntry()
 
-        putEntry(configFileName)
+        putEntry(jsonConfigFileName)
         zos.write(json.encodeToString(theme).encodeUtf8().toByteArray())
         zos.closeEntry()
 
@@ -119,7 +120,7 @@ object ZipThemes {
         theme.keyIcons.values.forEach(putFile)
 
         zos.close()
-        themeCache.remove(name)
+        invalidateCache(name)
         updateCount.intValue += 1
     }
 
@@ -130,41 +131,59 @@ object ZipThemes {
 
     data class ThemeMetadataResult(
         val meta: ThemeMetadata,
-        val config: SerializableCustomTheme?,
+        val config: SerializableTheme?,
         val error: String?
     )
 
     fun getMetadata(inputStream: InputStream): ThemeMetadataResult? {
         var metadata: ThemeMetadata? = null
-        var config: SerializableCustomTheme? = null
+        var config: SerializableTheme? = null
         var error: String? = null
 
-        ZipFileHelper.parseSafe(inputStream,
-            versionFileName to { bytes ->
-                val buff = ByteBuffer.wrap(bytes).apply { order(ByteOrder.LITTLE_ENDIAN) }
-                val version = buff.get()
-                val date = buff.getLong()
+        try {
+            ZipFileHelper.parse(inputStream,
+                versionFileName to { bytes ->
+                    val buff = ByteBuffer.wrap(bytes).apply { order(ByteOrder.LITTLE_ENDIAN) }
+                    val version = buff.get()
+                    val date = buff.getLong()
 
-                metadata = ThemeMetadata(
-                    dateExported = Date(date),
-                    isNewer = version > currentVersion
-                )
-            },
-            configFileName to { bytes ->
-                try {
+                    metadata = ThemeMetadata(
+                        dateExported = Date(date),
+                        isNewer = version > currentVersion
+                    )
+                },
+                //jsonConfigFileName to { bytes ->
+                //    val string = bytes.decodeToString()
+                //    val cfg = JsonZipTheme(string)
+                //    config = cfg
+                //},
+                tomlConfigFileName to { bytes ->
                     val string = bytes.decodeToString()
-                    val cfg = json.decodeFromString<SerializableCustomTheme>(string)
 
-                    if(cfg.id == null || cfg.id.length < 3) throw Exception("ID must be at least 3 characters for a custom theme")
-                    if(cfg.id.endsWith('_')) throw Exception("ID must not end with underscores")
+                    var cfg: TomlZipTheme? = null
+
+                    try {
+                        cfg = TomlZipTheme(string)
+                    } finally {
+                        metadata = ThemeMetadata(
+                            dateExported = Date(0),
+                            isNewer = (cfg?.formatVersion ?: 0) > currentVersion
+                        )
+                    }
+
+                    if(!cfg.validate()) throw Exception("Validation failed")
 
                     config = cfg
-                } catch(e: Exception) {
-                    error += "Cause: ${e.message}\n\nStack trace: ${e.stackTrace.map { it.toString() }}"
                 }
-            }
-        )
+            )
 
+            if(config == null) throw Exception("Config not found")
+            if(config?.id == null || (config?.id?.length ?: 0) < 3) throw Exception("ID must be at least 3 characters for a custom theme")
+            if(config?.id?.endsWith('_') == true) throw Exception("ID must not end with underscores")
+        } catch(e: Exception) {
+            error += "Cause: ${e.message}\n\nStack trace: ${e.stackTrace.map { it.toString() }}"
+            e.printStackTrace()
+        }
         return metadata?.let {
             ThemeMetadataResult(metadata, config, error)
         }
@@ -183,7 +202,7 @@ object ZipThemes {
             inputStream.copyTo(outputStream)
         }
 
-        themeCache.remove(custom(id))
+        invalidateCache(custom(id))
 
         val setting = custom(id).toSetting()
         val currTheme = context.getSetting(THEME_KEY)
@@ -195,9 +214,11 @@ object ZipThemes {
                 )
             }
         }
+
+        updateCount.intValue += 1
     }
 
-    private fun loadFile(androidContext: Context, file: File): Pair<ThemeDecodingContext, SerializableCustomTheme> {
+    private fun loadFile(androidContext: Context, file: File): Pair<ThemeDecodingContext, SerializableTheme> {
         val hash = file.inputStream().use {
             MD5Calculator.checksum(it)
         }
@@ -207,6 +228,8 @@ object ZipThemes {
         val ctx = object : ThemeDecodingContext {
             override val context: Context
                 get() = androidContext
+
+            override val palette = lazy { dynamicTonalPalette(androidContext) }
 
             override fun getFileBytes(path: String): ByteArray? {
                 val entry = zipFile.getEntry(path)
@@ -228,14 +251,19 @@ object ZipThemes {
             }
         }
 
-        val theme = json.decodeFromString<SerializableCustomTheme>(
-            ctx.getFileBytes(configFileName)!!.decodeToString()
-        )
+        val tomlBytes = ctx.getFileBytes(tomlConfigFileName)
+        val jsonBytes = ctx.getFileBytes(jsonConfigFileName)
+
+        val theme = when {
+            tomlBytes != null -> TomlZipTheme(tomlBytes.decodeToString())
+            jsonBytes != null -> JsonZipTheme(jsonBytes.decodeToString())
+            else -> throw IllegalArgumentException("File has no config")
+        }
 
         return Pair(ctx, theme)
     }
 
-    private fun load(context: Context, name: ThemeFileName): Pair<ThemeDecodingContext, SerializableCustomTheme> {
+    private fun load(context: Context, name: ThemeFileName): Pair<ThemeDecodingContext, SerializableTheme> {
         val file = when(name.location) {
             ThemeLocation.Custom -> {
                 val fileName = "${name.name}.zip"
@@ -251,7 +279,6 @@ object ZipThemes {
                 if(cacheFile.isFile) {
                     cacheFile
                 } else {
-
                     val fileName = "themes/${name.name}.zip"
                     val assets = context.assets
 
@@ -276,6 +303,8 @@ object ZipThemes {
             val wrapper = object : ThemeDecodingContext {
                 override val context: Context
                     get() = i.first.context
+
+                override val palette = lazy { dynamicTonalPalette(context) }
 
                 override fun getFileBytes(path: String): ByteArray? =
                     if(path == i.second.thumbnailImage) i.first.getFileBytes(path) else null
@@ -312,7 +341,7 @@ object ZipThemes {
         }
 
         file.delete()
-        themeCache.remove(name)
+        invalidateCache(name)
         updateCount.intValue += 1
     }
 }

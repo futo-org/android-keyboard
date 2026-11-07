@@ -85,6 +85,21 @@
             </intent-filter>
         </activity>
 
+
+        <activity android:name=".uix.settings.VoiceInputSwitchActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:launchMode="singleTask"
+            android:noHistory="false"
+            android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.futo.inputmethod.latin.action.VoiceInputSwitch" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".uix.ImportResourceActivity"
             android:label="@string/language_settings_import_dictionary_or_model"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
