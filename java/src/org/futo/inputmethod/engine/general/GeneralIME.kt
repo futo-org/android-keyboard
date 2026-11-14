@@ -36,6 +36,7 @@ import org.futo.inputmethod.latin.Subtypes.switchToNextLanguage
 import org.futo.inputmethod.latin.SuggestedWords
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
 import org.futo.inputmethod.latin.SuggestionBlacklist
+import org.futo.inputmethod.latin.TextReplacements
 import org.futo.inputmethod.latin.WordComposer
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.common.InputPointers
@@ -118,6 +119,14 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         context,
         helper.lifecycleScope
     )
+
+    private val textReplacements = TextReplacements(
+        context,
+        helper.lifecycleScope
+    )
+
+    /** Used by [InputLogic] to expand text replacement shortcuts as they're typed. */
+    fun getTextReplacements(): TextReplacements = textReplacements
 
     private val languageModelFacilitator = LanguageModelFacilitator(
         context = context,
@@ -213,6 +222,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
         if (context.isDirectBootUnlocked) onDeviceUnlocked()
 
         suggestionBlacklist.init()
+        textReplacements.init()
 
         helper.lifecycleScope.launch {
             GlobalIMEMessage.collect { message ->

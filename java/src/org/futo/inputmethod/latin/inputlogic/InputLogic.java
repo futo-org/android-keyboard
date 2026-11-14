@@ -43,6 +43,8 @@ import org.futo.inputmethod.latin.Suggest;
 import org.futo.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import org.futo.inputmethod.latin.SuggestedWords;
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import org.futo.inputmethod.latin.TextReplacement;
+import org.futo.inputmethod.latin.TextReplacements;
 import org.futo.inputmethod.latin.WordComposer;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.common.InputPointers;
@@ -662,6 +664,14 @@ public final class InputLogic {
             unlearnWord(mWordComposer.getTypedWord(), settingsValues, Constants.EVENT_BACKSPACE);
             resetComposingWord(settingsValues, false);
         }
+
+        // Expand a text replacement shortcut terminated by this separator. This happens before the
+        // separator is handled so that the shortcut is expanded rather than autocorrected.
+        if (Event.NOT_A_CODE_POINT != event.mCodePoint
+                && settingsValues.isWordSeparator(event.mCodePoint)) {
+            tryPerformTextReplacement(true /* separatorTyped */);
+        }
+
         final Event processedEvent = mWordComposer.processEvent(event);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
                 processedEvent, SystemClock.uptimeMillis(), mSpaceState,
@@ -695,6 +705,15 @@ public final class InputLogic {
             }
             currentEvent = currentEvent.mNextEvent;
         }
+
+        // Shortcuts made up entirely of symbols never see a separator, so they are expanded as
+        // soon as the character completing them has been inserted. This must also run when that
+        // character is itself a separator: "..." ends in one, and in email fields so does "@@".
+        // findMatch only considers symbol-only shortcuts here, so word shortcuts are unaffected.
+        if (Event.NOT_A_CODE_POINT != processedEvent.mCodePoint) {
+            tryPerformTextReplacement(false /* separatorTyped */);
+        }
+
         // Try to record the word being corrected when the user enters a word character or
         // the backspace key.
         if (!mConnection.hasSlowInputConnection() && !mWordComposer.isComposingWord()
@@ -722,6 +741,46 @@ public final class InputLogic {
 
 
         return inputTransaction;
+    }
+
+    /**
+     * Expands a text replacement shortcut ending at the cursor, if there is one.
+     *
+     * The lookup is done on the text preceding the cursor rather than on the composing word, so
+     * that shortcuts which never enter composition (e.g. "@@") work too.
+     *
+     * @param separatorTyped whether the character that triggered this lookup is a word separator.
+     *     Shortcuts containing word code points only expand once a separator terminates them.
+     * @return whether a replacement was performed.
+     */
+    private boolean tryPerformTextReplacement(final boolean separatorTyped) {
+        final TextReplacements textReplacements = mIme.getTextReplacements();
+        if (null == textReplacements || textReplacements.isEmpty()) return false;
+        if (mConnection.hasSelection() || !mConnection.isCursorPositionKnown()) return false;
+
+        final CharSequence textBeforeCursor =
+                mConnection.getTextBeforeCursor(textReplacements.getLookbehindLength(), 0);
+        if (null == textBeforeCursor || textBeforeCursor.length() == 0) return false;
+
+        final TextReplacement match = textReplacements.findMatch(
+                textBeforeCursor, textBeforeCursor.length(), separatorTyped);
+        if (null == match) return false;
+
+        // The shortcut may still be composing, in which case the composition has to be finished
+        // before the text can be deleted and replaced.
+        if (mWordComposer.isComposingWord()) {
+            mConnection.finishComposingText();
+            resetComposingState(true /* alsoResetLastComposedWord */);
+        }
+
+        mConnection.deleteTextBeforeCursor(match.getShortcut().length());
+        mConnection.commitText(match.getReplacement(), 1);
+
+        // The replacement is committed verbatim, so any pending automatic space would corrupt it.
+        mSpaceState = SpaceState.NONE;
+        mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
+        mIme.setNeutralSuggestionStrip();
+        return true;
     }
 
     /**

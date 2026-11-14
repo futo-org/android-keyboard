@@ -389,6 +389,12 @@ val SUGGESTION_BLACKLIST = SettingsKey(
     default = setOf()
 )
 
+/** JSON-encoded list of org.futo.inputmethod.latin.TextReplacement */
+val TEXT_REPLACEMENTS = SettingsKey(
+    key = stringPreferencesKey("textReplacements"),
+    default = ""
+)
+
 val SHOW_EMOJI_SUGGESTIONS = SettingsKey(
     key = booleanPreferencesKey("suggestEmojis"),
     default = true
