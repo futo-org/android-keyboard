@@ -57,6 +57,7 @@ import org.futo.inputmethod.latin.uix.settings.pages.SearchScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLanguageScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SelectLayoutsScreen
 import org.futo.inputmethod.latin.uix.settings.pages.SwipeMenu
+import org.futo.inputmethod.latin.uix.settings.pages.TextReplacementScreen
 import org.futo.inputmethod.latin.uix.settings.pages.TypingSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.pages.VoiceInputMenu
 import org.futo.inputmethod.latin.uix.settings.pages.addModelManagerNavigation
@@ -181,6 +182,7 @@ fun SettingsNavigator(
             composable("dynamicpalette") { DevPaletteScreen(navController) }
             composable("devkeyboard") { DevKeyboardScreen(navController) }
             composable("blacklist") { BlacklistScreen(navController) }
+            composable("textReplacement") { TextReplacementScreen(navController) }
             composable("payment") { PaymentScreen(navController) { navController.navigateUp() } }
             composable("paid") { PaymentThankYouScreen { navController.navigateUp() } }
             composable("credits") { CreditsScreen(navController) }

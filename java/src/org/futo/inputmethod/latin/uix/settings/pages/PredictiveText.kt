@@ -68,6 +68,14 @@ val PredictiveTextMenu = UserSettingsMenu(
         ),
 
         userSettingNavigationItem(
+            title = R.string.text_replacement_title,
+            subtitle = R.string.text_replacement_subtitle,
+            style = NavigationItemStyle.HomeSecondary,
+            icon = R.drawable.file_text,
+            navigateTo = "textReplacement"
+        ).copy(searchTags = R.string.text_replacement_tags),
+
+        userSettingNavigationItem(
             title = R.string.prediction_settings_word_blacklist,
             style = NavigationItemStyle.HomeSecondary,
             icon = R.drawable.file_text,

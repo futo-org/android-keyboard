@@ -620,6 +620,23 @@
     <string name="prediction_settings_word_blacklist_edit_blacklisted_words_subtitle">Click here to view the list of blacklisted suggestions, add or remove entries</string>
     <string name="prediction_settings_word_blacklist_remove_word_from_blacklist">Remove word</string>
 
+    <!-- Text replacement menu -->
+    <string name="text_replacement_title">Text Replacement</string>
+    <string name="text_replacement_subtitle">Expand short abbreviations into longer text as you type</string>
+    <string name="text_replacement_tags">shortcut, macro, abbreviation, expansion, snippet, autotext</string>
+    <string name="text_replacement_none">You have no text replacements. Add one below to get started.</string>
+    <!-- The abbreviation the user types, e.g. "omw" -->
+    <string name="text_replacement_shortcut">Shortcut</string>
+    <!-- The text the shortcut is replaced with, e.g. "On my way!" -->
+    <string name="text_replacement_replacement">Replacement</string>
+    <string name="text_replacement_add">Add replacement</string>
+    <string name="text_replacement_save">Save</string>
+    <string name="text_replacement_cancel">Cancel</string>
+    <string name="text_replacement_edit">Edit replacement</string>
+    <string name="text_replacement_remove">Remove replacement</string>
+    <string name="text_replacement_duplicate_shortcut">This shortcut is already in use</string>
+    <string name="text_replacement_explanation">A shortcut is expanded when you type a space or punctuation after it. Shortcuts made up only of symbols, like @@, are expanded as soon as you type them.</string>
+
 
     <!-- Help & feedback menu -->
     <string name="help_menu_title">Help &amp; Feedback</string>
