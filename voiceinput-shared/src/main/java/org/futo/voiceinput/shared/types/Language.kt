@@ -242,7 +242,7 @@ fun getLanguageFromWhisperString(str: String): Language? {
         "da" -> Language.Danish
         "hu" -> Language.Hungarian
         "ta" -> Language.Tamil
-        "no" -> Language.Norwegian
+        "no", "nb" -> Language.Norwegian
         "th" -> Language.Thai
         "ur" -> Language.Urdu
         "hr" -> Language.Croatian
