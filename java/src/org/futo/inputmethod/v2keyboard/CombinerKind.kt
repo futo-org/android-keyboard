@@ -6,6 +6,7 @@ import org.futo.inputmethod.event.combiners.NFCNormalizingCombiner
 import org.futo.inputmethod.event.combiners.DeadKeyPreCombiner
 import org.futo.inputmethod.event.combiners.KoashurCombiner
 import org.futo.inputmethod.event.combiners.KoreanCombiner
+import org.futo.inputmethod.event.combiners.avro.AvroCombiner
 import org.futo.inputmethod.event.combiners.vietnamese.VNICombiner
 import org.futo.inputmethod.event.combiners.vietnamese.VietTelexCombiner
 import org.futo.inputmethod.event.combiners.wylie.WylieCombiner
@@ -20,4 +21,5 @@ enum class CombinerKind(val factory: () -> Combiner) {
     VNI( { VNICombiner() }),
     Wylie({ WylieCombiner() }),
     Koashur({ KoashurCombiner() }),
+    Avro({ AvroCombiner() }),
 }
