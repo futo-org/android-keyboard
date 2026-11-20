@@ -12,8 +12,6 @@ object InputConnectionUtil {
      * both.
      */
     fun extractSelection(ic: InputConnection, minValue: Int = 0): Pair<Int, Int> {
-        if(!SupportsNonComposing) return -1 to -1
-
         var selStart = -1
         var selEnd = -1
 
@@ -30,9 +28,10 @@ object InputConnectionUtil {
 
         if(selStart == -1 || selEnd == -1) {
             val extracted = ic.getExtractedText(ExtractedTextRequest().apply { hintMaxChars = 1 }, 0)
-            if(extracted != null) {
+            if(extracted != null && extracted.startOffset >= 0 &&
+                extracted.selectionStart >= 0 && extracted.selectionEnd >= 0) {
                 selStart = extracted.selectionStart + extracted.startOffset
-                selStart = extracted.selectionEnd   + extracted.startOffset
+                selEnd = extracted.selectionEnd + extracted.startOffset
 
                 if(selStart < minValue || selStart < 0) selStart = -1
                 if(selEnd   < minValue || selEnd   < 0) selEnd   = -1
