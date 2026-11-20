@@ -72,6 +72,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import kotlin.Pair;
 
 /**
  * This class manages the input logic.
@@ -128,6 +129,7 @@ public final class InputLogic {
     // TODO: This boolean is persistent state and causes large side effects at unexpected times.
     // Find a way to remove it for readability.
     private boolean mIsAutoCorrectionIndicatorOn;
+    private boolean mIsCursorRecorrection;
     private long mDoubleSpacePeriodCountdownStart;
 
     // The word being corrected while the cursor is in the middle of the word.
@@ -643,6 +645,14 @@ public final class InputLogic {
     public InputTransaction onCodeInput(final SettingsValues settingsValues,
             @Nonnull final Event event, final int keyboardShiftMode,
             final int currentKeyboardScriptId) {
+        if (mIsCursorRecorrection && mWordComposer.isComposingWord()) {
+            // Android may not have delivered the latest tap yet. Do not let the first key replace a word that was reopened at the previous caret.
+            final int cursor = mConnection.getExpectedSelectionStart();
+            final Pair<Integer, Integer> selection = mConnection.getExtractedSelection();
+            if (!isCaretAt(selection, cursor)) {
+                resetAfterRecorrectionMismatch(selection);
+            }
+        }
         mWordBeingCorrectedByCursor = null;
 
         if(settingsValues.needsToLookupSuggestions()) {
@@ -849,7 +859,8 @@ public final class InputLogic {
         final boolean newAutoCorrectionIndicator = suggestedWords.mWillAutoCorrect;
 
         // Put a blue underline to a word in TextView which will be auto-corrected.
-        if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
+        // Repainting the underline would replace text in a reopened region before a key can validate it.
+        if (!mIsCursorRecorrection && mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
                 && mWordComposer.isComposingWord() && mConnection.useAutoCorrectIndicator()) {
             mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
             final CharSequence textWithUnderline =
@@ -2064,12 +2075,6 @@ public final class InputLogic {
             return false;
         }
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
-        final int actualCursorPosition = mConnection.getExtractedSelectionStart();
-        if(actualCursorPosition != -1 && actualCursorPosition != expectedCursorPosition) {
-            Log.e(TAG, "ResetComposingWord: cursors don't match! Expected: " + expectedCursorPosition + ", actual: " + actualCursorPosition);
-            mConnection.tryExtractCursorPosition();
-            return false;
-        }
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
                 InputLogic.COMPOSITION_TEXT_AFTER /* checkTextAfter */)) {
             resetEntireInputState(
@@ -2115,6 +2120,13 @@ public final class InputLogic {
             return false;
         }
 
+        // A selection callback can lag behind the text read above, especially when input resumes. Never make that text replaceable at a different editor position.
+        final Pair<Integer, Integer> selection = mConnection.getExtractedSelection();
+        if ((useAfter || selection.getFirst() >= 0) && !isCaretAt(selection, expectedCursorPosition)) {
+            resetAfterRecorrectionMismatch(selection);
+            return false;
+        }
+
         final String typedWordString = range.mWord.toString();
 
         final int[] codePoints = StringUtils.toCodePointArray(typedWordString);
@@ -2130,8 +2142,22 @@ public final class InputLogic {
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor(), typedWordString);
 
+        mIsCursorRecorrection = useAfter;
         mConnection.send();
         return true;
+    }
+
+    private static boolean isCaretAt(final Pair<Integer, Integer> selection, final int cursor) {
+        return cursor >= 0 && selection.getFirst() == cursor && selection.getSecond() == cursor;
+    }
+
+    private void resetAfterRecorrectionMismatch(final Pair<Integer, Integer> selection) {
+        final int oldStart = mConnection.getExpectedSelectionStart();
+        final int oldEnd = mConnection.getExpectedSelectionEnd();
+        final int start = selection.getFirst() >= 0 ? selection.getFirst() : oldStart;
+        final int end = selection.getFirst() >= 0 ? selection.getSecond() : oldEnd;
+        mConnection.updateICCursor(oldStart, start, oldEnd, end);
+        resetEntireInputState(start, end, true /* clearSuggestionStrip */);
     }
 
     /**
@@ -2490,6 +2516,7 @@ public final class InputLogic {
      * @param alsoResetLastComposedWord whether to also reset the last composed word.
      */
     private void resetComposingState(final boolean alsoResetLastComposedWord) {
+        mIsCursorRecorrection = false;
         mWordComposer.reset(alsoResetLastComposedWord);
         if (alsoResetLastComposedWord) {
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -2890,6 +2917,7 @@ public final class InputLogic {
      */
     private void setComposingTextInternal(final CharSequence newComposingText,
             final int newCursorPosition) {
+        mIsCursorRecorrection = false;
         mConnection.setComposingText(newComposingText, newCursorPosition);
     }
 

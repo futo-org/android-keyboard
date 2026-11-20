@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Application name for the dev version of keyboard. "FUTO" should not be translated. -->
-    <string name="english_ime_name">FUTO Keyboard [Dev Build]</string>
+    <string name="english_ime_name">FUTO Keyboard [Modified Test Build]</string>
 
     <!-- Name of Android spell checker service. "FUTO" should not be translated. -->
     <string name="spell_checker_service_name">FUTO Spell Checker [Dev Build]</string>

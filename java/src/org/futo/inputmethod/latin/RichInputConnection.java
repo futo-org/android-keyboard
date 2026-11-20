@@ -1201,19 +1201,16 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return mExpectedSelStart;
     }
 
-    public int getExtractedSelectionStart() {
-        if(!isConnected()) return -1;
-        return InputConnectionUtil.INSTANCE.extractSelection(mIC, 0).getFirst();
+    public Pair<Integer, Integer> getExtractedSelection() {
+        updateConnection();
+        return isConnected() ? InputConnectionUtil.INSTANCE.extractSelection(mIC, 0)
+                : new Pair<>(INVALID_CURSOR_POSITION, INVALID_CURSOR_POSITION);
     }
 
     public int getExpectedSelectionEnd() {
         return mExpectedSelEnd;
     }
 
-    public int getExtractedSelectionEnd() {
-        if(!isConnected()) return -1;
-        return InputConnectionUtil.INSTANCE.extractSelection(mIC, 0).getSecond();
-    }
     /**
      * @return whether there is a selection currently active.
      */

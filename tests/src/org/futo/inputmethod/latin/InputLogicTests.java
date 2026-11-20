@@ -22,6 +22,9 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.view.inputmethod.BaseInputConnection;
 
+import androidx.test.filters.SdkSuppress;
+
+import org.futo.inputmethod.engine.IMEInterface;
 import org.futo.inputmethod.latin.common.Constants;
 import org.futo.inputmethod.latin.define.DecoderSpecificConstants;
 import org.futo.inputmethod.latin.settings.Settings;
@@ -47,6 +50,41 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_TYPE = "abcd";
         type(WORD_TO_TYPE);
         assertEquals("type word", WORD_TO_TYPE, mEditText.getText().toString());
+    }
+
+    @SdkSuppress(maxSdkVersion = 30)
+    public void testDelayedSelectionDoesNotReplaceAnotherWord() {
+        final IMEInterface ime = reopenAlpha(3);
+
+        // The editor has already applied the tap in "bravo" when it delivers an earlier cursor update from "alpha".
+        mInputConnection.setSelection(8, 8);
+        ime.onUpdateSelection(3, 3, 4, 4, 0, 5);
+        assertEquals(-1, BaseInputConnection.getComposingSpanStart(mEditText.getText()));
+        type('x');
+        assertEquals("alpha brxavo", mEditText.getText().toString());
+        assertEquals(9, mEditText.getSelectionStart());
+    }
+
+    @SdkSuppress(maxSdkVersion = 30)
+    public void testFirstKeyBeforeSelectionCallbackDoesNotReplacePreviousWord() {
+        reopenAlpha(5);
+
+        // The tap reaches the editor before its selection callback reaches the keyboard.
+        mInputConnection.setSelection(8, 8);
+        type('x');
+        assertEquals("alpha brxavo", mEditText.getText().toString());
+        assertEquals(9, mEditText.getSelectionStart());
+    }
+
+    private IMEInterface reopenAlpha(final int caret) {
+        mEditText.setText("alpha bravo");
+        final IMEInterface ime = getService().getImeManager().getActiveIME(
+                Settings.getInstance().getCurrent());
+        mInputConnection.setSelection(caret, caret);
+        ime.onUpdateSelection(0, 0, caret, caret, -1, -1);
+        assertEquals(0, BaseInputConnection.getComposingSpanStart(mEditText.getText()));
+        assertEquals(5, BaseInputConnection.getComposingSpanEnd(mEditText.getText()));
+        return ime;
     }
 
     public void testPickSuggestionThenBackspace() {
