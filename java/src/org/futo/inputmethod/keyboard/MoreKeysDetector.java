@@ -37,6 +37,14 @@ public final class MoreKeysDetector extends KeyDetector {
         mExtraAllowance = extraAllowance;
     }
 
+    // How far below the normal touch point the finger started (it pressed low on a tall key).
+    // Touches in that band below the panel count as if they were on the bottom row, so the
+    // key under the finger is still selected and sliding sideways still works.
+    private int mVerticalShift = 0;
+    public void setVerticalShift(final int verticalShift) {
+        mVerticalShift = Math.max(0, verticalShift);
+    }
+
     @Override
     public Key detectHitKey(final int x, final int y) {
         final Keyboard keyboard = getKeyboard();
@@ -44,7 +52,11 @@ public final class MoreKeysDetector extends KeyDetector {
             return null;
         }
         final int touchX = getTouchX(x);
-        final int touchY = getTouchY(y);
+        int touchY = getTouchY(y);
+        final int bottom = keyboard.mOccupiedHeight;
+        if (mVerticalShift > 0 && touchY >= bottom) {
+            touchY = Math.max(bottom - 1, touchY - mVerticalShift);
+        }
 
         Key nearestKey = null;
         float nearestDist = ((y < 0) ? mSlideAllowanceTop : mSlideAllowance) + mExtraAllowance;

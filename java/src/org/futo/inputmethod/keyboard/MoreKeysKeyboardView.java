@@ -157,6 +157,9 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             mOriginY = (int)container.getY() - CoordinateUtils.y(mCoordinates);
 
             mKeyDetector.setExtraAllowance(0);
+            // Same as below: a touch low on a tall key must still reach the bottom row
+            mKeyDetector.setVerticalShift(
+                    CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight() - mOriginY);
         } else {
             mOriginX = CoordinateUtils.x(touchOrigin) - getDefaultCoordX();
 
@@ -164,11 +167,12 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             // Using container Y instead though
             mOriginY = (int)container.getY() - CoordinateUtils.y(mCoordinates);
 
-            // If we hit the key too low, keyDetector may not even register the moreKey hit. Need to set extra allowance
+            // If we hit the key too low, keyDetector may not even register the moreKey hit.
+            // An extra allowance alone left the finger exactly on the edge of the allowance (any
+            // sideways offset or padding and nothing was selected), so shift the touch up instead.
             int touchOriginY = CoordinateUtils.y(touchOrigin) - container.getMeasuredHeight();
-            int extraAllowance = Math.max(0, touchOriginY - mOriginY - (int)(sideAllowance));
-            if(strongCaptive) extraAllowance = Integer.MAX_VALUE;
-            mKeyDetector.setExtraAllowance(extraAllowance);
+            mKeyDetector.setVerticalShift(touchOriginY - mOriginY);
+            mKeyDetector.setExtraAllowance(strongCaptive ? Integer.MAX_VALUE : 0);
         }
         controller.onShowMoreKeysPanel(this);
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
