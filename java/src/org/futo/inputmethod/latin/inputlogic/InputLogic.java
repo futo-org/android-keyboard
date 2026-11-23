@@ -1167,6 +1167,8 @@ public final class InputLogic {
                 && settingsValues.isWordCodePoint(codePoint)
         // We never go into composing state if suggestions are not requested.
                 && settingsValues.needsToLookupSuggestions()
+                // After an unverified reopen, send literal input until the editor reports its caret.
+                && (!mRecorrectionCheckFailed || mConnection.isCursorPositionKnown())
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
         // NOTE: If the InputConnection is slow, we skip the text-after-cursor check since it
@@ -2068,6 +2070,7 @@ public final class InputLogic {
             final SettingsValues settingsValues,
             final boolean useAfter
     ) {
+        final boolean needsVerifiedCaret = useAfter || mIsCursorRecorrection;
         resetEntireInputState(mConnection.getExpectedSelectionStart(),
                 mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
         //mSpaceState = SpaceState.NONE;
@@ -2134,7 +2137,8 @@ public final class InputLogic {
 
         // Check after reading the word: the user may have moved the caret while the editor was answering the text query.
         final Pair<Integer, Integer> selection = mConnection.getExtractedSelection();
-        if ((useAfter || selection.getFirst() >= 0) && !isCaretAt(selection, expectedCursorPosition)) {
+        if ((needsVerifiedCaret || selection.getFirst() >= 0)
+                && !isCaretAt(selection, expectedCursorPosition)) {
             resetAfterRecorrectionMismatch(selection);
             return false;
         }
@@ -2156,7 +2160,7 @@ public final class InputLogic {
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor(), typedWordString);
 
-        mIsCursorRecorrection = useAfter || selection.getFirst() >= 0;
+        mIsCursorRecorrection = needsVerifiedCaret || selection.getFirst() >= 0;
         mConnection.send();
         return true;
     }

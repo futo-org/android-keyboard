@@ -358,7 +358,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         // TODO: the following is exceedingly error-prone. Right now when the cursor is in the
         // middle of the composing word mComposingText only holds the part of the composing text
         // that is before the cursor, so this actually works, but it's terribly confusing. Fix this.
-        mExpectedSelStart += text.length() - mComposingText.length();
+        if (mExpectedSelStart != INVALID_CURSOR_POSITION) {
+            mExpectedSelStart += text.length() - mComposingText.length();
+        }
         mExpectedSelEnd = mExpectedSelStart;
         mComposingText.setLength(0);
         if (isConnected()) {
@@ -639,21 +641,13 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     public void setComposingRegion(final int start, final int end, final String expectedWord) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
-        final CharSequence textBeforeCursor =
-                getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE + (end - start), 0);
-        mCommittedTextBeforeComposingText.setLength(0);
-        if (!TextUtils.isEmpty(textBeforeCursor)) {
-            // The cursor is not necessarily at the end of the composing text, but we have its
-            // position in mExpectedSelStart and mExpectedSelEnd. In this case we want the start
-            // of the text, so we should use mExpectedSelStart. In other words, the composing
-            // text starts (mExpectedSelStart - start) characters before the end of textBeforeCursor
-            final int indexOfStartOfComposingText =
-                    Math.max(textBeforeCursor.length() - (mExpectedSelStart - start), 0);
-            mComposingText.append(textBeforeCursor.subSequence(indexOfStartOfComposingText,
-                    textBeforeCursor.length()));
-            mCommittedTextBeforeComposingText.append(
-                    textBeforeCursor.subSequence(0, indexOfStartOfComposingText));
-        }
+        // Reopening already read the word and checked the caret. Use that word and the local cache
+        // rather than opening another editor round-trip before applying an absolute region.
+        final int prefixLength = mExpectedSelStart - start;
+        mCommittedTextBeforeComposingText.setLength(Math.max(
+                mCommittedTextBeforeComposingText.length() - prefixLength, 0));
+        mComposingText.setLength(0);
+        mComposingText.append(expectedWord, 0, prefixLength);
         if (isConnected()) {
             if(mIC instanceof InputConnectionInternalComposingWrapper) {
                 ((InputConnectionInternalComposingWrapper)mIC).setComposingRegionWithText(start, end, expectedWord);

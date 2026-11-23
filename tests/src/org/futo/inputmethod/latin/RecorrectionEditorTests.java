@@ -93,6 +93,55 @@ public class RecorrectionEditorTests {
     }
 
     @Test
+    @UiThreadTest
+    @SdkSuppress(maxSdkVersion = 30)
+    public void literalInputAtUnknownCaretDoesNotInventAnAbsolutePosition() {
+        final EditText editor = new EditText(InstrumentationRegistry.getTargetContext());
+        editor.setText("alpha bravo");
+        editor.setSelection(8);
+        final EditorInfo info = new EditorInfo();
+        final RichInputConnection connection = connect(editor.getContext(),
+                editor.onCreateInputConnection(info), info);
+        assertTrue(connection.resetCachesUponCursorMoveAndReturnSuccess(-1, -1, true));
+        connection.commitText("xy", 1);
+        assertEquals("alpha brxyavo", editor.getText().toString());
+        assertEquals(10, editor.getSelectionStart());
+        assertFalse(connection.isCursorPositionKnown());
+    }
+
+    @Test
+    @UiThreadTest
+    @SdkSuppress(maxSdkVersion = 30)
+    public void reopeningKnownWordDoesNotReadEditorAgainAfterCheckingCaret() {
+        final EditText editor = new EditText(InstrumentationRegistry.getTargetContext());
+        final char[] prefix = new char[Constants.EDITOR_CONTENTS_CACHE_SIZE + 16];
+        Arrays.fill(prefix, ' ');
+        final int start = prefix.length;
+        final int caret = start + 3;
+        editor.setText(new String(prefix) + "alpha bravo");
+        editor.setSelection(caret);
+        final EditorInfo info = new EditorInfo();
+        final boolean[] afterCaretCheck = {false};
+        final InputConnection target = new InputConnectionWrapper(
+                editor.onCreateInputConnection(info), false) {
+            @Override
+            public CharSequence getTextBeforeCursor(final int n, final int flags) {
+                assertFalse("do not query text again between checking the caret and marking the word",
+                        afterCaretCheck[0]);
+                return super.getTextBeforeCursor(n, flags);
+            }
+        };
+        final RichInputConnection connection = connect(editor.getContext(), target, info);
+        assertTrue(connection.resetCachesUponCursorMoveAndReturnSuccess(caret, caret, false));
+        assertEquals(new Pair<>(caret, caret), connection.getExtractedSelection());
+        afterCaretCheck[0] = true;
+        connection.setComposingRegion(start, start + 5, "alpha");
+        assertEquals(start, BaseInputConnection.getComposingSpanStart(editor.getText()));
+        assertEquals(start + 5, BaseInputConnection.getComposingSpanEnd(editor.getText()));
+        assertEquals(caret, editor.getSelectionStart());
+    }
+
+    @Test
     public void knownComposingWordDoesNotRequireFullDocument() {
         final InputConnection editor = new InputConnectionWrapper(null, false) {
             @Override
