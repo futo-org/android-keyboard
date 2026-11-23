@@ -51,6 +51,8 @@ public final class TargetPackageInfoGetterTask extends
     protected PackageInfo doInBackground(final String... packageName) {
         final PackageManager pm = mContext.getPackageManager();
         mContext = null; // Bazooka-powered anti-leak device
+        // Android can start an input session before it has a package name for the editor.
+        if (packageName[0] == null) return null;
         try {
             final PackageInfo packageInfo = pm.getPackageInfo(packageName[0], 0 /* flags */);
             sCache.put(packageName[0], packageInfo);
