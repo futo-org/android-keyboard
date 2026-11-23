@@ -524,6 +524,15 @@ fun RowScope.SuggestionItems(words: SuggestedWords, onClick: (i: Int) -> Unit, o
             }
         }
 
+        words.mInputStyle == SuggestedWords.INPUT_STYLE_RECORRECTION && layout.verbatimWord != null -> {
+            val alternatives = layout.sortedMatches.filter { it.mWord != layout.verbatimWord.mWord }
+            suggestionItem(layout.verbatimWord)
+            SuggestionSeparator()
+            suggestionItem(alternatives.getOrNull(0))
+            SuggestionSeparator()
+            suggestionItem(alternatives.getOrNull(1))
+        }
+
         else -> {
             var supplementalSuggestionIndex = 1
             if(layout.emojiMatches.isEmpty()) {

@@ -321,8 +321,16 @@ class InputConnectionInternalComposingWrapper(
         composingText = ""
         composingStart = -1
         composingEnd = -1
-        //return super.finishComposingText()
         return true
+    }
+
+    fun abandonComposingText() {
+        finishComposingText()
+        // In native-region mode, flush a pending region before finishing it in the editor.
+        if (useSetComposingRegion) {
+            send()
+            super.finishComposingText()
+        }
     }
 
     fun setComposingRegionWithText(start: Int, end: Int, text: String?): Boolean {
@@ -330,32 +338,32 @@ class InputConnectionInternalComposingWrapper(
         composingEnd = end
         composingText = text ?: ""
 
-        if(text == null || BuildConfig.DEBUG) {
+        // The caller already read this word. A debug-only comparison here would ask some editors to copy the whole document again.
+        if(text == null) {
             val extracted = super.getExtractedText(ExtractedTextRequest(), 0)
-            if(extracted == null || extracted.startOffset > start || extracted.text.length < end) {
+            if(extracted == null || extracted.startOffset < 0 || extracted.startOffset > start ||
+                extracted.text.length < end - extracted.startOffset) {
                 // Maybe our best bet here is to set cursor position to end, then get text before cursor (end-start)
                 //  and then we could restore the position back, but that would be quite a mess...
                 if(BuildConfig.DEBUG) Log.e(TAG, "setComposingRegion was out of bounds for extracted text")
 
-                if(text == null) {
-                    composingStart = -1
-                    composingEnd = -1
-                    composingText = ""
-                    return false
-                }
+                composingStart = -1
+                composingEnd = -1
+                composingText = ""
+                return false
             } else {
                 composingText = extracted.text.substring(
                     start - extracted.startOffset, end - extracted.startOffset
                 )
-
-                if(text != null && BuildConfig.DEBUG && composingText != text)
-                    Log.e(TAG, "Expected composingText [$text], but actually got [$composingText]")
             }
         }
 
         if(BuildConfig.DEBUG) Log.d(TAG, "setComposingRegion acquired text=[$composingText]")
 
-        if(useSetComposingRegion) return super.setComposingRegion(start, end)
+        if (useSetComposingRegion && !super.setComposingRegion(start, end)) {
+            finishComposingText()
+            return false
+        }
         return true
     }
 
