@@ -360,7 +360,10 @@ class InputConnectionInternalComposingWrapper(
 
         if(BuildConfig.DEBUG) Log.d(TAG, "setComposingRegion acquired text=[$composingText]")
 
-        if(useSetComposingRegion) return super.setComposingRegion(start, end)
+        if (useSetComposingRegion && !super.setComposingRegion(start, end)) {
+            finishComposingText()
+            return false
+        }
         return true
     }
 

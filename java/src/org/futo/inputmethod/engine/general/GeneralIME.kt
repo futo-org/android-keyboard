@@ -463,7 +463,25 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     var updateSuggestionJob: Job? = null
     var lmUpdateJob: Job? = null
-    private suspend fun updateSuggestionsDictionaryInternal(inputStyle: Int, sequenceNumber: Int) {
+    private suspend fun updateSuggestionsDictionaryInternal(requestedStyle: Int, sequenceNumber: Int) {
+        val cursorWordGeneration = inputLogic.cursorWordEditGeneration
+        val inputStyle = if (requestedStyle == SuggestedWords.INPUT_STYLE_TYPING && inputLogic.isEditingCursorWord) {
+            SuggestedWords.INPUT_STYLE_RECORRECTION
+        } else {
+            requestedStyle
+        }
+        fun publish(words: SuggestedWords) {
+            if (inputStyle == SuggestedWords.INPUT_STYLE_RECORRECTION) {
+                // Check and publish on the same thread that owns edits, including selection callbacks.
+                helper.lifecycleScope.launch(Dispatchers.Main.immediate) {
+                    if (cursorWordGeneration == inputLogic.cursorWordEditGeneration) {
+                        onGetSuggestedWords(words, inputStyle, sequenceNumber)
+                    }
+                }
+            } else if (cursorWordGeneration == inputLogic.cursorWordEditGeneration) {
+                onGetSuggestedWords(words, inputStyle, sequenceNumber)
+            }
+        }
         // This method returns null for us if LM is disabled
         val predictionInputValues = languageModelFacilitator.makePredictionInputValues(inputStyle)
 
@@ -500,6 +518,7 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
             ) { suggestedWords -> dictResult = suggestedWords }
         }
 
+        if (cursorWordGeneration != inputLogic.cursorWordEditGeneration) return
         when {
             !lmResult.isNullOrEmpty() && dictResult != null && predictionInputValues != null -> {
                 val processed = languageModelFacilitator.processAndMergeSuggestions(
@@ -508,18 +527,18 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
                     lmResult
                 )
                 if(processed != null) {
-                    onGetSuggestedWords(processed, inputStyle, sequenceNumber)
+                    publish(processed)
                 } else {
                     throwIfDebug(IllegalStateException(
                         "The processAndMergeSuggestions method should not typically return null"
                     ))
 
-                    onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
+                    publish(dictResult)
                 }
             }
 
             dictResult != null -> {
-                onGetSuggestedWords(dictResult, inputStyle, sequenceNumber)
+                publish(dictResult)
             }
 
             // Note: we don't support LM results but not dict
@@ -755,6 +774,11 @@ class GeneralIME(val helper: IMEHelper) : IMEInterface, WordLearner, SuggestionS
 
     override fun requestSuggestionRefresh() {
         inputLogic.mSuggestedWords?.let {
+            if (it.mInputStyle == SuggestedWords.INPUT_STYLE_RECORRECTION) {
+                // Never publish an older cursor-edit result under the current caret generation.
+                if (inputLogic.isEditingCursorWord) updateSuggestions(SuggestedWords.INPUT_STYLE_TYPING)
+                return
+            }
             onGetSuggestedWordsInternal(
                 it,
                 it.mInputStyle,

@@ -23,12 +23,14 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.util.Log;
+import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.SurroundingText;
 import android.view.inputmethod.InputMethodManager;
 
 import org.futo.inputmethod.compat.InputConnectionCompatUtils;
@@ -151,6 +153,22 @@ public final class RichInputConnection implements PrivateCommandPerformer {
 
     public boolean isConnected() {
         return mIC != null;
+    }
+
+    public boolean isCurrentConnection() {
+        final InputConnection current = mConnectionProvider.getCurrentInputConnection();
+        return current != null && (current == mIC || (mIC instanceof InputConnectionInternalComposingWrapper
+                && ((InputConnectionInternalComposingWrapper) mIC).getMTarget() == current));
+    }
+
+    public NgramContext getContextBeforeCursorWord(final SpacingAndPunctuations spacing,
+            final int utf16PrefixLength, final String word) {
+        final String cached = mCommittedTextBeforeComposingText.toString() + mComposingText;
+        final String before = cached.substring(0, Math.max(0, cached.length() - utf16PrefixLength));
+        final NgramContext context = NgramContextUtils.getNgramContextFromNthPreviousWord(before, spacing, 1);
+        // The transformer expects the entire edited token at the end of fullContext, not just its left half.
+        context.fullContext = before + word;
+        return context;
     }
 
     private void updateConnection() {
@@ -343,6 +361,57 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (isConnected()) {
             mIC.finishComposingText();
         }
+    }
+
+    /** Finish a visual word marker before a literal edit without reloading or rewriting text. */
+    public void finishComposingTextForCursorEdit() {
+        if (mIC instanceof InputConnectionInternalComposingWrapper) {
+            mCommittedTextBeforeComposingText.append(mComposingText);
+            mComposingText.setLength(0);
+            ((InputConnectionInternalComposingWrapper) mIC).abandonComposingText();
+        } else {
+            finishComposingText();
+        }
+    }
+
+    @Nullable
+    public CharSequence readTextImmediatelyBeforeCursor(final int length) {
+        return getTextBeforeCursorAndDetectLaggyConnection(OPERATION_GET_TEXT_BEFORE_CURSOR,
+                SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS, length, 0);
+    }
+
+    /** On legacy editors, a null result cannot distinguish an empty selection from an unavailable one. */
+    @Nullable
+    public CharSequence readLiveSelectedText() {
+        if (!isConnected()) return null;
+        final long start = SystemClock.uptimeMillis();
+        final CharSequence selected = mIC.getSelectedText(0);
+        detectLaggyConnection(OPERATION_GET_TEXT_BEFORE_CURSOR, SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS, start);
+        return selected;
+    }
+
+    @Nullable
+    public SurroundingText readSurroundingTextForCursorEdit(final int beforeLength) {
+        if (!isCurrentConnection() || Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return null;
+        final long start = SystemClock.uptimeMillis();
+        final SurroundingText surrounding = mIC.getSurroundingText(beforeLength, 0, 0);
+        detectLaggyConnection(OPERATION_GET_TEXT_BEFORE_CURSOR, SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS, start);
+        return surrounding;
+    }
+
+    /** Let the editor distinguish deleting its selection from deleting a character at its caret. */
+    public void sendBackspaceToEditor() {
+        final long time = SystemClock.uptimeMillis();
+        final int flags = KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE;
+        sendKeyEvent(new KeyEvent(time, time, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL, 0,
+                0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
+        sendKeyEvent(new KeyEvent(time, time, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL, 0,
+                0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
+    }
+
+    /** A passive marker must not change what the IME thinks is in its text cache. */
+    public void markCursorWordForDisplay(final int start, final int end) {
+        if (isConnected() && useAutoCorrectIndicator()) mIC.setComposingRegion(start, end);
     }
 
     /**
@@ -638,9 +707,17 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         return result;
     }
 
-    public void setComposingRegion(final int start, final int end, final String expectedWord) {
+    public boolean setComposingRegion(final int start, final int end, final String expectedWord) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        if (!isConnected()) return false;
+        final boolean accepted;
+        if (mIC instanceof InputConnectionInternalComposingWrapper) {
+            accepted = ((InputConnectionInternalComposingWrapper) mIC).setComposingRegionWithText(start, end, expectedWord);
+        } else {
+            accepted = mIC.setComposingRegion(start, end);
+        }
+        if (!accepted) return false;
         // Reopening already read the word and checked the caret. Use that word and the local cache
         // rather than opening another editor round-trip before applying an absolute region.
         final int prefixLength = mExpectedSelStart - start;
@@ -648,13 +725,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                 mCommittedTextBeforeComposingText.length() - prefixLength, 0));
         mComposingText.setLength(0);
         mComposingText.append(expectedWord, 0, prefixLength);
-        if (isConnected()) {
-            if(mIC instanceof InputConnectionInternalComposingWrapper) {
-                ((InputConnectionInternalComposingWrapper)mIC).setComposingRegionWithText(start, end, expectedWord);
-            } else {
-                mIC.setComposingRegion(start, end);
-            }
-        }
+        return true;
     }
 
     public void setComposingText(final CharSequence text, final int newCursorPosition) {

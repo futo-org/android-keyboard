@@ -30,6 +30,28 @@ import kotlin.Pair;
 public class RecorrectionEditorTests {
     @Test
     @UiThreadTest
+    public void refusedNativeRegionDoesNotLeaveAlternativeCompositionArmed() {
+        final EditText editor = new EditText(InstrumentationRegistry.getTargetContext());
+        editor.setText("fork");
+        editor.setSelection(3);
+        final InputConnection target = new InputConnectionWrapper(
+                editor.onCreateInputConnection(new EditorInfo()), false) {
+            @Override
+            public boolean setComposingRegion(final int start, final int end) {
+                return false;
+            }
+        };
+        final InputConnectionInternalComposingWrapper wrapper =
+                new InputConnectionInternalComposingWrapper(true, false, target);
+        wrapper.cursorUpdated(-1, -1, 3, 3);
+        assertFalse(wrapper.setComposingRegionWithText(0, 4, "fork"));
+        wrapper.commitText(" ", 1);
+        assertEquals("for k", editor.getText().toString());
+        assertEquals(4, editor.getSelectionStart());
+    }
+
+    @Test
+    @UiThreadTest
     @SdkSuppress(maxSdkVersion = 30)
     public void slowSelectionReadIsNotRepeatedWithinSameInput() {
         final EditText editor = new EditText(InstrumentationRegistry.getTargetContext());

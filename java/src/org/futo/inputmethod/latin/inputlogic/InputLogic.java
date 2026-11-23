@@ -131,6 +131,11 @@ public final class InputLogic {
     private boolean mIsAutoCorrectionIndicatorOn;
     private boolean mIsCursorRecorrection;
     private boolean mRecorrectionCheckFailed;
+    // Kept for suggestions even after the editor's composing span has been finished.
+    private volatile CursorWordEdit mCursorWordEdit;
+    private boolean mCursorWordMarkerSent;
+    private volatile long mCursorWordEditGeneration;
+    private volatile long mCursorWordSuggestionGeneration = -1L;
     private long mDoubleSpacePeriodCountdownStart;
 
     // The word being corrected while the cursor is in the middle of the word.
@@ -235,6 +240,7 @@ public final class InputLogic {
      * @param settingsValues the current settings values
      */
     public void startInput(final String combiningSpec, final SettingsValues settingsValues) {
+        discardCursorWordEdit();
         mEnteredText = null;
         mWordBeingCorrectedByCursor = null;
         numCursorUpdatesSinceInputStarted = 0;
@@ -332,6 +338,7 @@ public final class InputLogic {
     }
 
     private void resetInput() {
+        discardCursorWordEdit();
         if (mWordComposer.isComposingWord()) {
             mConnection.finishComposingText();
             StatsUtils.onWordCommitUserTyped(
@@ -369,6 +376,7 @@ public final class InputLogic {
      * @return the complete transaction object
      */
     public InputTransaction onTextInput(final SettingsValues settingsValues, final Event event, final int keyboardShiftMode) {
+        discardCursorWordEdit();
         verifyReopenedWordCaret();
         final String rawText = event.getTextToCommit().toString();
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
@@ -441,6 +449,14 @@ public final class InputLogic {
             final int currentKeyboardScriptId) {
         final SuggestedWords suggestedWords = mSuggestedWords;
         final String suggestion = suggestionInfo.mWord;
+        final CursorWordEdit cursorEdit = mCursorWordEdit;
+        // Strip clicks carry a candidate object from a particular result, not just a string.
+        if (!suggestedWords.mSuggestedWordInfoList.contains(suggestionInfo)
+                || (suggestedWords.mInputStyle == SuggestedWords.INPUT_STYLE_RECORRECTION
+                        && (cursorEdit == null || mCursorWordSuggestionGeneration != mCursorWordEditGeneration))) {
+            return new InputTransaction(settingsValues, Event.createSuggestionPickedEvent(suggestionInfo),
+                    SystemClock.uptimeMillis(), mSpaceState, keyboardShiftState);
+        }
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && suggestedWords.isPunctuationSuggestions()) {
             // We still want to log a suggestion click.
@@ -456,7 +472,8 @@ public final class InputLogic {
         final Event event = Event.createSuggestionPickedEvent(suggestionInfo);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
                 event, SystemClock.uptimeMillis(), mSpaceState, keyboardShiftState);
-        if (!verifyReopenedWordCaret()) {
+        if (cursorEdit != null ? !attachCursorWordForSuggestion(settingsValues, currentKeyboardScriptId,
+                suggestedWords, suggestionInfo, cursorEdit) : !verifyReopenedWordCaret()) {
             // This suggestion belonged to the previous caret, not to the user's current selection.
             inputTransaction.setRequiresUpdateSuggestions();
             return inputTransaction;
@@ -564,8 +581,23 @@ public final class InputLogic {
         mConnection.updateICCursor(oldSelStart, newSelStart, oldSelEnd, newSelEnd);
 
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd, composingStart, composingEnd)) {
+            final CursorWordEdit wordEdit = mCursorWordEdit;
+            if (wordEdit != null && !mCursorWordMarkerSent && newSelStart == newSelEnd
+                    && newSelStart == mConnection.getExpectedSelectionStart()
+                    && mConnection.isCurrentConnection() && mConnection.useAutoCorrectIndicator()) {
+                final int wordStart = newSelStart - wordEdit.getCaretOffset();
+                final int wordEnd = wordStart + wordEdit.getWord().length();
+                if (wordStart >= 0) {
+                    mCursorWordMarkerSent = true;
+                    if (composingStart != wordStart || composingEnd != wordEnd) {
+                        // Native composition can mark the word without replacing it or shifting the caret.
+                        mConnection.markCursorWordForDisplay(wordStart, wordEnd);
+                    }
+                }
+            }
             return false;
         }
+        discardCursorWordEdit();
         mRecorrectionCheckFailed = false;
 
         // TODO: the following is probably better done in resetEntireInputState().
@@ -654,6 +686,22 @@ public final class InputLogic {
     public InputTransaction onCodeInput(final SettingsValues settingsValues,
             @Nonnull final Event event, final int keyboardShiftMode,
             final int currentKeyboardScriptId) {
+        // Layout-only events must not leave the user in a new one-letter composition on the next key.
+        if (mCursorWordEdit != null && !mConnection.hasSelection() && event.mNextEvent == null
+                && event.isFunctionalKeyEvent() && (event.mKeyCode == Constants.CODE_SHIFT
+                        || event.mKeyCode == Constants.CODE_CAPSLOCK
+                        || event.mKeyCode == Constants.CODE_SYMBOL_SHIFT
+                        || event.mKeyCode == Constants.CODE_SWITCH_ALPHA_SYMBOL)) {
+            final InputTransaction layoutChange = new InputTransaction(settingsValues, event,
+                    SystemClock.uptimeMillis(), mSpaceState, keyboardShiftMode);
+            if (event.mKeyCode == Constants.CODE_SHIFT) {
+                layoutChange.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
+            }
+            return layoutChange;
+        }
+        final InputTransaction cursorEdit = tryLiteralCursorWordEdit(settingsValues, event, keyboardShiftMode);
+        if (cursorEdit != null) return cursorEdit;
+        discardCursorWordEdit();
         final boolean deleteInsideReopenedWord = event.mKeyCode == Constants.CODE_DELETE
                 && mIsCursorRecorrection && mWordComposer.isCursorFrontOrMiddleOfComposingWord();
         verifyReopenedWordCaret();
@@ -745,6 +793,110 @@ public final class InputLogic {
         return inputTransaction;
     }
 
+    @Nullable
+    private InputTransaction tryLiteralCursorWordEdit(final SettingsValues settings, final Event event,
+            final int shiftMode) {
+        final CursorWordEdit previous = mCursorWordEdit;
+        if (previous == null && !(mIsCursorRecorrection && mWordComposer.isComposingWord()
+                && mWordComposer.isCursorFrontOrMiddleOfComposingWord())) return null;
+        if (!settings.needsToLookupSuggestions() || !mWordComposer.supportsLiteralCursorEdits()
+                || mConnection.hasSlowInputConnection() || mConnection.hasSelection()) return null;
+        if (!mConnection.isCurrentConnection()) {
+            resetAfterRecorrectionMismatch(new Pair<>(-1, -1));
+            return null;
+        }
+
+        final boolean delete = event.mKeyCode == Constants.CODE_DELETE;
+        if (event.mNextEvent != null || event.isDead() || event.isConsumed()
+                || (delete ? event.isKeyRepeat() && settings.mBackspaceModeHold == Settings.BACKSPACE_MODE_WORDS
+                        : event.isFunctionalKeyEvent() || !settings.isWordCodePoint(event.mCodePoint)
+                                || settings.isWordSeparator(event.mCodePoint))) return null;
+        final String word = previous == null ? mWordComposer.getTypedWord() : previous.getWord();
+        final int offset = previous == null
+                ? word.offsetByCodePoints(0, mWordComposer.sizeBeforeCursor()) : previous.getCaretOffset();
+        if (delete && offset == 0) return null; // This edit can join the preceding word; use normal deletion.
+        final CharSequence insertion = delete ? null : event.getTextToCommit();
+        if (!delete && TextUtils.isEmpty(insertion)) return null;
+        if (word.length() + (delete ? 0 : insertion.length()) >= BinaryDictionary.DICTIONARY_MAX_WORD_LENGTH) {
+            return null;
+        }
+
+        mCursorWordEditGeneration++;
+        final CursorWordEdit next = new CursorWordEdit(word, offset).apply(mConnection, mWordComposer,
+                insertion, mImeHelper::getCodepointCoordinates);
+        if (next == null) {
+            // The editor does not have the expected text at its caret. Do not delete using cached offsets.
+            resetAfterRecorrectionMismatch(new Pair<>(-1, -1));
+            return null;
+        }
+
+        mCursorWordMarkerSent = false;
+        mIsCursorRecorrection = true;
+        mCursorWordEdit = next;
+        mSpaceState = SpaceState.NONE;
+        mEnteredText = null;
+        // The editor could have applied an unreported tap before the literal edit. Do not learn
+        // the speculative token from the local edit snapshot.
+        mWordBeingCorrectedByCursor = null;
+        mLastComposedWord.deactivate();
+        synchronized (mLastEvents) {
+            // This key did not use the ordinary sequential typing path.
+            mLastEvents.clear();
+        }
+        cancelDoubleSpacePeriodCountdown();
+        mLastKeyTime = SystemClock.uptimeMillis();
+        if (delete) StatsUtils.onBackspacePressed(offset - next.getCaretOffset());
+        final InputTransaction transaction = new InputTransaction(settings, event, mLastKeyTime,
+                mSpaceState, shiftMode);
+        transaction.setDidAffectContents();
+        transaction.setRequiresUpdateSuggestions();
+        transaction.requireShiftUpdate(delete && event.isKeyRepeat()
+                ? InputTransaction.SHIFT_UPDATE_LATER : InputTransaction.SHIFT_UPDATE_NOW);
+        return transaction;
+    }
+
+    private void discardCursorWordEdit() {
+        if (mCursorWordEdit == null) return;
+        mConnection.finishComposingTextForCursorEdit();
+        resetComposingState(true /* alsoResetLastComposedWord */);
+    }
+
+    /** Changes even when a cursor-edit session begins and ends during one suggestion request. */
+    public long getCursorWordEditGeneration() {
+        return mCursorWordEditGeneration;
+    }
+
+    public boolean isEditingCursorWord() {
+        return mCursorWordEdit != null;
+    }
+
+    private boolean attachCursorWordForSuggestion(final SettingsValues settings, final int scriptId,
+            final SuggestedWords suggestions, final SuggestedWordInfo picked, final CursorWordEdit edit) {
+        final int cursor = mConnection.getExpectedSelectionStart();
+        final TextRange live = mConnection.isCurrentConnection() && !mConnection.hasSlowInputConnection()
+                && suggestions.mTypedWordInfo != null
+                && edit.getWord().equals(suggestions.mTypedWordInfo.mWord)
+                && suggestions.mSuggestedWordInfoList.contains(picked)
+                ? mConnection.getWordRangeAtCursor(settings, scriptId, true) : null;
+        if (live == null || live.mHasUrlSpans || !TextUtils.equals(live.mWord, edit.getWord())
+                || live.getNumberOfCharsInWordBeforeCursor() != edit.getCaretOffset()
+                || !isCaretAt(mConnection.getExtractedSelection(), cursor)
+                || cursor < edit.getCaretOffset()) {
+            discardCursorWordEdit();
+            return false;
+        }
+        final int start = cursor - edit.getCaretOffset();
+        mConnection.finishComposingTextForCursorEdit();
+        if (!mConnection.setComposingRegion(start, start + edit.getWord().length(), edit.getWord())) {
+            discardCursorWordEdit();
+            return false;
+        }
+        mConnection.send();
+        mCursorWordEditGeneration++;
+        mCursorWordEdit = null;
+        return true;
+    }
+
     /**
      * Updates keys whose hitboxes are boosted. This works by looking at the word being composed,
      * and checking for next letters that would still produce a valid word within the dictionary
@@ -771,6 +923,7 @@ public final class InputLogic {
 
     public void onStartBatchInput(final SettingsValues settingsValues,
             final KeyboardSwitcher keyboardSwitcher) {
+        discardCursorWordEdit();
         verifyReopenedWordCaret();
         mWordBeingCorrectedByCursor = null;
         mInputLogicHandler.onStartBatchInput();
@@ -850,7 +1003,9 @@ public final class InputLogic {
     // TODO: on the long term, this method should become private, but it will be difficult.
     // Especially, how do we deal with InputMethodService.onDisplayCompletions?
     public void setSuggestedWords(final SuggestedWords suggestedWords) {
-        if(mWordComposer.isComposingWord() && !suggestedWords.isEmpty()) {
+        if (suggestedWords.mInputStyle == SuggestedWords.INPUT_STYLE_RECORRECTION) {
+            mCursorWordSuggestionGeneration = mCursorWordEditGeneration;
+        } else if (mWordComposer.isComposingWord() && !suggestedWords.isEmpty()) {
             rememberSuggestedWords(mConnection.getExpectedSelectionStart() - mWordComposer.sizeBeforeCursor(),
                     mWordComposer.getTypedWord(), suggestedWords);
         }
@@ -2157,8 +2312,11 @@ public final class InputLogic {
         //if (forStartInput) {
         //    mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
         //}
-        mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
-                expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor(), typedWordString);
+        if (!mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
+                expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor(), typedWordString)) {
+            resetComposingState(true /* alsoResetLastComposedWord */);
+            return false;
+        }
 
         mIsCursorRecorrection = needsVerifiedCaret || selection.getFirst() >= 0;
         mConnection.send();
@@ -2435,6 +2593,11 @@ public final class InputLogic {
      */
     public NgramContext getNgramContextFromNthPreviousWordForSuggestion(
             final SpacingAndPunctuations spacingAndPunctuations, final int nthPreviousWord) {
+        final CursorWordEdit editorWord = mCursorWordEdit;
+        if (editorWord != null) {
+            return mConnection.getContextBeforeCursorWord(spacingAndPunctuations,
+                    editorWord.getCaretOffset(), editorWord.getWord());
+        }
         if (spacingAndPunctuations.currentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
             // word information from textview.
@@ -2550,6 +2713,9 @@ public final class InputLogic {
      * @param alsoResetLastComposedWord whether to also reset the last composed word.
      */
     private void resetComposingState(final boolean alsoResetLastComposedWord) {
+        if (mCursorWordEdit != null) mCursorWordEditGeneration++;
+        mCursorWordEdit = null;
+        mCursorWordMarkerSent = false;
         mIsCursorRecorrection = false;
         mWordComposer.reset(alsoResetLastComposedWord);
         if (alsoResetLastComposedWord) {
@@ -2602,6 +2768,7 @@ public final class InputLogic {
      * @param keyCode the key code to send inside the key event.
      */
     public boolean sendDownUpKeyEvent(final int keyCode, final int metaState) {
+        discardCursorWordEdit();
         final long eventTime = SystemClock.uptimeMillis();
         boolean a = mConnection.sendKeyEvent(new KeyEvent(eventTime, eventTime,
                 KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
@@ -2747,6 +2914,7 @@ public final class InputLogic {
      * @param separatorString the separator that's causing the commit, or NOT_A_SEPARATOR if none.
      */
     public void commitTyped(final SettingsValues settingsValues, final String separatorString) {
+        discardCursorWordEdit();
         if (!mWordComposer.isComposingWord()) return;
         final String typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {

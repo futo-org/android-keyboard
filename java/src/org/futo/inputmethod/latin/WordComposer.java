@@ -63,6 +63,7 @@ public final class WordComposer {
     private SuggestedWordInfo mAutoCorrection;
     private boolean mIsResumed;
     private boolean mAllowCorrectionAfterResumedEdit;
+    private boolean mSupportsLiteralCursorEdits = true;
     private boolean mIsBatchMode;
     private boolean mIsAttachedToNonWord;
     // A memory of the last rejected batch mode suggestion, if any. This goes like this: the user
@@ -123,6 +124,13 @@ public final class WordComposer {
     public void setCombiners(@NotNull List<@NotNull CombinerKind> combiners) {
         mCombinerChain = new CombinerChain(combiners,
                 mCombinerChain.getComposingWordWithCombiningFeedback().toString());
+        mSupportsLiteralCursorEdits = combiners.stream().allMatch(kind ->
+                kind == CombinerKind.DeadKey || kind == CombinerKind.DeadKeyPreCombiner
+                        || kind == CombinerKind.NFCNormalize);
+    }
+
+    public boolean supportsLiteralCursorEdits() {
+        return mSupportsLiteralCursorEdits;
     }
 
     /**
