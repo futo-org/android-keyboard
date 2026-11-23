@@ -130,6 +130,7 @@ public final class InputLogic {
     // Find a way to remove it for readability.
     private boolean mIsAutoCorrectionIndicatorOn;
     private boolean mIsCursorRecorrection;
+    private boolean mRecorrectionCheckFailed;
     private long mDoubleSpacePeriodCountdownStart;
 
     // The word being corrected while the cursor is in the middle of the word.
@@ -239,6 +240,7 @@ public final class InputLogic {
         numCursorUpdatesSinceInputStarted = 0;
         mConnection.finishComposingText(); // On screen rotation in case we were composing, finish composition before resetting
         mConnection.onStartInput();
+        mRecorrectionCheckFailed = false;
         if (!mWordComposer.getTypedWord().isEmpty()) {
             // For messaging apps that offer send button, the IME does not get the opportunity
             // to capture the last word. This block should capture those uncommitted words.
@@ -367,6 +369,7 @@ public final class InputLogic {
      * @return the complete transaction object
      */
     public InputTransaction onTextInput(final SettingsValues settingsValues, final Event event, final int keyboardShiftMode) {
+        verifyReopenedWordCaret();
         final String rawText = event.getTextToCommit().toString();
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
                 SystemClock.uptimeMillis(), mSpaceState,
@@ -453,6 +456,11 @@ public final class InputLogic {
         final Event event = Event.createSuggestionPickedEvent(suggestionInfo);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
                 event, SystemClock.uptimeMillis(), mSpaceState, keyboardShiftState);
+        if (!verifyReopenedWordCaret()) {
+            // This suggestion belonged to the previous caret, not to the user's current selection.
+            inputTransaction.setRequiresUpdateSuggestions();
+            return inputTransaction;
+        }
         // Manual pick affects the contents of the editor, so we take note of this. It's important
         // for the sequence of language switching.
         inputTransaction.setDidAffectContents();
@@ -558,6 +566,7 @@ public final class InputLogic {
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd, composingStart, composingEnd)) {
             return false;
         }
+        mRecorrectionCheckFailed = false;
 
         // TODO: the following is probably better done in resetEntireInputState().
         // it should only happen when the cursor moved, and the very purpose of the
@@ -645,14 +654,9 @@ public final class InputLogic {
     public InputTransaction onCodeInput(final SettingsValues settingsValues,
             @Nonnull final Event event, final int keyboardShiftMode,
             final int currentKeyboardScriptId) {
-        if (mIsCursorRecorrection && mWordComposer.isComposingWord()) {
-            // Android may not have delivered the latest tap yet. Do not let the first key replace a word that was reopened at the previous caret.
-            final int cursor = mConnection.getExpectedSelectionStart();
-            final Pair<Integer, Integer> selection = mConnection.getExtractedSelection();
-            if (!isCaretAt(selection, cursor)) {
-                resetAfterRecorrectionMismatch(selection);
-            }
-        }
+        final boolean deleteInsideReopenedWord = event.mKeyCode == Constants.CODE_DELETE
+                && mIsCursorRecorrection && mWordComposer.isCursorFrontOrMiddleOfComposingWord();
+        verifyReopenedWordCaret();
         mWordBeingCorrectedByCursor = null;
 
         if(settingsValues.needsToLookupSuggestions()) {
@@ -670,7 +674,14 @@ public final class InputLogic {
             // TODO: Double check this isn't causing any new regressions. I believe this is also redundant
             //  with a lot of subsequent similar checks scattered in various handleXyz functions
             unlearnWord(mWordComposer.getTypedWord(), settingsValues, Constants.EVENT_BACKSPACE);
-            resetComposingWord(settingsValues, false);
+            if (deleteInsideReopenedWord) {
+                // Backspace is relative to the caret. End the reopened span rather than reading
+                // and rearming a word prefix just to delete one character inside the word.
+                resetEntireInputState(mConnection.getExpectedSelectionStart(),
+                        mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
+            } else {
+                resetComposingWord(settingsValues, false);
+            }
         }
         final Event processedEvent = mWordComposer.processEvent(event);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
@@ -760,6 +771,7 @@ public final class InputLogic {
 
     public void onStartBatchInput(final SettingsValues settingsValues,
             final KeyboardSwitcher keyboardSwitcher) {
+        verifyReopenedWordCaret();
         mWordBeingCorrectedByCursor = null;
         mInputLogicHandler.onStartBatchInput();
 
@@ -2120,18 +2132,20 @@ public final class InputLogic {
             return false;
         }
 
-        // A selection callback can lag behind the text read above, especially when input resumes. Never make that text replaceable at a different editor position.
+        // Check after reading the word: the user may have moved the caret while the editor was answering the text query.
         final Pair<Integer, Integer> selection = mConnection.getExtractedSelection();
         if ((useAfter || selection.getFirst() >= 0) && !isCaretAt(selection, expectedCursorPosition)) {
             resetAfterRecorrectionMismatch(selection);
             return false;
         }
+        // A slow successful probe still gives us a position, but must not arm a span we cannot revalidate promptly on the next key.
+        if (mConnection.hasSlowInputConnection()) return false;
 
         final String typedWordString = range.mWord.toString();
 
         final int[] codePoints = StringUtils.toCodePointArray(typedWordString);
         if(!mWordComposer.setComposingWord(codePoints,
-                mImeHelper.getCodepointCoordinates(codePoints))) {
+                mImeHelper.getCodepointCoordinates(codePoints), useAfter)) {
             return false;
         }
         mWordComposer.setCursorPositionWithinWord(
@@ -2142,7 +2156,7 @@ public final class InputLogic {
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor(), typedWordString);
 
-        mIsCursorRecorrection = useAfter;
+        mIsCursorRecorrection = useAfter || selection.getFirst() >= 0;
         mConnection.send();
         return true;
     }
@@ -2151,11 +2165,22 @@ public final class InputLogic {
         return cursor >= 0 && selection.getFirst() == cursor && selection.getSecond() == cursor;
     }
 
+    private boolean verifyReopenedWordCaret() {
+        if (!mIsCursorRecorrection || !mWordComposer.isComposingWord()) return true;
+        // A tap can reach the editor before its selection callback reaches the IME. Never replace the reopened word on the strength of the cached position alone.
+        final Pair<Integer, Integer> selection = mConnection.getExtractedSelection();
+        if (isCaretAt(selection, mConnection.getExpectedSelectionStart())) return true;
+        resetAfterRecorrectionMismatch(selection);
+        return false;
+    }
+
     private void resetAfterRecorrectionMismatch(final Pair<Integer, Integer> selection) {
+        mRecorrectionCheckFailed = true;
         final int oldStart = mConnection.getExpectedSelectionStart();
         final int oldEnd = mConnection.getExpectedSelectionEnd();
-        final int start = selection.getFirst() >= 0 ? selection.getFirst() : oldStart;
-        final int end = selection.getFirst() >= 0 ? selection.getSecond() : oldEnd;
+        // Unknown is not the old collapsed caret. Let the editor handle deletion when it may have a new selection.
+        final int start = selection.getFirst();
+        final int end = selection.getSecond();
         mConnection.updateICCursor(oldStart, start, oldEnd, end);
         resetEntireInputState(start, end, true /* clearSuggestionStrip */);
     }
@@ -2197,6 +2222,11 @@ public final class InputLogic {
             return;
         }
 
+        if (mConnection.hasSlowInputConnection()
+                || (inputTransaction != null && mRecorrectionCheckFailed)) {
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            return;
+        }
         resetComposingWord(settingsValues, true);
 
         if(mWordComposer.isComposingWord()) {

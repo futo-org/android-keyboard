@@ -62,6 +62,7 @@ public final class WordComposer {
     private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
     private SuggestedWordInfo mAutoCorrection;
     private boolean mIsResumed;
+    private boolean mAllowCorrectionAfterResumedEdit;
     private boolean mIsBatchMode;
     private boolean mIsAttachedToNonWord;
     // A memory of the last rejected batch mode suggestion, if any. This goes like this: the user
@@ -94,6 +95,7 @@ public final class WordComposer {
         mEvents = new ArrayList<>();
         mAutoCorrection = null;
         mIsResumed = false;
+        mAllowCorrectionAfterResumedEdit = false;
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
@@ -134,6 +136,7 @@ public final class WordComposer {
         mDigitsCount = 0;
         mIsOnlyFirstCharCapitalized = false;
         mIsResumed = false;
+        mAllowCorrectionAfterResumedEdit = false;
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mIsAttachedToNonWord = false;
@@ -196,12 +199,18 @@ public final class WordComposer {
      * @param event the event to apply. Must not be null.
      */
     public void applyProcessedEvent(final Event event) {
+        final String reopenedText = mIsResumed && mAllowCorrectionAfterResumedEdit
+                ? mTypedWordCache.toString() : null;
         mCombinerChain.applyProcessedEvent(event);
         final int primaryCode = event.mCodePoint;
         final int keyX = event.mX;
         final int keyY = event.mY;
         final int newIndex = size();
         refreshTypedWordCache();
+        // Reopening alone must not autocorrect existing text. After an edit it is ordinary composition again.
+        if (reopenedText != null && !reopenedText.contentEquals(mTypedWordCache)) {
+            mIsResumed = false;
+        }
         mCursorPositionWithinWord = mCodePointSize;
         // We may have deleted the last one.
         if (0 == mCodePointSize) {
@@ -317,6 +326,11 @@ public final class WordComposer {
      * @return Returns false if the combiner chain has refused to set composing word
      */
     public boolean setComposingWord(final int[] codePoints, final int[] coordinates) {
+        return setComposingWord(codePoints, coordinates, false);
+    }
+
+    public boolean setComposingWord(final int[] codePoints, final int[] coordinates,
+            final boolean allowCorrectionAfterEdit) {
         reset(true);
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
@@ -333,6 +347,8 @@ public final class WordComposer {
             applyProcessedEvent(processedEvent);
         }
         mIsResumed = true;
+        // The prefix composed after moving inside a word is not an independent word.
+        mAllowCorrectionAfterResumedEdit = allowCorrectionAfterEdit;
         return true;
     }
 
@@ -511,6 +527,7 @@ public final class WordComposer {
         mAutoCorrection = null;
         mCursorPositionWithinWord = 0;
         mIsResumed = false;
+        mAllowCorrectionAfterResumedEdit = false;
         mRejectedBatchModeSuggestion = null;
         return lastComposedWord;
     }
@@ -526,6 +543,7 @@ public final class WordComposer {
         mCursorPositionWithinWord = mCodePointSize;
         mRejectedBatchModeSuggestion = null;
         mIsResumed = true;
+        mAllowCorrectionAfterResumedEdit = false;
     }
 
     public boolean isBatchMode() {

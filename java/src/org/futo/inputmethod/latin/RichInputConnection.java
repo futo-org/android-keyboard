@@ -88,11 +88,13 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     private static final int OPERATION_GET_TEXT_AFTER_CURSOR = 1;
     private static final int OPERATION_GET_WORD_RANGE_AT_CURSOR = 2;
     private static final int OPERATION_RELOAD_TEXT_CACHE = 3;
+    private static final int OPERATION_EXTRACT_SELECTION = 4;
     private static final String[] OPERATION_NAMES = new String[] {
             "GET_TEXT_BEFORE_CURSOR",
             "GET_TEXT_AFTER_CURSOR",
             "GET_WORD_RANGE_AT_CURSOR",
-            "RELOAD_TEXT_CACHE"};
+            "RELOAD_TEXT_CACHE",
+            "EXTRACT_SELECTION"};
 
     /**
      * The amount of time the keyboard will persist in the {@link #hasSlowInputConnection} state
@@ -262,13 +264,21 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mExpectedSelStart = newSelStart;
         mExpectedSelEnd = newSelEnd;
         mComposingText.setLength(0);
+        if (shouldFinishComposition) {
+            updateConnection();
+            if (isConnected()) {
+                // Drop the old span even if the editor cannot supply text for the new caret.
+                if (mIC instanceof InputConnectionInternalComposingWrapper) {
+                    ((InputConnectionInternalComposingWrapper) mIC).abandonComposingText();
+                } else {
+                    mIC.finishComposingText();
+                }
+            }
+        }
         final boolean didReloadTextSuccessfully = reloadTextCache();
         if (!didReloadTextSuccessfully) {
             Log.d(TAG, "Will try to retrieve text later.");
             return false;
-        }
-        if (isConnected() && shouldFinishComposition) {
-            mIC.finishComposingText();
         }
         return true;
     }
@@ -278,7 +288,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         //  e.g. request getTextBeforeCursor(huge number), count, compare to selectionStart
         if(!isConnected()) return false;
 
-        Pair<Integer, Integer> selection = InputConnectionUtil.INSTANCE.extractSelection(mIC, 0);
+        final Pair<Integer, Integer> selection = getExtractedSelection();
 
         if(selection.getFirst() == -1) return false;
 
@@ -1202,9 +1212,19 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     public Pair<Integer, Integer> getExtractedSelection() {
+        if (hasSlowInputConnection()) {
+            return new Pair<>(INVALID_CURSOR_POSITION, INVALID_CURSOR_POSITION);
+        }
         updateConnection();
-        return isConnected() ? InputConnectionUtil.INSTANCE.extractSelection(mIC, 0)
-                : new Pair<>(INVALID_CURSOR_POSITION, INVALID_CURSOR_POSITION);
+        if (!isConnected()) {
+            return new Pair<>(INVALID_CURSOR_POSITION, INVALID_CURSOR_POSITION);
+        }
+        // A legacy editor may return its entire document. Put these reads under the same backoff as other slow editor calls.
+        final long start = SystemClock.uptimeMillis();
+        final Pair<Integer, Integer> result = InputConnectionUtil.INSTANCE.extractSelection(mIC, 0);
+        detectLaggyConnection(OPERATION_EXTRACT_SELECTION, SLOW_INPUT_CONNECTION_ON_PARTIAL_RELOAD_MS,
+                start);
+        return result;
     }
 
     public int getExpectedSelectionEnd() {
