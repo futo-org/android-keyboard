@@ -64,3 +64,6 @@
     <methods>;
 }
 -keep class org.mozc.android.inputmethod.japanese.protobuf.** { *; }
+
+# Keep swipe
+-keep class org.futo.ml.inference.** { *; }

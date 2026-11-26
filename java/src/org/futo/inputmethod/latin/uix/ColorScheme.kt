@@ -31,7 +31,6 @@ data class ExtraColors(
     val onKeyboardContainerPressed: Color,
 
     val hintColor: Color?,
-    val hintHiVis: Boolean,
 
     val navigationBarColor: Color? = null,
     val navigationBarColorForTransparency: Color? = null,
@@ -148,8 +147,6 @@ data class KeyboardColorScheme(
         get() = extended.onKeyboardContainerPressed
     val hintColor: Color?
         get() = extended.hintColor
-    val hintHiVis: Boolean
-        get() = extended.hintHiVis
 }
 
 fun extendedDarkColorScheme(
@@ -192,7 +189,6 @@ fun extendedDarkColorScheme(
     keyboardContainerPressed: Color = outline.copy(alpha = 0.33f),
     onKeyboardContainerPressed: Color = Color.Transparent,
     hintColor: Color? = null,
-    hintHiVis: Boolean = false,
     keyboardBackgroundShader: String? = null
 ): KeyboardColorScheme =
     KeyboardColorScheme(
@@ -237,7 +233,6 @@ fun extendedDarkColorScheme(
             keyboardContainerPressed   = keyboardContainerPressed,
             onKeyboardContainerPressed = onKeyboardContainerPressed,
             hintColor = hintColor,
-            hintHiVis = hintHiVis,
             navigationBarColorForTransparency = navigationBarColorForTransparency,
             advancedThemeOptions = AdvancedThemeOptions()
         )
@@ -284,7 +279,6 @@ fun extendedLightColorScheme(
     keyboardContainerPressed: Color = outline.copy(alpha = 0.33f),
     onKeyboardContainerPressed: Color = Color.Transparent,
     hintColor: Color? = null,
-    hintHiVis: Boolean = false,
     keyboardBackgroundShader: String? = null
 ): KeyboardColorScheme =
     KeyboardColorScheme(
@@ -329,73 +323,10 @@ fun extendedLightColorScheme(
             keyboardContainerPressed   = keyboardContainerPressed,
             onKeyboardContainerPressed = onKeyboardContainerPressed,
             hintColor = hintColor,
-            hintHiVis = hintHiVis,
             navigationBarColorForTransparency = navigationBarColorForTransparency,
             advancedThemeOptions = AdvancedThemeOptions()
         )
     )
-
-
-// Taken from androidx/compose/material3/DynamicTonalPalette.android.kt
-// Copyright 2021 The Android Open Source Project, subject to Apache-2.0 license
-internal fun Color.setLuminance(
-    @FloatRange(from = 0.0, to = 100.0)
-    newLuminance: Float
-): Color {
-    if ((newLuminance < 0.0001) or (newLuminance > 99.9999)) {
-        // aRGBFromLstar() from monet ColorUtil.java
-        val y = 100 * labInvf((newLuminance + 16) / 116)
-        val component = delinearized(y)
-        return Color(
-            /* red = */component,
-            /* green = */component,
-            /* blue = */component,
-        )
-    }
-
-    val sLAB = this.convert(ColorSpaces.CieLab)
-    return Color(
-        /* luminance = */newLuminance,
-        /* a = */sLAB.component2(),
-        /* b = */sLAB.component3(),
-        colorSpace = ColorSpaces.CieLab
-    ).convert(ColorSpaces.Srgb)
-}
-
-// Taken from androidx/compose/material3/DynamicTonalPalette.android.kt
-// Copyright 2021 The Android Open Source Project, subject to Apache-2.0 license
-/** Helper method from monet ColorUtils.java */
-private fun labInvf(ft: Float): Float {
-    val e = 216f / 24389f
-    val kappa = 24389f / 27f
-    val ft3 = ft * ft * ft
-    return if (ft3 > e) {
-        ft3
-    } else {
-        (116 * ft - 16) / kappa
-    }
-}
-
-// Taken from androidx/compose/material3/DynamicTonalPalette.android.kt
-// Copyright 2021 The Android Open Source Project, subject to Apache-2.0 license
-/**
- * Helper method from monet ColorUtils.java
- *
- * Delinearizes an RGB component.
- *
- * @param rgbComponent 0.0 <= rgb_component <= 100.0, represents linear R/G/B channel
- * @return 0 <= output <= 255, color channel converted to regular RGB space
- */
-private fun delinearized(rgbComponent: Float): Int {
-    val normalized = rgbComponent / 100
-    val delinearized = if (normalized <= 0.0031308) {
-        normalized * 12.92
-    } else {
-        1.055 * normalized.toDouble().pow(1.0 / 2.4) - 0.055
-    }
-    return MathUtils.clamp((delinearized * 255.0).roundToInt(), 0, 255)
-}
-
 
 fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
     return KeyboardColorScheme(
@@ -413,7 +344,6 @@ fun wrapDarkColorScheme(scheme: ColorScheme): KeyboardColorScheme {
             keyboardContainerPressed = scheme.outline.copy(alpha = 0.33f),
             onKeyboardContainerPressed = Color.Transparent,
             hintColor = null,
-            hintHiVis = false,
             advancedThemeOptions = AdvancedThemeOptions()
         )
     )
@@ -435,7 +365,6 @@ fun wrapLightColorScheme(scheme: ColorScheme): KeyboardColorScheme {
             keyboardContainerPressed = scheme.outline.copy(alpha = 0.33f),
             onKeyboardContainerPressed = Color.Transparent,
             hintColor = null,
-            hintHiVis = false,
             advancedThemeOptions = AdvancedThemeOptions()
         )
     )

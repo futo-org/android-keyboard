@@ -9,7 +9,9 @@ import com.charleskorn.kaml.YamlConfiguration
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.modules.EmptySerializersModule
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
@@ -154,7 +156,20 @@ private fun parseNames(context: Context, namesPath: String): Map<String, Map<Str
 }
 
 private val yaml = Yaml(
-    EmptySerializersModule(),
+    SerializersModule {
+        polymorphic(AbstractKey::class) {
+            // Classes that extend TemplatedKey, since Kotlin serializers
+            // don't pick them up automatically.
+            subclass(ShiftKey::class)
+            subclass(DeleteKey::class)
+            subclass(SymbolsKey::class)
+            subclass(AlphabetKey::class)
+            subclass(NumberKey::class)
+            subclass(SpaceKey::class)
+            subclass(AltLayoutKey::class)
+
+        }
+    },
     YamlConfiguration(
         polymorphismStyle = PolymorphismStyle.Property,
         allowAnchorsAndAliases = true

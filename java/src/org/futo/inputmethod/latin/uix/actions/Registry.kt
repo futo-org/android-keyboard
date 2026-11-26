@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.collection.mutableIntSetOf
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -12,6 +13,7 @@ import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.PreferenceUtils
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
+import org.futo.inputmethod.latin.uix.actions.clipboard.ClipboardHistoryAction
 import org.futo.inputmethod.latin.uix.actions.fonttyper.FontTyperAction
 import org.futo.inputmethod.latin.uix.getSetting
 import org.futo.inputmethod.latin.uix.setSettingBlocking
@@ -40,7 +42,7 @@ val AllActionsMap = mapOf(
     "down" to ArrowDownAction,
     "left" to ArrowLeftAction,
     "right" to ArrowRightAction,
-    "font_typer" to FontTyperAction
+    "font_typer" to FontTyperAction,
 )
 
 val ActionToId = AllActionsMap.entries.associate { it.value to it.key }
@@ -66,7 +68,7 @@ private fun List<Action>.verifyNamesAreUnique(): List<Action> {
 }
 
 object ActionRegistry {
-    suspend fun getActionOverride(context: Context, action: Action): Action {
+    fun getActionOverride(context: Context, action: Action): Action {
         return if(action == VoiceInputAction || action == SystemVoiceInputAction) {
             val useSystemVoiceInput = context.getSetting(USE_SYSTEM_VOICE_INPUT)
             if(useSystemVoiceInput) {
@@ -111,8 +113,8 @@ enum class ActionCategory {
     Disabled
 }
 
-fun ActionCategory.name(context: Context): String {
-    return context.getString(when(this) {
+fun ActionCategory.name(resources: Resources): String {
+    return resources.getString(when(this) {
         ActionCategory.ActionKey -> R.string.action_kind_action_key
         ActionCategory.PinnedKey -> R.string.action_kind_pinned_key
         ActionCategory.Favorites -> R.string.action_kind_favorites
@@ -262,7 +264,7 @@ fun String.toActionList(): List<Action> = split(",").mapNotNull { AllActionsMap[
 val DefaultActionSettings = mapOf(
     ActionCategory.ActionKey to listOf(EmojiAction),
     ActionCategory.PinnedKey to listOf(VoiceInputAction),
-    ActionCategory.Favorites to listOf(SwitchLanguageAction, UndoAction, RedoAction, TextEditAction, ClipboardHistoryAction, ThemeAction, KeyboardModeAction),
+    ActionCategory.Favorites to listOfNotNull(if(IsDebug) MemoryDebugAction else null, SwitchLanguageAction, UndoAction, RedoAction, TextEditAction, ClipboardHistoryAction, ThemeAction, KeyboardModeAction),
     ActionCategory.More to listOf(), // Remaining actions get populated automatically by ensureWellFormed
     ActionCategory.Disabled to listOf(MemoryDebugAction, SystemVoiceInputAction, BugViewerAction)
 )

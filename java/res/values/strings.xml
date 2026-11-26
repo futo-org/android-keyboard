@@ -64,6 +64,9 @@
     <!-- Search tags for the setting (these are not displayed to the user, the bad words will allow this option to appear when they search those words) -->
     <string name="prefs_block_potentially_offensive_tags">bad words, swear words, swears, curse words, blacklist, filtering, fuck, shit</string>
 
+    <string name="prefs_block_slurs_title">Block slurs</string>
+    <string name="prefs_block_slurs_summary">Currently only affects English</string>
+
     <!-- Option to decide the auto correction threshold score -->
     <!-- Option to enable auto correction [CHAR LIMIT=20]-->
     <string name="auto_correction">Auto-correction</string>

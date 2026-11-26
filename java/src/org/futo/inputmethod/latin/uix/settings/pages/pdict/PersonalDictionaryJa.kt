@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -111,11 +112,24 @@ fun decodeJapanesePersonalWord(word: PersonalWord): JapanesePersonalWord? {
     )
 }
 
+
+private val miscPermitted = "？！…。〜ー、".toSet()
+
 @Composable
 @Preview
 fun JapaneseWordPopupDialog(selectedWord: JapanesePersonalWord? = null, locale: Locale? = Locale.JAPANESE) {
     val navController = LocalNavController.current
     val furigana = remember { mutableStateOf((selectedWord?.furigana ?: "")) }
+    val isError = remember { mutableStateOf(false) }
+
+    LaunchedEffect(furigana.value) {
+        isError.value = !furigana.value.all {
+            Character.UnicodeBlock.of(it) == Character.UnicodeBlock.HIRAGANA
+                    || miscPermitted.contains(it)
+        }
+    }
+
+
     val word = remember { mutableStateOf((selectedWord?.output ?: "")) }
     val pos = remember { mutableStateOf(selectedWord?.pos ?: PosTypes.NO_POS) }
     AlertDialog(
@@ -132,7 +146,15 @@ fun JapaneseWordPopupDialog(selectedWord: JapanesePersonalWord? = null, locale: 
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text("よみ:")
-                SettingsTextEdit(furigana, placeholder = "...")
+                SettingsTextEdit(furigana, placeholder = "...", error = isError.value)
+
+                if (isError.value) {
+                    Text(
+                        text = "ひらがなのみ入力してください",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
 
                 Spacer(Modifier.Companion.height(12.dp))
 

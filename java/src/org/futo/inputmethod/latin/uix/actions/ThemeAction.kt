@@ -4,6 +4,7 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.Action
@@ -29,20 +30,14 @@ val ThemeAction = Action(
             @Composable
             override fun WindowContents(keyboardShown: Boolean) {
                 val context = LocalContext.current
-
+                val resources = LocalResources.current
                 val openSettingsLambda = {
                     if(context.isDirectBootUnlocked && !manager.isDeviceLocked()) {
-                        val intent = Intent()
-                        intent.setClass(context, SettingsActivity::class.java)
-                        intent.setFlags(
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        )
-                        intent.putExtra("navDest", "themes")
-                        context.startActivity(intent)
+                        SettingsActivity.openToNavDest(context, "themes")
                     } else {
                         val toast = Toast.makeText(
                             context,
-                            context.getString(R.string.action_clipboard_manager_error_device_locked_title),
+                            resources.getString(R.string.action_clipboard_manager_error_device_locked_title),
                             Toast.LENGTH_SHORT
                         )
 

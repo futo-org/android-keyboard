@@ -66,6 +66,7 @@ public final class InputAttributes {
      * {@link org.futo.inputmethod.latin.settings.SettingsValues#mGestureFloatingPreviewTextEnabled}
      */
     final public boolean mDisableGestureFloatingPreviewText;
+    final public boolean mSendKeyEventsMode;
     final public boolean mIsGeneralTextInput;
     final public boolean mIsWebField;
     final public boolean mNoLearning;
@@ -111,12 +112,14 @@ public final class InputAttributes {
             mIsGeneralTextInput = false;
             mNoLearning = false;
             mIsEmailField = false;
+            mSendKeyEventsMode = true;
             mIsWebField = false;
             mLocaleOverride = null;
             mLayoutOverride = null;
             mHintLocales = null;
             return;
         }
+        mSendKeyEventsMode = false;
         // inputClass == InputType.TYPE_CLASS_TEXT
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
         final boolean flagNoSuggestions =
@@ -388,6 +391,9 @@ public final class InputAttributes {
             return CODE_FIELD_WITH_COMPOSITION;
 
         if(editorInfo.packageName.startsWith("com.termux") && editorInfo.inputType == 0)
+            return CODE_FIELD_NO_COMPOSITION;
+
+        if(editorInfo.packageName.startsWith("sh.haven.app") && editorInfo.inputType == 0)
             return CODE_FIELD_NO_COMPOSITION;
 
         if(editorInfo.packageName.startsWith("com.android.virtualization.terminal") && noSuggestions)

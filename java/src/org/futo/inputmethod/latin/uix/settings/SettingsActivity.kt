@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -33,6 +34,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.futo.inputmethod.latin.ATLCompat
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProvider
 import org.futo.inputmethod.latin.uix.DynamicThemeProviderOwner
@@ -44,7 +46,6 @@ import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.getSettingBlocking
 import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
-import org.futo.inputmethod.latin.uix.theme.ThemeOptions
 import org.futo.inputmethod.latin.uix.theme.UixThemeAuto
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
@@ -82,7 +83,7 @@ private fun Context.isDoublePackage(): Boolean {
     return (value.startsWith("$standalonePackage/") && packageName == playstorePackage) || (value.startsWith("$playstorePackage/") && packageName == standalonePackage)
 }
 
-public const val IMPORT_GGUF_MODEL_REQUEST = 71067309
+public const val IMPORT_RESOURCE_FILE_REQUEST = 71067309
 public const val EXPORT_GGUF_MODEL_REQUEST = 80595439
 
 
@@ -102,10 +103,27 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
 
     companion object {
         private var pollJob: Job? = null
+
+        @JvmStatic
+        fun openToNavDest(context: Context, navDest: String?) {
+            val intent = Intent()
+            intent.setClass(context, SettingsActivity::class.java)
+            intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            )
+            if(navDest != null) intent.putExtra("navDest", navDest)
+            context.startActivity(intent)
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun updateSystemState() {
+        if(ATLCompat.IsATL) {
+            this.inputMethodEnabled.value = true
+            this.inputMethodSelected.value = true
+            return
+        }
+
         val inputMethodEnabled = isInputMethodEnabled()
         val inputMethodSelected = isDefaultIMECurrent()
         this.inputMethodEnabled.value = inputMethodEnabled
@@ -178,6 +196,29 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
         }
     }
 
+    private fun handleIntent(intent: Intent) {
+        val destination = intent.getStringExtra("navDest")
+        if(destination != null) {
+            lifecycleScope.launch {
+                // The navigation graph has to initialize, and this can take some time.
+                // For now, just keep trying every 100ms until it doesn't throw an exception
+                // for up to 10 seconds
+                var navigated = false
+                for(i in 0 until 100) {
+                    delay(100L)
+                    try {
+                        navController.navigate(destination)
+                        navigated = true
+                    } catch (ignored: Exception) {
+
+                    }
+
+                    if(navigated) break
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -222,29 +263,13 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
             updateEdgeToEdge()
         }
 
-        val intent = intent
-        if(intent != null) {
-            val destination = intent.getStringExtra("navDest")
-            if(destination != null) {
-                lifecycleScope.launch {
-                    // The navigation graph has to initialize, and this can take some time.
-                    // For now, just keep trying every 100ms until it doesn't throw an exception
-                    // for up to 10 seconds
-                    var navigated = false
-                    for(i in 0 until 100) {
-                        delay(100L)
-                        try {
-                            navController.navigate(destination)
-                            navigated = true
-                        } catch (ignored: Exception) {
+        intent?.let { handleIntent(it) }
+    }
 
-                        }
-
-                        if(navigated) break
-                    }
-                }
-            }
-        }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
     }
 
     override fun onResume() {
@@ -271,7 +296,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
             return
         }
 
-        if(requestCode == IMPORT_GGUF_MODEL_REQUEST || requestCode == IMPORT_SETTINGS_REQUEST) {
+        if(requestCode == IMPORT_RESOURCE_FILE_REQUEST || requestCode == IMPORT_SETTINGS_REQUEST) {
             data?.data?.also { uri ->
                 val intent = Intent()
                 intent.setClass(this, ImportResourceActivity::class.java)
@@ -312,7 +337,7 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
 
     fun updateEdgeToEdge() {
         themeProvider?.let {
-            val color = it.keyboardColor
+            val color = it.colorScheme.background.toArgb()
 
             val luminance = sqrt(
                 0.299 * Color.red(color) / 255.0

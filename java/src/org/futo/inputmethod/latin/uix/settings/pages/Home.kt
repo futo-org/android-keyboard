@@ -29,9 +29,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.futo.inputmethod.latin.ATLCompat
 import org.futo.inputmethod.latin.BuildConfig
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.LocalNavController
+import org.futo.inputmethod.latin.uix.SYSTEM_VOICE_INPUT_PACKAGE
 import org.futo.inputmethod.latin.uix.TextEditPopupActivity
 import org.futo.inputmethod.latin.uix.USE_SYSTEM_VOICE_INPUT
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
@@ -40,6 +42,7 @@ import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.updates.ConditionalMigrateUpdateNotice
@@ -49,6 +52,23 @@ val HomeScreenLite = UserSettingsMenu(
     title = R.string.settings_home_title,
     navPath = "home", registerNavPath = false,
     settings = listOf(
+        userSettingDecorationOnly {
+            val context = LocalContext.current
+            if(ATLCompat.IsATL) {
+                NavigationItem(
+                    title = "Launch keyboard (window)",
+                    style = NavigationItemStyle.Misc,
+                    navigate = { ATLCompat.launchKeyboard(context, false) }
+                )
+                NavigationItem(
+                    title = "Launch keyboard (layershell)",
+                    style = NavigationItemStyle.Misc,
+                    navigate = { ATLCompat.launchKeyboard(context, true) }
+                )
+            }
+
+        },
+
         userSettingNavigationItem(
             title = R.string.settings_check_for_updates_manually,
             style = NavigationItemStyle.Misc,
@@ -70,6 +90,13 @@ val HomeScreenLite = UserSettingsMenu(
         ),
 
         userSettingNavigationItem(
+            title = SwipeMenu.title,
+            style = NavigationItemStyle.HomePrimary,
+            navigateTo = SwipeMenu.navPath,
+            icon = R.drawable.swipe_icon
+        ),
+
+        userSettingNavigationItem(
             title = R.string.prediction_settings_title,
             style = NavigationItemStyle.HomeTertiary,
             navigateTo = PredictiveTextMenu.navPath,
@@ -80,11 +107,15 @@ val HomeScreenLite = UserSettingsMenu(
             name = R.string.voice_input_settings_title
         ) {
             val navController = LocalNavController.current
+            val useExternal = useDataStoreValue(USE_SYSTEM_VOICE_INPUT)
+            val externalPkg = useDataStoreValue(SYSTEM_VOICE_INPUT_PACKAGE)
+            val name = usePackageReadableName(externalPkg)
+
             NavigationItem(
                 title = stringResource(R.string.voice_input_settings_title),
                 style = NavigationItemStyle.HomePrimary,
-                subtitle = if(useDataStoreValue(USE_SYSTEM_VOICE_INPUT)) {
-                    stringResource(R.string.voice_input_settings_builtin_disabled_notice)
+                subtitle = if(useExternal && name != null) {
+                    stringResource(R.string.voice_input_settings_builtin_disabled_notice2, name)
                 } else { null },
                 navigate = { navController!!.navigate(VoiceInputMenu.navPath) },
                 icon = painterResource(R.drawable.mic_fill)

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.graphics.createBitmap
 import org.futo.inputmethod.latin.R
@@ -84,9 +85,10 @@ object CandyRenderer: WordImageRenderer() {
 @Composable
 private fun PreviewRenderer() {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val renderer = CandyRenderer
     val image = remember {
-        renderer.render(context, context.getString(renderer.name))!!.asImageBitmap()
+        renderer.render(context, resources.getString(renderer.name))!!.asImageBitmap()
     }
     Image(image, contentDescription = null)
 }

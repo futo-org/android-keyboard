@@ -78,17 +78,24 @@ fun KeyboardViewCompose(keyboard: Keyboard?, width: Dp, customThemeCtx: Context?
 }
 
 @Composable
-fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null, customThemeCtx: Context? = null) {
+fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null, shifted: Boolean = false, customThemeCtx: Context? = null) {
     val context = customThemeCtx ?: LocalContext.current
 
+    val layout = remember(id) {
+        LayoutManager.getLayout(context, id)
+    }
+
     val loc = remember(id) {
-        locale ?: LayoutManager.getLayout(context, id).languages.firstOrNull()?.let {
+        locale ?: layout.languages.firstOrNull()?.let {
             Locale.forLanguageTag(it)
         }
     }
 
     val widthPx: Int = (320.0 * context.resources.displayMetrics.density).roundToInt()
-    val heightPx: Int = (200.0 * context.resources.displayMetrics.density).roundToInt()
+
+    val heightPx: Int = (
+            (50 * ((layout.getEffectiveRows(0).count { !it.isNumberRow } - 4).coerceAtLeast(0) * 0.5 + 4))
+                    * context.resources.displayMetrics.density).roundToInt()
 
     val keyboard = remember { mutableStateOf<Keyboard?>(null) }
 
@@ -119,7 +126,7 @@ fun KeyboardLayoutPreview(id: String, width: Dp = 172.dp, locale: Locale? = null
                 keyboard.value = layoutSet.getKeyboard(
                     KeyboardLayoutElement(
                         kind = KeyboardLayoutKind.Alphabet0,
-                        page = KeyboardLayoutPage.Base
+                        page = if(shifted) KeyboardLayoutPage.ManuallyShifted else KeyboardLayoutPage.Base
                     )
                 )
             }catch(e: Exception) {

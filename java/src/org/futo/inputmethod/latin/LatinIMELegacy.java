@@ -41,6 +41,7 @@ import android.util.Printer;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -56,6 +57,7 @@ import org.futo.inputmethod.accessibility.AccessibilityUtils;
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import org.futo.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration;
 import org.futo.inputmethod.engine.IMEInterface;
 import org.futo.inputmethod.engine.IMEManager;
 import org.futo.inputmethod.event.Event;
@@ -103,7 +105,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     public interface SuggestionStripController {
         public void updateVisibility(boolean shouldShowSuggestionsStrip, boolean fullscreenMode);
-        public void setSuggestions(SuggestedWords suggestedWords, boolean rtlSubtype, boolean useExpandableUi);
+        public void setSuggestions(SuggestedWords suggestedWords, boolean rtlSubtype, ExpandableSuggestionBarConfiguration cfg);
     }
     
     private final InputMethodService mInputMethodService;
@@ -131,7 +133,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     private View mComposeInputView;
     private InsetsUpdater mInsetsUpdater;
 
-    private RichInputMethodManager mRichImm;
+    public RichInputMethodManager mRichImm;
     public final KeyboardSwitcher mKeyboardSwitcher;
     private EmojiAltPhysicalKeyDetector mEmojiAltPhysicalKeyDetector;
 
@@ -570,8 +572,12 @@ public class LatinIMELegacy implements KeyboardActionListener,
             final int layoutHeight = mInputMethodService.isFullscreenMode()
                     ? LayoutParams.WRAP_CONTENT : LayoutParams.MATCH_PARENT;
             final View inputArea = window.findViewById(android.R.id.inputArea);
-            ViewLayoutUtils.updateLayoutHeightOf(inputArea, layoutHeight);
-            ViewLayoutUtils.updateLayoutGravityOf(inputArea, Gravity.BOTTOM);
+
+            if(inputArea != null) {
+                ViewLayoutUtils.updateLayoutHeightOf(inputArea, layoutHeight);
+                ViewLayoutUtils.updateLayoutGravityOf(inputArea, Gravity.BOTTOM);
+            }
+
             ViewLayoutUtils.updateLayoutHeightOf(mComposeInputView, layoutHeight);
         }
     }
@@ -607,10 +613,18 @@ public class LatinIMELegacy implements KeyboardActionListener,
 
     }
 
+    private boolean canDoLanguageSwitch() {
+        SettingsValues settings = mSettings.getCurrent();
+
+        return settings.mInputAttributes.mLocaleOverride == null
+                && settings.mInputAttributes.mLayoutOverride == null;
+    }
+
     @Override
     public boolean onCustomRequest(final int requestCode) {
         switch (requestCode) {
         case Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER:
+            if(!canDoLanguageSwitch()) return false;
             getLatinIME().getUixManager().showLanguageSwitcher();
             return true;
         }
@@ -645,9 +659,36 @@ public class LatinIMELegacy implements KeyboardActionListener,
         ).onUpWithPointerActive();
     }
 
+    private float mSwipeLanguageProgress = 0.0f;
     @Override
-    public void onSwipeLanguage(int direction) {
-        Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, direction);
+    public void onSwipeLanguageReleased() {
+        mKeyboardSwitcher.getMainKeyboardView().updateSwipeLanguageProgress(0.0f);
+        if(!canDoLanguageSwitch()) {
+            mSwipeLanguageProgress = 0.0f;
+            return;
+        }
+        if(Math.abs(mSwipeLanguageProgress) >= 1.0f) {
+            String newSubtype = Subtypes.INSTANCE.switchToNextLanguage(mInputMethodService, mSwipeLanguageProgress > 0.0f ? 1 : -1);
+            if(newSubtype != null && !newSubtype.isEmpty()) {
+                getLatinIME().changeSubtype(newSubtype);
+            }
+        }
+        mSwipeLanguageProgress = 0.0f;
+    }
+
+    @Override
+    public void onSwipeLanguageProgress(float progress) {
+        if(!canDoLanguageSwitch()) return;
+        MainKeyboardView view = mKeyboardSwitcher.getMainKeyboardView();
+        if(mSettings.getCurrent().mVibrateOn && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (Math.abs(progress) >= 1.0f && Math.abs(mSwipeLanguageProgress) < 1.0f) {
+                view.performHapticFeedback(HapticFeedbackConstants.GESTURE_THRESHOLD_ACTIVATE);
+            } else if(Math.abs(progress) < 1.0f && Math.abs(mSwipeLanguageProgress) >= 1.0f) {
+                view.performHapticFeedback(HapticFeedbackConstants.GESTURE_THRESHOLD_DEACTIVATE);
+            }
+        }
+        view.updateSwipeLanguageProgress(progress);
+        mSwipeLanguageProgress = progress;
     }
 
     @Override
@@ -692,7 +733,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     // completely replace #onCodeInput.
     public void onEvent(@Nonnull final Event event) {
         if (Constants.CODE_SHORTCUT == event.mKeyCode) {
-            mRichImm.switchToShortcutIme(mInputMethodService);
+            getLatinIME().trySwitchToShortcutIMEorInternal();
         }
         /*final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
@@ -837,6 +878,10 @@ public class LatinIMELegacy implements KeyboardActionListener,
     public void onPressKey(final int primaryCode, final int repeatCount,
             final boolean isSinglePointer) {
         mKeyboardSwitcher.onPressKey(primaryCode, isSinglePointer, getCurrentAutoCapsState());
+
+        if(primaryCode == Constants.CODE_DELETE && repeatCount > 1) {
+            if(!getActiveIME().hasMoreTextToDelete()) return;
+        }
         hapticAndAudioFeedback(primaryCode, repeatCount);
     }
 

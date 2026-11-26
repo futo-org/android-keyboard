@@ -35,17 +35,17 @@ import okio.sink
 import okio.source
 import org.futo.inputmethod.engine.GlobalIMEMessage
 import org.futo.inputmethod.engine.IMEMessage
+import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.mozcUserProfileDir
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.utils.readAllBytesCompat
 import org.futo.inputmethod.latin.uix.PreferenceUtils.getDefaultSharedPreferences
-import org.futo.inputmethod.latin.uix.actions.ClipboardFileName
-import org.futo.inputmethod.latin.uix.actions.ClipboardHistoryManager.Companion.onClipboardImportedFlow
-import org.futo.inputmethod.latin.uix.actions.clipboardFile
+import org.futo.inputmethod.latin.uix.actions.clipboard.ClipboardFileName
+import org.futo.inputmethod.latin.uix.actions.clipboard.ClipboardHistoryManager.Companion.onClipboardImportedFlow
+import org.futo.inputmethod.latin.uix.actions.clipboard.clipboardDir
+import org.futo.inputmethod.latin.uix.actions.clipboard.clipboardFile
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
-import org.futo.inputmethod.latin.uix.settings.SettingsActivity
-import org.futo.inputmethod.latin.uix.settings.pages.modelmanager.findSettingsActivity
 import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.json.JSONArray
@@ -235,7 +235,7 @@ object SettingsExporter {
         }
 
         // Collect resources
-        context.getExternalFilesDir(null)?.listFiles()?.forEach { resourceFile ->
+        context.getExternalFilesDir(null)?.listFiles()?.filter { it.isFile }?.forEach { resourceFile ->
             // if includeHeavyResources, then only include this if its not a .dict
             if (resourceFile.extension == "dict" || includeHeavyResources) {
                 zipOut.putNextEntry(ZipEntry("ext/${resourceFile.name}"))
@@ -268,10 +268,30 @@ object SettingsExporter {
             }
         }
 
+        // Collect clipboard files
+        context.clipboardDir.listFiles()?.forEach { clipboardFile ->
+            assert(!clipboardFile.isDirectory)
+            val entry = ZipEntry("clipboard/${clipboardFile.name}")
+            zipOut.putNextEntry(entry)
+            clipboardFile.inputStream().use { it.copyTo(zipOut) }
+            zipOut.closeEntry()
+        }
+
         // Collect mozc (Japanese user typing history, etc)
         mozcUserProfileDir(context).listFiles()?.forEach { subfile ->
             assert(!subfile.isDirectory)
             val entry = ZipEntry("mozc/${subfile.name}")
+            zipOut.putNextEntry(entry)
+            subfile.inputStream().use { it.copyTo(zipOut) }
+            zipOut.closeEntry()
+        }
+
+        // Collect RIME (Chinese user typing history, etc)
+        val rimeDir = ChineseIME.getRimeDir(context)
+        rimeDir.walk().filter { it.isFile }.forEach { subfile ->
+            val rel = subfile.toRelativeString(rimeDir)
+
+            val entry = ZipEntry("rime/$rel")
             zipOut.putNextEntry(entry)
             subfile.inputStream().use { it.copyTo(zipOut) }
             zipOut.closeEntry()
@@ -321,6 +341,8 @@ object SettingsExporter {
                 }
             }
 
+            context.clipboardDir.deleteRecursively()
+            ChineseIME.getRimeDir(context).deleteRecursively()
             mozcUserProfileDir(context).deleteRecursively()
 
             // delete all themes
@@ -382,14 +404,38 @@ object SettingsExporter {
                     }
                 }
 
+                entry.name.startsWith("clipboard/") -> {
+                    val relDir = entry.name.splitSlash()
+                    assert(!relDir.contains('/'))
+
+                    val clipboardDir = context.clipboardDir
+                    clipboardDir.mkdirs()
+                    File(clipboardDir, relDir).outputStream().use {
+                        zipIn.copyTo(it)
+                    }
+                }
+
+
                 entry.name.startsWith("mozc/") -> {
-                    val relDir = entry.name.split('/', limit=2).last()
+                    val relDir = entry.name.splitSlash()
 
                     assert(!relDir.contains('/'))
 
                     val userProfileDir = mozcUserProfileDir(context)
                     userProfileDir.mkdirs()
                     File(userProfileDir, relDir).outputStream().use {
+                        zipIn.copyTo(it)
+                    }
+                }
+
+                entry.name.startsWith("rime/") -> {
+                    val relDir = entry.name.splitSlash()
+                    val rimeDir = ChineseIME.getRimeDir(context)
+
+                    val targetFile = File(rimeDir, relDir)
+                    targetFile.parentFile!!.mkdirs()
+
+                    targetFile.outputStream().use {
                         zipIn.copyTo(it)
                     }
                 }
@@ -427,8 +473,7 @@ object SettingsExporter {
             putExtra(Intent.EXTRA_TITLE, defaultFileName)
         }
 
-        val activity: SettingsActivity = findSettingsActivity(context)
-        activity.startActivityForResult(intent, EXPORT_SETTINGS_REQUEST)
+        findActivity(context)!!.startActivityForResult(intent, EXPORT_SETTINGS_REQUEST)
     }
 
     fun triggerImportSettings(context: Context) {
@@ -436,7 +481,7 @@ object SettingsExporter {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/octet-stream"
         }
-        (context as Activity).startActivityForResult(intent, IMPORT_SETTINGS_REQUEST)
+        findActivity(context)!!.startActivityForResult(intent, IMPORT_SETTINGS_REQUEST)
     }
 
     data class CfgFileMetadata(
@@ -475,7 +520,7 @@ object SettingsExporter {
     @Composable
     fun ExportingMenu(navController: NavHostController = rememberNavController()) {
         val context = LocalContext.current
-        val activity = remember { findSettingsActivity(context) }
+        val activity = remember { findSettingsActivity(context)!! }
         val triggered = remember { mutableStateOf(false) }
 
         LaunchedEffect(Unit) {

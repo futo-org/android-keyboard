@@ -10,11 +10,11 @@ body:
       value: |
         # Thank you for opening a documentation change request.
 
-        The [android-keyboard](https://github.com/futo-org/android-keyboard) issue tracker is reserved for issues relating to the FUTO Keyboard Android Application. Use the `Documentation` issue type to report problems with the documentation in our code repositories, inside the application, or on [https://keyboard.futo.org](https://keyboard.futo.org)
+        The [android-keyboard](https://github.com/futo-org/android-keyboard) issue tracker is reserved for issues relating to the FUTO Keyboard Android Application. Use the `Documentation` issue type to report problems with the documentation in our code repositories, inside the application, or on [https://keyboard.futo.tech](https://keyboard.futo.tech)
 
         Technical writers monitor this issue type, so report FUTO Keyboard bugs or feature requests with the `Bug report` or `Feature Request` issue types instead to get engineering attention.
 
-        For general usage questions, please see the [FUTO Keyboard Zulip Channel](https://chat.futo.org/#narrow/stream/53-Keyboard) or the [FUTO Keyboard Discord](https://keyboard.futo.org/discord)
+        For general usage questions, please see the [FUTO Keyboard Zulip Channel](https://chat.futo.org/#narrow/stream/53-Keyboard) or the [FUTO Keyboard Discord](https://keyboard.futo.tech/discord)
 
   - type: textarea
     id: keyboard-affected-pages

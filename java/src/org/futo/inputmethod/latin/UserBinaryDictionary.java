@@ -32,6 +32,7 @@ import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
 
 import javax.annotation.Nullable;
@@ -61,6 +62,20 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
             Words.FREQUENCY,
     };
 
+    private static HashSet<Locale> localesNotNeededToRecreate = new HashSet<>();
+
+    private static boolean userDictionaryNeedsRecreation(Locale locale) {
+        if(localesNotNeededToRecreate.contains(locale)) {
+            return false;
+        }
+        localesNotNeededToRecreate.add(locale);
+        return true;
+    }
+
+    public static void resetUserDictionariesRequiringRecreation() {
+        localesNotNeededToRecreate.clear();
+    }
+
     private static final String NAME = "userunigram";
 
     private ContentObserver mObserver;
@@ -82,6 +97,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;
         ContentResolver cres = context.getContentResolver();
 
+        if(UserBinaryDictionary.userDictionaryNeedsRecreation(locale)) setNeedsToRecreate();
         mObserver = new ContentObserver(null) {
             @Override
             public void onChange(final boolean self) {

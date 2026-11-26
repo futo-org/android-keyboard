@@ -86,15 +86,48 @@ final def translationsWithoutEngValues = { final String path ->
             include 'values-*/**'
 
             filter { String line ->
-                line
-                // Fix duplicate <string> tags
-                        .replaceAll(/(<string [^>]+>)&lt;string [^&]+&gt;(.+)&lt;\/string&gt;<\/string>/, '$1$2</string>')
-                // Fix malformed xliff:g tags
-                        .replaceAll(/&lt;xliff:g ([^&]+)&gt;([^&]+)&lt;\/xliff:g&gt;/, '<xliff:g $1>$2</xliff:g>')
-                // Fix malformed quotes
-                        .replaceAll(/&amp;quot;/, '&quot;')
-                // Insert xliff binding
-                        .replaceAll(/<resources>/, '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">')
+                def matcher = line =~ /<string name="([^"]+)"[^>]*>(.+)<\/string>/
+
+                if (matcher.find()) {
+                    var stringName = matcher.group(1)
+                    var content = matcher.group(2)
+
+                    content = content
+                    // Fix duplicate string tags
+                            .replaceAll(/<!\[CDATA\[<string [^>]+>(.+)<\\/string>\]\]>/, '$1')
+                            .replaceAll(/<string [^>]+>(.+)<\\/string>/, '$1')
+                            .replaceAll(/&lt;string [^&]+&gt;(.+)&lt;\\/string&gt;/, '$1')
+                    // Remove xliff:g tags entirely, keep only the content
+                            .replaceAll(/<xliff:g [^>]+>(.+?)<\/xliff:g>/, '$1')
+                            .replaceAll(/&lt;xliff:g [^&]+&gt;(.+?)&lt;\/xliff:g&gt;/, '$1')
+                    // Fix escaped quotes
+                            .replaceAll(/&amp;quot;/, '"')
+                            .replaceAll(/&quot;/, '"')
+                            .replaceAll(/\\+/, "\\\\")
+                            .replaceAll(/\\"/, '"')
+                            .replaceAll(/\\'/, "'")
+
+                    if (content.startsWith("&quot;")) {
+                        content = content.substring(6)
+                    } else if (content.startsWith('\\"')) {
+                        content = content.substring(2)
+                    } else if (content.startsWith('"')) {
+                        content = content.substring(1)
+                    }
+                    if (content.endsWith("&quot;")) {
+                        content = content.substring(0, content.length() - 6)
+                    } else if (content.endsWith('\\"')) {
+                        content = content.substring(0, content.length() - 2)
+                    } else if (content.endsWith('"')) {
+                        content = content.substring(0, content.length() - 1)
+                    }
+
+                    content = content.replaceAll('"', '\\\\"')
+
+                    "    <string name=\"" + stringName + "\">\"" + content + "\"</string>\n"
+                } else {
+                    line
+                }
             }
         }
         into(destDir)
@@ -139,17 +172,10 @@ tasks.register('updateContributors') {
     outputs.file outputFile
 
     doLast {
-        def buffer = new ByteArrayOutputStream()
-
         exec {
             environment 'GITHUB_TOKEN', System.getenv('GITHUB_TOKEN') ?: ''
             commandLine 'python3', script.absolutePath
-            standardOutput = buffer
         }
-
-        outputFile.parentFile.mkdirs()
-        outputFile.text = buffer.toString("UTF-8")
-        println "Wrote contributors to ${project.relativePath(outputFile)}"
     }
 }
 
@@ -244,7 +270,8 @@ android {
                 it.buildConfigField "String", "ACRA_PASSWORD", "\"\""
             }
 
-            it.buildConfigField "String", "FUTOPAY_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
+            //it.buildConfigField "String", "FUTOPAY_URL", "\"https://pay.futo.org/api/PaymentPortal?product=voiceinput&success=futo-keyboard%3a%2f%2flicense%2factivate\""
+            it.buildConfigField "String", "FUTOPAY_URL", "\"https://pay2.futo.org/checkout/polar/futo-keyboard/futo-keyboard-voiceinput/checkout-ready?success=redirect-to-organization-page\""
             it.buildConfigField "String", "FUTOPAY_PRICE", "\"~\$6.99\""
 
             it.buildConfigField "String", "GOOGLEPAY_URL", "\"https://play.google.com/store/apps/details?id=org.futo.keyboardpayment\""
@@ -294,6 +321,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -343,6 +371,12 @@ android {
         noCompress 'dict'
     }
 
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+
     ndkVersion '28.2.13676358'
     externalNativeBuild {
         cmake {
@@ -359,6 +393,12 @@ android {
         mlModelBinding true
         buildConfig true
     }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
@@ -368,7 +408,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.8.4'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4'
     implementation 'androidx.activity:activity-compose:1.9.1'
-    implementation platform('androidx.compose:compose-bom:2024.06.00')
+    implementation platform('androidx.compose:compose-bom:2025.06.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
@@ -376,7 +416,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-compose:2.7.7'
+    implementation 'androidx.navigation:navigation-compose:2.10.0-alpha02'
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
@@ -389,11 +429,13 @@ dependencies {
     unstableImplementation 'ch.acra:acra-mail:5.11.1'
     unstableImplementation 'ch.acra:acra-dialog:5.11.1'
 
-    implementation 'sh.calvin.reorderable:reorderable:2.2.0'
+    implementation 'sh.calvin.reorderable:reorderable:3.0.0'
 
     //implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.7.1'
+
+    implementation 'com.akuleshov7:ktoml-core:0.7.1'
 
     //def work_version = "2.9.0"
     //implementation "androidx.work:work-runtime-ktx:$work_version"
@@ -408,6 +450,14 @@ dependencies {
     implementation 'com.google.guava:guava:33.4.8-android'
     implementation(name:'mozc-release', ext:'aar')
     // End for MOZC
+
+    // For RIME
+    implementation files('libs/rime-release.aar')
+    // End for RIME
+
+    implementation files('libs/futo-swipe-release.aar')
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'

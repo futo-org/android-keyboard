@@ -27,18 +27,24 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.futo.inputmethod.engine.general.ChineseIME
 import org.futo.inputmethod.engine.general.GeneralIME
 import org.futo.inputmethod.engine.general.JapaneseIME
+import org.futo.inputmethod.latin.ATLCompat
 import org.futo.inputmethod.latin.LatinIME
+import org.futo.inputmethod.latin.LegacySwipeSetting
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.SwipeDecoderDictionary
 import org.futo.inputmethod.latin.settings.Settings
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.LocalFoldingState
 import org.futo.inputmethod.latin.uix.settings.ScrollableList
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.theme.Typography
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 import org.futo.inputmethod.v2keyboard.KeyboardSizeStateProvider
+import java.io.File
 
 val DebugLabel = Typography.Small.copy(fontFamily = FontFamily.Monospace)
 val DebugTitle = Typography.Body.Medium.copy(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
@@ -211,6 +217,8 @@ private data class SKeyboard(
 
     val screenWidth: Int,
     val screenHeight: Int,
+    val mostCommonKeyWidth: Int,
+    val mostCommonKeyHeight: Int,
 )
 internal fun serializeKeyboard(ime: LatinIME): String {
     val keyboard = ime.latinIMELegacy.mKeyboardSwitcher.keyboard!!
@@ -244,6 +252,8 @@ internal fun serializeKeyboard(ime: LatinIME): String {
         keys = list,
         screenWidth = ime.resources.displayMetrics.widthPixels,
         screenHeight = ime.resources.displayMetrics.heightPixels,
+        mostCommonKeyWidth = keyboard.mMostCommonKeyWidth,
+        mostCommonKeyHeight = keyboard.mMostCommonKeyHeight,
     )
     return Json.encodeToString(SKeyboard.serializer(), kb)
 }
@@ -256,6 +266,12 @@ val MemoryDebugAction = Action(
     windowImpl = { manager, _ ->
         val latinIme = manager.getLatinIMEForDebug()
         object : ActionWindow() {
+            override val onlyShowAboveKeyboard: Boolean
+                get() = true
+
+            override val positionIsUserManagable: Boolean
+                get() = true
+
             @Composable
             override fun windowName(): String {
                 return stringResource(R.string.action_debug_title)
@@ -265,7 +281,7 @@ val MemoryDebugAction = Action(
             override fun WindowContents(keyboardShown: Boolean) {
                 val state: MutableState<Map<String, String>> = remember { mutableStateOf(mapOf()) }
                 LaunchedEffect(Unit) {
-                    while (true) {
+                    while (!ATLCompat.IsATL) {
                         delay(250)
 
                         val newInfo = Debug.MemoryInfo()
@@ -273,10 +289,57 @@ val MemoryDebugAction = Action(
                         state.value = newInfo.memoryStats
                     }
                 }
-                
+
                 val foldingState = LocalFoldingState.current
 
+                val codenameFor: (String) -> String = { pteAsset ->
+                    if(pteAsset.isBlank()) {
+                        ""
+                    } else {
+                        val metadataAsset = SwipeDecoderDictionary.metadataFor(pteAsset)
+                        val file = File(
+                            SwipeDecoderDictionary.getFilePath(
+                                manager.getContext(),
+                                metadataAsset
+                            )
+                        )
+                        val content = file.readText()
+
+                        SwipeDecoderDictionary.parseMetadataToGetCodename(content)
+                    }
+                }
                 ScrollableList {
+                    if(BugViewerState.bugs.isNotEmpty()) {
+                        Button(onClick = {
+                            manager.activateAction(BugViewerAction)
+                        }) {
+                            Text("View ${BugViewerState.bugs.size} errors")
+                        }
+                    }
+
+                    Text("Swipe Info", style = DebugTitle)
+                    SwipeDecoderDictionary.appliedLayoutInfo.let { layout ->
+                        if(useDataStoreValue(LegacySwipeSetting) == true) {
+                            Text("using legacy mode...", style = DebugLabel)
+                        } else {
+                            val scoring = SwipeDecoderDictionary.appliedScoring.value
+                            Text("universal model = ${SwipeDecoderDictionary.SWIPE_MODEL} (${remember(SwipeDecoderDictionary.SWIPE_MODEL) { codenameFor(SwipeDecoderDictionary.SWIPE_MODEL)} })", style = DebugLabel)
+                            Text("special decoder = ${SwipeDecoderDictionary.appliedLayoutInfo.decoder.ifBlank { "<none>" }} (${remember(SwipeDecoderDictionary.appliedLayoutInfo.decoder) { codenameFor(SwipeDecoderDictionary.appliedLayoutInfo.decoder)} })", style = DebugLabel)
+                            Text("context lm      = ${SwipeDecoderDictionary.appliedLayoutInfo.lm.ifBlank { "<none>" }} (${remember(SwipeDecoderDictionary.appliedLayoutInfo.lm) { codenameFor(SwipeDecoderDictionary.appliedLayoutInfo.lm)} })", style = DebugLabel)
+                            Text("scoring         γ=${scoring.gamma} λ=${scoring.lambda} β=${scoring.beta} α=${scoring.alpha}", style = DebugLabel)
+                            Text("", style = DebugLabel)
+                            Text("layout letters  = ${layout.letters}", style = DebugLabel)
+                            Text("layout scale    = ${layout.sx}, ${layout.sy}", style = DebugLabel)
+                            Text("layout offset   = ${layout.ox}, ${layout.oy}", style = DebugLabel)
+                            Text("", style = DebugLabel)
+                            Text("dictionary count   = ${SwipeDecoderDictionary.appliedTries?.size}", style = DebugLabel)
+                            Text("dictionary weights = ${SwipeDecoderDictionary.appliedTrieWeights.joinToString(", ")}", style = DebugLabel)
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Text("Editor Info", style = DebugTitle)
                     latinIme.currentInputEditorInfo?.let { info ->
                         Text("packageName       = ${info.packageName}",       style = DebugLabel)
@@ -315,6 +378,10 @@ val MemoryDebugAction = Action(
                             }
                         }
 
+                        is ChineseIME -> {
+                            Text("ChineseIME\n${ime.debugInfo}", style = DebugLabel)
+                        }
+
                         is JapaneseIME -> {
                             Text("JapaneseIME [no debug info yet]", style = DebugLabel)
                         }
@@ -323,6 +390,7 @@ val MemoryDebugAction = Action(
 
                     Text("Screen State Info", style = DebugTitle)
                     Text("size mode     = ${(manager.getContext() as KeyboardSizeStateProvider).currentSizeState}", style = DebugLabel)
+                    Text("size          = ${(manager.getContext() as LatinIME).size.value}", style = DebugLabel)
                     Text("Fold State", style = DebugTitle)
                     Text("state         = ${foldingState.feature?.state}",          style = DebugLabel)
                     Text("orientation   = ${foldingState.feature?.orientation}",    style = DebugLabel)
@@ -347,7 +415,6 @@ val MemoryDebugAction = Action(
                             "One other type of sentence?",
                             "[Three kinds now! Okay, this text should appear identically 5 times]"
                         )
-
 
                         val txn = manager.createInputTransaction()
                         testTexts.forEach { txn.updatePartial(it) }

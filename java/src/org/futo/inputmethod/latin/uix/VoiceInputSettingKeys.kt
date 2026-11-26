@@ -68,3 +68,8 @@ val USE_PERSONAL_DICT = SettingsKey(
     key = booleanPreferencesKey("use_personal_dict_voice_input"),
     default = true
 )
+
+val ANIMATE_BUBBLE = SettingsKey(
+    key = booleanPreferencesKey("animate_bubble"),
+    default = true
+)

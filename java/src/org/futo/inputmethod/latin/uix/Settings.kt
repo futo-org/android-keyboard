@@ -374,6 +374,11 @@ val USE_SYSTEM_VOICE_INPUT = SettingsKey(
     default = false
 )
 
+val SYSTEM_VOICE_INPUT_PACKAGE = SettingsKey(
+    key = stringPreferencesKey("systemVoiceInputPackage"),
+    default = ""
+)
+
 val USE_TRANSFORMER_FINETUNING = SettingsKey(
     key = booleanPreferencesKey("useTransformerFinetuning2"),
     default = false

@@ -24,7 +24,9 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
+import org.futo.inputmethod.latin.ATLCompat
 import org.futo.inputmethod.latin.R
+import org.futo.inputmethod.latin.uix.ANIMATE_BUBBLE
 import org.futo.inputmethod.latin.uix.AUDIO_FOCUS
 import org.futo.inputmethod.latin.uix.Action
 import org.futo.inputmethod.latin.uix.ActionWindow
@@ -81,7 +83,7 @@ fun NoModelInstalled(locale: Locale) {
             enabled = true,
             onClickLabel = null,
             onClick = {
-                context.openURI("https://keyboard.futo.org/voice-input-models", true)
+                context.openURI("https://keyboard.futo.tech/voice-input-models", true)
             },
             role = null,
             indication = null,
@@ -98,7 +100,7 @@ fun NoModelInstalled(locale: Locale) {
 
 class VoiceInputPersistentState(val manager: KeyboardManagerForAction) : PersistentActionState {
     val modelManager = ModelManager(manager.getContext())
-    val soundPlayer = SoundPlayer(manager.getContext())
+    val soundPlayer: SoundPlayer? = if(ATLCompat.IsATL) null else SoundPlayer(manager.getContext())
     val userDictionaryObserver = UserDictionaryObserver(manager.getContext())
 
     override suspend fun cleanUp() {
@@ -127,6 +129,7 @@ private class VoiceInputActionWindow(
         val canExpandSpace = context.getSetting(CAN_EXPAND_SPACE)
         val useVAD = context.getSetting(USE_VAD_AUTOSTOP)
         val usePersonalDict = context.getSetting(USE_PERSONAL_DICT)
+        val animateBubble = context.getSetting(ANIMATE_BUBBLE)
 
         val primaryModel = model
         val languageSpecificModels = mutableMapOf<Language, ModelLoader>()
@@ -142,6 +145,7 @@ private class VoiceInputActionWindow(
         return RecognizerViewSettings(
             shouldShowInlinePartialResult = false,
             shouldShowVerboseFeedback = verboseFeedback,
+            shouldAnimateBubble = animateBubble,
             modelRunConfiguration = MultiModelRunConfiguration(
                 primaryModel = primaryModel,
                 languageSpecificModels = languageSpecificModels
@@ -163,7 +167,7 @@ private class VoiceInputActionWindow(
     private var recognizerView: MutableState<RecognizerView?> = mutableStateOf(null)
     private var modelException: MutableState<ModelDoesNotExistException?> = mutableStateOf(null)
 
-    private val initJob = manager.getLifecycleScope().launch {
+    private val initJob = manager.getLifecycleScope().launch(Dispatchers.Default) {
         yield()
         val settings = loadSettings()
 
@@ -238,7 +242,7 @@ private class VoiceInputActionWindow(
     override fun cancelled() {
         if (!wasFinished) {
             if (shouldPlaySounds && !cancelPlayed) {
-                state.soundPlayer.playCancelSound()
+                state.soundPlayer?.playCancelSound()
                 cancelPlayed = true
             }
             inputTransaction.cancel()
@@ -247,7 +251,7 @@ private class VoiceInputActionWindow(
 
     override fun recordingStarted(device: MicrophoneDeviceState) {
         if (shouldPlaySounds) {
-            state.soundPlayer.playStartSound()
+            state.soundPlayer?.playStartSound()
         }
 
         // Only set the setting if bluetooth is available, else it would reset the setting
@@ -282,13 +286,7 @@ private class VoiceInputActionWindow(
     }
 
     override fun openSettings() {
-        val intent = Intent()
-        intent.setClass(context, SettingsActivity::class.java)
-        intent.setFlags(
-            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        )
-        intent.putExtra("navDest", "languages")
-        context.startActivity(intent)
+        SettingsActivity.openToNavDest(context, "languages")
     }
 }
 

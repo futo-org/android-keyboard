@@ -224,4 +224,12 @@ void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
             dictionaryIdCharBuffer, versionStringCharBuffer, dateStringCharBuffer);
 }
 
+ITrie *Dictionary::getITrieHandle(std::string letters, bool allowBadWords) {
+    itrieWrapper.badWordsAllowed = allowBadWords;
+    itrieWrapper.structure = mDictionaryStructureWithBufferPolicy.get();
+    itrieWrapper.initLetters(letters);
+    itrieWrapper.populateITrie(&itrie);
+    return &itrie;
+}
+
 } // namespace latinime

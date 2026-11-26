@@ -91,13 +91,6 @@ fun ModelListScreen(navController: NavHostController = rememberNavController()) 
         Spacer(modifier = Modifier.height(32.dp))
         ScreenTitle("Actions")
         NavigationItem(
-            title = "Docs",
-            style = NavigationItemStyle.Misc,
-            navigate = {
-                context.openURI("https://gitlab.futo.org/alex/keyboard-wiki/-/wikis/Keyboard-LM-docs")
-            }
-        )
-        NavigationItem(
             title = "Import from file",
             style = NavigationItemStyle.Misc,
             navigate = {

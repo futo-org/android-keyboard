@@ -25,7 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +40,8 @@ import org.futo.inputmethod.latin.uix.settings.BottomSpacer
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.SettingsMenus
+import org.futo.inputmethod.latin.uix.settings.UserSetting
+import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.theme.Typography
 
@@ -59,12 +61,8 @@ private fun normalizeString(s: String): String {
     } ?: s).lowercase()
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true)
-@Composable
-fun SearchScreen(navController: NavHostController = rememberNavController()) {
-    val context = LocalContext.current
-    val textFieldValue = remember { mutableStateOf("") }
+@Composable private fun searchResults(query: String): List<Pair<UserSettingsMenu, List<UserSetting>>> {
+    val resources = LocalResources.current
 
     val searchTagsByMenu = remember {
         SettingsMenus
@@ -72,17 +70,16 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
             .filter { it.name != 0 }
             .associate {
                 it to run {
-                    normalizeString(context.getString(it.name)) + "\n" +
-                            (it.searchTagList?.joinToString("\n") { normalizeString(context.getString(it)) }
-                                ?: it.searchTags?.let { normalizeString(context.getString(it)) }
+                    normalizeString(resources.getString(it.name)) + "\n" +
+                            (it.searchTagList?.joinToString("\n") { normalizeString(resources.getString(it)) }
+                                ?: it.searchTags?.let { normalizeString(resources.getString(it)) }
                                 ?: "") + "\n" +
-                            (it.subtitle?.let { normalizeString(context.getString(it)) } ?: "")
+                            (it.subtitle?.let { normalizeString(resources.getString(it)) } ?: "")
                 }
             }
     }
 
-    val query = normalizeString(textFieldValue.value)
-    val results = remember(query) {
+    return remember(query) {
         SettingsMenus.map { menu ->
             menu to menu.settings
                 .filter { it.name != 0 && it.appearsInSearch }
@@ -118,6 +115,16 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
     }.filter {
         it.second.isNotEmpty()
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true)
+@Composable
+fun SearchScreen(navController: NavHostController = rememberNavController()) {
+    val textFieldValue = remember { mutableStateOf("") }
+
+    val query = normalizeString(textFieldValue.value)
+    val results = searchResults(query)
 
     LazyColumn {
         item {
@@ -130,7 +137,6 @@ fun SearchScreen(navController: NavHostController = rememberNavController()) {
                 }, autofocus = true)
             }
         }
-
 
         if(query.isBlank()) {
             item {

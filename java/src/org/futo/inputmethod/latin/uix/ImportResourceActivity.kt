@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -51,6 +53,7 @@ import org.futo.inputmethod.latin.SubtypesSetting
 import org.futo.inputmethod.latin.localeFromString
 import org.futo.inputmethod.latin.uix.actions.BugInfo
 import org.futo.inputmethod.latin.uix.actions.BugViewerState
+import org.futo.inputmethod.latin.uix.actions.DebugLabel
 import org.futo.inputmethod.latin.uix.settings.NavigationItem
 import org.futo.inputmethod.latin.uix.settings.NavigationItemStyle
 import org.futo.inputmethod.latin.uix.settings.ScreenTitle
@@ -59,14 +62,15 @@ import org.futo.inputmethod.latin.uix.settings.ScrollableList
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.pages.DevAutoAcceptThemeImport
 import org.futo.inputmethod.latin.uix.settings.useDataStore
-import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.StatusBarColorSetter
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.UixThemeWrapper
+import org.futo.inputmethod.latin.uix.theme.ZipThemes
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
 import org.futo.inputmethod.latin.uix.theme.orDefault
 import org.futo.inputmethod.latin.utils.Dictionaries
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils
+import org.futo.inputmethod.latin.utils.ZipFileHelper
 import org.futo.inputmethod.latin.xlm.ModelPaths
 import org.futo.inputmethod.updates.openURI
 import org.futo.voiceinput.shared.BUILTIN_ENGLISH_MODEL
@@ -163,10 +167,11 @@ fun SettingsImportScreen(
 @Composable
 fun ImportScreen(fileKind: FileKindAndInfo, onApply: (FileKindAndInfo, InputMethodSubtype) -> Unit, onCancel: () -> Unit) {
     val context = LocalContext.current
+    val resources = LocalResources.current
     val importing = remember { mutableStateOf(false) }
     val importingLanguage = remember { mutableStateOf("") }
     ScrollableList {
-        ScreenTitleWithIcon(title = stringResource(R.string.resource_importer_import_title, fileKind.kind.kindTitle(context)), painter = painterResource(id = fileKind.kind.icon()))
+        ScreenTitleWithIcon(title = stringResource(R.string.resource_importer_import_title, fileKind.kind.kindTitle(resources)), painter = painterResource(id = fileKind.kind.icon()))
 
         if(fileKind.kind == FileKind.Invalid) {
             if(fileKind.invalidKindHint == InvalidFileHint.ImportedWordListInsteadOfDict) {
@@ -245,21 +250,21 @@ enum class FileKind {
 
     fun getAddonUrlForLocale(locale: Locale?): String {
         return when(this) {
-            VoiceInput -> "https://keyboard.futo.org/voice-input-models?locale=${locale?.toLanguageTag() ?: ""}"
-            Transformer -> "https://keyboard.futo.org/models?locale=${locale?.toLanguageTag() ?: ""}"
-            Dictionary -> "https://keyboard.futo.org/dictionaries?locale=${locale?.toLanguageTag() ?: ""}"
-            Invalid -> "https://keyboard.futo.org/"
+            VoiceInput -> "https://keyboard.futo.tech/voice-input-models?locale=${locale?.toLanguageTag() ?: ""}"
+            Transformer -> "https://keyboard.futo.tech/models?locale=${locale?.toLanguageTag() ?: ""}"
+            Dictionary -> "https://keyboard.futo.tech/dictionaries?locale=${locale?.toLanguageTag() ?: ""}"
+            Invalid -> "https://keyboard.futo.tech/"
         }
     }
 }
 
-fun FileKind.kindTitle(context: Context): String {
-    return when(this) {
-        FileKind.VoiceInput -> context.getString(R.string.file_kind_voice_input_model)
-        FileKind.Transformer -> context.getString(R.string.file_kind_transformer_model)
-        FileKind.Dictionary -> context.getString(R.string.file_kind_dictionary)
-        FileKind.Invalid -> context.getString(R.string.file_kind_invalid_file)
-    }
+fun FileKind.kindTitle(resources: Resources): String {
+    return resources.getString(when(this) {
+        FileKind.VoiceInput -> R.string.file_kind_voice_input_model
+        FileKind.Transformer -> R.string.file_kind_transformer_model
+        FileKind.Dictionary -> R.string.file_kind_dictionary
+        FileKind.Invalid -> R.string.file_kind_invalid_file
+    })
 }
 
 fun FileKind.icon(): Int {
@@ -288,6 +293,7 @@ data class FileKindAndInfo(
     val kind: FileKind,
     val name: String?,
     val locale: String?,
+    val forceLocale: String? = null,
     val invalidKindHint: InvalidFileHint? = null
 )
 
@@ -522,7 +528,7 @@ fun determineFileKind(inputStream: InputStream): FileKindAndInfo {
         }
 
         (magic == 0x1f8b0808.toUInt()) || (magic == 0x1f8b0800.toUInt()) || (magic == 0x64696374.toUInt()) ->
-            FileKindAndInfo(FileKind.Invalid, null, null, InvalidFileHint.ImportedWordListInsteadOfDict)
+            FileKindAndInfo(FileKind.Invalid, null, null, invalidKindHint = InvalidFileHint.ImportedWordListInsteadOfDict)
 
         else -> FileKindAndInfo(FileKind.Invalid, null, null)
     }
@@ -703,7 +709,9 @@ class ImportResourceActivity : ComponentActivity() {
 
         if(item == null) return
 
-        val sanitizedLocaleForFilename = inputMethodSubtype.locale.replace("#", "H")
+        var locale = fileKind.forceLocale ?: inputMethodSubtype.locale
+
+        val sanitizedLocaleForFilename = locale.replace("#", "H")
         val outputFileName = "${fileKind.kind.name.lowercase()}_$sanitizedLocaleForFilename${fileKind.kind.extension()}"
 
         lifecycleScope.launch {
@@ -725,7 +733,7 @@ class ImportResourceActivity : ComponentActivity() {
                     }
 
                     // 2. Update reference
-                    val language = inputMethodSubtype.locale.split("_").first()
+                    val language = locale.split("_").first()
                     ModelPaths.updateModelOption(applicationContext, language, outputFile)
                 } else {
                     // 1. Copy file
@@ -742,12 +750,12 @@ class ImportResourceActivity : ComponentActivity() {
 
                     // 2. Update reference
                     applicationContext.setSetting(
-                        fileKind.kind.preferenceKeyFor(inputMethodSubtype.locale),
+                        fileKind.kind.preferenceKeyFor(locale),
                         outputFileName
                     )
                     fileKind.name?.let {
                         applicationContext.setSetting(
-                            fileKind.kind.namePreferenceKeyFor(inputMethodSubtype.locale),
+                            fileKind.kind.namePreferenceKeyFor(locale),
                             it
                         )
                     }
@@ -768,8 +776,13 @@ class ImportResourceActivity : ComponentActivity() {
                     painterResource(R.drawable.themes)
                 )
 
-                if(item.v.meta.isNewer) {
-                    Tip("⚠\uFE0F " + stringResource(R.string.resource_importer_warning_cfg_backup_newer_version))
+                val errors = item.v.config?.errors ?: ""
+                if(item.v.meta.isNewer || errors.isNotEmpty()) {
+                    Tip("⚠\uFE0F " + stringResource(R.string.theme_settings_warning_newer_version))
+                }
+
+                if(errors.isNotEmpty()) {
+                    Text("${errors}", style = DebugLabel)
                 }
 
                 if(item.v.config == null) {
@@ -784,14 +797,14 @@ class ImportResourceActivity : ComponentActivity() {
                     Text(
                         stringResource(
                             R.string.theme_customizer_import_custom_theme_name_text,
-                            item.v.config.id ?: "?"
+                            item.v.config.name
                         )
                     )
 
                     Text(
                         stringResource(
                             R.string.theme_customizer_import_custom_theme_author_text,
-                            item.v.config.author ?: "?"
+                            item.v.config.author
                         )
                     )
 
@@ -896,9 +909,32 @@ class ImportResourceActivity : ComponentActivity() {
         null
     }
 
+    private fun detectChineseDict(input: InputStream): String? {
+        var name: String? = null
+        var version: Int? = null
+
+        val success = ZipFileHelper.parseSafe(input,
+            "FUTOKeyboard_ChineseDictionary_Name" to {
+                name = it.decodeToString().trim()
+            },
+            "FUTOKeyboard_ChineseDictionary_Version" to {
+                version = it.decodeToString().trim().toInt()
+            }
+        )
+
+        if(name == null || version == null || !success) return null
+
+        return name
+    }
+
     private fun detectItemBeingImported(): ItemBeingImported? {
         val languageResource = getInputStream()?.use { determineFileKind(it) }
         if(languageResource != null && languageResource.kind != FileKind.Invalid) return ItemBeingImported.LanguageResource(languageResource)
+
+        val chineseDictionary = getInputStream()?.use { detectChineseDict(it) }
+        if(chineseDictionary != null) return ItemBeingImported.LanguageResource(FileKindAndInfo(
+            FileKind.Dictionary, name=chineseDictionary, locale="zh", forceLocale = "zh"
+        ))
 
         val settingsBackup = getInputStream()?.use { SettingsExporter.getCfgFileMetadata(it) }
         if(settingsBackup != null) return ItemBeingImported.SettingsBackup(settingsBackup)
@@ -923,7 +959,7 @@ class ImportResourceActivity : ComponentActivity() {
         if(item is ItemBeingImported.CustomTheme && DevAutoAcceptThemeImport) {
             if(item.v.config == null) {
                 BugViewerState.pushBug(BugInfo(
-                    name = "your custom theme (invalid metadata json)",
+                    name = "your custom theme (invalid metadata)",
                     details = item.v.error ?: "Unknown error",
                 ))
                 BugViewerState.triggerOpen()
@@ -964,19 +1000,19 @@ object MissingDictionaryHelper {
         ) != null
         val hasBuiltInDict = Dictionaries.getDictionaryIfExists(context, locale, Dictionaries.DictionaryKind.Any) != null
 
-        // These languages have an automatic prompt to download the right file on keyboard.futo.org
+        // These languages have an automatic prompt to download the right file on keyboard.futo.tech
         val langsWithDownloadableDictionaries = setOf(
             "ar", "hy", "as", "bn", "eu", "be", "bg", "ca", "hr", "cs", "da", "nl", "en", "eo", "fi",
             "fr", "gl", "ka", "de", "gom", "el", "gu", "he", "iw", "hi", "hu", "it", "kn", "ks", "lv",
             "lt", "lb", "mai", "ml", "mr", "nb", "or", "pl", "pt", "pa", "ro", "ru", "sa", "sat", "sr",
             "sd", "sl", "es", "sv", "ta", "te", "tok", "tcy", "tr", "uk", "ur", "af", "ar", "bn", "bg",
             "cs", "fr", "de", "he", "id", "it", "kab", "kk", "pms", "ru", "sk", "es", "uk", "vi",
-            "ja"
+            "ja", "zh"
         )
 
-        // Typing is severely broken in Japanese without the dictionary, it is vital that this message
+        // Typing is severely broken in these languages without the dictionary, it is vital that this message
         // is shown every time until the user downloads the dictionary
-        val undismissableLanguages = setOf("ja")
+        val undismissableLanguages = setOf("ja", "zh")
 
         val dismissalSetting = SettingsKey(
             intPreferencesKey("dictionary_notice_dismiss_${locale.language}"),

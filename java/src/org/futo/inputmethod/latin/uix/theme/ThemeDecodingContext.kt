@@ -7,6 +7,7 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 
 interface ThemeDecodingContext: Closeable {
     val context: Context
+    val palette: Lazy<TonalPalette>
     fun getFileBytes(path: String): ByteArray?
 
     // implementation-defined hash, could be as simple as hash of whole zip file + path

@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 
 import org.futo.inputmethod.annotations.UsedForTesting;
+import org.futo.inputmethod.latin.ATLCompat;
 import org.futo.inputmethod.latin.SuggestedWords;
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import org.futo.inputmethod.latin.common.LocaleUtils;
@@ -45,7 +46,7 @@ public final class SuggestionSpanUtils {
             null /* receiver */, null /* defaultValue */, FIELD_FLAG_AUTO_CORRECTION);
 
     static {
-        if (DebugFlags.DEBUG_ENABLED) {
+        if (DebugFlags.DEBUG_ENABLED && !ATLCompat.INSTANCE.getIsATL()) {
             if (OBJ_FLAG_AUTO_CORRECTION == null) {
                 throw new RuntimeException("Field is accidentially null.");
             }

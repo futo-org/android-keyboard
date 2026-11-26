@@ -156,7 +156,7 @@ public final class CapsModeUtils {
             j--;
         }
         if (j <= 0 || Character.isWhitespace(prevChar)) {
-            if (spacingAndPunctuations.mUsesGermanRules) {
+            if (spacingAndPunctuations.usesGermanRules) {
                 // In German typography rules, there is a specific case that the first character
                 // of a new line should not be capitalized if the previous line ends in a comma.
                 boolean hasNewLine = false;
@@ -198,7 +198,7 @@ public final class CapsModeUtils {
         // No other language has such a rule as far as I know, instead putting inside the quotation
         // mark as the exact thing quoted and handling the surrounding punctuation independently,
         // e.g. <<Did they say, "let's go home"?>>
-        if (spacingAndPunctuations.mUsesAmericanTypography) {
+        if (spacingAndPunctuations.usesAmericanTypography) {
             for (; j > 0; j--) {
                 // Here we look to go over any closing punctuation. This is because in dominant
                 // variants of English, the final period is placed within double quotes and maybe
@@ -283,7 +283,7 @@ public final class CapsModeUtils {
                     state = WORD;
                 } else if (Character.isWhitespace(c)) {
                     return noCaps;
-                } else if (Character.isDigit(c) && spacingAndPunctuations.mUsesGermanRules) {
+                } else if (Character.isDigit(c) && spacingAndPunctuations.usesGermanRules) {
                     state = NUMBER;
                 } else {
                     return caps;

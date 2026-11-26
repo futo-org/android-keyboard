@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,6 +75,7 @@ import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
 import org.futo.inputmethod.latin.uix.theme.presets.VoiceInputTheme
+import org.futo.inputmethod.updates.openURI
 
 @Composable
 fun ThemePreview(theme: ThemeOption, isSelected: Boolean = false, overrideName: String? = null, modifier: Modifier = Modifier, onClick: () -> Unit = { }) {
@@ -270,18 +272,48 @@ fun AddCustomThemeButton(short: Boolean = false, onClick: () -> Unit = { }) {
         modifier = Modifier
             .padding(12.dp)
             .width(172.dp)
-            .height(if(short) 64.dp else 128.dp )
-            .clickable { onClick() },
+            .height(if(short) 64.dp else 128.dp ),
+        onClick = { onClick() },
         color = currColors.surfaceVariant,
         shape = keyboardShape
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Icon(
-                Icons.Default.Add, contentDescription = null, modifier = Modifier
+                Icons.Default.Add,
+                contentDescription = stringResource(R.string.theme_settings_add_new_theme),
+                modifier = Modifier
                     .size(if(short) 32.dp else 48.dp)
-                    .align(
-                        Alignment.Center
-                    )
+                    .align(Alignment.Center)
+            )
+        }
+    }
+}
+
+@Composable
+fun VisitThemeStoreButton(short: Boolean = false) {
+    val context = LocalContext.current
+    val currColors = MaterialTheme.colorScheme
+
+    val keyboardShape = RoundedCornerShape(8.dp)
+
+    Surface(
+        modifier = Modifier
+            .padding(12.dp)
+            .width(172.dp)
+            .height(if(short) 64.dp else 128.dp ),
+        onClick = {
+            context.openURI("https://keyboard.futo.tech/themes", true)
+        },
+        color = currColors.surfaceVariant,
+        shape = keyboardShape
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Icon(
+                painterResource(R.drawable.compass),
+                contentDescription = stringResource(R.string.theme_settings_visit_theme_store),
+                modifier = Modifier
+                    .size(if(short) 32.dp else 48.dp)
+                    .align(Alignment.Center)
             )
         }
     }
@@ -346,6 +378,10 @@ fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit
                     AddCustomThemeButton(customThemes.isEmpty()) {
                         onCustomTheme()
                     }
+                }
+
+                item {
+                    VisitThemeStoreButton(customThemes.isEmpty())
                 }
 
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) { }

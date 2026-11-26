@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -38,7 +39,7 @@ public class TextEditPopupActivity extends AppCompatActivity {
         editText.setHintTextColor(adjustAlpha(fgColor, 0.7f));
         editText.setHighlightColor(adjustAlpha(primaryColor, 0.7f));
         editText.setMinLines(1);
-        editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
 
         if (Build.VERSION_CODES.Q <= Build.VERSION.SDK_INT) {
             Drawable d;

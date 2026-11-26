@@ -33,7 +33,10 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -53,6 +56,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.accessibility.AccessibilityUtils
+import org.futo.inputmethod.engine.ExpandableSuggestionBarConfiguration
 import org.futo.inputmethod.engine.IMEManager
 import org.futo.inputmethod.engine.general.WordLearner
 import org.futo.inputmethod.latin.SuggestedWords.SuggestedWordInfo
@@ -68,6 +72,7 @@ import org.futo.inputmethod.latin.uix.KeyBordersSetting
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.SUGGESTION_BLACKLIST
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.THEME_KEY
 import org.futo.inputmethod.latin.uix.UixManager
 import org.futo.inputmethod.latin.uix.actions.CanThrowIfDebug
@@ -108,6 +113,11 @@ val SupportsNonComposing = Build.VERSION.SDK_INT >= 31
 val UseTransparentNavbar =
     // https://github.com/futo-org/android-keyboard/issues/772
     !Build.MANUFACTURER.lowercase().contains("motorola")
+
+val HideKeyboardWhenHardKeyboardConnected = SettingsKey(
+    booleanPreferencesKey("hideKeyboardWhenHardKeyboardConnected"),
+    false
+)
 
 private class UnlockedBroadcastReceiver(val onDeviceUnlocked: () -> Unit) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -225,7 +235,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             latinIMELegacy.mKeyboardSwitcher.mState.onLoadKeyboard(
                 currentInputEditorInfo ?: return,
                 latinIMELegacy.currentAutoCapsState,
-                latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName
+                latinIMELegacy.mKeyboardSwitcher.keyboard?.mId?.mKeyboardLayoutSetName,
+                null
             )
         }
 
@@ -350,6 +361,12 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.onCurrentInputMethodSubtypeChanged(targetSubtype)
     }
 
+    private fun onSizeMaybeUpdated() {
+        if(sizingCalculator.didMaybeChange(size.value)) {
+            onSizeUpdated()
+        }
+    }
+
     fun onSizeUpdated() {
         val newSize = calculateSize() ?: return
         val shouldInvalidateKeyboard = size.value?.let { oldSize ->
@@ -410,6 +427,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onCreate() {
         super.onCreate()
+
+        UserBinaryDictionary.resetUserDictionariesRequiringRecreation()
 
         CanThrowIfDebug = isDirectBootUnlocked
 
@@ -473,12 +492,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                 }
 
                 if(activeSubtype != null && activeSubtype != currentSubtype) {
-                    currentSubtype = activeSubtype
-
                     withContext(Dispatchers.Main) {
-                        val subtype = Subtypes.convertToSubtype(activeSubtype)
-                        changeInputMethodSubtype(subtype)
-                        uixManager.updateLocale(Subtypes.getLocale(subtype))
+                        changeSubtype(activeSubtype)
                     }
                 }
             }
@@ -487,6 +502,12 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
             dataStore.data.collect {
                 onNewSubtype(it[ActiveSubtype.key] ?: ActiveSubtype.default)
+            }
+        }
+
+        launchJob {
+            getSettingFlow(SubtypesSetting).collect {
+                Subtypes.updateLanguageOnSpaceBarVisibility(this@LatinIME)
             }
         }
 
@@ -523,6 +544,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         }
     }
 
+    fun changeSubtype(subtypeString: String) {
+        if(currentSubtype == subtypeString) return
+        currentSubtype = subtypeString
+
+        val subtype = Subtypes.convertToSubtype(subtypeString)
+        changeInputMethodSubtype(subtype)
+        uixManager.updateLocale(Subtypes.getLocale(subtype))
+    }
+
     private var destroying = false
     override fun onDestroy() {
         destroying = true
@@ -557,6 +587,14 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.setComposeInputView(composeView)
 
         uixManager.setContent()
+
+        // Due to annoying Android animation nonsense, we may never receive a notification of the
+        // correct insets, a 250ms delay to recheck is the best solution I could come up with
+        window.window?.decorView?.setOnApplyWindowInsetsListener { v, insets ->
+            window.window!!.decorView.post { onSizeUpdated() }
+            window.window!!.decorView.postDelayed({ onSizeMaybeUpdated() }, 250L)
+            v.onApplyWindowInsets(insets)
+        }
 
         return composeView
     }
@@ -633,11 +671,13 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
+        onSizeMaybeUpdated()
         imeManager.onStartInput()
         latinIMELegacy.onStartInputView(info, restarting)
         lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
         updateColorsIfDynamicChanged()
         updateKeyboardLanguage()
+        uixManager.updateEmojiTranslationsIfNeeded()
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
@@ -715,6 +755,15 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
     }
 
+    fun getNavigationBarBottomInset(view: View): Int {
+        val windowInsets: WindowInsetsCompat? = ViewCompat.getRootWindowInsets(view)
+        if (windowInsets != null) {
+            val navBarInsets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            return navBarInsets.bottom
+        }
+        return 0
+    }
+
     override fun onComputeInsets(outInsets: Insets?) {
         // This method may be called before {@link #setInputView(View)}.
         if (legacyInputView.value == null || composeView == null) {
@@ -726,20 +775,21 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.setInsets(outInsets!!.apply {
             when(size) {
                 is FloatingKeyboardSize -> {
+                    val bottomInset = getNavigationBarBottomInset(composeView!!)
                     val height = uixManager.touchableHeight
 
                     val left   = uixManager.floatingPosition.x.toInt()
                     val right  = (uixManager.floatingPosition.x + size.width).roundToInt()
-                    val top    = uixManager.floatingPosition.y.toInt()
+                    val top    = uixManager.floatingPosition.y.toInt() - uixManager.extraTopTouchHeight
                     val bottom = (uixManager.floatingPosition.y + height).roundToInt()
 
                     touchableInsets = Insets.TOUCHABLE_INSETS_REGION
                     touchableRegion.set(left, top, right, bottom)
-                    contentTopInsets = viewHeight
-                    visibleTopInsets = viewHeight
+                    contentTopInsets = viewHeight - bottomInset
+                    visibleTopInsets = viewHeight - bottomInset
                 }
                 else -> {
-                    touchableInsets = Insets.TOUCHABLE_INSETS_CONTENT
+                    touchableInsets = Insets.TOUCHABLE_INSETS_VISIBLE
 
                     val touchableHeight = uixManager.touchableHeight
                     val topInset = if(touchableHeight < 1 || touchableHeight >= viewHeight - 1) {
@@ -751,7 +801,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
                     }
 
                     contentTopInsets = topInset
-                    visibleTopInsets = topInset
+                    visibleTopInsets = topInset - uixManager.extraTopTouchHeight
                 }
             }
 
@@ -770,7 +820,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     override fun onEvaluateInputViewShown(): Boolean {
-        return latinIMELegacy.onEvaluateInputViewShown() || super.onEvaluateInputViewShown()
+        return latinIMELegacy.onEvaluateInputViewShown()
+                || super.onEvaluateInputViewShown()
+                || !getSetting(HideKeyboardWhenHardKeyboardConnected)
     }
 
     override fun onEvaluateFullscreenMode(): Boolean {
@@ -798,9 +850,9 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     override fun setSuggestions(
         suggestedWords: SuggestedWords,
         rtlSubtype: Boolean,
-        useExpandableUi: Boolean
+        cfg: ExpandableSuggestionBarConfiguration
     ) {
-        uixManager.setSuggestions(suggestedWords, rtlSubtype, useExpandableUi)
+        uixManager.setSuggestions(suggestedWords, rtlSubtype, cfg)
 
         // Cache the auto-correction in accessibility code so we can speak it if the user
         // touches a key that will insert it.
@@ -832,24 +884,26 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     fun blacklistWord(suggestedWordInfo: SuggestedWordInfo?) = lifecycleScope.launch {
-        if(suggestedWordInfo != null) {
-            val existingWords = getSetting(SUGGESTION_BLACKLIST).toMutableSet()
-            existingWords.add(suggestedWordInfo.mWord)
-            setSetting(SUGGESTION_BLACKLIST, existingWords)
-        }
+        val word = suggestedWordInfo?.mWord
+        if(word != null) {
+            SuggestionBlacklist.addToBlacklistSetting(this@LatinIME, word)
 
-        imeManager.getActiveIME(Settings.getInstance().current).let {
-            if(it is WordLearner && suggestedWordInfo != null) {
-                it.removeFromHistory(
-                    suggestedWordInfo.mWord,
-                    NgramContext.EMPTY_PREV_WORDS_INFO,
-                    -1,
-                    Constants.NOT_A_CODE
-                )
-            }
+            val settings = Settings.getInstance().current
+            imeManager.getActiveIME(settings).let { ime ->
+                if (ime is WordLearner) {
+                    SuggestionBlacklist.getCapitalVariants(word, settings.mLocale).forEach {
+                        ime.removeFromHistory(
+                            it,
+                            NgramContext.EMPTY_PREV_WORDS_INFO,
+                            -1,
+                            Constants.NOT_A_CODE
+                        )
+                    }
+                }
 
-            withContext(Dispatchers.Main) {
-                it.requestSuggestionRefresh()
+                withContext(Dispatchers.Main) {
+                    ime.requestSuggestionRefresh()
+                }
             }
         }
     }
@@ -867,6 +921,8 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     private var overrideInputConnection: InputConnection? = null
     private var overrideEditorInfo: EditorInfo? = null
     fun overrideInputConnection(to: InputConnection?, editorInfo: EditorInfo?) {
+        if(to == this.overrideInputConnection && editorInfo == overrideEditorInfo) return
+
         imeManager.onFinishInput()
         this.overrideInputConnection = to
         this.overrideEditorInfo = editorInfo
@@ -913,6 +969,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         Log.i("LatinIME", "Device has been unlocked, reloading settings")
 
         // Every place that called getDefaultSharedPreferences now needs to be refreshed or call it again
+        UserBinaryDictionary.resetUserDictionariesRequiringRecreation()
 
         // Mainly Settings singleton needs to be refreshed
         Settings.init(applicationContext)
@@ -927,6 +984,13 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         CanThrowIfDebug = true
 
         // TODO: Spell checker service
+    }
+
+    /// Switch to voice IME or to internal one if it's no longer present.
+    fun trySwitchToShortcutIMEorInternal() {
+        if(!latinIMELegacy.mRichImm.switchToShortcutIme(this)) {
+            uixManager.activateInternalVoiceIME()
+        }
     }
 
     override val foldState: FoldingOptions

@@ -3,6 +3,8 @@ package org.futo.inputmethod.latin.uix.settings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -74,6 +76,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -201,11 +204,11 @@ fun SpacedColumn(gap: Dp, modifier: Modifier = Modifier, horizontalAlignment: Al
 @Composable
 fun SettingItem(
     title: String,
+    modifier: Modifier = Modifier,
     subtitle: String? = null,
     onClick: (() -> Unit)? = null,
     icon: (@Composable () -> Unit)? = null,
     disabled: Boolean = false,
-    modifier: Modifier = Modifier,
     subcontent: (@Composable () -> Unit)? = null,
     compact: Boolean = false,
     onSubmenuNavigate: (() -> Unit)? = null,
@@ -443,19 +446,21 @@ fun<T> SettingRadio(
     options: List<T>,
     optionNames: List<String>,
     setting: DataStoreItem<T>,
+    modifier: Modifier = Modifier,
     hints: List<@Composable () -> Unit>? = null,
+    subcontent: List<@Composable () -> Unit>? = null,
 ) {
     ScreenTitle(title, showBack = false)
     Column {
         options.zip(optionNames).forEachIndexed { i, it ->
             SettingItem(title = it.second, onClick = { setting.setValue(it.first) }, icon = {
                 RadioButton(selected = setting.value == it.first, onClick = null)
-            }, modifier = Modifier.clearAndSetSemantics {
+            }, modifier = modifier.clearAndSetSemantics {
                 this.text = AnnotatedString(it.second)
                 this.role = Role.RadioButton
                 this.selected = setting.value == it.first
-            }) {
-                hints?.getOrNull(i)?.let { it() }
+            }, subcontent = subcontent?.getOrNull(i)) {
+                hints?.getOrNull(i)?.invoke()
             }
         }
     }
@@ -628,14 +633,15 @@ fun SettingSliderSharedPrefsInt(
 }
 
 @Composable
-fun ScrollableList(modifier: Modifier = Modifier, spacing: Dp = 0.dp, content: @Composable () -> Unit) {
+fun ScrollableList(modifier: Modifier = Modifier, spacing: Dp = 0.dp, horizontalAlignment: Alignment.Horizontal = Alignment.Start, content: @Composable () -> Unit) {
     val scrollState = rememberScrollState()
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(spacing)
+        verticalArrangement = Arrangement.spacedBy(spacing),
+        horizontalAlignment = horizontalAlignment
     ) {
         content()
     }
@@ -804,6 +810,46 @@ fun<T> DropDownPicker(
     }
 }*/
 
+@Composable
+fun CollapsibleSection(title: String, modifier: Modifier = Modifier, section: @Composable ColumnScope.() -> Unit) {
+    val resources = LocalResources.current
+    var expanded by remember { mutableStateOf(false) }
+
+    Column {
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 44.dp).clickable {
+                expanded = !expanded
+            }.padding(16.dp).semantics {
+                stateDescription = resources.getString(
+                    if(expanded)
+                        R.string.setting_section_expanded
+                    else
+                        R.string.setting_section_collapsed
+                )
+                role = Role.DropdownList
+            }
+        ) {
+            RotatingChevronIcon(expanded, tint = LocalContentColor.current)
+
+            Spacer(Modifier.width(16.dp))
+
+            Text(
+                text = title,
+                style = Typography.Body.Regular,
+                color = LocalContentColor.current,
+                modifier = Modifier.weight(1.0f)
+            )
+        }
+
+        AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
+            Column {
+                section()
+            }
+        }
+    }
+}
+
+
 private val DropDownShape = RoundedCornerShape(12.dp)
 @Composable
 fun<T> DropDownPicker(
@@ -814,8 +860,8 @@ fun<T> DropDownPicker(
     scrollableOptions: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val resources = LocalResources.current
     var expanded by remember { mutableStateOf(false) }
-
 
     SpacedColumn(4.dp, modifier = modifier.semantics {
         role = Role.DropdownList
@@ -830,8 +876,12 @@ fun<T> DropDownPicker(
             ).heightIn(min = 44.dp).clip(DropDownShape).clickable {
                 expanded = !expanded
             }.padding(16.dp).semantics {
-                // TODO: Localization
-                stateDescription = if(expanded) "Expanded" else "Collapsed"
+                stateDescription = resources.getString(
+                    if(expanded)
+                        R.string.setting_section_expanded
+                    else
+                        R.string.setting_section_collapsed
+                )
                 role = Role.DropdownList
             }
         ) {
@@ -849,7 +899,7 @@ fun<T> DropDownPicker(
             RotatingChevronIcon(expanded, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
-        AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
+        AnimatedVisibility(expanded, enter = fadeIn(), exit = fadeOut()) {
             val scrollState = rememberScrollState()
             Column(Modifier.let {
                 if(scrollableOptions) {

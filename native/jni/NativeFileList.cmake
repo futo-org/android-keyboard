@@ -124,6 +124,7 @@ set(LATIN_IME_CORE_SRC_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/suggest/core/dicnode/dic_node_utils.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/suggest/core/dicnode/dic_nodes_cache.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/suggest/core/dictionary/dictionary.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/suggest/core/dictionary/dictionary_itrie.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/suggest/core/dictionary/dictionary_utils.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/suggest/core/dictionary/digraph_utils.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/suggest/core/dictionary/error_type_utils.cpp

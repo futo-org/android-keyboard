@@ -27,6 +27,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
 
+    <!-- For clipboard manager reading screenshots -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
+        android:minSdkVersion="33" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
 
     <application android:label="@string/english_ime_name"
@@ -35,6 +41,7 @@
          android:supportsRtl="true"
          android:allowBackup="true"
          android:largeHeap="true"
+         android:enableOnBackInvokedCallback="true"
          android:name=".CrashLoggingApplication">
 
         <!-- Services -->
@@ -75,6 +82,21 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+
+        <activity android:name=".uix.settings.VoiceInputSwitchActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:launchMode="singleTask"
+            android:noHistory="false"
+            android:configChanges="orientation|screenLayout|screenSize|keyboardHidden|keyboard|uiMode|density"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.futo.inputmethod.latin.action.VoiceInputSwitch" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -182,11 +204,18 @@
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove" />
+            tools:node="remove"
+            tools:ignore="MissingClass" />
 
         <provider
             android:authorities="${applicationId}.font"
             android:name=".content.KbContentProvider"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+
+        <provider
+            android:authorities="${applicationId}.clipboard"
+            android:name=".uix.actions.clipboard.ClipboardProvider"
             android:exported="false"
             android:grantUriPermissions="true" />
     </application>

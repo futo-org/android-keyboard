@@ -1,6 +1,7 @@
 package org.futo.inputmethod.latin.uix.actions
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +9,13 @@ import android.view.accessibility.AccessibilityEvent
 import android.widget.TextView
 import androidx.annotation.UiThread
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,6 +62,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -73,6 +80,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
@@ -92,18 +100,27 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.common.Constants
 import org.futo.inputmethod.latin.uix.Action
-import org.futo.inputmethod.latin.uix.ActionTextEditor
+import org.futo.inputmethod.latin.uix.ActionHeaderSearch
 import org.futo.inputmethod.latin.uix.ActionWindow
 import org.futo.inputmethod.latin.uix.AutoFitText
+import org.futo.inputmethod.latin.uix.DataStoreHelper
 import org.futo.inputmethod.latin.uix.DialogRequestItem
 import org.futo.inputmethod.latin.uix.EmojiTracker.getRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.resetRecentEmojis
 import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
+import org.futo.inputmethod.latin.uix.LocalManager
 import org.futo.inputmethod.latin.uix.PersistentActionState
+import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
+import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiFamily
+import org.futo.inputmethod.latin.uix.theme.LocalCompatEmojiTypeface
 import org.futo.inputmethod.latin.uix.theme.Typography
+import org.futo.inputmethod.latin.uix.theme.emojiNeedsCompat
+import org.futo.inputmethod.latin.uix.theme.emojiShouldShow
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -112,7 +129,13 @@ import java.util.zip.GZIPInputStream
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import kotlin.streams.toList
+
+private val CompatEmojiVersions = setOf("9.0", "10.0", "12.0", "12.1", "13.0", "13.1", "14.0", "15.0", "15.1", "16.0", "17.0")
+val Context.compatEmojiTypeface: Typeface? get() = try {
+    Typeface.createFromAsset(assets, "fonts/NotoColorEmoji_api24.ttf")
+} catch(e: Exception) {
+    null
+}
 
 private fun levenshteinDistance(lhs: CharSequence, rhs: CharSequence): Int {
     val lhsLen = lhs.length
@@ -212,14 +235,18 @@ class EmojiGridAdapter(
     private val onSelectSkinTone: (PopupInfo) -> Unit,
     private val emojiCellWidth: Int,
     private val contentColor: Color,
+    private val rippleColor: Color,
+    private val emojiTypeface: Typeface?,
     var wideCellWidth: Float
 ) : ListAdapter<EmojiViewItem, RecyclerView.ViewHolder>(EmojiViewItemDiffCallback) {
 
     class EmojiViewHolder(
         context: Context,
+        rippleColor: Int,
+        emojiTypeface: Typeface?,
         width: Int,
         height: Int
-    ) : RecyclerView.ViewHolder(EmojiView(context)) {
+    ) : RecyclerView.ViewHolder(EmojiView(context, rippleColor, emojiTypeface)) {
         private val emojiView: EmojiView = (itemView as EmojiView).apply {
             layoutParams = ViewGroup.LayoutParams(width, height)
             isClickable = true
@@ -269,7 +296,7 @@ class EmojiGridAdapter(
     @UiThread
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            VIEW_EMOJI -> EmojiViewHolder(parent.context, width = emojiCellWidth, height = emojiCellWidth)
+            VIEW_EMOJI -> EmojiViewHolder(parent.context, width = emojiCellWidth, height = emojiCellWidth, rippleColor = rippleColor.toArgb(), emojiTypeface = emojiTypeface)
             VIEW_CATEGORY -> CategoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.emoji_category, parent, false))
             else -> throw RuntimeException("Unknown viewType $viewType")
         }
@@ -297,7 +324,10 @@ class EmojiGridAdapter(
 }
 
 
+val LastUsedSkinTone = SettingsKey(stringPreferencesKey("last_used_skin_tone"), "")
+
 val skinTones = listOf(
+    "",
     "\ud83c\udffb",
     "\ud83c\udffc",
     "\ud83c\udffd",
@@ -305,21 +335,35 @@ val skinTones = listOf(
     "\ud83c\udfff",
 )
 
-// TODO: Mixing multiple skin tones
-//  e.g. family: woman, woman, girl, girl: medium, dark. light, medium skin tones
-fun generateSkinToneVariants(emoji: String, emojiMap: Map<String, EmojiItem>): List<String> {
-    val humanEmojis = emoji.split("\u200D")
-    val variants = mutableListOf<String>()
+data class TonedEmoji(
+    val emoji: String,
+    val skinTone: String?
+)
 
-    for (modifier in skinTones) {
-        val variant = humanEmojis.joinToString("\u200D") { part ->
-            if (emojiMap[part]?.category == "People & Body") {
-                part + modifier
-            } else {
-                part
-            }
+// #2316 - writing hand emoji is U+270D U+FE0F, to apply a dark skin tone
+// correctly it needs to be stripped to produce U+270D U+1F3FF, some apps
+// won't render U+270D U+FE0F U+1F3FF correctly
+fun String.stripVariationSelector16() =
+    replace("\uFE0F", "")
+
+fun generateSkinToneVariantOf(emoji: String, modifier: String, emojiMap: Map<String, EmojiItem>): String {
+    if(modifier.isEmpty()) return emoji
+
+    val humanEmojis = emoji.split("\u200D")
+    val variant = humanEmojis.joinToString("\u200D") { part ->
+        if (emojiMap[part]?.category == "People & Body") {
+            part.stripVariationSelector16() + modifier
+        } else {
+            part
         }
-        variants.add(variant.replace("\uFE0F", ""))
+    }
+
+    return variant
+}
+
+fun generateSkinToneVariants(emoji: String, emojiMap: Map<String, EmojiItem>): List<TonedEmoji> {
+    val variants = skinTones.map {
+        TonedEmoji(generateSkinToneVariantOf(emoji, it, emojiMap), it)
     }
 
     return variants
@@ -341,22 +385,28 @@ fun Emojis(
         }
     }
 
+    val lastUsedSkinTone = useDataStore(LastUsedSkinTone)
+
     var activePopup: PopupInfo? by rememberSaveable { mutableStateOf(null) }
     var popupIsActive by rememberSaveable { mutableStateOf(false) }
 
     val color = LocalKeyboardScheme.current.onKeyboardContainer
 
     var wideEmojiWidth by remember { mutableIntStateOf(100) }
+    val emojiTypeface = LocalCompatEmojiTypeface.current
+    val rippleColor = LocalKeyboardScheme.current.keyboardContainerPressed
     val emojiAdapter = remember {
         EmojiGridAdapter(
-            onClick,
+            onClick = onClick,
             onSelectSkinTone = {
                 activePopup = it
                 popupIsActive = true
             },
-            emojiWidth,
-            color,
-            wideEmojiWidth / 100.0f
+            emojiCellWidth = emojiWidth,
+            contentColor = color,
+            wideCellWidth = wideEmojiWidth / 100.0f,
+            emojiTypeface = emojiTypeface,
+            rippleColor = rippleColor
         )
     }
 
@@ -367,6 +417,11 @@ fun Emojis(
     var viewWidth by remember { mutableIntStateOf(0) }
     var viewHeight by remember { mutableIntStateOf(0) }
     var popupSize by remember { mutableStateOf(IntSize(0, 0)) }
+
+    val blockerAlpha: Float by animateFloatAsState(
+        targetValue = if (popupIsActive) 1.0f else 0.0f
+    )
+
 
     Box(modifier = modifier) {
         AndroidView(
@@ -460,7 +515,12 @@ fun Emojis(
                         }
                     }
                 }
+                .padding(8.dp, 0.dp)
         )
+
+        Box(Modifier.matchParentSize().background(
+            MaterialTheme.colorScheme.background.copy(alpha = blockerAlpha * 0.5f)
+        ))
 
         val posX = (activePopup?.x ?: 0) - popupSize.width / 2
         val posY = (activePopup?.y ?: 0) - popupSize.height
@@ -479,32 +539,56 @@ fun Emojis(
             }
             .absoluteOffset {
                 IntOffset(x, y)
-            }) {
+            },
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             activePopup?.let { popupInfo ->
+                val compatFamily = LocalCompatEmojiFamily.current
+                val familyToUse = remember(compatFamily, popupInfo.emoji.emoji) {
+                    if(emojiNeedsCompat(popupInfo.emoji.emoji, emojiTypeface)) {
+                        compatFamily
+                    } else {
+                        null
+                    }
+                }
                 Box {
                     Surface(
-                        color = MaterialTheme.colorScheme.primaryContainer,
+                        color = LocalKeyboardScheme.current.keyboardPress,
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Row {
-                            generateSkinToneVariants(popupInfo.emoji.emoji, emojiMap).map { emoji ->
-                                IconButton(
-                                    onClick = {
-                                        onClick(
-                                            EmojiItem(
-                                                emoji = emoji,
-                                                description = popupInfo.emoji.description,
-                                                category = popupInfo.emoji.category,
-                                                skinTones = false
-                                            )
-                                        )
-                                        popupIsActive = false
-                                    }, modifier = Modifier
-                                        .width(42.dp)
-                                        .height(42.dp)
-                                ) {
-                                    Box {
-                                        Text(emoji, modifier = Modifier.align(Alignment.Center))
+                        Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                            generateSkinToneVariants(popupInfo.emoji.untoned, emojiMap).map { toned ->
+                                val emoji = toned.emoji
+                                val tone = toned.skinTone
+
+                                if(emoji != popupInfo.emoji.emoji) {
+                                    Box(
+                                        Modifier
+                                            .width(40.dp)
+                                            .height(40.dp)
+                                            .clickable {
+                                                onClick(
+                                                    EmojiItem(
+                                                        emoji = emoji,
+                                                        description = popupInfo.emoji.description,
+                                                        category = popupInfo.emoji.category,
+                                                        skinTones = false
+                                                    )
+                                                )
+                                                popupIsActive = false
+
+                                                if(tone != null) {
+                                                    lastUsedSkinTone.setValue(tone)
+                                                }
+                                            }
+                                    ) {
+                                        Text(
+                                            emoji, modifier = Modifier.align(Alignment.Center),
+                                            fontFamily = familyToUse,
+                                            fontSize = with(LocalDensity.current) {
+                                                32.dp.toSp()
+                                            })
                                     }
                                 }
                             }
@@ -590,11 +674,11 @@ private fun EmojiCategoriesContainer(
         }
     }
 
-    val context = LocalContext.current
+    val resources = LocalResources.current
 
     LazyRow(state = listState, modifier = modifier.padding(8.dp, 0.dp)) {
         items(categories) {
-            val localizedTitle = localizedCategoryNameMap[it.title]?.let { context.getString(it) } ?: it.title
+            val localizedTitle = localizedCategoryNameMap[it.title]?.let { resources.getString(it) } ?: it.title
             IconButton(
                 onClick = { goToCategory(it) }, modifier = if (it == activeCategoryItem) {
                     Modifier.background(
@@ -604,7 +688,7 @@ private fun EmojiCategoriesContainer(
                 } else {
                     Modifier
                 }.clearAndSetSemantics {
-                    contentDescription = context.getString(R.string.action_emoji_jump_to_category, localizedTitle)
+                    contentDescription = resources.getString(R.string.action_emoji_jump_to_category, localizedTitle)
                     toggleableState = ToggleableState(it == activeCategoryItem)
                 }
             ) {
@@ -637,14 +721,14 @@ private fun EmojiCategoriesContainer(
 
 @Composable
 private fun BackspaceKey(onBackspace: (Boolean) -> Unit) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     Box(modifier = Modifier
         .minimumInteractiveComponentSize()
         .repeatablyClickableAction(onTrigger = onBackspace)
         .size(48.dp)
         .clearAndSetSemantics {
             this.role = Role.Button
-            this.text = AnnotatedString(context.getString(R.string.spoken_description_delete))
+            this.text = AnnotatedString(resources.getString(R.string.spoken_description_delete))
         },
         contentAlignment = Alignment.Center
     ) {
@@ -705,39 +789,43 @@ fun EmojiGrid(
         }
     }
 
-    val categorizedEmojis = remember {
+    val skinTone = useDataStoreValue(LastUsedSkinTone)
+    val emojiTypeface = LocalCompatEmojiTypeface.current
+    val categorizedEmojis = remember(skinTone) {
         var prevCategory = ""
-        val data = emojis.flatMap { emoji ->
-            listOfNotNull(
+
+        buildList {
+            for(emoji in emojis) {
                 if (emoji.category != prevCategory) {
                     prevCategory = emoji.category
-                    CategoryItem(emoji.category)
-                } else {
-                    null
-                },
-                EmojiItemItem(emoji)
-            )
-        }
+                    add(CategoryItem(emoji.category))
+                }
 
-        data
+                add(EmojiItemItem(transformEmojiForLastUsedSkinTone(skinTone, emoji, emojiMap, emojiTypeface)))
+            }
+        }
     }
 
     val currentCategory = remember { mutableStateOf(CategoryItem("Recent")) }
     val jumpCategory: MutableState<CategoryItem?> = remember { mutableStateOf(null) }
 
 
-    var emojiList = listOf(CategoryItem("Recent")) + recentEmojis.map { EmojiItemItem(it) } + categorizedEmojis
+    var emojiList = buildList<EmojiViewItem> {
+        if(recentEmojis.isNotEmpty()) {
+            add(CategoryItem("Recent"))
+            addAll(recentEmojis.map { EmojiItemItem(it) })
+        }
+        addAll(categorizedEmojis)
+    }
 
     if(isSearching) {
-        val locale = context.resources.configuration.locale
         val context = LocalContext.current
-        LaunchedEffect(locale.language) {
-            PersistentEmojiState.loadTranslationsForLanguage(context, locale)
+        val locales = LocalManager.current.let { remember { it.getActiveLocales() } }
+        LaunchedEffect(locales) {
+            locales.forEach { PersistentEmojiState.loadTranslationsForLanguage(context, it) }
         }
 
-        val translations = remember(locale.language) {
-            PersistentEmojiState.getTranslationForLocale(locale)
-        }
+        val translations = PersistentEmojiState.getTranslationForLocales(locales)
 
         emojiList =
             emojiList.filterIsInstance<EmojiItemItem>().searchMultiple2(searchFilter) { item ->
@@ -749,6 +837,8 @@ fun EmojiGrid(
             }.take(30).distinctBy { it.emoji.emoji }
 
         if(emojiList.isEmpty()) {
+            // Note: this gets matched and auto translated by localizedCategoryNameMap, don't
+            // update this string without also updating it there
             emojiList = emojiList + listOf(CategoryItem("No results found"))
         }
     }
@@ -787,8 +877,55 @@ fun EmojiGrid(
     }
 }
 
-data class EmojiNames(val names: List<String>)
-data class EmojiTranslations(val emojiToNames: Map<String, EmojiNames>)
+fun transformEmojiForLastUsedSkinTone(
+    skinTone: String,
+    item: EmojiItem,
+    emojiMap: Map<String, EmojiItem>,
+    emojiTypeface: Typeface?
+): EmojiItem {
+    // default skin tone
+    if(skinTone.isEmpty()) return item
+
+    // not toneable
+    if(!item.skinTones) return item
+
+    val toned = generateSkinToneVariantOf(item.emoji, skinTone, emojiMap)
+
+    // no need if it's identical
+    if(toned == item.emoji) return item
+
+    // if it's not renderable, skip
+    if(!emojiShouldShow(toned, emojiTypeface)) return item
+
+    return EmojiItem(
+        toned,
+        item.description,
+        item.category,
+        true,
+        untoned = item.emoji
+    )
+}
+
+data class EmojiNames(val names: List<String>) {
+    operator fun plus(other: EmojiNames): EmojiNames {
+        return EmojiNames((names + other.names).distinct())
+    }
+}
+data class EmojiTranslations(val emojiToNames: Map<String, EmojiNames>) {
+    private fun getOrBlank(key: String) = emojiToNames[key] ?: EmojiNames(emptyList())
+    operator fun plus(other: EmojiTranslations): EmojiTranslations {
+        return EmojiTranslations(
+            buildMap {
+                (emojiToNames.keys + other.emojiToNames.keys).forEach {
+                    put(it, getOrBlank(it) + other.getOrBlank(it))
+                }
+            }
+        )
+    }
+}
+
+data class LooseShortcut(val emoji: String, val shortcut: String, val score: Int)
+
 
 class PersistentEmojiState : PersistentActionState {
     companion object {
@@ -801,8 +938,34 @@ class PersistentEmojiState : PersistentActionState {
 
         @JvmStatic
         fun getTranslationForLocale(locale: Locale): EmojiTranslations? {
+            if(locale.language == "en") {
+                if("en_merged" in loadedTranslations) return loadedTranslations["en_merged"]
+
+                val fromUnicode = loadedTranslations["en"] ?: return null
+                val fromGemoji = loadedTranslations["en_gemoji"] ?: return null
+                val merged = fromUnicode + fromGemoji
+
+                loadedTranslations["en_merged"] = merged
+                return merged
+            }
             return loadedTranslations[locale.language]
         }
+
+        @JvmStatic
+        fun getTranslationForLocales(locales: List<Locale>): EmojiTranslations? {
+            if(locales.size == 1) return getTranslationForLocale(locales[0])
+
+            val key = locales.joinToString { it.language }
+            if(key in loadedTranslations) return loadedTranslations[key]
+
+            val merged = locales.fold(EmojiTranslations(emptyMap())) { t, l ->
+                t + (getTranslationForLocale(l) ?: return null)
+            }
+
+            loadedTranslations[key] = merged
+            return merged
+        }
+
 
         @JvmStatic
         fun getShortcut(locale: Locale, text: String): String? {
@@ -873,58 +1036,86 @@ class PersistentEmojiState : PersistentActionState {
 
         @JvmStatic
         suspend fun loadEmojis(context: Context) = withContext(Dispatchers.IO) {
-            val stream = GZIPInputStream(context.resources.openRawResource(R.raw.gemoji))
+            val stream = context.resources.openRawResource(R.raw.gemoji)
             val text = stream.bufferedReader().readText()
 
             val supplementalEmoteText = context.resources.openRawResource(R.raw.supplemental_emotes)
                 .bufferedReader().readText()
+
+            val compatTypeface = context.compatEmojiTypeface
 
             withContext(Dispatchers.Default) {
                 val emojiData = Json.parseToJsonElement(text).jsonArray.toList()
                 val supplementalEmoteData = Json.parseToJsonElement(supplementalEmoteText).jsonArray
                     .toList()
 
-                val englishShortcuts = hashMapOf<String, String>()
-                val englishLooseShortcuts = hashMapOf<String, String>()
-                //val englishTranslations = hashMapOf<String, EmojiNames>()
+                val englishShortcuts = mutableListOf<LooseShortcut>()
+                val englishTranslations = hashMapOf<String, EmojiNames>()
 
                 emojis.value = (emojiData + supplementalEmoteData).mapNotNull {
                     val emoji = it.jsonObject["emoji"]!!.jsonPrimitive.content
+                    val version = it.jsonObject["unicode_version"]!!.jsonPrimitive.content
+                    val description = it.jsonObject["description"]!!.jsonPrimitive.content
                     val category = it.jsonObject["category"]!!.jsonPrimitive.content
-                    val supported =
-                        emoji.codePoints().toList().all { c -> Character.getName(c) != null }
-                                || category == "ASCII"
 
                     val tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
                         ?.toList() ?: listOf()
                     val aliases = it.jsonObject["aliases"]?.jsonArray?.map { it.jsonPrimitive.content }
                         ?.toList() ?: listOf()
 
+                    val supported = when {
+                        category == "ASCII" -> true
+                        else -> emojiShouldShow(emoji, compatTypeface)
+                    }
+
                     if(!supported) {
                         null
                     } else {
-                        //englishTranslations.put(emoji, EmojiNames((tags + aliases)
-                        //    .flatMap { listOf(it) + it.split("_") }
-                        //    .toSet().toList()))
+                        englishTranslations.put(emoji, EmojiNames(listOf(description) + aliases + tags))
+
+                        if(!description.contains(' ')) {
+                            englishShortcuts.add(LooseShortcut(emoji = emoji, shortcut = description, score = 10))
+                        }
 
                         aliases.forEach { x ->
-                            if(!englishShortcuts.containsKey(x)) {
-                                englishShortcuts.put(x, emoji)
-                            }
+                            englishShortcuts.add(LooseShortcut(emoji = emoji, shortcut = x, score = 5))
                         }
 
                         if(category != "ASCII") {
-                            (tags + aliases).forEach { x ->
-                                val v = x.split("_").first()
-                                if (!englishLooseShortcuts.containsKey(v)) {
-                                    englishLooseShortcuts.put(v, emoji)
+                            tags.forEach { x ->
+                                englishShortcuts.add(
+                                    LooseShortcut(
+                                        emoji = emoji,
+                                        shortcut = x,
+                                        score = 4
+                                    )
+                                )
+                            }
+
+                            val lowQualityShortcuts = setOf("flag", "united", "japanese", "mrs",
+                                "lady", "empty", "small", "last", "flat", "high", "old", "low",
+                                "long", "american", "cape", "costa", "cook", "diego", "central",
+                                "south", "heard", "north", "san", "el", "us")
+
+                            (tags + aliases).filter {
+                                it.contains('_')
+                            }.forEach { x ->
+                                val shortcut = x.split('_')[0]
+                                if(shortcut !in lowQualityShortcuts) {
+                                    englishShortcuts.add(
+                                        LooseShortcut(
+                                            emoji = emoji,
+                                            shortcut = shortcut,
+                                            score = 0
+                                        )
+                                    )
                                 }
                             }
                         }
 
                         EmojiItem(
                             emoji = emoji,
-                            description = it.jsonObject["description"]!!.jsonPrimitive.content,
+                            description = description,
                             category = category,
                             skinTones = it.jsonObject["skin_tones"]?.jsonPrimitive?.booleanOrNull == true,
                             //tags = it.jsonObject["tags"]?.jsonArray?.map { it.jsonPrimitive.content }
@@ -940,12 +1131,19 @@ class PersistentEmojiState : PersistentActionState {
                     }
                 }
 
-                loadedTranslatedShortcuts["en"] = englishShortcuts.apply {
-                    englishLooseShortcuts.forEach {
-                        if(!containsKey(it.key)) put(it.key, it.value)
-                    }
-                }
+                loadedTranslatedShortcuts["en"] = englishShortcuts
+                    .sortedByDescending { it.score }
+                    .distinctBy { it.shortcut }
+                    .associate { it.shortcut to it.emoji }
+
+                loadedTranslations["en_gemoji"] = EmojiTranslations(englishTranslations)
             }
+        }
+
+        @JvmStatic
+        fun transformEmojiToLastSkinTone(emoji: String): String {
+            val skintone = DataStoreHelper.getSetting(LastUsedSkinTone)
+            return generateSkinToneVariantOf(emoji, skintone, emojiMap)
         }
     }
 
@@ -1010,25 +1208,10 @@ val EmojiAction = Action(
 
             @Composable
             override fun WindowTitleBar(rowScope: RowScope) {
-                val context = LocalContext.current
+                val resources = LocalResources.current
                 if(searching.value) {
                     with(rowScope) {
-                        Surface(
-                            color = LocalKeyboardScheme.current.keyboardContainer,
-                            contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
-                            shape = RoundedCornerShape(24.dp),
-                            modifier = Modifier
-                                .minimumInteractiveComponentSize()
-                                .padding(2.dp)
-                                .weight(1.0f)
-                        ) {
-                            Box(
-                                modifier = Modifier.padding(8.dp),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                ActionTextEditor(text = searchText)
-                            }
-                        }
+                        ActionHeaderSearch(searchText, Modifier.weight(1.0f))
                     }
                 } else {
                     super.WindowTitleBar(rowScope)
@@ -1055,10 +1238,10 @@ val EmojiAction = Action(
 
                     IconButton(onClick = {
                         manager.requestDialog(
-                            context.getString(R.string.action_emoji_clear_recent_emojis_question),
+                            resources.getString(R.string.action_emoji_clear_recent_emojis_question),
                             listOf(
-                                DialogRequestItem(context.getString(R.string.action_emoji_clear_recent_emojis_cancel)) {},
-                                DialogRequestItem(context.getString(R.string.action_emoji_clear_recent_emojis_clear)) {
+                                DialogRequestItem(resources.getString(R.string.action_emoji_clear_recent_emojis_cancel)) {},
+                                DialogRequestItem(resources.getString(R.string.action_emoji_clear_recent_emojis_clear)) {
                                     runBlocking {
                                         manager.getContext().resetRecentEmojis()
                                     }

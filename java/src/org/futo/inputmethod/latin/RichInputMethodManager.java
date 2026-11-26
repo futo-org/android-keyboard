@@ -30,7 +30,9 @@ import android.view.inputmethod.InputMethodSubtype;
 import org.futo.inputmethod.annotations.UsedForTesting;
 import org.futo.inputmethod.compat.InputMethodManagerCompatWrapper;
 import org.futo.inputmethod.latin.settings.Settings;
+import org.futo.inputmethod.latin.uix.DataStoreHelper;
 import org.futo.inputmethod.latin.uix.PreferenceUtils;
+import org.futo.inputmethod.latin.uix.SettingsKt;
 import org.futo.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import org.futo.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -40,6 +42,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -63,6 +66,8 @@ public class RichInputMethodManager {
     private InputMethodManagerCompatWrapper mImmWrapper;
     private InputMethodInfoCache mInputMethodInfoCache;
     private RichInputMethodSubtype mCurrentRichInputMethodSubtype;
+
+    private String mShortcutPackage;
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
 
@@ -279,40 +284,67 @@ public class RichInputMethodManager {
                     + (mShortcutSubtype == null ? "<null>" : (
                             mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
         }
-        final RichInputMethodSubtype richSubtype = mCurrentRichInputMethodSubtype;
-        final Locale systemLocale = mContext.getResources().getConfiguration().locale;
 
-        // TODO: Update an icon for shortcut IME
-        final Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
-                getInputMethodManager().getShortcutInputMethodsAndSubtypes();
+        mShortcutPackage = DataStoreHelper.getSetting(SettingsKt.getSYSTEM_VOICE_INPUT_PACKAGE());
+        if(mShortcutPackage.isEmpty()) {
+            mShortcutPackage = null;
+        }
+
+
+
         mShortcutInputMethodInfo = null;
         mShortcutSubtype = null;
-        for (final InputMethodInfo imi : shortcuts.keySet()) {
-            final List<InputMethodSubtype> subtypes = shortcuts.get(imi);
-            // TODO: Returns the first found IMI for now. Should handle all shortcuts as
-            // appropriate.
-            mShortcutInputMethodInfo = imi;
-            // TODO: Pick up the first found subtype for now. Should handle all subtypes
-            // as appropriate.
-            mShortcutSubtype = subtypes.size() > 0 ? subtypes.get(0) : null;
-            break;
+
+        if(mShortcutPackage != null) {
+            final List<InputMethodInfo> inputMethodList = getInputMethodManager().getEnabledInputMethodList();
+            for (final InputMethodInfo imi : inputMethodList) {
+                if(!mShortcutPackage.equals(imi.getPackageName())) continue;
+
+                mShortcutInputMethodInfo = imi;
+                final List<InputMethodSubtype> subtypes = getInputMethodManager()
+                        .getEnabledInputMethodSubtypeList(imi, true);
+
+                for(int i=0; i<subtypes.size(); i++) {
+                    final InputMethodSubtype subtype = imi.getSubtypeAt(i);
+                    if ("voice".equals(subtype.getMode())) {
+                        mShortcutSubtype = subtype;
+                        break;
+                    }
+                }
+
+                break;
+            }
+        } else {
+            // Fallback to first one. If package no longer exists, we do not set any shortcut at all
+            final Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
+                    getInputMethodManager().getShortcutInputMethodsAndSubtypes();
+            for (final InputMethodInfo imi : shortcuts.keySet()) {
+                final List<InputMethodSubtype> subtypes = shortcuts.get(imi);
+                mShortcutInputMethodInfo = imi;
+                mShortcutSubtype = subtypes.size() > 0 ? subtypes.get(0) : null;
+                break;
+            }
         }
+
+
         if (DEBUG) {
             Log.d(TAG, "Update shortcut IME to : "
                     + (mShortcutInputMethodInfo == null
                             ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
                     + (mShortcutSubtype == null ? "<null>" : (
-                            mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
+                            mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode()))
+                    + " tgt=" + (mShortcutPackage == null ? "<null>" : mShortcutPackage));
         }
     }
 
-    public void switchToShortcutIme(final InputMethodService context) {
+    public boolean switchToShortcutIme(final InputMethodService context) {
         if (mShortcutInputMethodInfo == null) {
-            return;
+            return false;
         }
 
         final String imiId = mShortcutInputMethodInfo.getId();
         switchToTargetIME(imiId, mShortcutSubtype, context);
+        return true;
     }
 
     private void switchToTargetIME(final String imiId, final InputMethodSubtype subtype,

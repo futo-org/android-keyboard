@@ -84,7 +84,7 @@ interface KeyboardManagerForAction {
     fun getActiveLocales(): List<Locale>
 
     fun overrideInputConnection(inputConnection: InputConnection, editorInfo: EditorInfo)
-    fun unsetInputConnection()
+    fun unsetInputConnection(): Boolean
 
     fun requestDialog(text: String, options: List<DialogRequestItem>, onCancel: () -> Unit)
     fun openInputMethodPicker()
@@ -108,7 +108,7 @@ interface KeyboardManagerForAction {
 
     // Returns null if the current IME is not of this kind.
     // TODO: In the future make an IMEActionInterface for correctness
-    fun<T: IMEInterface> getIMEInterface(clazz: Class<T>): T?
+    fun getCurrentIME(): IMEInterface
 }
 
 enum class CloseResult {
@@ -189,5 +189,10 @@ data class Action(
 
     val shownInEditor: Boolean = true,
 
-    val settingsMenu: UserSettingsMenu? = null
+    val settingsMenu: UserSettingsMenu? = null,
+)
+
+data class LangSpecAction(
+    val action: Action,
+    val langRequired: Set<String>
 )
