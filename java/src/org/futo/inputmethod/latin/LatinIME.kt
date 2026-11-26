@@ -86,6 +86,7 @@ import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
@@ -326,39 +327,32 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
 
         // We need to read these right from the settings. LatinIME just seems to return a generic "keyboard" subtype
         // with no language info when you get subtypes from InputMethodManager
-        val enabledSubtypes = getSettingBlocking(SubtypesSetting).map(Subtypes::convertToSubtype)
+        val enabledSubtypes = getSettingBlocking(SubtypesSetting).map { it to Subtypes.convertToSubtype(it) }
         if (enabledSubtypes.isEmpty()) return
 
-        val currentSubtype = RichInputMethodManager.getInstance().currentSubtype.rawSubtype
-        val currentSubtypeString = Subtypes.subtypeToString(currentSubtype)
-        val currentLanguage = Subtypes.getLocale(currentSubtype).language
+        val currentSubtypeObj = RichInputMethodManager.getInstance().currentSubtype.rawSubtype
+        val currentSubtypeString = Subtypes.subtypeToString(currentSubtypeObj)
+        val currentLanguage = Subtypes.getLocale(currentSubtypeObj).language
         val hintedLocales = (0 until hintLocales.size()).map(hintLocales::get)
 
-        if (hintedLocales.any { it.language == currentLanguage }) {
-            // Some apps update hintLocales faster than keyboard view state settles.
-            // If the current language is already valid for hints, keep it but force one UI resync.
-            // Example is changing between JP/EN in translate, going from 12 key back to EN would not work correctly. 
-            if (lastAutoSwitchResyncSubtype != currentSubtypeString) {
-                latinIMELegacy.onCurrentInputMethodSubtypeChanged(currentSubtype)
-                lastAutoSwitchResyncSubtype = currentSubtypeString
-            }
+        if (currentLanguage.isNotEmpty() && hintedLocales.any { it.language == currentLanguage }) {
             return
         }
 
         // checking subtypes by tag and fallback to language if none found
-        val targetSubtype = hintedLocales.firstNotNullOfOrNull { hintLocale ->
-            enabledSubtypes.find {
-                Subtypes.getLocale(it).toLanguageTag().equals(hintLocale.toLanguageTag(), true)
-            } ?: enabledSubtypes.find {
-                val subtypeLocale = Subtypes.getLocale(it)
+        val (targetSubtypeString, targetSubtype) = hintedLocales.firstNotNullOfOrNull { hintLocale ->
+            enabledSubtypes.find { (_, subtype) ->
+                Subtypes.getLocale(subtype).toLanguageTag().equals(hintLocale.toLanguageTag(), true)
+            } ?: enabledSubtypes.find { (_, subtype) ->
+                val subtypeLocale = Subtypes.getLocale(subtype)
                 subtypeLocale.language.isNotEmpty() && subtypeLocale.language == hintLocale.language
             }
         } ?: return
 
-        if (Subtypes.subtypeToString(targetSubtype) == currentSubtypeString) return
+        if (targetSubtypeString == currentSubtype || Subtypes.subtypeToString(targetSubtype) == currentSubtypeString) return
 
-        lastAutoSwitchResyncSubtype = ""
-        latinIMELegacy.onCurrentInputMethodSubtypeChanged(targetSubtype)
+        setSettingBlocking(ActiveSubtype.key, targetSubtypeString)
+        changeSubtype(targetSubtypeString)
     }
 
     private fun onSizeMaybeUpdated() {
@@ -411,7 +405,6 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
     }
 
     private var currentSubtype = ""
-    private var lastAutoSwitchResyncSubtype = ""
 
     val jobs = mutableListOf<Job>()
     private fun launchJob(task: suspend CoroutineScope.() -> Unit) {
