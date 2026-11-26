@@ -209,6 +209,13 @@ public final class InputAttributes {
         return editorInfo.inputType == mInputType;
     }
 
+    public boolean hasSameHintLocales(final EditorInfo editorInfo) {
+        final LocaleList newHintLocales = (editorInfo != null
+                && (editorInfo.inputType & InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT)
+                ? editorInfo.hintLocales : null;
+        return Objects.equals(mHintLocales, newHintLocales);
+    }
+
     private boolean hasNoMicrophoneKeyOption() {
         @SuppressWarnings("deprecation")
         final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(

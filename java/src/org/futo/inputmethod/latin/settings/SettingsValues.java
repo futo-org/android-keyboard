@@ -366,6 +366,10 @@ public class SettingsValues {
         return mInputAttributes.isSameInputType(editorInfo);
     }
 
+    public boolean hasSameHintLocales(final EditorInfo editorInfo) {
+        return mInputAttributes.hasSameHintLocales(editorInfo);
+    }
+
     public boolean hasSameOrientation(final Configuration configuration) {
         return mDisplayOrientation == configuration.orientation;
     }

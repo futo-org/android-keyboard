@@ -345,9 +345,7 @@ public class LatinIMELegacy implements KeyboardActionListener,
     }
 
     void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
-        // Refresh InputAttributes even when restarting in the same field. Some apps
-        // (e.g Translate) update hintLocales but not inputType, leading to out of date hintLocales
-        loadSettings();
+
     }
 
     public void updateMainKeyboardViewSettings() {
@@ -428,8 +426,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
         // In the practice, if it is, we should have gotten onConfigurationChanged so it should
         // be fine, but this is horribly confusing and must be fixed AS SOON AS POSSIBLE.
 
-        if (isDifferentTextField ||
-                !currentSettingsValues.hasSameOrientation(mInputMethodService.getResources().getConfiguration())) {
+        if (isDifferentTextField
+                || !currentSettingsValues.hasSameOrientation(mInputMethodService.getResources().getConfiguration())
+                || (currentSettingsValues.mAutoSwitchLanguage && !currentSettingsValues.hasSameHintLocales(editorInfo))) {
             loadSettings();
         }
         if (isDifferentTextField) {

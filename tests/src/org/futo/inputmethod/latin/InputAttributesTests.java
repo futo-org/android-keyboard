@@ -13,7 +13,9 @@ import org.junit.runner.RunWith;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -47,5 +49,24 @@ public class InputAttributesTests {
         final InputAttributes inputAttributes = new InputAttributes(null, false, "");
 
         assertNull(inputAttributes.mHintLocales);
+    }
+
+    @Test
+    public void testHasSameHintLocales() {
+        final EditorInfo editorInfo = new EditorInfo();
+        editorInfo.inputType = InputType.TYPE_CLASS_TEXT;
+        editorInfo.hintLocales = new LocaleList(new Locale("en", "US"));
+
+        final InputAttributes inputAttributes = new InputAttributes(editorInfo, false, "");
+
+        final EditorInfo sameEditorInfo = new EditorInfo();
+        sameEditorInfo.inputType = InputType.TYPE_CLASS_TEXT;
+        sameEditorInfo.hintLocales = new LocaleList(new Locale("en", "US"));
+        assertTrue(inputAttributes.hasSameHintLocales(sameEditorInfo));
+
+        final EditorInfo changedEditorInfo = new EditorInfo();
+        changedEditorInfo.inputType = InputType.TYPE_CLASS_TEXT;
+        changedEditorInfo.hintLocales = new LocaleList(new Locale("ja", "JP"));
+        assertFalse(inputAttributes.hasSameHintLocales(changedEditorInfo));
     }
 }
