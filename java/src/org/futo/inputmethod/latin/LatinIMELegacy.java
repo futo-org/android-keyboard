@@ -426,8 +426,9 @@ public class LatinIMELegacy implements KeyboardActionListener,
         // In the practice, if it is, we should have gotten onConfigurationChanged so it should
         // be fine, but this is horribly confusing and must be fixed AS SOON AS POSSIBLE.
 
-        if (isDifferentTextField ||
-                !currentSettingsValues.hasSameOrientation(mInputMethodService.getResources().getConfiguration())) {
+        if (isDifferentTextField
+                || !currentSettingsValues.hasSameOrientation(mInputMethodService.getResources().getConfiguration())
+                || (currentSettingsValues.mAutoSwitchLanguage && !currentSettingsValues.hasSameHintLocales(editorInfo))) {
             loadSettings();
         }
         if (isDifferentTextField) {

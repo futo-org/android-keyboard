@@ -86,6 +86,7 @@ import org.futo.inputmethod.latin.uix.getSettingFlow
 import org.futo.inputmethod.latin.uix.isDirectBootUnlocked
 import org.futo.inputmethod.latin.uix.safeKeyboardPadding
 import org.futo.inputmethod.latin.uix.setSetting
+import org.futo.inputmethod.latin.uix.setSettingBlocking
 import org.futo.inputmethod.latin.uix.theme.ThemeOption
 import org.futo.inputmethod.latin.uix.theme.applyWindowColors
 import org.futo.inputmethod.latin.uix.theme.getThemeOption
@@ -315,6 +316,43 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
             recreateKeyboard()
             return
         }
+    }
+
+    private fun updateKeyboardLanguage() {
+        val settings = latinIMELegacy.mSettings.current
+        if (!settings.mAutoSwitchLanguage) return
+
+        val hintLocales = settings.mInputAttributes.mHintLocales ?: return
+        if (hintLocales.isEmpty) return
+
+        // We need to read these right from the settings. LatinIME just seems to return a generic "keyboard" subtype
+        // with no language info when you get subtypes from InputMethodManager
+        val enabledSubtypes = getSettingBlocking(SubtypesSetting).map { it to Subtypes.convertToSubtype(it) }
+        if (enabledSubtypes.isEmpty()) return
+
+        val currentSubtypeObj = RichInputMethodManager.getInstance().currentSubtype.rawSubtype
+        val currentSubtypeString = Subtypes.subtypeToString(currentSubtypeObj)
+        val currentLanguage = Subtypes.getLocale(currentSubtypeObj).language
+        val hintedLocales = (0 until hintLocales.size()).map(hintLocales::get)
+
+        if (currentLanguage.isNotEmpty() && hintedLocales.any { it.language == currentLanguage }) {
+            return
+        }
+
+        // checking subtypes by tag and fallback to language if none found
+        val (targetSubtypeString, targetSubtype) = hintedLocales.firstNotNullOfOrNull { hintLocale ->
+            enabledSubtypes.find { (_, subtype) ->
+                Subtypes.getLocale(subtype).toLanguageTag().equals(hintLocale.toLanguageTag(), true)
+            } ?: enabledSubtypes.find { (_, subtype) ->
+                val subtypeLocale = Subtypes.getLocale(subtype)
+                subtypeLocale.language.isNotEmpty() && subtypeLocale.language == hintLocale.language
+            }
+        } ?: return
+
+        if (targetSubtypeString == currentSubtype || Subtypes.subtypeToString(targetSubtype) == currentSubtypeString) return
+
+        setSettingBlocking(ActiveSubtype.key, targetSubtypeString)
+        changeSubtype(targetSubtypeString)
     }
 
     private fun onSizeMaybeUpdated() {
@@ -631,6 +669,7 @@ class LatinIME : InputMethodServiceCompose(), LatinIMELegacy.SuggestionStripCont
         latinIMELegacy.onStartInputView(info, restarting)
         lifecycleScope.launch { uixManager.showUpdateNoticeIfNeeded() }
         updateColorsIfDynamicChanged()
+        updateKeyboardLanguage()
         uixManager.updateEmojiTranslationsIfNeeded()
     }
 
